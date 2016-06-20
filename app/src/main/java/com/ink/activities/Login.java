@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -174,9 +175,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
+                        Log.d("Fasfha", "onResponse: ");
                     }
                 }
-
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     mProgressView.setVisibility(View.GONE);
