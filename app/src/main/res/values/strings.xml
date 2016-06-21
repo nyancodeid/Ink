@@ -41,5 +41,7 @@
     <string name="groupsText">Groups</string>
     <string name="friendsText">Friends</string>
     <string name="settingsString">Settings</string>
+    <string name="logoutString">Logout</string>
+    <string name="serverErrorText">There was an problem with server.Please reload again</string>
 
 </resources>

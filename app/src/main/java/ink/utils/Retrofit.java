@@ -1,6 +1,7 @@
 package ink.utils;
 
 import okhttp3.ResponseBody;
+import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
@@ -39,10 +40,14 @@ public class Retrofit {
     public interface InkService {
         @FormUrlEncoded
         @POST(Constants.REGISTER_URL)
-        retrofit2.Call<ResponseBody> register(@Field("login") String login, @Field("password") String password);
+        Call<ResponseBody> register(@Field("login") String login, @Field("password") String password);
 
         @FormUrlEncoded
         @POST(Constants.LOGIN_URL)
-        retrofit2.Call<ResponseBody> login(@Field("login") String login, @Field("password") String password);
+        Call<ResponseBody> login(@Field("login") String login, @Field("password") String password);
+
+        @POST(Constants.FRIENDS_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getFriends(@Field("user_id") String userId);
     }
 }

@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import ink.activities.HomeActivity;
 import ink.adapters.FeedAdapter;
 import ink.models.FeedModel;
 import ink.utils.RecyclerTouchListener;
@@ -29,8 +28,6 @@ public class Feed extends android.support.v4.app.Fragment {
     private RecyclerView mRecyclerView;
     private FeedAdapter mAdapter;
     private FeedModel mFeedModel;
-    private boolean isScrolledUp;
-    private HomeActivity parent;
 
     public static Feed newInstance() {
         Feed feed = new Feed();
@@ -50,9 +47,6 @@ public class Feed extends android.support.v4.app.Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-
-        parent = ((HomeActivity) getActivity());
-
         mAdapter = new FeedAdapter(mFeedModelArrayList, getActivity());
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);

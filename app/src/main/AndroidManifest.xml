@@ -28,8 +28,13 @@
         <activity android:name="ink.activities.Registration" />
         <activity
             android:name="ink.activities.HomeActivity"
-            android:label="@string/title_activity_home"
+            android:label="@string/feedText"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name="ink.fragments.Profile"
+
+            android:theme="@style/AppTheme">
+
+        </activity>
     </application>
 
 </manifest>

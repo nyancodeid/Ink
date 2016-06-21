@@ -57,7 +57,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         // Set up the login form.
         mSharedHelper = new SharedHelper(this);
         if (mSharedHelper.isLoggedIn()) {
-
+            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+            finish();
         }
         mLoginView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -75,7 +76,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id ==R.id.login || id == EditorInfo.IME_NULL) {
+                if (id == R.id.login || id == EditorInfo.IME_NULL) {
                     attemptLogin();
                     return true;
                 }
@@ -87,13 +88,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!mPasswordView.getText().toString().isEmpty()&&!mLoginView.getText().toString().isEmpty()){
+                if (!mPasswordView.getText().toString().isEmpty() && !mLoginView.getText().toString().isEmpty()) {
                     attemptLogin();
-                }else{
-                    if(mPasswordView.getText().toString().isEmpty()){
+                } else {
+                    if (mPasswordView.getText().toString().isEmpty()) {
                         mPasswordView.setError(getString(R.string.emptyPasswordError));
                     }
-                    if(mLoginView.getText().toString().isEmpty()){
+                    if (mLoginView.getText().toString().isEmpty()) {
                         mLoginView.setError(getString(R.string.emptyLoginError));
                     }
                 }
@@ -167,8 +168,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                     }
                                 });
                                 builder.show();
-                            }else{
-                                startActivity(new Intent(getApplicationContext(),HomeActivity.class));
+                            } else {
+                                String userId = jsonObject.optString("user_id");
+                                mSharedHelper.putUserId(userId);
+                                mSharedHelper.putShouldShowIntro(false);
+                                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                                finish();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -178,6 +183,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         Log.d("Fasfha", "onResponse: ");
                     }
                 }
+
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
                     mProgressView.setVisibility(View.GONE);
