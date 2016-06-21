@@ -1,4 +1,4 @@
-package com.ink;
+package com.ink.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.ink.R;
 import com.ink.activities.HomeActivity;
 import com.ink.adapters.FeedAdapter;
 import com.ink.models.FeedModel;

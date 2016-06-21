@@ -15,7 +15,7 @@ import android.widget.ImageView;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-import com.ink.Feed;
+import com.ink.fragments.Feed;
 import com.ink.R;
 import com.ink.utils.CircleTransform;
 import com.ink.utils.SharedHelper;
