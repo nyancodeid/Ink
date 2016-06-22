@@ -67,9 +67,9 @@
 
             <ImageView
                 android:id="@+id/triangleView"
-                android:layout_width="35dp"
+                android:layout_width="25dp"
                 android:layout_marginLeft="10dp"
-                android:layout_height="35dp"
+                android:layout_height="25dp"
                 android:layout_alignLeft="@+id/statusCard"
                 android:layout_alignStart="@+id/statusCard"
                 android:layout_below="@+id/imageCard"
