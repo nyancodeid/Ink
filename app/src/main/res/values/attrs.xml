@@ -60,8 +60,8 @@
             <enum name="end" value="3" />
             <enum name="marquee" value="4" />
         </attr>
-        <attr name="menu_labels_maxLines" format="integer" />
-        <attr name="menu_fab_size" format="enum">
+        <attr format="integer" name="menu_labels_maxLines" />
+        <attr format="enum" name="menu_fab_size">
             <enum name="normal" value="0" />
             <enum name="mini" value="1" />
         </attr>
@@ -78,10 +78,10 @@
             <enum name="up" value="0" />
             <enum name="down" value="1" />
         </attr>
-        <attr name="menu_backgroundColor" format="color" />
-        <attr name="menu_fab_label" format="string" />
-        <attr name="menu_fab_show_animation" format="reference" />
-        <attr name="menu_fab_hide_animation" format="reference" />
+        <attr format="color" name="menu_backgroundColor" />
+        <attr format="string" name="menu_fab_label" />
+        <attr format="reference" name="menu_fab_show_animation" />
+        <attr format="reference" name="menu_fab_hide_animation" />
     </declare-styleable>
 
 </resources>

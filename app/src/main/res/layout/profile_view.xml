@@ -1,19 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="#30cccccc"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.CardView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_margin="16dp">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/singleText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="hello"
-            android:transitionName="profile" />
-    </android.support.v7.widget.CardView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/imageCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/no_image"
+                android:transitionName="card">
+
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/singleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Card"
+                    android:transitionName="text" />
+            </android.support.v7.widget.CardView>
+
+            <!--Triangle part-->
+            <android.support.v7.widget.CardView
+                android:id="@+id/statusCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/triangleView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/status_rectangle"
+                app:cardCornerRadius="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:text="hellosgsjgkasjgkjasklgjklasjgjsgjas;l
+                    fasjfhjkasjfaslfkas;lk;flsk;lfasfas
+                    sfhasjkfhasjkhfkashfasjkfhasklf;as
+                    asflkjashjkfhjkashfjkashjkfhasjkfha;klsfa
+                    fasfjkhasjfsjkfhjkashfjkasf
+                    faskfhjasfjhasgfashfjkas
+                    fsakfhasjfgasjkfhjkashfkasj;klfa
+
+                    " />
+            </android.support.v7.widget.CardView>
+
+            <ImageView
+                android:id="@+id/triangleView"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignLeft="@+id/statusCard"
+                android:layout_alignStart="@+id/statusCard"
+                android:layout_below="@+id/imageCard"
+                android:background="@drawable/status_triangle" />
+        </RelativeLayout>
+    </android.support.v4.widget.NestedScrollView>
 </RelativeLayout>

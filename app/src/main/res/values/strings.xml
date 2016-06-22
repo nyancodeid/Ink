@@ -11,9 +11,7 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing emailcompletions."</string>
     <string name="intro">Intro</string>
     <string name="registerText"><![CDATA[ New to Ink? Register now]]></string>
     <string name="appFont">sans-serif-light</string>
@@ -43,5 +41,10 @@
     <string name="settingsString">Settings</string>
     <string name="logoutString">Logout</string>
     <string name="serverErrorText">There was an problem with server.Please reload again</string>
+    <string name="noFirstname">No Firstname</string>
+    <string name="noLastname">No Lastname</string>
+    <string name="noPhone">No Phone Number</string>
+    <string name="title_item_list">Items</string>
+    <string name="title_item_detail">Item Detail</string>
 
 </resources>

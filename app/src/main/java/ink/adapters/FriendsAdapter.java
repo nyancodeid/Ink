@@ -43,14 +43,13 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.friend_single_view, parent, false);
-
         return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         FriendsModel friendsModel = friendsModelList.get(position);
-        holder.name.setText(friendsModel.getName());
+        holder.name.setText(friendsModel.getFullName());
         holder.phoneNumber.setText(friendsModel.getPhoneNumber());
     }
 

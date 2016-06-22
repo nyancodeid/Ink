@@ -2,10 +2,12 @@ package ink.fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -75,7 +77,6 @@ public class MyFriends extends Fragment {
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);
         itemAnimator.setRemoveDuration(500);
-        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setItemAnimator(itemAnimator);
 
@@ -83,14 +84,21 @@ public class MyFriends extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 Intent intent = new Intent(getActivity(), Profile.class);
-                RelativeLayout relativeLayout = (RelativeLayout) view;
-                CardView cardView = (CardView) relativeLayout.getChildAt(0);
-                RelativeLayout innerLayout = (RelativeLayout) cardView.getChildAt(0);
-                TextView textView = (TextView) innerLayout.findViewById(R.id.friendName);
-                intent.putExtra("contact", "hello");
-                ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation(getActivity(), (View) textView, "profile");
-                startActivity(intent, options.toBundle());
+                intent.putExtra("firstName", mFriendsModelArrayList.get(position).getFirstName());
+                intent.putExtra("lastName", mFriendsModelArrayList.get(position).getLastName());
+                intent.putExtra("phoneNumber", mFriendsModelArrayList.get(position).getPhoneNumber());
+                intent.putExtra("id", mFriendsModelArrayList.get(position).getFriendId());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    RelativeLayout relativeLayout = (RelativeLayout) view;
+                    CardView cardView = (CardView) relativeLayout.getChildAt(0);
+                    RelativeLayout innerLayout = (RelativeLayout) cardView.getChildAt(0);
+                    TextView textViewToAnimate = (TextView) innerLayout.findViewById(R.id.friendName);
+                    Pair<View, String> pair1 = Pair.create((View) cardView, cardView.getTransitionName());
+                    Pair<View, String> pair2 = Pair.create((View) textViewToAnimate, textViewToAnimate.getTransitionName());
+                    handleAnimation(intent, pair1, pair2);
+                } else {
+                    startActivity(intent);
+                }
             }
 
             @Override
@@ -100,6 +108,11 @@ public class MyFriends extends Fragment {
         }));
         mRecyclerView.setAdapter(mFriendsAdapter);
         getFreinds();
+    }
+
+    private void handleAnimation(Intent intent, Pair<View, String>... pairs) {
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), pairs);
+        startActivity(intent, options.toBundle());
     }
 
     private void getFreinds() {
@@ -135,10 +148,24 @@ public class MyFriends extends Fragment {
                             JSONArray friendsArray = jsonObject.optJSONArray("friends");
                             for (int i = 0; i < friendsArray.length(); i++) {
                                 JSONObject eachObject = friendsArray.optJSONObject(i);
-                                String name = eachObject.optString("first_name") + " " + eachObject.optString("last_name");
+                                String firstName = eachObject.optString("first_name");
+                                String lastname = eachObject.optString("last_name");
                                 String phoneNumber = eachObject.optString("phone_number");
+                                // TODO: 2016-06-22  add image link to server
+
                                 String imageLink = "";
-                                mFriendsModel = new FriendsModel(name, phoneNumber, imageLink);
+                                if (firstName.equals(ErrorCause.NOT_AVAILABLE)) {
+                                    firstName = getString(R.string.noFirstname);
+                                }
+                                if (lastname.equals(ErrorCause.NOT_AVAILABLE)) {
+                                    lastname = getString(R.string.noLastname);
+                                }
+                                String name = firstName + " " + lastname;
+                                if (phoneNumber.equals(ErrorCause.NOT_AVAILABLE)) {
+                                    phoneNumber = getString(R.string.noPhone);
+                                }
+                                String friendId = eachObject.optString("friend_id");
+                                mFriendsModel = new FriendsModel(name, imageLink, phoneNumber, friendId, firstName, lastname);
                                 mFriendsModelArrayList.add(mFriendsModel);
                                 mFriendsAdapter.notifyDataSetChanged();
                             }
