@@ -31,8 +31,9 @@
             android:label="@string/feedText"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="ink.fragments.Profile"
-            android:theme="@style/AppTheme"></activity>
+            android:name="ink.activities.Profile"
+            android:theme="@style/AppTheme" />
+        <activity android:name="ink.activities.Chat"></activity>
     </application>
 
 </manifest>

@@ -46,5 +46,18 @@
     <string name="noPhone">No Phone Number</string>
     <string name="title_item_list">Items</string>
     <string name="title_item_detail">Item Detail</string>
+    <string name="loadingText">Loading...</string>
+    <string name="singleUserErrorTile">Error while fetching data</string>
+    <string name="singleUserErrorMessage">There was an error while fetching the information of the user.Please try again and be sure you have active internet connection.</string>
+    <string name="noGender">No gender specified</string>
+    <string name="noFacebook">Facebook is not attached</string>
+    <string name="noSkype">Skype is not attached</string>
+    <string name="noAddress">No address is specified</string>
+    <string name="noRelationship">Relationship is not specified</string>
+    <string name="sendMessage">Send message</string>
+    <string name="blockUser">Block</string>
+    <string name="noFriendsAvailable">You dont have any friends</string>
+    <string name="writeMessageHint">Write a message</string>
+    <string name="writing">Writing...</string>
 
 </resources>

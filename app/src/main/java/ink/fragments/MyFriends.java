@@ -13,10 +13,10 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ink.activities.Profile;
 import ink.adapters.FriendsAdapter;
 import ink.models.FriendsModel;
 import ink.utils.ErrorCause;
@@ -53,6 +54,7 @@ public class MyFriends extends Fragment {
     private FriendsAdapter mFriendsAdapter;
     private FriendsModel mFriendsModel;
     private AVLoadingIndicatorView mFriendsLoading;
+    private RelativeLayout mNoFriendsLayout;
 
     public static MyFriends newInstance() {
         MyFriends myFriends = new MyFriends();
@@ -70,6 +72,7 @@ public class MyFriends extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mSharedHelper = new SharedHelper(getActivity());
         mRecyclerView = (RecyclerView) view.findViewById(R.id.friendsRecyclerView);
+        mNoFriendsLayout = (RelativeLayout) view.findViewById(R.id.noFriendsLayout);
         mFriendsLoading = (AVLoadingIndicatorView) view.findViewById(R.id.friendsLoading);
         mFriendsAdapter = new FriendsAdapter(mFriendsModelArrayList, getActivity());
 
@@ -92,9 +95,10 @@ public class MyFriends extends Fragment {
                     RelativeLayout relativeLayout = (RelativeLayout) view;
                     CardView cardView = (CardView) relativeLayout.getChildAt(0);
                     RelativeLayout innerLayout = (RelativeLayout) cardView.getChildAt(0);
-                    TextView textViewToAnimate = (TextView) innerLayout.findViewById(R.id.friendName);
-                    Pair<View, String> pair1 = Pair.create((View) cardView, cardView.getTransitionName());
-                    Pair<View, String> pair2 = Pair.create((View) textViewToAnimate, textViewToAnimate.getTransitionName());
+                    ImageView profileImage = (ImageView) innerLayout.findViewById(R.id.friendImage);
+                    TextView username = (TextView) innerLayout.findViewById(R.id.friendName);
+                    Pair<View, String> pair1 = Pair.create((View) profileImage, profileImage.getTransitionName());
+                    Pair<View, String> pair2 = Pair.create((View) username, username.getTransitionName());
                     handleAnimation(intent, pair1, pair2);
                 } else {
                     startActivity(intent);
@@ -107,7 +111,7 @@ public class MyFriends extends Fragment {
             }
         }));
         mRecyclerView.setAdapter(mFriendsAdapter);
-        getFreinds();
+        getFriends();
     }
 
     private void handleAnimation(Intent intent, Pair<View, String>... pairs) {
@@ -115,14 +119,13 @@ public class MyFriends extends Fragment {
         startActivity(intent, options.toBundle());
     }
 
-    private void getFreinds() {
+    private void getFriends() {
         final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().getFriends(mSharedHelper.getUserId());
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     String responseString = response.body().string();
-                    Log.d("Fasfhasjkfa", "onResponse: " + responseString);
                     try {
                         JSONObject jsonObject = new JSONObject(responseString);
                         boolean success = jsonObject.optBoolean("success");
@@ -131,7 +134,9 @@ public class MyFriends extends Fragment {
                             String cause = jsonObject.optString("cause");
                             String finalErrorMessage;
                             if (cause.equals(ErrorCause.NO_FRIENDS)) {
-
+                                mNoFriendsLayout.setVisibility(View.VISIBLE);
+                                mFriendsLoading.setVisibility(View.GONE);
+                                mRecyclerView.setVisibility(View.GONE);
                             } else {
                                 finalErrorMessage = getString(R.string.serverErrorText);
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -154,14 +159,14 @@ public class MyFriends extends Fragment {
                                 // TODO: 2016-06-22  add image link to server
 
                                 String imageLink = "";
-                                if (firstName.equals(ErrorCause.NOT_AVAILABLE)) {
+                                if (firstName.isEmpty()) {
                                     firstName = getString(R.string.noFirstname);
                                 }
-                                if (lastname.equals(ErrorCause.NOT_AVAILABLE)) {
+                                if (lastname.isEmpty()) {
                                     lastname = getString(R.string.noLastname);
                                 }
                                 String name = firstName + " " + lastname;
-                                if (phoneNumber.equals(ErrorCause.NOT_AVAILABLE)) {
+                                if (phoneNumber.isEmpty()) {
                                     phoneNumber = getString(R.string.noPhone);
                                 }
                                 String friendId = eachObject.optString("friend_id");

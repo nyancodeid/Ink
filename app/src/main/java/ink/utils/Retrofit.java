@@ -49,5 +49,9 @@ public class Retrofit {
         @POST(Constants.FRIENDS_URL)
         @FormUrlEncoded
         Call<ResponseBody> getFriends(@Field("user_id") String userId);
+
+        @POST(Constants.SINGLE_USER_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getSingleUserDetails(@Field("user_id") String userId);
     }
 }

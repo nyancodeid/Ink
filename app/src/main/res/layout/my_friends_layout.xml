@@ -19,4 +19,27 @@
         android:visibility="visible"
         app:indicator="BallClipRotateMultiple"
         app:indicator_color="@color/colorPrimary" />
+
+    <RelativeLayout
+        android:id="@+id/noFriendsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/noFriendsImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/sad" />
+
+        <TextView
+            android:id="@+id/noFriendsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/noFriendsImage"
+            android:fontFamily="@string/appFont"
+            android:text="@string/noFriendsAvailable"
+            android:textColor="#000000" />
+    </RelativeLayout>
 </RelativeLayout>

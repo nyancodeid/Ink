@@ -211,6 +211,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 break;
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(mBroadcastReceiver);
+        super.onDestroy();
+
+    }
 }
 
 
