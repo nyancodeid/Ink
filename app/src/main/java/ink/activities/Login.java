@@ -21,6 +21,8 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.ink.R;
 
 import org.json.JSONException;
@@ -56,6 +58,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mSharedHelper = new SharedHelper(this);
+        if (!checkPlayServices()) {
+            return;
+        }
         if (mSharedHelper.isLoggedIn()) {
             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
             finish();
@@ -217,6 +222,21 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         unregisterReceiver(mBroadcastReceiver);
         super.onDestroy();
 
+    }
+
+    private boolean checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, 1000).show();
+            } else {
+                Log.i("Fffsfasfas", "This device is not supported.");
+                finish();
+            }
+            return false;
+        }
+        return true;
     }
 }
 

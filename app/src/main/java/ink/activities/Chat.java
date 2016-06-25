@@ -123,6 +123,8 @@ public class Chat extends AppCompatActivity {
         final int lastIndex = mChatModelArrayList.indexOf(tempChat);
         mChatAdapter.notifyDataSetChanged();
         mWriteEditText.setText("");
+
+
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {

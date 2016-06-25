@@ -171,8 +171,10 @@ public class HomeActivity extends AppCompatActivity
             case R.id.nav_send:
                 break;
             case R.id.logout:
+                String token = mSharedHelper.getToken();
                 mSharedHelper.clean();
                 mSharedHelper.putShouldShowIntro(false);
+                mSharedHelper.putToken(token);
                 startActivity(new Intent(getApplicationContext(), Login.class));
                 finish();
                 break;
@@ -194,4 +196,6 @@ public class HomeActivity extends AppCompatActivity
                 break;
         }
     }
+
+
 }

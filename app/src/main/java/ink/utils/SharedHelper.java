@@ -54,4 +54,22 @@ public class SharedHelper {
     public boolean isLoggedIn() {
         return mSharedPreferences.contains("user_id");
     }
+
+    public void putToken(String token) {
+        mEditor.putString("token", token);
+        mEditor.commit();
+    }
+
+    public void shouldUpdateToken(boolean shouldUpdate) {
+        mEditor.putBoolean("shouldUpdate", shouldUpdate);
+        mEditor.commit();
+    }
+
+    public boolean shouldUpdateToken() {
+        return mSharedPreferences.getBoolean("shouldUpdate", false);
+    }
+
+    public String getToken() {
+        return mSharedPreferences.getString("token", "no token");
+    }
 }
