@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -15,48 +16,72 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <RelativeLayout
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/noMessageLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/writeField"
+        android:layout_marginBottom="30dp"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/noMessageIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/no_message" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/noMessageIcon"
+                android:text="@string/noMessageText" />
+        </RelativeLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.v7.widget.CardView
         android:id="@+id/writeField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/write_message_background">
+        android:layout_margin="2dp"
+        android:elevation="5dp"
+        app:cardCornerRadius="10dp">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/writeEditTextInputter"
+        <EditText
+            android:id="@+id/writeEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/writeEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#ffffff"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:hint="@string/writeMessageHint"
-                android:imeActionId="@+id/send"
-                android:imeActionLabel="..."
-                android:imeOptions="actionUnspecified"
-                android:maxHeight="80dp"
-                android:minHeight="50dp"
-                android:paddingLeft="15dp" />
-
-        </android.support.design.widget.TextInputLayout>
-
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/sendChatMessage"
+            android:background="#ffffff"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:hint="@string/writeMessageHint"
+            android:imeActionId="@+id/send"
+            android:imeActionLabel="Done"
+            android:imeOptions="actionUnspecified"
+            android:maxHeight="80dp"
+            android:minHeight="50dp"
+            android:paddingLeft="15dp" />
 
         <fab.FloatingActionButton
             android:id="@+id/sendChatMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/writeEditTextInputter"
-            android:layout_marginBottom="8dp"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
             android:src="@drawable/ic_send_white_24dp"
             fab:fab_colorNormal="@color/colorPrimary"
             fab:fab_colorPressed="@color/colorPrimaryDark"
             fab:fab_label="@string/sendMessage"
             fab:fab_size="mini" />
-    </RelativeLayout>
+    </android.support.v7.widget.CardView>
 </RelativeLayout>

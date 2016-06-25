@@ -53,5 +53,14 @@ public class Retrofit {
         @POST(Constants.SINGLE_USER_URL)
         @FormUrlEncoded
         Call<ResponseBody> getSingleUserDetails(@Field("user_id") String userId);
+
+        @POST(Constants.MESSAGES_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getMessages(@Field("user_id") String userId, @Field("opponent_id") String opponentId);
+
+
+        @POST(Constants.SEND_MESSAGE_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> sendMessage(@Field("user_id") String userId, @Field("opponent_id") String opponentId, @Field("message") String message);
     }
 }

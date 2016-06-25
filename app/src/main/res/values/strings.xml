@@ -59,5 +59,7 @@
     <string name="noFriendsAvailable">You dont have any friends</string>
     <string name="writeMessageHint">Write a message</string>
     <string name="writing">Writing...</string>
+    <string name="serverErrorTitle">Error while connectiont to server...</string>
+    <string name="noMessageText">Once you start a conversation,\nyou\'ll see it listed here</string>
 
 </resources>

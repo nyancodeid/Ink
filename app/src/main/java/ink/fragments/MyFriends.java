@@ -83,6 +83,7 @@ public class MyFriends extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setItemAnimator(itemAnimator);
 
+
         mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), mRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -194,5 +195,6 @@ public class MyFriends extends Fragment {
             }
         });
     }
+
 
 }

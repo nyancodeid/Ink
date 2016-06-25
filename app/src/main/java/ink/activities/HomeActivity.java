@@ -172,6 +172,7 @@ public class HomeActivity extends AppCompatActivity
                 break;
             case R.id.logout:
                 mSharedHelper.clean();
+                mSharedHelper.putShouldShowIntro(false);
                 startActivity(new Intent(getApplicationContext(), Login.class));
                 finish();
                 break;

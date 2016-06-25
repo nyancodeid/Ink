@@ -11,7 +11,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +79,7 @@ public class Profile extends AppCompatActivity {
         setContentView(R.layout.profile_view);
         ButterKnife.bind(this);
         ButterKnife.setDebug(true);
+        mProfileFab.setEnabled(false);
         Bundle extras = getIntent().getExtras();
         mProfileImage = (ImageView) findViewById(R.id.profileImage);
         imageCard = (CardView) findViewById(R.id.imageCard);
@@ -104,6 +104,7 @@ public class Profile extends AppCompatActivity {
     public void WriteMessage() {
         Intent intent = new Intent(getApplicationContext(), Chat.class);
         intent.putExtra("firstName", mFirstName);
+        intent.putExtra("opponentId", mFriendId);
         startActivity(intent);
         mProfileFab.close(true);
     }
@@ -118,6 +119,7 @@ public class Profile extends AppCompatActivity {
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                mProfileFab.setEnabled(true);
                 try {
                     String responseString = response.body().string();
                     try {
@@ -193,7 +195,7 @@ public class Profile extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d("Fasfjasklfa", "onResponse: " + t.toString());
+                mProfileFab.setEnabled(true);
             }
         });
     }
