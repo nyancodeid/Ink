@@ -18,10 +18,15 @@ import android.widget.ImageView;
 import com.ink.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
 import fab.FloatingActionButton;
 import ink.fragments.Feed;
 import ink.fragments.MyFriends;
+import ink.service.BackgroundTaskService;
+import ink.service.SendTokenService;
 import ink.utils.CircleTransform;
+import ink.utils.RealmHelper;
 import ink.utils.SharedHelper;
 
 public class HomeActivity extends AppCompatActivity
@@ -171,10 +176,18 @@ public class HomeActivity extends AppCompatActivity
             case R.id.nav_send:
                 break;
             case R.id.logout:
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                    ((ActivityManager) getSystemService(ACTIVITY_SERVICE))
+//                            .clearApplicationUserData();
+//                } else {
+//
+//                }
+                clearApplicationData();
                 String token = mSharedHelper.getToken();
                 mSharedHelper.clean();
                 mSharedHelper.putShouldShowIntro(false);
                 mSharedHelper.putToken(token);
+                RealmHelper.getInstance().clearDatabase(getApplicationContext());
                 startActivity(new Intent(getApplicationContext(), Login.class));
                 finish();
                 break;
@@ -197,5 +210,72 @@ public class HomeActivity extends AppCompatActivity
         }
     }
 
+    private void startMessageDownloadService() {
+        startService(new Intent(getApplicationContext(), BackgroundTaskService.class));
+    }
 
+    private void startTokenService() {
+        startService(new Intent(getApplicationContext(), SendTokenService.class));
+    }
+
+    @Override
+    protected void onResume() {
+        if (!mSharedHelper.isMessagesDownloaded()) {
+            startMessageDownloadService();
+        }
+        if (mSharedHelper.isTokenRefreshed()) {
+            startTokenService();
+        }
+        super.onResume();
+    }
+
+
+    public void clearApplicationData() {
+
+        File cacheDirectory = getCacheDir();
+        File applicationDirectory = new File(cacheDirectory.getParent());
+        if (applicationDirectory.exists()) {
+
+            String[] fileNames = applicationDirectory.list();
+
+            for (String fileName : fileNames) {
+
+                if (!fileName.equals("lib")) {
+
+                    deleteFile(new File(applicationDirectory, fileName));
+
+                }
+
+            }
+
+        }
+    }
+
+    public static boolean deleteFile(File file) {
+
+        boolean deletedAll = true;
+
+        if (file != null) {
+
+            if (file.isDirectory()) {
+
+                String[] children = file.list();
+
+                for (int i = 0; i < children.length; i++) {
+
+                    deletedAll = deleteFile(new File(file, children[i])) && deletedAll;
+
+                }
+
+            } else {
+
+                deletedAll = file.delete();
+
+            }
+
+        }
+
+        return deletedAll;
+
+    }
 }

@@ -60,6 +60,15 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public void setTokenRefreshed(boolean isRefreshed) {
+        mEditor.putBoolean("refreshed", isRefreshed);
+        mEditor.commit();
+    }
+
+    public boolean isTokenRefreshed() {
+        return mSharedPreferences.getBoolean("refreshed", true);
+    }
+
     public void shouldUpdateToken(boolean shouldUpdate) {
         mEditor.putBoolean("shouldUpdate", shouldUpdate);
         mEditor.commit();
@@ -67,6 +76,15 @@ public class SharedHelper {
 
     public boolean shouldUpdateToken() {
         return mSharedPreferences.getBoolean("shouldUpdate", false);
+    }
+
+    public void setMessagesDownloaded() {
+        mEditor.putBoolean("isMessagesDownloaded", true);
+        mEditor.commit();
+    }
+
+    public boolean isMessagesDownloaded() {
+        return mSharedPreferences.contains("isMessagesDownloaded");
     }
 
     public String getToken() {

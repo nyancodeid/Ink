@@ -87,11 +87,12 @@ public class MyFriends extends Fragment {
         mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), mRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
+                String opponentId = mFriendsModelArrayList.get(position).getFriendId();
                 Intent intent = new Intent(getActivity(), Profile.class);
                 intent.putExtra("firstName", mFriendsModelArrayList.get(position).getFirstName());
                 intent.putExtra("lastName", mFriendsModelArrayList.get(position).getLastName());
                 intent.putExtra("phoneNumber", mFriendsModelArrayList.get(position).getPhoneNumber());
-                intent.putExtra("id", mFriendsModelArrayList.get(position).getFriendId());
+                intent.putExtra("id", opponentId);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     RelativeLayout relativeLayout = (RelativeLayout) view;
                     CardView cardView = (CardView) relativeLayout.getChildAt(0);

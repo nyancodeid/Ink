@@ -9,10 +9,19 @@ public class ChatModel {
     private String opponentId;
     private String message;
     private boolean isClickable;
+    private String deliveryStatus;
+    private String userImage;
+    private String opponentImage;
 
 
-    public ChatModel(String messageId, String userId, String opponentId, String message, boolean isClickable) {
+    public ChatModel(String messageId, String userId,
+                     String opponentId, String message,
+                     boolean isClickable, String deliveryStatus,
+                     String userImage, String opponentImage) {
+        this.userImage = userImage;
+        this.opponentImage = opponentImage;
         this.isClickable = isClickable;
+        this.deliveryStatus = deliveryStatus;
         this.messageId = messageId;
         this.userId = userId;
         this.opponentId = opponentId;
@@ -46,6 +55,14 @@ public class ChatModel {
 
     public String getOpponentId() {
         return opponentId;
+    }
+
+    public String getDeliveryStatus() {
+        return deliveryStatus;
+    }
+
+    public void setDeliveryStatus(String deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
     }
 
     public void setOpponentId(String opponentId) {

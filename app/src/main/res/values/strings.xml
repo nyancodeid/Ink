@@ -61,5 +61,8 @@
     <string name="writing">Writing...</string>
     <string name="serverErrorTitle">Error while connectiont to server...</string>
     <string name="noMessageText">Once you start a conversation,\nyou\'ll see it listed here</string>
+    <string name="sendingNowText">Sending now...</string>
+    <string name="sentText">Sent</string>
+    <string name="reply_label">Reply</string>
 
 </resources>
