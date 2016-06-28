@@ -140,11 +140,12 @@ public class HomeActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        Intent intent;
         switch (id) {
             case R.id.profile:
                 if (!mToolbar.getTitle().equals(PROFILE)) {
-                    mToolbar.setTitle(getString(R.string.profileText));
+                    intent = new Intent(getApplicationContext(), MyProfile.class);
+                    startActivity(intent);
                 }
                 break;
             case R.id.feeds:

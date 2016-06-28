@@ -3,6 +3,7 @@
     package="com.ink">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name="ink.StartupApplication"
         android:allowBackup="true"
@@ -33,7 +34,7 @@
             android:label="@string/feedText"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="ink.activities.Profile"
+            android:name="ink.activities.OpponentProfile"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme" />
         <activity
@@ -52,13 +53,16 @@
         </service>
         <service android:name="ink.service.BackgroundTaskService" />
         <service android:name="ink.service.SendTokenService" />
-        <service android:name="ink.service.SendReplyService"></service>
+        <service android:name="ink.service.SendReplyService" />
 
-        <receiver android:name="ink.receiver.DismissReceiver"></receiver>
         <activity
             android:name="ink.activities.NotificationView"
             android:excludeFromRecents="true"
-            android:theme="@style/Theme.Transparent"></activity>
+            android:theme="@style/Theme.Transparent"
+            android:windowSoftInputMode="stateAlwaysVisible" />
+        <activity android:name="ink.activities.MyProfile">
+
+        </activity>
     </application>
 
 </manifest>

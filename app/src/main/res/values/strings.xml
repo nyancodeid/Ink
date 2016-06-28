@@ -72,5 +72,9 @@
     <string name="errorLastName">Last name should be specified</string>
     <string name="loginText">Login</string>
     <string name="passwordText">Password</string>
+    <string name="editProfile">Edit</string>
+    <string name="noStatusText">Write a status...</string>
+    <string name="saveText">Save</string>
+    <string name="myProfileText">My Profile</string>
 
 </resources>

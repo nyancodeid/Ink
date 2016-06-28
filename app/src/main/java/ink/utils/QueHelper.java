@@ -26,7 +26,7 @@ public class QueHelper {
                             final String mOpponentId,
                             final String message, final int sentItemLocation, final QueCallback queCallback) {
         Call<ResponseBody> sendMessageResponse = Retrofit.getInstance().getInkService().sendMessage(mCurrentUserId,
-                mOpponentId, message);
+                mOpponentId, message, Time.getTimeZone());
 
         sendMessageResponse.enqueue(new Callback<ResponseBody>() {
             @Override

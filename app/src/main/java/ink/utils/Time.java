@@ -3,6 +3,7 @@ package ink.utils;
 import android.util.Log;
 
 import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * Created by USER on 2016-06-26.
@@ -25,5 +26,9 @@ public class Time {
         }
 
         return finalFormat;
+    }
+
+    public static String getTimeZone() {
+        return TimeZone.getDefault().getID();
     }
 }

@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ink.activities.Profile;
+import ink.activities.OpponentProfile;
 import ink.adapters.FriendsAdapter;
 import ink.models.FriendsModel;
 import ink.utils.ErrorCause;
@@ -88,7 +88,7 @@ public class MyFriends extends Fragment {
             @Override
             public void onClick(View view, int position) {
                 String opponentId = mFriendsModelArrayList.get(position).getFriendId();
-                Intent intent = new Intent(getActivity(), Profile.class);
+                Intent intent = new Intent(getActivity(), OpponentProfile.class);
                 intent.putExtra("firstName", mFriendsModelArrayList.get(position).getFirstName());
                 intent.putExtra("lastName", mFriendsModelArrayList.get(position).getLastName());
                 intent.putExtra("phoneNumber", mFriendsModelArrayList.get(position).getPhoneNumber());

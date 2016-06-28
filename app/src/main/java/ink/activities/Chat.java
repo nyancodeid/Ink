@@ -2,12 +2,14 @@ package ink.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -63,12 +65,14 @@ public class Chat extends AppCompatActivity {
     private ChatModel mChatModel;
     private String mUserImage = "";
     private String mOpponentImage = "";
+    private AlertDialog.Builder mBuilder;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        mBuilder = new AlertDialog.Builder(this);
         ButterKnife.bind(this);
         mSharedHelper = new SharedHelper(this);
         Notification.getInstance().setSendingRemote(false);
@@ -93,7 +97,15 @@ public class Chat extends AppCompatActivity {
             @Override
             public void onLongClick(View view, int position) {
                 ChatModel chatModel = mChatModelArrayList.get(position);
-                Log.d("Fsafasfasfa", "onLongClick: " + "clicked status" + chatModel.getDeliveryStatus());
+                mBuilder.setTitle("Message Details");
+                mBuilder.setMessage("Date of message:" + chatModel.getDate());
+                mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                mBuilder.show();
             }
         }));
 
@@ -112,7 +124,8 @@ public class Chat extends AppCompatActivity {
 
 
         ChatModel tempChat = new ChatModel(null, mCurrentUserId, mOpponentId, mWriteEditText.getText().toString(),
-                false, Constants.STATUS_NOT_DELIVERED, mUserImage, mOpponentImage);
+                false, Constants.STATUS_NOT_DELIVERED,
+                mUserImage, mOpponentImage, "");
         mChatModelArrayList.add(tempChat);
         int itemLocation = mChatModelArrayList.indexOf(tempChat);
 
@@ -144,7 +157,6 @@ public class Chat extends AppCompatActivity {
                     @Override
                     public void onMessageSent(String response, int sentItemLocation) {
                         System.gc();
-                        Log.d("Fsafasfasfa", "onMessageSent: " + "item sent");
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             boolean success = jsonObject.optBoolean("success");
@@ -153,6 +165,7 @@ public class Chat extends AppCompatActivity {
                                 mChatModelArrayList.get(sentItemLocation).setMessageId(messageId);
                                 mChatModelArrayList.get(sentItemLocation).setClickable(true);
                                 mChatModelArrayList.get(sentItemLocation).setDeliveryStatus(Constants.STATUS_DELIVERED);
+                                mChatModelArrayList.get(sentItemLocation).setDate(jsonObject.optString("date"));
                                 mChatAdapter.notifyItemChanged(sentItemLocation);
                                 RealmHelper.getInstance().updateMessages(messageId,
                                         Constants.STATUS_DELIVERED, String.valueOf(sentItemLocation),
@@ -188,7 +201,9 @@ public class Chat extends AppCompatActivity {
                 String userId = eachModel.getUserId();
                 String userImage = eachModel.getUserImage();
                 String opponentImage = eachModel.getOpponentImage();
-                mChatModel = new ChatModel(messageId, userId, opponentId, message, true, eachModel.getDeliveryStatus(), userImage, opponentImage);
+                String date = eachModel.getDate();
+                mChatModel = new ChatModel(messageId, userId, opponentId, message, true,
+                        eachModel.getDeliveryStatus(), userImage, opponentImage, date);
                 mChatModelArrayList.add(mChatModel);
                 if (eachModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED)) {
                     int itemLocation = mChatModelArrayList.indexOf(mChatModel);
@@ -245,7 +260,7 @@ public class Chat extends AppCompatActivity {
                 if (mOpponentId.equals(response.get("user_id"))) {
                     mChatModel = new ChatModel(response.get("message_id"), response.get("user_id"),
                             response.get("opponent_id"), response.get("message"), true, Constants.STATUS_DELIVERED,
-                            response.get("user_image"), response.get("opponent_image"));
+                            response.get("user_image"), response.get("opponent_image"), response.get("date"));
                     mChatModelArrayList.add(mChatModel);
                     mChatAdapter.notifyDataSetChanged();
                     mRecyclerView.post(new Runnable() {

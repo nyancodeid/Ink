@@ -38,7 +38,7 @@ import retrofit2.Response;
 /**
  * Created by USER on 2016-06-22.
  */
-public class Profile extends AppCompatActivity {
+public class OpponentProfile extends AppCompatActivity {
     private String mFriendId;
     private String mFirstName;
     private String mLastName;
@@ -174,7 +174,7 @@ public class Profile extends AppCompatActivity {
                             mRelationship.setText(relationship);
                             mGender.setText(gender);
                         } else {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(OpponentProfile.this);
                             builder.setTitle(getString(R.string.singleUserErrorTile));
                             builder.setMessage(getString(R.string.singleUserErrorMessage));
                             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -195,7 +195,7 @@ public class Profile extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                mProfileFab.setEnabled(true);
+                getSingleUser();
             }
         });
     }

@@ -27,6 +27,7 @@ public class Retrofit {
         mInkService = retrofit.create(InkService.class);
 
     }
+
     public InkService getInkService() {
         return mInkService;
     }
@@ -58,7 +59,7 @@ public class Retrofit {
 
         @POST(Constants.SEND_MESSAGE_URL)
         @FormUrlEncoded
-        Call<ResponseBody> sendMessage(@Field("user_id") String userId, @Field("opponent_id") String opponentId, @Field("message") String message);
+        Call<ResponseBody> sendMessage(@Field("user_id") String userId, @Field("opponent_id") String opponentId, @Field("message") String message, @Field("timezone") String timezone);
 
 
         @POST(Constants.SINGLE_USER_MESSAGES)
@@ -68,5 +69,7 @@ public class Retrofit {
         @POST(Constants.REGISTER_TOKEN)
         @FormUrlEncoded
         Call<ResponseBody> registerToken(@Field("user_id") String userId, @Field("token") String token);
+
+
     }
 }

@@ -73,6 +73,11 @@ public class NotificationView extends AppCompatActivity {
         });
     }
 
+    @OnClick(R.id.backButton)
+    public void backButton() {
+        finish();
+    }
+
     @OnClick(R.id.replyMessage)
     public void replyMessage() {
         String messageToSend = mReplyBody.getText().toString();

@@ -12,13 +12,15 @@ public class ChatModel {
     private String deliveryStatus;
     private String userImage;
     private String opponentImage;
+    private String date;
 
 
     public ChatModel(String messageId, String userId,
                      String opponentId, String message,
                      boolean isClickable, String deliveryStatus,
-                     String userImage, String opponentImage) {
+                     String userImage, String opponentImage, String date) {
         this.userImage = userImage;
+        this.date = date;
         this.opponentImage = opponentImage;
         this.isClickable = isClickable;
         this.deliveryStatus = deliveryStatus;
@@ -75,5 +77,13 @@ public class ChatModel {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

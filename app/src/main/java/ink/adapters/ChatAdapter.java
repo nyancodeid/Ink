@@ -74,14 +74,19 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.chatViewBubble.getLayoutParams();
         LinearLayout.LayoutParams deliveryStatusParams = (LinearLayout.LayoutParams) holder.deliveryStatus.getLayoutParams();
         if (mCurrentUserId.equals(chatModel.getUserId())) {
-            holder.deliveryStatus.setVisibility(View.VISIBLE);
             layoutParams.gravity = Gravity.RIGHT;
             deliveryStatusParams.gravity = Gravity.RIGHT;
             holder.chatViewBubble.setLayoutParams(layoutParams);
             holder.chatViewBubble.setBackground(ContextCompat.getDrawable(mContext, R.drawable.outgoing_message_bg));
             if (chatModel.getDeliveryStatus().equals(Constants.STATUS_DELIVERED)) {
+                if (position >= chatModelList.size() - 1) {
+                    holder.deliveryStatus.setVisibility(View.VISIBLE);
+                } else {
+                    holder.deliveryStatus.setVisibility(View.INVISIBLE);
+                }
                 holder.deliveryStatus.setText(mContext.getString(R.string.sentText));
             } else if (chatModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED)) {
+                holder.deliveryStatus.setVisibility(View.VISIBLE);
                 holder.deliveryStatus.setText(mContext.getString(R.string.sendingNowText));
             }
         } else {
