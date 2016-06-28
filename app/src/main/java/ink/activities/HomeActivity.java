@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ink.R;
 import com.squareup.picasso.Picasso;
@@ -47,6 +49,7 @@ public class HomeActivity extends AppCompatActivity
     public static String GROUPS;
     public static String FRIENDS;
     public static String SETTINGS;
+    private TextView mUserNameTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +89,8 @@ public class HomeActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction().replace(R.id.container, mFeed).commit();
 
         mProfileImage = (ImageView) headerView.findViewById(R.id.profileImage);
+        mUserNameTV = (TextView) headerView.findViewById(R.id.userNameTextView);
+        mUserNameTV.setText(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
         if (mSharedHelper.hasImage()) {
 
         } else {
@@ -183,13 +188,11 @@ public class HomeActivity extends AppCompatActivity
 //
 //                }
                 clearApplicationData();
-                String token = mSharedHelper.getToken();
                 mSharedHelper.clean();
                 mSharedHelper.putShouldShowIntro(false);
-                mSharedHelper.putToken(token);
                 RealmHelper.getInstance().clearDatabase(getApplicationContext());
-                startActivity(new Intent(getApplicationContext(), Login.class));
-                finish();
+                Toast.makeText(HomeActivity.this, getString(R.string.loggedOutText), Toast.LENGTH_SHORT).show();
+                System.exit(1);
                 break;
         }
 

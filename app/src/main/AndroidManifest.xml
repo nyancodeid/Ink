@@ -3,7 +3,6 @@
     package="com.ink">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:name="ink.StartupApplication"
         android:allowBackup="true"
@@ -51,8 +50,15 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="ink.service.BackgroundTaskService"></service>
-        <service android:name="ink.service.SendTokenService"></service>
+        <service android:name="ink.service.BackgroundTaskService" />
+        <service android:name="ink.service.SendTokenService" />
+        <service android:name="ink.service.SendReplyService"></service>
+
+        <receiver android:name="ink.receiver.DismissReceiver"></receiver>
+        <activity
+            android:name="ink.activities.NotificationView"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.Transparent"></activity>
     </application>
 
 </manifest>

@@ -90,4 +90,45 @@ public class SharedHelper {
     public String getToken() {
         return mSharedPreferences.getString("token", "no token");
     }
+
+    public int getUniqueId() {
+        return mSharedPreferences.getInt("uniqueId", 0);
+    }
+
+    public void putUniqueId(int id) {
+        mEditor.putInt("uniqueId", id);
+        mEditor.commit();
+    }
+
+    public void putFirstName(String fistName) {
+        mEditor.putString("firstName", fistName);
+        mEditor.commit();
+    }
+
+    public String getFirstName() {
+        return mSharedPreferences.getString("firstName", "");
+    }
+
+    public void putLastName(String lastName) {
+        mEditor.putString("lastName", lastName);
+        mEditor.commit();
+    }
+
+    public String getLastName() {
+        return mSharedPreferences.getString("lastName", "");
+    }
+
+    public void putLastNotificationId(String id) {
+        mEditor.putString(id, "notification_id");
+        mEditor.commit();
+    }
+
+    public String getNotificationId(String id) {
+        return mSharedPreferences.getString(id, null);
+    }
+
+    public void removeNotificationId(String id) {
+        mEditor.remove(id);
+        mEditor.commit();
+    }
 }

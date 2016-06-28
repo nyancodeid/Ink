@@ -51,6 +51,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private RelativeLayout mRegisterWrapper;
     private BroadcastReceiver mBroadcastReceiver;
     private SharedHelper mSharedHelper;
+    private Button mLoginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +90,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        mLoginButton = (Button) findViewById(R.id.email_sign_in_button);
+        mLoginButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!mPasswordView.getText().toString().isEmpty() && !mLoginView.getText().toString().isEmpty()) {
@@ -117,6 +118,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
+        disableButtons();
         // Reset errors.
         mLoginView.setError(null);
         mPasswordView.setError(null);
@@ -145,6 +147,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
+            enableButtons();
             focusView.requestFocus();
         } else {
             // Show a progress spinner, and kick off a background task to
@@ -156,6 +159,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     mProgressView.setVisibility(View.GONE);
+                    enableButtons();
                     try {
                         try {
                             String responseString = response.body().string();
@@ -175,6 +179,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                 builder.show();
                             } else {
                                 String userId = jsonObject.optString("user_id");
+                                mSharedHelper.putFirstName(jsonObject.optString("first_name"));
+                                mSharedHelper.putLastName(jsonObject.optString("last_name"));
                                 mSharedHelper.putUserId(userId);
                                 mSharedHelper.putShouldShowIntro(false);
                                 startActivity(new Intent(getApplicationContext(), HomeActivity.class));
@@ -191,6 +197,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    enableButtons();
                     mProgressView.setVisibility(View.GONE);
                 }
             });
@@ -237,6 +244,19 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             return false;
         }
         return true;
+    }
+
+
+    private void disableButtons() {
+        mLoginView.setEnabled(false);
+        mPasswordView.setEnabled(false);
+        mLoginButton.setEnabled(false);
+    }
+
+    private void enableButtons() {
+        mLoginView.setEnabled(true);
+        mPasswordView.setEnabled(true);
+        mLoginButton.setEnabled(true);
     }
 }
 

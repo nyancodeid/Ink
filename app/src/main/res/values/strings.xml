@@ -2,8 +2,8 @@
     <string name="app_name">Ink</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Login</string>
-    <string name="prompt_password">Password</string>
+    <string name="prompt_email">* Login</string>
+    <string name="prompt_password">* Password</string>
     <string name="action_sign_in">Sign</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="action_register_short">Register</string>
@@ -16,7 +16,7 @@
     <string name="registerText"><![CDATA[ New to Ink? Register now]]></string>
     <string name="appFont">sans-serif-light</string>
     <string name="registerButtonText">Register</string>
-    <string name="confirmPassword">Confirm Password</string>
+    <string name="confirmPassword">* Confirm Password</string>
     <string name="not_equals_error">Passwords does not match</string>
     <string name="randomChatText">Make random chat</string>
     <string name="successRegistration">Registration succeeded</string>
@@ -63,6 +63,14 @@
     <string name="noMessageText">Once you start a conversation,\nyou\'ll see it listed here</string>
     <string name="sendingNowText">Sending now...</string>
     <string name="sentText">Sent</string>
-    <string name="reply_label">Reply</string>
+    <string name="reply">Reply</string>
+    <string name="loggedOutText">Logged out</string>
+    <string name="replyMessageHint">Reply</string>
+    <string name="promptFirstName">* First name</string>
+    <string name="promptLastName">* Last name</string>
+    <string name="errorFirstName">First name should be specified</string>
+    <string name="errorLastName">Last name should be specified</string>
+    <string name="loginText">Login</string>
+    <string name="passwordText">Password</string>
 
 </resources>

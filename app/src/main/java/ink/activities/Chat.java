@@ -36,20 +36,18 @@ import ink.adapters.ChatAdapter;
 import ink.callbacks.QueCallback;
 import ink.models.ChatModel;
 import ink.models.MessageModel;
-import ink.service.NotificationService;
 import ink.utils.Constants;
 import ink.utils.Notification;
 import ink.utils.QueHelper;
 import ink.utils.RealmHelper;
 import ink.utils.RecyclerTouchListener;
 import ink.utils.SharedHelper;
-import ink.utils.Time;
 
 public class Chat extends AppCompatActivity {
 
     @Bind(R.id.sendChatMessage)
     fab.FloatingActionButton mSendChatMessage;
-    @Bind(R.id.writeEditText)
+    @Bind(R.id.messageBody)
     EditText mWriteEditText;
     @Bind(R.id.noMessageLayout)
     NestedScrollView mNoMessageLayout;
@@ -63,8 +61,8 @@ public class Chat extends AppCompatActivity {
     private List<ChatModel> mChatModelArrayList = new ArrayList<>();
     private ChatAdapter mChatAdapter;
     private ChatModel mChatModel;
-    private String mUserImage;
-    private String mOpponentImage;
+    private String mUserImage = "";
+    private String mOpponentImage = "";
 
 
     @Override
@@ -72,9 +70,7 @@ public class Chat extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
-        ActionBar actionBar = getSupportActionBar();
         mSharedHelper = new SharedHelper(this);
-        Bundle bundle = getIntent().getExtras();
         Notification.getInstance().setSendingRemote(false);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(getPackageName() + ".Chat"));
         mChatAdapter = new ChatAdapter(mChatModelArrayList, this);
@@ -87,20 +83,7 @@ public class Chat extends AppCompatActivity {
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(itemAnimator);
         mRecyclerView.setAdapter(mChatAdapter);
-        if (bundle != null) {
-            String firstName = bundle.getString("firstName");
-            mOpponentId = bundle.getString("opponentId");
-            mCurrentUserId = mSharedHelper.getUserId();
-            getMessages();
-            //action bar set ups.
-            if (actionBar != null) {
-                actionBar.setTitle(firstName);
-            }
-        }
-        //action bar set ups
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+
 
         mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, mRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
@@ -137,9 +120,7 @@ public class Chat extends AppCompatActivity {
         attemptToQue(message, itemLocation);
         mChatAdapter.notifyDataSetChanged();
 
-        RealmHelper.getInstance().insertMessage(mCurrentUserId, mOpponentId,
-                mWriteEditText.getText().toString(), "0", Time.getCurrentTime(),
-                String.valueOf(itemLocation), Constants.STATUS_NOT_DELIVERED, mCurrentUserId, mOpponentImage);
+
         mWriteEditText.setText("");
         mRecyclerView.post(new Runnable() {
             @Override
@@ -152,8 +133,11 @@ public class Chat extends AppCompatActivity {
 
     }
 
-
     private void attemptToQue(String message, int itemLocation) {
+        RealmHelper.getInstance().insertMessage(mCurrentUserId, mOpponentId,
+                mWriteEditText.getText().toString(), "0", "",
+                String.valueOf(itemLocation), Constants.STATUS_NOT_DELIVERED, mUserImage, mOpponentImage);
+
         QueHelper queHelper = new QueHelper();
         queHelper.attachToQue(mCurrentUserId, mOpponentId, message, itemLocation,
                 new QueCallback() {
@@ -270,13 +254,37 @@ public class Chat extends AppCompatActivity {
                             mRecyclerView.smoothScrollToPosition(mChatAdapter.getItemCount());
                         }
                     });
-                } else {
-                    NotificationService.sendNotification("New message", getApplicationContext());
                 }
 
             }
         }
     };
 
+    @Override
+    protected void onResume() {
+        Notification.getInstance().setSendingRemote(false);
+        ActionBar actionBar = getSupportActionBar();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String firstName = bundle.getString("firstName");
+            mOpponentId = bundle.getString("opponentId");
+            mCurrentUserId = mSharedHelper.getUserId();
+            getMessages();
+            //action bar set ups.
+            if (actionBar != null) {
+                actionBar.setTitle(firstName);
+            }
+        }
+        //action bar set ups
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        super.onResume();
+    }
 
+    @Override
+    protected void onPause() {
+        Notification.getInstance().setSendingRemote(true);
+        super.onPause();
+    }
 }

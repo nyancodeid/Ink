@@ -27,12 +27,6 @@ public class Retrofit {
         mInkService = retrofit.create(InkService.class);
 
     }
-
-    public void register() {
-        mInkService.register("gkaslga", "fasfasfa");
-
-    }
-
     public InkService getInkService() {
         return mInkService;
     }
@@ -40,7 +34,10 @@ public class Retrofit {
     public interface InkService {
         @FormUrlEncoded
         @POST(Constants.REGISTER_URL)
-        Call<ResponseBody> register(@Field("login") String login, @Field("password") String password);
+        Call<ResponseBody> register(@Field("login")
+                                    String login, @Field("password")
+                                    String password, @Field("firstName") String firstName,
+                                    @Field("lastName") String lastName);
 
         @FormUrlEncoded
         @POST(Constants.LOGIN_URL)
@@ -70,6 +67,6 @@ public class Retrofit {
 
         @POST(Constants.REGISTER_TOKEN)
         @FormUrlEncoded
-        Call<ResponseBody> registerToken(@Field("user_id") String userId,@Field("token") String token);
+        Call<ResponseBody> registerToken(@Field("user_id") String userId, @Field("token") String token);
     }
 }

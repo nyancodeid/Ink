@@ -76,6 +76,7 @@ public class RealmHelper {
                 for (MessageModel messageResult : resultQuery) {
                     messageResult.setMessageId(messageId);
                     messageResult.setDeliveryStatus(deliveryStatus);
+                    messageResult.setDate(Time.getCurrentTime());
                 }
             }
         });
