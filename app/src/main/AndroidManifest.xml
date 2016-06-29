@@ -63,7 +63,7 @@
             android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
             android:name="ink.activities.MyProfile"
-            android:theme="@style/ProfileNoActionBar"></activity>
+            android:theme="@style/AppTheme.Profile"></activity>
     </application>
 
 </manifest>

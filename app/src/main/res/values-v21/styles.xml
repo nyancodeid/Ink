@@ -5,7 +5,7 @@
         <item name="android:windowContentTransitions">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorPrimaryDark</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -15,10 +15,10 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="ProfileNoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="AppTheme.Profile" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorPrimaryDark</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
@@ -36,8 +36,11 @@
         <item name="android:backgroundDimEnabled">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorPrimaryDark</item>
 
     </style>
-
+    <style name="textStyleFont">
+        <item name="android:fontFamily">@string/appFont</item>
+        <item name="android:textSize">20sp</item>
+    </style>
 </resources>

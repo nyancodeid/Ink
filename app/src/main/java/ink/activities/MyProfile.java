@@ -10,11 +10,14 @@ import android.support.design.widget.FloatingActionMenu;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -71,6 +74,8 @@ public class MyProfile extends AppCompatActivity {
     @Bind(R.id.editProfile)
     FloatingActionButton mEditSaveButton;
     private Menu mCancelMenuItem;
+    @Bind(R.id.editImageNameFab)
+    FloatingActionButton mEditImageNameFab;
 
     @Bind(R.id.collapsing_toolbar)
     CollapsingToolbarLayout mCollapsingToolbar;
@@ -88,20 +93,22 @@ public class MyProfile extends AppCompatActivity {
     private String mRelationshipToSend;
     private String mStatusToSend;
     private AlertDialog.Builder promptBuilder;
+    private PopupMenu mEditPopUp;
+    private View mDialogView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile);
         ButterKnife.bind(this);
-
+        mEditImageNameFab.hide(false);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        promptBuilder = new AlertDialog.Builder(this);
         mSharedHelper = new SharedHelper(this);
         mFirstNameToSend = mSharedHelper.getFirstName();
         mLastNameToSend = mSharedHelper.getLastName();
         mCollapsingToolbar.setTitle(mFirstNameToSend + " " + mLastNameToSend);
+        mProfileFab.setEnabled(false);
         mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#99000000"));
         getMyData();
     }
@@ -162,6 +169,7 @@ public class MyProfile extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        mProfileFab.setEnabled(true);
     }
 
     private void attachValues() {
@@ -218,6 +226,56 @@ public class MyProfile extends AppCompatActivity {
         }
     }
 
+    @OnClick(R.id.editImageNameFab)
+    public void editImageName() {
+        System.gc();
+        mEditPopUp = new PopupMenu(MyProfile.this, mEditImageNameFab);
+        mEditPopUp.getMenu().add(0, 0, 0, getString(R.string.changeImage));
+        mEditPopUp.getMenu().add(1, 1, 1, getString(R.string.changeName));
+        mEditPopUp.show();
+        mEditPopUp.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case 0:
+                        openGallery();
+                        break;
+                    case 1:
+                        openNameChanger();
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+
+    private void openGallery() {
+
+    }
+
+    private void openNameChanger() {
+        System.gc();
+        promptBuilder = new AlertDialog.Builder(this);
+        promptBuilder.setCancelable(false);
+        LayoutInflater inflater = this.getLayoutInflater();
+        mDialogView = inflater.inflate(R.layout.name_view, null);
+
+        promptBuilder.setView(mDialogView);
+        promptBuilder.setPositiveButton(getString(R.string.saveText), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        promptBuilder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        promptBuilder.show();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -243,6 +301,7 @@ public class MyProfile extends AppCompatActivity {
     }
 
     private void enableEdit() {
+        mEditImageNameFab.show(true);
         mCancelMenuItem.getItem(0).setVisible(true);
         mStatusText.setFocusable(true);
         mStatusText.setFocusableInTouchMode(true);
@@ -265,6 +324,7 @@ public class MyProfile extends AppCompatActivity {
 
     private void saveEdit() {
         isEditing = false;
+        mEditImageNameFab.hide(true);
         mStatusText.setFocusable(false);
         mStatusText.setFocusableInTouchMode(false);
         mAddress.setFocusable(false);
@@ -317,6 +377,9 @@ public class MyProfile extends AppCompatActivity {
     }
 
     private void showAlertWithValues() {
+        System.gc();
+        promptBuilder = new AlertDialog.Builder(this);
+        promptBuilder.setCancelable(false);
         String finalPrompt = getString(R.string.correctnessDetailViewText, mStatusToSend, mFirstNameToSend,
                 mLastNameToSend, mAddressToSend, mPhoneNumberToSend,
                 mRelationshipToSend, mGenderToSend,
@@ -326,15 +389,14 @@ public class MyProfile extends AppCompatActivity {
         promptBuilder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
-                mProfileFab.showMenu(true);
+                mProfileFab.showMenuButton(true);
             }
         });
         promptBuilder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 sendUpdatesToServer();
-                mProfileFab.showMenu(true);
+                mProfileFab.showMenuButton(true);
             }
         });
         promptBuilder.show();
@@ -370,7 +432,7 @@ public class MyProfile extends AppCompatActivity {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     String body = response.body().string();
-                    Log.d("onResponse", "onResponse: "+body);
+                    Log.d("onResponse", "onResponse: " + body);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

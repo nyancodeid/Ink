@@ -96,8 +96,11 @@
         \nFacebook : %8$s
         \nSkype : %9$s
 
-        \n\nAre these correct?
+        \n\nAre those correct?
     </string>
     <string name="noStatusWasWritte">No status was written</string>
+    <string name="changeImage">Change image</string>
+    <string name="changeName">Change name</string>
+    <string name="cancel">Cancel</string>
 
 </resources>
