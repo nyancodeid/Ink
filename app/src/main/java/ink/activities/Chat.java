@@ -78,6 +78,8 @@ public class Chat extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(getPackageName() + ".Chat"));
         mChatAdapter = new ChatAdapter(mChatModelArrayList, this);
         mRealHelper = RealmHelper.getInstance();
+
+
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);
         itemAnimator.setRemoveDuration(500);

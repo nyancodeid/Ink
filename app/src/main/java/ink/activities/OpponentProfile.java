@@ -11,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -137,8 +136,7 @@ public class OpponentProfile extends AppCompatActivity {
                             String status = jsonObject.optString("status");
 
                             if (status.isEmpty()) {
-                                mTriangleView.setVisibility(View.GONE);
-                                mCardView.setVisibility(View.GONE);
+                                mStatusText.setText(getString(R.string.shortNoStatus));
                             } else {
                                 mStatusText.setText(status);
                             }

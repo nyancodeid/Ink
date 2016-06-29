@@ -27,7 +27,6 @@
                 android:transitionName="card">
 
                 <ImageView
-                    android:scaleType="centerCrop"
                     android:id="@+id/profileImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

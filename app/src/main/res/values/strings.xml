@@ -87,14 +87,14 @@
     <string name="checkCorrectness">Please check for correctness</string>
     <string name="correctnessDetailViewText">
         \nStatus : %1$s
-        \nFirst Name : %2$s
-        \nLast Name : %3$s
-        \nAddress : %4$s
-        \nPhone Number : %5$s
-        \nRelationship : %6$s
-        \nGender : %7$s
-        \nFacebook : %8$s
-        \nSkype : %9$s
+        \n\nFirst Name : %2$s
+        \n\nLast Name : %3$s
+        \n\nAddress : %4$s
+        \n\nPhone Number : %5$s
+        \n\nRelationship : %6$s
+        \n\nGender : %7$s
+        \n\nFacebook : %8$s
+        \n\nSkype : %9$s
 
         \n\nAre those correct?
     </string>
@@ -102,5 +102,20 @@
     <string name="changeImage">Change image</string>
     <string name="changeName">Change name</string>
     <string name="cancel">Cancel</string>
+    <string name="shortNoStatus">No status</string>
+    <string name="femaleGender">Female</string>
+    <string name="maleGender">Male</string>
+    <string name="single">Single</string>
+    <string name="inRelationship">In a relationship</string>
+    <string name="engaged">Engaged</string>
+    <string name="married">Married</string>
+    <string name="complicated">It\'s complicated</string>
+    <string name="openRelationship">In an open relationship</string>
+    <string name="divorced">Divorced</string>
+    <string name="facebook_app_id">1713388275578207</string>
+    <string name="cantRead">Can\'t load without permission...</string>
+    <string name="selectImage">Select image</string>
+    <string name="notSupported">Not supported</string>
+    <string name="notSupportedText">This image is not supported.Please select image from galler and not from other sources</string>
 
 </resources>

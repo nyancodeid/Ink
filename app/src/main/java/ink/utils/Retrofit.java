@@ -79,7 +79,9 @@ public class Retrofit {
                                              @Field("relationship") String relationship,
                                              @Field("gender") String gender,
                                              @Field("facebook") String facebook,
-                                             @Field("skype") String skype);
+                                             @Field("skype") String skype,
+                                             @Field("base64") String base64Image,
+                                             @Field("status") String status);
 
     }
 }

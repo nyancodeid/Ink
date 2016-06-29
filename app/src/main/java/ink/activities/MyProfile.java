@@ -1,17 +1,25 @@
 package ink.activities;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionMenu;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +29,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.ink.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -28,7 +44,10 @@ import com.squareup.picasso.Target;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -44,6 +63,7 @@ import retrofit2.Response;
 
 public class MyProfile extends AppCompatActivity {
 
+    private static final int PICK_IMAGE_RESULT_CODE = 1547;
     private SharedHelper mSharedHelper;
     //Butter knife binders.
     @Bind(R.id.addressTV)
@@ -95,31 +115,134 @@ public class MyProfile extends AppCompatActivity {
     private AlertDialog.Builder promptBuilder;
     private PopupMenu mEditPopUp;
     private View mDialogView;
+    private CallbackManager mCallbackManager;
+    private ProgressDialog facebookAttachDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(this);
         setContentView(R.layout.activity_my_profile);
         ButterKnife.bind(this);
+        registerFacebookCallback();
         mEditImageNameFab.hide(false);
         setSupportActionBar(mToolbar);
+        facebookAttachDialog = new ProgressDialog(this);
+        facebookAttachDialog.setTitle("Please wait...");
+        facebookAttachDialog.setMessage("Attaching facebook profile...");
+        facebookAttachDialog.dismiss();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mSharedHelper = new SharedHelper(this);
         mFirstNameToSend = mSharedHelper.getFirstName();
         mLastNameToSend = mSharedHelper.getLastName();
         mCollapsingToolbar.setTitle(mFirstNameToSend + " " + mLastNameToSend);
-        mProfileFab.setEnabled(false);
+        mProfileFab.hideMenu(false);
         mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#99000000"));
         getMyData();
     }
 
+    private void registerFacebookCallback() {
+        mCallbackManager = CallbackManager.Factory.create();
+
+        LoginManager.getInstance().registerCallback(mCallbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        facebookAttachDialog.show();
+                        GraphRequest request = GraphRequest.newMeRequest(
+                                loginResult.getAccessToken(),
+                                new GraphRequest.GraphJSONObjectCallback() {
+                                    @Override
+                                    public void onCompleted(
+                                            JSONObject object,
+                                            GraphResponse response) {
+                                        String userLink = object.optString("link");
+                                        mFacebook.setText(userLink);
+                                        mFacebookProfileToSend = userLink;
+                                        facebookAttachDialog.dismiss();
+
+                                    }
+                                });
+                        Bundle parameters = new Bundle();
+                        parameters.putString("fields", "link");
+                        request.setParameters(parameters);
+                        request.executeAsync();
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+
+                    }
+                });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == PICK_IMAGE_RESULT_CODE) {
+                Uri selectedImageUri = data.getData();
+                String selectedImagePath;
+                try {
+                    selectedImagePath = getRealPathFromURI(selectedImageUri);
+                } catch (Exception e) {
+                    selectedImagePath = null;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MyProfile.this);
+                    builder.setTitle(getString(R.string.notSupported));
+                    builder.setMessage(getString(R.string.notSupportedText));
+                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.show();
+                }
+                if (selectedImagePath != null) {
+                    mImageLinkToSend = selectedImagePath;
+                    Picasso.with(getApplicationContext()).load(new File(selectedImagePath)).fit().centerCrop().into(profileImage);
+                }
+            }
+        }
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    private String getRealPathFromURI(Uri contentURI) {
+        String result;
+        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) {
+            result = contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            result = cursor.getString(idx);
+            cursor.close();
+        }
+        return result;
+    }
 
     private void getMyData() {
-        Call<ResponseBody> myDataResponse = Retrofit.getInstance()
+        final Call<ResponseBody> myDataResponse = Retrofit.getInstance()
                 .getInkService().getSingleUserDetails(mSharedHelper.getUserId());
         myDataResponse.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    getMyData();
+                    return;
+                }
+                if (response.body() == null) {
+                    getMyData();
+                    return;
+                }
                 fetchData(response);
             }
 
@@ -152,6 +275,7 @@ public class MyProfile extends AppCompatActivity {
 
                     attachValues();
                 } else {
+                    mProfileFab.showMenu(true);
                     AlertDialog.Builder builder = new AlertDialog.Builder(MyProfile.this);
                     builder.setTitle(getString(R.string.singleUserErrorTile));
                     builder.setMessage(getString(R.string.singleUserErrorMessage));
@@ -169,7 +293,6 @@ public class MyProfile extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mProfileFab.setEnabled(true);
     }
 
     private void attachValues() {
@@ -213,6 +336,7 @@ public class MyProfile extends AppCompatActivity {
         mAddress.setText(mAddressToSend);
         mRelationship.setText(mRelationshipToSend);
         mGender.setText(mGenderToSend);
+        mProfileFab.showMenu(true);
     }
 
 
@@ -223,6 +347,82 @@ public class MyProfile extends AppCompatActivity {
         if (!isEditing) {
             enableEdit();
             isEditing = true;
+        }
+    }
+
+    @OnClick(R.id.relationshipTV)
+    public void relationship() {
+        if (isEditing) {
+            PopupMenu popupMenu = new PopupMenu(MyProfile.this, mRelationship);
+            popupMenu.getMenu().add(0, 0, 0, getString(R.string.single));
+            popupMenu.getMenu().add(1, 1, 1, getString(R.string.inRelationship));
+            popupMenu.getMenu().add(2, 2, 2, getString(R.string.engaged));
+            popupMenu.getMenu().add(3, 3, 3, getString(R.string.married));
+            popupMenu.getMenu().add(4, 4, 4, getString(R.string.complicated));
+            popupMenu.getMenu().add(5, 5, 5, getString(R.string.openRelationship));
+            popupMenu.getMenu().add(6, 6, 6, getString(R.string.divorced));
+            popupMenu.show();
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case 0:
+                            mRelationship.setText(getString(R.string.single));
+                            break;
+                        case 1:
+                            mRelationship.setText(getString(R.string.inRelationship));
+                            break;
+                        case 2:
+                            mRelationship.setText(getString(R.string.engaged));
+                            break;
+                        case 3:
+                            mRelationship.setText(getString(R.string.married));
+                            break;
+                        case 4:
+                            mRelationship.setText(getString(R.string.complicated));
+                            break;
+                        case 5:
+                            mRelationship.setText(getString(R.string.openRelationship));
+                            break;
+                        case 6:
+                            mRelationship.setText(getString(R.string.divorced));
+                            break;
+                    }
+                    return true;
+                }
+            });
+        }
+    }
+
+
+    @OnClick(R.id.facebookTV)
+    public void facebook() {
+        if (isEditing) {
+            LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
+        }
+    }
+
+    @OnClick(R.id.genderTV)
+    public void gender() {
+        if (isEditing) {
+            PopupMenu popupMenu = new PopupMenu(MyProfile.this, mGender);
+            popupMenu.getMenu().add(0, 0, 0, getString(R.string.femaleGender));
+            popupMenu.getMenu().add(1, 1, 1, getString(R.string.maleGender));
+            popupMenu.show();
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case 0:
+                            mGender.setText(getString(R.string.femaleGender));
+                            break;
+                        case 1:
+                            mGender.setText(getString(R.string.maleGender));
+                            break;
+                    }
+                    return true;
+                }
+            });
         }
     }
 
@@ -251,7 +451,11 @@ public class MyProfile extends AppCompatActivity {
 
 
     private void openGallery() {
-
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,
+                getString(R.string.selectImage)), PICK_IMAGE_RESULT_CODE);
     }
 
     private void openNameChanger() {
@@ -260,12 +464,22 @@ public class MyProfile extends AppCompatActivity {
         promptBuilder.setCancelable(false);
         LayoutInflater inflater = this.getLayoutInflater();
         mDialogView = inflater.inflate(R.layout.name_view, null);
-
+        final EditText nameChange = (EditText) mDialogView.findViewById(R.id.firstNameChange);
+        final EditText lastNameChange = (EditText) mDialogView.findViewById(R.id.lastNameChange);
+        nameChange.setText(mFirstNameToSend);
+        lastNameChange.setText(mLastNameToSend);
+        nameChange.setSelection(mFirstNameToSend.length());
         promptBuilder.setView(mDialogView);
         promptBuilder.setPositiveButton(getString(R.string.saveText), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
+                if (!nameChange.getText().toString().isEmpty()) {
+                    mFirstNameToSend = nameChange.getText().toString();
+                }
+                if (!lastNameChange.getText().toString().isEmpty()) {
+                    mLastNameToSend = lastNameChange.getText().toString();
+                }
+                mCollapsingToolbar.setTitle(mFirstNameToSend + " " + mLastNameToSend);
             }
         });
         promptBuilder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -284,8 +498,7 @@ public class MyProfile extends AppCompatActivity {
                 finish();
                 break;
             case R.id.save:
-                item.setVisible(false);
-                saveEdit();
+                promptUser();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -301,6 +514,30 @@ public class MyProfile extends AppCompatActivity {
     }
 
     private void enableEdit() {
+
+        String status = mStatusText.getText().toString();
+        String address = mAddress.getText().toString();
+        String phone = mPhone.getText().toString();
+        String relationship = mRelationship.getText().toString();
+        String gender = mGender.getText().toString();
+        String facebook = mFacebook.getText().toString();
+        String skype = mSkype.getText().toString();
+
+        mStatusText.setText("");
+        mStatusText.setHint(status);
+        mAddress.setText("");
+        mAddress.setHint(address);
+        mPhone.setText("");
+        mPhone.setHint(phone);
+        mRelationship.setText("");
+        mRelationship.setHint(relationship);
+        mGender.setText("");
+        mGender.setHint(gender);
+        mFacebook.setText("");
+        mFacebook.setHint(facebook);
+        mSkype.setText("");
+        mSkype.setHint(skype);
+
         mEditImageNameFab.show(true);
         mCancelMenuItem.getItem(0).setVisible(true);
         mStatusText.setFocusable(true);
@@ -312,12 +549,7 @@ public class MyProfile extends AppCompatActivity {
         mAddress.setFocusableInTouchMode(true);
         mPhone.setFocusable(true);
         mPhone.setFocusableInTouchMode(true);
-        mRelationship.setFocusable(true);
-        mRelationship.setFocusableInTouchMode(true);
-        mGender.setFocusable(true);
-        mGender.setFocusableInTouchMode(true);
-        mFacebook.setFocusable(true);
-        mFacebook.setFocusableInTouchMode(true);
+        mGender.setClickable(true);
         mSkype.setFocusable(true);
         mSkype.setFocusableInTouchMode(true);
     }
@@ -335,16 +567,23 @@ public class MyProfile extends AppCompatActivity {
         mRelationship.setFocusableInTouchMode(false);
         mGender.setFocusable(false);
         mGender.setFocusableInTouchMode(false);
+        mGender.setClickable(false);
         mFacebook.setFocusable(false);
         mFacebook.setFocusableInTouchMode(false);
         mSkype.setFocusable(false);
         mSkype.setFocusableInTouchMode(false);
 
+    }
+
+
+    private void promptUser() {
         if (!mStatusText.getText().toString().isEmpty()) {
             mStatusToSend = mStatusText.getText().toString();
             if (mStatusText.getText().toString().equals(getString(R.string.noStatusText))) {
                 mStatusToSend = getString(R.string.noStatusWasWritte);
             }
+        } else {
+            mStatusToSend = getString(R.string.noStatusWasWritte);
         }
 
         if (!mAddress.getText().toString().isEmpty()) {
@@ -389,14 +628,16 @@ public class MyProfile extends AppCompatActivity {
         promptBuilder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                sendUpdatesToServer();
                 mProfileFab.showMenuButton(true);
+                saveEdit();
+                mCancelMenuItem.getItem(0).setVisible(false);
             }
         });
         promptBuilder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                sendUpdatesToServer();
-                mProfileFab.showMenuButton(true);
+                mProfileFab.hideMenuButton(false);
             }
         });
         promptBuilder.show();
@@ -425,11 +666,25 @@ public class MyProfile extends AppCompatActivity {
         if (mSkype.getText().toString().equals(getString(R.string.noSkype))) {
             mSkypeToSend = "";
         }
-        final Call<ResponseBody> updateCall = Retrofit.getInstance().getInkService().updateUserDetails(mSharedHelper.getUserId(), mFirstNameToSend, mLastNameToSend,
-                mAddressToSend, mPhoneNumberToSend, mRelationshipToSend, mGenderToSend, mFacebookProfileToSend, mSkypeToSend);
+        String base64 = mImageLinkToSend;
+        if (!mImageLinkToSend.isEmpty()) {
+            base64 = getBase64String(mImageLinkToSend);
+        }
+        final Call<ResponseBody> updateCall = Retrofit.getInstance().getInkService().updateUserDetails(mSharedHelper.getUserId(),
+                mFirstNameToSend, mLastNameToSend,
+                mAddressToSend.equals(getString(R.string.noAddress)) ? "" : mAddressToSend, mPhoneNumberToSend.equals(getString(R.string.noPhone)) ? "" : mPhoneNumberToSend,
+                mRelationshipToSend.equals(getString(R.string.noRelationship)) ? "" : mRelationshipToSend,
+                mGenderToSend.equals(getString(R.string.noGender)) ? "" : mGenderToSend,
+                mFacebookProfileToSend.equals(getString(R.string.noFacebook)) ? "" : mFacebookProfileToSend,
+                mSkypeToSend.equals(getString(R.string.noSkype)) ? "" : mSkypeToSend, base64,
+                mStatusToSend.equals(getString(R.string.noStatusText)) ? "" : mStatusToSend);
         updateCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    sendUpdatesToServer();
+                    return;
+                }
                 try {
                     String body = response.body().string();
                     Log.d("onResponse", "onResponse: " + body);
@@ -440,9 +695,20 @@ public class MyProfile extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                updateCall.enqueue(this);
+                sendUpdatesToServer();
             }
         });
+    }
+
+    private String getBase64String(String path) {
+        Bitmap bitmap = BitmapFactory.decodeFile(path);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] bytes = byteArrayOutputStream.toByteArray();
+        String encodedImage = Base64.encodeToString(bytes, Base64.DEFAULT);
+        bitmap.recycle();
+        bitmap = null;
+        return encodedImage;
     }
 
 
@@ -455,7 +721,7 @@ public class MyProfile extends AppCompatActivity {
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
-
+                imageView.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image));
             }
 
             @Override
