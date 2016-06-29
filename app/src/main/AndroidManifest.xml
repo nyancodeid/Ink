@@ -61,9 +61,9 @@
             android:excludeFromRecents="true"
             android:theme="@style/Theme.Transparent"
             android:windowSoftInputMode="stateAlwaysVisible" />
-        <activity android:name="ink.activities.MyProfile">
-
-        </activity>
+        <activity
+            android:name="ink.activities.MyProfile"
+            android:theme="@style/ProfileNoActionBar"></activity>
     </application>
 
 </manifest>

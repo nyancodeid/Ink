@@ -30,4 +30,8 @@
 
     </style>
 
+    <style name="textStyleFont">
+        <item name="android:fontFamily">@string/appFont</item>
+    </style>
+
 </resources>

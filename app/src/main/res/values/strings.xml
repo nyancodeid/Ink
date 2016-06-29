@@ -76,5 +76,28 @@
     <string name="noStatusText">Write a status...</string>
     <string name="saveText">Save</string>
     <string name="myProfileText">My Profile</string>
+    <string name="addAddress">Add address</string>
+    <string name="addPhoneNumber">Add phone number</string>
+    <string name="addRelationship">Add your relationship</string>
+    <string name="addGender">Specify your gender</string>
+    <string name="addFacebook">Attach your facebook profile</string>
+    <string name="addYourSkype">Add your skype</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="checkCorrectness">Please check for correctness</string>
+    <string name="correctnessDetailViewText">
+        \nStatus : %1$s
+        \nFirst Name : %2$s
+        \nLast Name : %3$s
+        \nAddress : %4$s
+        \nPhone Number : %5$s
+        \nRelationship : %6$s
+        \nGender : %7$s
+        \nFacebook : %8$s
+        \nSkype : %9$s
+
+        \n\nAre these correct?
+    </string>
+    <string name="noStatusWasWritte">No status was written</string>
 
 </resources>

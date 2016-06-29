@@ -50,6 +50,8 @@ public class HomeActivity extends AppCompatActivity
     public static String FRIENDS;
     public static String SETTINGS;
     private TextView mUserNameTV;
+    private Class<?> mLastClassToOpen;
+    private boolean shouldOpenActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +78,19 @@ public class HomeActivity extends AppCompatActivity
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            public void onDrawerClosed(View view) {
+                if (shouldOpenActivity) {
+                    startActivity(new Intent(getApplicationContext(), getLastKnownClass()));
+                }
+                super.onDrawerClosed(view);
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+        };
         if (mDrawer != null) {
             mDrawer.addDrawerListener(toggle);
         }
@@ -98,6 +112,11 @@ public class HomeActivity extends AppCompatActivity
         }
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+    private Class<?> getLastKnownClass() {
+        return mLastClassToOpen;
+    }
+
 
     public FloatingActionMenu getFab() {
         return mFab;
@@ -135,7 +154,6 @@ public class HomeActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -144,12 +162,13 @@ public class HomeActivity extends AppCompatActivity
         switch (id) {
             case R.id.profile:
                 if (!mToolbar.getTitle().equals(PROFILE)) {
-                    intent = new Intent(getApplicationContext(), MyProfile.class);
-                    startActivity(intent);
+                    shouldOpenActivity = true;
+                    setLastClassToOpen(MyProfile.class);
                 }
                 break;
             case R.id.feeds:
                 if (!mToolbar.getTitle().equals(FEED)) {
+                    shouldOpenActivity = false;
                     mToolbar.setTitle(getString(R.string.feedText));
                     getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     getSupportFragmentManager().beginTransaction().replace(R.id.container, mFeed).commit();
@@ -157,16 +176,19 @@ public class HomeActivity extends AppCompatActivity
                 break;
             case R.id.messages:
                 if (!mToolbar.getTitle().equals(MESSAGES)) {
+                    shouldOpenActivity = false;
                     mToolbar.setTitle(getString(R.string.messageText));
                 }
                 break;
             case R.id.groups:
                 if (!mToolbar.getTitle().equals(GROUPS)) {
+                    shouldOpenActivity = false;
                     mToolbar.setTitle(getString(R.string.groupsText));
                 }
                 break;
             case R.id.friends:
                 if (!mToolbar.getTitle().equals(FRIENDS)) {
+                    shouldOpenActivity = false;
                     mToolbar.setTitle(getString(R.string.friendsText));
                     getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     getSupportFragmentManager().beginTransaction().replace(R.id.container, mMyFriends).commit();
@@ -174,20 +196,18 @@ public class HomeActivity extends AppCompatActivity
                 break;
             case R.id.settings:
                 if (!mToolbar.getTitle().equals(SETTINGS)) {
+                    shouldOpenActivity = false;
                     mToolbar.setTitle(getString(R.string.settingsString));
                 }
                 break;
             case R.id.nav_share:
+                shouldOpenActivity = false;
                 break;
             case R.id.nav_send:
+                shouldOpenActivity = false;
                 break;
             case R.id.logout:
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                    ((ActivityManager) getSystemService(ACTIVITY_SERVICE))
-//                            .clearApplicationUserData();
-//                } else {
-//
-//                }
+                shouldOpenActivity = false;
                 clearApplicationData();
                 mSharedHelper.clean();
                 mSharedHelper.putShouldShowIntro(false);
@@ -281,5 +301,13 @@ public class HomeActivity extends AppCompatActivity
 
         return deletedAll;
 
+    }
+
+    private void setLastClassToOpen(Class<?> classToOpen) {
+        mLastClassToOpen = classToOpen;
+    }
+
+    private void setShouldOpenActivity(boolean shouldOpenActivity) {
+        this.shouldOpenActivity = shouldOpenActivity;
     }
 }

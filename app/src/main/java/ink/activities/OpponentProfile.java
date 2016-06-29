@@ -3,7 +3,6 @@ package ink.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionMenu;
@@ -76,7 +75,7 @@ public class OpponentProfile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.profile_view);
+        setContentView(R.layout.opponent_profile);
         ButterKnife.bind(this);
         ButterKnife.setDebug(true);
         mProfileFab.setEnabled(false);
@@ -84,7 +83,6 @@ public class OpponentProfile extends AppCompatActivity {
         mProfileImage = (ImageView) findViewById(R.id.profileImage);
         imageCard = (CardView) findViewById(R.id.imageCard);
         mCardNewLayoutParams = imageCard.getLayoutParams();
-        Picasso.with(this).load(R.drawable.no_image).into(getTarget());
         ActionBar actionBar = getSupportActionBar();
         if (extras != null) {
             mFriendId = extras.getString("id");
@@ -214,7 +212,6 @@ public class OpponentProfile extends AppCompatActivity {
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 mCardNewLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 imageCard.setLayoutParams(mCardNewLayoutParams);
-                mProfileImage.setBackground(new BitmapDrawable(getResources(), bitmap));
             }
 
             @Override

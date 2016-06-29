@@ -70,6 +70,16 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> registerToken(@Field("user_id") String userId, @Field("token") String token);
 
+        @POST(Constants.UPDATE_DETAILS)
+        @FormUrlEncoded
+        Call<ResponseBody> updateUserDetails(@Field("user_id") String userId, @Field("first_name") String firstName,
+                                             @Field("last_name") String lastName,
+                                             @Field("address") String address,
+                                             @Field("phone_number") String phoneNumber,
+                                             @Field("relationship") String relationship,
+                                             @Field("gender") String gender,
+                                             @Field("facebook") String facebook,
+                                             @Field("skype") String skype);
 
     }
 }

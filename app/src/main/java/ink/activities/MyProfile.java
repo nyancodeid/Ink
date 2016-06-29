@@ -1,12 +1,17 @@
 package ink.activities;
 
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionMenu;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,6 +19,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.ink.R;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,8 +63,6 @@ public class MyProfile extends AppCompatActivity {
     ImageView mGenderImageView;
     @Bind(R.id.statusText)
     EditText mStatusText;
-    @Bind(R.id.userName)
-    EditText mUsername;
     @Bind(R.id.profileFab)
     FloatingActionMenu mProfileFab;
     @Bind(R.id.profileImage)
@@ -67,17 +72,37 @@ public class MyProfile extends AppCompatActivity {
     FloatingActionButton mEditSaveButton;
     private Menu mCancelMenuItem;
 
+    @Bind(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout mCollapsingToolbar;
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+
+    private String mFirstNameToSend;
+    private String mLastNameToSend;
+    private String mGenderToSend;
+    private String mPhoneNumberToSend;
+    private String mFacebookProfileToSend;
+    private String mImageLinkToSend;
+    private String mSkypeToSend;
+    private String mAddressToSend;
+    private String mRelationshipToSend;
+    private String mStatusToSend;
+    private AlertDialog.Builder promptBuilder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(getString(R.string.myProfileText));
-        }
         ButterKnife.bind(this);
+
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        promptBuilder = new AlertDialog.Builder(this);
         mSharedHelper = new SharedHelper(this);
+        mFirstNameToSend = mSharedHelper.getFirstName();
+        mLastNameToSend = mSharedHelper.getLastName();
+        mCollapsingToolbar.setTitle(mFirstNameToSend + " " + mLastNameToSend);
+        mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#99000000"));
         getMyData();
     }
 
@@ -107,52 +132,18 @@ public class MyProfile extends AppCompatActivity {
                 boolean success = jsonObject.optBoolean("success");
                 if (success) {
                     String userId = jsonObject.optString("userId");
-                    String firstName = jsonObject.optString("first_name");
-                    String lastName = jsonObject.optString("last_name");
-                    String gender = jsonObject.optString("gender");
-                    String phoneNumber = jsonObject.optString("phone_number");
-                    String facebookProfile = jsonObject.optString("facebook_profile");
-                    String imageLink = jsonObject.optString("image_link");
-                    String skype = jsonObject.optString("skype");
-                    String address = jsonObject.optString("address");
-                    String relationship = jsonObject.optString("relationship");
-                    String status = jsonObject.optString("status");
+                    mFirstNameToSend = jsonObject.optString("first_name");
+                    mLastNameToSend = jsonObject.optString("last_name");
+                    mGenderToSend = jsonObject.optString("gender");
+                    mPhoneNumberToSend = jsonObject.optString("phone_number");
+                    mFacebookProfileToSend = jsonObject.optString("facebook_profile");
+                    mImageLinkToSend = jsonObject.optString("image_link");
+                    mSkypeToSend = jsonObject.optString("skype");
+                    mAddressToSend = jsonObject.optString("address");
+                    mRelationshipToSend = jsonObject.optString("relationship");
+                    mStatusToSend = jsonObject.optString("status");
 
-                    mUsername.setText(firstName + " " + lastName);
-                    if (status.isEmpty()) {
-                        mStatusText.setText(getString(R.string.noStatusText));
-                    } else {
-                        mStatusText.setText(status);
-                    }
-                    if (!gender.isEmpty()) {
-                        if (gender.equals(Constants.GENDER_FEMALE)) {
-                            mGenderImageView.setBackgroundResource(R.drawable.ic_gender_female);
-                        }
-                    } else {
-                        gender = getString(R.string.noGender);
-                    }
-
-                    if (phoneNumber.isEmpty()) {
-                        phoneNumber = getString(R.string.noPhone);
-                    }
-                    if (facebookProfile.isEmpty()) {
-                        facebookProfile = getString(R.string.noFacebook);
-                    }
-                    if (skype.isEmpty()) {
-                        skype = getString(R.string.noSkype);
-                    }
-                    if (address.isEmpty()) {
-                        address = getString(R.string.noAddress);
-                    }
-                    if (relationship.isEmpty()) {
-                        relationship = getString(R.string.noRelationship);
-                    }
-                    mPhone.setText(phoneNumber);
-                    mFacebook.setText(facebookProfile);
-                    mSkype.setText(skype);
-                    mAddress.setText(address);
-                    mRelationship.setText(relationship);
-                    mGender.setText(gender);
+                    attachValues();
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MyProfile.this);
                     builder.setTitle(getString(R.string.singleUserErrorTile));
@@ -173,9 +164,54 @@ public class MyProfile extends AppCompatActivity {
         }
     }
 
+    private void attachValues() {
+        if (mStatusToSend.isEmpty()) {
+            mStatusText.setText(getString(R.string.noStatusText));
+        } else {
+            mStatusText.setText(mStatusToSend);
+        }
+        if (!mGenderToSend.isEmpty()) {
+            if (mGenderToSend.equals(Constants.GENDER_FEMALE)) {
+                mGenderImageView.setBackgroundResource(R.drawable.ic_gender_female);
+            }
+        } else {
+            mGenderToSend = getString(R.string.noGender);
+        }
+
+        if (mPhoneNumberToSend.isEmpty()) {
+            mPhoneNumberToSend = getString(R.string.noPhone);
+        }
+        if (mFacebookProfileToSend.isEmpty()) {
+            mFacebookProfileToSend = getString(R.string.noFacebook);
+        }
+        if (mSkypeToSend.isEmpty()) {
+            mSkypeToSend = getString(R.string.noSkype);
+        }
+        if (mAddressToSend.isEmpty()) {
+            mAddressToSend = getString(R.string.noAddress);
+        }
+        if (mRelationshipToSend.isEmpty()) {
+            mRelationshipToSend = getString(R.string.noRelationship);
+        }
+
+        if (mImageLinkToSend != null && !mImageLinkToSend.isEmpty()) {
+            Picasso.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).into(getProfileTarget(profileImage));
+        } else {
+            profileImage.setBackgroundResource(R.drawable.no_image);
+        }
+        mPhone.setText(mPhoneNumberToSend);
+        mFacebook.setText(mFacebookProfileToSend);
+        mSkype.setText(mSkypeToSend);
+        mAddress.setText(mAddressToSend);
+        mRelationship.setText(mRelationshipToSend);
+        mGender.setText(mGenderToSend);
+    }
+
+
     @OnClick(R.id.editProfile)
     public void editProfile() {
         mProfileFab.close(true);
+        mProfileFab.hideMenuButton(true);
         if (!isEditing) {
             enableEdit();
             isEditing = true;
@@ -243,5 +279,127 @@ public class MyProfile extends AppCompatActivity {
         mFacebook.setFocusableInTouchMode(false);
         mSkype.setFocusable(false);
         mSkype.setFocusableInTouchMode(false);
+
+        if (!mStatusText.getText().toString().isEmpty()) {
+            mStatusToSend = mStatusText.getText().toString();
+            if (mStatusText.getText().toString().equals(getString(R.string.noStatusText))) {
+                mStatusToSend = getString(R.string.noStatusWasWritte);
+            }
+        }
+
+        if (!mAddress.getText().toString().isEmpty()) {
+            mAddressToSend = mAddress.getText().toString();
+        }
+
+        if (!mPhone.getText().toString().isEmpty()) {
+            mPhoneNumberToSend = mPhone.getText().toString();
+        }
+
+        if (!mRelationship.getText().toString().isEmpty()) {
+            mRelationshipToSend = mRelationship.getText().toString();
+        }
+
+        if (!mGender.getText().toString().isEmpty()) {
+            mGenderToSend = mGender.getText().toString();
+        }
+
+        if (!mFacebook.getText().toString().isEmpty()) {
+            mFacebookProfileToSend = mFacebook.getText().toString();
+        }
+
+
+        if (!mSkype.getText().toString().isEmpty()) {
+            mSkypeToSend = mSkype.getText().toString();
+        }
+
+
+        showAlertWithValues();
+    }
+
+    private void showAlertWithValues() {
+        String finalPrompt = getString(R.string.correctnessDetailViewText, mStatusToSend, mFirstNameToSend,
+                mLastNameToSend, mAddressToSend, mPhoneNumberToSend,
+                mRelationshipToSend, mGenderToSend,
+                mFacebookProfileToSend, mSkypeToSend);
+        promptBuilder.setTitle(getString(R.string.checkCorrectness));
+        promptBuilder.setMessage(finalPrompt);
+        promptBuilder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                mProfileFab.showMenu(true);
+            }
+        });
+        promptBuilder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                sendUpdatesToServer();
+                mProfileFab.showMenu(true);
+            }
+        });
+        promptBuilder.show();
+
+    }
+
+    private void sendUpdatesToServer() {
+        if (mStatusText.getText().toString().equals(getString(R.string.noStatusText))) {
+            mStatusToSend = "";
+        }
+        if (mAddress.getText().toString().equals(getString(R.string.noAddress))) {
+            mAddressToSend = "";
+        }
+        if (mPhone.getText().toString().equals(getString(R.string.noPhone))) {
+            mPhoneNumberToSend = "";
+        }
+        if (mRelationship.getText().toString().equals(getString(R.string.noRelationship))) {
+            mRelationshipToSend = "";
+        }
+        if (mGender.getText().toString().equals(getString(R.string.noGender))) {
+            mGenderToSend = "";
+        }
+        if (mFacebook.getText().toString().equals(getString(R.string.noFacebook))) {
+            mFacebookProfileToSend = "";
+        }
+        if (mSkype.getText().toString().equals(getString(R.string.noSkype))) {
+            mSkypeToSend = "";
+        }
+        final Call<ResponseBody> updateCall = Retrofit.getInstance().getInkService().updateUserDetails(mSharedHelper.getUserId(), mFirstNameToSend, mLastNameToSend,
+                mAddressToSend, mPhoneNumberToSend, mRelationshipToSend, mGenderToSend, mFacebookProfileToSend, mSkypeToSend);
+        updateCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    String body = response.body().string();
+                    Log.d("onResponse", "onResponse: "+body);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                updateCall.enqueue(this);
+            }
+        });
+    }
+
+
+    private Target getProfileTarget(final ImageView imageView) {
+        return new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                imageView.setImageBitmap(bitmap);
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
     }
 }
