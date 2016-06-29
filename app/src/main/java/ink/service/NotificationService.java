@@ -20,6 +20,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
@@ -29,6 +31,7 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.ink.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.Map;
 
@@ -73,7 +76,7 @@ public class NotificationService extends FirebaseMessagingService {
             sendNotification("New Message", response.get("user_id"),
                     response.get("message"), getApplicationContext(),
                     response.get("message_id"), response.get("opponent_id"),
-                    response.get("user_image"), response.get("opponent_image"), response.get("name"));
+                    response.get("opponent_image"), response.get("user_image"), response.get("name"));
         } else {
             Intent intent = new Intent(getPackageName() + ".Chat");
             intent.putExtra("data", remoteMessage);
@@ -121,6 +124,10 @@ public class NotificationService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, Integer.valueOf(opponentId), intent, 0);
         android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
         builder.setSmallIcon(R.mipmap.ic_launcher);
+
+        if (opponentImage != null && !opponentImage.isEmpty()) {
+            Picasso.with(context).load(opponentImage).into(getTarget(builder));
+        }
         builder.setAutoCancel(true);
 
 
@@ -130,9 +137,31 @@ public class NotificationService extends FirebaseMessagingService {
         builder.setContentTitle("New Message from " + userName);
         builder.setContentText(messageBody);
         builder.setGroup(GROUP_KEY_MESSAGES);
+        builder.setDefaults(android.app.Notification.DEFAULT_ALL);
         builder.setContentIntent(chatPending);
         builder.setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody));
+        builder.setShowWhen(true);
         android.app.Notification notification = builder.build();
         notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+    }
+
+
+    private com.squareup.picasso.Target getTarget(final android.support.v7.app.NotificationCompat.Builder builder) {
+        return new com.squareup.picasso.Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                builder.setLargeIcon(bitmap);
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
     }
 }

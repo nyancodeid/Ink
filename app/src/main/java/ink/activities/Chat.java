@@ -67,7 +67,6 @@ public class Chat extends AppCompatActivity {
     private String mOpponentImage = "";
     private AlertDialog.Builder mBuilder;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -211,6 +210,13 @@ public class Chat extends AppCompatActivity {
                 }
                 mChatAdapter.notifyDataSetChanged();
             }
+            mRecyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    mRecyclerView.smoothScrollToPosition(mChatAdapter.getItemCount());
+                }
+            });
+
         }
     }
 
@@ -284,6 +290,9 @@ public class Chat extends AppCompatActivity {
             String firstName = bundle.getString("firstName");
             mOpponentId = bundle.getString("opponentId");
             mCurrentUserId = mSharedHelper.getUserId();
+            if (mChatModelArrayList != null) {
+                mChatModelArrayList.clear();
+            }
             getMessages();
             //action bar set ups.
             if (actionBar != null) {
@@ -294,8 +303,10 @@ public class Chat extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
         super.onResume();
     }
+
 
     @Override
     protected void onPause() {
