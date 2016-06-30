@@ -77,10 +77,12 @@ public class HomeActivity extends AppCompatActivity
 
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             public void onDrawerClosed(View view) {
                 if (shouldOpenActivity) {
+                    shouldOpenActivity = false;
                     startActivity(new Intent(getApplicationContext(), getLastKnownClass()));
                 }
                 super.onDrawerClosed(view);
@@ -104,7 +106,6 @@ public class HomeActivity extends AppCompatActivity
 
         mProfileImage = (ImageView) headerView.findViewById(R.id.profileImage);
         mUserNameTV = (TextView) headerView.findViewById(R.id.userNameTextView);
-        mUserNameTV.setText(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
         if (mSharedHelper.hasImage()) {
 
         } else {
@@ -161,42 +162,42 @@ public class HomeActivity extends AppCompatActivity
         Intent intent;
         switch (id) {
             case R.id.profile:
+                shouldOpenActivity = true;
                 if (!mToolbar.getTitle().equals(PROFILE)) {
-                    shouldOpenActivity = true;
                     setLastClassToOpen(MyProfile.class);
                 }
                 break;
             case R.id.feeds:
+                shouldOpenActivity = false;
                 if (!mToolbar.getTitle().equals(FEED)) {
-                    shouldOpenActivity = false;
                     mToolbar.setTitle(getString(R.string.feedText));
                     getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     getSupportFragmentManager().beginTransaction().replace(R.id.container, mFeed).commit();
                 }
                 break;
             case R.id.messages:
+                shouldOpenActivity = false;
                 if (!mToolbar.getTitle().equals(MESSAGES)) {
-                    shouldOpenActivity = false;
                     mToolbar.setTitle(getString(R.string.messageText));
                 }
                 break;
             case R.id.groups:
+                shouldOpenActivity = false;
                 if (!mToolbar.getTitle().equals(GROUPS)) {
-                    shouldOpenActivity = false;
                     mToolbar.setTitle(getString(R.string.groupsText));
                 }
                 break;
             case R.id.friends:
+                shouldOpenActivity = false;
                 if (!mToolbar.getTitle().equals(FRIENDS)) {
-                    shouldOpenActivity = false;
                     mToolbar.setTitle(getString(R.string.friendsText));
                     getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     getSupportFragmentManager().beginTransaction().replace(R.id.container, mMyFriends).commit();
                 }
                 break;
             case R.id.settings:
+                shouldOpenActivity = false;
                 if (!mToolbar.getTitle().equals(SETTINGS)) {
-                    shouldOpenActivity = false;
                     mToolbar.setTitle(getString(R.string.settingsString));
                 }
                 break;
@@ -250,6 +251,7 @@ public class HomeActivity extends AppCompatActivity
         if (mSharedHelper.isTokenRefreshed()) {
             startTokenService();
         }
+        mUserNameTV.setText(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
         super.onResume();
     }
 

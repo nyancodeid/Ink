@@ -7,13 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.R;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import ink.models.FriendsModel;
+import ink.utils.CircleTransform;
+import ink.utils.Constants;
 
 /**
  * Created by USER on 2016-06-22.
@@ -25,11 +30,13 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name, phoneNumber;
+        public ImageView friendImage;
 
         public ViewHolder(View view) {
             super(view);
             name = (TextView) view.findViewById(R.id.friendName);
             phoneNumber = (TextView) view.findViewById(R.id.friendPhoneNumber);
+            friendImage = (ImageView) view.findViewById(R.id.friendImage);
         }
     }
 
@@ -51,6 +58,16 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         FriendsModel friendsModel = friendsModelList.get(position);
         holder.name.setText(friendsModel.getFullName());
         holder.phoneNumber.setText(friendsModel.getPhoneNumber());
+        if (!friendsModel.getImageLink().isEmpty()) {
+            String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + friendsModel.getImageLink();
+            Picasso.with(mContext).load(url)
+                    .transform(new CircleTransform()).fit().centerCrop()
+                    .into(holder.friendImage, picassoCallback(url, holder.friendImage));
+        } else {
+            Picasso.with(mContext).load(R.drawable.no_image)
+                    .transform(new CircleTransform()).fit().centerCrop()
+                    .into(holder.friendImage);
+        }
     }
 
 
@@ -60,6 +77,21 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
             viewHolder.itemView.setAnimation(animAnticipateOvershoot);
             viewHolder.itemView.setTag("Animated");
         }
+    }
+
+    private com.squareup.picasso.Callback picassoCallback(final String link, final ImageView view) {
+        com.squareup.picasso.Callback callback = new Callback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError() {
+                Picasso.with(mContext).load(link).transform(new CircleTransform()).into(view);
+            }
+        };
+        return callback;
     }
 
     @Override

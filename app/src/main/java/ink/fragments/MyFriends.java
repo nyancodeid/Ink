@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ink.R;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -116,6 +115,9 @@ public class MyFriends extends Fragment {
         getFriends();
     }
 
+
+
+
     private void handleAnimation(Intent intent, Pair<View, String>... pairs) {
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), pairs);
         startActivity(intent, options.toBundle());
@@ -158,9 +160,7 @@ public class MyFriends extends Fragment {
                                 String firstName = eachObject.optString("first_name");
                                 String lastname = eachObject.optString("last_name");
                                 String phoneNumber = eachObject.optString("phone_number");
-                                // TODO: 2016-06-22  add image link to server
-
-                                String imageLink = "";
+                                String imageLink = eachObject.optString("image_link");
                                 if (firstName.isEmpty()) {
                                     firstName = getString(R.string.noFirstname);
                                 }
@@ -191,8 +191,7 @@ public class MyFriends extends Fragment {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show();
-                mFriendsLoading.setVisibility(View.GONE);
+                getFriends();
             }
         });
     }

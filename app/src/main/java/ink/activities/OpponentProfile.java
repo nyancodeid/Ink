@@ -2,22 +2,26 @@ package ink.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionMenu;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +48,7 @@ public class OpponentProfile extends AppCompatActivity {
     private ImageView mProfileImage;
     private CardView imageCard;
     private ViewGroup.LayoutParams mCardNewLayoutParams;
+    private String mFacebookLink;
 
     //Butter knife binders.
     @Bind(R.id.addressTV)
@@ -56,6 +61,8 @@ public class OpponentProfile extends AppCompatActivity {
     TextView mGender;
     @Bind(R.id.facebookTV)
     TextView mFacebook;
+    @Bind(R.id.facebookWrapper)
+    RelativeLayout mFacebookWrapper;
     @Bind(R.id.skypeTV)
     TextView mSkype;
     @Bind(R.id.triangleView)
@@ -70,6 +77,10 @@ public class OpponentProfile extends AppCompatActivity {
     TextView mUsername;
     @Bind(R.id.profileFab)
     FloatingActionMenu mProfileFab;
+    @Bind(R.id.opponentImageLoading)
+    AVLoadingIndicatorView mOpponentImageLoading;
+    @Bind(R.id.addressWrapper)
+    RelativeLayout mAddressWrapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +107,25 @@ public class OpponentProfile extends AppCompatActivity {
         getSingleUser();
     }
 
+
+    @OnClick(R.id.facebookWrapper)
+    public void facebook() {
+        if (!mFacebook.getText().toString().equals(getString(R.string.loadingText)) && !mFacebook.getText().toString().equals(getString(R.string.noFacebook))) {
+
+            Snackbar.make(mFacebookWrapper, getString(R.string.openingFacebook), Snackbar.LENGTH_SHORT);
+            String addressToPass = mFacebookLink;
+            openFacebookPage(addressToPass);
+        }
+    }
+
+    @OnClick(R.id.addressWrapper)
+    public void addressWrapper() {
+        if (!mAddress.getText().toString().equals(getString(R.string.loadingText)) && !mAddress.getText().toString().equals(getString(R.string.noAddress))) {
+            Snackbar.make(mAddressWrapper, getString(R.string.openingGoogle), Snackbar.LENGTH_SHORT);
+            String addressToPass = mAddress.getText().toString();
+            openGoogleMaps(addressToPass);
+        }
+    }
 
     @OnClick(R.id.sendMessage)
     public void WriteMessage() {
@@ -128,12 +158,23 @@ public class OpponentProfile extends AppCompatActivity {
                             String lastName = jsonObject.optString("last_name");
                             String gender = jsonObject.optString("gender");
                             String phoneNumber = jsonObject.optString("phone_number");
-                            String facebookProfile = jsonObject.optString("facebook_profile");
+                            mFacebookLink = jsonObject.optString("facebook_profile");
                             String imageLink = jsonObject.optString("image_link");
                             String skype = jsonObject.optString("skype");
                             String address = jsonObject.optString("address");
                             String relationship = jsonObject.optString("relationship");
                             String status = jsonObject.optString("status");
+                            String facebookName = jsonObject.optString("facebook_name");
+                            boolean shouldHighlightFacebook = true;
+                            boolean shouldHighlightAddress = true;
+                            if (imageLink != null && !imageLink.isEmpty()) {
+                                Picasso.with(getApplicationContext()).load(Constants.MAIN_URL +
+                                        Constants.USER_IMAGES_FOLDER + imageLink).fit().centerCrop().into(mProfileImage, getPicassoCallback(Constants.MAIN_URL +
+                                        Constants.USER_IMAGES_FOLDER + imageLink));
+                            } else {
+                                mProfileImage.setBackgroundResource(R.drawable.no_image);
+                                mOpponentImageLoading.setVisibility(View.GONE);
+                            }
 
                             if (status.isEmpty()) {
                                 mStatusText.setText(getString(R.string.shortNoStatus));
@@ -142,7 +183,11 @@ public class OpponentProfile extends AppCompatActivity {
                             }
                             if (!gender.isEmpty()) {
                                 if (gender.equals(Constants.GENDER_FEMALE)) {
-                                    mGenderImageView.setBackgroundResource(R.drawable.ic_gender_female);
+                                    mGenderImageView.setBackground(null);
+                                    mGenderImageView.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_gender_female));
+                                } else {
+                                    mGenderImageView.setBackground(null);
+                                    mGenderImageView.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_gender_male));
                                 }
                             } else {
                                 gender = getString(R.string.noGender);
@@ -151,25 +196,35 @@ public class OpponentProfile extends AppCompatActivity {
                             if (phoneNumber.isEmpty()) {
                                 phoneNumber = getString(R.string.noPhone);
                             }
-                            if (facebookProfile.isEmpty()) {
-                                facebookProfile = getString(R.string.noFacebook);
+                            if (mFacebookLink.isEmpty()) {
+                                mFacebookLink = getString(R.string.noFacebook);
+                                facebookName = getString(R.string.noFacebook);
+                                shouldHighlightFacebook = false;
                             }
                             if (skype.isEmpty()) {
                                 skype = getString(R.string.noSkype);
                             }
                             if (address.isEmpty()) {
                                 address = getString(R.string.noAddress);
+                                shouldHighlightAddress = false;
                             }
                             if (relationship.isEmpty()) {
                                 relationship = getString(R.string.noRelationship);
                             }
                             mPhone.setText(phoneNumber);
-                            mFacebook.setText(facebookProfile);
+                            if (shouldHighlightFacebook) {
+                                mFacebook.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+                            }
+                            if (shouldHighlightAddress) {
+                                mAddress.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+                            }
+                            mFacebook.setText(facebookName);
                             mSkype.setText(skype);
                             mAddress.setText(address);
                             mRelationship.setText(relationship);
                             mGender.setText(gender);
                         } else {
+                            mOpponentImageLoading.setVisibility(View.GONE);
                             AlertDialog.Builder builder = new AlertDialog.Builder(OpponentProfile.this);
                             builder.setTitle(getString(R.string.singleUserErrorTile));
                             builder.setMessage(getString(R.string.singleUserErrorMessage));
@@ -196,6 +251,21 @@ public class OpponentProfile extends AppCompatActivity {
         });
     }
 
+    private com.squareup.picasso.Callback getPicassoCallback(final String link) {
+        com.squareup.picasso.Callback callback = new com.squareup.picasso.Callback() {
+            @Override
+            public void onSuccess() {
+                mOpponentImageLoading.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError() {
+                Picasso.with(getApplicationContext()).load(link).fit().centerCrop().into(mProfileImage);
+            }
+        };
+        return callback;
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -203,25 +273,33 @@ public class OpponentProfile extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void openGoogleMaps(String address) {
+        String uri = "geo:0,0?q=" + address;
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        mapIntent.setPackage("com.google.android.apps.maps");
 
-    private Target getTarget() {
-        mTarget = new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                mCardNewLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                imageCard.setLayoutParams(mCardNewLayoutParams);
-            }
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapIntent);
+        }
 
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
-        return mTarget;
     }
+
+    private Intent getOpenFacebookIntent(String page) {
+
+        try {
+            getPackageManager()
+                    .getPackageInfo("com.facebook.katana", 0);
+            return new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("fb://facewebmodal/f?href=" + page));
+        } catch (Exception e) {
+            return new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(page));
+        }
+    }
+
+    private void openFacebookPage(String page) {
+        Intent facebookIntent = getOpenFacebookIntent(page);
+        startActivity(facebookIntent);
+    }
+
 }

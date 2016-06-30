@@ -98,7 +98,6 @@
 
         \n\nAre those correct?
     </string>
-    <string name="noStatusWasWritte">No status was written</string>
     <string name="changeImage">Change image</string>
     <string name="changeName">Change name</string>
     <string name="cancel">Cancel</string>
@@ -117,5 +116,13 @@
     <string name="selectImage">Select image</string>
     <string name="notSupported">Not supported</string>
     <string name="notSupportedText">This image is not supported.Please select image from galler and not from other sources</string>
+    <string name="waitTillLoad">Please wait till load...</string>
+    <string name="noStatusWritten">No status was written</string>
+    <string name="error">Error</string>
+    <string name="couldNotUpdate">Could not update your data.Please try again later.If you continue to have this issue,contact support team.</string>
+    <string name="updating">Updating your account...</string>
+    <string name="saved">Updates saved</string>
+    <string name="openingFacebook">Opening facebook...</string>
+    <string name="openingGoogle">Openning google maps...</string>
 
 </resources>

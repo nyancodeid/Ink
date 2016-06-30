@@ -122,16 +122,15 @@ public class Chat extends AppCompatActivity {
         if (mNoMessageLayout.getVisibility() == View.VISIBLE) {
             mNoMessageLayout.setVisibility(View.GONE);
         }
+        String message = mWriteEditText.getText().toString();
 
-
-        ChatModel tempChat = new ChatModel(null, mCurrentUserId, mOpponentId, mWriteEditText.getText().toString(),
+        ChatModel tempChat = new ChatModel(null, mCurrentUserId, mOpponentId, message.trim(),
                 false, Constants.STATUS_NOT_DELIVERED,
                 mUserImage, mOpponentImage, "");
         mChatModelArrayList.add(tempChat);
         int itemLocation = mChatModelArrayList.indexOf(tempChat);
 
-        String message = mWriteEditText.getText().toString();
-        attemptToQue(message, itemLocation);
+        attemptToQue(message.trim(), itemLocation);
         mChatAdapter.notifyDataSetChanged();
 
 
@@ -208,7 +207,7 @@ public class Chat extends AppCompatActivity {
                 mChatModelArrayList.add(mChatModel);
                 if (eachModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED)) {
                     int itemLocation = mChatModelArrayList.indexOf(mChatModel);
-                    attemptToQue(eachModel.getMessage(), itemLocation);
+                    attemptToQue(eachModel.getMessage().trim(), itemLocation);
                 }
                 mChatAdapter.notifyDataSetChanged();
             }
@@ -237,7 +236,7 @@ public class Chat extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s.length() <= 0) {
+            if (s.toString().trim().length() <= 0) {
                 mSendChatMessage.setEnabled(false);
             } else {
                 mSendChatMessage.setEnabled(true);

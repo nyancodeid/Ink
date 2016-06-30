@@ -17,21 +17,29 @@
 
             <android.support.v7.widget.CardView
                 android:id="@+id/imageCard"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/no_image"
+                android:minHeight="300dp"
                 android:transitionName="card">
 
-                <ImageView
-                    android:id="@+id/profileImage"
+                <com.wang.avi.AVLoadingIndicatorView
+                    android:id="@+id/opponentImageLoading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:background="@drawable/no_image" />
+                    app:indicator_color="@color/colorPrimary" />
+
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:scaleType="fitXY" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -101,36 +109,44 @@
                         android:src="@drawable/ic_city" />
 
                     <View
+                        android:id="@+id/firstDivider"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_alignLeft="@+id/addressTV"
-                        android:layout_alignStart="@+id/addressTV"
-                        android:layout_below="@+id/addressTV"
-                        android:layout_marginTop="10dp"
+                        android:layout_alignLeft="@+id/addressWrapper"
+                        android:layout_alignStart="@+id/addressWrapper"
+                        android:layout_below="@+id/addressWrapper"
                         android:background="@color/linesColor"></View>
 
-                    <TextView
-                        android:id="@+id/addressTV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <RelativeLayout
+                        android:id="@+id/addressWrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:layout_alignTop="@+id/addressIcon"
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="8dp"
                         android:layout_toRightOf="@+id/addressIcon"
-                        android:fontFamily="@string/appFont"
-                        android:text="@string/loadingText"
-                        android:textColor="#000000" />
+                        android:minHeight="30dp">
+
+                        <TextView
+                            android:id="@+id/addressTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@string/appFont"
+                            android:text="@string/loadingText"
+                            android:textColor="#000000" />
+                    </RelativeLayout>
 
                     <ImageView
                         android:id="@+id/phoneIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/addressIcon"
+                        android:layout_below="@+id/firstDivider"
                         android:layout_marginTop="16dp"
                         android:src="@drawable/ic_deskphone" />
 
 
                     <View
+                        android:id="@+id/secondDivicer"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_alignLeft="@+id/phoneTV"
@@ -156,12 +172,13 @@
                         android:id="@+id/relationshipIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/phoneIcon"
+                        android:layout_below="@+id/secondDivicer"
                         android:layout_marginTop="16dp"
                         android:src="@drawable/ic_heart" />
 
 
                     <View
+                        android:id="@+id/thirdDivider"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_alignLeft="@+id/relationshipTV"
@@ -187,12 +204,13 @@
                         android:id="@+id/genderIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/relationshipIcon"
+                        android:layout_below="@+id/thirdDivider"
                         android:layout_marginTop="16dp"
-                        android:src="@drawable/ic_gender_male" />
+                        android:background="@drawable/ic_gender_male" />
 
 
                     <View
+                        android:id="@+id/forthDivider"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_alignLeft="@+id/genderTV"
@@ -218,38 +236,45 @@
                         android:id="@+id/facebookProfileIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/genderIcon"
+                        android:layout_below="@+id/forthDivider"
                         android:layout_marginTop="16dp"
                         android:src="@drawable/ic_facebook_box" />
 
 
                     <View
+                        android:id="@+id/fifthDivider"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_alignLeft="@+id/facebookTV"
-                        android:layout_alignStart="@+id/facebookTV"
-                        android:layout_below="@+id/facebookTV"
+                        android:layout_alignLeft="@+id/facebookWrapper"
+                        android:layout_alignStart="@+id/facebookWrapper"
+                        android:layout_below="@+id/facebookWrapper"
                         android:layout_marginTop="10dp"
                         android:background="@color/linesColor"></View>
 
-                    <TextView
-                        android:id="@+id/facebookTV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <RelativeLayout
+                        android:id="@+id/facebookWrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:layout_alignTop="@+id/facebookProfileIcon"
                         android:layout_marginLeft="16dp"
                         android:layout_marginTop="8dp"
                         android:layout_toRightOf="@+id/facebookProfileIcon"
-                        android:fontFamily="@string/appFont"
-                        android:text="@string/loadingText"
-                        android:textColor="#000000" />
+                        android:minHeight="30dp">
 
+                        <TextView
+                            android:id="@+id/facebookTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@string/appFont"
+                            android:text="@string/loadingText"
+                            android:textColor="#000000" />
+                    </RelativeLayout>
 
                     <ImageView
                         android:id="@+id/skypeIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/facebookProfileIcon"
+                        android:layout_below="@+id/fifthDivider"
                         android:layout_marginTop="16dp"
                         android:src="@drawable/ic_skype" />
 

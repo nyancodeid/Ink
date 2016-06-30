@@ -7,12 +7,12 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionMenu;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +20,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,7 +38,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.ink.R;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,6 +52,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
+import ink.callbacks.GeneralCallback;
 import ink.utils.Constants;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
@@ -91,8 +91,11 @@ public class MyProfile extends AppCompatActivity {
     @Bind(R.id.profileImage)
     ImageView profileImage;
     private boolean isEditing;
+    private boolean isDataDownloaded;
     @Bind(R.id.editProfile)
     FloatingActionButton mEditSaveButton;
+    @Bind(R.id.imageLoading)
+    AVLoadingIndicatorView mImageLoading;
     private Menu mCancelMenuItem;
     @Bind(R.id.editImageNameFab)
     FloatingActionButton mEditImageNameFab;
@@ -102,6 +105,7 @@ public class MyProfile extends AppCompatActivity {
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
 
+    private Snackbar updateSnackbar;
     private String mFirstNameToSend;
     private String mLastNameToSend;
     private String mGenderToSend;
@@ -114,9 +118,12 @@ public class MyProfile extends AppCompatActivity {
     private String mStatusToSend;
     private AlertDialog.Builder promptBuilder;
     private PopupMenu mEditPopUp;
+    private Thread mWorkerThread;
     private View mDialogView;
     private CallbackManager mCallbackManager;
     private ProgressDialog facebookAttachDialog;
+    private boolean isImageChosen;
+    private String mFacebookName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,8 +143,22 @@ public class MyProfile extends AppCompatActivity {
         mFirstNameToSend = mSharedHelper.getFirstName();
         mLastNameToSend = mSharedHelper.getLastName();
         mCollapsingToolbar.setTitle(mFirstNameToSend + " " + mLastNameToSend);
-        mProfileFab.hideMenu(false);
         mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#99000000"));
+
+        mProfileFab.setOnMenuButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isDataDownloaded) {
+                    if (mProfileFab.isOpened()) {
+                        mProfileFab.close(true);
+                    } else {
+                        mProfileFab.open(true);
+                    }
+                } else {
+                    Snackbar.make(mProfileFab, getString(R.string.waitTillLoad), Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
         getMyData();
     }
 
@@ -157,14 +178,15 @@ public class MyProfile extends AppCompatActivity {
                                             JSONObject object,
                                             GraphResponse response) {
                                         String userLink = object.optString("link");
-                                        mFacebook.setText(userLink);
+                                        mFacebookName = object.optString("name");
+                                        mFacebook.setText(mFacebookName);
                                         mFacebookProfileToSend = userLink;
                                         facebookAttachDialog.dismiss();
 
                                     }
                                 });
                         Bundle parameters = new Bundle();
-                        parameters.putString("fields", "link");
+                        parameters.putString("fields", "link,name");
                         request.setParameters(parameters);
                         request.executeAsync();
 
@@ -207,7 +229,12 @@ public class MyProfile extends AppCompatActivity {
                 }
                 if (selectedImagePath != null) {
                     mImageLinkToSend = selectedImagePath;
-                    Picasso.with(getApplicationContext()).load(new File(selectedImagePath)).fit().centerCrop().into(profileImage);
+                    mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
+                    showImageLoading();
+                    isImageChosen = true;
+                    Picasso.with(getApplicationContext()).load(new File(selectedImagePath)).fit().centerCrop().into(profileImage, picassoCallback(selectedImagePath, true));
+                } else {
+                    isImageChosen = false;
                 }
             }
         }
@@ -267,15 +294,15 @@ public class MyProfile extends AppCompatActivity {
                     mGenderToSend = jsonObject.optString("gender");
                     mPhoneNumberToSend = jsonObject.optString("phone_number");
                     mFacebookProfileToSend = jsonObject.optString("facebook_profile");
+                    mFacebookName = jsonObject.optString("facebook_name");
                     mImageLinkToSend = jsonObject.optString("image_link");
                     mSkypeToSend = jsonObject.optString("skype");
                     mAddressToSend = jsonObject.optString("address");
                     mRelationshipToSend = jsonObject.optString("relationship");
                     mStatusToSend = jsonObject.optString("status");
 
-                    attachValues();
+                    attachValues(true);
                 } else {
-                    mProfileFab.showMenu(true);
                     AlertDialog.Builder builder = new AlertDialog.Builder(MyProfile.this);
                     builder.setTitle(getString(R.string.singleUserErrorTile));
                     builder.setMessage(getString(R.string.singleUserErrorMessage));
@@ -295,15 +322,18 @@ public class MyProfile extends AppCompatActivity {
         }
     }
 
-    private void attachValues() {
+    private void attachValues(boolean shouldLoadImage) {
         if (mStatusToSend.isEmpty()) {
-            mStatusText.setText(getString(R.string.noStatusText));
-        } else {
-            mStatusText.setText(mStatusToSend);
+            mStatusToSend = getString(R.string.noStatusText);
         }
+
         if (!mGenderToSend.isEmpty()) {
             if (mGenderToSend.equals(Constants.GENDER_FEMALE)) {
-                mGenderImageView.setBackgroundResource(R.drawable.ic_gender_female);
+                mGenderImageView.setBackground(null);
+                mGenderImageView.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_gender_female));
+            } else {
+                mGenderImageView.setBackground(null);
+                mGenderImageView.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_gender_male));
             }
         } else {
             mGenderToSend = getString(R.string.noGender);
@@ -314,6 +344,7 @@ public class MyProfile extends AppCompatActivity {
         }
         if (mFacebookProfileToSend.isEmpty()) {
             mFacebookProfileToSend = getString(R.string.noFacebook);
+            mFacebookName = getString(R.string.noFacebook);
         }
         if (mSkypeToSend.isEmpty()) {
             mSkypeToSend = getString(R.string.noSkype);
@@ -326,17 +357,27 @@ public class MyProfile extends AppCompatActivity {
         }
 
         if (mImageLinkToSend != null && !mImageLinkToSend.isEmpty()) {
-            Picasso.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).into(getProfileTarget(profileImage));
+            mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
+            if (shouldLoadImage) {
+                Picasso.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).fit().centerCrop().into(profileImage, picassoCallback(mImageLinkToSend, false));
+            } else {
+                mSharedHelper.putFirstName(mFirstNameToSend);
+                mSharedHelper.putLastName(mLastNameToSend);
+                mCollapsingToolbar.setTitle(mFirstNameToSend + " " + mLastNameToSend);
+            }
         } else {
             profileImage.setBackgroundResource(R.drawable.no_image);
         }
         mPhone.setText(mPhoneNumberToSend);
-        mFacebook.setText(mFacebookProfileToSend);
+        mFacebook.setText(mFacebookName);
         mSkype.setText(mSkypeToSend);
         mAddress.setText(mAddressToSend);
         mRelationship.setText(mRelationshipToSend);
+        mStatusText.setText(mStatusToSend);
         mGender.setText(mGenderToSend);
-        mProfileFab.showMenu(true);
+        isDataDownloaded = true;
+        hideImageLoading();
+        hideSnack();
     }
 
 
@@ -349,6 +390,7 @@ public class MyProfile extends AppCompatActivity {
             isEditing = true;
         }
     }
+
 
     @OnClick(R.id.relationshipTV)
     public void relationship() {
@@ -415,9 +457,13 @@ public class MyProfile extends AppCompatActivity {
                     switch (item.getItemId()) {
                         case 0:
                             mGender.setText(getString(R.string.femaleGender));
+                            mGenderImageView.setBackground(null);
+                            mGenderImageView.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_gender_female));
                             break;
                         case 1:
+                            mGenderImageView.setBackground(null);
                             mGender.setText(getString(R.string.maleGender));
+                            mGenderImageView.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_gender_male));
                             break;
                     }
                     return true;
@@ -579,11 +625,6 @@ public class MyProfile extends AppCompatActivity {
     private void promptUser() {
         if (!mStatusText.getText().toString().isEmpty()) {
             mStatusToSend = mStatusText.getText().toString();
-            if (mStatusText.getText().toString().equals(getString(R.string.noStatusText))) {
-                mStatusToSend = getString(R.string.noStatusWasWritte);
-            }
-        } else {
-            mStatusToSend = getString(R.string.noStatusWasWritte);
         }
 
         if (!mAddress.getText().toString().isEmpty()) {
@@ -603,7 +644,7 @@ public class MyProfile extends AppCompatActivity {
         }
 
         if (!mFacebook.getText().toString().isEmpty()) {
-            mFacebookProfileToSend = mFacebook.getText().toString();
+            mFacebookName = mFacebook.getText().toString();
         }
 
 
@@ -619,15 +660,20 @@ public class MyProfile extends AppCompatActivity {
         System.gc();
         promptBuilder = new AlertDialog.Builder(this);
         promptBuilder.setCancelable(false);
-        String finalPrompt = getString(R.string.correctnessDetailViewText, mStatusToSend, mFirstNameToSend,
+        String statusText = mStatusToSend;
+        if (mStatusToSend.equals(getString(R.string.noStatusText))) {
+            statusText = getString(R.string.noStatusWritten);
+        }
+        String finalPrompt = getString(R.string.correctnessDetailViewText, statusText, mFirstNameToSend,
                 mLastNameToSend, mAddressToSend, mPhoneNumberToSend,
                 mRelationshipToSend, mGenderToSend,
-                mFacebookProfileToSend, mSkypeToSend);
+                mFacebookName, mSkypeToSend);
         promptBuilder.setTitle(getString(R.string.checkCorrectness));
         promptBuilder.setMessage(finalPrompt);
         promptBuilder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
                 sendUpdatesToServer();
                 mProfileFab.showMenuButton(true);
                 saveEdit();
@@ -645,6 +691,9 @@ public class MyProfile extends AppCompatActivity {
     }
 
     private void sendUpdatesToServer() {
+        showImageLoading();
+        showSnack(mProfileFab);
+        isDataDownloaded = false;
         if (mStatusText.getText().toString().equals(getString(R.string.noStatusText))) {
             mStatusToSend = "";
         }
@@ -666,18 +715,34 @@ public class MyProfile extends AppCompatActivity {
         if (mSkype.getText().toString().equals(getString(R.string.noSkype))) {
             mSkypeToSend = "";
         }
-        String base64 = mImageLinkToSend;
-        if (!mImageLinkToSend.isEmpty()) {
-            base64 = getBase64String(mImageLinkToSend);
+        if (!mImageLinkToSend.isEmpty() && isImageChosen) {
+            getBase64String(mImageLinkToSend, new GeneralCallback<String>() {
+                @Override
+                public void onSuccess(String s) {
+                    callServer(s);
+                }
+
+                @Override
+                public void onFailure(String s) {
+                    sendUpdatesToServer();
+                }
+            });
+
+        } else {
+            callServer("");
         }
+    }
+
+
+    private void callServer(final String base64) {
         final Call<ResponseBody> updateCall = Retrofit.getInstance().getInkService().updateUserDetails(mSharedHelper.getUserId(),
-                mFirstNameToSend, mLastNameToSend,
-                mAddressToSend.equals(getString(R.string.noAddress)) ? "" : mAddressToSend, mPhoneNumberToSend.equals(getString(R.string.noPhone)) ? "" : mPhoneNumberToSend,
-                mRelationshipToSend.equals(getString(R.string.noRelationship)) ? "" : mRelationshipToSend,
-                mGenderToSend.equals(getString(R.string.noGender)) ? "" : mGenderToSend,
-                mFacebookProfileToSend.equals(getString(R.string.noFacebook)) ? "" : mFacebookProfileToSend,
-                mSkypeToSend.equals(getString(R.string.noSkype)) ? "" : mSkypeToSend, base64,
-                mStatusToSend.equals(getString(R.string.noStatusText)) ? "" : mStatusToSend);
+                mFirstNameToSend.trim(), mLastNameToSend.trim(),
+                mAddressToSend.equals(getString(R.string.noAddress)) ? "" : mAddressToSend.trim(), mPhoneNumberToSend.equals(getString(R.string.noPhone)) ? "" : mPhoneNumberToSend.trim(),
+                mRelationshipToSend.equals(getString(R.string.noRelationship)) ? "" : mRelationshipToSend.trim(),
+                mGenderToSend.equals(getString(R.string.noGender)) ? "" : mGenderToSend.trim(),
+                mFacebookProfileToSend.equals(getString(R.string.noFacebook)) ? "" : mFacebookProfileToSend.trim(),
+                mSkypeToSend.equals(getString(R.string.noSkype)) ? "" : mSkypeToSend.trim(), base64,
+                mStatusToSend.equals(getString(R.string.noStatusText)) ? "" : mStatusToSend.trim(), mFacebookName, mImageLinkToSend);
         updateCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -685,9 +750,35 @@ public class MyProfile extends AppCompatActivity {
                     sendUpdatesToServer();
                     return;
                 }
+                if (response.body() == null) {
+                    sendUpdatesToServer();
+                    return;
+                }
                 try {
                     String body = response.body().string();
-                    Log.d("onResponse", "onResponse: " + body);
+                    try {
+                        JSONObject jsonObject = new JSONObject(body);
+                        boolean success = jsonObject.optBoolean("success");
+                        if (success) {
+                            mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
+                            attachValues(false);
+                        } else {
+                            hideImageLoading();
+                            hideSnack();
+                            promptBuilder = new AlertDialog.Builder(MyProfile.this);
+                            promptBuilder.setTitle(getString(R.string.error));
+                            promptBuilder.setMessage(getString(R.string.couldNotUpdate));
+                            promptBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+                            promptBuilder.show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -698,36 +789,103 @@ public class MyProfile extends AppCompatActivity {
                 sendUpdatesToServer();
             }
         });
+
+
     }
 
-    private String getBase64String(String path) {
-        Bitmap bitmap = BitmapFactory.decodeFile(path);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        byte[] bytes = byteArrayOutputStream.toByteArray();
-        String encodedImage = Base64.encodeToString(bytes, Base64.DEFAULT);
-        bitmap.recycle();
-        bitmap = null;
-        return encodedImage;
-    }
-
-
-    private Target getProfileTarget(final ImageView imageView) {
-        return new Target() {
+    private void getBase64String(final String path, final GeneralCallback callback) {
+        mWorkerThread = new Thread(new Runnable() {
             @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                imageView.setImageBitmap(bitmap);
+            public void run() {
+                Bitmap bitmap = BitmapFactory.decodeFile(path);
+                bitmap = reduceBitmap(bitmap, 500);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] bytes = byteArrayOutputStream.toByteArray();
+                String encodedImage = Base64.encodeToString(bytes, Base64.DEFAULT);
+                if (encodedImage == null) {
+                    callback.onFailure(encodedImage);
+                } else {
+                    callback.onSuccess(encodedImage);
+                }
+                bitmap.recycle();
+                bitmap = null;
+                mWorkerThread = null;
+            }
+        });
+        mWorkerThread.start();
+    }
+
+    private Bitmap reduceBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float) width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+
+        return Bitmap.createScaledBitmap(image, width, height, true);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        isDataDownloaded = false;
+        super.onDestroy();
+    }
+
+    private com.squareup.picasso.Callback picassoCallback(final String imageLinkToSend, final boolean shouldUseFullPath) {
+        System.gc();
+        com.squareup.picasso.Callback callback = new com.squareup.picasso.Callback() {
+            @Override
+            public void onSuccess() {
+                hideImageLoading();
             }
 
             @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-                imageView.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.no_image));
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
+            public void onError() {
+                showImageLoading();
+                String finalPath = imageLinkToSend;
+                if (!shouldUseFullPath) {
+                    finalPath = Constants.MAIN_URL +
+                            Constants.USER_IMAGES_FOLDER + imageLinkToSend;
+                }
+                Picasso.with(getApplicationContext()).load(finalPath).fit().centerCrop().into(profileImage, picassoCallback(imageLinkToSend, shouldUseFullPath));
             }
         };
+        return callback;
+    }
+
+
+    private void showImageLoading() {
+        mImageLoading.setVisibility(View.VISIBLE);
+    }
+
+    private void hideImageLoading() {
+        mImageLoading.setVisibility(View.GONE);
+    }
+
+    private void showSnack(View view) {
+        updateSnackbar = Snackbar.make(view, getString(R.string.updating), Snackbar.LENGTH_INDEFINITE);
+        updateSnackbar.show();
+    }
+
+    private void hideSnack() {
+        if (updateSnackbar != null) {
+            if (updateSnackbar.isShown()) {
+                updateSnackbar.setText(getString(R.string.saved));
+                updateSnackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        updateSnackbar.dismiss();
+                    }
+                });
+            }
+        }
     }
 }

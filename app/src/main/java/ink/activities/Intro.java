@@ -25,12 +25,13 @@ public class Intro extends AppIntro2 {
         super.onCreate(savedInstanceState);
         mLoginIntent = new Intent(getApplicationContext(), Login.class);
         mSharedHelper = new SharedHelper(this);
+
         if (mSharedHelper.shouldShowIntro()) {
             startActivity(mLoginIntent);
             finish();
         } else {
             addSlide(AppIntroFragment.newInstance("Make random chat", "Meet new peaople with random chat.", R.drawable.random_chat_image, ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
-            addSlide(AppIntroFragment.newInstance("Make new friends", "Find new friends to chat with.",R.drawable.find_new_friends, ContextCompat.getColor(getApplicationContext(),R.color.colorPrimary)));
+            addSlide(AppIntroFragment.newInstance("Make new friends", "Find new friends to chat with.", R.drawable.find_new_friends, ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
             addSlide(AppIntroFragment.newInstance("Where is your friend?", "Find out where are your friends when you chat with them.", R.drawable.where_is_friend, ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
         }
 

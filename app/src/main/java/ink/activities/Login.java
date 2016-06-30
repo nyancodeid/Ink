@@ -197,8 +197,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    enableButtons();
-                    mProgressView.setVisibility(View.GONE);
+                    attemptLogin();
                 }
             });
         }
@@ -206,7 +205,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 0;
     }
 
@@ -251,12 +249,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         mLoginView.setEnabled(false);
         mPasswordView.setEnabled(false);
         mLoginButton.setEnabled(false);
+        mRegisterWrapper.setEnabled(false);
     }
 
     private void enableButtons() {
         mLoginView.setEnabled(true);
         mPasswordView.setEnabled(true);
         mLoginButton.setEnabled(true);
+        mRegisterWrapper.setEnabled(true);
     }
 }
 
