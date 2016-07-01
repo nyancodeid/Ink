@@ -183,6 +183,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                 mSharedHelper.putLastName(jsonObject.optString("last_name"));
                                 mSharedHelper.putUserId(userId);
                                 mSharedHelper.putShouldShowIntro(false);
+                                String imageLink = jsonObject.optString("imageLink");
+                                if (imageLink != null && !imageLink.isEmpty()) {
+                                    mSharedHelper.putImageLink(imageLink);
+                                }
                                 startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                                 finish();
                             }

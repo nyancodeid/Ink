@@ -3,7 +3,7 @@
     package="com.ink">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
@@ -64,11 +64,14 @@
         <activity
             android:name="ink.activities.NotificationView"
             android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent"
             android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
             android:name="ink.activities.MyProfile"
-            android:theme="@style/AppTheme.Profile"></activity>
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/AppTheme.Profile" />
+        <activity android:name="ink.activities.Messages"></activity>
     </application>
 
 </manifest>

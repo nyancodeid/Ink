@@ -762,6 +762,11 @@ public class MyProfile extends AppCompatActivity {
                         if (success) {
                             mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
                             attachValues(false);
+                            Picasso.with(getApplicationContext()).invalidate(Constants.MAIN_URL +
+                                    Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink());
+                            String imageLink = mSharedHelper.getUserId() + ".png";
+                            mSharedHelper.putImageLink(imageLink);
+                            deleteDirectoryTree(new File(getApplicationContext().getCacheDir() + "picasso-cache"));
                         } else {
                             hideImageLoading();
                             hideSnack();
@@ -791,6 +796,16 @@ public class MyProfile extends AppCompatActivity {
         });
 
 
+    }
+
+    private void deleteDirectoryTree(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
+                deleteDirectoryTree(child);
+            }
+        }
+
+        fileOrDirectory.delete();
     }
 
     private void getBase64String(final String path, final GeneralCallback callback) {

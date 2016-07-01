@@ -17,7 +17,9 @@ public class Constants {
     public static final String STATUS_DELIVERED = "delivered";
     public static final String STATUS_NOT_DELIVERED = "not sent";
     public static final String SINGLE_USER_MESSAGES = "SingleUserMessages.php";
+    public static final String CHAT_MESSAGES = "ChatMessages.php";
     public static final String REGISTER_TOKEN = "RegisterToken.php";
+    public static final String REQUEST_DELETE_URL = "RequestDeleteMessage.php";
     public static final String UPDATE_DETAILS = "UpdateDetails.php";
     public static final int TASK_GET_MESSAGES = 1;
     public static final int TASK_SEND_TOKEN = 2;

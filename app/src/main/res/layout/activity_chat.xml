@@ -20,7 +20,7 @@
         android:id="@+id/noMessageLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/writeField"
+        android:layout_centerInParent="true"
         android:layout_marginBottom="30dp"
         android:visibility="gone">
 
@@ -63,12 +63,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
-                android:fontFamily="@string/appFont"
                 android:layout_marginTop="3dp"
                 android:layout_toLeftOf="@+id/sendChatMessage"
                 android:background="#ffffff"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
+                android:fontFamily="@string/appFont"
                 android:hint="@string/writeMessageHint"
                 android:imeActionId="@+id/send"
                 android:imeActionLabel="Done"

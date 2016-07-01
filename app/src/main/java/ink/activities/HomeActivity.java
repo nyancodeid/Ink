@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,7 @@ import ink.fragments.MyFriends;
 import ink.service.BackgroundTaskService;
 import ink.service.SendTokenService;
 import ink.utils.CircleTransform;
+import ink.utils.Constants;
 import ink.utils.RealmHelper;
 import ink.utils.SharedHelper;
 
@@ -105,12 +107,8 @@ public class HomeActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction().replace(R.id.container, mFeed).commit();
 
         mProfileImage = (ImageView) headerView.findViewById(R.id.profileImage);
+        mProfileImage.setOnClickListener(this);
         mUserNameTV = (TextView) headerView.findViewById(R.id.userNameTextView);
-        if (mSharedHelper.hasImage()) {
-
-        } else {
-            Picasso.with(getApplicationContext()).load(R.mipmap.ic_launcher).transform(new CircleTransform()).into(mProfileImage);
-        }
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -163,9 +161,7 @@ public class HomeActivity extends AppCompatActivity
         switch (id) {
             case R.id.profile:
                 shouldOpenActivity = true;
-                if (!mToolbar.getTitle().equals(PROFILE)) {
-                    setLastClassToOpen(MyProfile.class);
-                }
+                setLastClassToOpen(MyProfile.class);
                 break;
             case R.id.feeds:
                 shouldOpenActivity = false;
@@ -176,10 +172,8 @@ public class HomeActivity extends AppCompatActivity
                 }
                 break;
             case R.id.messages:
-                shouldOpenActivity = false;
-                if (!mToolbar.getTitle().equals(MESSAGES)) {
-                    mToolbar.setTitle(getString(R.string.messageText));
-                }
+                shouldOpenActivity = true;
+                setLastClassToOpen(Messages.class);
                 break;
             case R.id.groups:
                 shouldOpenActivity = false;
@@ -228,11 +222,21 @@ public class HomeActivity extends AppCompatActivity
         switch (v.getId()) {
             case R.id.messages:
                 mFab.close(true);
+                openMessages();
                 break;
             case R.id.makePost:
                 mFab.close(true);
                 break;
+            case R.id.profileImage:
+                shouldOpenActivity = true;
+                setLastClassToOpen(MyProfile.class);
+                mDrawer.closeDrawer(Gravity.LEFT);
+                break;
         }
+    }
+
+    private void openMessages() {
+        startActivity(new Intent(getApplicationContext(), Messages.class));
     }
 
     private void startMessageDownloadService() {
@@ -252,6 +256,16 @@ public class HomeActivity extends AppCompatActivity
             startTokenService();
         }
         mUserNameTV.setText(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
+        if (mSharedHelper.hasImage()) {
+            if (!mSharedHelper.getImageLink().isEmpty()) {
+                Picasso.with(getApplicationContext()).load(Constants.MAIN_URL +
+                        Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink()).transform(new CircleTransform()).fit()
+                        .centerCrop().into(mProfileImage);
+            }
+        } else {
+            Picasso.with(getApplicationContext()).load(R.mipmap.ic_launcher).transform(new CircleTransform()).into(mProfileImage);
+        }
+
         super.onResume();
     }
 

@@ -43,12 +43,13 @@ public class BackgroundTaskService extends Service {
     }
 
     private void getMyMessages(final String userId) {
-        Call<ResponseBody> myMessagesResponse = Retrofit.getInstance().getInkService().getMyMessages(userId);
+        Call<ResponseBody> myMessagesResponse = Retrofit.getInstance().getInkService().getChatMessages(userId);
         myMessagesResponse.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     String responseString = response.body().string();
+                    Log.d("Fasfasfasfas", "on response: " + responseString);
                     JSONObject jsonObject = new JSONObject(responseString);
                     JSONArray messagesArray = jsonObject.optJSONArray("messages");
                     RealmHelper realmHelper = RealmHelper.getInstance();

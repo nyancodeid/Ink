@@ -124,5 +124,14 @@
     <string name="saved">Updates saved</string>
     <string name="openingFacebook">Opening facebook...</string>
     <string name="openingGoogle">Openning google maps...</string>
+    <string name="myMessages">Messages</string>
+    <string name="chooseAction">Choose Action</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="viewProfile">View Profile</string>
+    <string name="deleteMessage">Delete Message</string>
+    <string name="areYouSure">Are you sure?</string>
+    <string name="deleteingMessage">Deleting message...</string>
+    <string name="messageDeleted">Message was deleted</string>
+    <string name="somethingWentWrong">Something went wrong.Try again...</string>
 
 </resources>

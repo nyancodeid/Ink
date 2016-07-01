@@ -16,7 +16,14 @@ public class SharedHelper {
     }
 
     public boolean hasImage() {
-        return mSharedPreferences.contains("imageLink");
+        return mSharedPreferences.getString("imageLink", "").isEmpty() ? false : true;
+    }
+    public String getImageLink(){
+        return mSharedPreferences.getString("imageLink","");
+    }
+    public void putImageLink(String imageLink) {
+        mEditor.putString("imageLink", imageLink);
+        mEditor.commit();
     }
 
     public boolean shouldShowIntro() {

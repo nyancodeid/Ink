@@ -21,7 +21,6 @@ public class Retrofit {
     private Retrofit() {
         retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
                 .baseUrl(Constants.MAIN_URL)
-//                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         mInkService = retrofit.create(InkService.class);
@@ -66,9 +65,21 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getMyMessages(@Field("user_id") String userId);
 
+
+        @POST(Constants.CHAT_MESSAGES)
+        @FormUrlEncoded
+        Call<ResponseBody> getChatMessages(@Field("user_id") String userId);
+
+
         @POST(Constants.REGISTER_TOKEN)
         @FormUrlEncoded
         Call<ResponseBody> registerToken(@Field("user_id") String userId, @Field("token") String token);
+
+
+        @POST(Constants.REQUEST_DELETE_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> requestDelete(@Field("user_id") String userId, @Field("opponent_id") String opponentId);
+
 
         @POST(Constants.UPDATE_DETAILS)
         @FormUrlEncoded
