@@ -98,6 +98,16 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         feedCal.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    getFeeds();
+                    return;
+                }
+                if (response.body() == null) {
+                    getFeeds();
+                    return;
+                }
+
+
                 try {
                     String responseBody = response.body().string();
                     JSONArray jsonArray = new JSONArray(responseBody);
