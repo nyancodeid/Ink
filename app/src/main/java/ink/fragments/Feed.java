@@ -91,6 +91,9 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     }
 
     private void getFeeds() {
+        if (mFeedModelArrayList != null) {
+            mFeedModelArrayList.clear();
+        }
         Call<ResponseBody> feedCal = Retrofit.getInstance().getInkService().getPosts(mSharedHelper.getUserId());
         feedCal.enqueue(new Callback<ResponseBody>() {
             @Override

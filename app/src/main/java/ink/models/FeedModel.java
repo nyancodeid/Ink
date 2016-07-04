@@ -17,9 +17,10 @@ public class FeedModel {
 
     public FeedModel(String id, String userImage, String fileName, String content, String posterId,
                      String address,
-                     String datePosted,String firstName,
+                     String datePosted, String firstName,
                      String lastName) {
         this.id = id;
+        this.firstName = firstName;
         this.fileName = fileName;
         this.lastName = lastName;
         this.userImage = userImage;

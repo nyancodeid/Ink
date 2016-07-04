@@ -23,15 +23,17 @@
                 android:id="@+id/feedUserImage"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
-                android:layout_margin="5dp" />
+                android:layout_below="@+id/userPostedTitle"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="25dp" />
 
             <TextView
                 android:id="@+id/userPostedTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
+                android:layout_marginLeft="5dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@string/appFont"
@@ -43,19 +45,21 @@
                 android:id="@+id/feedContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/userPostedTitle"
+                android:layout_alignTop="@+id/feedUserImage"
                 android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginRight="5dp"
                 android:layout_toRightOf="@+id/feedUserImage"
-                android:fontFamily="@string/appFont" />
+                android:fontFamily="@string/appFont"
+                android:minHeight="96dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="20dp" />
 
             <TextView
                 android:id="@+id/whenPosted"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_below="@id/feedContent"
+                android:layout_below="@+id/feedAttachmentLayout"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
                 android:fontFamily="@string/appFont"
@@ -66,9 +70,9 @@
                 android:id="@+id/feedAddressLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/whenPosted"
+                android:layout_below="@+id/feedContent"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginTop="15dp"
                 android:visibility="gone">
 

@@ -90,7 +90,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             holder.feedAddressLayout.setVisibility(View.VISIBLE);
             holder.feedAddress.setText(feedModel.getAddress());
         } else {
-            holder.feedAddress.setVisibility(View.GONE);
+            holder.feedAddressLayout.setVisibility(View.GONE);
         }
 
         animate(holder);
