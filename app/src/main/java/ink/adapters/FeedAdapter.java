@@ -75,9 +75,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         }
 
         holder.feedContent.setText(feedModel.getContent());
-        holder.whenPosted.setText(mContext.getString(R.string.postedAt) + " " + feedModel.getDatePosted());
-        holder.userPostedTitle.setText(feedModel.getFirstName() + " " + feedModel.getLastName() + " " +
-                mContext.getString(R.string.personPosted));
+        holder.whenPosted.setText(feedModel.getDatePosted());
+        holder.userPostedTitle.setText(feedModel.getFirstName() + " " + feedModel.getLastName());
 
         if (feedModel.getFileName() != null && !feedModel.getFileName().isEmpty()) {
             holder.feedAttachmentLayout.setVisibility(View.VISIBLE);

@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:cardCornerRadius="5dp"
@@ -21,38 +22,38 @@
 
             <ImageView
                 android:id="@+id/feedUserImage"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:layout_below="@+id/userPostedTitle"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="25dp" />
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_alignTop="@+id/userPostedTitle"
+                android:layout_marginLeft="10dp" />
 
             <TextView
                 android:id="@+id/userPostedTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
+                android:layout_toRightOf="@+id/feedUserImage"
                 android:fontFamily="@string/appFont"
                 android:text="@string/personPosted"
-                android:textColor="#000000"
-                android:textSize="20sp" />
+                android:textColor="@color/colorPrimaryDark" />
 
             <TextView
                 android:id="@+id/feedContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/feedUserImage"
+                android:layout_below="@+id/userPostedTitle"
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp"
                 android:layout_toRightOf="@+id/feedUserImage"
                 android:fontFamily="@string/appFont"
                 android:minHeight="96dp"
                 android:paddingLeft="10dp"
-                android:paddingTop="20dp" />
+                android:paddingTop="20dp"
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/whenPosted"

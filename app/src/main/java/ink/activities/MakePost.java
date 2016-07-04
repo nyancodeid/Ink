@@ -354,7 +354,7 @@ public class MakePost extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
-                        showSuccessDialog();
+                        finish();
                     } else {
                         showFailureDialog();
                     }

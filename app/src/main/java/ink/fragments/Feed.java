@@ -128,8 +128,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         String datePosted = eachObject.optString("date_posted");
                         String firstName = eachObject.optString("first_name");
                         String lastName = eachObject.optString("last_name");
-                        mFeedModel = new FeedModel(id, imageLink, fileName,
-                                getString(R.string.quoteOpen) + postBody + getString(R.string.quoteClose),
+                        mFeedModel = new FeedModel(id, imageLink, fileName, postBody,
                                 posterId, address, datePosted, firstName, lastName);
                         mFeedModelArrayList.add(mFeedModel);
                         mAdapter.notifyDataSetChanged();
@@ -141,6 +140,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                     feedRefresh.setRefreshing(false);
                     if (mFeedModelArrayList.size() == 0) {
                         noPostsWrapper.setVisibility(View.VISIBLE);
+                    } else {
+                        noPostsWrapper.setVisibility(View.GONE);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
