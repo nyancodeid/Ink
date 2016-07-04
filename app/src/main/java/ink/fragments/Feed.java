@@ -2,6 +2,7 @@ package ink.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -65,6 +66,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         mSharedHelper = new SharedHelper(getActivity());
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         feedRefresh = (SwipeRefreshLayout) view.findViewById(R.id.feedRefresh);
+        feedRefresh.setColorSchemeColors(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.colorPrimary));
         feedsLoading = (AVLoadingIndicatorView) view.findViewById(R.id.feedsLoading);
         noPostsWrapper = (RelativeLayout) view.findViewById(R.id.noPostsWrapper);
 
