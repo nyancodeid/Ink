@@ -162,4 +162,5 @@
     <string name="notPosted">Could not share your post.Please try again...</string>
     <string name="personPosted">posted</string>
     <string name="postedAt">Posted at</string>
+    <string name="noPostsYet">No post yet</string>
 </resources>

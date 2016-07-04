@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.ink.R;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -42,6 +43,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private SwipeRefreshLayout feedRefresh;
     private SharedHelper mSharedHelper;
     private AVLoadingIndicatorView feedsLoading;
+    private RelativeLayout noPostsWrapper;
 
     public static Feed newInstance() {
         Feed feed = new Feed();
@@ -64,6 +66,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         feedRefresh = (SwipeRefreshLayout) view.findViewById(R.id.feedRefresh);
         feedsLoading = (AVLoadingIndicatorView) view.findViewById(R.id.feedsLoading);
+        noPostsWrapper = (RelativeLayout) view.findViewById(R.id.noPostsWrapper);
+
         feedRefresh.setOnRefreshListener(this);
         getFeeds();
         mAdapter = new FeedAdapter(mFeedModelArrayList, getActivity());
@@ -135,6 +139,9 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         feedsLoading.setVisibility(View.GONE);
                     }
                     feedRefresh.setRefreshing(false);
+                    if (mFeedModelArrayList.size() == 0) {
+                        noPostsWrapper.setVisibility(View.VISIBLE);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {

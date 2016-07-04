@@ -8,15 +8,15 @@
     tools:context="ink.activities.HomeActivity">
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:layout_width="match_parent"
         android:id="@+id/feedRefresh"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <com.wang.avi.AVLoadingIndicatorView
@@ -28,4 +28,26 @@
         android:visibility="visible"
         app:indicator="BallClipRotateMultiple"
         app:indicator_color="@color/colorPrimary" />
+
+    <RelativeLayout
+        android:id="@+id/noPostsWrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/noPostIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/no_posts" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/noPostIcon"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@string/appFont"
+            android:text="@string/noPostsYet" />
+    </RelativeLayout>
 </RelativeLayout>
