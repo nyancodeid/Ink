@@ -29,13 +29,12 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     private Context mContext;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView name, phoneNumber;
+        public TextView name;
         public ImageView friendImage;
 
         public ViewHolder(View view) {
             super(view);
             name = (TextView) view.findViewById(R.id.friendName);
-            phoneNumber = (TextView) view.findViewById(R.id.friendPhoneNumber);
             friendImage = (ImageView) view.findViewById(R.id.friendImage);
         }
     }
@@ -57,7 +56,6 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
         FriendsModel friendsModel = friendsModelList.get(position);
         holder.name.setText(friendsModel.getFullName());
-        holder.phoneNumber.setText(friendsModel.getPhoneNumber());
         if (!friendsModel.getImageLink().isEmpty()) {
             String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + friendsModel.getImageLink();
             Picasso.with(mContext).load(url)
