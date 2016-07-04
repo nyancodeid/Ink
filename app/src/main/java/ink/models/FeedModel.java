@@ -13,13 +13,15 @@ public class FeedModel {
     private String datePosted;
     private String firstName;
     private String lastName;
+    private boolean isLiked;
 
 
     public FeedModel(String id, String userImage, String fileName, String content, String posterId,
                      String address,
                      String datePosted, String firstName,
-                     String lastName) {
+                     String lastName, boolean isLiked) {
         this.id = id;
+        this.isLiked = isLiked;
         this.firstName = firstName;
         this.fileName = fileName;
         this.lastName = lastName;
@@ -101,5 +103,13 @@ public class FeedModel {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
     }
 }

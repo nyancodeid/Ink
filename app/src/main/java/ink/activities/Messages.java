@@ -278,7 +278,7 @@ public class Messages extends AppCompatActivity implements SwipeRefreshLayout.On
 
                             String year = String.valueOf(calendar.get(Calendar.YEAR));
 
-                            finalDate = year + "/" + month + "/" + day + "\n\n" + hours + ":" + minutes + ":" + seconds;
+                            finalDate = year + "/" + month + "/" + day + "\n" + hours + ":" + minutes + ":" + seconds;
                         } catch (ParseException e) {
                             finalDate = date;
                             e.printStackTrace();

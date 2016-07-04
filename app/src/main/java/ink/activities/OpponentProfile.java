@@ -47,7 +47,6 @@ public class OpponentProfile extends AppCompatActivity {
     private Target mTarget;
     private ImageView mProfileImage;
     private CardView imageCard;
-    private ViewGroup.LayoutParams mCardNewLayoutParams;
     private String mFacebookLink;
 
     //Butter knife binders.
@@ -92,7 +91,7 @@ public class OpponentProfile extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         mProfileImage = (ImageView) findViewById(R.id.profileImage);
         imageCard = (CardView) findViewById(R.id.imageCard);
-        mCardNewLayoutParams = imageCard.getLayoutParams();
+        ViewGroup.LayoutParams mCardNewLayoutParams = imageCard.getLayoutParams();
         ActionBar actionBar = getSupportActionBar();
         if (extras != null) {
             mFriendId = extras.getString("id");

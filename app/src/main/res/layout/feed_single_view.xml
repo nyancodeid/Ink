@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView
+        android:id="@+id/feedItemCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -67,6 +68,53 @@
                 android:text="@string/postedAt"
                 android:textSize="12sp" />
 
+            <View
+                android:id="@+id/actionDivider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/whenPosted"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/linesColor">
+
+            </View>
+
+            <RelativeLayout
+                android:id="@+id/likeWrapper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/actionDivider"
+                android:layout_alignStart="@+id/actionDivider"
+                android:layout_below="@+id/actionDivider"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground">
+
+                <ImageView
+                    android:id="@+id/likeIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/like_inactive" />
+
+                <TextView
+                    android:id="@+id/likeTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@+id/likeIcon"
+                    android:fontFamily="@string/appFont"
+                    android:text="@string/likeText" />
+            </RelativeLayout>
+
             <RelativeLayout
                 android:id="@+id/feedAddressLayout"
                 android:layout_width="match_parent"
@@ -75,6 +123,9 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="15dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:visibility="gone">
 
                 <ImageView
@@ -101,6 +152,9 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="15dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:visibility="gone">
 
                 <ImageView

@@ -11,6 +11,7 @@ public class Constants {
     public static final String FRIENDS_URL = "UserFriends.php";
     public static final String SINGLE_USER_URL = "SingleUser.php";
     public static final String MESSAGES_URL = "Messages.php";
+    public static final String UPLOADED_FILES_DIR = "UserUploads/";
     public static final String SEND_MESSAGE_URL = "SendMessage.php";
     public static final String GENDER_MALE = "Male";
     public static final String GENDER_FEMALE = "Female";
@@ -25,5 +26,7 @@ public class Constants {
     public static final int TASK_GET_MESSAGES = 1;
     public static final int TASK_SEND_TOKEN = 2;
     public static final String MAKE_POST_URL = "MakePost.php";
+    public static final String LIKE_URL = "LikePost.php";
+    public static final int TEXT_VIEW_DEFAULT_COLOR = android.R.color.tab_indicator_text;
 }
 

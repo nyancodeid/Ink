@@ -9,11 +9,12 @@
 
     <ImageView
         android:id="@+id/messagesImage"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_marginBottom="5dp"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="35dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp" />
+        android:layout_marginTop="20dp" />
 
     <TextView
         android:id="@+id/messagesUserName"
@@ -21,7 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/messagesImage"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="7dp"
+        android:layout_toLeftOf="@+id/messageDate"
         android:layout_toRightOf="@+id/messagesImage"
         android:ellipsize="end"
         android:fontFamily="@string/appFont"
@@ -34,9 +36,11 @@
         android:id="@+id/messageBody"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/messagesImage"
+        android:layout_below="@+id/messagesUserName"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@+id/messageDate"
         android:layout_toRightOf="@+id/messagesImage"
         android:ellipsize="end"
         android:fontFamily="@string/appFont"

@@ -93,6 +93,11 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getPosts(@Field("user_id") String userId);
 
+        @POST(Constants.LIKE_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> likePost(@Field("user_id") String userId, @Field("post_id") String postId,
+                                    @Field("isLiking") boolean isLiking);
+
 
         @POST(Constants.UPDATE_DETAILS)
         @FormUrlEncoded

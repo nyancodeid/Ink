@@ -163,4 +163,8 @@
     <string name="personPosted">posted</string>
     <string name="postedAt">Posted at</string>
     <string name="noPostsYet">No post yet</string>
+    <string name="downloadQuestion">Download?</string>
+    <string name="downloadTheFile">Download the next file :</string>
+    <string name="beingDownloaded">The file is being downloaded</string>
+    <string name="likeText">Like</string>
 </resources>

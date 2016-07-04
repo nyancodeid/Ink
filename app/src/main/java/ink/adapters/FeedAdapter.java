@@ -1,12 +1,12 @@
 package ink.adapters;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import ink.interfaces.FeedItemClick;
 import ink.models.FeedModel;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
@@ -27,23 +28,31 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
     private List<FeedModel> feedList;
     private Context mContext;
+    private FeedItemClick mOnClickListener;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView feedContent, userPostedTitle,
+        public TextView feedContent, userPostedTitle, likeTV,
                 whenPosted, feedAddress, feedAttachmentName;
-        private ImageView feedUserImage;
-        private RelativeLayout feedAddressLayout, feedAttachmentLayout;
+        private ImageView feedUserImage, likeIcon;
+        private CardView feedItemCard;
+        private RelativeLayout feedAddressLayout, feedAttachmentLayout, likeWrapper;
 
         public ViewHolder(View view) {
             super(view);
             userPostedTitle = (TextView) view.findViewById(R.id.userPostedTitle);
             whenPosted = (TextView) view.findViewById(R.id.whenPosted);
             feedAddress = (TextView) view.findViewById(R.id.feedAddress);
+            likeTV = (TextView) view.findViewById(R.id.likeTV);
             feedAttachmentName = (TextView) view.findViewById(R.id.feedAttachmentName);
             feedContent = (TextView) view.findViewById(R.id.feedContent);
             feedUserImage = (ImageView) view.findViewById(R.id.feedUserImage);
+            likeIcon = (ImageView) view.findViewById(R.id.likeIcon);
             feedAddressLayout = (RelativeLayout) view.findViewById(R.id.feedAddressLayout);
+            likeWrapper = (RelativeLayout) view.findViewById(R.id.likeWrapper);
             feedAttachmentLayout = (RelativeLayout) view.findViewById(R.id.feedAttachmentLayout);
+            feedItemCard = (CardView) view.findViewById(R.id.feedItemCard);
+
+
         }
     }
 
@@ -52,6 +61,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         mContext = context;
         this.feedList = feedList;
     }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -62,7 +72,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         FeedModel feedModel = feedList.get(position);
         if (feedModel.getUserImage() != null && !feedModel.getUserImage().isEmpty()) {
             Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + feedModel.getUserImage())
@@ -77,6 +87,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         holder.feedContent.setText(feedModel.getContent());
         holder.whenPosted.setText(feedModel.getDatePosted());
         holder.userPostedTitle.setText(feedModel.getFirstName() + " " + feedModel.getLastName());
+        if (feedModel.isLiked()) {
+            holder.likeIcon.setBackgroundResource(R.drawable.like_active);
+            holder.likeTV.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
+        } else {
+            holder.likeIcon.setBackgroundResource(R.drawable.like_inactive);
+            holder.likeTV.setTextColor(ContextCompat.getColor(mContext, Constants.TEXT_VIEW_DEFAULT_COLOR));
+        }
 
         if (feedModel.getFileName() != null && !feedModel.getFileName().isEmpty()) {
             holder.feedAttachmentLayout.setVisibility(View.VISIBLE);
@@ -91,17 +108,52 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         } else {
             holder.feedAddressLayout.setVisibility(View.GONE);
         }
-
-        animate(holder);
+        //listeners
+        holder.feedItemCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mOnClickListener != null) {
+                    mOnClickListener.onCardViewClick(position);
+                }
+            }
+        });
+        holder.feedAttachmentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mOnClickListener != null) {
+                    mOnClickListener.onAttachmentClick(position);
+                }
+            }
+        });
+        holder.feedAddressLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mOnClickListener != null) {
+                    mOnClickListener.onAddressClick(position);
+                }
+            }
+        });
+        holder.feedItemCard.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (mOnClickListener != null) {
+                    mOnClickListener.onCardLongClick(position);
+                }
+                return true;
+            }
+        });
+        holder.likeWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mOnClickListener != null) {
+                    mOnClickListener.onLikeClick(position, holder.likeIcon, holder.likeTV);
+                }
+            }
+        });
     }
 
-
-    public void animate(RecyclerView.ViewHolder viewHolder) {
-        final Animation animAnticipateOvershoot = AnimationUtils.loadAnimation(mContext, R.anim.bounce_interpolator);
-        if (viewHolder.itemView.getTag() == null) {
-            viewHolder.itemView.setAnimation(animAnticipateOvershoot);
-            viewHolder.itemView.setTag("Animated");
-        }
+    public void setOnFeedClickListener(FeedItemClick mOnClickListener) {
+        this.mOnClickListener = mOnClickListener;
     }
 
     @Override

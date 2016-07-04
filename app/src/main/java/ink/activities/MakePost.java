@@ -164,12 +164,12 @@ public class MakePost extends AppCompatActivity {
         progressDialog.show();
         if (isFileChosen) {
             if (chosenFile != null) {
-                makePost(chosenFile, mPostBody.getText().toString(), mGoogleAddress);
+                makePost(chosenFile, mPostBody.getText().toString().trim(), mGoogleAddress);
             } else {
                 progressDialog.dismiss();
             }
         } else {
-            makePost(null, mPostBody.getText().toString(), mGoogleAddress);
+            makePost(null, mPostBody.getText().toString().trim(), mGoogleAddress);
         }
     }
 
@@ -386,7 +386,7 @@ public class MakePost extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
-                        showSuccessDialog();
+                        finish();
                     } else {
                         showFailureDialog();
                     }

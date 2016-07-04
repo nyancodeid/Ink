@@ -268,7 +268,7 @@ public class HomeActivity extends AppCompatActivity
                         .centerCrop().into(mProfileImage);
             }
         } else {
-            Picasso.with(getApplicationContext()).load(R.mipmap.ic_launcher).transform(new CircleTransform()).into(mProfileImage);
+            Picasso.with(getApplicationContext()).load(R.drawable.no_image).transform(new CircleTransform()).into(mProfileImage);
         }
 
         super.onResume();
