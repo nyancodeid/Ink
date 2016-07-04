@@ -1,7 +1,5 @@
 package ink.utils;
 
-import android.util.Log;
-
 import java.io.IOException;
 
 import ink.callbacks.QueCallback;
@@ -35,7 +33,6 @@ public class QueHelper {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     String responseString = response.body().string();
-                    Log.d("fasfkjlasfas", "onResponse: "+responseString);
                     queCallback.onMessageSent(responseString, sentItemLocation);
                 } catch (IOException e) {
                     e.printStackTrace();

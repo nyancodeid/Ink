@@ -47,7 +47,10 @@ public class RealmHelper {
 
     public void insertMessage(final String userId, final String opponentId, final String message,
                               final String messageId, final String date,
-                              final String id, final String deliveryStatus, final String userImage, final String opponentImage) {
+                              final String id, final String deliveryStatus,
+                              final String userImage,
+                              final String opponentImage, final String deleteOpponentId,
+                              final String deleteUserId) {
         mRealm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -62,9 +65,22 @@ public class RealmHelper {
                 messageModel.setUserImage(userImage);
                 messageModel.setOpponentImage(opponentImage);
                 messageModel.setDate(date);
+                messageModel.setDeleteUserId(deleteUserId);
+                messageModel.setDeleteOpponentId(deleteOpponentId);
             }
         });
 
+    }
+
+    public void removeMessage(final String opponentId, final String userId) {
+        mRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.where(MessageModel.class).equalTo("opponentId", opponentId).equalTo("userId", userId)
+                        .or().equalTo("opponentId", userId).equalTo("userId", opponentId
+                ).findAll().deleteAllFromRealm();
+            }
+        });
     }
 
     public void updateMessages(final String messageId, final String deliveryStatus, final String lastPosition, final String opponentId) {

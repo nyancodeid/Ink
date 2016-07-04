@@ -15,6 +15,8 @@ public class MessageModel extends RealmObject {
     String deliveryStatus;
     String userImage;
     String opponentImage;
+    String deleteUserId;
+    String deleteOpponentId;
 
     public MessageModel() {
 
@@ -91,5 +93,21 @@ public class MessageModel extends RealmObject {
 
     public void setDeliveryStatus(String deliveryStatus) {
         this.deliveryStatus = deliveryStatus;
+    }
+
+    public String getDeleteUserId() {
+        return deleteUserId;
+    }
+
+    public void setDeleteUserId(String deleteUserId) {
+        this.deleteUserId = deleteUserId;
+    }
+
+    public String getDeleteOpponentId() {
+        return deleteOpponentId;
+    }
+
+    public void setDeleteOpponentId(String deleteOpponentId) {
+        this.deleteOpponentId = deleteOpponentId;
     }
 }

@@ -35,6 +35,7 @@ import butterknife.ButterKnife;
 import ink.adapters.MessagesAdapter;
 import ink.decorators.DividerItemDecoration;
 import ink.models.UserMessagesModel;
+import ink.utils.RealmHelper;
 import ink.utils.RecyclerTouchListener;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
@@ -181,6 +182,7 @@ public class Messages extends AppCompatActivity implements SwipeRefreshLayout.On
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        RealmHelper.getInstance().removeMessage(opponentId, mSharedHelper.getUserId());
                         getUserMessages();
                     } else {
                         hideSnack(false);
@@ -230,7 +232,7 @@ public class Messages extends AppCompatActivity implements SwipeRefreshLayout.On
                         String message = eachObject.optString("message");
                         String firstName = eachObject.optString("firstName");
                         String lastName = eachObject.optString("lastName");
-                        String imageName = eachObject.optString("image_name");
+                        String imageName = eachObject.optString("imageName");
                         String date = eachObject.optString("date");
                         String deleteUserId = eachObject.optString("delete_user_id");
                         String deleteOpponentId = eachObject.optString("delete_opponent_id");
@@ -279,6 +281,7 @@ public class Messages extends AppCompatActivity implements SwipeRefreshLayout.On
                             finalDate = date;
                             e.printStackTrace();
                         }
+
                         userMessagesModel = new UserMessagesModel(userId, opponentId, messageId, message,
                                 firstName, lastName, imageName, finalDate, imageName);
                         userMessagesModels.add(userMessagesModel);

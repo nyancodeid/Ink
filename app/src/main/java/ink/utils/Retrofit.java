@@ -1,10 +1,17 @@
 package ink.utils;
 
+import java.util.Map;
+
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 
 /**
  * Created by USER on 2016-06-19.
@@ -20,6 +27,7 @@ public class Retrofit {
 
     private Retrofit() {
         retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(Constants.MAIN_URL)
                 .build();
 
@@ -81,6 +89,11 @@ public class Retrofit {
         Call<ResponseBody> requestDelete(@Field("user_id") String userId, @Field("opponent_id") String opponentId);
 
 
+        @POST(Constants.GET_POSTS_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getPosts(@Field("user_id") String userId);
+
+
         @POST(Constants.UPDATE_DETAILS)
         @FormUrlEncoded
         Call<ResponseBody> updateUserDetails(@Field("user_id") String userId, @Field("first_name") String firstName,
@@ -94,7 +107,25 @@ public class Retrofit {
                                              @Field("base64") String base64Image,
                                              @Field("status") String status,
                                              @Field("facebook_name") String facebookName,
+
                                              @Field("image_link") String imageLink);
 
+        @Multipart
+        @POST(Constants.MAKE_POST_URL)
+        Call<ResponseBody> makePost(@PartMap Map<String, RequestBody> map, @Part("user_id") String userId,
+                                    @Part("postBody") String postBody,
+                                    @Part("googleAddress") String googleAddress,
+                                    @Part("imageLink") String userImageLink,
+                                    @Part("firstName") String firstName,
+                                    @Part("lastName") String lastName);
+
+
+        @POST(Constants.MAKE_POST_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> makePost(@Field("user_id") String userId, @Field("postBody") String postBody,
+                                    @Field("googleAddress") String googleAddress,
+                                    @Field("imageLink") String userImageLink,
+                                    @Field("firstName") String firstName,
+                                    @Field("lastName") String lastName);
     }
 }

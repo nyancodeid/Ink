@@ -54,6 +54,7 @@ public class HomeActivity extends AppCompatActivity
     private TextView mUserNameTV;
     private Class<?> mLastClassToOpen;
     private boolean shouldOpenActivity;
+    private FloatingActionButton mMakePost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +72,12 @@ public class HomeActivity extends AppCompatActivity
         mSharedHelper = new SharedHelper(this);
         mFab = (FloatingActionMenu) findViewById(R.id.fab);
         mMessages = (FloatingActionButton) findViewById(R.id.messages);
+        mMakePost = (FloatingActionButton) findViewById(R.id.makePost);
         mNewPost = (FloatingActionButton) findViewById(R.id.makePost);
         mFeed = Feed.newInstance();
         mMyFriends = MyFriends.newInstance();
         mMessages.setOnClickListener(this);
+        mMakePost.setOnClickListener(this);
         mNewPost.setOnClickListener(this);
 
 
@@ -226,6 +229,8 @@ public class HomeActivity extends AppCompatActivity
                 break;
             case R.id.makePost:
                 mFab.close(true);
+                System.gc();
+                startActivity(new Intent(getApplicationContext(), MakePost.class));
                 break;
             case R.id.profileImage:
                 shouldOpenActivity = true;

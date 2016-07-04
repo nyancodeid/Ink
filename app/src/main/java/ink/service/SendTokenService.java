@@ -4,9 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
-
-import java.io.IOException;
 
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
@@ -29,7 +26,6 @@ public class SendTokenService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("fashfjkasfasfas", "sending: "+"");
         mSharedHelper = new SharedHelper(this);
         sendToken(mSharedHelper.getToken());
         return super.onStartCommand(intent, flags, startId);
@@ -41,17 +37,11 @@ public class SendTokenService extends Service {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 mSharedHelper.setTokenRefreshed(false);
-                try {
-                    Log.d("fashfjkasfasfas", "got the response: "+response.body().string());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 stopSelf();
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d("fashfjkasfasfas", "failed: "+"");
                 sendToken(token);
             }
         });

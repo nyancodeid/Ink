@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -30,6 +29,8 @@ public class NotificationView extends AppCompatActivity {
     private String userImage;
     private String opponentImage;
     private String userName;
+    private String mDeleteUserId;
+    private String mDeleteOpponentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +45,12 @@ public class NotificationView extends AppCompatActivity {
             userImage = extras.getString("userImage");
             opponentImage = extras.getString("opponentImage");
             userName = extras.getString("username");
+            mDeleteUserId = extras.getString("deleteUserId");
+            mDeleteOpponentId = extras.getString("deleteOpponentId");
+
+
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             notificationManager.cancel(Integer.valueOf(mOpponentId));
-            Log.d("sendNotification", "dismissedOpponentId: " + mOpponentId);
             mMessageReceived.setText("Reply to" + " " + userName);
             mReplyBody.requestFocus();
             mReplyMessage.setEnabled(false);
@@ -87,6 +91,8 @@ public class NotificationView extends AppCompatActivity {
         intent.putExtra("opponentId", mOpponentId);
         intent.putExtra("userImage", userImage);
         intent.putExtra("opponentImage", opponentImage);
+        intent.putExtra("deleteUserId", mDeleteUserId);
+        intent.putExtra("deleteOpponentId", mDeleteOpponentId);
         startService(intent);
         finish();
         overridePendingTransition(R.anim.slide_up, R.anim.slide_down);

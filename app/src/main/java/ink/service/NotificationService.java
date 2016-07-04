@@ -26,7 +26,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -67,7 +66,8 @@ public class NotificationService extends FirebaseMessagingService {
             public void run() {
                 RealmHelper.getInstance().insertMessage(response.get("user_id"), response.get("opponent_id"),
                         response.get("message"), response.get("message_id"), response.get("date"), response.get("message_id"),
-                        Constants.STATUS_DELIVERED, response.get("user_image"), response.get("opponent_image"));
+                        Constants.STATUS_DELIVERED, response.get("user_image"), response.get("opponent_image"),
+                        response.get("delete_opponent_id"), response.get("delete_user_id"));
             }
         });
 
@@ -76,7 +76,8 @@ public class NotificationService extends FirebaseMessagingService {
             sendNotification("New Message", response.get("user_id"),
                     response.get("message"), getApplicationContext(),
                     response.get("message_id"), response.get("opponent_id"),
-                    response.get("opponent_image"), response.get("user_image"), response.get("name"));
+                    response.get("opponent_image"), response.get("user_image"), response.get("name"),
+                    response.get("delete_user_id"), response.get("delete_opponent_id"));
         } else {
             Intent intent = new Intent(getPackageName() + ".Chat");
             intent.putExtra("data", remoteMessage);
@@ -96,19 +97,18 @@ public class NotificationService extends FirebaseMessagingService {
     public void sendNotification(String title, String opponentId,
                                  String messageBody, Context context,
                                  String messageId, String currentUserId,
-                                 String userImage, String opponentImage, String userName) {
+                                 String userImage, String opponentImage,
+                                 String userName, String deleteUserId, String deleteOpponentId) {
 
         NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
         Intent chatIntent = new Intent(context, Chat.class);
         chatIntent.putExtra("firstName", userName);
         chatIntent.putExtra("opponentId", opponentId);
-        Log.d("opponentId", "sendNotification: " + opponentId);
         chatIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
 
-        Log.d("sendNotification", "sendNotification: " + opponentId);
         Intent intent = new Intent(context, NotificationView.class);
         intent.putExtra("message", messageBody);
         intent.putExtra("mOpponentId", opponentId);
@@ -116,6 +116,8 @@ public class NotificationService extends FirebaseMessagingService {
         intent.putExtra("userImage", userImage);
         intent.putExtra("opponentImage", opponentImage);
         intent.putExtra("username", userName);
+        intent.putExtra("deleteUserId", deleteUserId);
+        intent.putExtra("deleteOpponentId", deleteUserId);
 
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
                 | Intent.FLAG_ACTIVITY_NEW_TASK);

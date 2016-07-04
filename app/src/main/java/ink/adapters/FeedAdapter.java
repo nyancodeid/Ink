@@ -7,13 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import ink.models.FeedModel;
+import ink.utils.CircleTransform;
+import ink.utils.Constants;
 
 /**
  * Created by USER on 2016-06-20.
@@ -24,12 +29,21 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     private Context mContext;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, content;
+        public TextView feedContent, userPostedTitle,
+                whenPosted, feedAddress, feedAttachmentName;
+        private ImageView feedUserImage;
+        private RelativeLayout feedAddressLayout, feedAttachmentLayout;
 
         public ViewHolder(View view) {
             super(view);
-            title = (TextView) view.findViewById(R.id.feedTitle);
-            content = (TextView) view.findViewById(R.id.feedContent);
+            userPostedTitle = (TextView) view.findViewById(R.id.userPostedTitle);
+            whenPosted = (TextView) view.findViewById(R.id.whenPosted);
+            feedAddress = (TextView) view.findViewById(R.id.feedAddress);
+            feedAttachmentName = (TextView) view.findViewById(R.id.feedAttachmentName);
+            feedContent = (TextView) view.findViewById(R.id.feedContent);
+            feedUserImage = (ImageView) view.findViewById(R.id.feedUserImage);
+            feedAddressLayout = (RelativeLayout) view.findViewById(R.id.feedAddressLayout);
+            feedAttachmentLayout = (RelativeLayout) view.findViewById(R.id.feedAttachmentLayout);
         }
     }
 
@@ -50,8 +64,35 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         FeedModel feedModel = feedList.get(position);
-        holder.title.setText(feedModel.getTitle());
-        holder.content.setText(feedModel.getContent());
+        if (feedModel.getUserImage() != null && !feedModel.getUserImage().isEmpty()) {
+            Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + feedModel.getUserImage())
+                    .transform(new CircleTransform())
+                    .fit().centerCrop().into(holder.feedUserImage);
+        } else {
+            Picasso.with(mContext).load(R.drawable.no_image)
+                    .transform(new CircleTransform())
+                    .fit().centerCrop().into(holder.feedUserImage);
+        }
+
+        holder.feedContent.setText(feedModel.getContent());
+        holder.whenPosted.setText(mContext.getString(R.string.postedAt) + " " + feedModel.getDatePosted());
+        holder.userPostedTitle.setText(feedModel.getFirstName() + " " + feedModel.getLastName() + " " +
+                mContext.getString(R.string.personPosted));
+
+        if (feedModel.getFileName() != null && !feedModel.getFileName().isEmpty()) {
+            holder.feedAttachmentLayout.setVisibility(View.VISIBLE);
+            holder.feedAttachmentName.setText(feedModel.getFileName());
+        } else {
+            holder.feedAttachmentLayout.setVisibility(View.GONE);
+        }
+
+        if (feedModel.getAddress() != null && !feedModel.getAddress().isEmpty()) {
+            holder.feedAddressLayout.setVisibility(View.VISIBLE);
+            holder.feedAddress.setText(feedModel.getAddress());
+        } else {
+            holder.feedAddress.setVisibility(View.GONE);
+        }
+
         animate(holder);
     }
 

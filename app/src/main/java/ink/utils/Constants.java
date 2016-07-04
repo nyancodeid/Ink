@@ -20,8 +20,10 @@ public class Constants {
     public static final String CHAT_MESSAGES = "ChatMessages.php";
     public static final String REGISTER_TOKEN = "RegisterToken.php";
     public static final String REQUEST_DELETE_URL = "RequestDeleteMessage.php";
+    public static final String GET_POSTS_URL = "GetPosts.php";
     public static final String UPDATE_DETAILS = "UpdateDetails.php";
     public static final int TASK_GET_MESSAGES = 1;
     public static final int TASK_SEND_TOKEN = 2;
+    public static final String MAKE_POST_URL = "MakePost.php";
 }
 

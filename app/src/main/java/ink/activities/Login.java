@@ -195,7 +195,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
-                        Log.d("Fasfha", "onResponse: ");
                     }
                 }
 

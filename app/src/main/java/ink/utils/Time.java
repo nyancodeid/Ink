@@ -1,7 +1,5 @@
 package ink.utils;
 
-import android.util.Log;
-
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -20,9 +18,7 @@ public class Time {
         String finalFormat = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second;
         if (month < 10) {
             String finalMonth = "0" + month;
-            Log.d("finalMonth", "getCurrentTime: " + finalMonth);
             finalFormat = year + "-" + finalMonth + "-" + day + " " + hour + ":" + minute + ":" + second;
-            Log.d("finalFormat", "getCurrentTime: " + finalFormat);
         }
 
         return finalFormat;

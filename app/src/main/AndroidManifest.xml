@@ -5,6 +5,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
 
     <application
         android:name="ink.StartupApplication"
@@ -14,6 +18,9 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/googleMapsApiKey" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -71,7 +78,16 @@
             android:name="ink.activities.MyProfile"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.Profile" />
-        <activity android:name="ink.activities.Messages"></activity>
+        <activity android:name="ink.activities.Messages" />
+        <activity
+            android:name="ink.activities.MakePost"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="ink.activities.MapsActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Transparent"></activity>
     </application>
 
 </manifest>

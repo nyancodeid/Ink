@@ -34,7 +34,8 @@ public class SendReplyService extends Service {
         if (extras != null) {
             attemptToQue(extras.getString("message"),
                     extras.getString("opponentId"), extras.getString("currentUserId"),
-                    extras.getString("userImage"), extras.getString("opponentImage"));
+                    extras.getString("userImage"), extras.getString("opponentImage"),
+                    extras.getString("delete_user_id"), extras.getString("delete_opponent_id"));
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -42,13 +43,15 @@ public class SendReplyService extends Service {
 
     private void attemptToQue(String message, final String mOpponentId,
                               final String mCurrentUserId,
-                              String userImage, String mOpponentImage) {
+                              String userImage, String mOpponentImage, String deleteUserId,
+                              String deleteOpponentId) {
         int uniqueId = sharedHelper.getUniqueId();
         int finalId = uniqueId++;
         sharedHelper.putUniqueId(finalId);
         RealmHelper.getInstance().insertMessage(mCurrentUserId, mOpponentId,
                 message, "0", "",
-                String.valueOf(finalId), Constants.STATUS_NOT_DELIVERED, userImage, mOpponentImage);
+                String.valueOf(finalId), Constants.STATUS_NOT_DELIVERED, userImage, mOpponentImage, deleteOpponentId,
+                deleteUserId);
 
         QueHelper queHelper = new QueHelper();
         queHelper.attachToQue(mCurrentUserId, mOpponentId, message, finalId,

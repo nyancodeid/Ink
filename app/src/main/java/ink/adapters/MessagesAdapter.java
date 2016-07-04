@@ -58,7 +58,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         holder.messagesUserName.setText(userMessagesModel.getFirstName() + " " + userMessagesModel.getLastName());
         holder.messageBody.setText(userMessagesModel.getMessage());
         holder.messageDate.setText(userMessagesModel.getDate());
-        if (!userMessagesModel.getImageLink().isEmpty()) {
+        if (!userMessagesModel.getImageName().isEmpty()) {
             String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + userMessagesModel.getImageLink();
             Picasso.with(mContext).load(url)
                     .transform(new CircleTransform()).fit().centerCrop()
@@ -69,7 +69,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                     .into(holder.messagesImage);
         }
     }
-
 
 
     private com.squareup.picasso.Callback picassoCallback(final String link, final ImageView view) {

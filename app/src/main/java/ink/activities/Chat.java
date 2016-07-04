@@ -16,7 +16,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -66,6 +65,8 @@ public class Chat extends AppCompatActivity {
     private String mUserImage = "";
     private String mOpponentImage = "";
     private AlertDialog.Builder mBuilder;
+    private String mDeleteUserId;
+    private String mDeleteOpponentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,7 +131,7 @@ public class Chat extends AppCompatActivity {
         mChatModelArrayList.add(tempChat);
         int itemLocation = mChatModelArrayList.indexOf(tempChat);
 
-        attemptToQue(message.trim(), itemLocation);
+        attemptToQue(message.trim(), itemLocation, mDeleteOpponentId, mDeleteUserId);
         mChatAdapter.notifyDataSetChanged();
 
 
@@ -146,10 +147,13 @@ public class Chat extends AppCompatActivity {
 
     }
 
-    private void attemptToQue(String message, int itemLocation) {
+    private void attemptToQue(String message, int itemLocation, String deleteOpponentId,
+                              String deleteUserId) {
         RealmHelper.getInstance().insertMessage(mCurrentUserId, mOpponentId,
                 mWriteEditText.getText().toString(), "0", "",
-                String.valueOf(itemLocation), Constants.STATUS_NOT_DELIVERED, mUserImage, mOpponentImage);
+                String.valueOf(itemLocation),
+                Constants.STATUS_NOT_DELIVERED, mUserImage,
+                mOpponentImage, deleteOpponentId, deleteUserId);
 
         QueHelper queHelper = new QueHelper();
         queHelper.attachToQue(mCurrentUserId, mOpponentId, message, itemLocation,
@@ -181,7 +185,6 @@ public class Chat extends AppCompatActivity {
 
                     @Override
                     public void onMessageSentFail(QueHelper failedHelperInstance, String failedMessage, int failedItemLocation) {
-                        Log.d("Fsafasfasfa", "onMessageSentFail: " + "on failure sent");
                         failedHelperInstance.attachToQue(mCurrentUserId, mOpponentId, failedMessage, failedItemLocation, this);
                     }
                 });
@@ -202,14 +205,31 @@ public class Chat extends AppCompatActivity {
                 String userImage = eachModel.getUserImage();
                 String opponentImage = eachModel.getOpponentImage();
                 String date = eachModel.getDate();
+
+                String deleteUserId = eachModel.getDeleteUserId();
+                String deleteOpponentId = eachModel.getDeleteOpponentId();
+                mDeleteOpponentId = eachModel.getDeleteOpponentId();
+                mDeleteUserId = eachModel.getDeleteUserId();
+
+                if (deleteOpponentId != null && deleteUserId != null) {
+                    if (deleteOpponentId.equals(mSharedHelper.getUserId()) || deleteUserId.equals(mSharedHelper.getUserId())) {
+                        continue;
+                    }
+                }
+
                 mChatModel = new ChatModel(messageId, userId, opponentId, message, true,
                         eachModel.getDeliveryStatus(), userImage, opponentImage, date);
                 mChatModelArrayList.add(mChatModel);
                 if (eachModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED)) {
                     int itemLocation = mChatModelArrayList.indexOf(mChatModel);
-                    attemptToQue(eachModel.getMessage().trim(), itemLocation);
+                    attemptToQue(eachModel.getMessage().trim(), itemLocation,
+                            deleteOpponentId, deleteUserId);
                 }
                 mChatAdapter.notifyDataSetChanged();
+            }
+
+            if (mChatModelArrayList.size() <= 0) {
+                mNoMessageLayout.setVisibility(View.VISIBLE);
             }
             mRecyclerView.post(new Runnable() {
                 @Override

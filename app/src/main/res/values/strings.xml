@@ -133,5 +133,33 @@
     <string name="deleteingMessage">Deleting message...</string>
     <string name="messageDeleted">Message was deleted</string>
     <string name="somethingWentWrong">Something went wrong.Try again...</string>
-
+    <string name="discardChanges">Discard changes</string>
+    <string name="discardChangesQuestion">Do you want to discard changes you have made?</string>
+    <string name="googleMapsApiKey">AIzaSyC_SMdaFoOfRqBhUlzVVG9NO1U0g9P1MfU</string>
+    <string name="selectLocation">Select your location</string>
+    <string name="openingMap">Opening map...</string>
+    <string name="permissionsRequired">Permissions are required to show your location</string>
+    <string name="addresNotAvailable">Could not get address name</string>
+    <string name="nothingChosen">Nothing was chosen</string>
+    <string name="writeSomething">Write a post...</string>
+    <string name="fieldEmptyError">Nothing was written</string>
+    <string name="attachUrl">Paste URL here</string>
+    <string name="attach">Attach</string>
+    <string name="attachUrlTitle">Attach URL</string>
+    <string name="attachUrlError">You should input something</string>
+    <string name="urlIsNotValid">URL is not valid...</string>
+    <string name="storagePermissions">Storage permissions are required for attachment</string>
+    <string name="sizeExceeded">File size exceeded</string>
+    <string name="sizeExceededMessage">You have exceeded the maximum size of file which is 20MB.Please reduce the file size and try again.</string>
+    <string name="fileError">File error</string>
+    <string name="couldNotReadFile">Could not read the file.If you are using custom explore.Please navigate through default one and try again</string>
+    <string name="addedAttachment">Added Attachment</string>
+    <string name="addedAddress">Added address</string>
+    <string name="posting">Posting...</string>
+    <string name="postingYourShare">Posting your share.Please wait...</string>
+    <string name="success">Success!</string>
+    <string name="posted">Your share was posted sucesfully</string>
+    <string name="notPosted">Could not share your post.Please try again...</string>
+    <string name="personPosted">posted</string>
+    <string name="postedAt">Posted at</string>
 </resources>

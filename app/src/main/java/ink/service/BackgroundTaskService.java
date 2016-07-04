@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,7 +48,6 @@ public class BackgroundTaskService extends Service {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     String responseString = response.body().string();
-                    Log.d("Fasfasfasfas", "on response: " + responseString);
                     JSONObject jsonObject = new JSONObject(responseString);
                     JSONArray messagesArray = jsonObject.optJSONArray("messages");
                     RealmHelper realmHelper = RealmHelper.getInstance();
@@ -64,8 +62,13 @@ public class BackgroundTaskService extends Service {
                             String deliveryStatus = Constants.STATUS_DELIVERED;
                             String userIdImage = eachObject.optString("user_id_image");
                             String opponentImage = eachObject.optString("opponent_id_image");
-                            realmHelper.insertMessage(userId, opponentId, message, messageId, date, messageId,
-                                    deliveryStatus, userIdImage, opponentImage);
+                            String deleteUserId = eachObject.optString("delete_user_id");
+                            String deleteOpponentId = eachObject.optString("delete_opponent_id");
+
+                            realmHelper.insertMessage(userId,
+                                    opponentId, message, messageId, date, messageId,
+                                    deliveryStatus,
+                                    userIdImage, opponentImage, deleteOpponentId, deleteUserId);
                         }
                     }
                     mSharedHelper.setMessagesDownloaded();
@@ -80,7 +83,6 @@ public class BackgroundTaskService extends Service {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d("Fasfasfasfas", "onFailure: " + "");
                 getMyMessages(userId);
             }
         });
@@ -89,7 +91,6 @@ public class BackgroundTaskService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.d("Fasfasfasfas", "ondestroy: " + "");
         super.onDestroy();
     }
 }
