@@ -80,13 +80,27 @@
 
             </View>
 
+            <TextView
+                android:id="@+id/likesCountTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/actionDivider"
+                android:layout_alignStart="@+id/actionDivider"
+                android:layout_below="@+id/actionDivider"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/likesText"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
             <RelativeLayout
                 android:id="@+id/likeWrapper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/actionDivider"
                 android:layout_alignStart="@+id/actionDivider"
-                android:layout_below="@+id/actionDivider"
+                android:layout_below="@+id/likesCountTV"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"

@@ -140,8 +140,9 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         String firstName = eachObject.optString("first_name");
                         String lastName = eachObject.optString("last_name");
                         boolean isLiked = eachObject.optBoolean("is_liked");
+                        String likesCount = eachObject.optString("likes_count");
                         mFeedModel = new FeedModel(id, imageLink, fileName, postBody,
-                                posterId, address, datePosted, firstName, lastName, isLiked);
+                                posterId, address, datePosted, firstName, lastName, isLiked, likesCount);
                         mFeedModelArrayList.add(mFeedModel);
                         mAdapter.notifyDataSetChanged();
                     }
@@ -224,15 +225,17 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     }
 
     @Override
-    public void onLikeClick(int position, ImageView likeView, TextView likeTV) {
+    public void onLikeClick(int position, ImageView likeView, TextView likeTV, TextView likeCountTV) {
         boolean isLiked = mFeedModelArrayList.get(position).isLiked();
         if (isLiked) {
             //must dislike
+            like(mFeedModelArrayList.get(position).getId(), 1, likeCountTV);
             likeView.setBackgroundResource(R.drawable.like_inactive);
             likeTV.setTextColor(ContextCompat.getColor(getActivity(), Constants.TEXT_VIEW_DEFAULT_COLOR));
             mFeedModelArrayList.get(position).setLiked(false);
         } else {
             //must like
+            like(mFeedModelArrayList.get(position).getId(), 0, likeCountTV);
             likeView.setBackgroundResource(R.drawable.like_active);
             likeTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
             mFeedModelArrayList.get(position).setLiked(true);
@@ -253,5 +256,48 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     public void onResume() {
         getFeeds();
         super.onResume();
+    }
+
+    private void like(final String postId, final int isLiking, final TextView likeCountTV) {
+        final Call<ResponseBody> likeCall = Retrofit.getInstance().getInkService().likePost(mSharedHelper.getUserId(), postId, isLiking);
+        likeCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    like(postId, isLiking, likeCountTV);
+                    return;
+                }
+                if (response.body() == null) {
+                    like(postId, isLiking, likeCountTV);
+                    return;
+                }
+
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    String likesCount = jsonObject.optString("likes_count");
+                    if (!likesCount.equals("0")) {
+                        likeCountTV.setVisibility(View.VISIBLE);
+                        if (Integer.parseInt(likesCount) > 1) {
+                            likeCountTV.setText(likesCount + " " + getString(R.string.likesText));
+                        } else {
+                            likeCountTV.setText(likesCount + " " + getString(R.string.singleLikeText));
+                        }
+                    } else {
+                        likeCountTV.setVisibility(View.GONE);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                like(postId, isLiking, likeCountTV);
+            }
+        });
     }
 }

@@ -167,4 +167,6 @@
     <string name="downloadTheFile">Download the next file :</string>
     <string name="beingDownloaded">The file is being downloaded</string>
     <string name="likeText">Like</string>
+    <string name="likesText">likes</string>
+    <string name="singleLikeText">like</string>
 </resources>

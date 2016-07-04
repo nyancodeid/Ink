@@ -32,7 +32,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView feedContent, userPostedTitle, likeTV,
-                whenPosted, feedAddress, feedAttachmentName;
+                whenPosted, feedAddress, feedAttachmentName, likesCountTV;
         private ImageView feedUserImage, likeIcon;
         private CardView feedItemCard;
         private RelativeLayout feedAddressLayout, feedAttachmentLayout, likeWrapper;
@@ -42,6 +42,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             userPostedTitle = (TextView) view.findViewById(R.id.userPostedTitle);
             whenPosted = (TextView) view.findViewById(R.id.whenPosted);
             feedAddress = (TextView) view.findViewById(R.id.feedAddress);
+            likesCountTV = (TextView) view.findViewById(R.id.likesCountTV);
             likeTV = (TextView) view.findViewById(R.id.likeTV);
             feedAttachmentName = (TextView) view.findViewById(R.id.feedAttachmentName);
             feedContent = (TextView) view.findViewById(R.id.feedContent);
@@ -108,6 +109,16 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         } else {
             holder.feedAddressLayout.setVisibility(View.GONE);
         }
+        if (!feedModel.getLikesCount().equals("0")) {
+            holder.likesCountTV.setVisibility(View.VISIBLE);
+            if (Integer.parseInt(feedModel.getLikesCount()) > 1) {
+                holder.likesCountTV.setText(feedModel.getLikesCount() + " " + mContext.getString(R.string.likesText));
+            } else {
+                holder.likesCountTV.setText(feedModel.getLikesCount() + " " + mContext.getString(R.string.singleLikeText));
+            }
+        } else {
+            holder.likesCountTV.setVisibility(View.GONE);
+        }
         //listeners
         holder.feedItemCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,7 +157,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             @Override
             public void onClick(View view) {
                 if (mOnClickListener != null) {
-                    mOnClickListener.onLikeClick(position, holder.likeIcon, holder.likeTV);
+                    mOnClickListener.onLikeClick(position, holder.likeIcon, holder.likeTV, holder.likesCountTV);
                 }
             }
         });
