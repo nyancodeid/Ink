@@ -18,4 +18,14 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical" />
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/feedsLoading"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_centerInParent="true"
+        android:layout_margin="16dp"
+        android:visibility="visible"
+        app:indicator="BallClipRotateMultiple"
+        app:indicator_color="@color/colorPrimary" />
 </RelativeLayout>

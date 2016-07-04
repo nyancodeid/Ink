@@ -117,7 +117,7 @@ public class Retrofit {
                                     @Part("googleAddress") String googleAddress,
                                     @Part("imageLink") String userImageLink,
                                     @Part("firstName") String firstName,
-                                    @Part("lastName") String lastName);
+                                    @Part("lastName") String lastName, @Part("timezone") String timezone);
 
 
         @POST(Constants.MAKE_POST_URL)
@@ -126,6 +126,6 @@ public class Retrofit {
                                     @Field("googleAddress") String googleAddress,
                                     @Field("imageLink") String userImageLink,
                                     @Field("firstName") String firstName,
-                                    @Field("lastName") String lastName);
+                                    @Field("lastName") String lastName, @Field("timezone") String timezone);
     }
 }

@@ -44,6 +44,7 @@ import butterknife.OnClick;
 import ink.utils.FileUtils;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
+import ink.utils.Time;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -343,7 +344,8 @@ public class MakePost extends AppCompatActivity {
 
     private void callToServerWithoutBody(final String postBody, final String googleAdress) {
         Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().makePost(mSharedHelper.getUserId(),
-                postBody, googleAdress, mSharedHelper.getImageLink(), mSharedHelper.getFirstName(), mSharedHelper.getLastName());
+                postBody, googleAdress, mSharedHelper.getImageLink(), mSharedHelper.getFirstName(), mSharedHelper.getLastName(),
+                Time.getTimeZone());
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -375,7 +377,7 @@ public class MakePost extends AppCompatActivity {
     private void callToServerWithBody(final Map<String, RequestBody> map, final String postBody, final String googleAddress) {
         Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().makePost(map,
                 mSharedHelper.getUserId(), postBody, googleAddress, mSharedHelper.getImageLink(),
-                mSharedHelper.getFirstName(), mSharedHelper.getLastName());
+                mSharedHelper.getFirstName(), mSharedHelper.getLastName(), Time.getTimeZone());
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
