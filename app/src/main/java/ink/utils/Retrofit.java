@@ -73,6 +73,13 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getMyMessages(@Field("user_id") String userId);
 
+        @POST(Constants.ADD_COMMENT_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> addComment(@Field("commenter_id") String commenterId, @Field("commenter_image") String commenterImage,
+                                      @Field("comment_body") String commentBody,
+                                      @Field("post_id") String postId,
+                                      @Field("first_name")String firstName,
+                                      @Field("last_name")String lastName);
 
         @POST(Constants.CHAT_MESSAGES)
         @FormUrlEncoded
@@ -92,6 +99,11 @@ public class Retrofit {
         @POST(Constants.GET_POSTS_URL)
         @FormUrlEncoded
         Call<ResponseBody> getPosts(@Field("user_id") String userId);
+
+
+        @POST(Constants.GET_COMMENTS_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getComments(@Field("post_id") String postId);
 
         @POST(Constants.LIKE_URL)
         @FormUrlEncoded

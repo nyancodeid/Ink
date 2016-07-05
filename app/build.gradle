@@ -46,5 +46,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:9.0.2'
     compile 'org.jsoup:jsoup:1.9.2'
     compile group: 'commons-validator', name: 'commons-validator', version: '1.4.0'
+    compile 'com.mikhaellopez:hfrecyclerview:1.0.0'
+    compile 'com.github.jlmd:AnimatedCircleLoadingView:1.1.5@aar'
+    compile 'com.github.ybq:Android-SpinKit:1.0.4'
 }
 apply plugin: 'com.google.gms.google-services'

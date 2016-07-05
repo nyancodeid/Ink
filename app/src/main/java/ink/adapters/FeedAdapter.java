@@ -1,7 +1,6 @@
 package ink.adapters;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,11 +30,11 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     private FeedItemClick mOnClickListener;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView feedContent, userPostedTitle, likeTV,
+        public TextView feedContent, userPostedTitle,
                 whenPosted, feedAddress, feedAttachmentName, likesCountTV;
         private ImageView feedUserImage, likeIcon;
         private CardView feedItemCard;
-        private RelativeLayout feedAddressLayout, feedAttachmentLayout, likeWrapper;
+        private RelativeLayout feedAddressLayout, feedAttachmentLayout, likeWrapper, commentWrapper;
 
         public ViewHolder(View view) {
             super(view);
@@ -43,13 +42,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             whenPosted = (TextView) view.findViewById(R.id.whenPosted);
             feedAddress = (TextView) view.findViewById(R.id.feedAddress);
             likesCountTV = (TextView) view.findViewById(R.id.likesCountTV);
-            likeTV = (TextView) view.findViewById(R.id.likeTV);
             feedAttachmentName = (TextView) view.findViewById(R.id.feedAttachmentName);
             feedContent = (TextView) view.findViewById(R.id.feedContent);
             feedUserImage = (ImageView) view.findViewById(R.id.feedUserImage);
             likeIcon = (ImageView) view.findViewById(R.id.likeIcon);
             feedAddressLayout = (RelativeLayout) view.findViewById(R.id.feedAddressLayout);
             likeWrapper = (RelativeLayout) view.findViewById(R.id.likeWrapper);
+            commentWrapper = (RelativeLayout) view.findViewById(R.id.commentWrapper);
             feedAttachmentLayout = (RelativeLayout) view.findViewById(R.id.feedAttachmentLayout);
             feedItemCard = (CardView) view.findViewById(R.id.feedItemCard);
 
@@ -90,10 +89,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         holder.userPostedTitle.setText(feedModel.getFirstName() + " " + feedModel.getLastName());
         if (feedModel.isLiked()) {
             holder.likeIcon.setBackgroundResource(R.drawable.like_active);
-            holder.likeTV.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         } else {
             holder.likeIcon.setBackgroundResource(R.drawable.like_inactive);
-            holder.likeTV.setTextColor(ContextCompat.getColor(mContext, Constants.TEXT_VIEW_DEFAULT_COLOR));
         }
 
         if (feedModel.getFileName() != null && !feedModel.getFileName().isEmpty()) {
@@ -157,7 +154,15 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             @Override
             public void onClick(View view) {
                 if (mOnClickListener != null) {
-                    mOnClickListener.onLikeClick(position, holder.likeIcon, holder.likeTV, holder.likesCountTV);
+                    mOnClickListener.onLikeClick(position, holder.likeIcon, holder.likesCountTV);
+                }
+            }
+        });
+        holder.commentWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mOnClickListener != null) {
+                    mOnClickListener.onCommentClicked(position);
                 }
             }
         });

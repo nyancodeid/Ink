@@ -23,10 +23,10 @@ public class Constants {
     public static final String REQUEST_DELETE_URL = "RequestDeleteMessage.php";
     public static final String GET_POSTS_URL = "GetPosts.php";
     public static final String UPDATE_DETAILS = "UpdateDetails.php";
-    public static final int TASK_GET_MESSAGES = 1;
-    public static final int TASK_SEND_TOKEN = 2;
     public static final String MAKE_POST_URL = "MakePost.php";
     public static final String LIKE_URL = "LikePost.php";
+    public static final String GET_COMMENTS_URL = "GetComments.php";
+    public static final String ADD_COMMENT_URL = "AddComment.php";
     public static final int TEXT_VIEW_DEFAULT_COLOR = android.R.color.tab_indicator_text;
 }
 

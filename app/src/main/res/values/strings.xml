@@ -169,4 +169,9 @@
     <string name="likeText">Like</string>
     <string name="likesText">likes</string>
     <string name="singleLikeText">like</string>
+    <string name="addCommentHint">Add a comment...</string>
+    <string name="comments">Comments</string>
+    <string name="noComments">No comments yet</string>
+    <string name="commentText">Comments</string>
+    <string name="addingComment">Adding comment...</string>
 </resources>
