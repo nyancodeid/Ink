@@ -17,6 +17,7 @@ import java.util.List;
 
 import ink.interfaces.FeedItemClick;
 import ink.models.FeedModel;
+import ink.utils.Animations;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 
@@ -28,11 +29,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     private List<FeedModel> feedList;
     private Context mContext;
     private FeedItemClick mOnClickListener;
+    private boolean shouldStartAnimation;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView feedContent, userPostedTitle,
                 whenPosted, feedAddress, feedAttachmentName, likesCountTV;
-        private ImageView feedUserImage, likeIcon;
+        private ImageView feedUserImage, likeIcon, commentIcon;
         private CardView feedItemCard;
         private RelativeLayout feedAddressLayout, feedAttachmentLayout, likeWrapper, commentWrapper;
 
@@ -45,6 +47,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             feedAttachmentName = (TextView) view.findViewById(R.id.feedAttachmentName);
             feedContent = (TextView) view.findViewById(R.id.feedContent);
             feedUserImage = (ImageView) view.findViewById(R.id.feedUserImage);
+            commentIcon = (ImageView) view.findViewById(R.id.commentIcon);
             likeIcon = (ImageView) view.findViewById(R.id.likeIcon);
             feedAddressLayout = (RelativeLayout) view.findViewById(R.id.feedAddressLayout);
             likeWrapper = (RelativeLayout) view.findViewById(R.id.likeWrapper);
@@ -74,6 +77,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         FeedModel feedModel = feedList.get(position);
+
         if (feedModel.getUserImage() != null && !feedModel.getUserImage().isEmpty()) {
             Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + feedModel.getUserImage())
                     .transform(new CircleTransform())
@@ -162,7 +166,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             @Override
             public void onClick(View view) {
                 if (mOnClickListener != null) {
-                    mOnClickListener.onCommentClicked(position);
+                    mOnClickListener.onCommentClicked(position, holder.commentIcon);
                 }
             }
         });
@@ -175,5 +179,18 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return feedList.size();
+    }
+
+
+    @Override
+    public void onViewAttachedToWindow(ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if (shouldStartAnimation) {
+            Animations.animateCircular(holder.itemView);
+        }
+    }
+
+    public void setShouldStartAnimation(boolean shouldStartAnimation) {
+        this.shouldStartAnimation = shouldStartAnimation;
     }
 }

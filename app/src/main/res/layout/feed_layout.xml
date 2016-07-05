@@ -19,15 +19,15 @@
             android:scrollbars="vertical" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <com.wang.avi.AVLoadingIndicatorView
-        android:id="@+id/feedsLoading"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
+    <com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/circle_loading_view"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
         android:layout_centerInParent="true"
-        android:layout_margin="16dp"
-        android:visibility="visible"
-        app:indicator="BallClipRotateMultiple"
-        app:indicator_color="@color/colorPrimary" />
+        android:background="@android:color/transparent"
+        app:mainColor="@color/colorPrimary"
+        app:secondaryColor="@color/colorPrimaryDark"
+        app:textColor="@android:color/white" />
 
     <RelativeLayout
         android:id="@+id/noPostsWrapper"

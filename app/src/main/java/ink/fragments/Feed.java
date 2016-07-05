@@ -20,8 +20,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView;
 import com.ink.R;
-import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +35,7 @@ import ink.activities.Comments;
 import ink.adapters.FeedAdapter;
 import ink.interfaces.FeedItemClick;
 import ink.models.FeedModel;
+import ink.utils.Animations;
 import ink.utils.Constants;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
@@ -53,8 +54,9 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private FeedModel mFeedModel;
     private SwipeRefreshLayout feedRefresh;
     private SharedHelper mSharedHelper;
-    private AVLoadingIndicatorView feedsLoading;
+    private AnimatedCircleLoadingView feedsLoading;
     private RelativeLayout noPostsWrapper;
+    private boolean isOnCreate;
 
     public static Feed newInstance() {
         Feed feed = new Feed();
@@ -72,13 +74,14 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        isOnCreate = true;
         mSharedHelper = new SharedHelper(getActivity());
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         feedRefresh = (SwipeRefreshLayout) view.findViewById(R.id.feedRefresh);
         feedRefresh.setColorSchemeColors(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.colorPrimary));
-        feedsLoading = (AVLoadingIndicatorView) view.findViewById(R.id.feedsLoading);
+        feedsLoading = (AnimatedCircleLoadingView) view.findViewById(R.id.circle_loading_view);
         noPostsWrapper = (RelativeLayout) view.findViewById(R.id.noPostsWrapper);
+        feedsLoading.startIndeterminate();
 
         feedRefresh.setOnRefreshListener(this);
         mAdapter = new FeedAdapter(mFeedModelArrayList, getActivity());
@@ -94,6 +97,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     @Override
     public void onRefresh() {
+        mAdapter.setShouldStartAnimation(true);
         getFeeds();
     }
 
@@ -141,6 +145,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
                     if (feedsLoading.getVisibility() == View.VISIBLE) {
                         feedsLoading.setVisibility(View.GONE);
+                        feedsLoading.stopOk();
                     }
                     feedRefresh.setRefreshing(false);
                     mAdapter.notifyDataSetChanged();
@@ -218,6 +223,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     @Override
     public void onLikeClick(int position, ImageView likeView, TextView likeCountTV) {
+        Animations.animateCircular(likeView);
         boolean isLiked = mFeedModelArrayList.get(position).isLiked();
         if (isLiked) {
             //must dislike
@@ -233,7 +239,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     }
 
     @Override
-    public void onCommentClicked(int position) {
+    public void onCommentClicked(int position, View commentView) {
+        Animations.animateCircular(commentView);
         FeedModel clickedModel = mFeedModelArrayList.get(position);
         Intent intent = new Intent(getActivity(), Comments.class);
         intent.putExtra("postId", clickedModel.getId());
@@ -260,7 +267,11 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     @Override
     public void onResume() {
-        getFeeds();
+        if (isOnCreate) {
+            mAdapter.setShouldStartAnimation(true);
+            isOnCreate = false;
+            getFeeds();
+        }
         super.onResume();
     }
 

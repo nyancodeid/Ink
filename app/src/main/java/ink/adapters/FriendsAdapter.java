@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import ink.models.FriendsModel;
+import ink.utils.Animations;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 
@@ -76,7 +77,11 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
             viewHolder.itemView.setTag("Animated");
         }
     }
-
+    @Override
+    public void onViewAttachedToWindow(ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        Animations.animateCircular(holder.itemView);
+    }
     private com.squareup.picasso.Callback picassoCallback(final String link, final ImageView view) {
         com.squareup.picasso.Callback callback = new Callback() {
             @Override

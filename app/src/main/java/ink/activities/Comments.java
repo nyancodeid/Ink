@@ -48,6 +48,7 @@ import ink.adapters.CommentAdapter;
 import ink.decorators.DividerItemDecoration;
 import ink.interfaces.CommentClickHandler;
 import ink.models.CommentModel;
+import ink.utils.Animations;
 import ink.utils.Constants;
 import ink.utils.RecyclerTouchListener;
 import ink.utils.Retrofit;
@@ -327,6 +328,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
 
     @Override
     public void onLikeClicked(int position, TextView likesCountTV, ImageView likeView) {
+        Animations.animateCircular(likeView);
         if (isLiked) {
             //must dislike
             like(mPostId, 1, likesCountTV);

@@ -1,5 +1,6 @@
 package ink.interfaces;
 
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,5 +18,5 @@ public interface FeedItemClick {
 
     void onLikeClick(int position, ImageView likeView, TextView likeCountTV);
 
-    void onCommentClicked(int position);
+    void onCommentClicked(int position, View commentView);
 }

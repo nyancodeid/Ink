@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import ink.models.UserMessagesModel;
+import ink.utils.Animations;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 
@@ -85,7 +86,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         };
         return callback;
     }
-
+    @Override
+    public void onViewAttachedToWindow(ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        Animations.animateCircular(holder.itemView);
+    }
     @Override
     public int getItemCount() {
         return userMessagesModels.size();

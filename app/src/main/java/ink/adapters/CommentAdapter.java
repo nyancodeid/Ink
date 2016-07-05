@@ -206,4 +206,5 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
     public void setIsLiked(boolean isLiked) {
         this.isLiked = isLiked;
     }
+
 }
