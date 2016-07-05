@@ -270,8 +270,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         if (isOnCreate) {
             mAdapter.setShouldStartAnimation(true);
             isOnCreate = false;
-            getFeeds();
         }
+        getFeeds();
         super.onResume();
     }
 

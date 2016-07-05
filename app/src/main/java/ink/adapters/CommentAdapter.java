@@ -2,6 +2,7 @@ package ink.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import ink.interfaces.CommentClickHandler;
 import ink.models.CommentModel;
+import ink.utils.Animations;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 
@@ -207,4 +209,10 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         this.isLiked = isLiked;
     }
 
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        Log.d("Fasfsfasfas", "onViewRecycled: "+"attached to window");
+        Animations.animateCircular(holder.itemView);
+    }
 }
