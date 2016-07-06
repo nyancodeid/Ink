@@ -63,15 +63,18 @@ public class Messages extends AppCompatActivity implements SwipeRefreshLayout.On
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
     private String finalOpponentId;
     private Snackbar deleteRequestSnack;
+    private boolean isOnCreate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
         ButterKnife.bind(this);
+        isOnCreate = true;
         mMessagesSwipe.setColorSchemeColors(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
         userMessagesModels = new ArrayList<>();
         messagesAdapter = new MessagesAdapter(userMessagesModels, this);
+        messagesAdapter.setShouldStartAnimation(true);
         mMessagesSwipe.setOnRefreshListener(this);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -324,6 +327,10 @@ public class Messages extends AppCompatActivity implements SwipeRefreshLayout.On
 
     @Override
     protected void onResume() {
+        if (isOnCreate) {
+            messagesAdapter.setShouldStartAnimation(false);
+            isOnCreate = false;
+        }
         getUserMessages();
         super.onResume();
     }

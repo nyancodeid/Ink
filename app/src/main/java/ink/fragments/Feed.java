@@ -85,6 +85,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
         feedRefresh.setOnRefreshListener(this);
         mAdapter = new FeedAdapter(mFeedModelArrayList, getActivity());
+        mAdapter.setShouldStartAnimation(true);
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);
         itemAnimator.setRemoveDuration(500);

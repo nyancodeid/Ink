@@ -15,7 +15,6 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import ink.models.UserMessagesModel;
-import ink.utils.Animations;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 
@@ -26,6 +25,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
     private List<UserMessagesModel> userMessagesModels;
     private Context mContext;
+    private boolean shouldStartAnimation;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView messagesUserName, messageBody, messageDate;
@@ -86,11 +86,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         };
         return callback;
     }
-    @Override
-    public void onViewAttachedToWindow(ViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-        Animations.animateCircular(holder.itemView);
+
+    public void setShouldStartAnimation(boolean shouldStartAnimation) {
+        this.shouldStartAnimation = shouldStartAnimation;
     }
+
     @Override
     public int getItemCount() {
         return userMessagesModels.size();

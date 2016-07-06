@@ -17,7 +17,6 @@ import java.util.List;
 
 import ink.interfaces.FeedItemClick;
 import ink.models.FeedModel;
-import ink.utils.Animations;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 
@@ -181,14 +180,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         return feedList.size();
     }
 
-
-    @Override
-    public void onViewAttachedToWindow(ViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-        if (shouldStartAnimation) {
-            Animations.animateCircular(holder.itemView);
-        }
-    }
 
     public void setShouldStartAnimation(boolean shouldStartAnimation) {
         this.shouldStartAnimation = shouldStartAnimation;
