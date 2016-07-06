@@ -1,29 +1,446 @@
 package ink.activities;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ink.R;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import fab.FloatingActionButton;
+import ink.adapters.GroupsAdapter;
+import ink.callbacks.GeneralCallback;
+import ink.models.GroupsModel;
+import ink.utils.CircleTransform;
+import ink.utils.Retrofit;
+import ink.utils.SharedHelper;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class Groups extends AppCompatActivity {
+
+    private SharedHelper mSharedHelper;
+    @Bind(R.id.groupsRecycler)
+    RecyclerView mGroupsRecycler;
+    @Bind(R.id.createGroup)
+    FloatingActionButton mCreateGroup;
+    private AlertDialog addGroupDialog = null;
+    private String chosenColor = "";
+    private static final int PICK_IMAGE_RESULT_CODE = 1547;
+    private boolean isImageChosen;
+    private String mImageLinkToSend;
+    private ImageView groupImage;
+    private Thread mWorkerThread;
+    private Dialog addGroupProgress;
+    private List<GroupsModel> groupsModels;
+    private GroupsModel groupsModel;
+    private GroupsAdapter groupsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
+        ButterKnife.bind(this);
+        addGroupProgress = new Dialog(this, R.style.Theme_Transparent);
+        addGroupProgress.setContentView(R.layout.dim_group_layout);
+        mGroupsRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0)
+                    mCreateGroup.hide(true);
+                else if (dy < 0)
+                    mCreateGroup.show(true);
+            }
+        });
+        groupsAdapter = new GroupsAdapter(groupsModels, this);
+        mSharedHelper = new SharedHelper(this);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(getString(R.string.groupsText));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        getGroups();
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        finish();
+        if (item.getItemId() == R.id.myGroups) {
+
+        } else {
+            finish();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.group_menu, menu);
+        return true;
+    }
+
+    private void getGroups() {
+        Call<ResponseBody> groupsCall = Retrofit.getInstance().getInkService().getGroups(mSharedHelper.getUserId());
+        groupsCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    getGroups();
+                    return;
+                }
+                if (response.body() == null) {
+                    getGroups();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        boolean hasAnyGroups = jsonObject.optBoolean("hasGroups");
+                        if (hasAnyGroups) {
+                            JSONArray jsonArray = jsonObject.optJSONArray("groups");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject eachObject = jsonArray.optJSONObject(i);
+                                String groupId = eachObject.optString("group_id");
+                                String groupImage = eachObject.optString("group_image");
+                                String groupName = eachObject.optString("group_name");
+                                String groupOwnerName = eachObject.optString("group_owner_name");
+                                String groupDescription = eachObject.optString("group_description");
+                                String groupOwnerId = eachObject.optString("group_owner_id");
+                                String groupColor = eachObject.optString("group_color");
+
+                                // TODO: 2016-07-07  add participants count
+                                groupsModel = new GroupsModel(groupId, groupImage, groupName, groupOwnerName, groupDescription,
+                                        groupOwnerId, groupColor, "0");
+                                groupsModels.add(groupsModel);
+                                groupsAdapter.notifyDataSetChanged();
+                            }
+                        } else {
+                            showNoGroupLayout();
+                        }
+                    } else {
+                        getGroups();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                getGroups();
+            }
+        });
+    }
+
+    private void showNoGroupLayout() {
+
+    }
+
+
+    private void showAddGroupDialog() {
+        System.gc();
+
+        chosenColor = "";
+        mImageLinkToSend = "";
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(Groups.this);
+        builder.setTitle(getString(R.string.createGroup));
+        View groupView = getLayoutInflater().inflate(R.layout.add_group_view, null);
+        Button pickBackgroundColor = (Button) groupView.findViewById(R.id.pickBackgroundColor);
+        Button publishGroup = (Button) groupView.findViewById(R.id.publishGroup);
+        final EditText groupName = (EditText) groupView.findViewById(R.id.groupName);
+        final EditText groupDescription = (EditText) groupView.findViewById(R.id.groupDescription);
+        NestedScrollView nestedScrollView = (NestedScrollView) groupView.findViewById(R.id.nestedScrollView);
+        nestedScrollView.setVerticalScrollBarEnabled(true);
+        Button pickImage = (Button) groupView.findViewById(R.id.pickImage);
+        groupImage = (ImageView) groupView.findViewById(R.id.groupImage);
+        publishGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (groupName.getText().toString().trim().isEmpty()) {
+                    groupName.setError(getString(R.string.groupNameError));
+                    return;
+                }
+                if (groupDescription.getText().toString().trim().isEmpty()) {
+                    groupDescription.setError(getString(R.string.groupDescriptionError));
+                    return;
+                }
+                publishCreatedGroup(groupName.getText().toString().trim()
+                        , groupDescription.getText().toString().trim());
+            }
+        });
+        groupImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openGallery();
+            }
+        });
+        final TextView pickerText = (TextView) groupView.findViewById(R.id.pickerText);
+        pickImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openGallery();
+            }
+        });
+        pickBackgroundColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showColorPicker(new GeneralCallback<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        chosenColor = "#" + s;
+                        pickerText.setText(getString(R.string.selectedBackgroundColor));
+                        pickerText.setTextColor(Color.parseColor("#" + s));
+                    }
+
+                    @Override
+                    public void onFailure(String s) {
+                        chosenColor = null;
+                    }
+                });
+            }
+        });
+        builder.setView(groupView);
+        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        addGroupDialog = builder.show();
+        addGroupDialog.show();
+
+    }
+
+    private void dismissLoading() {
+        if (addGroupProgress.isShowing()) {
+            addGroupProgress.dismiss();
+        }
+        Snackbar.make(mCreateGroup, getString(R.string.groupCreated), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        }).show();
+    }
+
+    private void publishCreatedGroup(final String groupName, final String groupDescription) {
+        String base64 = "";
+        addGroupProgress.show();
+
+        if (mImageLinkToSend != null && !mImageLinkToSend.isEmpty() && isImageChosen) {
+            getBase64String(mImageLinkToSend, new GeneralCallback<String>() {
+                @Override
+                public void onSuccess(String o) {
+                    callToServer(o, groupName, groupDescription);
+                }
+
+                @Override
+                public void onFailure(String o) {
+                    publishCreatedGroup(groupName, groupDescription);
+                }
+            });
+        } else {
+            callToServer(base64, groupName, groupDescription);
+        }
+
+    }
+
+    private void callToServer(final String base64, final String groupName, final String groupDescription) {
+        Call<ResponseBody> createGroupCall = Retrofit.getInstance().getInkService().createGroup(mSharedHelper.getUserId(),
+                base64, groupName, groupDescription, chosenColor,
+                mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
+        createGroupCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    callToServer(base64, groupName, groupDescription);
+                }
+                if (response.body() == null) {
+                    callToServer(base64, groupName, groupDescription);
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        dismissLoading();
+                        if (addGroupDialog != null && addGroupDialog.isShowing()) {
+                            addGroupDialog.dismiss();
+                        }
+                    } else {
+                        callToServer(base64, groupName, groupDescription);
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                callToServer(base64, groupName, groupDescription);
+            }
+        });
+    }
+
+    @OnClick(R.id.createGroup)
+    public void createGroup() {
+        showAddGroupDialog();
+    }
+
+    private void showColorPicker(final GeneralCallback<String> generalCallback) {
+        AmbilWarnaDialog dialog = new AmbilWarnaDialog(this, Color.parseColor("#3F51B5"), new AmbilWarnaDialog.OnAmbilWarnaListener() {
+            @Override
+            public void onOk(AmbilWarnaDialog dialog, int color) {
+                // color is the color selected by the user.
+                String hexWithoutAlpha = Integer.toHexString(color).toUpperCase().substring(2);
+                generalCallback.onSuccess(hexWithoutAlpha);
+            }
+
+            @Override
+            public void onCancel(AmbilWarnaDialog dialog) {
+                generalCallback.onFailure(null);
+            }
+        });
+        dialog.show();
+
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,
+                getString(R.string.selectImage)), PICK_IMAGE_RESULT_CODE);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == PICK_IMAGE_RESULT_CODE) {
+                Uri selectedImageUri = data.getData();
+                String selectedImagePath;
+                try {
+                    selectedImagePath = getRealPathFromURI(selectedImageUri);
+                } catch (Exception e) {
+                    selectedImagePath = null;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Groups.this);
+                    builder.setTitle(getString(R.string.notSupported));
+                    builder.setMessage(getString(R.string.notSupportedText));
+                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.show();
+                }
+                if (selectedImagePath != null) {
+                    mImageLinkToSend = selectedImagePath;
+                    isImageChosen = true;
+                    Picasso.with(getApplicationContext()).load(new File(selectedImagePath)).transform(new CircleTransform()).fit().centerCrop().into(groupImage);
+                } else {
+                    isImageChosen = false;
+                }
+            }
+        }
+    }
+
+    private String getRealPathFromURI(Uri contentURI) {
+        String result;
+        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) {
+            result = contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            result = cursor.getString(idx);
+            cursor.close();
+        }
+        return result;
+    }
+
+    private void getBase64String(final String path, final GeneralCallback callback) {
+        mWorkerThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap bitmap = BitmapFactory.decodeFile(path);
+                bitmap = reduceBitmap(bitmap, 500);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] bytes = byteArrayOutputStream.toByteArray();
+                String encodedImage = Base64.encodeToString(bytes, Base64.DEFAULT);
+                if (encodedImage == null) {
+                    callback.onFailure(encodedImage);
+                } else {
+                    callback.onSuccess(encodedImage);
+                }
+                bitmap.recycle();
+                bitmap = null;
+                mWorkerThread = null;
+            }
+        });
+        mWorkerThread.start();
+    }
+
+    private Bitmap reduceBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float) width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+
+        return Bitmap.createScaledBitmap(image, width, height, true);
     }
 }

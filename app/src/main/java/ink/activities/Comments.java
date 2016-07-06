@@ -131,7 +131,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
         mCommentRecycler.setAdapter(mCommentAdapter);
 
         addCommentDialog = new Dialog(this, R.style.Theme_Transparent);
-        addCommentDialog.setContentView(R.layout.dim_layout);
+        addCommentDialog.setContentView(R.layout.dim_comment_layout);
 
         mCommentRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

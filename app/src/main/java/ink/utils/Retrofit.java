@@ -73,13 +73,32 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getMyMessages(@Field("user_id") String userId);
 
+
+        @POST(Constants.GET_GROUP_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getGroups(@Field("user_id") String userId);
+
+        @POST(Constants.MY_GROUPS_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getMyGroups(@Field("user_id") String userId);
+
+        @POST(Constants.ADD_GROUP_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> createGroup(@Field("user_id") String userId,
+                                       @Field("base64") String base64,
+                                       @Field("groupName") String groupName,
+                                       @Field("groupDescription") String groupDescription,
+                                       @Field("groupColor") String groupColor,
+                                       @Field("ownerName") String ownerName);
+
+
         @POST(Constants.ADD_COMMENT_URL)
         @FormUrlEncoded
         Call<ResponseBody> addComment(@Field("commenter_id") String commenterId, @Field("commenter_image") String commenterImage,
                                       @Field("comment_body") String commentBody,
                                       @Field("post_id") String postId,
-                                      @Field("first_name")String firstName,
-                                      @Field("last_name")String lastName);
+                                      @Field("first_name") String firstName,
+                                      @Field("last_name") String lastName);
 
         @POST(Constants.CHAT_MESSAGES)
         @FormUrlEncoded

@@ -195,7 +195,7 @@ public class HomeActivity extends AppCompatActivity
                 }
                 break;
             case R.id.settings:
-                shouldOpenActivity = false;
+                shouldOpenActivity = true;
                 setLastClassToOpen(Settings.class);
                 break;
             case R.id.nav_share:

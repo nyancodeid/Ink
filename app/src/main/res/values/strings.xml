@@ -173,6 +173,24 @@
     <string name="comments">Comments</string>
     <string name="noComments">No comments yet</string>
     <string name="commentText">Comments</string>
+    <string name="selectedBackgroundColor">Picked background color</string>
     <string name="addingComment">Adding comment...</string>
     <string name="chatRoulette">Chat Roulette</string>
+    <string name="myGroup">My groups</string>
+    <string name="addGroupName">Add group name</string>
+    <string name="addGroupHint">E.x Family</string>
+    <string name="addGroupDescription">Add group description</string>
+    <string name="addGroupDescriptionHint">E.x All family members join here</string>
+    <string name="pickColor">Pick a color</string>
+    <string name="pickColorButton">Pick a background color</string>
+    <string name="noBackgroundColorSelected">No background color selected</string>
+    <string name="noImageSelected">No image selected</string>
+    <string name="pickImage">Pick a group image</string>
+    <string name="publishGroup">Publish group</string>
+    <string name="createGroup">Create group</string>
+    <string name="groupNameError">Group name is a mandatory</string>
+    <string name="groupDescriptionError">Group description is a mandatory</string>
+    <string name="publishingGroup">Publishing group...</string>
+    <string name="groupCreated">Group created</string>
+    <string name="participantText">Participant(s)</string>
 </resources>

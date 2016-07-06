@@ -24,7 +24,7 @@
             android:title="@string/friendsText" />
         <item
             android:id="@+id/chatRoulette"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_sync_black_24dp"
             android:title="@string/chatRoulette" />
         <item
             android:id="@+id/settings"

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nestedScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fadeScrollbars="false"
+    android:scrollbarAlwaysDrawHorizontalTrack="true"
+    android:scrollbarAlwaysDrawVerticalTrack="true"
+    android:scrollbarFadeDuration="0">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:fontFamily="@string/appFont"
+            android:text="@string/addGroupName"
+            android:textColor="@color/colorPrimary" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <EditText
+                android:id="@+id/groupName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/addGroupHint" />
+        </android.support.design.widget.TextInputLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:fontFamily="@string/appFont"
+            android:text="@string/addGroupDescription"
+            android:textColor="@color/colorPrimary" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <EditText
+                android:id="@+id/groupDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/addGroupDescriptionHint" />
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:id="@+id/pickerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@string/appFont"
+            android:text="@string/noBackgroundColorSelected"
+            android:textColor="@color/colorPrimary" />
+
+        <Button
+            android:id="@+id/pickBackgroundColor"
+            style="?attr/selectableItemBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/group_buttons"
+            android:padding="10dp"
+            android:text="@string/pickColorButton"
+            android:textAllCaps="false"
+            android:textColor="#000000" />
+
+
+        <ImageView
+            android:id="@+id/groupImage"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/no_background_image" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@string/appFont"
+            android:text="@string/noImageSelected"
+            android:textColor="@color/colorPrimary" />
+
+        <Button
+            android:id="@+id/pickImage"
+            style="?attr/selectableItemBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/group_buttons"
+            android:padding="10dp"
+            android:text="@string/pickImage"
+            android:textAllCaps="false"
+            android:textColor="#000000" />
+
+
+        <Button
+            android:id="@+id/publishGroup"
+            style="?attr/selectableItemBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/circle_corner"
+            android:padding="10dp"
+            android:text="@string/publishGroup"
+            android:textAllCaps="false"
+            android:textColor="#ffffff" />
+
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
