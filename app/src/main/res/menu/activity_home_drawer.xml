@@ -23,6 +23,10 @@
             android:icon="@drawable/ic_supervisor_account_black_24dp"
             android:title="@string/friendsText" />
         <item
+            android:id="@+id/chatRoulette"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/chatRoulette" />
+        <item
             android:id="@+id/settings"
             android:icon="@drawable/ic_menu_manage"
             android:title="@string/settingsString" />

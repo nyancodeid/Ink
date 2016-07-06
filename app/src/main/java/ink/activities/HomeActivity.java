@@ -179,10 +179,12 @@ public class HomeActivity extends AppCompatActivity
                 setLastClassToOpen(Messages.class);
                 break;
             case R.id.groups:
-                shouldOpenActivity = false;
-                if (!mToolbar.getTitle().equals(GROUPS)) {
-                    mToolbar.setTitle(getString(R.string.groupsText));
-                }
+                setLastClassToOpen(Groups.class);
+                shouldOpenActivity = true;
+                break;
+            case R.id.chatRoulette:
+                setLastClassToOpen(ChatRoulette.class);
+                shouldOpenActivity = true;
                 break;
             case R.id.friends:
                 shouldOpenActivity = false;
@@ -194,9 +196,7 @@ public class HomeActivity extends AppCompatActivity
                 break;
             case R.id.settings:
                 shouldOpenActivity = false;
-                if (!mToolbar.getTitle().equals(SETTINGS)) {
-                    mToolbar.setTitle(getString(R.string.settingsString));
-                }
+                setLastClassToOpen(Settings.class);
                 break;
             case R.id.nav_share:
                 shouldOpenActivity = false;

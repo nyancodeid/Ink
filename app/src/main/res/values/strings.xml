@@ -39,7 +39,7 @@
     <string name="groupsText">Groups</string>
     <string name="friendsText">Friends</string>
     <string name="settingsString">Settings</string>
-    <string name="logoutString">Logout</string>
+    <string name="logoutString">Log Out</string>
     <string name="serverErrorText">There was an problem with server.Please reload again</string>
     <string name="noFirstname">No Firstname</string>
     <string name="noLastname">No Lastname</string>
@@ -174,4 +174,5 @@
     <string name="noComments">No comments yet</string>
     <string name="commentText">Comments</string>
     <string name="addingComment">Adding comment...</string>
+    <string name="chatRoulette">Chat Roulette</string>
 </resources>
