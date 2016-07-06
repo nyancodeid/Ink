@@ -193,4 +193,5 @@
     <string name="publishingGroup">Publishing group...</string>
     <string name="groupCreated">Group created</string>
     <string name="participantText">Participant(s)</string>
+    <string name="noGroupsYet">No groups yet.Find any and join now!</string>
 </resources>

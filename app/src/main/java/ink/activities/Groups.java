@@ -11,10 +11,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.Menu;
@@ -23,6 +27,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.R;
@@ -35,6 +40,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -45,6 +51,7 @@ import ink.adapters.GroupsAdapter;
 import ink.callbacks.GeneralCallback;
 import ink.models.GroupsModel;
 import ink.utils.CircleTransform;
+import ink.utils.RecyclerTouchListener;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -53,13 +60,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
-public class Groups extends AppCompatActivity {
+public class Groups extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private SharedHelper mSharedHelper;
     @Bind(R.id.groupsRecycler)
-    RecyclerView mGroupsRecycler;
+    RecyclerView mRecyclerView;
     @Bind(R.id.createGroup)
     FloatingActionButton mCreateGroup;
+    @Bind(R.id.groupSwipe)
+    SwipeRefreshLayout groupSwipe;
+    @Bind(R.id.noGroupsLayout)
+    RelativeLayout noGroupsLayout;
     private AlertDialog addGroupDialog = null;
     private String chosenColor = "";
     private static final int PICK_IMAGE_RESULT_CODE = 1547;
@@ -72,14 +83,23 @@ public class Groups extends AppCompatActivity {
     private GroupsModel groupsModel;
     private GroupsAdapter groupsAdapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
         ButterKnife.bind(this);
+        groupSwipe.setOnRefreshListener(this);
         addGroupProgress = new Dialog(this, R.style.Theme_Transparent);
         addGroupProgress.setContentView(R.layout.dim_group_layout);
-        mGroupsRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        groupSwipe.setColorSchemeColors(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+        groupSwipe.post(new Runnable() {
+            @Override
+            public void run() {
+                groupSwipe.setRefreshing(true);
+            }
+        });
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0)
@@ -88,6 +108,7 @@ public class Groups extends AppCompatActivity {
                     mCreateGroup.show(true);
             }
         });
+        groupsModels = new ArrayList<>();
         groupsAdapter = new GroupsAdapter(groupsModels, this);
         mSharedHelper = new SharedHelper(this);
         ActionBar actionBar = getSupportActionBar();
@@ -95,6 +116,30 @@ public class Groups extends AppCompatActivity {
             actionBar.setTitle(getString(R.string.groupsText));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+        itemAnimator.setAddDuration(500);
+        itemAnimator.setRemoveDuration(500);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        mRecyclerView.setLayoutManager(gridLayoutManager);
+        mRecyclerView.setItemAnimator(itemAnimator);
+
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, mRecyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Intent intent = new Intent(getApplicationContext(), SingleGroupView.class);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+        mRecyclerView.setAdapter(groupsAdapter);
+
+
         getGroups();
     }
 
@@ -134,8 +179,13 @@ public class Groups extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        if (groupsModels != null) {
+                            groupsModels.clear();
+                            groupsAdapter.notifyDataSetChanged();
+                        }
                         boolean hasAnyGroups = jsonObject.optBoolean("hasGroups");
                         if (hasAnyGroups) {
+                            hideNoGroupLayout();
                             JSONArray jsonArray = jsonObject.optJSONArray("groups");
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject eachObject = jsonArray.optJSONObject(i);
@@ -146,14 +196,17 @@ public class Groups extends AppCompatActivity {
                                 String groupDescription = eachObject.optString("group_description");
                                 String groupOwnerId = eachObject.optString("group_owner_id");
                                 String groupColor = eachObject.optString("group_color");
+                                String participantsCount = eachObject.optString("participants");
 
                                 // TODO: 2016-07-07  add participants count
                                 groupsModel = new GroupsModel(groupId, groupImage, groupName, groupOwnerName, groupDescription,
-                                        groupOwnerId, groupColor, "0");
+                                        groupOwnerId, groupColor, participantsCount);
                                 groupsModels.add(groupsModel);
                                 groupsAdapter.notifyDataSetChanged();
+                                groupSwipe.setRefreshing(false);
                             }
                         } else {
+                            groupSwipe.setRefreshing(false);
                             showNoGroupLayout();
                         }
                     } else {
@@ -173,8 +226,12 @@ public class Groups extends AppCompatActivity {
         });
     }
 
-    private void showNoGroupLayout() {
+    private void hideNoGroupLayout() {
+        noGroupsLayout.setVisibility(View.GONE);
+    }
 
+    private void showNoGroupLayout() {
+        noGroupsLayout.setVisibility(View.VISIBLE);
     }
 
 
@@ -262,6 +319,7 @@ public class Groups extends AppCompatActivity {
             public void onClick(View view) {
             }
         }).show();
+        getGroups();
     }
 
     private void publishCreatedGroup(final String groupName, final String groupDescription) {
@@ -442,5 +500,10 @@ public class Groups extends AppCompatActivity {
         }
 
         return Bitmap.createScaledBitmap(image, width, height, true);
+    }
+
+    @Override
+    public void onRefresh() {
+        getGroups();
     }
 }

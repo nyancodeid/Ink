@@ -94,7 +94,8 @@
         </activity>
         <activity android:name="ink.activities.Groups" />
         <activity android:name="ink.activities.Settings" />
-        <activity android:name="ink.activities.ChatRoulette"></activity>
+        <activity android:name="ink.activities.ChatRoulette" />
+        <activity android:name="ink.activities.SingleGroupView"></activity>
     </application>
 
 </manifest>
