@@ -6,6 +6,8 @@ package ink.utils;
 public class Constants {
     public static final String MAIN_URL = "http://vaentertaiment.esy.es/Ink/";
     public static final String USER_IMAGES_FOLDER = "UserImages/";
+    public static final String ADD_GROUP_URL = "AddGroup.php";
+    public static final String GET_GROUP_URL = "GetGroups.php";
     public static final String REGISTER_URL = "Register.php";
     public static final String LOGIN_URL = "Login.php";
     public static final String FRIENDS_URL = "UserFriends.php";
