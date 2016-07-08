@@ -141,7 +141,8 @@
     <string name="permissionsRequired">Permissions are required to show your location</string>
     <string name="addresNotAvailable">Could not get address name</string>
     <string name="nothingChosen">Nothing was chosen</string>
-    <string name="writeSomething">Write a post...</string>
+    <string name="writePost">Write a post...</string>
+    <string name="writeSomething">Write something...</string>
     <string name="fieldEmptyError">Nothing was written</string>
     <string name="attachUrl">Paste URL here</string>
     <string name="attach">Attach</string>
@@ -194,4 +195,5 @@
     <string name="groupCreated">Group created</string>
     <string name="participantText">Participant(s)</string>
     <string name="noGroupsYet">No groups yet.Find any and join now!</string>
+    <string name="joinText">Join Group</string>
 </resources>

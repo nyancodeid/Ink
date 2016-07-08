@@ -181,7 +181,7 @@
             android:background="@android:color/transparent"
             android:fontFamily="@string/appFont"
             android:gravity="left|top"
-            android:hint="@string/writeSomething" />
+            android:hint="@string/writePost" />
 
         <LinearLayout
             android:id="@+id/attachmentContent"

@@ -129,6 +129,15 @@ public class Groups extends AppCompatActivity implements SwipeRefreshLayout.OnRe
             @Override
             public void onClick(View view, int position) {
                 Intent intent = new Intent(getApplicationContext(), SingleGroupView.class);
+                intent.putExtra("groupName", groupsModels.get(position).getGroupName());
+                intent.putExtra("groupId", groupsModels.get(position).getGroupId());
+                intent.putExtra("groupColor", groupsModels.get(position).getGroupColor());
+                intent.putExtra("groupImage", groupsModels.get(position).getGroupImage());
+                intent.putExtra("groupDescription", groupsModels.get(position).getGroupDescription());
+                intent.putExtra("groupOwnerId", groupsModels.get(position).getGroupOwnerId());
+                intent.putExtra("groupOwnerName", groupsModels.get(position).getGroupOwnerName());
+                intent.putExtra("count", groupsModels.get(position).getParticipantsCount());
+                intent.putExtra("ownerImage", groupsModels.get(position).getOwnerImage());
                 startActivity(intent);
             }
 
@@ -197,10 +206,10 @@ public class Groups extends AppCompatActivity implements SwipeRefreshLayout.OnRe
                                 String groupOwnerId = eachObject.optString("group_owner_id");
                                 String groupColor = eachObject.optString("group_color");
                                 String participantsCount = eachObject.optString("participants");
+                                String ownerImage = eachObject.optString("owner_image");
 
-                                // TODO: 2016-07-07  add participants count
                                 groupsModel = new GroupsModel(groupId, groupImage, groupName, groupOwnerName, groupDescription,
-                                        groupOwnerId, groupColor, participantsCount);
+                                        groupOwnerId, groupColor, participantsCount, ownerImage);
                                 groupsModels.add(groupsModel);
                                 groupsAdapter.notifyDataSetChanged();
                                 groupSwipe.setRefreshing(false);
@@ -347,7 +356,7 @@ public class Groups extends AppCompatActivity implements SwipeRefreshLayout.OnRe
     private void callToServer(final String base64, final String groupName, final String groupDescription) {
         Call<ResponseBody> createGroupCall = Retrofit.getInstance().getInkService().createGroup(mSharedHelper.getUserId(),
                 base64, groupName, groupDescription, chosenColor,
-                mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
+                mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), mSharedHelper.getImageLink());
         createGroupCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

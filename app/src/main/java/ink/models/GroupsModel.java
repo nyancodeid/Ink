@@ -12,13 +12,16 @@ public class GroupsModel {
     private String groupOwnerId;
     private String groupColor;
     private String participantsCount;
+    private String ownerImage;
 
     public GroupsModel(String groupId,
                        String groupImage,
                        String groupName, String groupOwnerName,
                        String groupDescription, String groupOwnerId,
-                       String groupColor, String participantsCount) {
+                       String groupColor, String participantsCount,
+                       String ownerImage) {
         this.groupId = groupId;
+        this.ownerImage = ownerImage;
         this.participantsCount = participantsCount;
         this.groupImage = groupImage;
         this.groupName = groupName;
@@ -87,6 +90,14 @@ public class GroupsModel {
 
     public String getGroupColor() {
         return groupColor;
+    }
+
+    public String getOwnerImage() {
+        return ownerImage;
+    }
+
+    public void setOwnerImage(String ownerImage) {
+        this.ownerImage = ownerImage;
     }
 
     public void setGroupColor(String groupColor) {

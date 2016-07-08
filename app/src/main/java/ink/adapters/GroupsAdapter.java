@@ -29,7 +29,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView groupName, followersCount;
-        public ImageView groupImage;
+        public ImageView groupImage, ownerImage;
         public CardView groupBackground;
 
         public ViewHolder(View view) {
@@ -37,6 +37,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
             groupName = (TextView) view.findViewById(R.id.groupName);
             followersCount = (TextView) view.findViewById(R.id.followersCount);
             groupImage = (ImageView) view.findViewById(R.id.groupImage);
+            ownerImage = (ImageView) view.findViewById(R.id.ownerImage);
             groupBackground = (CardView) view.findViewById(R.id.groupBackground);
         }
     }
@@ -70,13 +71,21 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
             holder.followersCount.setTextColor(Color.parseColor("#ffffff"));
             holder.groupName.setTextColor(Color.parseColor("#ffffff"));
         }
-        if (groupsModel.getGroupImage().isEmpty()) {
-            Picasso.with(mContext).load(R.drawable.no_background_image).transform(new CircleTransform()).fit()
+        if (!groupsModel.getGroupImage().isEmpty()) {
+            Picasso.with(mContext).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER +
+                    groupsModel.getGroupImage()).fit()
                     .centerCrop().into(holder.groupImage);
         } else {
-            Picasso.with(mContext).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER +
-                    groupsModel.getGroupImage()).transform(new CircleTransform()).fit()
+            Picasso.with(mContext).load(R.drawable.no_image_box).fit()
                     .centerCrop().into(holder.groupImage);
+        }
+        if (groupsModel.getOwnerImage() != null && !groupsModel.getOwnerImage().isEmpty()) {
+            Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                    groupsModel.getOwnerImage()).transform(new CircleTransform()).fit()
+                    .centerCrop().into(holder.ownerImage);
+        } else {
+            Picasso.with(mContext).load(R.drawable.no_image).transform(new CircleTransform()).fit()
+                    .centerCrop().into(holder.ownerImage);
         }
         holder.groupBackground.setCardBackgroundColor(Color.parseColor(hexColor));
         holder.groupName.setText(groupsModel.getGroupName());

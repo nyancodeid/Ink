@@ -89,7 +89,8 @@ public class Retrofit {
                                        @Field("groupName") String groupName,
                                        @Field("groupDescription") String groupDescription,
                                        @Field("groupColor") String groupColor,
-                                       @Field("ownerName") String ownerName);
+                                       @Field("ownerName") String ownerName,
+                                       @Field("ownerImage") String ownerImage);
 
 
         @POST(Constants.ADD_COMMENT_URL)
