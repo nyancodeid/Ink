@@ -210,4 +210,5 @@
     <string name="personRequestedText">requested to join the</string>
     <string name="groupText">group</string>
     <string name="noRequestText">You do not have any pending request</string>
+    <string name="myRequests">My requests</string>
 </resources>

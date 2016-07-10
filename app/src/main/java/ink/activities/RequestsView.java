@@ -1,5 +1,6 @@
 package ink.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -7,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -62,7 +64,8 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
         requestsRecycler.setItemAnimator(itemAnimator);
         requestsRecycler.setAdapter(requestsAdapter);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar!=null){
+        if (actionBar != null) {
+            actionBar.setTitle(getString(R.string.myRequests));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         getMyRequests();
@@ -99,6 +102,7 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
                         JSONArray jsonArray = jsonObject.optJSONArray("requests");
                         if (jsonArray.length() <= 0) {
                             noRequestsLayout.setVisibility(View.VISIBLE);
+                            requestSwipe.setRefreshing(false);
                             return;
                         }
                         noRequestsLayout.setVisibility(View.GONE);
@@ -150,5 +154,24 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
 
     }
 
+    @Override
+    public void onItemClicked(int position) {
+        RequestsModel singleModel = requestsModels.get(position);
+        String name = singleModel.getRequesterName();
+        String[] splited = name.split("\\s+");
+        String firstName = splited[0];
+        String lastName = splited[1];
+        Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
+        intent.putExtra("id", singleModel.getRequesterId());
+        intent.putExtra("firstName", firstName);
+        intent.putExtra("lastName", lastName);
+        startActivity(intent);
+    }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return super.onOptionsItemSelected(item);
+    }
 }

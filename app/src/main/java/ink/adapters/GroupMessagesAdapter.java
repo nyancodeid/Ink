@@ -59,7 +59,7 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
                     groupMessagesModel.getSenderImage()).transform(new CircleTransform()).fit()
                     .centerCrop().into(holder.messageSenderImage);
         } else {
-            Picasso.with(mContext).load(R.drawable.no_image_box).transform(new CircleTransform()).fit()
+            Picasso.with(mContext).load(R.drawable.no_image).transform(new CircleTransform()).fit()
                     .centerCrop().into(holder.messageSenderImage);
         }
         holder.groupMessageBody.setText(groupMessagesModel.getGroupMessage());

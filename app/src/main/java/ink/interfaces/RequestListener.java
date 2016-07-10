@@ -7,4 +7,5 @@ public interface RequestListener {
     void onAcceptClicked(int position);
 
     void onDeclineClicked(int position);
+    void onItemClicked(int position);
 }

@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/requestRootLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
     android:orientation="vertical">
 
     <ImageView
@@ -21,15 +26,23 @@
         android:fontFamily="@string/appFont"
         android:text="@string/loadingText" />
 
+    <View
+        android:id="@+id/requestDivider"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:layout_centerHorizontal="true"></View>
+
     <Button
         android:id="@+id/declineRequest"
         style="?attr/selectableItemBackground"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/requesterImage"
         android:layout_alignStart="@+id/requesterImage"
         android:layout_below="@+id/requesterMessage"
+        android:layout_marginRight="20dp"
         android:layout_marginTop="15dp"
+        android:layout_toLeftOf="@+id/requestDivider"
         android:background="@drawable/circle_corner"
         android:drawableRight="@drawable/decline_icon"
         android:fontFamily="@string/appFont"
@@ -42,12 +55,14 @@
     <Button
         android:id="@+id/acceptRequest"
         style="?attr/selectableItemBackground"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/requesterMessage"
         android:layout_alignRight="@+id/requesterMessage"
         android:layout_below="@+id/requesterMessage"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="15dp"
+        android:layout_toRightOf="@+id/requestDivider"
         android:background="@drawable/circle_corner"
         android:drawableRight="@drawable/accept_icon"
         android:fontFamily="@string/appFont"

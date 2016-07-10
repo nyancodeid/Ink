@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.R;
@@ -32,12 +33,14 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
         public TextView requesterMessage;
         public ImageView requesterImage;
         public Button accept, decline;
+        public RelativeLayout requestRootLayout;
 
         public ViewHolder(View view) {
             super(view);
             requesterMessage = (TextView) view.findViewById(R.id.requesterMessage);
             requesterImage = (ImageView) view.findViewById(R.id.requesterImage);
             accept = (Button) view.findViewById(R.id.acceptRequest);
+            requestRootLayout = (RelativeLayout) view.findViewById(R.id.requestRootLayout);
             decline = (Button) view.findViewById(R.id.declineRequest);
         }
     }
@@ -64,7 +67,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                     requestsModel.getRequesterImage()).transform(new CircleTransform()).fit()
                     .centerCrop().into(holder.requesterImage);
         } else {
-            Picasso.with(mContext).load(R.drawable.no_image_box).transform(new CircleTransform()).fit()
+            Picasso.with(mContext).load(R.drawable.no_image).transform(new CircleTransform()).fit()
                     .centerCrop().into(holder.requesterImage);
         }
         holder.accept.setOnClickListener(new View.OnClickListener() {
@@ -83,8 +86,16 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                 }
             }
         });
+        holder.requestRootLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (requestListener != null) {
+                    requestListener.onItemClicked(position);
+                }
+            }
+        });
         holder.requesterMessage.setText(requestsModel.getRequesterName() + " " + mContext.getString(R.string.personRequestedText) + " " +
-                requestsModel.getGroupName()+" "+mContext.getString(R.string.groupText));
+                requestsModel.getGroupName() + " " + mContext.getString(R.string.groupText));
     }
 
 
