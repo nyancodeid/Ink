@@ -8,6 +8,10 @@ public class Constants {
     public static final String USER_IMAGES_FOLDER = "UserImages/";
     public static final String GROUP_IMAGES_FOLDER = "GroupImages/";
     public static final String ADD_GROUP_URL = "AddGroup.php";
+    public static final String GROUP_REQUESTS_URL = "GetGroupRequests.php";
+    public static final String SEARCH_GROUP_URL = "SearchGroups.php";
+    public static final String JOIN_GROUP_URL = "JoinGroup.php";
+    public static final String ADD_GROUP_MESSAGE_URL = "AddGroupMessage.php";
     public static final String GET_GROUP_URL = "GetGroups.php";
     public static final String REGISTER_URL = "Register.php";
     public static final String MY_GROUPS_URL = "UserGroups.php";
@@ -34,5 +38,7 @@ public class Constants {
     public static final String GET_COMMENTS_URL = "GetComments.php";
     public static final String ADD_COMMENT_URL = "AddComment.php";
     public static final int TEXT_VIEW_DEFAULT_COLOR = android.R.color.tab_indicator_text;
+    public static final String TYPE_MESSAGE = "message";
+    public static final String TYPE_REQUEST = "request";
 }
 

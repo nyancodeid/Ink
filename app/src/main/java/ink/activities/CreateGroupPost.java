@@ -1,17 +1,25 @@
 package ink.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.ink.R;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -19,7 +27,12 @@ import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
+import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CreateGroupPost extends AppCompatActivity {
 
@@ -31,6 +44,9 @@ public class CreateGroupPost extends AppCompatActivity {
     EditText groupInputField;
     @Bind(R.id.sendGroupMessage)
     FloatingActionButton sendGroupMessageIcon;
+    @Bind(R.id.groupMessageSpin)
+    SpinKitView groupMessageSpin;
+    private String groupId;
 
     private SharedHelper sharedHelper;
 
@@ -39,6 +55,12 @@ public class CreateGroupPost extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group_post);
         ButterKnife.bind(this);
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            groupId = bundle.getString("groupId");
+        }
+
+
         sharedHelper = new SharedHelper(this);
         if (!sharedHelper.getImageLink().isEmpty()) {
             Picasso.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + sharedHelper.getImageLink()).
@@ -91,6 +113,51 @@ public class CreateGroupPost extends AppCompatActivity {
 
     @OnClick(R.id.sendGroupMessage)
     public void postGroupMessageWrapper() {
-        Toast.makeText(CreateGroupPost.this, "hello", Toast.LENGTH_SHORT).show();
+        sendGroupMessage();
+    }
+
+    private void sendGroupMessage() {
+        Call<ResponseBody> sendGroupMessageCall = Retrofit.getInstance().getInkService().sendGroupMessage(groupId,
+                groupInputField.getText().toString().trim(), sharedHelper.getUserId(),
+                sharedHelper.getImageLink(), sharedHelper.getFirstName() + " " + sharedHelper.getLastName());
+        groupInputField.setText("");
+        groupMessageSpin.setVisibility(View.VISIBLE);
+        groupInputField.setEnabled(false);
+        sendGroupMessageCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    sendGroupMessage();
+                    return;
+                }
+                if (response.body() == null) {
+                    sendGroupMessage();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        finish();
+                        overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
+                        LocalBroadcastManager.getInstance(CreateGroupPost.this).sendBroadcast(new Intent(getPackageName() +
+                                "SingleGroupView"));
+                    } else {
+                        sendGroupMessage();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                sendGroupMessage();
+            }
+        });
+
     }
 }

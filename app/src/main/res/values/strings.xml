@@ -196,4 +196,18 @@
     <string name="participantText">Participant(s)</string>
     <string name="noGroupsYet">No groups yet.Find any and join now!</string>
     <string name="joinText">Join Group</string>
+    <string name="messagePosted">Message posted</string>
+    <string name="noGroupMessages">No group posts</string>
+    <string name="search_title">Search</string>
+    <string name="groupSearchHint">Groups...</string>
+    <string name="nothingFoundText">No matching result</string>
+    <string name="newMessage">New Message from</string>
+    <string name="requestedText">requested to join</string>
+    <string name="requestedTextBody">Action is needed for the request.You can accept or deny the request by clicking on the notification and being redirected to corresponding page.</string>
+    <string name="requestTitle">My requests</string>
+    <string name="acceptText">Accept</string>
+    <string name="declineText">Decline</string>
+    <string name="personRequestedText">requested to join the</string>
+    <string name="groupText">group</string>
+    <string name="noRequestText">You do not have any pending request</string>
 </resources>

@@ -19,6 +19,38 @@
         </android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/searchProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        app:indicator="BallClipRotateMultiple"
+        app:indicator_color="@color/colorPrimary" />
+
+    <RelativeLayout
+        android:id="@+id/nothingFoundLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/nothingFoundIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/nothing_found_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nothingFoundIcon"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@string/appFont"
+            android:text="@string/nothingFoundText" />
+    </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/noGroupsLayout"
         android:layout_width="wrap_content"

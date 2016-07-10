@@ -36,6 +36,7 @@ import java.util.Map;
 
 import ink.activities.Chat;
 import ink.activities.NotificationView;
+import ink.activities.RequestsView;
 import ink.utils.Constants;
 import ink.utils.Notification;
 import ink.utils.RealmHelper;
@@ -58,31 +59,37 @@ public class NotificationService extends FirebaseMessagingService {
 
         // Build the notification and add the actio
 //
-        final Map<String, String> response = remoteMessage.getData();
-        Looper looper = Looper.getMainLooper();
-        Handler handler = new Handler(looper);
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                RealmHelper.getInstance().insertMessage(response.get("user_id"), response.get("opponent_id"),
-                        response.get("message"), response.get("message_id"), response.get("date"), response.get("message_id"),
-                        Constants.STATUS_DELIVERED, response.get("user_image"), response.get("opponent_image"),
-                        response.get("delete_opponent_id"), response.get("delete_user_id"));
-            }
-        });
-
         mSharedHelper = new SharedHelper(this);
-        if (Notification.getInstance().isSendingRemote()) {
-            sendNotification("New Message", response.get("user_id"),
-                    response.get("message"), getApplicationContext(),
-                    response.get("message_id"), response.get("opponent_id"),
-                    response.get("opponent_image"), response.get("user_image"), response.get("name"),
-                    response.get("delete_user_id"), response.get("delete_opponent_id"));
-        } else {
-            Intent intent = new Intent(getPackageName() + ".Chat");
-            intent.putExtra("data", remoteMessage);
-            LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
-            localBroadcastManager.sendBroadcast(intent);
+        final Map<String, String> response = remoteMessage.getData();
+        if (response.get("type").equals(Constants.TYPE_MESSAGE)) {
+            Looper looper = Looper.getMainLooper();
+            Handler handler = new Handler(looper);
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+
+                    RealmHelper.getInstance().insertMessage(response.get("user_id"), response.get("opponent_id"),
+                            response.get("message"), response.get("message_id"), response.get("date"), response.get("message_id"),
+                            Constants.STATUS_DELIVERED, response.get("user_image"), response.get("opponent_image"),
+                            response.get("delete_opponent_id"), response.get("delete_user_id"));
+                }
+            });
+
+            if (Notification.getInstance().isSendingRemote()) {
+                sendNotification("New Message", response.get("user_id"),
+                        response.get("message"), getApplicationContext(),
+                        response.get("message_id"), response.get("opponent_id"),
+                        response.get("opponent_image"), response.get("user_image"), response.get("name"),
+                        response.get("delete_user_id"), response.get("delete_opponent_id"));
+            } else {
+                Intent intent = new Intent(getPackageName() + ".Chat");
+                intent.putExtra("data", remoteMessage);
+                LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+                localBroadcastManager.sendBroadcast(intent);
+            }
+        } else if (response.get("type").equals(Constants.TYPE_REQUEST)) {
+            sendRequestNotification(getApplicationContext(), response.get("requesterName"),
+                    response.get("requestedGroup"), response.get("requestId"));
         }
 
 
@@ -136,7 +143,7 @@ public class NotificationService extends FirebaseMessagingService {
         builder.addAction(new NotificationCompat.Action(R.drawable.ic_send_black_24dp, context.getString(R.string.reply),
                 pendingIntent));
 
-        builder.setContentTitle("New Message from " + userName);
+        builder.setContentTitle(getString(R.string.newMessage) + " " + userName);
         builder.setContentText(messageBody);
         builder.setGroup(GROUP_KEY_MESSAGES);
         builder.setDefaults(android.app.Notification.DEFAULT_ALL);
@@ -145,6 +152,34 @@ public class NotificationService extends FirebaseMessagingService {
         builder.setShowWhen(true);
         android.app.Notification notification = builder.build();
         notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+    }
+
+    public void sendRequestNotification(Context context, String requesterName, String requestedGroup,
+                                        String requestId) {
+
+        NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+
+        Intent requestsViewIntent = new Intent(context, RequestsView.class);
+        requestsViewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+
+        PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(requestId), requestsViewIntent, 0);
+        android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setAutoCancel(true);
+
+
+        builder.setContentTitle(requesterName + " " + getString(R.string.requestedText) + " " +
+                "'" + requestedGroup + "'");
+        builder.setContentText(getString(R.string.requestedTextBody));
+        builder.setGroup(GROUP_KEY_MESSAGES);
+        builder.setDefaults(android.app.Notification.DEFAULT_ALL);
+        builder.setContentIntent(requestsViewPending);
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.requestedTextBody)));
+        builder.setShowWhen(true);
+        android.app.Notification notification = builder.build();
+        notificationManagerCompat.notify(Integer.valueOf(requestId), notification);
     }
 
 

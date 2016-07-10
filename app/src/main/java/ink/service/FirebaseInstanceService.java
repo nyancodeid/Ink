@@ -30,7 +30,6 @@ public class FirebaseInstanceService extends FirebaseInstanceIdService {
         mSharedHelper = new SharedHelper(this);
         mSharedHelper.putToken(refreshedToken);
         mSharedHelper.setTokenRefreshed(true);
-        // TODO: Implement this method to send any registration to your app's servers.
         sendRegistrationToServer(refreshedToken);
     }
     // [END refresh_token]

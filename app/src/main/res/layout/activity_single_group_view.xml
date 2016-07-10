@@ -115,8 +115,48 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </RelativeLayout>
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/groupMessagesLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:visibility="gone"
+                app:indicator="BallClipRotateMultiple"
+                app:indicator_color="@color/colorPrimary" />
 
+            <RelativeLayout
+                android:id="@+id/noGroupMessageLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/noGroupMessageIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/no_group_message_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/noGroupMessageIcon"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@string/appFont"
+                    android:text="@string/noGroupMessages" />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/groupMessagesRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 
     <ImageView

@@ -13,14 +13,16 @@ public class GroupsModel {
     private String groupColor;
     private String participantsCount;
     private String ownerImage;
+    private boolean isMember;
 
     public GroupsModel(String groupId,
                        String groupImage,
                        String groupName, String groupOwnerName,
                        String groupDescription, String groupOwnerId,
                        String groupColor, String participantsCount,
-                       String ownerImage) {
+                       String ownerImage, boolean isMember) {
         this.groupId = groupId;
+        this.isMember = isMember;
         this.ownerImage = ownerImage;
         this.participantsCount = participantsCount;
         this.groupImage = groupImage;
@@ -102,5 +104,13 @@ public class GroupsModel {
 
     public void setGroupColor(String groupColor) {
         this.groupColor = groupColor;
+    }
+
+    public boolean isMember() {
+        return isMember;
+    }
+
+    public void setMember(boolean member) {
+        isMember = member;
     }
 }

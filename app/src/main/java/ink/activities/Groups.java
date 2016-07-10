@@ -1,6 +1,8 @@
 package ink.activities;
 
 import android.app.Dialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,6 +14,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -20,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +36,7 @@ import android.widget.TextView;
 
 import com.ink.R;
 import com.squareup.picasso.Picasso;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,6 +76,10 @@ public class Groups extends AppCompatActivity implements SwipeRefreshLayout.OnRe
     SwipeRefreshLayout groupSwipe;
     @Bind(R.id.noGroupsLayout)
     RelativeLayout noGroupsLayout;
+    @Bind(R.id.nothingFoundLayout)
+    RelativeLayout nothingFoundLayout;
+    @Bind(R.id.searchProgress)
+    AVLoadingIndicatorView searchProgress;
     private AlertDialog addGroupDialog = null;
     private String chosenColor = "";
     private static final int PICK_IMAGE_RESULT_CODE = 1547;
@@ -138,6 +147,7 @@ public class Groups extends AppCompatActivity implements SwipeRefreshLayout.OnRe
                 intent.putExtra("groupOwnerName", groupsModels.get(position).getGroupOwnerName());
                 intent.putExtra("count", groupsModels.get(position).getParticipantsCount());
                 intent.putExtra("ownerImage", groupsModels.get(position).getOwnerImage());
+                intent.putExtra("isMember", groupsModels.get(position).isMember());
                 startActivity(intent);
             }
 
@@ -155,8 +165,41 @@ public class Groups extends AppCompatActivity implements SwipeRefreshLayout.OnRe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Do something when collapsed
+                if (searchProgress.getVisibility() == View.VISIBLE) {
+                    searchProgress.setVisibility(View.GONE);
+                }
+                if (nothingFoundLayout.getVisibility() == View.VISIBLE) {
+                    nothingFoundLayout.setVisibility(View.GONE);
+                }
+                groupSwipe.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        groupSwipe.setRefreshing(true);
+                    }
+                });
+                mRecyclerView.setVisibility(View.VISIBLE);
+                getGroups();
+                return true;  // Return true to collapse action view
+            }
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // Do something when expanded
+                return true;  // Return true to expand action view
+            }
+        });
+
         if (item.getItemId() == R.id.myGroups) {
 
+        } else if (item.getItemId() == R.id.search) {
+
+        } else if (item.getItemId() == R.id.requests) {
+            startActivity(new Intent(getApplicationContext(), RequestsView.class));
         } else {
             finish();
         }
@@ -167,7 +210,126 @@ public class Groups extends AppCompatActivity implements SwipeRefreshLayout.OnRe
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.group_menu, menu);
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                doSearch(newText);
+                return true;
+            }
+        });
+
         return true;
+    }
+
+    private void doSearch(final String newText) {
+        if (!newText.trim().toLowerCase().isEmpty()) {
+            if (noGroupsLayout.getVisibility() == View.VISIBLE) {
+                noGroupsLayout.setVisibility(View.GONE);
+            }
+            if (nothingFoundLayout.getVisibility() == View.VISIBLE) {
+                nothingFoundLayout.setVisibility(View.GONE);
+            }
+            if (mRecyclerView.getVisibility() == View.VISIBLE) {
+                mRecyclerView.setVisibility(View.GONE);
+            }
+            searchProgress.setVisibility(View.VISIBLE);
+
+            String searchableText = newText.trim().toLowerCase();
+            Call<ResponseBody> searchCall = Retrofit.getInstance().getInkService().searchGroups(mSharedHelper.getUserId(),
+                    searchableText);
+            searchCall.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response == null) {
+                        doSearch(newText);
+                        return;
+                    }
+                    if (response.body() == null) {
+                        doSearch(newText);
+                        return;
+                    }
+                    try {
+                        String responseBody = response.body().string();
+                        JSONObject jsonObject = new JSONObject(responseBody);
+                        boolean hasResults = jsonObject.optBoolean("hasAnyResult");
+                        if (hasResults) {
+                            JSONArray resultsArray = jsonObject.optJSONArray("result");
+                            if (groupsModels != null) {
+                                groupsModels.clear();
+                                groupsAdapter.notifyDataSetChanged();
+                            }
+                            for (int i = 0; i < resultsArray.length(); i++) {
+                                JSONObject eachObject = resultsArray.optJSONObject(i);
+                                String groupId = eachObject.optString("group_id");
+                                String groupImage = eachObject.optString("group_image");
+                                String groupName = eachObject.optString("group_name");
+                                String groupOwnerName = eachObject.optString("group_owner_name");
+                                String groupDescription = eachObject.optString("group_description");
+                                String groupOwnerId = eachObject.optString("group_owner_id");
+                                String groupColor = eachObject.optString("group_color");
+                                String participantsCount = eachObject.optString("participants");
+                                String ownerImage = eachObject.optString("owner_image");
+                                boolean isMember = eachObject.optBoolean("isMember");
+
+                                groupsModel = new GroupsModel(groupId, groupImage, groupName, groupOwnerName, groupDescription,
+                                        groupOwnerId, groupColor, participantsCount, ownerImage, isMember);
+                                groupsModels.add(groupsModel);
+                                groupsAdapter.notifyDataSetChanged();
+                            }
+                            showResult();
+                        } else {
+                            showNoResult();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    doSearch(newText);
+                }
+            });
+
+        }
+    }
+
+    private void showResult() {
+        if (nothingFoundLayout.getVisibility() == View.VISIBLE) {
+            nothingFoundLayout.setVisibility(View.GONE);
+        }
+        mRecyclerView.setVisibility(View.VISIBLE);
+        if (searchProgress.getVisibility() == View.VISIBLE) {
+            searchProgress.setVisibility(View.GONE);
+        }
+        if (noGroupsLayout.getVisibility() == View.VISIBLE) {
+            noGroupsLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void showNoResult() {
+        if (noGroupsLayout.getVisibility() == View.VISIBLE) {
+            noGroupsLayout.setVisibility(View.GONE);
+        }
+        mRecyclerView.setVisibility(View.GONE);
+        if (searchProgress.getVisibility() == View.VISIBLE) {
+            searchProgress.setVisibility(View.GONE);
+        }
+        nothingFoundLayout.setVisibility(View.VISIBLE);
     }
 
     private void getGroups() {
@@ -207,9 +369,10 @@ public class Groups extends AppCompatActivity implements SwipeRefreshLayout.OnRe
                                 String groupColor = eachObject.optString("group_color");
                                 String participantsCount = eachObject.optString("participants");
                                 String ownerImage = eachObject.optString("owner_image");
+                                boolean isMember = eachObject.optBoolean("isMember");
 
                                 groupsModel = new GroupsModel(groupId, groupImage, groupName, groupOwnerName, groupDescription,
-                                        groupOwnerId, groupColor, participantsCount, ownerImage);
+                                        groupOwnerId, groupColor, participantsCount, ownerImage, isMember);
                                 groupsModels.add(groupsModel);
                                 groupsAdapter.notifyDataSetChanged();
                                 groupSwipe.setRefreshing(false);
@@ -513,6 +676,15 @@ public class Groups extends AppCompatActivity implements SwipeRefreshLayout.OnRe
 
     @Override
     public void onRefresh() {
+        if (mRecyclerView.getVisibility() == View.GONE) {
+            mRecyclerView.setVisibility(View.VISIBLE);
+        }
+        if (searchProgress.getVisibility() == View.VISIBLE) {
+            searchProgress.setVisibility(View.GONE);
+        }
+        if (nothingFoundLayout.getVisibility() == View.VISIBLE) {
+            nothingFoundLayout.setVisibility(View.GONE);
+        }
         getGroups();
     }
 }

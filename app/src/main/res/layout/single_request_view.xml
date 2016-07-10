@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/requesterImage"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_margin="10dp" />
+
+    <TextView
+        android:id="@+id/requesterMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/requesterImage"
+        android:layout_alignTop="@+id/requesterImage"
+        android:layout_marginRight="5dp"
+        android:layout_toRightOf="@+id/requesterImage"
+        android:fontFamily="@string/appFont"
+        android:text="@string/loadingText" />
+
+    <Button
+        android:id="@+id/declineRequest"
+        style="?attr/selectableItemBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/requesterImage"
+        android:layout_alignStart="@+id/requesterImage"
+        android:layout_below="@+id/requesterMessage"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/circle_corner"
+        android:drawableRight="@drawable/decline_icon"
+        android:fontFamily="@string/appFont"
+        android:padding="5dp"
+        android:text="@string/declineText"
+        android:textAllCaps="false"
+        android:textColor="#ffffff" />
+
+
+    <Button
+        android:id="@+id/acceptRequest"
+        style="?attr/selectableItemBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/requesterMessage"
+        android:layout_alignRight="@+id/requesterMessage"
+        android:layout_below="@+id/requesterMessage"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/circle_corner"
+        android:drawableRight="@drawable/accept_icon"
+        android:fontFamily="@string/appFont"
+        android:padding="5dp"
+        android:text="@string/acceptText"
+        android:textAllCaps="false"
+        android:textColor="#ffffff" />
+</RelativeLayout>

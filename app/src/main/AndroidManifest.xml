@@ -110,7 +110,15 @@
             android:name="ink.activities.CreateGroupPost"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Transparent"></activity>
+            android:theme="@style/Theme.Transparent" />
+
+        <meta-data
+            android:name="android.app.default_searchable"
+            android:value="ink.activities.SearchResultsActivity" />
+
+        <activity
+            android:name="ink.activities.RequestsView"
+            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
     </application>
 
 </manifest>

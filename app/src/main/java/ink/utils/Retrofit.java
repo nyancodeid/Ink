@@ -63,6 +63,22 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getMessages(@Field("user_id") String userId, @Field("opponent_id") String opponentId);
 
+        @POST(Constants.SEARCH_GROUP_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> searchGroups(@Field("userId") String userId, @Field("textToSearch") String textToSearch);
+
+
+        @POST(Constants.GROUP_REQUESTS_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getMyRequests(@Field("ownerId") String userId);
+
+        @POST(Constants.JOIN_GROUP_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> requestJoin(@Field("ownerId") String ownerId,
+                                       @Field("participantId") String participantId,
+                                       @Field("participantname") String participantname,
+                                       @Field("participantImage") String participantImage,
+                                       @Field("participantGroupId") String participantGroupId);
 
         @POST(Constants.SEND_MESSAGE_URL)
         @FormUrlEncoded
@@ -72,6 +88,10 @@ public class Retrofit {
         @POST(Constants.SINGLE_USER_MESSAGES)
         @FormUrlEncoded
         Call<ResponseBody> getMyMessages(@Field("user_id") String userId);
+
+        @POST(Constants.GROUP_MESSAGES_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getGroupMessages(@Field("group_id") String groupId);
 
 
         @POST(Constants.GET_GROUP_URL)
@@ -91,6 +111,14 @@ public class Retrofit {
                                        @Field("groupColor") String groupColor,
                                        @Field("ownerName") String ownerName,
                                        @Field("ownerImage") String ownerImage);
+
+        @POST(Constants.ADD_GROUP_MESSAGE_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> sendGroupMessage(@Field("group_id") String groupId,
+                                            @Field("group_message") String groupMessage,
+                                            @Field("sender_id") String senderId,
+                                            @Field("sender_image") String senderImage,
+                                            @Field("sender_name") String senderName);
 
 
         @POST(Constants.ADD_COMMENT_URL)
