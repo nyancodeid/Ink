@@ -211,4 +211,36 @@
     <string name="groupText">group</string>
     <string name="noRequestText">You do not have any pending request</string>
     <string name="myRequests">My requests</string>
+    <string name="pending">Request pending...</string>
+    <string name="successfullyRequested">Request successfully submitted</string>
+    <string name="requestDenied">Request denied</string>
+    <string name="requestAccepted">Request accepted</string>
+    <string name="noMembers">No participants</string>
+    <string name="membersTitle">Participants</string>
+    <string name="close">Close</string>
+    <string name="chatRouletteText">  Chat Roulette -
+        \nNew way to communicate</string>
+    <string name="joinWaitRoom">Join wait room</string>
+    <string name="welcomeHintText">Welcome to Chat Roulette</string>
+    <string name="clickJoinButtonText">First let\'s start some Walkthrough of the section so you will know the basics.Here you can start random chatting to any person worldwide so  in order to start the random chat you need to join to a room first.
+    You can do it by clicking on the \'Join wait room \' button which will redirect you to the wait room.</string>
+    <string name="waitRoom">Wait Room</string>
+    <string name="statusText">Status : </string>
+    <string name="notConnectedToOpponent">Not connected to an opponent</string>
+    <string name="connectedToOpponent">Connected to an opponent</string>
+    <string name="disconnectedToOpponent">Disconnected from opponent</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="statustChanageTitle">Status changes during connection</string>
+    <string name="statusBrief">During search of a person the status will change and you will be informed whenever new opponent will be found,or your opponent will left the conversation</string>
+    <string name="connectDisconnectTitle">Connecting/Disconnecting inside the room</string>
+    <string name="connectDisconnectBrief">Whenever you want to start the conversation,you can click on the highlighted button to start the conversation.If you are already inside the conversation,the button icon will be changed to the disconnect status,and you can disconnect whenever you want to.</string>
+    <string name="messageBodyTitle">The message field</string>
+    <string name="messageBodyBrief">This is the place where you will write to your opponent.Write a message and send it,as simple as that.</string>
+    <string name="sendMessageTitle">Send button</string>
+    <string name="sendMessageBrief">To send your typed message simply click on this button and your message will be sent to the connected opponent.</string>
+    <string name="messagesPlaceTitle">Place where messages are shown</string>
+    <string name="messagesPlaceBrief">This is the place where your conversation will be visible as soon as you start one.</string>
+    <string name="endingTitle">Enjoy your time!</string>
+    <string name="endingBrief">Thank you for passing the tutorial.Hope you will enjoy your time and meet a lot of new friends here.Enjoy your day! :)</string>
 </resources>

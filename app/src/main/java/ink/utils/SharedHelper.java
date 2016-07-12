@@ -18,9 +18,11 @@ public class SharedHelper {
     public boolean hasImage() {
         return mSharedPreferences.getString("imageLink", "").isEmpty() ? false : true;
     }
-    public String getImageLink(){
-        return mSharedPreferences.getString("imageLink","");
+
+    public String getImageLink() {
+        return mSharedPreferences.getString("imageLink", "");
     }
+
     public void putImageLink(String imageLink) {
         mEditor.putString("imageLink", imageLink);
         mEditor.commit();
@@ -55,6 +57,15 @@ public class SharedHelper {
 
     public void clean() {
         mEditor.clear();
+        mEditor.commit();
+    }
+
+    public boolean shouldShowShowCase() {
+        return mSharedPreferences.getBoolean("shouldShowShowCase", true);
+    }
+
+    public void setShouldShowShowCase(boolean value) {
+        mEditor.putBoolean("shouldShowShowCase", value);
         mEditor.commit();
     }
 

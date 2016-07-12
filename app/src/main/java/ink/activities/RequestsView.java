@@ -2,6 +2,7 @@ package ink.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import butterknife.ButterKnife;
 import ink.adapters.RequestsAdapter;
 import ink.interfaces.RequestListener;
 import ink.models.RequestsModel;
+import ink.utils.Constants;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -146,12 +148,13 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onAcceptClicked(int position) {
-
+        acceptRequest(position);
     }
+
 
     @Override
     public void onDeclineClicked(int position) {
-
+        denyRequest(position);
     }
 
     @Override
@@ -174,4 +177,88 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
         finish();
         return super.onOptionsItemSelected(item);
     }
+
+    private void acceptRequest(final int position) {
+        final RequestsModel requestsModel = requestsModels.get(position);
+        Call<ResponseBody> requestCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.TYPE_ACCEPT_REQUEST,
+                requestsModel.getRequesterId(), requestsModel.getRequesterName(), requestsModel.getRequesterImage(),
+                requestsModel.getRequestedGroupId());
+        requestCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    acceptRequest(position);
+                    return;
+                }
+                if (response.body() == null) {
+                    acceptRequest(position);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        Snackbar.make(noRequestsLayout, getString(R.string.requestAccepted), Snackbar.LENGTH_SHORT).show();
+                        requestsModels.clear();
+                        getMyRequests();
+                    } else {
+                        denyRequest(position);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                acceptRequest(position);
+            }
+        });
+    }
+
+    private void denyRequest(final int position) {
+        RequestsModel requestsModel = requestsModels.get(position);
+        Call<ResponseBody> requestCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.TYPE_DENY_REQUEST,
+                requestsModel.getRequesterId(), requestsModel.getRequesterName(), requestsModel.getRequesterImage(),
+                requestsModel.getRequestedGroupId());
+        requestCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                if (response == null) {
+                    denyRequest(position);
+                    return;
+                }
+                if (response.body() == null) {
+                    denyRequest(position);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        Snackbar.make(noRequestsLayout, getString(R.string.requestDenied), Snackbar.LENGTH_SHORT).show();
+                        requestsModels.clear();
+                        getMyRequests();
+                    } else {
+                        denyRequest(position);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                denyRequest(position);
+            }
+        });
+    }
+
 }

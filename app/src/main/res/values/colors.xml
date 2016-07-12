@@ -7,4 +7,6 @@
     <color name="chat_background_color">#30cccccc</color>
     <color name="defaultGroupColor">#404040</color>
     <color name="defaultGroupPressedColor">#1C1C1C</color>
+    <color name="red">@android:color/holo_red_dark</color>
+    <color name="green">#58f409</color>
 </resources>

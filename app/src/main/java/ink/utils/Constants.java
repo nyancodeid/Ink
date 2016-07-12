@@ -15,8 +15,9 @@ public class Constants {
     public static final String GET_GROUP_URL = "GetGroups.php";
     public static final String REGISTER_URL = "Register.php";
     public static final String MY_GROUPS_URL = "UserGroups.php";
-    public static final String GROUP_PARTICIPANTS_URL = "GroupsParticipants.php";
+    public static final String GROUP_PARTICIPANTS_URL = "GroupParticipants.php";
     public static final String GROUP_MESSAGES_URL = "GroupMessages.php";
+    public static final String RESPOND_TO_REQUEST_URL = "RespondToRequest.php";
     public static final String LOGIN_URL = "Login.php";
     public static final String FRIENDS_URL = "UserFriends.php";
     public static final String SINGLE_USER_URL = "SingleUser.php";
@@ -40,5 +41,7 @@ public class Constants {
     public static final int TEXT_VIEW_DEFAULT_COLOR = android.R.color.tab_indicator_text;
     public static final String TYPE_MESSAGE = "message";
     public static final String TYPE_REQUEST = "request";
+    public static final String TYPE_ACCEPT_REQUEST = "0";
+    public static final String TYPE_DENY_REQUEST = "1";
 }
 

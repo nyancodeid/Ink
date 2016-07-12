@@ -76,7 +76,7 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> requestJoin(@Field("ownerId") String ownerId,
                                        @Field("participantId") String participantId,
-                                       @Field("participantname") String participantname,
+                                       @Field("participantName") String participantname,
                                        @Field("participantImage") String participantImage,
                                        @Field("participantGroupId") String participantGroupId);
 
@@ -89,10 +89,23 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getMyMessages(@Field("user_id") String userId);
 
+        @POST(Constants.GROUP_PARTICIPANTS_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getParticipants(@Field("groupId") String groupId);
+
         @POST(Constants.GROUP_MESSAGES_URL)
         @FormUrlEncoded
-        Call<ResponseBody> getGroupMessages(@Field("group_id") String groupId);
+        Call<ResponseBody> getGroupMessages(@Field("group_id") String groupId,
+                                            @Field("user_id") String userId);
 
+
+        @POST(Constants.RESPOND_TO_REQUEST_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> respondToRequest(@Field("respondType") String respondType,
+                                            @Field("participantId") String participantId,
+                                            @Field("participantName") String participantName,
+                                            @Field("participantImage") String participantImage,
+                                            @Field("groupId") String groupId);
 
         @POST(Constants.GET_GROUP_URL)
         @FormUrlEncoded

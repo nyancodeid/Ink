@@ -101,7 +101,8 @@
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name="ink.activities.ChatRoulette"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" />
         <activity
             android:name="ink.activities.SingleGroupView"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -118,7 +119,11 @@
 
         <activity
             android:name="ink.activities.RequestsView"
-            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name="ink.activities.WaitRoom"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

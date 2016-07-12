@@ -2,14 +2,17 @@ package ink.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,9 +41,10 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import fab.FloatingActionButton;
 import ink.adapters.GroupMessagesAdapter;
+import ink.adapters.MemberAdapter;
 import ink.models.GroupMessagesModel;
+import ink.models.MemberModel;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.RecyclerTouchListener;
@@ -70,7 +74,7 @@ public class SingleGroupView extends AppCompatActivity {
     @Bind(R.id.ownerImageView)
     ImageView mOwnerImageView;
     @Bind(R.id.addMessageToGroup)
-    FloatingActionButton mAddMessageToGroup;
+    android.support.design.widget.FloatingActionButton mAddMessageToGroup;
     @Bind(R.id.groupMessagesRecycler)
     RecyclerView groupMessagesRecycler;
     @Bind(R.id.groupMessagesLoading)
@@ -94,6 +98,10 @@ public class SingleGroupView extends AppCompatActivity {
     private GroupMessagesAdapter groupMessagesAdapter;
     private SharedHelper mSharedHelper;
     private boolean isMember;
+    private boolean isRequested;
+    private MemberModel memberModel;
+    private MemberAdapter memberAdapter;
+    private List<MemberModel> memberModels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,11 +111,15 @@ public class SingleGroupView extends AppCompatActivity {
         mSharedHelper = new SharedHelper(this);
         Bundle extras = getIntent().getExtras();
         groupMessagesModels = new ArrayList<>();
+        memberModels = new ArrayList<>();
+        memberAdapter = new MemberAdapter(memberModels, this);
         groupMessagesAdapter = new GroupMessagesAdapter(groupMessagesModels, this);
         mJoinGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestJoin();
+                if (!isRequested) {
+                    requestJoin();
+                }
             }
         });
         broadcastReceiver = new BroadcastReceiver() {
@@ -127,10 +139,11 @@ public class SingleGroupView extends AppCompatActivity {
         groupMessagesRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                Log.d("fasfsfasfas", "onScrolled: " + "scrolled" + dy + " dy is " + dy);
                 if (dy > 0)
-                    mAddMessageToGroup.hide(true);
+                    mAddMessageToGroup.hide();
                 else if (dy < 0)
-                    mAddMessageToGroup.show(true);
+                    mAddMessageToGroup.show();
             }
         });
 
@@ -189,6 +202,14 @@ public class SingleGroupView extends AppCompatActivity {
         getGroupMessages();
         mGroupSingleDescription.setText(mGroupDescription);
         mGroupSingleFollowersCount.setText(mCount + " " + getString(R.string.participantText));
+        if (!mCount.equals("0")) {
+            mGroupSingleFollowersCount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getParticipants();
+                }
+            });
+        }
         setSupportActionBar(mToolbar);
         mCollapsingToolbar.setTitle(mGroupName);
 
@@ -211,14 +232,115 @@ public class SingleGroupView extends AppCompatActivity {
         if (mGroupColor != null && !mGroupColor.isEmpty()) {
             mGroupBackgroundColor.setBackgroundColor(Color.parseColor(mGroupColor));
             mJoinGroupButton.setTextColor(Color.parseColor(mGroupColor));
-            mAddMessageToGroup.setColorNormal(Color.parseColor(mGroupColor));
-            mAddMessageToGroup.setColorPressed(Color.parseColor(mGroupColor));
+            mAddMessageToGroup.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(mGroupColor)));
+            mAddMessageToGroup.setRippleColor(Color.parseColor("#cccccc"));
         }
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    private void getParticipants() {
+        System.gc();
+        if (memberModels != null) {
+            memberModels.clear();
+        }
+        final AlertDialog.Builder builder = new AlertDialog.Builder(SingleGroupView.this);
+        builder.setTitle(getString(R.string.membersTitle));
+        View memberView = getLayoutInflater().inflate(R.layout.member_dialog_view, null);
+        RecyclerView recyclerView = (RecyclerView) memberView.findViewById(R.id.memberRecycler);
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+        itemAnimator.setAddDuration(500);
+        itemAnimator.setRemoveDuration(500);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setItemAnimator(itemAnimator);
+        recyclerView.setAdapter(memberAdapter);
+        final AVLoadingIndicatorView membersLoading = (AVLoadingIndicatorView) memberView.findViewById(R.id.membersLoading);
+        recyclerView.setAdapter(memberAdapter);
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                if (memberModels.get(position).getMemberId().equals(mSharedHelper.getUserId())) {
+                    startActivity(new Intent(getApplicationContext(), MyProfile.class));
+                } else {
+                    String name = memberModels.get(position).getMemberName();
+                    String[] splited = name.split("\\s+");
+                    String firstName = splited[0];
+                    String lastName = splited[1];
+                    Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
+                    intent.putExtra("id", memberModels.get(position).getMemberId());
+                    intent.putExtra("firstName", firstName);
+                    intent.putExtra("lastName", lastName);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+
+        builder.setView(memberView);
+        builder.setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.show();
+        Call<ResponseBody> participantCall = Retrofit.getInstance().getInkService().getParticipants(mGroupId);
+        participantCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    getParticipants();
+                    return;
+                }
+                if (response.body() == null) {
+                    getParticipants();
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        JSONArray jsonArray = jsonObject.optJSONArray("members");
+                        if (jsonArray.length() <= 0) {
+                            Snackbar.make(membersLoading, getString(R.string.noMembers), Snackbar.LENGTH_LONG).show();
+                            membersLoading.setVisibility(View.GONE);
+                            return;
+                        }
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject eachObject = jsonArray.optJSONObject(i);
+                            String memberId = eachObject.optString("participant_id");
+                            String memberName = eachObject.optString("participant_name");
+                            String memberImage = eachObject.optString("participant_image");
+                            String memberItemId = eachObject.optString("participant_item_id");
+                            String memberGroupId = eachObject.optString("participant_group_id");
+                            memberModel = new MemberModel(memberId, memberName, memberImage, memberItemId
+                                    , memberGroupId);
+                            memberModels.add(memberModel);
+                            memberAdapter.notifyDataSetChanged();
+                        }
+                        membersLoading.setVisibility(View.GONE);
+                    } else {
+                        getParticipants();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                getParticipants();
+            }
+        });
     }
 
     private void requestJoin() {
@@ -238,8 +360,17 @@ public class SingleGroupView extends AppCompatActivity {
                 }
                 try {
                     String responseBody = response.body().string();
-                    Log.d("fsafasfsfas", "onResponse: " + responseBody);
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        mJoinGroupButton.setText(getString(R.string.pending));
+                        Snackbar.make(mJoinGroupButton, getString(R.string.successfullyRequested), Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        requestJoin();
+                    }
                 } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
@@ -272,7 +403,7 @@ public class SingleGroupView extends AppCompatActivity {
             groupMessagesModels.clear();
         }
         groupMessagesAdapter.notifyDataSetChanged();
-        Call<ResponseBody> messagesCall = Retrofit.getInstance().getInkService().getGroupMessages(mGroupId);
+        Call<ResponseBody> messagesCall = Retrofit.getInstance().getInkService().getGroupMessages(mGroupId, mSharedHelper.getUserId());
         messagesCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -290,6 +421,12 @@ public class SingleGroupView extends AppCompatActivity {
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
                         boolean hasMessages = jsonObject.optBoolean("hasMessages");
+                        isRequested = jsonObject.optBoolean("alreadyRequested");
+                        if (isRequested) {
+                            mJoinGroupButton.setText(getString(R.string.pending));
+                        } else {
+                            mJoinGroupButton.setText(getString(R.string.joinText));
+                        }
                         if (hasMessages) {
                             noGroupMessageLayout.setVisibility(View.GONE);
                             JSONArray messagesArray = jsonObject.optJSONArray("messages");
@@ -302,7 +439,7 @@ public class SingleGroupView extends AppCompatActivity {
                                 String senderName = eachObject.optString("sender_name");
                                 String groupMessageId = eachObject.optString("group_message_id");
                                 groupMessagesModel = new GroupMessagesModel(groupId, groupMessage,
-                                        senderId, senderImage, senderName, groupMessageId);
+                                        senderId, senderImage, senderName, groupMessageId, isRequested);
                                 groupMessagesModels.add(groupMessagesModel);
                                 groupMessagesAdapter.notifyDataSetChanged();
                             }

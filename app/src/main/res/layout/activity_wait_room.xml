@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="ink.activities.WaitRoom">
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_toLeftOf="@+id/connectDisconnectButton"
+        android:fontFamily="@string/appFont"
+        android:gravity="center"
+        android:text="@string/statusText"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <fab.FloatingActionButton
+        android:id="@+id/connectDisconnectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/connect_icon"
+        android:tag="@string/connect"
+        fab:fab_colorNormal="@color/colorPrimary"
+        fab:fab_colorPressed="@color/colorPrimaryDark"
+        fab:fab_size="mini" />
+
+    <TextView
+        android:id="@+id/actualStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/status"
+        android:layout_centerHorizontal="true"
+        android:layout_toLeftOf="@+id/connectDisconnectButton"
+        android:fontFamily="@string/appFont"
+        android:gravity="center"
+        android:text="@string/notConnectedToOpponent"
+        android:textColor="@color/red" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/chatRouletteRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/chatRouletteCard"
+        android:layout_below="@+id/actualStatus"
+        android:layout_marginTop="10dp">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/chatRouletteCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="2dp"
+        android:elevation="5dp"
+        app:cardCornerRadius="10dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/chatRouletteMessageBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="3dp"
+                android:layout_toLeftOf="@+id/chatRouletteSendMessage"
+                android:background="#ffffff"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:fontFamily="@string/appFont"
+                android:hint="@string/writeMessageHint"
+                android:imeActionId="@+id/send"
+                android:imeActionLabel="Done"
+                android:imeOptions="actionUnspecified"
+                android:maxHeight="80dp"
+                android:minHeight="50dp"
+                android:paddingLeft="15dp" />
+
+            <fab.FloatingActionButton
+                android:id="@+id/chatRouletteSendMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_send_white_24dp"
+                fab:fab_colorNormal="@color/colorPrimary"
+                fab:fab_colorPressed="@color/colorPrimaryDark"
+                fab:fab_label="@string/sendMessage"
+                fab:fab_size="mini" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

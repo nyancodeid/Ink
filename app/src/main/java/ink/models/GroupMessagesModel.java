@@ -10,12 +10,15 @@ public class GroupMessagesModel {
     private String senderImage;
     private String senderName;
     private String groupMessageId;
+    private boolean isRequested;
 
 
     public GroupMessagesModel(String groupId, String groupMessage,
                               String senderId, String senderImage,
-                              String senderName, String groupMessageId) {
+                              String senderName, String groupMessageId,
+                              boolean isRequested) {
         this.groupId = groupId;
+        this.isRequested = isRequested;
         this.groupMessage = groupMessage;
         this.senderId = senderId;
         this.senderImage = senderImage;
@@ -33,6 +36,14 @@ public class GroupMessagesModel {
 
     public String getGroupMessage() {
         return groupMessage;
+    }
+
+    public boolean isRequested() {
+        return isRequested;
+    }
+
+    public void setRequested(boolean requested) {
+        isRequested = requested;
     }
 
     public void setGroupMessage(String groupMessage) {
