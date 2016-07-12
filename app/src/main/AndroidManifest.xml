@@ -59,6 +59,7 @@
             </intent-filter>
         </service>
         <service android:name="ink.service.BackgroundTaskService" />
+        <service android:name="ink.service.RemoveChatRouletteService" />
         <service android:name="ink.service.SendTokenService" />
         <service android:name="ink.service.SendReplyService" />
 

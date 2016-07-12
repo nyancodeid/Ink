@@ -84,6 +84,17 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> sendMessage(@Field("user_id") String userId, @Field("opponent_id") String opponentId, @Field("message") String message, @Field("timezone") String timezone);
 
+        @POST(Constants.WAITERS_QUE)
+        @FormUrlEncoded
+        Call<ResponseBody> waitersQueAction(@Field("user_id") String userId,
+                                            @Field("name") String name,
+                                            @Field("status") String status,
+                                            @Field("action") String action);
+
+
+        @POST(Constants.GET_WAITERS)
+        @FormUrlEncoded
+        Call<ResponseBody> getWaiters(@Field("user_id") String userId);
 
         @POST(Constants.SINGLE_USER_MESSAGES)
         @FormUrlEncoded

@@ -41,7 +41,15 @@ public class Constants {
     public static final int TEXT_VIEW_DEFAULT_COLOR = android.R.color.tab_indicator_text;
     public static final String TYPE_MESSAGE = "message";
     public static final String TYPE_REQUEST = "request";
+    public static final String WAITERS_QUE = "WaitRoomQue.php";
+    public static final String GET_WAITERS = "GetWaitersQue.php";
     public static final String TYPE_ACCEPT_REQUEST = "0";
     public static final String TYPE_DENY_REQUEST = "1";
+    public static final String STATUS_WAITING_NOT_AVAILABLE = "waiting_not_available";
+    public static final String STATUS_AVAILABLE = "available";
+    public static final String STATUS_IN_CHAT = "inChat";
+    public static final String ACTION_UPDATE = "update";
+    public static final String ACTION_DELETE = "delete";
+    public static final String ACTION_INSERT = "insert";
 }
 

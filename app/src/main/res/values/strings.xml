@@ -243,4 +243,7 @@
     <string name="messagesPlaceBrief">This is the place where your conversation will be visible as soon as you start one.</string>
     <string name="endingTitle">Enjoy your time!</string>
     <string name="endingBrief">Thank you for passing the tutorial.Hope you will enjoy your time and meet a lot of new friends here.Enjoy your day! :)</string>
+    <string name="connectedToQue">Connected to waiting room</string>
+    <string name="notConnectedToWaitRoom">You are not connected to wait room</string>
+    <string name="waitingForOpponents">Connected : Waiting for opponents</string>
 </resources>
