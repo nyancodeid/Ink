@@ -17,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -270,6 +271,7 @@ public class Chat extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
+            Log.d("fasfasfsafas", "onTextChanged: "+s);
             if (s.toString().trim().length() <= 0) {
                 mSendChatMessage.setEnabled(false);
             } else {

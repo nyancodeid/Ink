@@ -18,7 +18,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -495,7 +494,6 @@ public class WaitRoom extends AppCompatActivity {
                     }
                     try {
                         String responseBody = response.body().string();
-                        Log.d(TAG, "onResponse: waiters resposne "+responseBody);
                         final JSONObject jsonObject = new JSONObject(responseBody);
                         boolean success = jsonObject.optBoolean("success");
                         if (success) {

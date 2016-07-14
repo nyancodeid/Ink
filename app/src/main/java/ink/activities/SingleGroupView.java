@@ -9,6 +9,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
@@ -18,7 +19,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -49,6 +49,7 @@ import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.RecyclerTouchListener;
 import ink.utils.Retrofit;
+import ink.utils.ScrollAwareFABButtonehavior;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -139,7 +140,9 @@ public class SingleGroupView extends AppCompatActivity {
         groupMessagesRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                Log.d("fasfsfasfas", "onScrolled: " + "scrolled" + dy + " dy is " + dy);
+                if (!isMember) {
+                    return;
+                }
                 if (dy > 0)
                     mAddMessageToGroup.hide();
                 else if (dy < 0)
@@ -198,6 +201,9 @@ public class SingleGroupView extends AppCompatActivity {
         } else {
             mJoinGroupButton.setVisibility(View.GONE);
             mAddMessageToGroup.setVisibility(View.VISIBLE);
+            CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) mAddMessageToGroup.getLayoutParams();
+            p.setBehavior(new ScrollAwareFABButtonehavior(this));
+            mAddMessageToGroup.setLayoutParams(p);
         }
         getGroupMessages();
         mGroupSingleDescription.setText(mGroupDescription);

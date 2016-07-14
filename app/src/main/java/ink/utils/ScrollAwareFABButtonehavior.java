@@ -4,14 +4,13 @@ import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewCompat;
-import android.util.AttributeSet;
 import android.view.View;
 
 /**
  * Created by USER on 2016-07-06.
  */
 public class ScrollAwareFABButtonehavior extends FloatingActionButton.Behavior {
-    public ScrollAwareFABButtonehavior(Context context, AttributeSet attrs) {
+    public ScrollAwareFABButtonehavior(Context context) {
         // This is mandatory if we're assigning the behavior straight from XML
         super();
     }

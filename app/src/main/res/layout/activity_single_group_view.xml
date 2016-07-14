@@ -26,7 +26,6 @@
             app:expandedTitleGravity="center_horizontal"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
-            app:expandedTitleMarginTop="100dp"
             app:expandedTitleTextAppearance="@style/groupTitleStyle"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -163,9 +162,10 @@
         android:id="@+id/ownerImageView"
         android:layout_width="56dp"
         android:layout_height="56dp"
+        android:layout_marginRight="10dp"
         android:src="@drawable/no_image"
         app:layout_anchor="@+id/groupImage"
-        app:layout_anchorGravity="bottom|center" />
+        app:layout_anchorGravity="bottom|right" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addMessageToGroup"
@@ -175,6 +175,5 @@
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:src="@drawable/pen_vector"
-        app:backgroundTint="@color/defaultGroupColor"
-        app:layout_behavior="ink.utils.ScrollAwareFABButtonehavior" />
+        app:backgroundTint="@color/defaultGroupColor" />
 </android.support.design.widget.CoordinatorLayout>
