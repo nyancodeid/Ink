@@ -90,6 +90,13 @@ public class NotificationService extends FirebaseMessagingService {
         } else if (response.get("type").equals(Constants.TYPE_REQUEST)) {
             sendRequestNotification(getApplicationContext(), response.get("requesterName"),
                     response.get("requestedGroup"), response.get("requestId"));
+        } else if (response.get("type").equals(Constants.TYPE_CHAT_ROULETTE)) {
+            Intent intent = new Intent(getPackageName() + "WaitRoom");
+            intent.putExtra("currentUserId", response.get("currentUserId"));
+            intent.putExtra("opponentId", response.get("opponentId"));
+            intent.putExtra("message", response.get("message"));
+            intent.putExtra("isDisconnected",response.get("isDisconnected"));
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
 
 

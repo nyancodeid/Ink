@@ -10,6 +10,8 @@ public class Constants {
     public static final String ADD_GROUP_URL = "AddGroup.php";
     public static final String GROUP_REQUESTS_URL = "GetGroupRequests.php";
     public static final String SEARCH_GROUP_URL = "SearchGroups.php";
+    public static final String SEND_CHAT_ROULETTE_MESSAGE = "SendChatRouletteMessage.php";
+    public static final String DISCONNECT_URL = "Disconnect.php";
     public static final String JOIN_GROUP_URL = "JoinGroup.php";
     public static final String ADD_GROUP_MESSAGE_URL = "AddGroupMessage.php";
     public static final String GET_GROUP_URL = "GetGroups.php";
@@ -17,6 +19,7 @@ public class Constants {
     public static final String MY_GROUPS_URL = "UserGroups.php";
     public static final String GROUP_PARTICIPANTS_URL = "GroupParticipants.php";
     public static final String GROUP_MESSAGES_URL = "GroupMessages.php";
+    public static final String NOTIFY_OPPONENT = "NotifyOpponent.php";
     public static final String RESPOND_TO_REQUEST_URL = "RespondToRequest.php";
     public static final String LOGIN_URL = "Login.php";
     public static final String FRIENDS_URL = "UserFriends.php";
@@ -41,6 +44,7 @@ public class Constants {
     public static final int TEXT_VIEW_DEFAULT_COLOR = android.R.color.tab_indicator_text;
     public static final String TYPE_MESSAGE = "message";
     public static final String TYPE_REQUEST = "request";
+    public static final String TYPE_CHAT_ROULETTE = "chatRoulette";
     public static final String WAITERS_QUE = "WaitRoomQue.php";
     public static final String GET_WAITERS = "GetWaitersQue.php";
     public static final String TYPE_ACCEPT_REQUEST = "0";

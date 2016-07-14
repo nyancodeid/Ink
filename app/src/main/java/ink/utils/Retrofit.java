@@ -89,8 +89,23 @@ public class Retrofit {
         Call<ResponseBody> waitersQueAction(@Field("user_id") String userId,
                                             @Field("name") String name,
                                             @Field("status") String status,
-                                            @Field("action") String action);
+                                            @Field("action") String action,
+                                            @Field("opponentId") String opponentId);
 
+        @POST(Constants.SEND_CHAT_ROULETTE_MESSAGE)
+        @FormUrlEncoded
+        Call<ResponseBody> sendChatRouletteMessage(@Field("userId") String userId,
+                                                   @Field("opponentId") String opponentId,
+                                                   @Field("message") String message);
+
+        @POST(Constants.DISCONNECT_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> sendDisconnectNotification(@Field("opponentId") String opponentId);
+
+        @POST(Constants.NOTIFY_OPPONENT)
+        @FormUrlEncoded
+        Call<ResponseBody> notifyOpponent(@Field("opponentId") String opponentId,
+                                          @Field("userId") String userId);
 
         @POST(Constants.GET_WAITERS)
         @FormUrlEncoded

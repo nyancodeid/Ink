@@ -246,4 +246,9 @@
     <string name="connectedToQue">Connected to waiting room</string>
     <string name="notConnectedToWaitRoom">You are not connected to wait room</string>
     <string name="waitingForOpponents">Connected : Waiting for opponents</string>
+    <string name="opponentFound">Opponent found!</string>
+    <string name="messageNotSent">Could not sent the message,try again...</string>
+    <string name="userDisconnected">Opponent disconnected</string>
+    <string name="opponentDisconnectedText">We\'re sorry but your opponent was disconnected from the chat.
+        \nYou can find new opponent by cliking top right button to search again.</string>
 </resources>

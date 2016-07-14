@@ -50,6 +50,7 @@ public class ChatRoulette extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     @OnClick(R.id.joinWaitRoom)
     public void joinWaitRoom() {
         startActivity(new Intent(getApplicationContext(), WaitRoom.class));

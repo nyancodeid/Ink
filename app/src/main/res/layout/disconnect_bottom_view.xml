@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/sadSmileIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/sad" />
+
+        <TextView
+            android:id="@+id/disconnectText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sadSmileIcon"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="16dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@string/appFont"
+            android:text="@string/opponentDisconnectedText"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/closeBottomSheet"
+            style="?attr/selectableItemBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/disconnectText"
+            android:layout_margin="16dp"
+            android:background="@drawable/circle_corner"
+            android:fontFamily="@string/appFont"
+            android:text="OK"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

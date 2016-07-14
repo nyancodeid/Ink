@@ -12,18 +12,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ink.activities.WaitRoom">
 
-    <TextView
-        android:id="@+id/status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_toLeftOf="@+id/connectDisconnectButton"
-        android:fontFamily="@string/appFont"
-        android:gravity="center"
-        android:text="@string/statusText"
-        android:textColor="#000000"
-        android:textStyle="bold" />
-
     <fab.FloatingActionButton
         android:id="@+id/connectDisconnectButton"
         android:layout_width="wrap_content"
@@ -35,8 +23,17 @@
         fab:fab_colorPressed="@color/colorPrimaryDark"
         fab:fab_size="mini" />
 
-
-
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_toLeftOf="@+id/connectDisconnectButton"
+        android:fontFamily="@string/appFont"
+        android:gravity="center"
+        android:text="@string/statusText"
+        android:textColor="#000000"
+        android:textStyle="bold" />
 
 
     <TextView
@@ -107,4 +104,13 @@
                 fab:fab_size="mini" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:visibility="gone" />
 </RelativeLayout>

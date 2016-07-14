@@ -1,22 +1,32 @@
 package ink.activities;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
@@ -27,15 +37,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
+import ink.adapters.ChatAdapter;
 import ink.callbacks.GeneralCallback;
+import ink.models.ChatModel;
 import ink.service.RemoveChatRouletteService;
 import ink.utils.Constants;
 import ink.utils.Retrofit;
@@ -47,6 +58,7 @@ import retrofit2.Response;
 
 public class WaitRoom extends AppCompatActivity {
 
+    private static final String TAG = WaitRoom.class.getSimpleName();
     @Bind(R.id.chatRouletteRecycler)
     RecyclerView chatRouletteRecycler;
     @Bind(R.id.chatRouletteMessageBody)
@@ -57,10 +69,16 @@ public class WaitRoom extends AppCompatActivity {
     FloatingActionButton connectDisconnectButton;
     @Bind(R.id.actualStatus)
     TextView actualStatus;
+    @Bind(R.id.progressBar)
+    ProgressBar progressBar;
     private ShowcaseView.Builder showcaseViewBuilder;
     private SharedHelper sharedHelper;
     private boolean isConnectedToWaitRoom;
     private boolean shouldWaitForWaiters;
+    private String foundOpponentId;
+    private ChatAdapter chatAdapter;
+    private ChatModel chatModel;
+    private List<ChatModel> chatModels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +86,31 @@ public class WaitRoom extends AppCompatActivity {
         setContentView(R.layout.activity_wait_room);
         ButterKnife.bind(this);
         sharedHelper = new SharedHelper(this);
+        chatModels = new ArrayList<>();
+        chatAdapter = new ChatAdapter(chatModels, this);
+
+
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+        itemAnimator.setAddDuration(500);
+        itemAnimator.setRemoveDuration(500);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setStackFromEnd(true);
+        chatRouletteRecycler.setLayoutManager(linearLayoutManager);
+        chatRouletteRecycler.setItemAnimator(itemAnimator);
+        chatRouletteRecycler.setAdapter(chatAdapter);
+
+        chatRouletteRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(chatRouletteRecycler.getWindowToken(), 0);
+                }
+            }
+        });
+
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -183,7 +226,55 @@ public class WaitRoom extends AppCompatActivity {
 
     @OnClick(R.id.chatRouletteSendMessage)
     public void chatRouletteSendMessage() {
+        sendMessage();
+    }
 
+    private void sendMessage() {
+        String message = chatRouletteMessageBody.getText().toString().trim();
+        ChatModel tempChat = new ChatModel(null, sharedHelper.getUserId(), foundOpponentId, message, true, Constants.STATUS_NOT_DELIVERED, null,
+                null, null);
+        chatModels.add(tempChat);
+        chatAdapter.notifyDataSetChanged();
+        final int itemLocation = chatModels.indexOf(tempChat);
+        chatRouletteMessageBody.setText("");
+        scrollToBottom();
+        Call<ResponseBody> chatRouletteSendMessageCall = Retrofit.getInstance().getInkService().sendChatRouletteMessage(
+                sharedHelper.getUserId(), foundOpponentId, message);
+        chatRouletteSendMessageCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    sendMessage();
+                    return;
+                }
+                if (response.body() == null) {
+                    sendMessage();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        chatModels.get(itemLocation).setDeliveryStatus(Constants.STATUS_DELIVERED);
+                        chatAdapter.notifyItemChanged(itemLocation);
+                    } else {
+                        Snackbar.make(connectDisconnectButton, getString(R.string.messageNotSent),
+                                Snackbar.LENGTH_LONG).show();
+                    }
+                    scrollToBottom();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                sendMessage();
+            }
+        });
     }
 
     @Override
@@ -192,14 +283,12 @@ public class WaitRoom extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onDestroy() {
-        startService(new Intent(getApplicationContext(), RemoveChatRouletteService.class));
-        super.onDestroy();
-    }
 
     @OnClick(R.id.connectDisconnectButton)
     public void connectDisconnectButton() {
+        if (chatModels != null) {
+            chatModels.clear();
+        }
         if (!isConnectedToWaitRoom) {
             if (actualStatus != null) {
                 Snackbar.make(actualStatus, getString(R.string.notConnectedToWaitRoom), Snackbar.LENGTH_LONG).show();
@@ -211,8 +300,10 @@ public class WaitRoom extends AppCompatActivity {
         if (connectDisconnectButton.getTag().equals(getString(R.string.connect))) {
             connectDisconnectButton.setTag(getString(R.string.disconnect));
             connectDisconnectButton.setImageResource(R.drawable.disconnect_icon);
-            LocalBroadcastManager.getInstance(this).registerReceiver(messagesReceiver, new IntentFilter(getPackageName() + "WaitRoom"));
+            LocalBroadcastManager.getInstance(this).registerReceiver(messagesReceiver,
+                    new IntentFilter(getPackageName() + "WaitRoom"));
             shouldWaitForWaiters = true;
+            progressBar.setVisibility(View.VISIBLE);
             getWaiters();
             waitersQueAction(Constants.ACTION_UPDATE, Constants.STATUS_AVAILABLE, new GeneralCallback<String>() {
                 @Override
@@ -230,11 +321,24 @@ public class WaitRoom extends AppCompatActivity {
             connectDisconnectButton.setTag(getString(R.string.connect));
             connectDisconnectButton.setImageResource(R.drawable.connect_icon);
             shouldWaitForWaiters = false;
+            chatRouletteMessageBody.setEnabled(false);
+            if (chatModels != null) {
+                chatModels.clear();
+                chatAdapter.notifyDataSetChanged();
+                scrollToBottom();
+            }
+
+            progressBar.setVisibility(View.VISIBLE);
             waitersQueAction(Constants.ACTION_UPDATE, Constants.STATUS_WAITING_NOT_AVAILABLE, new GeneralCallback<String>() {
                 @Override
                 public void onSuccess(String s) {
                     actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
                     actualStatus.setText(getString(R.string.notConnectedToOpponent));
+                    progressBar.setVisibility(View.GONE);
+                    if (foundOpponentId != null) {
+                        sendDisconnect(foundOpponentId);
+                        foundOpponentId = null;
+                    }
                 }
 
                 @Override
@@ -245,17 +349,98 @@ public class WaitRoom extends AppCompatActivity {
         }
     }
 
+    private void sendDisconnect(final String foundOpponentId) {
+        Call<ResponseBody> disconnectCall = Retrofit.getInstance().getInkService().sendDisconnectNotification(foundOpponentId);
+        disconnectCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    sendDisconnect(foundOpponentId);
+                    return;
+                }
+                if (response.body() == null) {
+                    sendDisconnect(foundOpponentId);
+                    return;
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                sendDisconnect(foundOpponentId);
+            }
+        });
+    }
+
     private BroadcastReceiver messagesReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                String isDisconnected = extras.getString("isDisconnected");
+                if (isDisconnected.equals("1")) {
+                    actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                    actualStatus.setText(getString(R.string.opponentFound));
+                    progressBar.setVisibility(View.GONE);
+                    chatRouletteMessageBody.setEnabled(true);
+                    shouldWaitForWaiters = false;
 
+                    String currentUserId = extras.getString("currentUserId");
+                    String opponentId = extras.getString("opponentId");
+                    String message = extras.getString("message");
+                    chatModel = new ChatModel(null, currentUserId, opponentId, message, true, Constants.STATUS_DELIVERED, null,
+                            null, null);
+                    chatModels.add(chatModel);
+                    chatAdapter.notifyDataSetChanged();
+                    scrollToBottom();
+                } else {
+                    disconnectFromOpponent();
+                }
+            }
         }
     };
 
+    private void disconnectFromOpponent() {
+        progressBar.setVisibility(View.GONE);
+        shouldWaitForWaiters = false;
+        connectDisconnectButton.setTag(getString(R.string.connect));
+        connectDisconnectButton.setImageResource(R.drawable.connect_icon);
+        chatRouletteMessageBody.setEnabled(false);
+        waitersQueAction(Constants.ACTION_UPDATE, Constants.STATUS_WAITING_NOT_AVAILABLE, new GeneralCallback<String>() {
+            @Override
+            public void onSuccess(String s) {
+                shouldWaitForWaiters = false;
+                final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(WaitRoom.this);
+                bottomSheetDialog.setTitle(getString(R.string.userDisconnected));
+                LayoutInflater inflater = getLayoutInflater();
+                View bottomSheetView = inflater.inflate(R.layout.disconnect_bottom_view, null);
+                bottomSheetDialog.setContentView(bottomSheetView);
+                Button closeBottomSheet = (Button) bottomSheetView.findViewById(R.id.closeBottomSheet);
+                closeBottomSheet.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        LocalBroadcastManager.getInstance(WaitRoom.this).unregisterReceiver(messagesReceiver);
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+                bottomSheetDialog.show();
+                actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                actualStatus.setText(getString(R.string.notConnectedToOpponent));
+            }
+
+            @Override
+            public void onFailure(String s) {
+            }
+        });
+    }
+
 
     private void waitersQueAction(final String action, final String status, final GeneralCallback<String> callback) {
+        if (foundOpponentId == null) {
+            foundOpponentId = "0";
+        }
         Call<ResponseBody> waitersQueActionCall = Retrofit.getInstance().getInkService().waitersQueAction(sharedHelper.getUserId(),
-                sharedHelper.getFirstName() + " " + sharedHelper.getLastName(), status, action);
+                sharedHelper.getFirstName() + " " + sharedHelper.getLastName(), status, action, foundOpponentId);
         waitersQueActionCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -293,6 +478,8 @@ public class WaitRoom extends AppCompatActivity {
     }
 
     private void getWaiters() {
+        progressBar.setVisibility(View.VISIBLE);
+        chatRouletteMessageBody.setEnabled(false);
         Call<ResponseBody> getWaitersCall = Retrofit.getInstance().getInkService().getWaiters(sharedHelper.getUserId());
         if (shouldWaitForWaiters) {
             getWaitersCall.enqueue(new Callback<ResponseBody>() {
@@ -308,17 +495,20 @@ public class WaitRoom extends AppCompatActivity {
                     }
                     try {
                         String responseBody = response.body().string();
-                        Log.d("fasfasfasfas", "onResponse: " + responseBody);
-                        JSONObject jsonObject = new JSONObject(responseBody);
+                        Log.d(TAG, "onResponse: waiters resposne "+responseBody);
+                        final JSONObject jsonObject = new JSONObject(responseBody);
                         boolean success = jsonObject.optBoolean("success");
                         if (success) {
                             boolean isMemberAvailable = jsonObject.optBoolean("isMemberAvailable");
                             if (!isMemberAvailable) {
                                 if (shouldWaitForWaiters) {
                                     scheduleTask();
+                                } else {
+                                    progressBar.setVisibility(View.GONE);
                                 }
                             } else {
-                                // TODO: 2016-07-13 grab the members
+                                String opponentId = jsonObject.optString("waiter_id");
+                                handleOpponentFound(opponentId);
                             }
                         } else {
                             getWaiters();
@@ -338,14 +528,64 @@ public class WaitRoom extends AppCompatActivity {
         }
     }
 
+    private void handleOpponentFound(final String opponentId) {
+        foundOpponentId = opponentId;
+        waitersQueAction(Constants.ACTION_UPDATE, Constants.STATUS_IN_CHAT, new GeneralCallback<String>() {
+            @Override
+            public void onSuccess(String s) {
+                Snackbar.make(connectDisconnectButton, getString(R.string.opponentFound),
+                        Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                }).show();
+                actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.green));
+                actualStatus.setText(getString(R.string.opponentFound));
+                progressBar.setVisibility(View.GONE);
+                chatRouletteMessageBody.setEnabled(true);
+                shouldWaitForWaiters = false;
+            }
+
+            @Override
+            public void onFailure(String s) {
+
+            }
+        });
+    }
+
     private void scheduleTask() {
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        Runnable task = new Runnable() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 getWaiters();
             }
-        };
-        executor.schedule(task, 5, TimeUnit.SECONDS);
+        }, 2000);
+    }
+
+    private void scrollToBottom() {
+        chatRouletteRecycler.post(new Runnable() {
+            @Override
+            public void run() {
+                // Call smooth scroll
+                chatRouletteRecycler.smoothScrollToPosition(chatAdapter.getItemCount());
+            }
+        });
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        Intent intent = new Intent(getApplicationContext(), RemoveChatRouletteService.class);
+        intent.putExtra("opponentId", foundOpponentId);
+        if (foundOpponentId != null) {
+            foundOpponentId = null;
+        }
+        startService(intent);
+        if (messagesReceiver != null) {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(messagesReceiver);
+        }
+        super.onDestroy();
     }
 }
