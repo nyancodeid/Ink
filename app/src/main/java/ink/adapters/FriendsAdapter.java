@@ -60,11 +60,13 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         if (!friendsModel.getImageLink().isEmpty()) {
             String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + friendsModel.getImageLink();
             Picasso.with(mContext).load(url)
-                    .transform(new CircleTransform()).fit().centerCrop()
+                    .error(R.drawable.image_laoding_error)
+                    .placeholder(R.drawable.no_image_yet_state)  .transform(new CircleTransform()).fit().centerCrop()
                     .into(holder.friendImage, picassoCallback(url, holder.friendImage));
         } else {
             Picasso.with(mContext).load(R.drawable.no_image)
-                    .transform(new CircleTransform()).fit().centerCrop()
+                    .error(R.drawable.image_laoding_error)
+                    .placeholder(R.drawable.no_image_yet_state)    .transform(new CircleTransform()).fit().centerCrop()
                     .into(holder.friendImage);
         }
     }

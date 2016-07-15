@@ -73,15 +73,16 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
         }
         if (!groupsModel.getGroupImage().isEmpty()) {
             Picasso.with(mContext).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER +
-                    groupsModel.getGroupImage()).fit()
+                    groupsModel.getGroupImage()).error(R.drawable.image_laoding_error)
+                    .placeholder(R.drawable.no_image_yet_state).fit()
                     .centerCrop().into(holder.groupImage);
         } else {
-            Picasso.with(mContext).load(R.drawable.no_image_box).fit()
-                    .centerCrop().into(holder.groupImage);
+            holder.groupImage.setBackgroundResource(R.drawable.no_group_image);
         }
         if (groupsModel.getOwnerImage() != null && !groupsModel.getOwnerImage().isEmpty()) {
             Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                    groupsModel.getOwnerImage()).transform(new CircleTransform()).fit()
+                    groupsModel.getOwnerImage()).error(R.drawable.image_laoding_error)
+                    .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
                     .centerCrop().into(holder.ownerImage);
         } else {
             Picasso.with(mContext).load(R.drawable.no_image).transform(new CircleTransform()).fit()

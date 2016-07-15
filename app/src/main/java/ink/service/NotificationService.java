@@ -32,6 +32,8 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.ink.R;
 import com.squareup.picasso.Picasso;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.util.Map;
 
 import ink.activities.Chat;
@@ -77,7 +79,7 @@ public class NotificationService extends FirebaseMessagingService {
 
             if (Notification.getInstance().isSendingRemote()) {
                 sendNotification("New Message", response.get("user_id"),
-                        response.get("message"), getApplicationContext(),
+                        StringEscapeUtils.unescapeJava(response.get("message")), getApplicationContext(),
                         response.get("message_id"), response.get("opponent_id"),
                         response.get("opponent_image"), response.get("user_image"), response.get("name"),
                         response.get("delete_user_id"), response.get("delete_opponent_id"));
@@ -95,7 +97,7 @@ public class NotificationService extends FirebaseMessagingService {
             intent.putExtra("currentUserId", response.get("currentUserId"));
             intent.putExtra("opponentId", response.get("opponentId"));
             intent.putExtra("message", response.get("message"));
-            intent.putExtra("isDisconnected",response.get("isDisconnected"));
+            intent.putExtra("isDisconnected", response.get("isDisconnected"));
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
 
@@ -142,7 +144,8 @@ public class NotificationService extends FirebaseMessagingService {
         builder.setSmallIcon(R.mipmap.ic_launcher);
 
         if (opponentImage != null && !opponentImage.isEmpty()) {
-            Picasso.with(context).load(opponentImage).into(getTarget(builder));
+            Picasso.with(context).load(opponentImage).error(R.drawable.image_laoding_error)
+                    .placeholder(R.drawable.no_image_yet_state).into(getTarget(builder));
         }
         builder.setAutoCancel(true);
 

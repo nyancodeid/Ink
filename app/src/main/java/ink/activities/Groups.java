@@ -613,7 +613,8 @@ public class Groups extends AppCompatActivity implements SwipeRefreshLayout.OnRe
                 if (selectedImagePath != null) {
                     mImageLinkToSend = selectedImagePath;
                     isImageChosen = true;
-                    Picasso.with(getApplicationContext()).load(new File(selectedImagePath)).transform(new CircleTransform()).fit().centerCrop().into(groupImage);
+                    Picasso.with(getApplicationContext()).load(new File(selectedImagePath)).error(R.drawable.image_laoding_error)
+                            .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop().into(groupImage);
                 } else {
                     isImageChosen = false;
                 }

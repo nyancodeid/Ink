@@ -80,6 +80,7 @@ public class HomeActivity extends AppCompatActivity
         mMakePost.setOnClickListener(this);
         mNewPost.setOnClickListener(this);
 
+        deleteDirectoryTree(getApplicationContext().getCacheDir());
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -264,7 +265,8 @@ public class HomeActivity extends AppCompatActivity
         if (mSharedHelper.hasImage()) {
             if (!mSharedHelper.getImageLink().isEmpty()) {
                 Picasso.with(getApplicationContext()).load(Constants.MAIN_URL +
-                        Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink()).transform(new CircleTransform()).fit()
+                        Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink()).error(R.drawable.image_laoding_error)
+                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
                         .centerCrop().into(mProfileImage);
             }
         } else {
@@ -330,5 +332,14 @@ public class HomeActivity extends AppCompatActivity
 
     private void setShouldOpenActivity(boolean shouldOpenActivity) {
         this.shouldOpenActivity = shouldOpenActivity;
+    }
+    private void deleteDirectoryTree(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
+                deleteDirectoryTree(child);
+            }
+        }
+
+        fileOrDirectory.delete();
     }
 }

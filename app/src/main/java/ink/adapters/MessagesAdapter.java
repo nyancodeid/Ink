@@ -62,7 +62,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         if (!userMessagesModel.getImageName().isEmpty()) {
             String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + userMessagesModel.getImageLink();
             Picasso.with(mContext).load(url)
-                    .transform(new CircleTransform()).fit().centerCrop()
+                    .error(R.drawable.image_laoding_error)
+                    .placeholder(R.drawable.no_image_yet_state) .transform(new CircleTransform()).fit().centerCrop()
                     .into(holder.messagesImage, picassoCallback(url, holder.messagesImage));
         } else {
             Picasso.with(mContext).load(R.drawable.no_image)

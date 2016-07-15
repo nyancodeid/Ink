@@ -168,7 +168,7 @@ public class OpponentProfile extends AppCompatActivity {
                             boolean shouldHighlightAddress = true;
                             if (imageLink != null && !imageLink.isEmpty()) {
                                 Picasso.with(getApplicationContext()).load(Constants.MAIN_URL +
-                                        Constants.USER_IMAGES_FOLDER + imageLink).fit().centerCrop().into(mProfileImage, getPicassoCallback(Constants.MAIN_URL +
+                                        Constants.USER_IMAGES_FOLDER + imageLink).fit().centerInside().into(mProfileImage, getPicassoCallback(Constants.MAIN_URL +
                                         Constants.USER_IMAGES_FOLDER + imageLink));
                             } else {
                                 mProfileImage.setBackgroundResource(R.drawable.no_image);
@@ -259,7 +259,7 @@ public class OpponentProfile extends AppCompatActivity {
 
             @Override
             public void onError() {
-                Picasso.with(getApplicationContext()).load(link).fit().centerCrop().into(mProfileImage);
+                Picasso.with(getApplicationContext()).load(link).fit().centerInside().into(mProfileImage, getPicassoCallback(link));
             }
         };
         return callback;

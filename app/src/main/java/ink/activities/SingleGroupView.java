@@ -220,15 +220,16 @@ public class SingleGroupView extends AppCompatActivity {
         mCollapsingToolbar.setTitle(mGroupName);
 
         if (mGroupImage != null && !mGroupImage.isEmpty()) {
-            Picasso.with(this).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + mGroupImage).fit().centerCrop()
+            Picasso.with(this).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + mGroupImage).error(R.drawable.image_laoding_error)
+                    .placeholder(R.drawable.no_image_yet_state).fit().centerCrop()
                     .into(mGroupImageView);
         } else {
-            Picasso.with(this).load(R.drawable.no_image_box).fit().centerCrop()
-                    .into(mGroupImageView);
+            mGroupImageView.setBackgroundResource(R.drawable.no_group_image);
         }
         if (mOwnerImage != null && !mOwnerImage.isEmpty()) {
             Picasso.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                    mOwnerImage).transform(new CircleTransform()).fit()
+                    mOwnerImage).error(R.drawable.image_laoding_error)
+                    .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
                     .centerCrop().into(mOwnerImageView);
         } else {
             Picasso.with(this).load(R.drawable.no_image).transform(new CircleTransform()).fit()

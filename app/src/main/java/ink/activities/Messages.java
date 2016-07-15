@@ -19,6 +19,7 @@ import android.view.View;
 import com.ink.R;
 import com.wang.avi.AVLoadingIndicatorView;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -234,7 +235,7 @@ public class Messages extends AppCompatActivity implements SwipeRefreshLayout.On
                         String userId = eachObject.optString("user_id");
                         String opponentId = eachObject.optString("opponent_id");
                         String messageId = eachObject.optString("message_id");
-                        String message = eachObject.optString("message");
+                        String message = StringEscapeUtils.unescapeJava(eachObject.optString("message"));
                         String firstName = eachObject.optString("firstName");
                         String lastName = eachObject.optString("lastName");
                         String imageName = eachObject.optString("imageName");

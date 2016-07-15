@@ -17,7 +17,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -27,6 +26,7 @@ import android.widget.EditText;
 import com.google.firebase.messaging.RemoteMessage;
 import com.ink.R;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -83,8 +83,6 @@ public class Chat extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(getPackageName() + ".Chat"));
         mChatAdapter = new ChatAdapter(mChatModelArrayList, this);
         mRealHelper = RealmHelper.getInstance();
-
-
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);
         itemAnimator.setRemoveDuration(500);
@@ -93,7 +91,6 @@ public class Chat extends AppCompatActivity {
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(itemAnimator);
         mRecyclerView.setAdapter(mChatAdapter);
-
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -138,9 +135,9 @@ public class Chat extends AppCompatActivity {
         if (mNoMessageLayout.getVisibility() == View.VISIBLE) {
             mNoMessageLayout.setVisibility(View.GONE);
         }
-        String message = mWriteEditText.getText().toString();
+        String message = StringEscapeUtils.escapeJava(mWriteEditText.getText().toString().trim());
 
-        ChatModel tempChat = new ChatModel(null, mCurrentUserId, mOpponentId, message.trim(),
+        ChatModel tempChat = new ChatModel(null, mCurrentUserId, mOpponentId, StringEscapeUtils.unescapeJava(message.trim()),
                 false, Constants.STATUS_NOT_DELIVERED,
                 mUserImage, mOpponentImage, "");
         mChatModelArrayList.add(tempChat);
@@ -165,7 +162,7 @@ public class Chat extends AppCompatActivity {
     private void attemptToQue(String message, int itemLocation, String deleteOpponentId,
                               String deleteUserId) {
         RealmHelper.getInstance().insertMessage(mCurrentUserId, mOpponentId,
-                mWriteEditText.getText().toString(), "0", "",
+                message, "0", "",
                 String.valueOf(itemLocation),
                 Constants.STATUS_NOT_DELIVERED, mUserImage,
                 mOpponentImage, deleteOpponentId, deleteUserId);
@@ -215,7 +212,7 @@ public class Chat extends AppCompatActivity {
                 MessageModel eachModel = messageModels.get(i);
                 String messageId = eachModel.getMessageId();
                 String opponentId = eachModel.getOpponentId();
-                String message = eachModel.getMessage();
+                String message = StringEscapeUtils.unescapeJava(eachModel.getMessage());
                 String userId = eachModel.getUserId();
                 String userImage = eachModel.getUserImage();
                 String opponentImage = eachModel.getOpponentImage();
@@ -237,7 +234,7 @@ public class Chat extends AppCompatActivity {
                 mChatModelArrayList.add(mChatModel);
                 if (eachModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED)) {
                     int itemLocation = mChatModelArrayList.indexOf(mChatModel);
-                    attemptToQue(eachModel.getMessage().trim(), itemLocation,
+                    attemptToQue(message, itemLocation,
                             deleteOpponentId, deleteUserId);
                 }
                 mChatAdapter.notifyDataSetChanged();
@@ -271,7 +268,7 @@ public class Chat extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            Log.d("fasfasfsafas", "onTextChanged: "+s);
+
             if (s.toString().trim().length() <= 0) {
                 mSendChatMessage.setEnabled(false);
             } else {
@@ -280,8 +277,7 @@ public class Chat extends AppCompatActivity {
         }
 
         @Override
-        public void afterTextChanged(Editable s) {
-
+        public void afterTextChanged(Editable editable) {
         }
     };
 
@@ -302,7 +298,7 @@ public class Chat extends AppCompatActivity {
 
                 if (mOpponentId.equals(response.get("user_id"))) {
                     mChatModel = new ChatModel(response.get("message_id"), response.get("user_id"),
-                            response.get("opponent_id"), response.get("message"), true, Constants.STATUS_DELIVERED,
+                            response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
                             response.get("user_image"), response.get("opponent_image"), response.get("date"));
                     mChatModelArrayList.add(mChatModel);
                     mChatAdapter.notifyDataSetChanged();

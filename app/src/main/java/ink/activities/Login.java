@@ -153,57 +153,69 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             mProgressView.setVisibility(View.VISIBLE);
-            final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().login(mLoginView.getText().toString().toString(),
-                    mPasswordView.getText().toString());
-            responseBodyCall.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    mProgressView.setVisibility(View.GONE);
-                    enableButtons();
+            proceedLogin();
+        }
+    }
+
+    private void proceedLogin() {
+        final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().login(mLoginView.getText().toString().toString(),
+                mPasswordView.getText().toString());
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                mProgressView.setVisibility(View.GONE);
+                enableButtons();
+                if (response == null) {
+                    proceedLogin();
+                    return;
+                }
+                if (response.body() == null) {
+                    proceedLogin();
+                    return;
+                }
+                try {
                     try {
-                        try {
-                            String responseString = response.body().string();
-                            JSONObject jsonObject = new JSONObject(responseString);
-                            boolean success = jsonObject.optBoolean("success");
-                            AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
-                            if (!success) {
-                                builder.setTitle(getString(R.string.errorLogin));
-                                builder.setMessage(getString(R.string.errorLoginMessage));
-                                builder.setCancelable(false);
-                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                                builder.show();
-                            } else {
-                                String userId = jsonObject.optString("user_id");
-                                mSharedHelper.putFirstName(jsonObject.optString("first_name"));
-                                mSharedHelper.putLastName(jsonObject.optString("last_name"));
-                                mSharedHelper.putUserId(userId);
-                                mSharedHelper.putShouldShowIntro(false);
-                                String imageLink = jsonObject.optString("imageLink");
-                                if (imageLink != null && !imageLink.isEmpty()) {
-                                    mSharedHelper.putImageLink(imageLink);
+                        String responseString = response.body().string();
+                        JSONObject jsonObject = new JSONObject(responseString);
+                        boolean success = jsonObject.optBoolean("success");
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+                        if (!success) {
+                            builder.setTitle(getString(R.string.errorLogin));
+                            builder.setMessage(getString(R.string.errorLoginMessage));
+                            builder.setCancelable(false);
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
                                 }
-                                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-                                finish();
+                            });
+                            builder.show();
+                        } else {
+                            String userId = jsonObject.optString("user_id");
+                            mSharedHelper.putFirstName(jsonObject.optString("first_name"));
+                            mSharedHelper.putLastName(jsonObject.optString("last_name"));
+                            mSharedHelper.putUserId(userId);
+                            mSharedHelper.putShouldShowIntro(false);
+                            String imageLink = jsonObject.optString("imageLink");
+                            if (imageLink != null && !imageLink.isEmpty()) {
+                                mSharedHelper.putImageLink(imageLink);
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                            finish();
                         }
-                    } catch (IOException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+            }
 
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    attemptLogin();
-                }
-            });
-        }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                attemptLogin();
+            }
+        });
     }
 
 

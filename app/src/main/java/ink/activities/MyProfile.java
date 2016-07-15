@@ -20,6 +20,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +39,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.ink.R;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.PicassoTools;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
@@ -232,7 +234,8 @@ public class MyProfile extends AppCompatActivity {
                     mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
                     showImageLoading();
                     isImageChosen = true;
-                    Picasso.with(getApplicationContext()).load(new File(selectedImagePath)).fit().centerCrop().into(profileImage, picassoCallback(selectedImagePath, true));
+                    Picasso.with(getApplicationContext()).load(new File(selectedImagePath)).error(R.drawable.image_laoding_error).fit()
+                            .centerInside().into(profileImage, picassoCallback(selectedImagePath, true));
                 } else {
                     isImageChosen = false;
                 }
@@ -240,7 +243,6 @@ public class MyProfile extends AppCompatActivity {
         }
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
-
 
     private String getRealPathFromURI(Uri contentURI) {
         String result;
@@ -359,7 +361,7 @@ public class MyProfile extends AppCompatActivity {
         if (mImageLinkToSend != null && !mImageLinkToSend.isEmpty()) {
             mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
             if (shouldLoadImage) {
-                Picasso.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).fit().centerCrop().into(profileImage, picassoCallback(mImageLinkToSend, false));
+                Picasso.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).fit().centerInside().into(profileImage, picassoCallback(mImageLinkToSend, false));
             } else {
                 mSharedHelper.putFirstName(mFirstNameToSend);
                 mSharedHelper.putLastName(mLastNameToSend);
@@ -762,11 +764,20 @@ public class MyProfile extends AppCompatActivity {
                         if (success) {
                             mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
                             attachValues(false);
-                            Picasso.with(getApplicationContext()).invalidate(Constants.MAIN_URL +
-                                    Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink());
-                            String imageLink = mSharedHelper.getUserId() + ".png";
-                            mSharedHelper.putImageLink(imageLink);
-                            deleteDirectoryTree(new File(getApplicationContext().getCacheDir() + "picasso-cache"));
+                            hideImageLoading();
+                            hideSnack();
+                            Log.d("fasfsafasfas", "onResponse: " + jsonObject);
+                            String imageId = jsonObject.optString("image_id");
+                            if (imageId != null && !imageId.isEmpty()) {
+                                String imageLink = mSharedHelper.getUserId() + ".png";
+                                Picasso.with(getApplicationContext()).invalidate(mSharedHelper.getImageLink());
+                                mSharedHelper.putImageLink(imageLink);
+                                PicassoTools.clearCache(Picasso.with(getApplicationContext()));
+                                deleteDirectoryTree(getApplicationContext().getCacheDir());
+                                Picasso.with(getApplicationContext()).invalidate(Constants.MAIN_URL +
+                                        Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink());
+                            }
+
                         } else {
                             hideImageLoading();
                             hideSnack();
@@ -870,7 +881,7 @@ public class MyProfile extends AppCompatActivity {
                     finalPath = Constants.MAIN_URL +
                             Constants.USER_IMAGES_FOLDER + imageLinkToSend;
                 }
-                Picasso.with(getApplicationContext()).load(finalPath).fit().centerCrop().into(profileImage, picassoCallback(imageLinkToSend, shouldUseFullPath));
+                Picasso.with(getApplicationContext()).load(finalPath).fit().centerInside().into(profileImage, picassoCallback(imageLinkToSend, shouldUseFullPath));
             }
         };
         return callback;

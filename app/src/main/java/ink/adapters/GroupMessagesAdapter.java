@@ -56,7 +56,8 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
 
         if (!groupMessagesModel.getSenderImage().isEmpty()) {
             Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                    groupMessagesModel.getSenderImage()).transform(new CircleTransform()).fit()
+                    groupMessagesModel.getSenderImage()).error(R.drawable.image_laoding_error)
+                    .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
                     .centerCrop().into(holder.messageSenderImage);
         } else {
             Picasso.with(mContext).load(R.drawable.no_image).transform(new CircleTransform()).fit()

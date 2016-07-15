@@ -32,6 +32,14 @@ public class QueHelper {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
+                    if (response == null) {
+                        attachToQue(mCurrentUserId, mOpponentId, message, sentItemLocation, queCallback);
+                        return;
+                    }
+                    if (response.body() == null) {
+                        attachToQue(mCurrentUserId, mOpponentId, message, sentItemLocation, queCallback);
+                        return;
+                    }
                     String responseString = response.body().string();
                     queCallback.onMessageSent(responseString, sentItemLocation);
                 } catch (IOException e) {

@@ -24,7 +24,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/no_image"
-                android:minHeight="300dp"
+                android:minHeight="200dp"
                 android:transitionName="card">
 
                 <com.wang.avi.AVLoadingIndicatorView
@@ -37,8 +37,10 @@
                 <ImageView
                     android:id="@+id/profileImage"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:adjustViewBounds="true"
+                    android:minHeight="200dp"
                     android:scaleType="fitXY" />
 
                 <RelativeLayout

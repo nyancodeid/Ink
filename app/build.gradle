@@ -51,5 +51,6 @@ dependencies {
     compile 'com.github.jlmd:AnimatedCircleLoadingView:1.1.5@aar'
     compile 'com.github.ybq:Android-SpinKit:1.0.4'
     compile 'com.github.yukuku:ambilwarna:2.0.1'
+    compile 'org.apache.commons:commons-lang3:3.4'
 }
 apply plugin: 'com.google.gms.google-services'

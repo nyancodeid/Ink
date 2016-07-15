@@ -79,7 +79,8 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             itemViewHolder.commenterName.setText(commentModel.getFirstName() + " " + commentModel.getLastName());
             if (commentModel.getCommenterImage() != null && !commentModel.getCommenterImage().isEmpty()) {
                 Picasso.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        commentModel.getCommenterImage()).transform(new CircleTransform()).fit().centerCrop()
+                        commentModel.getCommenterImage()).error(R.drawable.image_laoding_error)
+                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop()
                         .into(itemViewHolder.commenterImage);
             } else {
                 Picasso.with(context).load(R.drawable.no_image).transform(new CircleTransform()).fit().centerCrop()
@@ -89,7 +90,8 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             final HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
             if (ownerImage != null && !ownerImage.isEmpty()) {
                 Picasso.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        ownerImage).transform(new CircleTransform()).fit().centerCrop()
+                        ownerImage).error(R.drawable.image_laoding_error)
+                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop()
                         .into(headerViewHolder.postOwnerImage);
             } else {
                 Picasso.with(context).load(R.drawable.no_image).transform(new CircleTransform()).fit().centerCrop()

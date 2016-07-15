@@ -79,7 +79,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
         if (feedModel.getUserImage() != null && !feedModel.getUserImage().isEmpty()) {
             Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + feedModel.getUserImage())
-                    .transform(new CircleTransform())
+                    .error(R.drawable.image_laoding_error)
+                    .placeholder(R.drawable.no_image_yet_state) .transform(new CircleTransform())
                     .fit().centerCrop().into(holder.feedUserImage);
         } else {
             Picasso.with(mContext).load(R.drawable.no_image)
