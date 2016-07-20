@@ -11,6 +11,8 @@ import android.widget.VideoView;
 
 import com.ink.R;
 
+import ink.utils.Constants;
+
 /**
  * Created by USER on 2016-07-20.
  */
@@ -33,7 +35,7 @@ public class Packs extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         videoView = (VideoView) view.findViewById(R.id.videoView);
-        videoView.setVideoURI(Uri.parse("android.resource://" + getActivity().getPackageName() + "/" + R.raw.chest));
+        videoView.setVideoURI(Uri.parse(Constants.ANDROID_RESOURCE_DIR + getActivity().getPackageName() + "/" + R.raw.chest));
         videoView.start();
     }
 }
