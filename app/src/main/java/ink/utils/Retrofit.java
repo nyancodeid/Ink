@@ -137,6 +137,10 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getGroups(@Field("user_id") String userId);
 
+        @POST(Constants.USER_COINS_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getCoins(@Field("user_id") String userId);
+
         @POST(Constants.MY_GROUPS_URL)
         @FormUrlEncoded
         Call<ResponseBody> getMyGroups(@Field("user_id") String userId);

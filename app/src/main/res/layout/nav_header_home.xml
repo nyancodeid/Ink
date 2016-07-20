@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
     android:background="@drawable/side_nav_bar"
@@ -20,8 +20,28 @@
         android:id="@+id/userNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/profileImage"
         android:fontFamily="@string/appFont"
         android:text="android.studio@android.com"
         android:textColor="#ffffff" />
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/coinsImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/profileImage"
+        android:src="@drawable/coins_icon" />
+
+    <TextView
+        android:id="@+id/coinsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/coinsImage"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/coinsImage"
+        android:fontFamily="@string/appFont"
+        android:text="@string/loadingText"
+        android:textColor="#ffffff" />
+</RelativeLayout>

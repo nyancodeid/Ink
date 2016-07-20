@@ -251,4 +251,8 @@
     <string name="userDisconnected">Opponent disconnected</string>
     <string name="opponentDisconnectedText">We\'re sorry but your opponent was disconnected from the chat.
         \nYou can find new opponent by cliking top right button to search again.</string>
+    <string name="packs_title">Packs</string>
+    <string name="trade_title">Trade</string>
+    <string name="shopTitle">Shop</string>
+    <string name="coinsText">%1$s coins</string>
 </resources>

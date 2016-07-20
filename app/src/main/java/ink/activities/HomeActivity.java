@@ -18,26 +18,36 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.ink.R;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 
 import fab.FloatingActionButton;
 import ink.fragments.Feed;
 import ink.fragments.MyFriends;
+import ink.models.CoinsResponse;
 import ink.service.BackgroundTaskService;
 import ink.service.SendTokenService;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.RealmHelper;
+import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
+import ink.utils.User;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private FloatingActionMenu mFab;
     private ImageView mProfileImage;
+    private TextView coinsText;
     private SharedHelper mSharedHelper;
     private FloatingActionButton mMessages;
     private FloatingActionButton mNewPost;
@@ -111,9 +121,45 @@ public class HomeActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction().replace(R.id.container, mFeed).commit();
 
         mProfileImage = (ImageView) headerView.findViewById(R.id.profileImage);
+        coinsText = (TextView) headerView.findViewById(R.id.coinsText);
+        getCoins();
         mProfileImage.setOnClickListener(this);
         mUserNameTV = (TextView) headerView.findViewById(R.id.userNameTextView);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void getCoins() {
+        Call<ResponseBody> coinsCall = Retrofit.getInstance().getInkService().getCoins(mSharedHelper.getUserId());
+        coinsCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    getCoins();
+                    return;
+                }
+                if (response.body() == null) {
+                    getCoins();
+                }
+                Gson gson = new Gson();
+                try {
+                    CoinsResponse coinsResponse = gson.fromJson(response.body().string(), CoinsResponse.class);
+                    if (coinsResponse.success) {
+                        User.get().setCoins(coinsResponse.coins);
+                        coinsText.setText(getString(R.string.coinsText, coinsResponse.coins));
+                    } else {
+                        getCoins();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                getCoins();
+            }
+        });
     }
 
     private Class<?> getLastKnownClass() {
@@ -152,6 +198,8 @@ public class HomeActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.shop) {
+            startActivity(new Intent(getApplicationContext(), Shop.class));
         }
 
         return super.onOptionsItemSelected(item);
@@ -261,6 +309,11 @@ public class HomeActivity extends AppCompatActivity
         if (mSharedHelper.isTokenRefreshed()) {
             startTokenService();
         }
+        if (User.get().getCoins() != 0) {
+            if (coinsText != null) {
+                coinsText.setText(getString(R.string.coinsText, User.get().getCoins()));
+            }
+        }
         mUserNameTV.setText(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
         if (mSharedHelper.hasImage()) {
             if (!mSharedHelper.getImageLink().isEmpty()) {
@@ -333,6 +386,7 @@ public class HomeActivity extends AppCompatActivity
     private void setShouldOpenActivity(boolean shouldOpenActivity) {
         this.shouldOpenActivity = shouldOpenActivity;
     }
+
     private void deleteDirectoryTree(File fileOrDirectory) {
         if (fileOrDirectory.isDirectory()) {
             for (File child : fileOrDirectory.listFiles()) {

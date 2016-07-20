@@ -12,6 +12,7 @@ public class Constants {
     public static final String SEARCH_GROUP_URL = "SearchGroups.php";
     public static final String SEND_CHAT_ROULETTE_MESSAGE = "SendChatRouletteMessage.php";
     public static final String DISCONNECT_URL = "Disconnect.php";
+    public static final String USER_COINS_URL = "GetUserCoins.php";
     public static final String JOIN_GROUP_URL = "JoinGroup.php";
     public static final String ADD_GROUP_MESSAGE_URL = "AddGroupMessage.php";
     public static final String GET_GROUP_URL = "GetGroups.php";
