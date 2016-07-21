@@ -125,7 +125,11 @@
             android:name="ink.activities.WaitRoom"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
-        <activity android:name="ink.activities.Shop"></activity>
+        <activity android:name="ink.activities.Shop" />
+        <activity
+            android:name="ink.activities.BuyCoins"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Transparent"></activity>
     </application>
 
 </manifest>

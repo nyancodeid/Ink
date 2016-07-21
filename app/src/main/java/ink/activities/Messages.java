@@ -216,9 +216,11 @@ public class Messages extends AppCompatActivity implements SwipeRefreshLayout.On
                 try {
                     if (response == null) {
                         getUserMessages();
+                        return;
                     }
                     if (response.body() == null) {
                         getUserMessages();
+                        return;
                     }
                     System.gc();
                     if (userMessagesModels != null) {

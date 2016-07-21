@@ -1,5 +1,6 @@
 package ink.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ink.R;
@@ -16,6 +18,7 @@ import java.util.List;
 
 import ink.fragments.Packs;
 import ink.fragments.Trade;
+import ink.utils.User;
 
 public class Shop extends AppCompatActivity {
     private TabLayout tabLayout;
@@ -77,7 +80,26 @@ public class Shop extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        finish();
+        if (item.getItemId() == R.id.coinsMenu) {
+        } else if (item.getItemId() == R.id.myCoinsMenu) {
+
+        } else if (item.getItemId() == R.id.buyCoinsMenu) {
+            startActivity(new Intent(getApplicationContext(), BuyCoins.class));
+        } else {
+            finish();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.shop_menu, menu);
+        if (menu != null) {
+            if (User.get().getCoins() != 0) {
+                menu.findItem(R.id.myCoinsMenu).setTitle(getString(R.string.coinsText, User.get().getCoins()));
+            }
+        }
+        return true;
     }
 }

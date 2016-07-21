@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/coinsMenu"
+        android:title="@string/coinsMenu"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/myCoinsMenu"
+                android:icon="@drawable/coins_icon"
+                android:title="@string/loadingText"
+                app:showAsAction="always" />
+            <item
+                android:id="@+id/buyCoinsMenu"
+                android:icon="@drawable/buy_coins_icon"
+                android:title="@string/buyCoins"
+                app:showAsAction="always" />
+        </menu>
+    </item>
+</menu>

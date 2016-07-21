@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/chat_background_color"
     tools:context="ink.activities.Chat">
 
     <android.support.v7.widget.RecyclerView
@@ -62,7 +61,6 @@
             <EditText
                 android:id="@+id/messageBody"
                 android:layout_width="match_parent"
-                android:inputType="textMultiLine|textShortMessage|textCapSentences"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="3dp"
@@ -75,6 +73,7 @@
                 android:imeActionId="@+id/send"
                 android:imeActionLabel="Done"
                 android:imeOptions="actionUnspecified"
+                android:inputType="textMultiLine|textShortMessage|textCapSentences"
                 android:maxHeight="80dp"
                 android:minHeight="50dp"
                 android:paddingLeft="15dp" />

@@ -255,4 +255,6 @@
     <string name="trade_title">Trade</string>
     <string name="shopTitle">Shop</string>
     <string name="coinsText">%1$s coins</string>
+    <string name="buyCoins">Buy Coins</string>
+    <string name="coinsMenu">Coins</string>
 </resources>

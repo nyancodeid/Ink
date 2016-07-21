@@ -72,6 +72,12 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getMyRequests(@Field("ownerId") String userId);
 
+        @POST(Constants.SHOP_COINS_URL)
+        Call<ResponseBody> getCoins();
+
+        @POST(Constants.SHOP_PACKS_URL)
+        Call<ResponseBody> getPacks();
+
         @POST(Constants.JOIN_GROUP_URL)
         @FormUrlEncoded
         Call<ResponseBody> requestJoin(@Field("ownerId") String ownerId,
