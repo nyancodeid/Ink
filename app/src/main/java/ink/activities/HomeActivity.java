@@ -135,24 +135,37 @@ public class HomeActivity extends AppCompatActivity
     private void checkIsWarned() {
         if (!mSharedHelper.isDeviceWarned()) {
             if (DeviceChecker.isHuawei()) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
                 builder.setTitle(getString(R.string.caution));
                 builder.setMessage(getString(R.string.huaweiWarning));
                 builder.setCancelable(false);
-                builder.setPositiveButton(getString(R.string.iDid), new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(getString(R.string.dontShowAgain), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                        mSharedHelper.putWarned(true);
+                        //just override for dialog not to close automatically
                     }
                 });
                 builder.setNegativeButton(getString(R.string.navigateToSettings), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        //just override for dialog not to close automatically
+                    }
+                });
+                final AlertDialog dialog = builder.create();
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        mSharedHelper.putWarned(true);
+                    }
+                });
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
                         startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
                     }
                 });
-                builder.show();
             }
         }
     }

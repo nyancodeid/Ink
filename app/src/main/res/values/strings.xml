@@ -274,6 +274,6 @@
         \nThank you for your understanding.
 
     </string>
-    <string name="iDid">I already did</string>
+    <string name="dontShowAgain">Don\'t show this again</string>
     <string name="navigateToSettings">Navigate to settings</string>
 </resources>
