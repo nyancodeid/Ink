@@ -257,4 +257,23 @@
     <string name="coinsText">%1$s coins</string>
     <string name="buyCoins">Buy Coins</string>
     <string name="coinsMenu">Coins</string>
+    <string name="caution">CAUTION!!!</string>
+    <string name="huaweiWarning">Dear user,We have detected that your device belongs to HUAWEI manufacturer.Due to HUAWEI phones being deeply changed in the OS,there is one thing you should do for the application to work properly.
+    The issue considers to the notifications not being received in the HUAWEI device.For the fix please follow the next:
+        \n\n1)Ensure that  device is not in the \'ULTRA-BATTER\' mode.
+        \n\n2)Add the application to protected apps of the device.
+        \n\nFor the Marshmallow and above devices do the next:
+        \n\n3)Open \'Settings\'
+        \n\n4)Navigate to \'Advanced Settings\'
+        \n\n5)Click on the \'Battery Manager\'
+        \n\n6)You will see the block called \'Protected Apps\',click on it.
+        \n\n7)Find the \'INK\' application in the list and switch the trigger ON.
+        \n\nAs soon as you did all the required steps,the text with the \'Protected\' sign will appear below of the app.
+        \n\nFor Lollipop and below devices you should follow same steps except 4 and 5 steps.Just navigate through Settings->Protected Apps and do the rest steps as follows.
+        \nWe sincerely sorry if this could make you fell uncomfortable,but there is nothing more we can do except warn you.
+        \nThank you for your understanding.
+
+    </string>
+    <string name="iDid">I already did</string>
+    <string name="navigateToSettings">Navigate to settings</string>
 </resources>

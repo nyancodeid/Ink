@@ -1,5 +1,6 @@
 package ink.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionMenu;
@@ -8,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -33,6 +35,7 @@ import ink.service.BackgroundTaskService;
 import ink.service.SendTokenService;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
+import ink.utils.DeviceChecker;
 import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
@@ -92,6 +95,7 @@ public class HomeActivity extends AppCompatActivity
 
         deleteDirectoryTree(getApplicationContext().getCacheDir());
 
+        checkIsWarned();
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -126,6 +130,31 @@ public class HomeActivity extends AppCompatActivity
         mProfileImage.setOnClickListener(this);
         mUserNameTV = (TextView) headerView.findViewById(R.id.userNameTextView);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void checkIsWarned() {
+        if (!mSharedHelper.isDeviceWarned()) {
+            if (DeviceChecker.isHuawei()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                builder.setTitle(getString(R.string.caution));
+                builder.setMessage(getString(R.string.huaweiWarning));
+                builder.setCancelable(false);
+                builder.setPositiveButton(getString(R.string.iDid), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        mSharedHelper.putWarned(true);
+                    }
+                });
+                builder.setNegativeButton(getString(R.string.navigateToSettings), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
+                    }
+                });
+                builder.show();
+            }
+        }
     }
 
     private void getCoins() {
@@ -258,6 +287,7 @@ public class HomeActivity extends AppCompatActivity
                 clearApplicationData();
                 mSharedHelper.clean();
                 mSharedHelper.putShouldShowIntro(false);
+                mSharedHelper.putWarned(true);
                 RealmHelper.getInstance().clearDatabase(getApplicationContext());
                 Toast.makeText(HomeActivity.this, getString(R.string.loggedOutText), Toast.LENGTH_SHORT).show();
                 System.exit(1);

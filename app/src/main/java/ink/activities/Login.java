@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -59,6 +60,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mSharedHelper = new SharedHelper(this);
+        Log.d("Fasfasfas", "onCreate: "+ Build.MANUFACTURER);
         if (!checkPlayServices()) {
             return;
         }

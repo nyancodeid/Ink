@@ -132,6 +132,15 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public boolean isDeviceWarned() {
+        return mSharedPreferences.getBoolean("isWarned", false);
+    }
+
+    public void putWarned(boolean isWarned) {
+        mEditor.putBoolean("isWarned", isWarned);
+        mEditor.commit();
+    }
+
     public String getLastName() {
         return mSharedPreferences.getString("lastName", "");
     }

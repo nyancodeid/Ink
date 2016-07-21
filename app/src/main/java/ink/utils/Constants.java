@@ -59,5 +59,6 @@ public class Constants {
     public static final String ACTION_DELETE = "delete";
     public static final String ACTION_INSERT = "insert";
     public static final String ANDROID_RESOURCE_DIR = "android.resource://";
+    public static final String HUAWEI_MODEL = "HUAWEI";
 }
 
