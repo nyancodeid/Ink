@@ -46,7 +46,6 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name="ink.activities.Chat"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
             android:configChanges="keyboardHidden|orientation|screenSize" />
 
         <service android:name="ink.service.NotificationService">
