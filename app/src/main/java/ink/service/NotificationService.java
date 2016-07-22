@@ -26,6 +26,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -37,7 +38,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import java.util.Map;
 
 import ink.activities.Chat;
-import ink.activities.NotificationView;
+import ink.activities.ReplyView;
 import ink.activities.RequestsView;
 import ink.utils.Constants;
 import ink.utils.Notification;
@@ -78,10 +79,11 @@ public class NotificationService extends FirebaseMessagingService {
             });
 
             if (Notification.getInstance().isSendingRemote()) {
+                Log.d(TAG, "onMessageReceived: " + response.get("opponent_image"));
                 sendNotification("New Message", response.get("user_id"),
                         StringEscapeUtils.unescapeJava(response.get("message")), getApplicationContext(),
                         response.get("message_id"), response.get("opponent_id"),
-                        response.get("opponent_image"), response.get("user_image"), response.get("name"),
+                        response.get("opponent_image"), response.get("opponent_image").isEmpty() ? "" : response.get("opponent_image"), response.get("name"),
                         response.get("delete_user_id"), response.get("delete_opponent_id"));
             } else {
                 Intent intent = new Intent(getPackageName() + ".Chat");
@@ -111,21 +113,25 @@ public class NotificationService extends FirebaseMessagingService {
      * @param messageBody FCM message body received.
      */
     public void sendNotification(String title, String opponentId,
-                                 String messageBody, Context context,
+                                 String messageBody, final Context context,
                                  String messageId, String currentUserId,
-                                 String userImage, String opponentImage,
+                                 String userImage, final String opponentImage,
                                  String userName, String deleteUserId, String deleteOpponentId) {
 
         NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
+        Log.d(TAG, "sendNotification: " + opponentImage);
         Intent chatIntent = new Intent(context, Chat.class);
+        chatIntent.setAction(opponentId);
         chatIntent.putExtra("firstName", userName);
         chatIntent.putExtra("opponentId", opponentId);
+        chatIntent.putExtra("opponentImage", opponentImage);
+
         chatIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
 
-        Intent intent = new Intent(context, NotificationView.class);
+        Intent intent = new Intent(context, ReplyView.class);
         intent.putExtra("message", messageBody);
         intent.putExtra("mOpponentId", opponentId);
         intent.putExtra("mCurrentUserId", currentUserId);
@@ -140,12 +146,18 @@ public class NotificationService extends FirebaseMessagingService {
 
         PendingIntent chatPending = PendingIntent.getActivity(context, Integer.valueOf(opponentId), chatIntent, 0);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, Integer.valueOf(opponentId), intent, 0);
-        android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
+        final android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
         builder.setSmallIcon(R.mipmap.ic_launcher);
 
         if (opponentImage != null && !opponentImage.isEmpty()) {
-            Picasso.with(context).load(opponentImage).error(R.drawable.image_laoding_error)
-                    .placeholder(R.drawable.no_image_yet_state).into(getTarget(builder));
+            Handler handler = new Handler(getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Picasso.with(context).load(opponentImage).error(R.drawable.image_laoding_error)
+                            .placeholder(R.drawable.no_image_yet_state).into(getTarget(builder));
+                }
+            });
         }
         builder.setAutoCancel(true);
 

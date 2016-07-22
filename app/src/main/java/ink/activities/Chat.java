@@ -16,21 +16,30 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
 import com.ink.R;
+import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,12 +51,20 @@ import ink.adapters.ChatAdapter;
 import ink.callbacks.QueCallback;
 import ink.models.ChatModel;
 import ink.models.MessageModel;
+import ink.models.UserStatus;
+import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.Notification;
 import ink.utils.QueHelper;
 import ink.utils.RealmHelper;
 import ink.utils.RecyclerTouchListener;
+import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
+import ink.utils.Time;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Chat extends AppCompatActivity {
 
@@ -59,6 +76,15 @@ public class Chat extends AppCompatActivity {
     NestedScrollView mNoMessageLayout;
     @Bind(R.id.chatRecyclerView)
     RecyclerView mRecyclerView;
+    @Bind(R.id.chatTitle)
+    TextView chatTitle;
+    private boolean isImageLoaded = false;
+    @Bind(R.id.opponentImage)
+    ImageView opponentImage;
+    @Bind(R.id.opponentStatus)
+    TextView opponentStatus;
+    @Bind(R.id.statusColor)
+    ImageView statusColor;
 
     private String mOpponentId;
     String mCurrentUserId;
@@ -72,14 +98,20 @@ public class Chat extends AppCompatActivity {
     private AlertDialog.Builder mBuilder;
     private String mDeleteUserId;
     private String mDeleteOpponentId;
+    private Gson gson;
+    private Animation fadeAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chat_background));
         setContentView(R.layout.activity_chat);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarik);
+        setSupportActionBar(toolbar);
         mBuilder = new AlertDialog.Builder(this);
+        fadeAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_scale);
         ButterKnife.bind(this);
+        gson = new Gson();
         mSharedHelper = new SharedHelper(this);
         Notification.getInstance().setSendingRemote(false);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(getPackageName() + ".Chat"));
@@ -128,6 +160,45 @@ public class Chat extends AppCompatActivity {
         mSendChatMessage.setEnabled(false);
         mWriteEditText.addTextChangedListener(chatTextWatcher);
 
+    }
+
+    private void getStatus() {
+        final Call<ResponseBody> statusCall = Retrofit.getInstance().getInkService().getUserStatus(mOpponentId);
+        statusCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    getStatus();
+                    return;
+                }
+                if (response.body() == null) {
+                    getStatus();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    final UserStatus userStatus = gson.fromJson(responseBody, UserStatus.class);
+                    if (userStatus.success) {
+                        if (userStatus.isOnline) {
+                            statusColor.setVisibility(View.VISIBLE);
+                            statusColor.startAnimation(fadeAnimation);
+                            opponentStatus.setText(getString(R.string.onlineStatus));
+                        } else {
+                            opponentStatus.setText(getString(R.string.lastSeen, Time.convertToLocalTime(userStatus.lastSeenTime)));
+                        }
+                    } else {
+                        getStatus();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                getStatus();
+            }
+        });
     }
 
 
@@ -324,16 +395,30 @@ public class Chat extends AppCompatActivity {
         if (bundle != null) {
             String firstName = bundle.getString("firstName");
             mOpponentId = bundle.getString("opponentId");
+            String opponentImage = bundle.getString("opponentImage");
+            Log.d("Fasfsafas", "onResume: " + opponentImage);
+            if (opponentImage != null && !opponentImage.isEmpty()) {
+                if (!isImageLoaded) {
+                    isImageLoaded = true;
+                    Picasso.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                            opponentImage).error(R.drawable.image_laoding_error)
+                            .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
+                            .centerCrop().into(this.opponentImage);
+                }
+            } else {
+                Picasso.with(this).load(R.drawable.no_image).transform(new CircleTransform()).fit()
+                        .centerCrop().into(this.opponentImage);
+            }
+            getStatus();
             mCurrentUserId = mSharedHelper.getUserId();
             if (mChatModelArrayList != null) {
                 mChatModelArrayList.clear();
             }
             getMessages();
             //action bar set ups.
-            if (actionBar != null) {
-                actionBar.setTitle(firstName);
-            }
+            chatTitle.setText(firstName);
         }
+
         //action bar set ups
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

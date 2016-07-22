@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="ink.activities.NotificationView">
+    tools:context="ink.activities.ReplyView">
 
     <ImageView
         android:id="@+id/backButton"
@@ -45,6 +45,7 @@
             <EditText
                 android:id="@+id/replyBody"
                 android:layout_width="match_parent"
+                android:inputType="textMultiLine|textShortMessage|textCapSentences"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="3dp"
@@ -57,7 +58,6 @@
                 android:maxHeight="80dp"
                 android:minHeight="50dp"
                 android:paddingLeft="15dp" />
-
             <fab.FloatingActionButton
                 android:id="@+id/replyMessage"
                 android:layout_width="wrap_content"

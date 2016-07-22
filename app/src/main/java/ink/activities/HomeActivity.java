@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,11 +27,18 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import fab.FloatingActionButton;
 import ink.fragments.Feed;
 import ink.fragments.MyFriends;
 import ink.models.CoinsResponse;
+import ink.models.PingResponse;
 import ink.service.BackgroundTaskService;
 import ink.service.SendTokenService;
 import ink.utils.CircleTransform;
@@ -48,6 +56,7 @@ import retrofit2.Response;
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
+    private static final long PING_TIME = 50000;
     private FloatingActionMenu mFab;
     private ImageView mProfileImage;
     private TextView coinsText;
@@ -57,6 +66,7 @@ public class HomeActivity extends AppCompatActivity
     private Feed mFeed;
     private MyFriends mMyFriends;
     private Toolbar mToolbar;
+    private Timer timer = new Timer();
     private DrawerLayout mDrawer;
     public static String PROFILE;
     public static String FEED;
@@ -68,12 +78,15 @@ public class HomeActivity extends AppCompatActivity
     private Class<?> mLastClassToOpen;
     private boolean shouldOpenActivity;
     private FloatingActionButton mMakePost;
+    private Thread mPingThread;
+    private Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        gson = new Gson();
         setSupportActionBar(mToolbar);
         PROFILE = getString(R.string.profileText);
         FEED = getString(R.string.feedText);
@@ -83,6 +96,8 @@ public class HomeActivity extends AppCompatActivity
         SETTINGS = getString(R.string.settingsString);
         mToolbar.setTitle(FEED);
         mSharedHelper = new SharedHelper(this);
+        initThread();
+
         mFab = (FloatingActionMenu) findViewById(R.id.fab);
         mMessages = (FloatingActionButton) findViewById(R.id.messages);
         mMakePost = (FloatingActionButton) findViewById(R.id.makePost);
@@ -92,6 +107,13 @@ public class HomeActivity extends AppCompatActivity
         mMessages.setOnClickListener(this);
         mMakePost.setOnClickListener(this);
         mNewPost.setOnClickListener(this);
+
+
+        try {
+            testTimezone();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         deleteDirectoryTree(getApplicationContext().getCacheDir());
 
@@ -124,12 +146,29 @@ public class HomeActivity extends AppCompatActivity
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, mFeed).commit();
 
+
         mProfileImage = (ImageView) headerView.findViewById(R.id.profileImage);
         coinsText = (TextView) headerView.findViewById(R.id.coinsText);
         getCoins();
         mProfileImage.setOnClickListener(this);
         mUserNameTV = (TextView) headerView.findViewById(R.id.userNameTextView);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void testTimezone() throws ParseException {
+
+    }
+
+    private void initThread() {
+        mPingThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (mPingThread.getState() != Thread.State.TERMINATED) {
+                    pingTime();
+                }
+            }
+        });
+        mPingThread.start();
     }
 
     private void checkIsWarned() {
@@ -438,5 +477,56 @@ public class HomeActivity extends AppCompatActivity
         }
 
         fileOrDirectory.delete();
+    }
+
+    private void pingTime() {
+        Call<ResponseBody> pingTimeCall = Retrofit.getInstance().getInkService().pingTime(mSharedHelper.getUserId());
+        pingTimeCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    pingTime();
+                    return;
+                }
+                if (response.body() == null) {
+                    pingTime();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    PingResponse pingResponse = gson.fromJson(responseBody, PingResponse.class);
+                    if (pingResponse.success) {
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                pingTime();
+                            }
+                        }, PING_TIME);
+                    } else {
+                        pingTime();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                pingTime();
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+        if (mPingThread != null) {
+            mPingThread.interrupt();
+            mPingThread = null;
+        }
+        super.onDestroy();
     }
 }

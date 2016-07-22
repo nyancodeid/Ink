@@ -11,12 +11,14 @@ import android.widget.TextView;
 
 import com.ink.R;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.service.SendReplyService;
 
-public class NotificationView extends AppCompatActivity {
+public class ReplyView extends AppCompatActivity {
 
     @Bind(R.id.messageReceived)
     TextView mMessageReceived;
@@ -84,7 +86,7 @@ public class NotificationView extends AppCompatActivity {
 
     @OnClick(R.id.replyMessage)
     public void replyMessage() {
-        String messageToSend = mReplyBody.getText().toString();
+        String messageToSend = StringEscapeUtils.escapeJava(mReplyBody.getText().toString().trim());
         Intent intent = new Intent(getApplicationContext(), SendReplyService.class);
         intent.putExtra("message", messageToSend);
         intent.putExtra("currentUserId", mCurrentUserId);

@@ -37,6 +37,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.callbacks.GeneralCallback;
+import ink.utils.PermissionsChecker;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -76,15 +77,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    private boolean isPermissionsGranted() {
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     private void requestPermission() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_CODE);
@@ -93,7 +85,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(final GoogleMap googleMap) {
         mGoogleMap = googleMap;
-        boolean isGranted = isPermissionsGranted();
+        boolean isGranted = PermissionsChecker.isLocationPermissionGranted(this);
         if (isGranted) {
             getLastKnownLocation(googleMap);
         } else {
@@ -202,7 +194,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_LOCATION_CODE: {
-                if (isPermissionsGranted()) {
+                if (PermissionsChecker.isLocationPermissionGranted(this)) {
                     getLastKnownLocation(mGoogleMap);
                 } else {
                     Snackbar.make(mMapsToolbar, getString(R.string.permissionsRequired), Snackbar.LENGTH_LONG).show();

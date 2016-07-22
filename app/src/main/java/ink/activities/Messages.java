@@ -41,6 +41,7 @@ import ink.utils.RealmHelper;
 import ink.utils.RecyclerTouchListener;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
+import ink.utils.Time;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -104,6 +105,7 @@ public class Messages extends AppCompatActivity implements SwipeRefreshLayout.On
                 Intent intent = new Intent(getApplicationContext(), Chat.class);
                 intent.putExtra("firstName", userMessagesModels.get(position).getFirstName());
                 intent.putExtra("opponentId", finalId);
+                intent.putExtra("opponentImage", userMessagesModels.get(position).getImageName());
                 startActivity(intent);
             }
 
@@ -284,14 +286,21 @@ public class Messages extends AppCompatActivity implements SwipeRefreshLayout.On
 
                             String year = String.valueOf(calendar.get(Calendar.YEAR));
 
-                            finalDate = year + "/" + month + "/" + day + "\n" + hours + ":" + minutes + ":" + seconds;
+                            finalDate = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
                         } catch (ParseException e) {
                             finalDate = date;
                             e.printStackTrace();
                         }
 
+                        String[] splittedDates = Time.convertToLocalTime(finalDate).split("\\s");
+                        String splittedDate = splittedDates[0];
+                        String splittedTime = splittedDates[1];
+                        if (userId.equals(mSharedHelper.getUserId())) {
+                            String messageOld = message;
+                            message = "You: " + messageOld;
+                        }
                         userMessagesModel = new UserMessagesModel(userId, opponentId, messageId, message,
-                                firstName, lastName, imageName, finalDate, imageName);
+                                firstName, lastName, imageName, splittedDate + "\n" + splittedTime, imageName);
                         userMessagesModels.add(userMessagesModel);
                         messagesAdapter.notifyDataSetChanged();
                     }

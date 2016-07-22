@@ -19,6 +19,7 @@ import ink.interfaces.FeedItemClick;
 import ink.models.FeedModel;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
+import ink.utils.Time;
 
 /**
  * Created by USER on 2016-06-20.
@@ -89,7 +90,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         }
 
         holder.feedContent.setText(feedModel.getContent());
-        holder.whenPosted.setText(feedModel.getDatePosted());
+        holder.whenPosted.setText(Time.convertToLocalTime(feedModel.getDatePosted()));
         holder.userPostedTitle.setText(feedModel.getFirstName() + " " + feedModel.getLastName());
         if (feedModel.isLiked()) {
             holder.likeIcon.setBackgroundResource(R.drawable.like_active);

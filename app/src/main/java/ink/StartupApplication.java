@@ -18,4 +18,5 @@ public class StartupApplication extends Application {
         AppEventsLogger.activateApp(this);
         super.onCreate();
     }
+
 }

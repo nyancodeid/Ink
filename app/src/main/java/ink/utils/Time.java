@@ -1,6 +1,9 @@
 package ink.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 /**
@@ -22,6 +25,28 @@ public class Time {
         }
 
         return finalFormat;
+    }
+
+    public static String convertToLocalTime(String timeToConvert) {
+        if (Constants.SERVER_TIME_ZONE.equals(TimeZone.getDefault())) {
+            return timeToConvert;
+        }
+        SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sourceFormat.setTimeZone(TimeZone.getTimeZone(Constants.SERVER_TIME_ZONE));
+        Date parsed;
+        try {
+            parsed = sourceFormat.parse(timeToConvert);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "";
+        }
+
+        TimeZone tz = TimeZone.getDefault();
+        SimpleDateFormat destFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        destFormat.setTimeZone(tz);
+
+        String result = destFormat.format(parsed);
+        return result;
     }
 
     public static String getTimeZone() {

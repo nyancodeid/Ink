@@ -78,6 +78,14 @@ public class Retrofit {
         @POST(Constants.SHOP_PACKS_URL)
         Call<ResponseBody> getPacks();
 
+        @POST(Constants.PING_TIME_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> pingTime(@Field("userId") String userId);
+
+        @POST(Constants.GET_USER_STATUS)
+        @FormUrlEncoded
+        Call<ResponseBody> getUserStatus(@Field("userId") String userId);
+
         @POST(Constants.JOIN_GROUP_URL)
         @FormUrlEncoded
         Call<ResponseBody> requestJoin(@Field("ownerId") String ownerId,

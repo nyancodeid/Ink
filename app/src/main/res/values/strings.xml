@@ -276,4 +276,6 @@
     </string>
     <string name="dontShowAgain">Don\'t show this again</string>
     <string name="navigateToSettings">Navigate to settings</string>
+    <string name="onlineStatus">Online</string>
+    <string name="lastSeen">Last seen at %1$s</string>
 </resources>

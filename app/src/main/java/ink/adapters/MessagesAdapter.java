@@ -17,6 +17,7 @@ import java.util.List;
 import ink.models.UserMessagesModel;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
+import ink.utils.Time;
 
 /**
  * Created by USER on 2016-07-02.
@@ -63,7 +64,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + userMessagesModel.getImageLink();
             Picasso.with(mContext).load(url)
                     .error(R.drawable.image_laoding_error)
-                    .placeholder(R.drawable.no_image_yet_state) .transform(new CircleTransform()).fit().centerCrop()
+                    .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop()
                     .into(holder.messagesImage, picassoCallback(url, holder.messagesImage));
         } else {
             Picasso.with(mContext).load(R.drawable.no_image)

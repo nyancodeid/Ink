@@ -11,9 +11,11 @@ public class Constants {
     public static final String GROUP_REQUESTS_URL = "GetGroupRequests.php";
     public static final String SEARCH_GROUP_URL = "SearchGroups.php";
     public static final String SEND_CHAT_ROULETTE_MESSAGE = "SendChatRouletteMessage.php";
+    public static final String GET_USER_STATUS = "GetUserStatus.php";
     public static final String DISCONNECT_URL = "Disconnect.php";
     public static final String USER_COINS_URL = "GetUserCoins.php";
     public static final String SHOP_COINS_URL = "GetCoinsShop.php";
+    public static final String PING_TIME_URL = "PingTime.php";
     public static final String SHOP_PACKS_URL = "GetPacks.php";
     public static final String JOIN_GROUP_URL = "JoinGroup.php";
     public static final String ADD_GROUP_MESSAGE_URL = "AddGroupMessage.php";
@@ -60,5 +62,6 @@ public class Constants {
     public static final String ACTION_INSERT = "insert";
     public static final String ANDROID_RESOURCE_DIR = "android.resource://";
     public static final String HUAWEI_MODEL = "HUAWEI";
+    public static final String SERVER_TIME_ZONE = "America/Los_Angeles";
 }
 

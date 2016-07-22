@@ -16,6 +16,7 @@ import java.util.List;
 
 import ink.models.ChatModel;
 import ink.utils.Constants;
+import ink.utils.Dp;
 import ink.utils.SharedHelper;
 
 /**
@@ -75,6 +76,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         LinearLayout.LayoutParams deliveryStatusParams = (LinearLayout.LayoutParams) holder.deliveryStatus.getLayoutParams();
         if (mCurrentUserId.equals(chatModel.getUserId())) {
             layoutParams.gravity = Gravity.RIGHT;
+            layoutParams.rightMargin = Dp.toDps(mContext, 16);
             deliveryStatusParams.gravity = Gravity.RIGHT;
             holder.chatViewBubble.setLayoutParams(layoutParams);
             holder.chatViewBubble.setBackground(ContextCompat.getDrawable(mContext, R.drawable.outgoing_message_bg));

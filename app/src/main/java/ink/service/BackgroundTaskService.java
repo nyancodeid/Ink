@@ -16,6 +16,7 @@ import ink.utils.Constants;
 import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
+import ink.utils.Time;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -58,7 +59,7 @@ public class BackgroundTaskService extends Service {
                             String opponentId = eachObject.optString("opponent_id");
                             String message = eachObject.optString("message");
                             String messageId = eachObject.optString("message_id");
-                            String date = eachObject.optString("date");
+                            String date = Time.convertToLocalTime(eachObject.optString("date"));
                             String deliveryStatus = Constants.STATUS_DELIVERED;
                             String userIdImage = eachObject.optString("user_id_image");
                             String opponentImage = eachObject.optString("opponent_id_image");
