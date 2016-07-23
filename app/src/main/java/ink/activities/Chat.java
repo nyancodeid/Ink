@@ -145,8 +145,12 @@ public class Chat extends AppCompatActivity {
             @Override
             public void onLongClick(View view, int position) {
                 ChatModel chatModel = mChatModelArrayList.get(position);
+                String date =  chatModel.getDate();
+                if (!mCurrentUserId.equals(chatModel.getUserId())) {
+                    date = Time.convertToLocalTime(date);
+                }
                 mBuilder.setTitle("Message Details");
-                mBuilder.setMessage("Date of message:" + chatModel.getDate());
+                mBuilder.setMessage("Date of message:" +date);
                 mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -254,7 +258,7 @@ public class Chat extends AppCompatActivity {
                                 mChatModelArrayList.get(sentItemLocation).setMessageId(messageId);
                                 mChatModelArrayList.get(sentItemLocation).setClickable(true);
                                 mChatModelArrayList.get(sentItemLocation).setDeliveryStatus(Constants.STATUS_DELIVERED);
-                                mChatModelArrayList.get(sentItemLocation).setDate(jsonObject.optString("date"));
+                                mChatModelArrayList.get(sentItemLocation).setDate(Time.convertToLocalTime(jsonObject.optString("date")));
                                 mChatAdapter.notifyItemChanged(sentItemLocation);
                                 RealmHelper.getInstance().updateMessages(messageId,
                                         Constants.STATUS_DELIVERED, String.valueOf(sentItemLocation),
