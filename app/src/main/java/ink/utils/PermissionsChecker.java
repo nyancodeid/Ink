@@ -20,4 +20,12 @@ public class PermissionsChecker {
         }
     }
 
+    public static boolean isCallPermissionGranted(Context context) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 }

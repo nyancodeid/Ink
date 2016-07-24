@@ -3,6 +3,8 @@ package ink.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -43,6 +45,7 @@ import ink.utils.DeviceChecker;
 import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
+import ink.utils.SinchHelper;
 import ink.utils.User;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -53,6 +56,7 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private static final long PING_TIME = 50000;
+    private static final String TAG = HomeActivity.class.getSimpleName();
     private FloatingActionMenu mFab;
     private ImageView mProfileImage;
     private TextView coinsText;
@@ -104,7 +108,6 @@ public class HomeActivity extends AppCompatActivity
         mMakePost.setOnClickListener(this);
         mNewPost.setOnClickListener(this);
 
-
         try {
             testTimezone();
         } catch (ParseException e) {
@@ -151,6 +154,7 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+
     private void testTimezone() throws ParseException {
 
     }
@@ -160,6 +164,14 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void run() {
                 if (mPingThread.getState() != Thread.State.TERMINATED) {
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            SinchHelper.get().startSinch(HomeActivity.this, mSharedHelper.getUserId(),
+                                    mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), null);
+                        }
+                    });
                     pingTime();
                 }
             }

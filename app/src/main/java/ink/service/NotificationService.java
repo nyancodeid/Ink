@@ -64,6 +64,9 @@ public class NotificationService extends FirebaseMessagingService {
 //
         mSharedHelper = new SharedHelper(this);
         final Map<String, String> response = remoteMessage.getData();
+        if (response.get("type") == null) {
+            return;
+        }
         if (response.get("type").equals(Constants.TYPE_MESSAGE)) {
             Looper looper = Looper.getMainLooper();
             Handler handler = new Handler(looper);

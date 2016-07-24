@@ -278,4 +278,6 @@
     <string name="navigateToSettings">Navigate to settings</string>
     <string name="onlineStatus">Online</string>
     <string name="lastSeen">Last seen at %1$s</string>
+    <string name="pickup">Pickup</string>
+    <string name="hangup">Hangup</string>
 </resources>

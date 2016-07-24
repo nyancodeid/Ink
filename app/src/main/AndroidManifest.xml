@@ -8,7 +8,23 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <permission
+        android:name="com.ink.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.ink.permission.C2D_MESSAGE" />
+
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:name="ink.StartupApplication"
@@ -46,8 +62,8 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name="ink.activities.Chat"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name="ink.service.NotificationService">
             <intent-filter>
@@ -63,6 +79,17 @@
         <service android:name="ink.service.RemoveChatRouletteService" />
         <service android:name="ink.service.SendTokenService" />
         <service android:name="ink.service.SendReplyService" />
+
+        <receiver
+            android:name="ink.broadcasts.CallReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.ink" />
+            </intent-filter>
+        </receiver>
+        <service android:name="ink.service.GcmIntentService" />
+        <!--<receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver>-->
 
         <activity
             android:name="ink.activities.ReplyView"

@@ -6,6 +6,7 @@ package ink.utils;
 public class Notification {
     private static Notification ourInstance = new Notification();
     private boolean sendingRemote = true;
+    private boolean isCallRemote = true;
 
     public static Notification getInstance() {
         return ourInstance;
@@ -20,5 +21,13 @@ public class Notification {
 
     public void setSendingRemote(boolean sendingRemote) {
         this.sendingRemote = sendingRemote;
+    }
+
+    public boolean isCallRemote() {
+        return isCallRemote;
+    }
+
+    public void setCallRemote(boolean isCallRemote) {
+        this.isCallRemote = isCallRemote;
     }
 }
