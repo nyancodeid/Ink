@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,6 +43,7 @@ import ink.service.SendTokenService;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.DeviceChecker;
+import ink.utils.MediaPlayer;
 import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
@@ -398,6 +400,7 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
+        Log.d("fsafsafsafaf", "onResume: " + MediaPlayer.get().isSoundPlaying());
         if (!mSharedHelper.isMessagesDownloaded()) {
             startMessageDownloadService();
         }
