@@ -27,7 +27,6 @@ import com.google.gson.Gson;
 import com.ink.R;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Timer;
@@ -43,6 +42,7 @@ import ink.service.SendTokenService;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.DeviceChecker;
+import ink.utils.FileUtils;
 import ink.utils.MediaPlayerManager;
 import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
@@ -116,7 +116,7 @@ public class HomeActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        deleteDirectoryTree(getApplicationContext().getCacheDir());
+        FileUtils.deleteDirectoryTree(getApplicationContext().getCacheDir());
 
         checkIsWarned();
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -347,7 +347,7 @@ public class HomeActivity extends AppCompatActivity
                 break;
             case R.id.logout:
                 shouldOpenActivity = false;
-                clearApplicationData();
+                FileUtils.clearApplicationData(getApplicationContext());
                 mSharedHelper.clean();
                 mSharedHelper.putShouldShowIntro(false);
                 mSharedHelper.putWarned(true);
@@ -428,55 +428,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
 
-    public void clearApplicationData() {
-
-        File cacheDirectory = getCacheDir();
-        File applicationDirectory = new File(cacheDirectory.getParent());
-        if (applicationDirectory.exists()) {
-
-            String[] fileNames = applicationDirectory.list();
-
-            for (String fileName : fileNames) {
-
-                if (!fileName.equals("lib")) {
-
-                    deleteFile(new File(applicationDirectory, fileName));
-
-                }
-
-            }
-
-        }
-    }
-
-    public static boolean deleteFile(File file) {
-
-        boolean deletedAll = true;
-
-        if (file != null) {
-
-            if (file.isDirectory()) {
-
-                String[] children = file.list();
-
-                for (int i = 0; i < children.length; i++) {
-
-                    deletedAll = deleteFile(new File(file, children[i])) && deletedAll;
-
-                }
-
-            } else {
-
-                deletedAll = file.delete();
-
-            }
-
-        }
-
-        return deletedAll;
-
-    }
-
     private void setLastClassToOpen(Class<?> classToOpen) {
         mLastClassToOpen = classToOpen;
     }
@@ -485,15 +436,6 @@ public class HomeActivity extends AppCompatActivity
         this.shouldOpenActivity = shouldOpenActivity;
     }
 
-    private void deleteDirectoryTree(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory()) {
-            for (File child : fileOrDirectory.listFiles()) {
-                deleteDirectoryTree(child);
-            }
-        }
-
-        fileOrDirectory.delete();
-    }
 
     private void pingTime() {
         Call<ResponseBody> pingTimeCall = Retrofit.getInstance().getInkService().pingTime(mSharedHelper.getUserId());

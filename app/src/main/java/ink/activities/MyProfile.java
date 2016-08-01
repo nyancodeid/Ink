@@ -56,6 +56,7 @@ import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.callbacks.GeneralCallback;
 import ink.utils.Constants;
+import ink.utils.FileUtils;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -773,7 +774,7 @@ public class MyProfile extends AppCompatActivity {
                                 Picasso.with(getApplicationContext()).invalidate(mSharedHelper.getImageLink());
                                 mSharedHelper.putImageLink(imageLink);
                                 PicassoTools.clearCache(Picasso.with(getApplicationContext()));
-                                deleteDirectoryTree(getApplicationContext().getCacheDir());
+                                FileUtils.deleteDirectoryTree(getApplicationContext().getCacheDir());
                                 Picasso.with(getApplicationContext()).invalidate(Constants.MAIN_URL +
                                         Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink());
                             }
@@ -807,16 +808,6 @@ public class MyProfile extends AppCompatActivity {
         });
 
 
-    }
-
-    private void deleteDirectoryTree(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory()) {
-            for (File child : fileOrDirectory.listFiles()) {
-                deleteDirectoryTree(child);
-            }
-        }
-
-        fileOrDirectory.delete();
     }
 
     private void getBase64String(final String path, final GeneralCallback callback) {
