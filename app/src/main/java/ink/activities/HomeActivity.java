@@ -353,6 +353,10 @@ public class HomeActivity extends AppCompatActivity
                 Toast.makeText(HomeActivity.this, getString(R.string.loggedOutText), Toast.LENGTH_SHORT).show();
                 System.exit(1);
                 break;
+            case R.id.music:
+                shouldOpenActivity = true;
+                setLastClassToOpen(Music.class);
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
