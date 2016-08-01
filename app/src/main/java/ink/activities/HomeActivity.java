@@ -43,7 +43,7 @@ import ink.service.SendTokenService;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.DeviceChecker;
-import ink.utils.MediaPlayer;
+import ink.utils.MediaPlayerManager;
 import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
@@ -400,7 +400,7 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
-        Log.d("fsafsafsafaf", "onResume: " + MediaPlayer.get().isSoundPlaying());
+        Log.d("fsafsafsafaf", "onResume: " + MediaPlayerManager.get().isSoundPlaying());
         if (!mSharedHelper.isMessagesDownloaded()) {
             startMessageDownloadService();
         }

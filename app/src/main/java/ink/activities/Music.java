@@ -32,6 +32,7 @@ import ink.adapters.MusicAdapter;
 import ink.decorators.DividerItemDecoration;
 import ink.interfaces.MusicClickListener;
 import ink.models.Track;
+import ink.utils.MediaPlayerManager;
 import ink.utils.Retrofit;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -110,7 +111,7 @@ public class Music extends AppCompatActivity implements MusicClickListener {
     @Override
     public void onMusicItemClick(int position) {
         Track track = tracks.get(position);
-        ink.utils.MediaPlayer.get().playMusic(track);
+        MediaPlayerManager.get().playMusic(track);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 

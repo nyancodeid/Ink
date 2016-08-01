@@ -7,17 +7,17 @@ import ink.models.Track;
 /**
  * Created by PC-Comp on 8/1/2016.
  */
-public class MediaPlayer {
-    private static MediaPlayer ourInstance = new MediaPlayer();
+public class MediaPlayerManager {
+    private static MediaPlayerManager ourInstance = new MediaPlayerManager();
 
-    public static MediaPlayer get() {
+    public static MediaPlayerManager get() {
         return ourInstance;
     }
 
     private android.media.MediaPlayer mMediaPlayer;
     private String mLastTrack;
 
-    private MediaPlayer() {
+    private MediaPlayerManager() {
         mLastTrack = "noTrackYet";
         mMediaPlayer = new android.media.MediaPlayer();
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
