@@ -3,6 +3,7 @@ package ink.activities;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,10 +17,12 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ink.R;
+import com.squareup.picasso.Picasso;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import java.io.IOException;
@@ -29,9 +32,11 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import ink.adapters.MusicAdapter;
+import ink.callbacks.GeneralCallback;
 import ink.decorators.DividerItemDecoration;
 import ink.interfaces.MusicClickListener;
 import ink.models.Track;
+import ink.utils.CircleTransform;
 import ink.utils.MediaPlayerManager;
 import ink.utils.Retrofit;
 import okhttp3.ResponseBody;
@@ -49,6 +54,14 @@ public class Music extends AppCompatActivity implements MusicClickListener {
     View musicInfoSheet;
     @Bind(R.id.openCloseMusicSheet)
     ImageView openCloseMusicSheet;
+    @Bind(R.id.statusText)
+    TextView statusText;
+    @Bind(R.id.currentlyPlayingName)
+    TextView currentlyPlayingName;
+    @Bind(R.id.playPauseButton)
+    ImageView playPauseButton;
+    @Bind(R.id.currentlyPlayingImage)
+    ImageView currentlyPlayingImage;
 
     private List<Track> tracks;
     private MusicAdapter musicAdapter;
@@ -72,6 +85,20 @@ public class Music extends AppCompatActivity implements MusicClickListener {
 
         mBottomSheetBehavior = BottomSheetBehavior.from(musicInfoSheet);
 
+        checkForMusicPlaying();
+
+        playPauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (MediaPlayerManager.get().isSoundPlaying()) {
+                    playPauseButton.setImageResource(R.drawable.play_icon);
+                    MediaPlayerManager.get().pauseMusic();
+                } else {
+                    playPauseButton.setImageResource(R.drawable.pause);
+                    MediaPlayerManager.get().playMusic(null, null);
+                }
+            }
+        });
 
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -107,12 +134,60 @@ public class Music extends AppCompatActivity implements MusicClickListener {
         getAllTracks();
     }
 
+    private void checkForMusicPlaying() {
+        if (MediaPlayerManager.get().isSoundPlaying()) {
+            initBottomSheet(null);
+        }
+    }
+
 
     @Override
     public void onMusicItemClick(int position) {
         Track track = tracks.get(position);
-        MediaPlayerManager.get().playMusic(track);
+        initBottomSheet(track);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
+
+    private void initBottomSheet(@Nullable Track track) {
+        statusText.setText(getString(R.string.buffering));
+
+        playPauseButton.setImageResource(R.drawable.pause);
+
+        String title;
+        String image;
+
+        if (track == null) {
+            statusText.setText(getString(R.string.currentlyPlaying));
+            title = MediaPlayerManager.get().getTitle();
+            image = MediaPlayerManager.get().getLastImage();
+        } else {
+            title = track.mTitle;
+            image = track.mArtworkURL;
+        }
+
+
+        if (image != null && !image.equals("null")) {
+            Picasso.with(getApplicationContext()).load(image).transform(new CircleTransform()).centerCrop().fit().into(currentlyPlayingImage);
+        } else {
+            currentlyPlayingImage.setBackground(null);
+            currentlyPlayingImage.setImageResource(R.drawable.gradient_no_image);
+        }
+        currentlyPlayingName.setText(title);
+
+        if (track == null) {
+            return;
+        }
+        MediaPlayerManager.get().playMusic(track, new GeneralCallback() {
+            @Override
+            public void onSuccess(Object o) {
+                statusText.setText(getString(R.string.currentlyPlaying));
+            }
+
+            @Override
+            public void onFailure(Object o) {
+
+            }
+        });
     }
 
     private void getAllTracks() {

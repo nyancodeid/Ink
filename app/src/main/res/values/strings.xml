@@ -285,4 +285,8 @@
     <string name="searchMusicTitle">Search music by name,album or track</string>
     <string name="pleaseInputSearch">Please input search criteria</string>
     <string name="failedSearch">Could not complete your request.Please try again later...</string>
+    <string name="currentlyPlaying">Currently Playing</string>
+    <string name="buffering">Buffering...</string>
+    <string name="noMusicSelected">No music selected</string>
+    <string name="waitingForMusic">Waiting for music selection</string>
 </resources>
