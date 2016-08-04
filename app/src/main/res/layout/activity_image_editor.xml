@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ink.activities.ImageEditor">
+
+    <TextView
+        android:id="@+id/imageChooseStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@string/appFont"
+        android:text="@string/noImageChosen"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/finalResultImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/pickImageButton"
+        android:layout_below="@+id/imageChooseStatus"
+        android:layout_margin="10dp"
+        android:fitsSystemWindows="true" />
+
+    <fab.FloatingActionButton
+        android:id="@+id/pickImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/open_icon"
+        fab:fab_colorNormal="@color/colorPrimary"
+        fab:fab_colorPressed="@color/colorPrimaryDark" />
+
+    <RelativeLayout
+        android:id="@+id/editorHintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#6577d8"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/editorHintText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="@string/appFont"
+            android:gravity="left"
+            android:text="@string/imageEditorHint"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/neverShowEditorHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/editorHintText"
+            android:layout_margin="5dp"
+            android:padding="10dp"
+            android:text="@string/dontShowAgain"
+            android:textAllCaps="false"
+            android:textColor="#404040" />
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/downArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/pickImageButton"
+        android:layout_alignEnd="@+id/pickImageButton"
+        android:layout_alignLeft="@+id/pickImageButton"
+        android:layout_alignParentRight="true"
+        android:layout_alignRight="@+id/pickImageButton"
+        android:layout_alignStart="@+id/pickImageButton"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/down_arrow"
+        android:visibility="gone" />
+
+</RelativeLayout>

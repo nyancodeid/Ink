@@ -2,54 +2,72 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/profile"
-            android:icon="@drawable/ic_account_box_black_24dp"
-            android:title="@string/profileText" />
-        <item
-            android:id="@+id/feeds"
-            android:icon="@drawable/ic_library_books_black_24dp"
-            android:title="@string/feedText" />
-        <item
-            android:id="@+id/messages"
-            android:icon="@drawable/ic_message_black_24dp"
-            android:title="@string/messageText" />
-        <item
-            android:id="@+id/groups"
-            android:icon="@drawable/ic_wc_black_24dp"
-            android:title="@string/groupsText" />
-        <item
-            android:id="@+id/friends"
-            android:icon="@drawable/ic_supervisor_account_black_24dp"
-            android:title="@string/friendsText" />
-        <item
-            android:id="@+id/chatRoulette"
-            android:icon="@drawable/ic_sync_black_24dp"
-            android:title="@string/chatRoulette" />
-        <item
-            android:id="@+id/music"
-            android:icon="@drawable/music_icon"
-            android:title="@string/music" />
-        <item
-            android:id="@+id/settings"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="@string/settingsString" />
-        <item
-            android:id="@+id/logout"
-            android:icon="@drawable/ic_exit_to_app_black_24dp"
-            android:title="@string/logoutString" />
+        <item android:title="@string/myAccount">
+            <menu>
+                <item
+                    android:id="@+id/profile"
+                    android:icon="@drawable/ic_account_box_black_24dp"
+                    android:title="@string/profileText" />
+                <item
+                    android:id="@+id/feeds"
+                    android:icon="@drawable/ic_library_books_black_24dp"
+                    android:title="@string/feedText" />
+                <item
+                    android:id="@+id/messages"
+                    android:icon="@drawable/ic_message_black_24dp"
+                    android:title="@string/messageText" />
+                <item
+                    android:id="@+id/groups"
+                    android:icon="@drawable/ic_wc_black_24dp"
+                    android:title="@string/groupsText" />
+                <item
+                    android:id="@+id/friends"
+                    android:icon="@drawable/ic_supervisor_account_black_24dp"
+                    android:title="@string/friendsText" />
+                <item
+                    android:id="@+id/chatRoulette"
+                    android:icon="@drawable/ic_sync_black_24dp"
+                    android:title="@string/chatRoulette" />
+                <item
+                    android:id="@+id/imageEdit"
+                    android:icon="@drawable/image_editor_icon"
+                    android:title="@string/imageEditor" />
+
+                <item
+                    android:id="@+id/music"
+                    android:icon="@drawable/music_icon"
+                    android:title="@string/music" />
+                <item
+                    android:id="@+id/settings"
+                    android:icon="@drawable/ic_menu_manage"
+                    android:title="@string/settingsString" />
+                <item
+                    android:id="@+id/logout"
+                    android:icon="@drawable/ic_exit_to_app_black_24dp"
+                    android:title="@string/logoutString" />
+            </menu>
+        </item>
     </group>
 
-    <item android:title="Tell others">
+    <item android:title="@string/community">
         <menu>
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:title="@string/share" />
+        </menu>
+    </item>
+
+    <item android:title="Help">
+        <menu>
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/sendFeedback"
+                android:icon="@drawable/feedback_icon"
+                android:title="@string/sendFeedback" />
+            <item
+                android:id="@+id/contactSupport"
+                android:icon="@drawable/contact_support_icon"
+                android:title="@string/contactSupport" />
         </menu>
     </item>
 

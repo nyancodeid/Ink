@@ -112,7 +112,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     }
 
 
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -240,7 +239,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     @Override
     protected void onDestroy() {
-        unregisterReceiver(mBroadcastReceiver);
+        try {
+            unregisterReceiver(mBroadcastReceiver);
+        } catch (IllegalArgumentException e) {
+
+        }
         super.onDestroy();
 
     }

@@ -139,6 +139,7 @@
     <string name="selectLocation">Select your location</string>
     <string name="openingMap">Opening map...</string>
     <string name="permissionsRequired">Permissions are required to show your location</string>
+    <string name="generalPermissionsNotGranted">All of permissions not granted.Uploading will not work</string>
     <string name="addresNotAvailable">Could not get address name</string>
     <string name="nothingChosen">Nothing was chosen</string>
     <string name="writePost">Write a post...</string>
@@ -159,7 +160,7 @@
     <string name="posting">Posting...</string>
     <string name="postingYourShare">Posting your share.Please wait...</string>
     <string name="success">Success!</string>
-    <string name="posted">Your share was posted sucesfully</string>
+    <string name="posted">Your share was posted successfully</string>
     <string name="notPosted">Could not share your post.Please try again...</string>
     <string name="personPosted">posted</string>
     <string name="postedAt">Posted at</string>
@@ -178,10 +179,10 @@
     <string name="addingComment">Adding comment...</string>
     <string name="chatRoulette">Chat Roulette</string>
     <string name="myGroup">My groups</string>
-    <string name="addGroupName">Add group name</string>
+    <string name="addGroupName">Add a group name</string>
     <string name="addGroupHint">E.x Family</string>
-    <string name="addGroupDescription">Add group description</string>
-    <string name="addGroupDescriptionHint">E.x All family members join here</string>
+    <string name="addGroupDescription">Add a group description</string>
+    <string name="addGroupDescriptionHint">E.x All club members can join this group</string>
     <string name="pickColor">Pick a color</string>
     <string name="pickColorButton">Pick a background color</string>
     <string name="noBackgroundColorSelected">No background color selected</string>
@@ -250,7 +251,7 @@
     <string name="messageNotSent">Could not sent the message,try again...</string>
     <string name="userDisconnected">Opponent disconnected</string>
     <string name="opponentDisconnectedText">We\'re sorry but your opponent was disconnected from the chat.
-        \nYou can find new opponent by cliking top right button to search again.</string>
+        \nYou can find new opponent by clicking top right button to search again.</string>
     <string name="packs_title">Packs</string>
     <string name="trade_title">Trade</string>
     <string name="shopTitle">Shop</string>
@@ -258,8 +259,8 @@
     <string name="buyCoins">Buy Coins</string>
     <string name="coinsMenu">Coins</string>
     <string name="caution">CAUTION!!!</string>
-    <string name="huaweiWarning">Dear user,We have detected that your device belongs to HUAWEI manufacturer.Due to HUAWEI phones being deeply changed in the OS,there is one thing you should do for the application to work properly.
-    The issue considers to the notifications not being received in the HUAWEI device.For the fix please follow the next:
+    <string name="huaweiWarning">Dear user,We have detected that your device belongs to HUAWEI manufacturer.Due to HUAWEI phones being deeply changed inside the OS,there is one thing you should do for the application to work properly.
+    The issue considers to the notifications and background task not being received and started in the HUAWEI device.For the fix please follow the steps below:
         \n\n1)Ensure that  device is not in the \'ULTRA-BATTER\' mode.
         \n\n2)Add the application to protected apps of the device.
         \n\nFor the Marshmallow and above devices do the next:
@@ -289,4 +290,22 @@
     <string name="buffering">Buffering...</string>
     <string name="noMusicSelected">No music selected</string>
     <string name="waitingForMusic">Waiting for music selection</string>
+    <string name="noImageChosen">Here you will see your edited image result</string>
+    <string name="imageEditorHint">To use the editor,first you need to pick up an image.
+        You can do it by clicking the  button located at the bottom (the arrow is pointing right now to the button) and you will be able to access your
+        phone\'s pictures directories in multiple way as you will be prompted to choose the one which best suits you,meanwhile if you want to edit already
+        edited image again,you will  be prompted to click on the image to do so.Thus,as soon as you edit any picture and afterwards you\'ll click the \'DONE\'
+        button from the editor menu,the image will be saved into your default pictures directory.Everything is automatized for your comfort.
+    </string>
+    <string name="imageEditor">Image Editor</string>
+    <string name="noImagePickerAppFound">No applications found to handle the images.Did you uninstall the gallery seriosly?</string>
+    <string name="couldNotOpenImage">Could not open image.Probably permissions not granted</string>
+    <string name="clickOnImageToEdit">Click on the image to edit again</string>
+    <string name="imageNotChosen">Image not chosen</string>
+    <string name="loading_image">Loading the image,please wait...</string>
+    <string name="myAccount">My Account</string>
+    <string name="community">Community</string>
+    <string name="share">Share</string>
+    <string name="sendFeedback">Send Feedback</string>
+    <string name="contactSupport">Contact Support</string>
 </resources>

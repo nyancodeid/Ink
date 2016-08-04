@@ -150,6 +150,15 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public boolean isEditorHintShown() {
+        return mSharedPreferences.getBoolean("editorHint", false);
+    }
+
+    public void putEditorHintShow(boolean value) {
+        mEditor.putBoolean("editorHint", value);
+        mEditor.commit();
+    }
+
     public String getNotificationId(String id) {
         return mSharedPreferences.getString(id, null);
     }

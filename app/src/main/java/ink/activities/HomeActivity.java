@@ -307,6 +307,7 @@ public class HomeActivity extends AppCompatActivity
                 shouldOpenActivity = true;
                 setLastClassToOpen(MyProfile.class);
                 break;
+
             case R.id.feeds:
                 shouldOpenActivity = false;
                 if (!mToolbar.getTitle().equals(FEED)) {
@@ -315,18 +316,22 @@ public class HomeActivity extends AppCompatActivity
                     getSupportFragmentManager().beginTransaction().replace(R.id.container, mFeed).commit();
                 }
                 break;
+
             case R.id.messages:
                 shouldOpenActivity = true;
                 setLastClassToOpen(Messages.class);
                 break;
+
             case R.id.groups:
                 setLastClassToOpen(Groups.class);
                 shouldOpenActivity = true;
                 break;
+
             case R.id.chatRoulette:
                 setLastClassToOpen(ChatRoulette.class);
                 shouldOpenActivity = true;
                 break;
+
             case R.id.friends:
                 shouldOpenActivity = false;
                 if (!mToolbar.getTitle().equals(FRIENDS)) {
@@ -335,29 +340,52 @@ public class HomeActivity extends AppCompatActivity
                     getSupportFragmentManager().beginTransaction().replace(R.id.container, mMyFriends).commit();
                 }
                 break;
+
+            case R.id.music:
+                shouldOpenActivity = true;
+                setLastClassToOpen(Music.class);
+                break;
+
+            case R.id.imageEdit:
+                shouldOpenActivity = true;
+                setLastClassToOpen(ImageEditor.class);
+                break;
+
             case R.id.settings:
                 shouldOpenActivity = true;
                 setLastClassToOpen(Settings.class);
                 break;
+
             case R.id.nav_share:
                 shouldOpenActivity = false;
                 break;
-            case R.id.nav_send:
+
+            case R.id.sendFeedback:
                 shouldOpenActivity = false;
                 break;
+
+            case R.id.contactSupport:
+                shouldOpenActivity = false;
+                break;
+
             case R.id.logout:
                 shouldOpenActivity = false;
                 FileUtils.clearApplicationData(getApplicationContext());
+                boolean introValue = mSharedHelper.shouldShowIntro();
+                boolean editorHintValue = mSharedHelper.isEditorHintShown();
                 mSharedHelper.clean();
-                mSharedHelper.putShouldShowIntro(false);
+
+                if (!introValue) {
+                    mSharedHelper.putShouldShowIntro(false);
+                }
+
+                if (editorHintValue) {
+                    mSharedHelper.putEditorHintShow(true);
+                }
                 mSharedHelper.putWarned(true);
                 RealmHelper.getInstance().clearDatabase(getApplicationContext());
                 Toast.makeText(HomeActivity.this, getString(R.string.loggedOutText), Toast.LENGTH_SHORT).show();
                 System.exit(1);
-                break;
-            case R.id.music:
-                shouldOpenActivity = true;
-                setLastClassToOpen(Music.class);
                 break;
         }
 

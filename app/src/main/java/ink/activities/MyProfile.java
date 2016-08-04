@@ -1,5 +1,6 @@
 package ink.activities;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,9 +11,11 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -57,6 +60,7 @@ import fab.FloatingActionButton;
 import ink.callbacks.GeneralCallback;
 import ink.utils.Constants;
 import ink.utils.FileUtils;
+import ink.utils.PermissionsChecker;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -66,7 +70,8 @@ import retrofit2.Response;
 
 public class MyProfile extends AppCompatActivity {
 
-    private static final int PICK_IMAGE_RESULT_CODE = 1547;
+    private static final int PICK_IMAGE_RESULT_CODE = 2;
+    private static final int STORAGE_PERMISSION_REQUEST = 1;
     private SharedHelper mSharedHelper;
     //Butter knife binders.
     @Bind(R.id.addressTV)
@@ -208,6 +213,20 @@ public class MyProfile extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case STORAGE_PERMISSION_REQUEST:
+                if (PermissionsChecker.isStoragePermissionGranted(getApplicationContext())) {
+                    openGallery();
+                } else {
+                    Snackbar.make(mGenderImageView, getString(R.string.generalPermissionsNotGranted), Snackbar.LENGTH_LONG).show();
+                }
+                break;
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -218,6 +237,7 @@ public class MyProfile extends AppCompatActivity {
                 try {
                     selectedImagePath = getRealPathFromURI(selectedImageUri);
                 } catch (Exception e) {
+                    mImageLoading.setVisibility(View.GONE);
                     selectedImagePath = null;
                     AlertDialog.Builder builder = new AlertDialog.Builder(MyProfile.this);
                     builder.setTitle(getString(R.string.notSupported));
@@ -239,6 +259,8 @@ public class MyProfile extends AppCompatActivity {
                             .centerInside().into(profileImage, picassoCallback(selectedImagePath, true));
                 } else {
                     isImageChosen = false;
+                    mImageLoading.setVisibility(View.GONE);
+                    Snackbar.make(mGender, getString(R.string.couldNotOpenImage), Snackbar.LENGTH_LONG).show();
                 }
             }
         }
@@ -487,7 +509,12 @@ public class MyProfile extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case 0:
-                        openGallery();
+                        if (!PermissionsChecker.isStoragePermissionGranted(getApplicationContext())) {
+                            ActivityCompat.requestPermissions(MyProfile.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                                    STORAGE_PERMISSION_REQUEST);
+                        } else {
+                            openGallery();
+                        }
                         break;
                     case 1:
                         openNameChanger();
