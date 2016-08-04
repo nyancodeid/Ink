@@ -3,8 +3,6 @@ package ink.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -14,7 +12,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,11 +40,9 @@ import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.DeviceChecker;
 import ink.utils.FileUtils;
-import ink.utils.MediaPlayerManager;
 import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
-import ink.utils.SinchHelper;
 import ink.utils.User;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -100,6 +95,7 @@ public class HomeActivity extends AppCompatActivity
         mSharedHelper = new SharedHelper(this);
         initThread();
 
+
         mFab = (FloatingActionMenu) findViewById(R.id.fab);
         mMessages = (FloatingActionButton) findViewById(R.id.messages);
         mMakePost = (FloatingActionButton) findViewById(R.id.makePost);
@@ -109,7 +105,6 @@ public class HomeActivity extends AppCompatActivity
         mMessages.setOnClickListener(this);
         mMakePost.setOnClickListener(this);
         mNewPost.setOnClickListener(this);
-
         try {
             testTimezone();
         } catch (ParseException e) {
@@ -166,14 +161,6 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void run() {
                 if (mPingThread.getState() != Thread.State.TERMINATED) {
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            SinchHelper.get().startSinch(HomeActivity.this, mSharedHelper.getUserId(),
-                                    mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), null);
-                        }
-                    });
                     pingTime();
                 }
             }
@@ -361,11 +348,13 @@ public class HomeActivity extends AppCompatActivity
                 break;
 
             case R.id.sendFeedback:
-                shouldOpenActivity = false;
+                shouldOpenActivity = true;
+                setLastClassToOpen(SendFeedback.class);
                 break;
 
             case R.id.contactSupport:
-                shouldOpenActivity = false;
+                shouldOpenActivity = true;
+                setLastClassToOpen(ContactSupport.class);
                 break;
 
             case R.id.logout:
@@ -428,7 +417,6 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
-        Log.d("fsafsafsafaf", "onResume: " + MediaPlayerManager.get().isSoundPlaying());
         if (!mSharedHelper.isMessagesDownloaded()) {
             startMessageDownloadService();
         }

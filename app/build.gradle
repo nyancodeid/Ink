@@ -58,11 +58,10 @@ dependencies {
     compile 'com.github.ybq:Android-SpinKit:1.0.4'
     compile 'com.github.yukuku:ambilwarna:2.0.1'
     compile 'org.apache.commons:commons-lang3:3.4'
-    compile "com.google.android.gms:play-services-gcm:9.0.2"
+    compile 'com.google.android.gms:play-services-gcm:9.0.2'
     compile 'com.adobe.creativesdk.foundation:auth:0.9.1062'
     compile 'com.adobe.creativesdk:image:4.6.3'
     compile 'com.localytics.android:library:3.8.0'
     compile 'com.android.support:multidex:1.0.0'
-    compile files('libs/sinch-android-rtc-3.9.8.jar')
 }
 apply plugin: 'com.google.gms.google-services'

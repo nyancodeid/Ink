@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
@@ -35,8 +34,6 @@ import android.widget.TextView;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.ink.R;
-import com.sinch.android.rtc.PushPair;
-import com.sinch.android.rtc.calling.CallListener;
 import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -64,7 +61,6 @@ import ink.utils.RealmHelper;
 import ink.utils.RecyclerTouchListener;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
-import ink.utils.SinchHelper;
 import ink.utils.Time;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -214,44 +210,7 @@ public class Chat extends AppCompatActivity {
 
     @OnClick(R.id.makeCall)
     public void makeCall() {
-        final com.sinch.android.rtc.calling.Call call = SinchHelper.get().makeCall(mOpponentId);
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Calling");
-        builder.setNegativeButton("Hangup", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                call.hangup();
-            }
-        });
-        builder.show();
-        call.addCallListener(new CallListener() {
-            @Override
-            public void onCallProgressing(com.sinch.android.rtc.calling.Call call) {
-                builder.setTitle("Ringing on other side");
-            }
 
-            @Override
-            public void onCallEstablished(com.sinch.android.rtc.calling.Call call) {
-                builder.setTitle("established");
-            }
-
-            @Override
-            public void onCallEnded(com.sinch.android.rtc.calling.Call call) {
-                builder.setTitle("call ended" + call.getDetails().getEndCause());
-                Snackbar.make(mRecyclerView, "Call ended" + call.getDetails().getEndCause(), Snackbar.LENGTH_INDEFINITE).setAction("OK",
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-
-                            }
-                        }).show();
-            }
-
-            @Override
-            public void onShouldSendPushNotification(com.sinch.android.rtc.calling.Call call, List<PushPair> list) {
-
-            }
-        });
 
     }
 

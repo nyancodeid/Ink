@@ -87,7 +87,6 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="ink.service.GcmIntentService" />
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
 
         <activity
@@ -158,7 +157,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
         <activity android:name="ink.activities.Music" />
-        <activity android:name="ink.activities.ImageEditor"></activity>
+        <activity android:name="ink.activities.ImageEditor" />
+        <activity android:name="ink.activities.SendFeedback" />
+        <activity android:name="ink.activities.ContactSupport"></activity>
     </application>
 
 </manifest>
