@@ -20,6 +20,14 @@ public class PermissionsChecker {
         }
     }
 
+    public static boolean isStoragePermissionGranted(Context context) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public static boolean isCallPermissionGranted(Context context) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             return false;
@@ -28,4 +36,11 @@ public class PermissionsChecker {
         }
     }
 
+    public static boolean isAccountPermissionGranted(Context context) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

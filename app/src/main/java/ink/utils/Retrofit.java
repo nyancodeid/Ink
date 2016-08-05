@@ -8,10 +8,12 @@ import retrofit2.Call;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
+import retrofit2.http.Query;
 
 /**
  * Created by USER on 2016-06-19.
@@ -24,6 +26,7 @@ public class Retrofit {
     }
 
     public InkService mInkService;
+    public MusicCloudInterface musicCloudInterface;
 
     private Retrofit() {
         retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
@@ -31,8 +34,19 @@ public class Retrofit {
                 .baseUrl(Constants.MAIN_URL)
                 .build();
 
-        mInkService = retrofit.create(InkService.class);
+        retrofit2.Retrofit cloudRetrofit = new retrofit2.Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(Constants.CLOUD_API_URL)
+                .build();
 
+
+        mInkService = retrofit.create(InkService.class);
+        musicCloudInterface = cloudRetrofit.create(MusicCloudInterface.class);
+
+    }
+
+    public MusicCloudInterface getMusicCloudInterface() {
+        return musicCloudInterface;
     }
 
     public InkService getInkService() {
@@ -254,5 +268,16 @@ public class Retrofit {
                                     @Field("imageLink") String userImageLink,
                                     @Field("firstName") String firstName,
                                     @Field("lastName") String lastName, @Field("timezone") String timezone);
+
+
+    }
+
+    public interface MusicCloudInterface {
+        @GET("/tracks?client_id=" + Constants.CLOUD_CLIENT_ID)
+        Call<ResponseBody> getAllTracks();
+
+        @GET("/tracks?client_id=" + Constants.CLOUD_CLIENT_ID)
+        Call<ResponseBody> searchSong(@Query("q") String searchString);
+
     }
 }

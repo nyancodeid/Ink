@@ -26,7 +26,6 @@ import com.ink.R;
 import com.sinch.android.rtc.SinchError;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Timer;
@@ -43,6 +42,7 @@ import ink.service.SinchService;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.DeviceChecker;
+import ink.utils.FileUtils;
 import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
@@ -98,6 +98,7 @@ public class HomeActivity extends BaseActivity
         mSharedHelper = new SharedHelper(this);
         initThread();
 
+
         mFab = (FloatingActionMenu) findViewById(R.id.fab);
         mMessages = (FloatingActionButton) findViewById(R.id.messages);
         mMakePost = (FloatingActionButton) findViewById(R.id.makePost);
@@ -107,14 +108,13 @@ public class HomeActivity extends BaseActivity
         mMessages.setOnClickListener(this);
         mMakePost.setOnClickListener(this);
         mNewPost.setOnClickListener(this);
-
         try {
             testTimezone();
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        deleteDirectoryTree(getApplicationContext().getCacheDir());
+        FileUtils.deleteDirectoryTree(getApplicationContext().getCacheDir());
 
         checkIsWarned();
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -307,6 +307,7 @@ public class HomeActivity extends BaseActivity
                 shouldOpenActivity = true;
                 setLastClassToOpen(MyProfile.class);
                 break;
+
             case R.id.feeds:
                 shouldOpenActivity = false;
                 if (!mToolbar.getTitle().equals(FEED)) {
@@ -315,18 +316,22 @@ public class HomeActivity extends BaseActivity
                     getSupportFragmentManager().beginTransaction().replace(R.id.container, mFeed).commit();
                 }
                 break;
+
             case R.id.messages:
                 shouldOpenActivity = true;
                 setLastClassToOpen(Messages.class);
                 break;
+
             case R.id.groups:
                 setLastClassToOpen(Groups.class);
                 shouldOpenActivity = true;
                 break;
+
             case R.id.chatRoulette:
                 setLastClassToOpen(ChatRoulette.class);
                 shouldOpenActivity = true;
                 break;
+
             case R.id.friends:
                 shouldOpenActivity = false;
                 if (!mToolbar.getTitle().equals(FRIENDS)) {
@@ -335,21 +340,50 @@ public class HomeActivity extends BaseActivity
                     getSupportFragmentManager().beginTransaction().replace(R.id.container, mMyFriends).commit();
                 }
                 break;
+
+            case R.id.music:
+                shouldOpenActivity = true;
+                setLastClassToOpen(Music.class);
+                break;
+
+            case R.id.imageEdit:
+                shouldOpenActivity = true;
+                setLastClassToOpen(ImageEditor.class);
+                break;
+
             case R.id.settings:
                 shouldOpenActivity = true;
                 setLastClassToOpen(Settings.class);
                 break;
+
             case R.id.nav_share:
                 shouldOpenActivity = false;
                 break;
-            case R.id.nav_send:
-                shouldOpenActivity = false;
+
+            case R.id.sendFeedback:
+                shouldOpenActivity = true;
+                setLastClassToOpen(SendFeedback.class);
                 break;
+
+            case R.id.contactSupport:
+                shouldOpenActivity = true;
+                setLastClassToOpen(ContactSupport.class);
+                break;
+
             case R.id.logout:
                 shouldOpenActivity = false;
-                clearApplicationData();
+                FileUtils.clearApplicationData(getApplicationContext());
+                boolean introValue = mSharedHelper.shouldShowIntro();
+                boolean editorHintValue = mSharedHelper.isEditorHintShown();
                 mSharedHelper.clean();
-                mSharedHelper.putShouldShowIntro(false);
+
+                if (!introValue) {
+                    mSharedHelper.putShouldShowIntro(false);
+                }
+
+                if (editorHintValue) {
+                    mSharedHelper.putEditorHintShow(true);
+                }
                 mSharedHelper.putWarned(true);
                 RealmHelper.getInstance().clearDatabase(getApplicationContext());
                 Toast.makeText(HomeActivity.this, getString(R.string.loggedOutText), Toast.LENGTH_SHORT).show();
@@ -423,55 +457,6 @@ public class HomeActivity extends BaseActivity
     }
 
 
-    public void clearApplicationData() {
-
-        File cacheDirectory = getCacheDir();
-        File applicationDirectory = new File(cacheDirectory.getParent());
-        if (applicationDirectory.exists()) {
-
-            String[] fileNames = applicationDirectory.list();
-
-            for (String fileName : fileNames) {
-
-                if (!fileName.equals("lib")) {
-
-                    deleteFile(new File(applicationDirectory, fileName));
-
-                }
-
-            }
-
-        }
-    }
-
-    public static boolean deleteFile(File file) {
-
-        boolean deletedAll = true;
-
-        if (file != null) {
-
-            if (file.isDirectory()) {
-
-                String[] children = file.list();
-
-                for (int i = 0; i < children.length; i++) {
-
-                    deletedAll = deleteFile(new File(file, children[i])) && deletedAll;
-
-                }
-
-            } else {
-
-                deletedAll = file.delete();
-
-            }
-
-        }
-
-        return deletedAll;
-
-    }
-
     private void setLastClassToOpen(Class<?> classToOpen) {
         mLastClassToOpen = classToOpen;
     }
@@ -480,15 +465,6 @@ public class HomeActivity extends BaseActivity
         this.shouldOpenActivity = shouldOpenActivity;
     }
 
-    private void deleteDirectoryTree(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory()) {
-            for (File child : fileOrDirectory.listFiles()) {
-                deleteDirectoryTree(child);
-            }
-        }
-
-        fileOrDirectory.delete();
-    }
 
     private void pingTime() {
         Call<ResponseBody> pingTimeCall = Retrofit.getInstance().getInkService().pingTime(mSharedHelper.getUserId());

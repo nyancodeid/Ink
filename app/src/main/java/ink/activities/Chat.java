@@ -7,12 +7,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,8 +34,6 @@ import android.widget.TextView;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.ink.R;
-import com.sinch.android.rtc.PushPair;
-import com.sinch.android.rtc.calling.CallListener;
 import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -44,7 +42,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +67,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Chat extends BaseActivity {
+public class Chat extends AppCompatActivity {
 
     @Bind(R.id.sendChatMessage)
     fab.FloatingActionButton mSendChatMessage;
@@ -213,58 +210,8 @@ public class Chat extends BaseActivity {
 
     @OnClick(R.id.makeCall)
     public void makeCall() {
-        Map<String, String> userDetails = new HashMap<>();
-        userDetails.put("callerName", mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
-        final com.sinch.android.rtc.calling.Call call = getSinchServiceInterface().callUser(mOpponentId, userDetails);
-        final Snackbar snackbar = Snackbar.make(mRecyclerView, "Calling", Snackbar.LENGTH_INDEFINITE);
-        snackbar.setAction("Hangup", new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                call.hangup();
-            }
-        });
-        call.addCallListener(new CallListener() {
-            @Override
-            public void onCallProgressing(com.sinch.android.rtc.calling.Call call) {
-                snackbar.setText("progressing call");
-                sendCallPush(call);
 
-            }
 
-            @Override
-            public void onCallEstablished(com.sinch.android.rtc.calling.Call call) {
-                snackbar.setText("established call");
-            }
-
-            @Override
-            public void onCallEnded(com.sinch.android.rtc.calling.Call call) {
-                Log.d("fasfasfas", "onCallEnded: ");
-                snackbar.setText("call ended" + call.getDetails().getEndCause());
-            }
-
-            @Override
-            public void onShouldSendPushNotification(com.sinch.android.rtc.calling.Call call, List<PushPair> list) {
-
-            }
-        });
-        snackbar.show();
-
-    }
-
-    private void sendCallPush(final com.sinch.android.rtc.calling.Call sinchCall) {
-        Call<ResponseBody> callResponse = Retrofit.getInstance().getInkService().sendCallPush(sinchCall.getCallId(),
-                mOpponentId);
-        callResponse.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                sendCallPush(sinchCall);
-            }
-        });
     }
 
     @OnClick(R.id.sendChatMessage)
