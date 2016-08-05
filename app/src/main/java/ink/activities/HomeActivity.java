@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,7 +24,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ink.R;
-import com.sinch.android.rtc.SinchError;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -34,11 +34,11 @@ import java.util.TimerTask;
 import fab.FloatingActionButton;
 import ink.fragments.Feed;
 import ink.fragments.MyFriends;
+import ink.mail.GMailSender;
 import ink.models.CoinsResponse;
 import ink.models.PingResponse;
 import ink.service.BackgroundTaskService;
 import ink.service.SendTokenService;
-import ink.service.SinchService;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.DeviceChecker;
@@ -53,7 +53,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, SinchService.StartFailedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     private static final long PING_TIME = 50000;
     private static final String TAG = HomeActivity.class.getSimpleName();
@@ -96,8 +96,16 @@ public class HomeActivity extends BaseActivity
         SETTINGS = getString(R.string.settingsString);
         mToolbar.setTitle(FEED);
         mSharedHelper = new SharedHelper(this);
-        initThread();
 
+        initThread();
+        GMailSender gMailSender = new GMailSender();
+        try {
+            gMailSender.sendMail("subject",
+                    "body","its me sender nigga","support@vaentertaiment.xyz");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(TAG, "onCreate: "+e.toString());
+        }
 
         mFab = (FloatingActionMenu) findViewById(R.id.fab);
         mMessages = (FloatingActionButton) findViewById(R.id.messages);
@@ -520,21 +528,5 @@ public class HomeActivity extends BaseActivity
         super.onDestroy();
     }
 
-    @Override
-    public void onStartFailed(SinchError error) {
 
-    }
-
-    @Override
-    public void onStarted() {
-
-    }
-
-    @Override
-    protected void onServiceConnected(SinchService.SinchServiceInterface sinchServiceInterface) {
-        if (!getSinchServiceInterface().isStarted()) {
-            getSinchServiceInterface().startClient(mSharedHelper.getUserId());
-        }
-        getSinchServiceInterface().setStartListener(this);
-    }
 }
