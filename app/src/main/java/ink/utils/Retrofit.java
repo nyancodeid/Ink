@@ -139,11 +139,6 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getWaiters(@Field("user_id") String userId);
 
-        @POST(Constants.SEND_CALL_PUSH)
-        @FormUrlEncoded
-        Call<ResponseBody> sendCallPush(@Field("callId") String callId,
-                                        @Field("userId") String userId);
-
         @POST(Constants.SINGLE_USER_MESSAGES)
         @FormUrlEncoded
         Call<ResponseBody> getMyMessages(@Field("user_id") String userId);

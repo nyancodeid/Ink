@@ -65,5 +65,6 @@ public class Constants {
     public static final String SERVER_TIME_ZONE = "America/Los_Angeles";
     public static final String CLOUD_CLIENT_ID = "15bf6f497229585b1cf45983d3d65b10";
     public static final String CLOUD_API_URL = "https://api.soundcloud.com";
+    public static final String TYPE_CALL = "type=call";
 }
 

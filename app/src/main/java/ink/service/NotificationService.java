@@ -38,7 +38,6 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import java.util.Map;
 
 import ink.activities.Chat;
-import ink.activities.IncomingCallScreenActivity;
 import ink.activities.ReplyView;
 import ink.activities.RequestsView;
 import ink.utils.Constants;
@@ -106,10 +105,10 @@ public class NotificationService extends FirebaseMessagingService {
             intent.putExtra("isDisconnected", response.get("isDisconnected"));
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         } else if (response.get("type").equals(Constants.TYPE_CALL)) {
-            Intent intent = new Intent(this, IncomingCallScreenActivity.class);
-            intent.putExtra("CALL_ID", response.get("callId"));
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+//            Intent intent = new Intent(this, IncomingCallScreenActivity.class);
+//            intent.putExtra("CALL_ID", response.get("callId"));
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            startActivity(intent);
         }
     }
     // [END receive_message]
