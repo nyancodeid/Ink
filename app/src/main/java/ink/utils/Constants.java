@@ -4,7 +4,7 @@ package ink.utils;
  * Created by USER on 2016-06-19.
  */
 public class Constants {
-    public static final String MAIN_URL = "http://vaentertaiment.esy.es/Ink/";
+    public static final String MAIN_URL = "http://45.32.187.213//Ink/";
     public static final String USER_IMAGES_FOLDER = "UserImages/";
     public static final String GROUP_IMAGES_FOLDER = "GroupImages/";
     public static final String ADD_GROUP_URL = "AddGroup.php";
@@ -49,6 +49,8 @@ public class Constants {
     public static final int TEXT_VIEW_DEFAULT_COLOR = android.R.color.tab_indicator_text;
     public static final String TYPE_MESSAGE = "message";
     public static final String TYPE_REQUEST = "request";
+    public static final String TYPE_CALL = "call";
+    public static final String SEND_CALL_PUSH = "SendCallPush.php";
     public static final String TYPE_CHAT_ROULETTE = "chatRoulette";
     public static final String WAITERS_QUE = "WaitRoomQue.php";
     public static final String GET_WAITERS = "GetWaitersQue.php";

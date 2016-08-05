@@ -1,10 +1,10 @@
 package ink.activities;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -12,7 +12,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
@@ -24,6 +23,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ink.R;
+import com.sinch.android.rtc.SinchError;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -39,21 +39,21 @@ import ink.models.CoinsResponse;
 import ink.models.PingResponse;
 import ink.service.BackgroundTaskService;
 import ink.service.SendTokenService;
+import ink.service.SinchService;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.DeviceChecker;
 import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
-import ink.utils.SinchHelper;
 import ink.utils.User;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+public class HomeActivity extends BaseActivity
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, SinchService.StartFailedListener {
 
     private static final long PING_TIME = 50000;
     private static final String TAG = HomeActivity.class.getSimpleName();
@@ -159,19 +159,21 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void initThread() {
         mPingThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 if (mPingThread.getState() != Thread.State.TERMINATED) {
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            SinchHelper.get().startSinch(HomeActivity.this, mSharedHelper.getUserId(),
-                                    mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), null);
-                        }
-                    });
                     pingTime();
                 }
             }
@@ -505,6 +507,9 @@ public class HomeActivity extends AppCompatActivity
                     String responseBody = response.body().string();
                     PingResponse pingResponse = gson.fromJson(responseBody, PingResponse.class);
                     if (pingResponse.success) {
+                        if (timer == null) {
+                            timer = new Timer();
+                        }
                         timer.schedule(new TimerTask() {
                             @Override
                             public void run() {
@@ -537,5 +542,23 @@ public class HomeActivity extends AppCompatActivity
             mPingThread = null;
         }
         super.onDestroy();
+    }
+
+    @Override
+    public void onStartFailed(SinchError error) {
+
+    }
+
+    @Override
+    public void onStarted() {
+
+    }
+
+    @Override
+    protected void onServiceConnected(SinchService.SinchServiceInterface sinchServiceInterface) {
+        if (!getSinchServiceInterface().isStarted()) {
+            getSinchServiceInterface().startClient(mSharedHelper.getUserId());
+        }
+        getSinchServiceInterface().setStartListener(this);
     }
 }

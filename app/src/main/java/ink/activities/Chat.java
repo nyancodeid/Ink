@@ -13,7 +13,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,6 +44,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,14 +64,13 @@ import ink.utils.RealmHelper;
 import ink.utils.RecyclerTouchListener;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
-import ink.utils.SinchHelper;
 import ink.utils.Time;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Chat extends AppCompatActivity {
+public class Chat extends BaseActivity {
 
     @Bind(R.id.sendChatMessage)
     fab.FloatingActionButton mSendChatMessage;
@@ -214,37 +213,33 @@ public class Chat extends AppCompatActivity {
 
     @OnClick(R.id.makeCall)
     public void makeCall() {
-        final com.sinch.android.rtc.calling.Call call = SinchHelper.get().makeCall(mOpponentId);
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Calling");
-        builder.setNegativeButton("Hangup", new DialogInterface.OnClickListener() {
+        Map<String, String> userDetails = new HashMap<>();
+        userDetails.put("callerName", mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
+        final com.sinch.android.rtc.calling.Call call = getSinchServiceInterface().callUser(mOpponentId, userDetails);
+        final Snackbar snackbar = Snackbar.make(mRecyclerView, "Calling", Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("Hangup", new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(View view) {
                 call.hangup();
             }
         });
-        builder.show();
         call.addCallListener(new CallListener() {
             @Override
             public void onCallProgressing(com.sinch.android.rtc.calling.Call call) {
-                builder.setTitle("Ringing on other side");
+                snackbar.setText("progressing call");
+                sendCallPush(call);
+
             }
 
             @Override
             public void onCallEstablished(com.sinch.android.rtc.calling.Call call) {
-                builder.setTitle("established");
+                snackbar.setText("established call");
             }
 
             @Override
             public void onCallEnded(com.sinch.android.rtc.calling.Call call) {
-                builder.setTitle("call ended" + call.getDetails().getEndCause());
-                Snackbar.make(mRecyclerView, "Call ended" + call.getDetails().getEndCause(), Snackbar.LENGTH_INDEFINITE).setAction("OK",
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-
-                            }
-                        }).show();
+                Log.d("fasfasfas", "onCallEnded: ");
+                snackbar.setText("call ended" + call.getDetails().getEndCause());
             }
 
             @Override
@@ -252,7 +247,24 @@ public class Chat extends AppCompatActivity {
 
             }
         });
+        snackbar.show();
 
+    }
+
+    private void sendCallPush(final com.sinch.android.rtc.calling.Call sinchCall) {
+        Call<ResponseBody> callResponse = Retrofit.getInstance().getInkService().sendCallPush(sinchCall.getCallId(),
+                mOpponentId);
+        callResponse.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                sendCallPush(sinchCall);
+            }
+        });
     }
 
     @OnClick(R.id.sendChatMessage)

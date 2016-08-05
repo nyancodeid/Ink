@@ -54,7 +54,6 @@
                         android:layout_height="wrap_content"
                         android:layout_alignTop="@+id/opponentImage"
                         android:layout_marginLeft="15dp"
-                        android:layout_marginTop="5dp"
                         android:layout_toRightOf="@+id/opponentImage"
                         android:fontFamily="@string/appFont"
                         android:text="@string/loadingText"
@@ -79,7 +78,7 @@
                         android:layout_toRightOf="@+id/opponentImage"
                         android:ellipsize="end"
                         android:fontFamily="@string/appFont"
-                        android:maxLines="1"
+                        android:maxLines="2"
                         android:text="@string/loadingText"
                         android:textColor="#ffffff"
                         android:textSize="11sp" />

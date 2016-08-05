@@ -12,7 +12,6 @@ import com.sinch.android.rtc.SinchClientListener;
 import com.sinch.android.rtc.SinchError;
 import com.sinch.android.rtc.calling.Call;
 import com.sinch.android.rtc.calling.CallClient;
-import com.sinch.android.rtc.calling.CallClientListener;
 import com.sinch.android.rtc.calling.CallListener;
 
 import java.util.List;
@@ -42,69 +41,68 @@ public class SinchHelper {
 
     public boolean startSinch(final Context context, final String userId, final String name,
                               @Nullable final GeneralCallback<SinchClient> generalCallback) {
-        sinchClient = Sinch.getSinchClientBuilder().context(context)
-                .applicationKey(SINCH_KEY)
-                .applicationSecret(SINCH_SECRET)
-                .environmentHost(SINCH_ENVIRONMENT)
-                .userId(userId)
-                .callerIdentifier(name)
-                .build();
+        if (isSinchClientStarted()) {
+            return true;
+        } else {
+            sinchClient = Sinch.getSinchClientBuilder().context(context)
+                    .applicationKey(SINCH_KEY)
+                    .applicationSecret(SINCH_SECRET)
+                    .environmentHost(SINCH_ENVIRONMENT)
+                    .userId(userId)
+                    .callerIdentifier(name)
+                    .build();
 
 
-        sinchClient.setSupportCalling(true);
-        sinchClient.setSupportManagedPush(true);
-        sinchClient.setSupportActiveConnectionInBackground(true);
-        sinchClient.startListeningOnActiveConnection();
+            sinchClient.setSupportCalling(true);
+            sinchClient.setSupportManagedPush(true);
+            sinchClient.setSupportActiveConnectionInBackground(true);
 
-        sinchClient.addSinchClientListener(new SinchClientListener() {
-            @Override
-            public void onClientStarted(final SinchClient sinchClient) {
-                sinchStarted = true;
-                if (generalCallback != null) {
-                    generalCallback.onSuccess(sinchClient);
-                }
-                callThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (callThread.getState() == Thread.State.TERMINATED) {
-                            Notification.getInstance().setCallRemote(true);
-                        } else {
-                            Notification.getInstance().setCallRemote(false);
-                            CallClient callClient = sinchClient.getCallClient();
-                            callClient.addCallClientListener(new CallClientListener() {
-                                @Override
-                                public void onIncomingCall(CallClient callClient, Call call) {
-
-                                }
-                            });
-                        }
+            sinchClient.addSinchClientListener(new SinchClientListener() {
+                @Override
+                public void onClientStarted(final SinchClient sinchClient) {
+                    sinchStarted = true;
+                    Log.d("fasfasfas", "onClientStarted: ");
+                    sinchClient.startListeningOnActiveConnection();
+                    if (generalCallback != null) {
+                        generalCallback.onSuccess(sinchClient);
                     }
-                });
-                callThread.start();
+                    callThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (callThread.getState() == Thread.State.TERMINATED) {
+                                Notification.getInstance().setCallRemote(true);
+                            } else {
+                                Notification.getInstance().setCallRemote(false);
+                            }
+                        }
+                    });
+                    callThread.start();
+                }
 
-            }
+                @Override
+                public void onClientStopped(SinchClient sinchClient) {
+                    Log.d("fasfasfas", "onClientStopped: ");
+                    sinchStarted = false;
+                }
 
-            @Override
-            public void onClientStopped(SinchClient sinchClient) {
-                sinchStarted = false;
-            }
+                @Override
+                public void onClientFailed(SinchClient sinchClient, SinchError sinchError) {
+                    Log.d("fasfasfas", "onClientFailed: " + sinchError.getMessage());
+                    startSinch(context, userId, name, generalCallback);
+                    sinchStarted = false;
+                }
 
-            @Override
-            public void onClientFailed(SinchClient sinchClient, SinchError sinchError) {
-                startSinch(context, userId, name, generalCallback);
-                sinchStarted = false;
-            }
+                @Override
+                public void onRegistrationCredentialsRequired(SinchClient sinchClient, ClientRegistration clientRegistration) {
+                }
 
-            @Override
-            public void onRegistrationCredentialsRequired(SinchClient sinchClient, ClientRegistration clientRegistration) {
-            }
+                @Override
+                public void onLogMessage(int i, String s, String s1) {
 
-            @Override
-            public void onLogMessage(int i, String s, String s1) {
-
-            }
-        });
-        sinchClient.start();
+                }
+            });
+            sinchClient.start();
+        }
         return sinchStarted;
     }
 
@@ -157,6 +155,10 @@ public class SinchHelper {
 
     public boolean isSinchStarted() {
         return sinchStarted;
+    }
+
+    private boolean isSinchClientStarted() {
+        return sinchClient != null && sinchClient.isStarted();
     }
 
     public void hangup(Call call) {
