@@ -308,4 +308,17 @@
     <string name="share">Share</string>
     <string name="sendFeedback">Send Feedback</string>
     <string name="contactSupport">Contact Support</string>
+    <string name="contactHintText">In order to contact you,we need your e-mail (optional)</string>
+    <string name="feedbackHint">Write your feedback</string>
+    <string name="feedbackTitle">Feedback</string>
+    <string name="sendingFeedback">Sending feedback...</string>
+    <string name="feedbackSent">Feedback was sent successfully.</string>
+    <string name="feedbackFailSent">Failed to sent the feedback.Please try again</string>
+    <string name="from">From :</string>
+    <string name="noAccount">You do not have any accounts attached.You can attach and come back,or you can specify desired e-mail below</string>
+    <string name="enterEmail">Enter e-mail</string>
+    <string name="emalEmpty">E-mail can not be empty</string>
+    <string name="incorrectEmail">Incorrect e-mail</string>
+    <string name="useDebiceInfo">Include device hardware information and model</string>
+    <string name="accountPermissionNeeded">Account permission needed for e-mail address</string>
 </resources>

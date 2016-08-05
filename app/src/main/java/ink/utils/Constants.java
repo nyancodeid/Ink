@@ -66,5 +66,8 @@ public class Constants {
     public static final String CLOUD_CLIENT_ID = "15bf6f497229585b1cf45983d3d65b10";
     public static final String CLOUD_API_URL = "https://api.soundcloud.com";
     public static final String TYPE_CALL = "type=call";
+    public static final String SUBJECT_FEEDBACK = "Feedback";
+    public static final String SUBJECT_REQUEST_SUPPORT = "Support Needed";
+    public static final String FEEDBACK_EMAIL = "support@vaentertaiment.xyz";
 }
 

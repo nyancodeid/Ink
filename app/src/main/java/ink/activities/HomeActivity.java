@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Process;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -13,7 +14,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,7 +34,6 @@ import java.util.TimerTask;
 import fab.FloatingActionButton;
 import ink.fragments.Feed;
 import ink.fragments.MyFriends;
-import ink.mail.GMailSender;
 import ink.models.CoinsResponse;
 import ink.models.PingResponse;
 import ink.service.BackgroundTaskService;
@@ -98,15 +97,6 @@ public class HomeActivity extends BaseActivity
         mSharedHelper = new SharedHelper(this);
 
         initThread();
-        GMailSender gMailSender = new GMailSender();
-        try {
-            gMailSender.sendMail("subject",
-                    "body","its me sender nigga","support@vaentertaiment.xyz");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d(TAG, "onCreate: "+e.toString());
-        }
-
         mFab = (FloatingActionMenu) findViewById(R.id.fab);
         mMessages = (FloatingActionButton) findViewById(R.id.messages);
         mMakePost = (FloatingActionButton) findViewById(R.id.makePost);
@@ -181,6 +171,7 @@ public class HomeActivity extends BaseActivity
         mPingThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                 if (mPingThread.getState() != Thread.State.TERMINATED) {
                     pingTime();
                 }
@@ -371,6 +362,7 @@ public class HomeActivity extends BaseActivity
             case R.id.sendFeedback:
                 shouldOpenActivity = true;
                 setLastClassToOpen(SendFeedback.class);
+                overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
                 break;
 
             case R.id.contactSupport:

@@ -46,6 +46,7 @@ public class ImageEditor extends AppCompatActivity {
     private Uri lastEditedImageUri;
     private ProgressDialog progressDialog;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +57,7 @@ public class ImageEditor extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getString(R.string.imageEditor));
         }
         progressDialog = new ProgressDialog(ImageEditor.this);
         progressDialog.setCancelable(false);
@@ -136,6 +138,7 @@ public class ImageEditor extends AppCompatActivity {
         downArrow.setVisibility(View.GONE);
         editorHintLayout.setVisibility(View.GONE);
     }
+
 
     private void openEditor(Uri imageUri) {
         Intent imageEditorIntent = new AdobeImageIntent.Builder(this)
