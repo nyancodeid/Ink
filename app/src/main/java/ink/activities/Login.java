@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -47,7 +46,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private TextView mRegisterText;
     private RelativeLayout mRegisterWrapper;
     private BroadcastReceiver mBroadcastReceiver;
     private SharedHelper mSharedHelper;
@@ -68,9 +66,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         }
         mLoginView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
-        mRegisterText = (TextView) findViewById(R.id.registerText);
         mRegisterWrapper = (RelativeLayout) findViewById(R.id.anotherOption);
-        mRegisterText.setText(Html.fromHtml(getString(R.string.registerText)));
         mRegisterWrapper.setOnClickListener(this);
         mBroadcastReceiver = new BroadcastReceiver() {
             @Override
