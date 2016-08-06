@@ -7,6 +7,16 @@
     tools:context="ink.activities.SendFeedback">
 
     <TextView
+        android:id="@+id/haveFeedbackTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@string/appFont"
+        android:text="@string/haveAnFeedback"
+        android:textStyle="italic" />
+
+    <TextView
         android:id="@+id/contactHint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,6 +24,7 @@
         android:layout_alignLeft="@+id/feedbackLayout"
         android:layout_alignRight="@+id/feedbackLayout"
         android:layout_alignStart="@+id/feedbackLayout"
+        android:layout_below="@+id/haveFeedbackTV"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:fontFamily="@string/appFont"
@@ -118,10 +129,11 @@
         android:textColor="#000000" />
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/sendFeedbackButton"
         android:layout_below="@+id/useDeviceInfoCheckBox"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:src="@drawable/feedback_large_icon" />
 </RelativeLayout>

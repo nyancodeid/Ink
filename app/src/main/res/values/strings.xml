@@ -338,6 +338,7 @@
     <string name="supportMessageHint">Your message was sent.One of our team members will contact  you within 24 hours</string>
     <string name="failedToSent">Failed</string>
     <string name="failedToSentMessage">Failed to send the message.Please try again later...</string>
+    <string name="haveAnFeedback">Have a feedback?We will be happy to hear you!</string>
     <string-array name="issueTypes">
         <item name="generalIssue">General</item>
         <item name="bugIssue">Bug</item>
