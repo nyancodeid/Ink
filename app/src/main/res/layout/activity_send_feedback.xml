@@ -1,115 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ink.activities.SendFeedback">
+    android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/contactHint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/feedbackLayout"
-        android:layout_alignLeft="@+id/feedbackLayout"
-        android:layout_alignRight="@+id/feedbackLayout"
-        android:layout_alignStart="@+id/feedbackLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
-        android:fontFamily="@string/appFont"
-        android:text="@string/contactHintText" />
-
-    <RelativeLayout
-        android:id="@+id/emailWrapper"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/feedbackLayout"
-        android:layout_alignLeft="@+id/feedbackLayout"
-        android:layout_alignRight="@+id/feedbackLayout"
-        android:layout_alignStart="@+id/feedbackLayout"
-        android:layout_below="@+id/contactHint"
-        android:layout_marginTop="15dp"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
-        android:paddingBottom="15dp"
-        android:paddingTop="15dp">
+        android:layout_height="match_parent"
+        tools:context="ink.activities.SendFeedback">
 
         <TextView
-            android:id="@+id/fromText"
+            android:id="@+id/contactHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/feedbackLayout"
+            android:layout_alignLeft="@+id/feedbackLayout"
+            android:layout_alignRight="@+id/feedbackLayout"
+            android:layout_alignStart="@+id/feedbackLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
             android:fontFamily="@string/appFont"
-            android:text="@string/from" />
+            android:text="@string/contactHintText" />
+
+        <RelativeLayout
+            android:id="@+id/emailWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/feedbackLayout"
+            android:layout_alignLeft="@+id/feedbackLayout"
+            android:layout_alignRight="@+id/feedbackLayout"
+            android:layout_alignStart="@+id/feedbackLayout"
+            android:layout_below="@+id/contactHint"
+            android:layout_marginTop="15dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp">
+
+            <TextView
+                android:id="@+id/fromText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@string/appFont"
+                android:text="@string/from" />
+
+            <TextView
+                android:id="@+id/actualEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/fromText"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/fromText"
+                android:fontFamily="@string/appFont"
+                android:text="@string/loadingText" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/actualEmail"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="2dp"
+                android:layout_toRightOf="@+id/actualEmail"
+                android:src="@drawable/arrow_down_simple" />
+        </RelativeLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/feedbackLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/emailWrapper"
+            android:layout_margin="16dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/feedbackInputField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/feedbackHint"
+                android:maxLines="3"></AutoCompleteTextView>
+        </android.support.design.widget.TextInputLayout>
+
+        <fab.FloatingActionButton
+            android:id="@+id/sendFeedbackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_send_white_24dp"
+            fab:fab_colorNormal="@color/colorPrimary"
+            fab:fab_colorPressed="@color/colorPrimaryDark"
+            fab:fab_colorRipple="#cccccc"
+            fab:fab_label="@string/sendMessage"
+            fab:fab_size="normal" />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/useDeviceInfoCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/feedbackLayout"
+            android:layout_alignStart="@+id/feedbackLayout"
+            android:layout_below="@+id/feedbackLayout"
+            android:checked="true" />
 
         <TextView
-            android:id="@+id/actualEmail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/fromText"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/fromText"
+            android:layout_alignBottom="@+id/useDeviceInfoCheckBox"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/useDeviceInfoCheckBox"
             android:fontFamily="@string/appFont"
-            android:text="@string/loadingText" />
+            android:text="@string/useDebiceInfo"
+            android:textColor="#000000" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/actualEmail"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="2dp"
-            android:layout_toRightOf="@+id/actualEmail"
-            android:src="@drawable/arrow_down_simple" />
+            android:layout_above="@+id/sendFeedbackButton"
+            android:layout_below="@+id/useDeviceInfoCheckBox"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/feedback_large_icon" />
     </RelativeLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/feedbackLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/emailWrapper"
-        android:layout_margin="16dp">
 
-        <AutoCompleteTextView
-            android:id="@+id/feedbackInputField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/feedbackHint"
-            android:maxLines="3"></AutoCompleteTextView>
-    </android.support.design.widget.TextInputLayout>
-
-    <fab.FloatingActionButton
-        android:id="@+id/sendFeedbackButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="10dp"
-        android:src="@drawable/ic_send_white_24dp"
-        fab:fab_colorNormal="@color/colorPrimary"
-        fab:fab_colorPressed="@color/colorPrimaryDark"
-        fab:fab_colorRipple="#cccccc"
-        fab:fab_label="@string/sendMessage"
-        fab:fab_size="normal" />
-
-    <android.support.v7.widget.AppCompatCheckBox
-        android:id="@+id/useDeviceInfoCheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/feedbackLayout"
-        android:layout_alignStart="@+id/feedbackLayout"
-        android:layout_below="@+id/feedbackLayout"
-        android:checked="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/useDeviceInfoCheckBox"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@+id/useDeviceInfoCheckBox"
-        android:fontFamily="@string/appFont"
-        android:text="@string/useDebiceInfo"
-        android:textColor="#000000" />
-</RelativeLayout>
+</android.support.v4.widget.NestedScrollView>
