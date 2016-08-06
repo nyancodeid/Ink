@@ -29,7 +29,7 @@
         android:layout_alignStart="@+id/feedbackLayout"
         android:layout_below="@+id/contactHint"
         android:layout_marginTop="15dp"
-        android:background="?attr/selectableItemBackground"
+        android:background="@drawable/circle_transparent_background"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground"
@@ -40,6 +40,8 @@
             android:id="@+id/fromText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
             android:fontFamily="@string/appFont"
             android:text="@string/from" />
 
@@ -48,18 +50,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/fromText"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/feedbackDropDown"
             android:layout_toRightOf="@+id/fromText"
             android:fontFamily="@string/appFont"
             android:text="@string/loadingText" />
 
         <ImageView
+            android:id="@+id/feedbackDropDown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/actualEmail"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="2dp"
-            android:layout_toRightOf="@+id/actualEmail"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
             android:src="@drawable/arrow_down_simple" />
     </RelativeLayout>
 

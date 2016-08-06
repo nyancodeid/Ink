@@ -35,24 +35,29 @@
     <RelativeLayout
         android:id="@+id/issueTypeLayout"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/selectIssueTV"
         android:layout_marginTop="5dp"
         android:background="@drawable/circle_transparent_background"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="?attr/selectableItemBackground">
+        android:foreground="?attr/selectableItemBackground"
+        android:minHeight="40dp">
 
         <TextView
             android:id="@+id/issueTypeTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/issueTypeDropDown"
             android:fontFamily="@string/appFont"
             android:text="@string/chooseIssueType" />
 
         <ImageView
+            android:id="@+id/issueTypeDropDown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -75,24 +80,29 @@
     <RelativeLayout
         android:id="@+id/chooseEmailLayout"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/chooseEmail"
         android:layout_marginTop="5dp"
         android:background="@drawable/circle_transparent_background"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="?attr/selectableItemBackground">
+        android:foreground="?attr/selectableItemBackground"
+        android:minHeight="40dp">
 
         <TextView
             android:id="@+id/emailTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/emailDropDown"
             android:fontFamily="@string/appFont"
             android:text="@string/chooseEmail" />
 
         <ImageView
+            android:id="@+id/emailDropDown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
