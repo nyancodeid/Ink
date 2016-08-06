@@ -33,8 +33,7 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground"
-        android:paddingBottom="15dp"
-        android:paddingTop="15dp">
+        android:minHeight="40dp">
 
         <TextView
             android:id="@+id/fromText"
@@ -64,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="15dp"
+            android:layout_marginRight="5dp"
             android:src="@drawable/arrow_down_simple" />
     </RelativeLayout>
 
