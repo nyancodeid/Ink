@@ -362,7 +362,6 @@ public class HomeActivity extends BaseActivity
             case R.id.sendFeedback:
                 shouldOpenActivity = true;
                 setLastClassToOpen(SendFeedback.class);
-                overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
                 break;
 
             case R.id.contactSupport:

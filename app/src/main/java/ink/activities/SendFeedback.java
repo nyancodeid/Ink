@@ -201,6 +201,7 @@ public class SendFeedback extends AppCompatActivity {
                                     @Override
                                     public void onClick(View view) {
                                         progressSnack.dismiss();
+                                        finish();
                                     }
                                 }).show();
                                 enableTouches();
@@ -215,6 +216,7 @@ public class SendFeedback extends AppCompatActivity {
         if (!PermissionsChecker.isAccountPermissionGranted(getApplicationContext())) {
             Snackbar.make(sendFeedbackButton, getString(R.string.accountPermissionNeeded), Snackbar.LENGTH_LONG).show();
         } else {
+            userAccounts = UserDetails.getUserAccountList(SendFeedback.this);
             initAccounts();
         }
     }
@@ -223,7 +225,6 @@ public class SendFeedback extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
-            overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
         }
         return super.onOptionsItemSelected(item);
     }

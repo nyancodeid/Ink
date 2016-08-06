@@ -308,6 +308,10 @@
     <string name="share">Share</string>
     <string name="sendFeedback">Send Feedback</string>
     <string name="contactSupport">Contact Support</string>
+
+
+
+    <!-- TO TRANSLATE-->
     <string name="contactHintText">In order to contact you,we need your e-mail (optional)</string>
     <string name="feedbackHint">Write your feedback</string>
     <string name="feedbackTitle">Feedback</string>
@@ -319,6 +323,6 @@
     <string name="enterEmail">Enter e-mail</string>
     <string name="emalEmpty">E-mail can not be empty</string>
     <string name="incorrectEmail">Incorrect e-mail</string>
-    <string name="useDebiceInfo">Include device hardware information and model</string>
+    <string name="useDebiceInfo">Include device hardware and model information </string>
     <string name="accountPermissionNeeded">Account permission needed for e-mail address</string>
 </resources>
