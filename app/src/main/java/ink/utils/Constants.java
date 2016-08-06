@@ -69,5 +69,6 @@ public class Constants {
     public static final String SUBJECT_FEEDBACK = "Feedback";
     public static final String SUBJECT_REQUEST_SUPPORT = "Support Needed";
     public static final String FEEDBACK_EMAIL = "support@vaentertaiment.xyz";
+    public static final String CONTACT_EMAIL = "contact@vaentertaiment.xyz";
 }
 

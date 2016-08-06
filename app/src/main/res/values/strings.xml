@@ -307,11 +307,10 @@
     <string name="community">Community</string>
     <string name="share">Share</string>
     <string name="sendFeedback">Send Feedback</string>
-    <string name="contactSupport">Contact Support</string>
-
 
 
     <!-- TO TRANSLATE-->
+    <string name="contactSupport">Contact Support 24/7</string>
     <string name="contactHintText">In order to contact you,we need your e-mail (optional)</string>
     <string name="feedbackHint">Write your feedback</string>
     <string name="feedbackTitle">Feedback</string>
@@ -325,4 +324,26 @@
     <string name="incorrectEmail">Incorrect e-mail</string>
     <string name="useDebiceInfo">Include device hardware and model information </string>
     <string name="accountPermissionNeeded">Account permission needed for e-mail address</string>
+    <string name="chooseIssueType">Select issue type </string>
+    <string name="chooseEmail">Choose contact back e-mail : </string>
+    <string name="fillAdditionalInformation">Please describe your issue in details :</string>
+    <string name="writeIssue">Write the issue</string>
+    <string name="issueType">Issue type</string>
+    <string name="contactBackEmail">Contact back e-mail</string>
+    <string name="needAnHelp">Need an help?We are here to assist you!</string>
+    <string name="allFieldsMandatory">All fields should be specified</string>
+    <string name="sending">Sending...</string>
+    <string name="messageBeingSent">Your message is being sent,please wait...</string>
+    <string name="messageSent">Message sent</string>
+    <string name="supportMessageHint">Your message was sent.One of our team members will contact  you within 24 hours</string>
+    <string name="failedToSent">Failed</string>
+    <string name="failedToSentMessage">Failed to send the message.Please try again later...</string>
+    <string-array name="issueTypes">
+        <item name="generalIssue">General</item>
+        <item name="bugIssue">Bug</item>
+        <item name="crashIssue">Crash</item>
+        <item name="billingIssue">Billing</item>
+        <item name="accountIssue">Account</item>
+        <item name="applicationIssue">Application</item>
+    </string-array>
 </resources>
