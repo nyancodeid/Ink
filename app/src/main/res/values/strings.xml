@@ -39,10 +39,10 @@
     <string name="groupsText">Groups</string>
     <string name="friendsText">Friends</string>
     <string name="settingsString">Settings</string>
-    <string name="logoutString">Log Out</string>
+    <string name="logoutString">Logout</string>
     <string name="serverErrorText">There was an problem with server.Please reload again</string>
-    <string name="noFirstname">No Firstname</string>
-    <string name="noLastname">No Lastname</string>
+    <string name="noFirstname">No First Name</string>
+    <string name="noLastname">No Last Name</string>
     <string name="noPhone">No Phone Number</string>
     <string name="title_item_list">Items</string>
     <string name="title_item_detail">Item Detail</string>
