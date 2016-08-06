@@ -57,7 +57,6 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(getString(R.string.registerAccount));
-
         }
 
         mRegisterLoading = findViewById(R.id.registerLoading);
