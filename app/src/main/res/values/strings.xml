@@ -339,6 +339,8 @@
     <string name="failedToSent">Failed</string>
     <string name="failedToSentMessage">Failed to send the message.Please try again later...</string>
     <string name="haveAnFeedback">Have a feedback?We will be happy to hear you!</string>
+    <string name="registerAccount">Regsiter Account</string>
+    <string name="joinMillion">Join our huge community and start the new way of communication!</string>
     <string-array name="issueTypes">
         <item name="generalIssue">General</item>
         <item name="bugIssue">Bug</item>

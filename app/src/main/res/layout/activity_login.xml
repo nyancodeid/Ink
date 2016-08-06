@@ -16,8 +16,8 @@
         android:id="@+id/loading_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_gravity="right"
+        android:visibility="gone"
         app:indicator="BallClipRotateMultiple"
         app:indicator_color="@color/colorPrimary" />
 
@@ -104,6 +104,14 @@
                     android:text="@string/registerText"
                     android:textSize="20sp" />
             </RelativeLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/registerWrapper"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="15dp"
+                android:src="@drawable/login_icon" />
         </RelativeLayout>
     </ScrollView>
 </LinearLayout>

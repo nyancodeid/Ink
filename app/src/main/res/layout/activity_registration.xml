@@ -17,12 +17,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@mipmap/ic_launcher" />
-
         <com.wang.avi.AVLoadingIndicatorView
             android:id="@+id/registerLoading"
             android:layout_width="wrap_content"
@@ -129,6 +123,22 @@
             android:textAllCaps="false"
             android:textColor="#ffffff"
             android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@string/appFont"
+            android:text="@string/joinMillion"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="25dp"
+            android:src="@drawable/register_icon" />
 
     </LinearLayout>
 </ScrollView>
