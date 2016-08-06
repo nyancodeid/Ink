@@ -69,7 +69,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         mLoginView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
         mRegisterText = (TextView) findViewById(R.id.registerText);
-        mRegisterWrapper = (RelativeLayout) findViewById(R.id.registerWrapper);
+        mRegisterWrapper = (RelativeLayout) findViewById(R.id.anotherOption);
         mRegisterText.setText(Html.fromHtml(getString(R.string.registerText)));
         mRegisterWrapper.setOnClickListener(this);
         mBroadcastReceiver = new BroadcastReceiver() {
@@ -231,10 +231,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.registerWrapper:
-                startActivity(new Intent(getApplicationContext(), Registration.class));
+            case R.id.anotherOption:
+                showOptions();
                 break;
         }
+    }
+
+    private void showOptions() {
+
     }
 
     @Override
