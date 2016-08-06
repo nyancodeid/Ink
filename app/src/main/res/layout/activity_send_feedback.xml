@@ -28,7 +28,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:fontFamily="@string/appFont"
-        android:text="@string/contactHintText" />
+        android:text="@string/contactHintText"
+        android:textStyle="bold" />
 
     <RelativeLayout
         android:id="@+id/emailWrapper"
