@@ -1,13 +1,14 @@
 package ink.activities;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -19,9 +20,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.ink.R;
 
 import org.json.JSONException;
@@ -29,6 +35,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import ink.utils.GoogleSignIn;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -39,8 +46,9 @@ import retrofit2.Response;
 /**
  * A login screen that offers login via email/password.
  */
-public class Login extends AppCompatActivity implements View.OnClickListener {
+public class Login extends BaseActivity implements View.OnClickListener {
 
+    private static final int GOOGLE_SIGN_IN_REQUEST_CODE = 1;
     // UI references.
     private AutoCompleteTextView mLoginView;
     private EditText mPasswordView;
@@ -50,6 +58,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private BroadcastReceiver mBroadcastReceiver;
     private SharedHelper mSharedHelper;
     private Button mLoginButton;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +66,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mSharedHelper = new SharedHelper(this);
+        FirebaseInstanceId.getInstance().getToken();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle(getString(R.string.logging));
+        progressDialog.setMessage(getString(R.string.loggingPleasWait));
         if (!checkPlayServices()) {
             return;
         }
@@ -86,7 +99,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             }
         });
 
-        mLoginButton = (Button) findViewById(R.id.email_sign_in_button);
+        mLoginButton = (Button) findViewById(R.id.signInButton);
         mLoginButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -192,6 +205,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                             mSharedHelper.putLastName(jsonObject.optString("last_name"));
                             mSharedHelper.putUserId(userId);
                             mSharedHelper.putShouldShowIntro(false);
+                            mSharedHelper.putIsSocialAccount(false);
                             String imageLink = jsonObject.optString("imageLink");
                             if (imageLink != null && !imageLink.isEmpty()) {
                                 mSharedHelper.putImageLink(imageLink);
@@ -234,6 +248,30 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void showOptions() {
+        System.gc();
+        AlertDialog alertDialog = null;
+        View optionsView = getLayoutInflater().inflate(R.layout.sign_in_options_view, null);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.chooseYourOption));
+        builder.setView(optionsView);
+        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        RelativeLayout googleSignInWrapper = (RelativeLayout) optionsView.findViewById(R.id.googleSignInWrapper);
+        alertDialog = builder.show();
+        final AlertDialog finalAlertDialog = alertDialog;
+        googleSignInWrapper.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (finalAlertDialog != null) {
+                    finalAlertDialog.dismiss();
+                }
+                GoogleSignIn.get().signIn(Login.this, GOOGLE_SIGN_IN_REQUEST_CODE);
+            }
+        });
 
     }
 
@@ -277,6 +315,86 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         mLoginButton.setEnabled(true);
         mRegisterWrapper.setEnabled(true);
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from
+        //   GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == GOOGLE_SIGN_IN_REQUEST_CODE) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                GoogleSignInAccount account = result.getSignInAccount();
+                // Get account information
+                progressDialog.show();
+                String fullName = account.getDisplayName();
+                String email = account.getEmail();
+                String[] nameParts = fullName.split("\\s");
+                String firstName = nameParts[0];
+                String lastName = nameParts[1];
+                Uri accountImageUri = account.getPhotoUrl();
+                loginUser(email, firstName, lastName, accountImageUri.toString());
+            }
+        }
+    }
+
+    private void loginUser(final String login, final String firstName, final String lastName, final String imageUrl) {
+        Call<ResponseBody> socialLoginCall = Retrofit.getInstance().getInkService().socialLogin(
+                login, firstName, lastName, imageUrl, mSharedHelper.getToken());
+
+        socialLoginCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    loginUser(login, firstName, lastName, imageUrl);
+                    return;
+                }
+                if (response.body() == null) {
+                    loginUser(login, firstName, lastName, imageUrl);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        String userId = jsonObject.optString("userId");
+                        saveSocialLoginInfo(firstName, lastName, userId, imageUrl);
+                    } else {
+                        progressDialog.dismiss();
+                        Toast.makeText(Login.this, getString(R.string.failedLogin), Toast.LENGTH_SHORT).show();
+                    }
+                    Log.d("fasfasfasfa", "onResponse: " + responseBody);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    progressDialog.dismiss();
+                    Toast.makeText(Login.this, getString(R.string.failedLogin), Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    progressDialog.dismiss();
+                    Toast.makeText(Login.this, getString(R.string.failedLogin), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void saveSocialLoginInfo(String firstName, String lastName, String userId, String imageUrl) {
+        mSharedHelper.putFirstName(firstName);
+        mSharedHelper.putLastName(lastName);
+        mSharedHelper.putUserId(userId);
+        mSharedHelper.putShouldShowIntro(false);
+        mSharedHelper.putIsSocialAccount(false);
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            mSharedHelper.putImageLink(imageUrl);
+        }
+    }
+
 }
 
 

@@ -84,6 +84,7 @@ public class SingleGroupView extends AppCompatActivity {
     RelativeLayout noGroupMessageLayout;
 
     private String mGroupName = "";
+    private boolean isSocialAccount;
     private BroadcastReceiver broadcastReceiver;
     private boolean isFollowing;
     private String mOwnerImage;
@@ -185,6 +186,7 @@ public class SingleGroupView extends AppCompatActivity {
         groupMessagesRecycler.setAdapter(groupMessagesAdapter);
         if (extras != null) {
             mGroupName = extras.getString("groupName");
+            isSocialAccount = extras.getBoolean("isSocialAccount");
             mGroupId = extras.getString("groupId");
             mGroupColor = extras.getString("groupColor");
             mGroupImage = extras.getString("groupImage");
@@ -227,10 +229,16 @@ public class SingleGroupView extends AppCompatActivity {
             mGroupImageView.setBackgroundResource(R.drawable.no_group_image);
         }
         if (mOwnerImage != null && !mOwnerImage.isEmpty()) {
-            Picasso.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                    mOwnerImage).error(R.drawable.image_laoding_error)
-                    .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
-                    .centerCrop().into(mOwnerImageView);
+            if (isSocialAccount) {
+                Picasso.with(this).load(mOwnerImage).error(R.drawable.image_laoding_error)
+                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
+                        .centerCrop().into(mOwnerImageView);
+            } else {
+                Picasso.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                        mOwnerImage).error(R.drawable.image_laoding_error)
+                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
+                        .centerCrop().into(mOwnerImageView);
+            }
         } else {
             Picasso.with(this).load(R.drawable.no_image).transform(new CircleTransform()).fit()
                     .centerCrop().into(mOwnerImageView);

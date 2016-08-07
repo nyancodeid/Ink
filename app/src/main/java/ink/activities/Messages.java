@@ -105,6 +105,7 @@ public class Messages extends AppCompatActivity implements SwipeRefreshLayout.On
                 Intent intent = new Intent(getApplicationContext(), Chat.class);
                 intent.putExtra("firstName", userMessagesModels.get(position).getFirstName());
                 intent.putExtra("opponentId", finalId);
+                intent.putExtra("isSocialAccount", userMessagesModels.get(position).isSocialAccount());
                 intent.putExtra("opponentImage", userMessagesModels.get(position).getImageName());
                 startActivity(intent);
             }
@@ -244,6 +245,7 @@ public class Messages extends AppCompatActivity implements SwipeRefreshLayout.On
                         String lastName = eachObject.optString("lastName");
                         String imageName = eachObject.optString("imageName");
                         String date = eachObject.optString("date");
+                        boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
                         String deleteUserId = eachObject.optString("delete_user_id");
                         String deleteOpponentId = eachObject.optString("delete_opponent_id");
 
@@ -299,7 +301,7 @@ public class Messages extends AppCompatActivity implements SwipeRefreshLayout.On
                             String messageOld = message;
                             message = "You: " + messageOld;
                         }
-                        userMessagesModel = new UserMessagesModel(userId, opponentId, messageId, message,
+                        userMessagesModel = new UserMessagesModel(isSocialAccount, userId, opponentId, messageId, message,
                                 firstName, lastName, imageName, splittedDate + "\n" + splittedTime, imageName);
                         userMessagesModels.add(userMessagesModel);
                         messagesAdapter.notifyDataSetChanged();

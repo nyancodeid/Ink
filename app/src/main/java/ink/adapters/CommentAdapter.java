@@ -19,6 +19,7 @@ import ink.interfaces.CommentClickHandler;
 import ink.models.CommentModel;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
+import ink.utils.SharedHelper;
 
 /**
  * Created by USER on 2016-07-05.
@@ -36,6 +37,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
     private String likesCount;
     private CommentClickHandler commentClickHandler;
     private boolean isLiked;
+    private SharedHelper sharedHelper;
 
     public CommentAdapter(List<CommentModel> data,
                           Context context, String ownerImage,
@@ -53,6 +55,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         this.ownerImage = ownerImage;
         this.ownerPostBody = ownerPostBody;
         commentModels = data;
+        sharedHelper = new SharedHelper(context);
     }
 
     @Override
@@ -78,10 +81,16 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             itemViewHolder.commenterBody.setText(commentModel.getCommentBody());
             itemViewHolder.commenterName.setText(commentModel.getFirstName() + " " + commentModel.getLastName());
             if (commentModel.getCommenterImage() != null && !commentModel.getCommenterImage().isEmpty()) {
-                Picasso.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        commentModel.getCommenterImage()).error(R.drawable.image_laoding_error)
-                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop()
-                        .into(itemViewHolder.commenterImage);
+                if (commentModel.isSocialAccount()) {
+                    Picasso.with(context).load(commentModel.getCommenterImage()).error(R.drawable.image_laoding_error)
+                            .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop()
+                            .into(itemViewHolder.commenterImage);
+                } else {
+                    Picasso.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                            commentModel.getCommenterImage()).error(R.drawable.image_laoding_error)
+                            .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop()
+                            .into(itemViewHolder.commenterImage);
+                }
             } else {
                 Picasso.with(context).load(R.drawable.no_image).transform(new CircleTransform()).fit().centerCrop()
                         .into(itemViewHolder.commenterImage);
@@ -89,10 +98,16 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         } else if (holder instanceof HeaderViewHolder) {
             final HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
             if (ownerImage != null && !ownerImage.isEmpty()) {
-                Picasso.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        ownerImage).error(R.drawable.image_laoding_error)
-                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop()
-                        .into(headerViewHolder.postOwnerImage);
+                if (sharedHelper.isSocialAccount()) {
+                    Picasso.with(context).load(ownerImage).error(R.drawable.image_laoding_error)
+                            .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop()
+                            .into(headerViewHolder.postOwnerImage);
+                } else {
+                    Picasso.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                            ownerImage).error(R.drawable.image_laoding_error)
+                            .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop()
+                            .into(headerViewHolder.postOwnerImage);
+                }
             } else {
                 Picasso.with(context).load(R.drawable.no_image).transform(new CircleTransform()).fit().centerCrop()
                         .into(headerViewHolder.postOwnerImage);

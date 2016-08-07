@@ -63,10 +63,16 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
         RequestsModel requestsModel = requestsModels.get(position);
 
         if (!requestsModel.getRequesterImage().isEmpty()) {
-            Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                    requestsModel.getRequesterImage()).error(R.drawable.image_laoding_error)
-                    .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
-                    .centerCrop().into(holder.requesterImage);
+            if (requestsModel.isSocialAccount()) {
+                Picasso.with(mContext).load(requestsModel.getRequesterImage()).error(R.drawable.image_laoding_error)
+                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
+                        .centerCrop().into(holder.requesterImage);
+            } else {
+                Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                        requestsModel.getRequesterImage()).error(R.drawable.image_laoding_error)
+                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
+                        .centerCrop().into(holder.requesterImage);
+            }
         } else {
             Picasso.with(mContext).load(R.drawable.no_image).transform(new CircleTransform()).fit()
                     .centerCrop().into(holder.requesterImage);

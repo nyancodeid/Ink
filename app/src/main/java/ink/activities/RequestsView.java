@@ -116,8 +116,9 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
                             String requesterImage = eachObject.optString("requester_image");
                             String requestedGroupId = eachObject.optString("requested_group_id");
                             String requestId = eachObject.optString("request_id");
+                            boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
                             String groupName = eachObject.optString("group_name");
-                            requestsModel = new RequestsModel(groupOwnerId, requesterId, requesterName, requesterImage, requestedGroupId,
+                            requestsModel = new RequestsModel(isSocialAccount,groupOwnerId, requesterId, requesterName, requesterImage, requestedGroupId,
                                     requestId, groupName);
                             requestsModels.add(requestsModel);
                             requestsAdapter.notifyDataSetChanged();

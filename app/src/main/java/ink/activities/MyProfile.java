@@ -786,6 +786,7 @@ public class MyProfile extends AppCompatActivity {
                 }
                 try {
                     String body = response.body().string();
+                    Log.d("Fasfasfas", "onResponse: " + body);
                     try {
                         JSONObject jsonObject = new JSONObject(body);
                         boolean success = jsonObject.optBoolean("success");
@@ -821,6 +822,18 @@ public class MyProfile extends AppCompatActivity {
                             promptBuilder.show();
                         }
                     } catch (JSONException e) {
+                        hideImageLoading();
+                        hideSnack();
+                        promptBuilder = new AlertDialog.Builder(MyProfile.this);
+                        promptBuilder.setTitle(getString(R.string.error));
+                        promptBuilder.setMessage(getString(R.string.couldNotUpdate));
+                        promptBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        promptBuilder.show();
                         e.printStackTrace();
                     }
                 } catch (IOException e) {

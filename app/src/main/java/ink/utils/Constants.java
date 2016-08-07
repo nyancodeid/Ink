@@ -45,6 +45,7 @@ public class Constants {
     public static final String MAKE_POST_URL = "MakePost.php";
     public static final String LIKE_URL = "LikePost.php";
     public static final String GET_COMMENTS_URL = "GetComments.php";
+    public static final String SOCIAL_LOGIN_URL = "SocialLogin.php";
     public static final String ADD_COMMENT_URL = "AddComment.php";
     public static final int TEXT_VIEW_DEFAULT_COLOR = android.R.color.tab_indicator_text;
     public static final String TYPE_MESSAGE = "message";

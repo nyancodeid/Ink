@@ -147,6 +147,7 @@ public class Groups extends AppCompatActivity implements SwipeRefreshLayout.OnRe
                 intent.putExtra("groupOwnerName", groupsModels.get(position).getGroupOwnerName());
                 intent.putExtra("count", groupsModels.get(position).getParticipantsCount());
                 intent.putExtra("ownerImage", groupsModels.get(position).getOwnerImage());
+                intent.putExtra("isSocialAccount", groupsModels.get(position).isSocialAccount());
                 intent.putExtra("isMember", groupsModels.get(position).isMember());
                 startActivity(intent);
             }
@@ -282,8 +283,9 @@ public class Groups extends AppCompatActivity implements SwipeRefreshLayout.OnRe
                                 String participantsCount = eachObject.optString("participants");
                                 String ownerImage = eachObject.optString("owner_image");
                                 boolean isMember = eachObject.optBoolean("isMember");
+                                boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
 
-                                groupsModel = new GroupsModel(groupId, groupImage, groupName, groupOwnerName, groupDescription,
+                                groupsModel = new GroupsModel(isSocialAccount, groupId, groupImage, groupName, groupOwnerName, groupDescription,
                                         groupOwnerId, groupColor, participantsCount, ownerImage, isMember);
                                 groupsModels.add(groupsModel);
                                 groupsAdapter.notifyDataSetChanged();
@@ -370,8 +372,9 @@ public class Groups extends AppCompatActivity implements SwipeRefreshLayout.OnRe
                                 String participantsCount = eachObject.optString("participants");
                                 String ownerImage = eachObject.optString("owner_image");
                                 boolean isMember = eachObject.optBoolean("isMember");
+                                boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
 
-                                groupsModel = new GroupsModel(groupId, groupImage, groupName, groupOwnerName, groupDescription,
+                                groupsModel = new GroupsModel(isSocialAccount, groupId, groupImage, groupName, groupOwnerName, groupDescription,
                                         groupOwnerId, groupColor, participantsCount, ownerImage, isMember);
                                 groupsModels.add(groupsModel);
                                 groupsAdapter.notifyDataSetChanged();

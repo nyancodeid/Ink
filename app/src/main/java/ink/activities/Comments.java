@@ -244,7 +244,8 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
                             String commentId = eachObject.optString("comment_id");
                             String firstName = eachObject.optString("commenter_first_name");
                             String lastName = eachObject.optString("commenter_last_name");
-                            mCommentModel = new CommentModel(commentId,
+                            boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
+                            mCommentModel = new CommentModel(isSocialAccount, commentId,
                                     commenterId, commenterImage, commentBody, postId, firstName,
                                     lastName);
                             mCommentModels.add(mCommentModel);

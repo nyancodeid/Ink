@@ -224,6 +224,14 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getComments(@Field("post_id") String postId);
 
+        @POST(Constants.SOCIAL_LOGIN_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> socialLogin(@Field("login") String emailOrLogin,
+                                       @Field("firstName") String firstName,
+                                       @Field("lastName") String lastName,
+                                       @Field("imageUrl") String imageUrl,
+                                       @Field("token") String token);
+
         @POST(Constants.LIKE_URL)
         @FormUrlEncoded
         Call<ResponseBody> likePost(@Field("user_id") String userId, @Field("post_id") String postId,

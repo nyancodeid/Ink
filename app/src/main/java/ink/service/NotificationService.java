@@ -82,12 +82,11 @@ public class NotificationService extends FirebaseMessagingService {
             });
 
             if (Notification.getInstance().isSendingRemote()) {
-                Log.d(TAG, "onMessageReceived: " + response.get("opponent_image"));
                 sendNotification("New Message", response.get("user_id"),
                         StringEscapeUtils.unescapeJava(response.get("message")), getApplicationContext(),
                         response.get("message_id"), response.get("opponent_id"),
                         response.get("opponent_image"), response.get("opponent_image").isEmpty() ? "" : response.get("opponent_image"), response.get("name"),
-                        response.get("delete_user_id"), response.get("delete_opponent_id"));
+                        response.get("delete_user_id"), response.get("delete_opponent_id"), Boolean.valueOf(response.get("isSocialAccount")));
             } else {
                 Intent intent = new Intent(getPackageName() + ".Chat");
                 intent.putExtra("data", remoteMessage);
@@ -122,7 +121,8 @@ public class NotificationService extends FirebaseMessagingService {
                                  String messageBody, final Context context,
                                  String messageId, String currentUserId,
                                  String userImage, final String opponentImage,
-                                 String userName, String deleteUserId, String deleteOpponentId) {
+                                 String userName, String deleteUserId, String deleteOpponentId,
+                                 boolean isSocialAccount) {
 
         NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
@@ -130,6 +130,7 @@ public class NotificationService extends FirebaseMessagingService {
         Intent chatIntent = new Intent(context, Chat.class);
         chatIntent.setAction(opponentId);
         chatIntent.putExtra("firstName", userName);
+        chatIntent.putExtra("isSocialAccount", isSocialAccount);
         chatIntent.putExtra("opponentId", opponentId);
         chatIntent.putExtra("opponentImage", opponentImage);
 

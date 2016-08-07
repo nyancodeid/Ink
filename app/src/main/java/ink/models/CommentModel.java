@@ -11,20 +11,30 @@ public class CommentModel {
     private String postId;
     private String firstName;
     private String lastName;
+    private boolean isSocialAccount;
 
 
-    public CommentModel(String commentId, String commenterId,
+    public CommentModel(boolean isSocialAccount,String commentId, String commenterId,
                         String commenterImage,
                         String commentBody,
                         String postId, String firstName,
                         String lastName) {
         this.commentId = commentId;
+        this.isSocialAccount = isSocialAccount;
         this.firstName = firstName;
         this.lastName = lastName;
         this.commenterId = commenterId;
         this.commenterImage = commenterImage;
         this.commentBody = commentBody;
         this.postId = postId;
+    }
+
+    public boolean isSocialAccount() {
+        return isSocialAccount;
+    }
+
+    public void setSocialAccount(boolean socialAccount) {
+        isSocialAccount = socialAccount;
     }
 
     public String getCommentId() {

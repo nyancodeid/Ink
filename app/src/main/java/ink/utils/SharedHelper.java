@@ -83,6 +83,16 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+
+    public void putIsSocialAccount(boolean value) {
+        mEditor.putBoolean("isSocialAccount", value);
+        mEditor.commit();
+    }
+
+    public boolean isSocialAccount() {
+        return mSharedPreferences.getBoolean("isSocialAccount", false);
+    }
+
     public boolean isTokenRefreshed() {
         return mSharedPreferences.getBoolean("refreshed", true);
     }

@@ -17,7 +17,6 @@ import java.util.List;
 import ink.models.UserMessagesModel;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
-import ink.utils.Time;
 
 /**
  * Created by USER on 2016-07-02.
@@ -62,6 +61,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         holder.messageDate.setText(userMessagesModel.getDate());
         if (!userMessagesModel.getImageName().isEmpty()) {
             String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + userMessagesModel.getImageLink();
+            if (userMessagesModel.isSocialAccount()) {
+                url = userMessagesModel.getImageLink();
+            }
             Picasso.with(mContext).load(url)
                     .error(R.drawable.image_laoding_error)
                     .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop()

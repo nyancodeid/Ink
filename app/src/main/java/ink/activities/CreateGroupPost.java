@@ -3,7 +3,6 @@ package ink.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -34,7 +33,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CreateGroupPost extends AppCompatActivity {
+public class CreateGroupPost extends BaseActivity {
 
     @Bind(R.id.currentUserName)
     TextView currentUserName;
@@ -63,9 +62,15 @@ public class CreateGroupPost extends AppCompatActivity {
 
         sharedHelper = new SharedHelper(this);
         if (!sharedHelper.getImageLink().isEmpty()) {
-            Picasso.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + sharedHelper.getImageLink()).error(R.drawable.image_laoding_error)
-                    .placeholder(R.drawable.no_image_yet_state).
-                    transform(new CircleTransform()).fit().centerCrop().into(currentUserImage);
+            if (isSocialAccount()) {
+                Picasso.with(this).load(sharedHelper.getImageLink()).error(R.drawable.image_laoding_error)
+                        .placeholder(R.drawable.no_image_yet_state).
+                        transform(new CircleTransform()).fit().centerCrop().into(currentUserImage);
+            } else {
+                Picasso.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + sharedHelper.getImageLink()).error(R.drawable.image_laoding_error)
+                        .placeholder(R.drawable.no_image_yet_state).
+                        transform(new CircleTransform()).fit().centerCrop().into(currentUserImage);
+            }
         } else {
             Picasso.with(this).load(R.drawable.no_image).
                     transform(new CircleTransform()).fit().centerCrop().into(currentUserImage);

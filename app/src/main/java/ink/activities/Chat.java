@@ -407,14 +407,21 @@ public class Chat extends AppCompatActivity {
             String firstName = bundle.getString("firstName");
             mOpponentId = bundle.getString("opponentId");
             String opponentImage = bundle.getString("opponentImage");
+            boolean isSocialAccount = bundle.getBoolean("isSocialAccount");
             Log.d("Fasfsafas", "onResume: " + opponentImage);
             if (opponentImage != null && !opponentImage.isEmpty()) {
                 if (!isImageLoaded) {
                     isImageLoaded = true;
-                    Picasso.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                            opponentImage).error(R.drawable.image_laoding_error)
-                            .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
-                            .centerCrop().into(this.opponentImage);
+                    if (isSocialAccount) {
+                        Picasso.with(this).load(opponentImage).error(R.drawable.image_laoding_error)
+                                .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
+                                .centerCrop().into(this.opponentImage);
+                    } else {
+                        Picasso.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                                opponentImage).error(R.drawable.image_laoding_error)
+                                .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
+                                .centerCrop().into(this.opponentImage);
+                    }
                 }
             } else {
                 Picasso.with(this).load(R.drawable.no_image).transform(new CircleTransform()).fit()

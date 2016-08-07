@@ -11,11 +11,12 @@ public class RequestsModel {
     private String requestedGroupId;
     private String requestId;
     private String groupName;
+    private boolean isSocialAccount;
 
 
-    public RequestsModel(String groupOwnerId, String requesterId,
+    public RequestsModel(boolean isSocialAccount, String groupOwnerId, String requesterId,
                          String requesterName, String requesterImage,
-                         String requestedGroupId, String requestId,String groupName) {
+                         String requestedGroupId, String requestId, String groupName) {
         this.groupOwnerId = groupOwnerId;
         this.groupName = groupName;
         this.requesterId = requesterId;
@@ -23,6 +24,14 @@ public class RequestsModel {
         this.requesterImage = requesterImage;
         this.requestedGroupId = requestedGroupId;
         this.requestId = requestId;
+    }
+
+    public boolean isSocialAccount() {
+        return isSocialAccount;
+    }
+
+    public void setSocialAccount(boolean socialAccount) {
+        isSocialAccount = socialAccount;
     }
 
     public String getGroupOwnerId() {

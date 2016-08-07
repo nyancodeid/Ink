@@ -48,6 +48,7 @@ public class OpponentProfile extends AppCompatActivity {
     private ImageView mProfileImage;
     private CardView imageCard;
     private String mFacebookLink;
+    private boolean isSocialAccount;
 
     //Butter knife binders.
     @Bind(R.id.addressTV)
@@ -132,6 +133,7 @@ public class OpponentProfile extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), Chat.class);
         intent.putExtra("firstName", mFirstName);
         intent.putExtra("opponentId", mFriendId);
+        intent.putExtra("isSocialAccount",isSocialAccount);
         intent.putExtra("opponentImage", mOpponentImage);
         startActivity(intent);
         mProfileFab.close(true);
@@ -168,10 +170,16 @@ public class OpponentProfile extends AppCompatActivity {
                             String facebookName = jsonObject.optString("facebook_name");
                             boolean shouldHighlightFacebook = true;
                             boolean shouldHighlightAddress = true;
+                            isSocialAccount = jsonObject.optBoolean("isSocialAccount");
                             if (mOpponentImage != null && !mOpponentImage.isEmpty()) {
-                                Picasso.with(getApplicationContext()).load(Constants.MAIN_URL +
-                                        Constants.USER_IMAGES_FOLDER + mOpponentImage).fit().centerInside().into(mProfileImage, getPicassoCallback(Constants.MAIN_URL +
-                                        Constants.USER_IMAGES_FOLDER + mOpponentImage));
+                                if (isSocialAccount) {
+                                    Picasso.with(getApplicationContext()).load(mOpponentImage).fit().centerInside().into(mProfileImage, getPicassoCallback(Constants.MAIN_URL +
+                                            Constants.USER_IMAGES_FOLDER + mOpponentImage));
+                                } else {
+                                    Picasso.with(getApplicationContext()).load(Constants.MAIN_URL +
+                                            Constants.USER_IMAGES_FOLDER + mOpponentImage).fit().centerInside().into(mProfileImage, getPicassoCallback(Constants.MAIN_URL +
+                                            Constants.USER_IMAGES_FOLDER + mOpponentImage));
+                                }
                             } else {
                                 mProfileImage.setBackgroundResource(R.drawable.no_image);
                                 mOpponentImageLoading.setVisibility(View.GONE);

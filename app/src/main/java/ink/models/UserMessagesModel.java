@@ -13,10 +13,12 @@ public class UserMessagesModel {
     private String imageName;
     private String date;
     private String imageLink;
+    private boolean isSocialAccount;
 
 
-    public UserMessagesModel(String userId, String opponentId, String messageId, String message, String firstName, String lastName, String imageName, String date, String imageLink) {
+    public UserMessagesModel(boolean isSocialAccount, String userId, String opponentId, String messageId, String message, String firstName, String lastName, String imageName, String date, String imageLink) {
         this.userId = userId;
+        this.isSocialAccount = isSocialAccount;
         this.imageLink = imageLink;
         this.opponentId = opponentId;
         this.messageId = messageId;
@@ -27,6 +29,14 @@ public class UserMessagesModel {
         this.date = date;
     }
 
+
+    public boolean isSocialAccount() {
+        return isSocialAccount;
+    }
+
+    public void setSocialAccount(boolean socialAccount) {
+        isSocialAccount = socialAccount;
+    }
 
     public String getUserId() {
         return userId;

@@ -343,6 +343,11 @@
     <string name="joinMillion">Join our huge community and start the new way of communication!</string>
     <string name="or">OR</string>
     <string name="chooseAnotherOption">Choose another options</string>
+    <string name="signInWithGoogle">Sign in with google account</string>
+    <string name="chooseYourOption">Choose sign in option</string>
+    <string name="logging">Logging...</string>
+    <string name="loggingPleasWait">Logging you in,please wait...</string>
+    <string name="failedLogin">Failed to login,please try again...</string>
     <string-array name="issueTypes">
         <item name="generalIssue">General</item>
         <item name="bugIssue">Bug</item>

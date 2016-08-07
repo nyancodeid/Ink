@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.ink.R;
 import com.squareup.picasso.Picasso;
@@ -113,6 +114,7 @@ public class HomeActivity extends BaseActivity
         }
 
         FileUtils.deleteDirectoryTree(getApplicationContext().getCacheDir());
+
 
         checkIsWarned();
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -372,13 +374,9 @@ public class HomeActivity extends BaseActivity
             case R.id.logout:
                 shouldOpenActivity = false;
                 FileUtils.clearApplicationData(getApplicationContext());
-                boolean introValue = mSharedHelper.shouldShowIntro();
                 boolean editorHintValue = mSharedHelper.isEditorHintShown();
                 mSharedHelper.clean();
-
-                if (!introValue) {
-                    mSharedHelper.putShouldShowIntro(false);
-                }
+                mSharedHelper.putShouldShowIntro(false);
 
                 if (editorHintValue) {
                     mSharedHelper.putEditorHintShow(true);
@@ -386,7 +384,22 @@ public class HomeActivity extends BaseActivity
                 mSharedHelper.putWarned(true);
                 RealmHelper.getInstance().clearDatabase(getApplicationContext());
                 Toast.makeText(HomeActivity.this, getString(R.string.loggedOutText), Toast.LENGTH_SHORT).show();
-                System.exit(1);
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                        try {
+                            FirebaseInstanceId.getInstance().deleteInstanceId();
+                            startActivity(new Intent(getApplicationContext(), Login.class));
+                            finish();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            startActivity(new Intent(getApplicationContext(), Login.class));
+                            finish();
+                        }
+                    }
+                });
+                thread.start();
                 break;
         }
 
@@ -443,10 +456,16 @@ public class HomeActivity extends BaseActivity
         mUserNameTV.setText(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
         if (mSharedHelper.hasImage()) {
             if (!mSharedHelper.getImageLink().isEmpty()) {
-                Picasso.with(getApplicationContext()).load(Constants.MAIN_URL +
-                        Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink()).error(R.drawable.image_laoding_error)
-                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
-                        .centerCrop().into(mProfileImage);
+                if (isSocialAccount()) {
+                    Picasso.with(getApplicationContext()).load(mSharedHelper.getImageLink()).error(R.drawable.image_laoding_error)
+                            .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
+                            .centerCrop().into(mProfileImage);
+                } else {
+                    Picasso.with(getApplicationContext()).load(Constants.MAIN_URL +
+                            Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink()).error(R.drawable.image_laoding_error)
+                            .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
+                            .centerCrop().into(mProfileImage);
+                }
             }
         } else {
             Picasso.with(getApplicationContext()).load(R.drawable.no_image).transform(new CircleTransform()).into(mProfileImage);

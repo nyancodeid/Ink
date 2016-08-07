@@ -80,10 +80,16 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
             holder.groupImage.setBackgroundResource(R.drawable.no_group_image);
         }
         if (groupsModel.getOwnerImage() != null && !groupsModel.getOwnerImage().isEmpty()) {
-            Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                    groupsModel.getOwnerImage()).error(R.drawable.image_laoding_error)
-                    .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
-                    .centerCrop().into(holder.ownerImage);
+            if (groupsModel.isSocialAccount()) {
+                Picasso.with(mContext).load(groupsModel.getOwnerImage()).error(R.drawable.image_laoding_error)
+                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
+                        .centerCrop().into(holder.ownerImage);
+            } else {
+                Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                        groupsModel.getOwnerImage()).error(R.drawable.image_laoding_error)
+                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
+                        .centerCrop().into(holder.ownerImage);
+            }
         } else {
             Picasso.with(mContext).load(R.drawable.no_image).transform(new CircleTransform()).fit()
                     .centerCrop().into(holder.ownerImage);

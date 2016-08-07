@@ -14,14 +14,16 @@ public class GroupsModel {
     private String participantsCount;
     private String ownerImage;
     private boolean isMember;
+    boolean isSocialAccount;
 
-    public GroupsModel(String groupId,
+    public GroupsModel(boolean isSocialAccount,String groupId,
                        String groupImage,
                        String groupName, String groupOwnerName,
                        String groupDescription, String groupOwnerId,
                        String groupColor, String participantsCount,
                        String ownerImage, boolean isMember) {
         this.groupId = groupId;
+        this.isSocialAccount = isSocialAccount;
         this.isMember = isMember;
         this.ownerImage = ownerImage;
         this.participantsCount = participantsCount;
@@ -112,5 +114,13 @@ public class GroupsModel {
 
     public void setMember(boolean member) {
         isMember = member;
+    }
+
+    public boolean isSocialAccount() {
+        return isSocialAccount;
+    }
+
+    public void setSocialAccount(boolean socialAccount) {
+        isSocialAccount = socialAccount;
     }
 }

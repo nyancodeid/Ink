@@ -75,7 +75,7 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <Button
-                    android:id="@+id/email_sign_in_button"
+                    android:id="@+id/signInButton"
                     style="?attr/selectableItemBackground"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/circle_transparent_background"
+                android:background="@drawable/button_border"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
@@ -120,7 +120,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:fontFamily="@string/appFont"
-                    android:text="@string/chooseAnotherOption" />
+                    android:text="@string/chooseAnotherOption"
+                    android:textColor="#ffffff" />
             </RelativeLayout>
 
             <ImageView
