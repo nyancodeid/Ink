@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -31,6 +32,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.utils.Constants;
+import ink.utils.ScrollAwareFABBehavior;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,7 +42,7 @@ import retrofit2.Response;
  * Created by USER on 2016-06-22.
  */
 public class OpponentProfile extends BaseActivity {
-    private String mFriendId;
+    private String mOpponentId;
     private String mFirstName;
     private String mLastName;
     private Target mTarget;
@@ -95,9 +97,18 @@ public class OpponentProfile extends BaseActivity {
         ViewGroup.LayoutParams mCardNewLayoutParams = imageCard.getLayoutParams();
         ActionBar actionBar = getSupportActionBar();
         if (extras != null) {
-            mFriendId = extras.getString("id");
+            mOpponentId = extras.getString("id");
             mFirstName = extras.getString("firstName");
             mLastName = extras.getString("lastName");
+            if (extras.containsKey("disableButton")) {
+                if (extras.getBoolean("disableButton")) {
+                    mProfileFab.setVisibility(View.GONE);
+                } else {
+
+                }
+            } else {
+                enableButton();
+            }
             mUsername.setText(mFirstName + " " + mLastName);
             if (actionBar != null) {
                 actionBar.setDisplayHomeAsUpEnabled(true);
@@ -107,11 +118,17 @@ public class OpponentProfile extends BaseActivity {
         getSingleUser();
     }
 
+    private void enableButton() {
+        mProfileFab.setVisibility(View.VISIBLE);
+        CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) mProfileFab.getLayoutParams();
+        p.setBehavior(new ScrollAwareFABBehavior(this));
+        mProfileFab.setLayoutParams(p);
+    }
+
 
     @OnClick(R.id.facebookWrapper)
     public void facebook() {
         if (!mFacebook.getText().toString().equals(getString(R.string.loadingText)) && !mFacebook.getText().toString().equals(getString(R.string.noFacebook))) {
-
             Snackbar.make(mFacebookWrapper, getString(R.string.openingFacebook), Snackbar.LENGTH_SHORT);
             String addressToPass = mFacebookLink;
             openFacebookPage(addressToPass);
@@ -131,8 +148,9 @@ public class OpponentProfile extends BaseActivity {
     public void WriteMessage() {
         Intent intent = new Intent(getApplicationContext(), Chat.class);
         intent.putExtra("firstName", mFirstName);
-        intent.putExtra("opponentId", mFriendId);
-        intent.putExtra("isSocialAccount",isSocialAccount);
+        intent.putExtra("lastName", mLastName);
+        intent.putExtra("opponentId", mOpponentId);
+        intent.putExtra("isSocialAccount", isSocialAccount);
         intent.putExtra("opponentImage", mOpponentImage);
         startActivity(intent);
         mProfileFab.close(true);
@@ -144,7 +162,7 @@ public class OpponentProfile extends BaseActivity {
     }
 
     private void getSingleUser() {
-        Call<ResponseBody> call = ink.utils.Retrofit.getInstance().getInkService().getSingleUserDetails(mFriendId);
+        Call<ResponseBody> call = ink.utils.Retrofit.getInstance().getInkService().getSingleUserDetails(mOpponentId);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

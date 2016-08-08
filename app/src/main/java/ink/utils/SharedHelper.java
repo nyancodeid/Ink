@@ -83,6 +83,14 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public void putIsRegistered(boolean value) {
+        mEditor.putBoolean("isRegistered", value);
+        mEditor.commit();
+    }
+
+    public boolean isRegistered() {
+        return mSharedPreferences.getBoolean("isRegistered", false);
+    }
 
     public void putIsSocialAccount(boolean value) {
         mEditor.putBoolean("isSocialAccount", value);

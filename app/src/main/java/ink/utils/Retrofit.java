@@ -234,7 +234,10 @@ public class Retrofit {
                                        @Field("firstName") String firstName,
                                        @Field("lastName") String lastName,
                                        @Field("imageUrl") String imageUrl,
-                                       @Field("token") String token);
+                                       @Field("token") String token,
+                                       @Field("type") String socialLoginType,
+                                       @Field("userLink") String userLink,
+                                       @Field("facebookName") String facebookName);
 
         @POST(Constants.LIKE_URL)
         @FormUrlEncoded

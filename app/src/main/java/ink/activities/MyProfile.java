@@ -270,7 +270,6 @@ public class MyProfile extends BaseActivity {
                 } else {
                     isImageChosen = false;
                     mImageLoading.setVisibility(View.GONE);
-                    Snackbar.make(mGender, getString(R.string.couldNotOpenImage), Snackbar.LENGTH_LONG).show();
                 }
             }
         }
@@ -706,9 +705,9 @@ public class MyProfile extends BaseActivity {
                                             Toast.makeText(MyProfile.this, getString(R.string.accountdeleted), Toast.LENGTH_SHORT).show();
                                         }
                                     });
-                                    fireAccountDeleteListener();
-                                    startActivity(new Intent(getApplicationContext(), Login.class));
-                                    finish();
+                                    Intent intent = new Intent(getApplicationContext(), Login.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                     progressDialog.dismiss();
@@ -719,7 +718,9 @@ public class MyProfile extends BaseActivity {
                                         }
                                     });
                                     fireAccountDeleteListener();
-                                    startActivity(new Intent(getApplicationContext(), Login.class));
+                                    Intent intent = new Intent(getApplicationContext(), Login.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    startActivity(intent);
                                     finish();
                                 }
                             }
@@ -899,7 +900,6 @@ public class MyProfile extends BaseActivity {
                 }
                 try {
                     String body = response.body().string();
-                    Log.d("Fasfasfas", "onResponse: " + body);
                     try {
                         JSONObject jsonObject = new JSONObject(body);
                         boolean success = jsonObject.optBoolean("success");
@@ -908,7 +908,6 @@ public class MyProfile extends BaseActivity {
                             attachValues(false);
                             hideImageLoading();
                             hideSnack();
-                            Log.d("fasfsafasfas", "onResponse: " + jsonObject);
                             String imageId = jsonObject.optString("image_id");
                             if (imageId != null && !imageId.isEmpty()) {
                                 String imageLink = mSharedHelper.getUserId() + ".png";
@@ -916,6 +915,7 @@ public class MyProfile extends BaseActivity {
                                 mSharedHelper.putImageLink(imageLink);
                                 PicassoTools.clearCache(Picasso.with(getApplicationContext()));
                                 FileUtils.deleteDirectoryTree(getApplicationContext().getCacheDir());
+                                mSharedHelper.putIsSocialAccount(false);
                                 if (isSocialAccount()) {
                                     Picasso.with(getApplicationContext()).invalidate(mSharedHelper.getImageLink());
                                 } else {
@@ -924,7 +924,6 @@ public class MyProfile extends BaseActivity {
                                 }
 
                             }
-
                         } else {
                             hideImageLoading();
                             hideSnack();

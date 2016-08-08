@@ -22,6 +22,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -34,8 +36,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Map;
 
-import ink.utils.GoogleSignIn;
+import ink.callbacks.GeneralCallback;
+import ink.utils.Constants;
+import ink.utils.SocialSignIn;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -59,11 +64,14 @@ public class Login extends BaseActivity implements View.OnClickListener {
     private SharedHelper mSharedHelper;
     private Button mLoginButton;
     private ProgressDialog progressDialog;
+    private CallbackManager mCallbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(this);
         setContentView(R.layout.activity_login);
+        mCallbackManager = CallbackManager.Factory.create();
         // Set up the login form.
         mSharedHelper = new SharedHelper(this);
         FirebaseInstanceId.getInstance().getToken();
@@ -261,6 +269,8 @@ public class Login extends BaseActivity implements View.OnClickListener {
             }
         });
         RelativeLayout googleSignInWrapper = (RelativeLayout) optionsView.findViewById(R.id.googleSignInWrapper);
+        RelativeLayout facebookSignInWrapper = (RelativeLayout) optionsView.findViewById(R.id.facebookSignInWrapper);
+        RelativeLayout inkSignInWrapper = (RelativeLayout) optionsView.findViewById(R.id.inkSignInWrapper);
         alertDialog = builder.show();
         final AlertDialog finalAlertDialog = alertDialog;
         googleSignInWrapper.setOnClickListener(new OnClickListener() {
@@ -269,10 +279,45 @@ public class Login extends BaseActivity implements View.OnClickListener {
                 if (finalAlertDialog != null) {
                     finalAlertDialog.dismiss();
                 }
-                GoogleSignIn.get().signIn(Login.this, GOOGLE_SIGN_IN_REQUEST_CODE);
+                SocialSignIn.get().googleSignIn(Login.this, GOOGLE_SIGN_IN_REQUEST_CODE);
             }
         });
+        facebookSignInWrapper.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (finalAlertDialog != null) {
+                    finalAlertDialog.dismiss();
+                }
+                SocialSignIn.get().facebookLogin(Login.this, mCallbackManager, new GeneralCallback<Map<String, String>>() {
+                    @Override
+                    public void onSuccess(Map<String, String> resultMap) {
+                        progressDialog.show();
+                        String name = resultMap.get("name");
+                        String link = resultMap.get("link");
+                        String email = resultMap.get("email");
+                        String imageUrl = resultMap.get("imageUrl");
+                        String[] nameParts = name.split("\\s");
+                        String firstName = nameParts[0];
+                        String lastName = nameParts[1];
+                        loginUser(email, firstName, lastName, imageUrl, link, name, Constants.SOCIAL_TYPE_FACEBOOK);
+                    }
 
+                    @Override
+                    public void onFailure(Map<String, String> stringStringMap) {
+
+                    }
+                });
+            }
+        });
+        inkSignInWrapper.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (finalAlertDialog != null) {
+                    finalAlertDialog.dismiss();
+                }
+                startActivity(new Intent(getApplicationContext(), Registration.class));
+            }
+        });
     }
 
     @Override
@@ -337,24 +382,36 @@ public class Login extends BaseActivity implements View.OnClickListener {
                 if (accountImageUri == null) {
                     accountImageUri = Uri.parse("http://104.196.103.60/Ink/UserImages/no_image.png");
                 }
-                loginUser(email, firstName, lastName, accountImageUri.toString());
+                loginUser(email, firstName, lastName, accountImageUri.toString(), "", "", Constants.SOCIAL_TYPE_GOOGLE);
             }
         }
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void loginUser(final String login, final String firstName, final String lastName, final String imageUrl) {
+    private void loginUser(final String login,
+                           final String firstName,
+                           final String lastName,
+                           final String imageUrl,
+                           final String userLink,
+                           final String facebookName, final String loginType) {
         Call<ResponseBody> socialLoginCall = Retrofit.getInstance().getInkService().socialLogin(
-                login, firstName, lastName, imageUrl, mSharedHelper.getToken());
+                login,
+                firstName,
+                lastName,
+                imageUrl,
+                mSharedHelper.getToken(),
+                loginType,
+                userLink, facebookName);
 
         socialLoginCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    loginUser(login, firstName, lastName, imageUrl);
+                    loginUser(login, firstName, lastName, imageUrl, userLink, facebookName, loginType);
                     return;
                 }
                 if (response.body() == null) {
-                    loginUser(login, firstName, lastName, imageUrl);
+                    loginUser(login, firstName, lastName, imageUrl, userLink, facebookName, loginType);
                     return;
                 }
                 try {
@@ -363,12 +420,18 @@ public class Login extends BaseActivity implements View.OnClickListener {
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
                         String userId = jsonObject.optString("userId");
-                        saveSocialLoginInfo(firstName, lastName, userId, imageUrl);
+                        boolean isSocial = true;
+                        boolean isRegistered = jsonObject.optBoolean("isRegistered");
+                        if (isRegistered) {
+                            isSocial = jsonObject.optBoolean("isSocialAccount");
+                            saveSocialLoginInfo(jsonObject.optString("firstName"), jsonObject.optString("lastName"), userId, jsonObject.optString("imageUrl"), isRegistered, isSocial);
+                        } else {
+                            saveSocialLoginInfo(firstName, lastName, userId, imageUrl, isRegistered, isSocial);
+                        }
                     } else {
                         progressDialog.dismiss();
                         Toast.makeText(Login.this, getString(R.string.failedLogin), Toast.LENGTH_SHORT).show();
                     }
-                    Log.d("fasfasfasfa", "onResponse: " + responseBody);
                 } catch (IOException e) {
                     e.printStackTrace();
                     progressDialog.dismiss();
@@ -387,16 +450,19 @@ public class Login extends BaseActivity implements View.OnClickListener {
         });
     }
 
-    private void saveSocialLoginInfo(String firstName, String lastName, String userId, String imageUrl) {
+    private void saveSocialLoginInfo(String firstName,
+                                     String lastName,
+                                     String userId,
+                                     String imageUrl,
+                                     boolean isRegistered,
+                                     boolean isSocial) {
         mSharedHelper.putFirstName(firstName);
         mSharedHelper.putLastName(lastName);
         mSharedHelper.putUserId(userId);
         mSharedHelper.putShouldShowIntro(false);
+        mSharedHelper.putIsRegistered(isRegistered);
+        mSharedHelper.putIsSocialAccount(isSocial);
         mSharedHelper.putImageLink(imageUrl);
-        mSharedHelper.putIsSocialAccount(true);
-        if (imageUrl != null && !imageUrl.isEmpty()) {
-            mSharedHelper.putImageLink(imageUrl);
-        }
         progressDialog.dismiss();
         startActivity(new Intent(getApplicationContext(), HomeActivity.class));
         finish();

@@ -18,7 +18,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -102,6 +101,8 @@ public class Chat extends BaseActivity {
     private String mDeleteOpponentId;
     private Gson gson;
     private Animation fadeAnimation;
+    private String firstName;
+    private String lastName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -240,6 +241,17 @@ public class Chat extends BaseActivity {
         });
 
 
+    }
+
+
+    @OnClick(R.id.opponentImage)
+    public void opponentImage() {
+        Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
+        intent.putExtra("id", mOpponentId);
+        intent.putExtra("firstName", firstName);
+        intent.putExtra("lastName", lastName);
+        intent.putExtra("disableButton",true);
+        startActivity(intent);
     }
 
     private void attemptToQue(String message, int itemLocation, String deleteOpponentId,
@@ -403,11 +415,12 @@ public class Chat extends BaseActivity {
         ActionBar actionBar = getSupportActionBar();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            String firstName = bundle.getString("firstName");
+            firstName = bundle.getString("firstName");
+            lastName = bundle.getString("lastName");
             mOpponentId = bundle.getString("opponentId");
             String opponentImage = bundle.getString("opponentImage");
             boolean isSocialAccount = bundle.getBoolean("isSocialAccount");
-            Log.d("Fasfsafas", "onResume: " + opponentImage);
+
             if (opponentImage != null && !opponentImage.isEmpty()) {
                 if (!isImageLoaded) {
                     isImageLoaded = true;

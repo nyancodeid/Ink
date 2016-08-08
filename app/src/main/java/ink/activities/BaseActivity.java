@@ -31,6 +31,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    protected boolean isSocialAccountRegistered() {
+        return sharedHelper.isRegistered();
+    }
+
     protected boolean isSocialAccount() {
         return sharedHelper.isSocialAccount();
     }

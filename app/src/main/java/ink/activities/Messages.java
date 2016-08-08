@@ -103,6 +103,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 }
                 Intent intent = new Intent(getApplicationContext(), Chat.class);
                 intent.putExtra("firstName", userMessagesModels.get(position).getFirstName());
+                intent.putExtra("lastName", userMessagesModels.get(position).getLastName());
                 intent.putExtra("opponentId", finalId);
                 intent.putExtra("isSocialAccount", userMessagesModels.get(position).isSocialAccount());
                 intent.putExtra("opponentImage", userMessagesModels.get(position).getImageName());

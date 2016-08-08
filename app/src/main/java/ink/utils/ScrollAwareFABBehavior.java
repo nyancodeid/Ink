@@ -15,6 +15,10 @@ public class ScrollAwareFABBehavior extends FloatingActionMenu.Behavior {
         // This is mandatory if we're assigning the behavior straight from XML
         super();
     }
+    public ScrollAwareFABBehavior(Context context) {
+        // This is mandatory if we're assigning the behavior straight from XML
+        super();
+    }
 
     @Override
     public boolean onStartNestedScroll(final CoordinatorLayout coordinatorLayout, final FloatingActionMenu child, final View directTargetChild, final View target, final int nestedScrollAxes) {
