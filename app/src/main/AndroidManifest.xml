@@ -24,6 +24,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
+        android:resizeableActivity="true"
         android:name="ink.StartupApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -76,16 +77,6 @@
         <service android:name="ink.service.RemoveChatRouletteService" />
         <service android:name="ink.service.SendTokenService" />
         <service android:name="ink.service.SendReplyService" />
-
-        <receiver
-            android:name="ink.broadcasts.CallReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
-                <category android:name="com.ink" />
-            </intent-filter>
-        </receiver>
 
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
 
@@ -160,6 +151,9 @@
         <activity android:name="ink.activities.ImageEditor" />
         <activity android:name="ink.activities.SendFeedback" />
         <activity android:name="ink.activities.ContactSupport"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="80f8d0846bb012e567f21fdf7ebbc38efe19d99e" />
     </application>
 
 </manifest>
