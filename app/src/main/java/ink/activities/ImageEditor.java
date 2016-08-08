@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -26,7 +25,7 @@ import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.utils.SharedHelper;
 
-public class ImageEditor extends AppCompatActivity {
+public class ImageEditor extends BaseActivity {
 
     private static final int RESULT_IMAGE_DONE = 1;
     private static final int RESULT_IMAGE_PICKED = 2;

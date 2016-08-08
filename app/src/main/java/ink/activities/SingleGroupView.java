@@ -14,7 +14,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -56,7 +55,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SingleGroupView extends AppCompatActivity {
+public class SingleGroupView extends BaseActivity {
 
     @Bind(R.id.groupCollapsingToolbar)
     CollapsingToolbarLayout mCollapsingToolbar;

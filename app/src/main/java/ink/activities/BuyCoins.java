@@ -1,7 +1,6 @@
 package ink.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.ink.R;
@@ -18,7 +17,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BuyCoins extends AppCompatActivity {
+public class BuyCoins extends BaseActivity {
 
     private SharedHelper sharedHelper;
 

@@ -9,7 +9,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,7 +46,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Messages extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private SharedHelper mSharedHelper;
 

@@ -15,7 +15,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -52,7 +51,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MakePost extends AppCompatActivity {
+public class MakePost extends BaseActivity {
     private static final int PICKFILE_REQUEST_CODE = 5584;
     private static final int STORAGE_PERMISSION_REQUEST = 45485;
     private static final long MAX_FILE_SIZE = 20971520;

@@ -19,7 +19,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -66,7 +65,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
-public class Groups extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private SharedHelper mSharedHelper;
     @Bind(R.id.groupsRecycler)

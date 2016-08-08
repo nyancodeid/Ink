@@ -7,7 +7,6 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -34,7 +33,7 @@ import ink.utils.PermissionsChecker;
 import ink.utils.UserDetails;
 import ink.utils.Validator;
 
-public class SendFeedback extends AppCompatActivity {
+public class SendFeedback extends BaseActivity {
     private static final int ACCOUNTS_REQUEST_CODE = 1;
     private String mSenderEmail = "Anonymous";
     public String phoneManufacture = "No phone manufacture";

@@ -3,7 +3,6 @@ package ink.activities;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
@@ -18,7 +17,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.service.SendReplyService;
 
-public class ReplyView extends AppCompatActivity {
+public class ReplyView extends BaseActivity {
 
     @Bind(R.id.messageReceived)
     TextView mMessageReceived;

@@ -2,11 +2,10 @@ package ink.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
 import com.ink.R;
 
-public class SplashScreen extends AppCompatActivity {
+public class SplashScreen extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

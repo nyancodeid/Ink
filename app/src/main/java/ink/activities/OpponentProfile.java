@@ -9,7 +9,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,7 +39,7 @@ import retrofit2.Response;
 /**
  * Created by USER on 2016-06-22.
  */
-public class OpponentProfile extends AppCompatActivity {
+public class OpponentProfile extends BaseActivity {
     private String mFriendId;
     private String mFirstName;
     private String mLastName;

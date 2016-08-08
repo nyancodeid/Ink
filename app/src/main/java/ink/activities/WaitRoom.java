@@ -12,7 +12,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -55,7 +54,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class WaitRoom extends AppCompatActivity {
+public class WaitRoom extends BaseActivity {
 
     private static final String TAG = WaitRoom.class.getSimpleName();
     @Bind(R.id.chatRouletteRecycler)

@@ -250,7 +250,7 @@ public class HomeActivity extends BaseActivity
                     } else {
                         getCoins();
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -510,19 +510,23 @@ public class HomeActivity extends BaseActivity
                 }
                 try {
                     String responseBody = response.body().string();
-                    PingResponse pingResponse = gson.fromJson(responseBody, PingResponse.class);
-                    if (pingResponse.success) {
-                        if (timer == null) {
-                            timer = new Timer();
-                        }
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                pingTime();
+                    try {
+                        PingResponse pingResponse = gson.fromJson(responseBody, PingResponse.class);
+                        if (pingResponse.success) {
+                            if (timer == null) {
+                                timer = new Timer();
                             }
-                        }, PING_TIME);
-                    } else {
-                        pingTime();
+                            timer.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    pingTime();
+                                }
+                            }, PING_TIME);
+                        } else {
+                            pingTime();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

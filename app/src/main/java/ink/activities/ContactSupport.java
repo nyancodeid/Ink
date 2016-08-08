@@ -8,7 +8,6 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -36,7 +35,7 @@ import ink.utils.PermissionsChecker;
 import ink.utils.UserDetails;
 import ink.utils.Validator;
 
-public class ContactSupport extends AppCompatActivity {
+public class ContactSupport extends BaseActivity {
 
     @Bind(R.id.issueTypeLayout)
     RelativeLayout issueTypeLayout;

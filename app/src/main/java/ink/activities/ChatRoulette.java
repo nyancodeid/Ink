@@ -3,7 +3,6 @@ package ink.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Button;
 
@@ -16,7 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.utils.SharedHelper;
 
-public class ChatRoulette extends AppCompatActivity {
+public class ChatRoulette extends BaseActivity {
 
     @Bind(R.id.joinWaitRoom)
     Button joinWaitRoom;

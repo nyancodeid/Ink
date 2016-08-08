@@ -13,7 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -59,7 +58,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Comments extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, CommentClickHandler {
+public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, CommentClickHandler {
 
     @Bind(R.id.commentBody)
     EditText mCommentBody;
