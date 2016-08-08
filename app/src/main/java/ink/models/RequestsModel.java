@@ -18,6 +18,7 @@ public class RequestsModel {
                          String requesterName, String requesterImage,
                          String requestedGroupId, String requestId, String groupName) {
         this.groupOwnerId = groupOwnerId;
+        this.isSocialAccount = isSocialAccount;
         this.groupName = groupName;
         this.requesterId = requesterId;
         this.requesterName = requesterName;

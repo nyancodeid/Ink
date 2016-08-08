@@ -86,6 +86,10 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getMyRequests(@Field("ownerId") String userId);
 
+        @POST(Constants.DELETE_ACCOUNT_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> deleteAccount(@Field("userId") String userId);
+
         @POST(Constants.SHOP_COINS_URL)
         Call<ResponseBody> getCoins();
 

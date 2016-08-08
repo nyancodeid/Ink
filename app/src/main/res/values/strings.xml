@@ -348,6 +348,16 @@
     <string name="logging">Logging...</string>
     <string name="loggingPleasWait">Logging you in,please wait...</string>
     <string name="failedLogin">Failed to login,please try again...</string>
+    <string name="loggingout">Logging out</string>
+    <string name="loggingoutPleaseWait">Logging you out,please wait...</string>
+    <string name="deleteAccount">Delete account</string>
+    <string name="deleteWarning">You are about to delete your account.
+        \nAll your private messages,pots,comments and rest will be completely removed without recovery option.
+        \nAre you sure you want to delete your account?</string>
+    <string name="deletingAccount">Deleting account</string>
+    <string name="yourAccountIsDeleting">Your account is being removed from server,please wait...</string>
+    <string name="coudlNotDelete">Could not delete your account.Contact support team</string>
+    <string name="accountdeleted">Account deleted</string>
     <string-array name="issueTypes">
         <item name="generalIssue">General</item>
         <item name="bugIssue">Bug</item>

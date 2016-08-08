@@ -302,6 +302,20 @@
                         android:minHeight="40dp"
                         android:text="@string/loadingText"
                         android:textColor="#000000" />
+
+                    <Button
+                        android:id="@+id/deleteAccont"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/skypeTV"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="25dp"
+                        android:background="@drawable/delete_account_background"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:text="@string/deleteAccount"
+                        android:textAllCaps="false"
+                        android:textColor="#ffffff" />
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
 

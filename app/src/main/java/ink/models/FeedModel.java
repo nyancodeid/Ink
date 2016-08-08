@@ -15,13 +15,15 @@ public class FeedModel {
     private String lastName;
     private boolean isLiked;
     private String likesCount;
+    private boolean isSocialAccount;
 
 
-    public FeedModel(String id, String userImage, String fileName, String content, String posterId,
+    public FeedModel(boolean isSocialAccount, String id, String userImage, String fileName, String content, String posterId,
                      String address,
                      String datePosted, String firstName,
                      String lastName, boolean isLiked, String likesCount) {
         this.id = id;
+        this.isSocialAccount = isSocialAccount;
         this.likesCount = likesCount;
         this.isLiked = isLiked;
         this.firstName = firstName;
@@ -45,6 +47,14 @@ public class FeedModel {
 
     public String getUserImage() {
         return userImage;
+    }
+
+    public boolean isSocialAccount() {
+        return isSocialAccount;
+    }
+
+    public void setSocialAccount(boolean socialAccount) {
+        isSocialAccount = socialAccount;
     }
 
     public void setUserImage(String userImage) {

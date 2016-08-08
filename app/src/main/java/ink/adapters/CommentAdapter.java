@@ -38,12 +38,13 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
     private CommentClickHandler commentClickHandler;
     private boolean isLiked;
     private SharedHelper sharedHelper;
+    private boolean isOwnerSocialAccount;
 
     public CommentAdapter(List<CommentModel> data,
                           Context context, String ownerImage,
                           String ownerPostBody, String attachment,
                           String location, String date, String name,
-                          String likesCount, boolean isLiked) {
+                          String likesCount, boolean isLiked, boolean isOwnerSocialAccount) {
         super(data, true, false);
         this.context = context;
         this.isLiked = isLiked;
@@ -52,6 +53,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         this.date = date;
         this.attachment = attachment;
         this.location = location;
+        this.isOwnerSocialAccount = isOwnerSocialAccount;
         this.ownerImage = ownerImage;
         this.ownerPostBody = ownerPostBody;
         commentModels = data;
@@ -98,7 +100,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         } else if (holder instanceof HeaderViewHolder) {
             final HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
             if (ownerImage != null && !ownerImage.isEmpty()) {
-                if (sharedHelper.isSocialAccount()) {
+                if (isOwnerSocialAccount) {
                     Picasso.with(context).load(ownerImage).error(R.drawable.image_laoding_error)
                             .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop()
                             .into(headerViewHolder.postOwnerImage);

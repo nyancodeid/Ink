@@ -9,6 +9,7 @@ public class Constants {
     public static final String GROUP_IMAGES_FOLDER = "GroupImages/";
     public static final String ADD_GROUP_URL = "AddGroup.php";
     public static final String GROUP_REQUESTS_URL = "GetGroupRequests.php";
+    public static final String DELETE_ACCOUNT_URL = "DeleteAccount.php";
     public static final String SEARCH_GROUP_URL = "SearchGroups.php";
     public static final String SEND_CHAT_ROULETTE_MESSAGE = "SendChatRouletteMessage.php";
     public static final String GET_USER_STATUS = "GetUserStatus.php";

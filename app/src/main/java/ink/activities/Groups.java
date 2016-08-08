@@ -25,6 +25,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -349,6 +350,7 @@ public class Groups extends AppCompatActivity implements SwipeRefreshLayout.OnRe
                 }
                 try {
                     String responseBody = response.body().string();
+                    Log.d("fsafsafasfsafas", "onResponse: "+responseBody);
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {

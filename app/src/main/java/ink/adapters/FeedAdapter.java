@@ -79,10 +79,18 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         FeedModel feedModel = feedList.get(position);
 
         if (feedModel.getUserImage() != null && !feedModel.getUserImage().isEmpty()) {
-            Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + feedModel.getUserImage())
-                    .error(R.drawable.image_laoding_error)
-                    .placeholder(R.drawable.no_image_yet_state) .transform(new CircleTransform())
-                    .fit().centerCrop().into(holder.feedUserImage);
+            if (feedModel.isSocialAccount()) {
+                Picasso.with(mContext).load(feedModel.getUserImage())
+                        .error(R.drawable.image_laoding_error)
+                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform())
+                        .fit().centerCrop().into(holder.feedUserImage);
+            } else {
+                Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + feedModel.getUserImage())
+                        .error(R.drawable.image_laoding_error)
+                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform())
+                        .fit().centerCrop().into(holder.feedUserImage);
+            }
+
         } else {
             Picasso.with(mContext).load(R.drawable.no_image)
                     .transform(new CircleTransform())

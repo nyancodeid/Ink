@@ -334,6 +334,9 @@ public class Login extends BaseActivity implements View.OnClickListener {
                 String firstName = nameParts[0];
                 String lastName = nameParts[1];
                 Uri accountImageUri = account.getPhotoUrl();
+                if (accountImageUri == null) {
+                    accountImageUri = Uri.parse("http://104.196.103.60/Ink/UserImages/no_image.png");
+                }
                 loginUser(email, firstName, lastName, accountImageUri.toString());
             }
         }
@@ -389,10 +392,14 @@ public class Login extends BaseActivity implements View.OnClickListener {
         mSharedHelper.putLastName(lastName);
         mSharedHelper.putUserId(userId);
         mSharedHelper.putShouldShowIntro(false);
-        mSharedHelper.putIsSocialAccount(false);
+        mSharedHelper.putImageLink(imageUrl);
+        mSharedHelper.putIsSocialAccount(true);
         if (imageUrl != null && !imageUrl.isEmpty()) {
             mSharedHelper.putImageLink(imageUrl);
         }
+        progressDialog.dismiss();
+        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+        finish();
     }
 
 }

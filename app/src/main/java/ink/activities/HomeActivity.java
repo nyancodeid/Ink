@@ -1,6 +1,7 @@
 package ink.activities;
 
 import android.app.ActivityManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,6 +36,7 @@ import java.util.TimerTask;
 import fab.FloatingActionButton;
 import ink.fragments.Feed;
 import ink.fragments.MyFriends;
+import ink.interfaces.AccountDeleteListener;
 import ink.models.CoinsResponse;
 import ink.models.PingResponse;
 import ink.service.BackgroundTaskService;
@@ -53,7 +55,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AccountDeleteListener {
 
     private static final long PING_TIME = 50000;
     private static final String TAG = HomeActivity.class.getSimpleName();
@@ -80,6 +82,7 @@ public class HomeActivity extends BaseActivity
     private FloatingActionButton mMakePost;
     private Thread mPingThread;
     private Gson gson;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +110,11 @@ public class HomeActivity extends BaseActivity
         mMessages.setOnClickListener(this);
         mMakePost.setOnClickListener(this);
         mNewPost.setOnClickListener(this);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle(getString(R.string.loggingout));
+        progressDialog.setMessage(getString(R.string.loggingoutPleaseWait));
+        setOnAccountDeleteListener(this);
+
         try {
             testTimezone();
         } catch (ParseException e) {
@@ -372,6 +380,7 @@ public class HomeActivity extends BaseActivity
                 break;
 
             case R.id.logout:
+                progressDialog.show();
                 shouldOpenActivity = false;
                 FileUtils.clearApplicationData(getApplicationContext());
                 boolean editorHintValue = mSharedHelper.isEditorHintShown();
@@ -390,10 +399,12 @@ public class HomeActivity extends BaseActivity
                         Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                         try {
                             FirebaseInstanceId.getInstance().deleteInstanceId();
+                            progressDialog.dismiss();
                             startActivity(new Intent(getApplicationContext(), Login.class));
                             finish();
                         } catch (IOException e) {
                             e.printStackTrace();
+                            progressDialog.dismiss();
                             startActivity(new Intent(getApplicationContext(), Login.class));
                             finish();
                         }
@@ -527,6 +538,11 @@ public class HomeActivity extends BaseActivity
 
     @Override
     protected void onDestroy() {
+        destroyPinger();
+        super.onDestroy();
+    }
+
+    private void destroyPinger() {
         if (timer != null) {
             timer.cancel();
             timer = null;
@@ -535,8 +551,11 @@ public class HomeActivity extends BaseActivity
             mPingThread.interrupt();
             mPingThread = null;
         }
-        super.onDestroy();
     }
 
 
+    @Override
+    public void onAccountDeleted() {
+        destroyPinger();
+    }
 }

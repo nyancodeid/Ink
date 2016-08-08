@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Process;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -18,7 +19,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
@@ -29,8 +29,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -40,6 +42,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.ink.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.PicassoTools;
@@ -61,6 +64,7 @@ import ink.callbacks.GeneralCallback;
 import ink.utils.Constants;
 import ink.utils.FileUtils;
 import ink.utils.PermissionsChecker;
+import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -68,7 +72,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MyProfile extends AppCompatActivity {
+public class MyProfile extends BaseActivity {
 
     private static final int PICK_IMAGE_RESULT_CODE = 2;
     private static final int STORAGE_PERMISSION_REQUEST = 1;
@@ -112,6 +116,8 @@ public class MyProfile extends AppCompatActivity {
     CollapsingToolbarLayout mCollapsingToolbar;
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
+    @Bind(R.id.deleteAccont)
+    Button deleteAccont;
 
     private Snackbar updateSnackbar;
     private String mFirstNameToSend;
@@ -132,6 +138,7 @@ public class MyProfile extends AppCompatActivity {
     private ProgressDialog facebookAttachDialog;
     private boolean isImageChosen;
     private String mFacebookName;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +158,9 @@ public class MyProfile extends AppCompatActivity {
         mFirstNameToSend = mSharedHelper.getFirstName();
         mLastNameToSend = mSharedHelper.getLastName();
         mCollapsingToolbar.setTitle(mFirstNameToSend + " " + mLastNameToSend);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle(getString(R.string.deletingAccount));
+        progressDialog.setMessage(getString(R.string.yourAccountIsDeleting));
         mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#99000000"));
 
         mProfileFab.setOnMenuButtonClickListener(new View.OnClickListener() {
@@ -384,7 +394,12 @@ public class MyProfile extends AppCompatActivity {
         if (mImageLinkToSend != null && !mImageLinkToSend.isEmpty()) {
             mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
             if (shouldLoadImage) {
-                Picasso.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).fit().centerInside().into(profileImage, picassoCallback(mImageLinkToSend, false));
+                if (isSocialAccount()) {
+                    Picasso.with(getApplicationContext()).load(mImageLinkToSend).fit().centerInside().into(profileImage, picassoCallback(mImageLinkToSend, false));
+                } else {
+                    Picasso.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).fit().centerInside().into(profileImage, picassoCallback(mImageLinkToSend, false));
+                }
+
             } else {
                 mSharedHelper.putFirstName(mFirstNameToSend);
                 mSharedHelper.putLastName(mLastNameToSend);
@@ -628,6 +643,103 @@ public class MyProfile extends AppCompatActivity {
         mGender.setClickable(true);
         mSkype.setFocusable(true);
         mSkype.setFocusableInTouchMode(true);
+        deleteAccont.setVisibility(View.VISIBLE);
+    }
+
+    @OnClick(R.id.deleteAccont)
+    public void deleteAccount() {
+        showWarning();
+    }
+
+    private void showWarning() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.caution));
+        builder.setMessage(getString(R.string.deleteWarning));
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                progressDialog.show();
+                deleteAccountRequest();
+            }
+        });
+        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.show();
+    }
+
+    private void deleteAccountRequest() {
+        final Call<ResponseBody> deleteAccountCall = Retrofit.getInstance().getInkService().deleteAccount(mSharedHelper.getUserId());
+        deleteAccountCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    deleteAccountRequest();
+                    return;
+                }
+                if (response.body() == null) {
+                    deleteAccountRequest();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    if (responseBody.equals("deleted")) {
+                        mSharedHelper.clean();
+                        try {
+                            RealmHelper.getInstance().clearDatabase(MyProfile.this);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        Thread thread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                                try {
+                                    FirebaseInstanceId.getInstance().deleteInstanceId();
+                                    progressDialog.dismiss();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(MyProfile.this, getString(R.string.accountdeleted), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                    fireAccountDeleteListener();
+                                    startActivity(new Intent(getApplicationContext(), Login.class));
+                                    finish();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    progressDialog.dismiss();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(MyProfile.this, getString(R.string.accountdeleted), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                    fireAccountDeleteListener();
+                                    startActivity(new Intent(getApplicationContext(), Login.class));
+                                    finish();
+                                }
+                            }
+                        });
+                        thread.start();
+                    } else {
+                        progressDialog.dismiss();
+                        Toast.makeText(MyProfile.this, getString(R.string.coudlNotDelete), Toast.LENGTH_LONG).show();
+                    }
+                } catch (IOException e) {
+                    deleteAccountRequest();
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                deleteAccountRequest();
+            }
+        });
     }
 
     private void saveEdit() {
@@ -648,6 +760,7 @@ public class MyProfile extends AppCompatActivity {
         mFacebook.setFocusableInTouchMode(false);
         mSkype.setFocusable(false);
         mSkype.setFocusableInTouchMode(false);
+        deleteAccont.setVisibility(View.GONE);
 
     }
 
@@ -803,8 +916,13 @@ public class MyProfile extends AppCompatActivity {
                                 mSharedHelper.putImageLink(imageLink);
                                 PicassoTools.clearCache(Picasso.with(getApplicationContext()));
                                 FileUtils.deleteDirectoryTree(getApplicationContext().getCacheDir());
-                                Picasso.with(getApplicationContext()).invalidate(Constants.MAIN_URL +
-                                        Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink());
+                                if (isSocialAccount()) {
+                                    Picasso.with(getApplicationContext()).invalidate(mSharedHelper.getImageLink());
+                                } else {
+                                    Picasso.with(getApplicationContext()).invalidate(Constants.MAIN_URL +
+                                            Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink());
+                                }
+
                             }
 
                         } else {
@@ -909,8 +1027,13 @@ public class MyProfile extends AppCompatActivity {
                 showImageLoading();
                 String finalPath = imageLinkToSend;
                 if (!shouldUseFullPath) {
-                    finalPath = Constants.MAIN_URL +
-                            Constants.USER_IMAGES_FOLDER + imageLinkToSend;
+                    if (isSocialAccount()) {
+                        finalPath = imageLinkToSend;
+                    } else {
+                        finalPath = Constants.MAIN_URL +
+                                Constants.USER_IMAGES_FOLDER + imageLinkToSend;
+                    }
+
                 }
                 Picasso.with(getApplicationContext()).load(finalPath).fit().centerInside().into(profileImage, picassoCallback(imageLinkToSend, shouldUseFullPath));
             }

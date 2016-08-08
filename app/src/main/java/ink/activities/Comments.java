@@ -19,6 +19,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -80,6 +81,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
     private CommentAdapter mCommentAdapter;
     private CommentModel mCommentModel;
     private String mAttachment;
+    private boolean isOwnerSocialAccount;
     private String mLocation;
     private String mDate;
     private String mName;
@@ -111,6 +113,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
             mUserImage = extras.getString("userImage");
             mPostBody = extras.getString("postBody");
             mAttachment = extras.getString("attachment");
+            isOwnerSocialAccount = extras.getBoolean("isSocialAccount");
             mLocation = extras.getString("location");
             mName = extras.getString("name");
             mDate = extras.getString("date");
@@ -118,7 +121,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
             isLiked = extras.getBoolean("isLiked");
         }
         mCommentAdapter = new CommentAdapter(mCommentModels, this, mUserImage,
-                mPostBody, mAttachment, mLocation, mDate, mName, mLikesCount, isLiked);
+                mPostBody, mAttachment, mLocation, mDate, mName, mLikesCount, isLiked,isOwnerSocialAccount);
         mCommentAdapter.setOnLikeClickListener(this);
         mCommentRefresher.setColorSchemeColors(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
@@ -227,6 +230,7 @@ public class Comments extends AppCompatActivity implements SwipeRefreshLayout.On
                 try {
                     isResponseReceived = true;
                     String responseBody = response.body().string();
+                    Log.d("fsafsafasfsafas", "onResponse: " + responseBody);
                     JSONArray jsonArray = new JSONArray(responseBody);
                     if (jsonArray.length() <= 0) {
                         mCommentsLoading.setVisibility(View.GONE);

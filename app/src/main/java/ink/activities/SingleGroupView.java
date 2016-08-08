@@ -380,6 +380,7 @@ public class SingleGroupView extends AppCompatActivity {
                     if (success) {
                         mJoinGroupButton.setText(getString(R.string.pending));
                         Snackbar.make(mJoinGroupButton, getString(R.string.successfullyRequested), Snackbar.LENGTH_SHORT).show();
+                        isRequested = true;
                     } else {
                         requestJoin();
                     }
