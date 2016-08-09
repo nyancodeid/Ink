@@ -8,12 +8,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -34,8 +36,10 @@ import android.widget.TextView;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.ink.R;
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.squareup.picasso.Picasso;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONException;
@@ -55,10 +59,13 @@ import ink.callbacks.QueCallback;
 import ink.interfaces.RecyclerItemClickListener;
 import ink.models.ChatModel;
 import ink.models.GifModel;
+import ink.models.GifResponse;
+import ink.models.GifResponseModel;
 import ink.models.MessageModel;
 import ink.models.UserStatus;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
+import ink.utils.ErrorCause;
 import ink.utils.Notification;
 import ink.utils.QueHelper;
 import ink.utils.RealmHelper;
@@ -96,6 +103,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     ImageView sendMessageGifView;
     @Bind(R.id.sendMessageGifViewWrapper)
     RelativeLayout sendMessageGifViewWrapper;
+    @Bind(R.id.singleGifViewLoading)
+    AVLoadingIndicatorView singleGifViewLoading;
 
     private String mOpponentId;
     String mCurrentUserId;
@@ -109,7 +118,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     private AlertDialog.Builder mBuilder;
     private String mDeleteUserId;
     private String mDeleteOpponentId;
-    private Gson gson;
+    private Gson gifGson;
     private Animation fadeAnimation;
     private String firstName;
     private String lastName;
@@ -119,6 +128,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     private GifModel gifModel;
     private boolean isGifChosen = false;
     private String lasChosenGifName;
+    private Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,13 +140,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         mBuilder = new AlertDialog.Builder(this);
         fadeAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_scale);
         ButterKnife.bind(this);
-        gson = new Gson();
         mSharedHelper = new SharedHelper(this);
-
+        gson = new Gson();
         gifModelList = new ArrayList<>();
         gifAdapter = new GifAdapter(gifModelList, this);
         gifAdapter.setOnItemClickListener(this);
-
+        gifGson = new Gson();
         Notification.getInstance().setSendingRemote(false);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(getPackageName() + ".Chat"));
         mChatAdapter = new ChatAdapter(mChatModelArrayList, this);
@@ -157,6 +166,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                     InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                     inputMethodManager.hideSoftInputFromWindow(mRecyclerView.getWindowToken(), 0);
                 }
+
+                LinearLayoutManager layoutManager = ((LinearLayoutManager) mRecyclerView.getLayoutManager());
+                int firstVisiblePosition = layoutManager.findFirstVisibleItemPosition();
+                Log.d("fasfsafsafasfsa", "onScrollStateChanged: " + firstVisiblePosition);
             }
         });
 
@@ -205,7 +218,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                 }
                 try {
                     String responseBody = response.body().string();
-                    final UserStatus userStatus = gson.fromJson(responseBody, UserStatus.class);
+                    final UserStatus userStatus = gifGson.fromJson(responseBody, UserStatus.class);
                     if (userStatus.success) {
                         if (userStatus.isOnline) {
                             statusColor.setVisibility(View.VISIBLE);
@@ -238,8 +251,13 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     @OnClick(R.id.trashIcon)
     public void trashIcon() {
         isGifChosen = false;
+        System.gc();
         sendMessageGifView.setBackground(null);
+        sendMessageGifView.setImageResource(0);
         sendMessageGifViewWrapper.setVisibility(View.GONE);
+        if (mWriteEditText.getText().toString().trim().isEmpty()) {
+            mSendChatMessage.setEnabled(false);
+        }
     }
 
     @OnClick(R.id.attachmentIcon)
@@ -249,9 +267,35 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         gifChooserDialog = new BottomSheetDialog(this);
         View view = getLayoutInflater().inflate(R.layout.user_gifs_view, null);
         gifChooserDialog.setContentView(view);
-        RecyclerView gifsRecycler = (RecyclerView) view.findViewById(R.id.gifsRecycler);
+        final RecyclerView gifsRecycler = (RecyclerView) view.findViewById(R.id.gifsRecycler);
+        ImageView closeGifChoser = (ImageView) view.findViewById(R.id.closeGifChoser);
+        closeGifChoser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gifChooserDialog.dismiss();
+                gifsRecycler.setAdapter(null);
+            }
+        });
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        gifsRecycler.setLayoutManager(gridLayoutManager);
+
         gifsRecycler.setAdapter(gifAdapter);
         getUserGifs();
+        gifChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                System.gc();
+                gifsRecycler.setAdapter(null);
+            }
+        });
+        gifChooserDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                System.gc();
+                gifsRecycler.setAdapter(null);
+            }
+        });
         gifChooserDialog.show();
     }
 
@@ -271,7 +315,22 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                 }
                 try {
                     String responseBody = response.body().string();
-                    Log.d("fasfsafsafasfsa", "onResponse: " + responseBody);
+                    GifResponse gifResponse = gson.fromJson(responseBody, GifResponse.class);
+                    if (gifResponse.success) {
+                        if (!gifResponse.cause.equals(ErrorCause.NO_GIFS)) {
+                            ArrayList<GifResponseModel> gifResponseModels = gifResponse.gifResponseModels;
+                            for (int i = 0; i < gifResponseModels.size(); i++) {
+                                GifResponseModel eachModel = gifResponseModels.get(i);
+                                gifModel = new GifModel(eachModel.id, eachModel.userId, eachModel.gifName, eachModel.isAnimated, eachModel.hasSound);
+                                gifModelList.add(gifModel);
+                                gifAdapter.notifyDataSetChanged();
+                            }
+                        } else {
+                            showNoGifSnackbar();
+                        }
+                    } else {
+
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -282,6 +341,18 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                 getUserGifs();
             }
         });
+    }
+
+    private void showNoGifSnackbar() {
+        Snackbar.make(opponentImage, getString(R.string.noGif), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (gifChooserDialog != null) {
+                    System.gc();
+                    gifChooserDialog.dismiss();
+                }
+            }
+        }).show();
     }
 
     @OnClick(R.id.sendChatMessage)
@@ -306,7 +377,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
             @Override
             public void run() {
                 // Call smooth scroll
-                mRecyclerView.smoothScrollToPosition(mChatAdapter.getItemCount());
+                scrollToBottom();
             }
         });
 
@@ -411,7 +482,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
             mRecyclerView.post(new Runnable() {
                 @Override
                 public void run() {
-                    mRecyclerView.smoothScrollToPosition(mChatAdapter.getItemCount());
+                    scrollToBottom();
                 }
             });
 
@@ -454,6 +525,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     protected void onDestroy() {
         Notification.getInstance().setSendingRemote(true);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        Ion.getDefault(getApplicationContext()).getCache().clear();
+        Ion.getDefault(getApplicationContext()).configure().getResponseCache().clear();
         super.onDestroy();
     }
 
@@ -475,7 +548,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                     mRecyclerView.post(new Runnable() {
                         @Override
                         public void run() {
-                            mRecyclerView.smoothScrollToPosition(mChatAdapter.getItemCount());
+                            scrollToBottom();
                         }
                     });
                 }
@@ -541,21 +614,31 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     @Override
     public void OnItemClicked(int position) {
+        System.gc();
         GifModel singleModel = gifModelList.get(position);
         String gifName = gifModelList.get(position).getGifName();
         sendMessageGifViewWrapper.setVisibility(View.VISIBLE);
         gifChooserDialog.dismiss();
+        singleGifViewLoading.setVisibility(View.VISIBLE);
+        mSendChatMessage.setEnabled(true);
         if (singleModel.isAnimated()) {
             if (singleModel.hasSound()) {
 
             }
-            Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + gifName).intoImageView(sendMessageGifView);
+            Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + gifName).intoImageView(sendMessageGifView).setCallback(new FutureCallback<ImageView>() {
+                @Override
+                public void onCompleted(Exception e, ImageView result) {
+                    singleGifViewLoading.setVisibility(View.GONE);
+                }
+            });
         } else {
 
         }
-        Log.d("fasfsafsafasfsa", "OnItemClicked: " + gifName);
         lasChosenGifName = gifName;
         isGifChosen = true;
     }
 
+    private void scrollToBottom() {
+        mRecyclerView.smoothScrollToPosition(mChatAdapter.getItemCount());
+    }
 }

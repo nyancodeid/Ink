@@ -360,6 +360,7 @@
     <string name="accountdeleted">Account deleted</string>
     <string name="signInWithFacebook">Sign in with facebook</string>
     <string name="registerInkAccount">Register new account on Ink</string>
+    <string name="noGif">You don\'t have any stickers.Go buy some!</string>
     <string-array name="issueTypes">
         <item name="generalIssue">General</item>
         <item name="bugIssue">Bug</item>

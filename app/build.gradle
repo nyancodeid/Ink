@@ -20,7 +20,7 @@ android {
     buildToolsVersion "24.0.0"
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "2g"
     }
     defaultConfig {
         applicationId "com.ink"

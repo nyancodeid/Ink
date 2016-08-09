@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.ink.R;
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.List;
 
@@ -38,13 +40,19 @@ public class GifAdapter extends RecyclerView.Adapter<GifAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         GifModel gifModel = gifAdapterList.get(position);
         if (gifModel.isAnimated()) {
             if (gifModel.hasSound()) {
 
             }
-            Ion.with(context).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + gifModel.getGifName()).intoImageView(holder.gifSingleView);
+            Ion.with(context).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + gifModel.getGifName()).intoImageView(holder.gifSingleView).setCallback(new FutureCallback<ImageView>() {
+                @Override
+                public void onCompleted(Exception e, ImageView result) {
+                    holder.gifLoadingSingleItem.setVisibility(View.GONE);
+                }
+            });
+
             holder.gifSingleView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -63,10 +71,12 @@ public class GifAdapter extends RecyclerView.Adapter<GifAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView gifSingleView;
+        private AVLoadingIndicatorView gifLoadingSingleItem;
 
         public ViewHolder(View itemView) {
             super(itemView);
             gifSingleView = (ImageView) itemView.findViewById(R.id.gifSingleView);
+            gifLoadingSingleItem = (AVLoadingIndicatorView) itemView.findViewById(R.id.gifLoadingSingleItem);
         }
     }
 
