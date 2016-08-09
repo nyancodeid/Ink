@@ -19,6 +19,7 @@
             android:scrollbars="vertical" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
+
     <com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/circle_loading_view"
         android:layout_width="250dp"

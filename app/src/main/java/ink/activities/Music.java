@@ -61,6 +61,7 @@ public class Music extends BaseActivity implements MusicClickListener {
     ImageView playPauseButton;
     @Bind(R.id.currentlyPlayingImage)
     ImageView currentlyPlayingImage;
+    private boolean isMusicChosen;
 
     private List<Track> tracks;
     private MusicAdapter musicAdapter;
@@ -89,6 +90,9 @@ public class Music extends BaseActivity implements MusicClickListener {
         playPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!isMusicChosen) {
+                    return;
+                }
                 if (MediaPlayerManager.get().isSoundPlaying()) {
                     playPauseButton.setImageResource(R.drawable.play_icon);
                     MediaPlayerManager.get().pauseMusic();
@@ -135,6 +139,7 @@ public class Music extends BaseActivity implements MusicClickListener {
 
     private void checkForMusicPlaying() {
         if (MediaPlayerManager.get().isSoundPlaying()) {
+            isMusicChosen = true;
             initBottomSheet(null);
         }
     }
@@ -145,6 +150,7 @@ public class Music extends BaseActivity implements MusicClickListener {
         Track track = tracks.get(position);
         initBottomSheet(track);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        isMusicChosen = true;
     }
 
     private void initBottomSheet(@Nullable Track track) {

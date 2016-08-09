@@ -139,7 +139,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         boolean isLiked = eachObject.optBoolean("is_liked");
                         String likesCount = eachObject.optString("likes_count");
                         boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
-                        mFeedModel = new FeedModel(isSocialAccount,id, imageLink, fileName, postBody,
+                        mFeedModel = new FeedModel(isSocialAccount, id, imageLink, fileName, postBody,
                                 posterId, address, datePosted, firstName, lastName, isLiked, likesCount);
                         mFeedModelArrayList.add(mFeedModel);
                         mAdapter.notifyDataSetChanged();

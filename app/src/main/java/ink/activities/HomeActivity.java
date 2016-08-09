@@ -526,6 +526,7 @@ public class HomeActivity extends BaseActivity
                             pingTime();
                         }
                     } catch (Exception e) {
+                        destroyPinger();
                         e.printStackTrace();
                     }
                 } catch (IOException e) {
