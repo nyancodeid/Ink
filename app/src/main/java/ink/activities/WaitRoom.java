@@ -229,7 +229,7 @@ public class WaitRoom extends BaseActivity {
 
     private void sendMessage() {
         String message = chatRouletteMessageBody.getText().toString().trim();
-        ChatModel tempChat = new ChatModel(null, sharedHelper.getUserId(), foundOpponentId, message, true, Constants.STATUS_NOT_DELIVERED, null,
+        ChatModel tempChat = new ChatModel(false, null, null, sharedHelper.getUserId(), foundOpponentId, message, true, Constants.STATUS_NOT_DELIVERED, null,
                 null, null);
         chatModels.add(tempChat);
         chatAdapter.notifyDataSetChanged();
@@ -386,7 +386,7 @@ public class WaitRoom extends BaseActivity {
                     String currentUserId = extras.getString("currentUserId");
                     String opponentId = extras.getString("opponentId");
                     String message = extras.getString("message");
-                    chatModel = new ChatModel(null, currentUserId, opponentId, message, true, Constants.STATUS_DELIVERED, null,
+                    chatModel = new ChatModel(false, null, null, currentUserId, opponentId, message, true, Constants.STATUS_DELIVERED, null,
                             null, null);
                     chatModels.add(chatModel);
                     chatAdapter.notifyDataSetChanged();

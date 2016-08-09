@@ -4,11 +4,12 @@ package ink.utils;
  * Created by USER on 2016-06-19.
  */
 public class Constants {
-    public static final String MAIN_URL = "http://104.196.103.60/Ink/";
+    public static final String MAIN_URL = "http://104.196.103.60/Ink_Base_project_1992_no_15_dp_deployed_57_olAllolclslf_8954/";
     public static final String USER_IMAGES_FOLDER = "UserImages/";
     public static final String GROUP_IMAGES_FOLDER = "GroupImages/";
     public static final String ADD_GROUP_URL = "AddGroup.php";
     public static final String GROUP_REQUESTS_URL = "GetGroupRequests.php";
+    public static final String ANIMATED_GIFS_URL = "GetUserGifs.php";
     public static final String DELETE_ACCOUNT_URL = "DeleteAccount.php";
     public static final String SEARCH_GROUP_URL = "SearchGroups.php";
     public static final String SEND_CHAT_ROULETTE_MESSAGE = "SendChatRouletteMessage.php";
@@ -74,5 +75,6 @@ public class Constants {
     public static final String CONTACT_EMAIL = "contact@vaentertaiment.xyz";
     public static final String SOCIAL_TYPE_FACEBOOK = "facebook";
     public static final String SOCIAL_TYPE_GOOGLE = "google";
+    public static final String SERVER_AUTH_KEY = "fsahga-s447489asg-gGgashagasgfag-JKGKAJGKAS-gasgasga678sag8as-GASGJASKLG";
 }
 

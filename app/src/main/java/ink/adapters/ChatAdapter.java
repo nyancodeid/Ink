@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -34,12 +35,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         private TextView message;
         private TextView deliveryStatus;
         private LinearLayout chatViewBubble;
+        private ImageView gifChatView;
 
         public ViewHolder(View view) {
             super(view);
             message = (TextView) view.findViewById(R.id.messageContainer);
             chatViewBubble = (LinearLayout) view.findViewById(R.id.chatViewBubble);
             deliveryStatus = (TextView) view.findViewById(R.id.deliveryStatus);
+            gifChatView = (ImageView) view.findViewById(R.id.gifChatView);
         }
     }
 
@@ -74,11 +77,17 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         holder.message.setText(chatModel.getMessage());
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.chatViewBubble.getLayoutParams();
         LinearLayout.LayoutParams deliveryStatusParams = (LinearLayout.LayoutParams) holder.deliveryStatus.getLayoutParams();
+        LinearLayout.LayoutParams gifChatViewLayoutParams = (LinearLayout.LayoutParams) holder.gifChatView.getLayoutParams();
+
         if (mCurrentUserId.equals(chatModel.getUserId())) {
             layoutParams.gravity = Gravity.RIGHT;
             layoutParams.rightMargin = Dp.toDps(mContext, 16);
             deliveryStatusParams.gravity = Gravity.RIGHT;
+            gifChatViewLayoutParams.gravity = Gravity.RIGHT;
+
             holder.chatViewBubble.setLayoutParams(layoutParams);
+            holder.gifChatView.setLayoutParams(gifChatViewLayoutParams);
+
             holder.chatViewBubble.setBackground(ContextCompat.getDrawable(mContext, R.drawable.outgoing_message_bg));
             if (chatModel.getDeliveryStatus().equals(Constants.STATUS_DELIVERED)) {
                 if (position >= chatModelList.size() - 1) {
@@ -94,7 +103,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         } else {
             holder.chatViewBubble.setBackground(ContextCompat.getDrawable(mContext, R.drawable.incoming_message_bg));
             layoutParams.gravity = Gravity.LEFT;
+            gifChatViewLayoutParams.gravity = Gravity.LEFT;
+
             holder.chatViewBubble.setLayoutParams(layoutParams);
+            holder.gifChatView.setLayoutParams(gifChatViewLayoutParams);
             holder.deliveryStatus.setVisibility(View.INVISIBLE);
         }
     }

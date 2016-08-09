@@ -13,14 +13,18 @@ public class ChatModel {
     private String userImage;
     private String opponentImage;
     private String date;
+    private boolean hasGif;
+    private String gifUrl;
 
 
-    public ChatModel(String messageId, String userId,
+    public ChatModel(boolean hasGif, String gifUrl, String messageId, String userId,
                      String opponentId, String message,
                      boolean isClickable, String deliveryStatus,
                      String userImage, String opponentImage, String date) {
         this.userImage = userImage;
         this.date = date;
+        this.hasGif = hasGif;
+        this.gifUrl = gifUrl;
         this.opponentImage = opponentImage;
         this.isClickable = isClickable;
         this.deliveryStatus = deliveryStatus;
@@ -61,6 +65,22 @@ public class ChatModel {
 
     public String getDeliveryStatus() {
         return deliveryStatus;
+    }
+
+    public boolean isHasGif() {
+        return hasGif;
+    }
+
+    public void setHasGif(boolean hasGif) {
+        this.hasGif = hasGif;
+    }
+
+    public String getGifUrl() {
+        return gifUrl;
+    }
+
+    public void setGifUrl(String gifUrl) {
+        this.gifUrl = gifUrl;
     }
 
     public void setDeliveryStatus(String deliveryStatus) {
