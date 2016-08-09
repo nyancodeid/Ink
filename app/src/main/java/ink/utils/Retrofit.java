@@ -216,7 +216,7 @@ public class Retrofit {
 
         @POST(Constants.USER_GIFS_URL)
         @FormUrlEncoded
-        Call<ResponseBody> getUserGifs(@Field("user_id") String userId,
+        Call<ResponseBody> getUserGifs(@Field("userId") String userId,
                                        @Field("authKey") String authKey);
 
 

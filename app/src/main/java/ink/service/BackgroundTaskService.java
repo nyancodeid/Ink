@@ -47,6 +47,14 @@ public class BackgroundTaskService extends Service {
         myMessagesResponse.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    getMyMessages(userId);
+                    return;
+                }
+                if (response.body() == null) {
+                    getMyMessages(userId);
+                    return;
+                }
                 try {
                     String responseString = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseString);
