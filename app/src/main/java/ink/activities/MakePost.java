@@ -41,6 +41,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.utils.FileUtils;
+import ink.utils.PermissionsChecker;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import ink.utils.Time;
@@ -203,7 +204,11 @@ public class MakePost extends BaseActivity {
 
     @OnClick(R.id.attachmentWidget)
     public void attachmentWidget() {
-        showAttachmentDialog();
+        if(PermissionsChecker.isStoragePermissionGranted(this)){
+            showAttachmentDialog();
+        }else{
+            Snackbar.make(mCheckWrapper, getString(R.string.storagePermissions), Snackbar.LENGTH_LONG).show();
+        }
     }
 
     private void showAttachmentDialog() {

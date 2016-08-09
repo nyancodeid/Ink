@@ -68,6 +68,7 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
     }
 
 
+
     @Override
     public int getItemCount() {
         return groupMessagesModels.size();

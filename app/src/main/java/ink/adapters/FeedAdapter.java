@@ -30,6 +30,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     private Context mContext;
     private FeedItemClick mOnClickListener;
     private boolean shouldStartAnimation;
+    private int lastPosition;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView feedContent, userPostedTitle,
@@ -184,6 +185,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     public void setOnFeedClickListener(FeedItemClick mOnClickListener) {
         this.mOnClickListener = mOnClickListener;
     }
+
+
 
     @Override
     public int getItemCount() {
