@@ -150,18 +150,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/sendMessageGifView"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
+                <RelativeLayout
+                    android:id="@+id/sendMessageGifViewWrapper"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
                     android:layout_centerHorizontal="true"
-                    android:visibility="gone" />
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/trashIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:padding="10dp"
+                        android:src="@drawable/trash_icon" />
+
+                    <ImageView
+                        android:id="@+id/sendMessageGifView"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:layout_below="@+id/trashIcon"
+                        android:layout_centerInParent="true" />
+
+                </RelativeLayout>
 
                 <EditText
                     android:id="@+id/messageBody"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/sendMessageGifView"
+                    android:layout_below="@+id/sendMessageGifViewWrapper"
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="3dp"
                     android:background="#ffffff"
@@ -205,6 +222,9 @@
                     android:layout_below="@+id/messageBody"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
                     android:padding="8dp"
                     android:src="@drawable/attach_vector" />
             </RelativeLayout>

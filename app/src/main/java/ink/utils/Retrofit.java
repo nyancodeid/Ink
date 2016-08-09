@@ -214,6 +214,12 @@ public class Retrofit {
         Call<ResponseBody> registerToken(@Field("user_id") String userId, @Field("token") String token);
 
 
+        @POST(Constants.USER_GIFS_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getUserGifs(@Field("user_id") String userId,
+                                       @Field("authKey") String authKey);
+
+
         @POST(Constants.REQUEST_DELETE_URL)
         @FormUrlEncoded
         Call<ResponseBody> requestDelete(@Field("user_id") String userId, @Field("opponent_id") String opponentId);

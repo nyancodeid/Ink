@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
@@ -18,6 +19,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -32,6 +34,7 @@ import android.widget.TextView;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.ink.R;
+import com.koushikdutta.ion.Ion;
 import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -47,8 +50,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.adapters.ChatAdapter;
+import ink.adapters.GifAdapter;
 import ink.callbacks.QueCallback;
+import ink.interfaces.RecyclerItemClickListener;
 import ink.models.ChatModel;
+import ink.models.GifModel;
 import ink.models.MessageModel;
 import ink.models.UserStatus;
 import ink.utils.CircleTransform;
@@ -65,7 +71,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Chat extends BaseActivity {
+public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     @Bind(R.id.sendChatMessage)
     fab.FloatingActionButton mSendChatMessage;
@@ -86,6 +92,10 @@ public class Chat extends BaseActivity {
     ImageView statusColor;
     @Bind(R.id.makeCall)
     RelativeLayout makeCall;
+    @Bind(R.id.sendMessageGifView)
+    ImageView sendMessageGifView;
+    @Bind(R.id.sendMessageGifViewWrapper)
+    RelativeLayout sendMessageGifViewWrapper;
 
     private String mOpponentId;
     String mCurrentUserId;
@@ -103,6 +113,12 @@ public class Chat extends BaseActivity {
     private Animation fadeAnimation;
     private String firstName;
     private String lastName;
+    private GifAdapter gifAdapter;
+    private BottomSheetDialog gifChooserDialog;
+    private List<GifModel> gifModelList;
+    private GifModel gifModel;
+    private boolean isGifChosen = false;
+    private String lasChosenGifName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +132,11 @@ public class Chat extends BaseActivity {
         ButterKnife.bind(this);
         gson = new Gson();
         mSharedHelper = new SharedHelper(this);
+
+        gifModelList = new ArrayList<>();
+        gifAdapter = new GifAdapter(gifModelList, this);
+        gifAdapter.setOnItemClickListener(this);
+
         Notification.getInstance().setSendingRemote(false);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(getPackageName() + ".Chat"));
         mChatAdapter = new ChatAdapter(mChatModelArrayList, this);
@@ -214,6 +235,55 @@ public class Chat extends BaseActivity {
 
     }
 
+    @OnClick(R.id.trashIcon)
+    public void trashIcon() {
+        isGifChosen = false;
+        sendMessageGifView.setBackground(null);
+        sendMessageGifViewWrapper.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.attachmentIcon)
+    public void attachmentIcon() {
+        System.gc();
+        gifModelList.clear();
+        gifChooserDialog = new BottomSheetDialog(this);
+        View view = getLayoutInflater().inflate(R.layout.user_gifs_view, null);
+        gifChooserDialog.setContentView(view);
+        RecyclerView gifsRecycler = (RecyclerView) view.findViewById(R.id.gifsRecycler);
+        gifsRecycler.setAdapter(gifAdapter);
+        getUserGifs();
+        gifChooserDialog.show();
+    }
+
+    private void getUserGifs() {
+        Call<ResponseBody> gifCall = Retrofit.getInstance().getInkService().getUserGifs(mSharedHelper.getUserId(),
+                Constants.SERVER_AUTH_KEY);
+        gifCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    getUserGifs();
+                    return;
+                }
+                if (response.body() == null) {
+                    getUserGifs();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    Log.d("fasfsafsafasfsa", "onResponse: " + responseBody);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                getUserGifs();
+            }
+        });
+    }
+
     @OnClick(R.id.sendChatMessage)
     public void sendChatMessage() {
         if (mNoMessageLayout.getVisibility() == View.VISIBLE) {
@@ -221,7 +291,7 @@ public class Chat extends BaseActivity {
         }
         String message = StringEscapeUtils.escapeJava(mWriteEditText.getText().toString().trim());
 
-        ChatModel tempChat = new ChatModel(null, mCurrentUserId, mOpponentId, StringEscapeUtils.unescapeJava(message.trim()),
+        ChatModel tempChat = new ChatModel(isGifChosen, lasChosenGifName, null, mCurrentUserId, mOpponentId, StringEscapeUtils.unescapeJava(message.trim()),
                 false, Constants.STATUS_NOT_DELIVERED,
                 mUserImage, mOpponentImage, "");
         mChatModelArrayList.add(tempChat);
@@ -250,7 +320,7 @@ public class Chat extends BaseActivity {
         intent.putExtra("id", mOpponentId);
         intent.putExtra("firstName", firstName);
         intent.putExtra("lastName", lastName);
-        intent.putExtra("disableButton",true);
+        intent.putExtra("disableButton", true);
         startActivity(intent);
     }
 
@@ -324,7 +394,7 @@ public class Chat extends BaseActivity {
                     }
                 }
 
-                mChatModel = new ChatModel(messageId, userId, opponentId, message, true,
+                mChatModel = new ChatModel(isGifChosen, lasChosenGifName, messageId, userId, opponentId, message, true,
                         eachModel.getDeliveryStatus(), userImage, opponentImage, date);
                 mChatModelArrayList.add(mChatModel);
                 if (eachModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED)) {
@@ -365,7 +435,11 @@ public class Chat extends BaseActivity {
         public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             if (s.toString().trim().length() <= 0) {
-                mSendChatMessage.setEnabled(false);
+                if (!isGifChosen) {
+                    mSendChatMessage.setEnabled(false);
+                } else {
+                    mSendChatMessage.setEnabled(true);
+                }
             } else {
                 mSendChatMessage.setEnabled(true);
             }
@@ -392,7 +466,8 @@ public class Chat extends BaseActivity {
                 Map<String, String> response = remoteMessage.getData();
 
                 if (mOpponentId.equals(response.get("user_id"))) {
-                    mChatModel = new ChatModel(response.get("message_id"), response.get("user_id"),
+                    // TODO: 8/9/2016  change the variables to real ones.
+                    mChatModel = new ChatModel(false, null, response.get("message_id"), response.get("user_id"),
                             response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
                             response.get("user_image"), response.get("opponent_image"), response.get("date"));
                     mChatModelArrayList.add(mChatModel);
@@ -463,4 +538,24 @@ public class Chat extends BaseActivity {
         Notification.getInstance().setSendingRemote(true);
         super.onPause();
     }
+
+    @Override
+    public void OnItemClicked(int position) {
+        GifModel singleModel = gifModelList.get(position);
+        String gifName = gifModelList.get(position).getGifName();
+        sendMessageGifViewWrapper.setVisibility(View.VISIBLE);
+        gifChooserDialog.dismiss();
+        if (singleModel.isAnimated()) {
+            if (singleModel.hasSound()) {
+
+            }
+            Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + gifName).intoImageView(sendMessageGifView);
+        } else {
+
+        }
+        Log.d("fasfsafsafasfsa", "OnItemClicked: " + gifName);
+        lasChosenGifName = gifName;
+        isGifChosen = true;
+    }
+
 }
