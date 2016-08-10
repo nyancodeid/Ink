@@ -341,6 +341,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     @Override
     protected void onResume() {
+        System.gc();
         if (isOnCreate) {
             messagesAdapter.setShouldStartAnimation(false);
             isOnCreate = false;

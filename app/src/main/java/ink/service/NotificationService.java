@@ -77,7 +77,7 @@ public class NotificationService extends FirebaseMessagingService {
                     RealmHelper.getInstance().insertMessage(response.get("user_id"), response.get("opponent_id"),
                             response.get("message"), response.get("message_id"), response.get("date"), response.get("message_id"),
                             Constants.STATUS_DELIVERED, response.get("user_image"), response.get("opponent_image"),
-                            response.get("delete_opponent_id"), response.get("delete_user_id"));
+                            response.get("delete_opponent_id"), response.get("delete_user_id"), Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"));
                 }
             });
 
@@ -86,7 +86,7 @@ public class NotificationService extends FirebaseMessagingService {
                         StringEscapeUtils.unescapeJava(response.get("message")), getApplicationContext(),
                         response.get("message_id"), response.get("opponent_id"),
                         response.get("opponent_image"), response.get("opponent_image").isEmpty() ? "" : response.get("opponent_image"), response.get("name"),
-                        response.get("delete_user_id"), response.get("delete_opponent_id"), Boolean.valueOf(response.get("isSocialAccount")), response.get("lastName"));
+                        response.get("delete_user_id"), response.get("delete_opponent_id"), Boolean.valueOf(response.get("isSocialAccount")), response.get("lastName"), Boolean.valueOf(response.get("hasGif")));
             } else {
                 Intent intent = new Intent(getPackageName() + ".Chat");
                 intent.putExtra("data", remoteMessage);
@@ -122,9 +122,16 @@ public class NotificationService extends FirebaseMessagingService {
                                  String messageId, String currentUserId,
                                  String userImage, final String opponentImage,
                                  String userName, String deleteUserId, String deleteOpponentId,
-                                 boolean isSocialAccount, String lastName) {
+                                 boolean isSocialAccount, String lastName, boolean hasGif) {
 
         NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+
+        if (hasGif && !messageBody.trim().isEmpty()) {
+            String oldMesssage = messageBody;
+            messageBody = oldMesssage + "\n\n" + userImage + " " + getString(R.string.haveSentSticker);
+        } else if (hasGif && messageBody.trim().isEmpty()) {
+            messageBody = userName + " " + getString(R.string.haveSentSticker);
+        }
 
         Log.d(TAG, "sendNotification: " + opponentImage);
         Intent chatIntent = new Intent(context, Chat.class);

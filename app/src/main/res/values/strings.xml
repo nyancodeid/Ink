@@ -366,7 +366,8 @@
     <!--DO NOT TRANSLATE THESE ONES-->
     <string name="notVisible">NOT_VISIBLE</string>
     <string name="visible">VISIBLE</string>
-
+    <string name="haveSentSticker">have sent you a sticker</string>
+    <string name="loadingSticker">Loading...</string>
 
 
     <!--CONTINUE TRANSLATION-->

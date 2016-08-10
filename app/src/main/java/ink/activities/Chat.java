@@ -168,6 +168,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                System.gc();
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                     InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                     inputMethodManager.hideSoftInputFromWindow(mRecyclerView.getWindowToken(), 0);
@@ -181,9 +182,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                             showScroller();
                         }
                     } else {
-                        Log.d("fsfafafsafas", "onScrollStateChanged: " + "trying to hide" + scrollDownChat.getTag());
                         if (scrollDownChat.getTag().equals(getString(R.string.visible))) {
-                            Log.d("fsfafafsafas", "onScrollStateChanged: " + "hiding");
                             hideScroller();
                         }
                     }
@@ -226,7 +225,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
-                mRecyclerView.scrollToPosition(mChatAdapter.getItemCount()-1);
+                mRecyclerView.scrollToPosition(mChatAdapter.getItemCount() - 1);
             }
         });
         hideScroller();
@@ -323,9 +322,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     public void trashIcon() {
         isGifChosen = false;
         System.gc();
-        sendMessageGifView.setBackground(null);
-        sendMessageGifView.setImageResource(0);
-        sendMessageGifViewWrapper.setVisibility(View.GONE);
+        dismissStickerChooser();
         if (mWriteEditText.getText().toString().trim().isEmpty()) {
             mSendChatMessage.setEnabled(false);
         }
@@ -432,14 +429,14 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
             mNoMessageLayout.setVisibility(View.GONE);
         }
         String message = StringEscapeUtils.escapeJava(mWriteEditText.getText().toString().trim());
-
+        dismissStickerChooser();
         ChatModel tempChat = new ChatModel(isGifChosen, lasChosenGifName, null, mCurrentUserId, mOpponentId, StringEscapeUtils.unescapeJava(message.trim()),
                 false, Constants.STATUS_NOT_DELIVERED,
                 mUserImage, mOpponentImage, "");
         mChatModelArrayList.add(tempChat);
         int itemLocation = mChatModelArrayList.indexOf(tempChat);
 
-        attemptToQue(message.trim(), itemLocation, mDeleteOpponentId, mDeleteUserId);
+        attemptToQue(message.trim(), itemLocation, mDeleteOpponentId, mDeleteUserId, isGifChosen, lasChosenGifName);
         mChatAdapter.notifyDataSetChanged();
 
 
@@ -451,8 +448,17 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                 scrollToBottom();
             }
         });
+        isGifChosen = false;
 
+    }
 
+    private void dismissStickerChooser() {
+        System.gc();
+        sendMessageGifView.setBackground(null);
+        sendMessageGifView.setImageResource(0);
+        if (sendMessageGifViewWrapper.getVisibility() == View.VISIBLE) {
+            sendMessageGifViewWrapper.setVisibility(View.GONE);
+        }
     }
 
 
@@ -467,20 +473,21 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     }
 
     private void attemptToQue(String message, int itemLocation, String deleteOpponentId,
-                              String deleteUserId) {
+                              String deleteUserId, final boolean hasGif, final String gifUrl) {
         RealmHelper.getInstance().insertMessage(mCurrentUserId, mOpponentId,
                 message, "0", "",
                 String.valueOf(itemLocation),
                 Constants.STATUS_NOT_DELIVERED, mUserImage,
-                mOpponentImage, deleteOpponentId, deleteUserId);
+                mOpponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl);
 
         QueHelper queHelper = new QueHelper();
-        queHelper.attachToQue(mCurrentUserId, mOpponentId, message, itemLocation,
+        queHelper.attachToQue(mCurrentUserId, mOpponentId, message, itemLocation, isGifChosen, gifUrl,
                 new QueCallback() {
                     @Override
                     public void onMessageSent(String response, int sentItemLocation) {
                         System.gc();
                         try {
+                            Log.d("fsafsafasfas", "onMessageSent: " + response);
                             JSONObject jsonObject = new JSONObject(response);
                             boolean success = jsonObject.optBoolean("success");
                             if (success) {
@@ -504,7 +511,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
                     @Override
                     public void onMessageSentFail(QueHelper failedHelperInstance, String failedMessage, int failedItemLocation) {
-                        failedHelperInstance.attachToQue(mCurrentUserId, mOpponentId, failedMessage, failedItemLocation, this);
+                        failedHelperInstance.attachToQue(mCurrentUserId, mOpponentId, failedMessage, failedItemLocation, hasGif, gifUrl, this);
                     }
                 });
     }
@@ -524,6 +531,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                 String userImage = eachModel.getUserImage();
                 String opponentImage = eachModel.getOpponentImage();
                 String date = eachModel.getDate();
+                boolean isGifChosen = eachModel.hasGif();
+                String gifUrl = eachModel.getGifUrl();
 
                 String deleteUserId = eachModel.getDeleteUserId();
                 String deleteOpponentId = eachModel.getDeleteOpponentId();
@@ -536,13 +545,13 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                     }
                 }
 
-                mChatModel = new ChatModel(isGifChosen, lasChosenGifName, messageId, userId, opponentId, message, true,
+                mChatModel = new ChatModel(isGifChosen, gifUrl, messageId, userId, opponentId, message, true,
                         eachModel.getDeliveryStatus(), userImage, opponentImage, date);
                 mChatModelArrayList.add(mChatModel);
                 if (eachModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED)) {
                     int itemLocation = mChatModelArrayList.indexOf(mChatModel);
                     attemptToQue(message, itemLocation,
-                            deleteOpponentId, deleteUserId);
+                            deleteOpponentId, deleteUserId, isGifChosen, lasChosenGifName);
                 }
                 mChatAdapter.notifyDataSetChanged();
             }
@@ -594,11 +603,17 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     @Override
     protected void onDestroy() {
+        System.gc();
         Notification.getInstance().setSendingRemote(true);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-        Ion.getDefault(getApplicationContext()).getCache().clear();
-        Ion.getDefault(getApplicationContext()).configure().getResponseCache().clear();
+        clearIonCache();
         super.onDestroy();
+    }
+
+    private void clearIonCache() {
+        Ion.getDefault(getApplicationContext()).getCache().clear();
+        Ion.getDefault(getApplicationContext()).getBitmapCache().clear();
+        Ion.getDefault(getApplicationContext()).configure().getResponseCache().clear();
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -610,8 +625,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                 Map<String, String> response = remoteMessage.getData();
 
                 if (mOpponentId.equals(response.get("user_id"))) {
-                    // TODO: 8/9/2016  change the variables to real ones.
-                    mChatModel = new ChatModel(false, null, response.get("message_id"), response.get("user_id"),
+                    mChatModel = new ChatModel(Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"), response.get("message_id"), response.get("user_id"),
                             response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
                             response.get("user_image"), response.get("opponent_image"), response.get("date"));
                     mChatModelArrayList.add(mChatModel);
@@ -630,6 +644,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     @Override
     protected void onResume() {
+        System.gc();
         Notification.getInstance().setSendingRemote(false);
         ActionBar actionBar = getSupportActionBar();
         Bundle bundle = getIntent().getExtras();
@@ -679,6 +694,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     @Override
     protected void onPause() {
+        System.gc();
         Notification.getInstance().setSendingRemote(true);
         super.onPause();
     }

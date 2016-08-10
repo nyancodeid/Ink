@@ -51,10 +51,10 @@ public class SendReplyService extends Service {
         RealmHelper.getInstance().insertMessage(mCurrentUserId, mOpponentId,
                 message, "0", "",
                 String.valueOf(finalId), Constants.STATUS_NOT_DELIVERED, userImage, mOpponentImage, deleteOpponentId,
-                deleteUserId);
+                deleteUserId, false, "");
 
         QueHelper queHelper = new QueHelper();
-        queHelper.attachToQue(mCurrentUserId, mOpponentId, message, finalId,
+        queHelper.attachToQue(mCurrentUserId, mOpponentId, message, finalId, false, "",
                 new QueCallback() {
                     @Override
                     public void onMessageSent(String response, int sentItemLocation) {
@@ -77,7 +77,7 @@ public class SendReplyService extends Service {
 
                     @Override
                     public void onMessageSentFail(QueHelper failedHelperInstance, String failedMessage, int failedItemLocation) {
-                        failedHelperInstance.attachToQue(mCurrentUserId, mOpponentId, failedMessage, failedItemLocation, this);
+                        failedHelperInstance.attachToQue(mCurrentUserId, mOpponentId, failedMessage, failedItemLocation, false, "", this);
                     }
                 });
     }

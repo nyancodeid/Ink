@@ -24,20 +24,24 @@ public class QueHelper {
 
     public void attachToQue(final String mCurrentUserId,
                             final String mOpponentId,
-                            final String message, final int sentItemLocation, final QueCallback queCallback) {
+                            final String message,
+                            final int sentItemLocation,
+                            final boolean hasGif, final String gifUrl,
+                            final QueCallback queCallback) {
+
         Call<ResponseBody> sendMessageResponse = Retrofit.getInstance().getInkService().sendMessage(mCurrentUserId,
-                mOpponentId, message, Time.getTimeZone());
+                mOpponentId, message, Time.getTimeZone(), hasGif, gifUrl);
 
         sendMessageResponse.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     if (response == null) {
-                        attachToQue(mCurrentUserId, mOpponentId, message, sentItemLocation, queCallback);
+                        attachToQue(mCurrentUserId, mOpponentId, message, sentItemLocation, hasGif, gifUrl, queCallback);
                         return;
                     }
                     if (response.body() == null) {
-                        attachToQue(mCurrentUserId, mOpponentId, message, sentItemLocation, queCallback);
+                        attachToQue(mCurrentUserId, mOpponentId, message, sentItemLocation, hasGif, gifUrl,queCallback);
                         return;
                     }
                     String responseString = response.body().string();

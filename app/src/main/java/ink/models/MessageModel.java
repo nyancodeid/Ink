@@ -17,6 +17,8 @@ public class MessageModel extends RealmObject {
     String opponentImage;
     String deleteUserId;
     String deleteOpponentId;
+    boolean hasGif;
+    String gifUrl;
 
     public MessageModel() {
 
@@ -109,5 +111,21 @@ public class MessageModel extends RealmObject {
 
     public void setDeleteOpponentId(String deleteOpponentId) {
         this.deleteOpponentId = deleteOpponentId;
+    }
+
+    public boolean hasGif() {
+        return hasGif;
+    }
+
+    public String getGifUrl() {
+        return gifUrl;
+    }
+
+    public void setHasGif(boolean hasGif) {
+        this.hasGif = hasGif;
+    }
+
+    public void setGifUrl(String gifUrl) {
+        this.gifUrl = gifUrl;
     }
 }

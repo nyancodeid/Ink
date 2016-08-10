@@ -67,7 +67,7 @@ public class ChatModel {
         return deliveryStatus;
     }
 
-    public boolean isHasGif() {
+    public boolean hasGif() {
         return hasGif;
     }
 

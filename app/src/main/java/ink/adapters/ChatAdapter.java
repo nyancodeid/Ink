@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ink.R;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     private static final int MY_MESSAGE = 1;
     private static final int OPPONENT_MESSAGE = 2;
+    private static final String LOADED = "LOADED";
     private List<ChatModel> chatModelList;
     private Context mContext;
     private String mCurrentUserId;
@@ -36,11 +39,16 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         private TextView deliveryStatus;
         private LinearLayout chatViewBubble;
         private ImageView gifChatView;
+        private LinearLayout singleGifViewWrapper;
+        private TextView singleGifViewLoading;
 
         public ViewHolder(View view) {
             super(view);
             message = (TextView) view.findViewById(R.id.messageContainer);
             chatViewBubble = (LinearLayout) view.findViewById(R.id.chatViewBubble);
+            singleGifViewWrapper = (LinearLayout) view.findViewById(R.id.singleGifViewWrapper);
+            singleGifViewLoading = (TextView) view.findViewById(R.id.singleGifViewLoading);
+
             deliveryStatus = (TextView) view.findViewById(R.id.deliveryStatus);
             gifChatView = (ImageView) view.findViewById(R.id.gifChatView);
         }
@@ -72,13 +80,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         ChatModel chatModel = chatModelList.get(position);
         holder.message.setText(chatModel.getMessage());
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.chatViewBubble.getLayoutParams();
         LinearLayout.LayoutParams deliveryStatusParams = (LinearLayout.LayoutParams) holder.deliveryStatus.getLayoutParams();
-        LinearLayout.LayoutParams gifChatViewLayoutParams = (LinearLayout.LayoutParams) holder.gifChatView.getLayoutParams();
+        LinearLayout.LayoutParams gifChatViewLayoutParams = (LinearLayout.LayoutParams) holder.singleGifViewWrapper.getLayoutParams();
 
+        checkForGif(chatModel, holder);
         if (mCurrentUserId.equals(chatModel.getUserId())) {
             layoutParams.gravity = Gravity.RIGHT;
             layoutParams.rightMargin = Dp.toDps(mContext, 16);
@@ -108,6 +117,45 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             holder.chatViewBubble.setLayoutParams(layoutParams);
             holder.gifChatView.setLayoutParams(gifChatViewLayoutParams);
             holder.deliveryStatus.setVisibility(View.INVISIBLE);
+        }
+
+    }
+
+    private void checkForGif(ChatModel chatModel, final ChatAdapter.ViewHolder holder) {
+        System.gc();
+        if (chatModel.hasGif()) {
+            holder.singleGifViewWrapper.setVisibility(View.VISIBLE);
+            if (holder.gifChatView.getTag() == null) {
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl()).intoImageView(holder.gifChatView)
+                        .setCallback(new FutureCallback<ImageView>() {
+                            @Override
+                            public void onCompleted(Exception e, ImageView result) {
+                                holder.singleGifViewLoading.setVisibility(View.GONE);
+                                holder.gifChatView.setTag(LOADED);
+                            }
+                        });
+            } else if (!holder.gifChatView.getTag().equals(LOADED)) {
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl()).intoImageView(holder.gifChatView)
+                        .setCallback(new FutureCallback<ImageView>() {
+                            @Override
+                            public void onCompleted(Exception e, ImageView result) {
+                                holder.singleGifViewLoading.setVisibility(View.GONE);
+                                holder.gifChatView.setTag(LOADED);
+                            }
+                        });
+            }
+            if (chatModel.getMessage().trim().isEmpty()) {
+                holder.chatViewBubble.setVisibility(View.GONE);
+            } else {
+                holder.chatViewBubble.setVisibility(View.VISIBLE);
+            }
+        } else {
+            if (chatModel.getMessage().trim().isEmpty()) {
+                holder.chatViewBubble.setVisibility(View.GONE);
+            } else {
+                holder.chatViewBubble.setVisibility(View.VISIBLE);
+            }
+            holder.singleGifViewWrapper.setVisibility(View.GONE);
         }
     }
 

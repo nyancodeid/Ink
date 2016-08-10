@@ -114,7 +114,14 @@ public class Retrofit {
 
         @POST(Constants.SEND_MESSAGE_URL)
         @FormUrlEncoded
-        Call<ResponseBody> sendMessage(@Field("user_id") String userId, @Field("opponent_id") String opponentId, @Field("message") String message, @Field("timezone") String timezone);
+        Call<ResponseBody> sendMessage(@Field("user_id") String userId,
+                                       @Field("opponent_id")
+                                       String opponentId,
+                                       @Field("message")
+                                       String message,
+                                       @Field("timezone") String timezone,
+                                       @Field("hasGif") boolean hasGif,
+                                       @Field("gifUrl") String gifUrl);
 
         @POST(Constants.WAITERS_QUE)
         @FormUrlEncoded

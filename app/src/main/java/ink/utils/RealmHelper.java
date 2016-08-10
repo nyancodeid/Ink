@@ -50,7 +50,9 @@ public class RealmHelper {
                               final String id, final String deliveryStatus,
                               final String userImage,
                               final String opponentImage, final String deleteOpponentId,
-                              final String deleteUserId) {
+                              final String deleteUserId,
+                              final boolean hasGif, final String gifUrl) {
+
         mRealm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -65,6 +67,8 @@ public class RealmHelper {
                 messageModel.setUserImage(userImage);
                 messageModel.setOpponentImage(opponentImage);
                 messageModel.setDate(date);
+                messageModel.setHasGif(hasGif);
+                messageModel.setGifUrl(gifUrl);
                 messageModel.setDeleteUserId(deleteUserId);
                 messageModel.setDeleteOpponentId(deleteOpponentId);
             }
