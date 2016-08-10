@@ -105,6 +105,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     RelativeLayout sendMessageGifViewWrapper;
     @Bind(R.id.singleGifViewLoading)
     AVLoadingIndicatorView singleGifViewLoading;
+    @Bind(R.id.scrollDownChat)
+    ImageView scrollDownChat;
 
     private String mOpponentId;
     String mCurrentUserId;
@@ -129,6 +131,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     private boolean isGifChosen = false;
     private String lasChosenGifName;
     private Gson gson;
+    private Animation slideIn;
+    private Animation slideOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,6 +150,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         gifAdapter = new GifAdapter(gifModelList, this);
         gifAdapter.setOnItemClickListener(this);
         gifGson = new Gson();
+        slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_in);
+        slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_out);
         Notification.getInstance().setSendingRemote(false);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(getPackageName() + ".Chat"));
         mChatAdapter = new ChatAdapter(mChatModelArrayList, this);
@@ -167,9 +173,21 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                     inputMethodManager.hideSoftInputFromWindow(mRecyclerView.getWindowToken(), 0);
                 }
 
-                LinearLayoutManager layoutManager = ((LinearLayoutManager) mRecyclerView.getLayoutManager());
-                int firstVisiblePosition = layoutManager.findFirstVisibleItemPosition();
-                Log.d("fasfsafsafasfsa", "onScrollStateChanged: " + firstVisiblePosition);
+                LinearLayoutManager layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
+                int firstVisiblePosition = layoutManager.findLastVisibleItemPosition();
+                if (mChatAdapter.getItemCount() > 5) {
+                    if (firstVisiblePosition < mChatAdapter.getItemCount() - 4) {
+                        if (scrollDownChat.getTag().equals(getString(R.string.notVisible))) {
+                            showScroller();
+                        }
+                    } else {
+                        Log.d("fsfafafsafas", "onScrollStateChanged: " + "trying to hide" + scrollDownChat.getTag());
+                        if (scrollDownChat.getTag().equals(getString(R.string.visible))) {
+                            Log.d("fsfafafsafas", "onScrollStateChanged: " + "hiding");
+                            hideScroller();
+                        }
+                    }
+                }
             }
         });
 
@@ -201,6 +219,59 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         mSendChatMessage.setEnabled(false);
         mWriteEditText.addTextChangedListener(chatTextWatcher);
 
+    }
+
+    @OnClick(R.id.scrollDownChat)
+    public void scrollDownChat() {
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.scrollToPosition(mChatAdapter.getItemCount()-1);
+            }
+        });
+        hideScroller();
+    }
+
+    private void hideScroller() {
+        scrollDownChat.setTag(getString(R.string.notVisible));
+        scrollDownChat.startAnimation(slideOut);
+        slideOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                scrollDownChat.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+    private void showScroller() {
+        scrollDownChat.setTag(getString(R.string.visible));
+        scrollDownChat.startAnimation(slideIn);
+        scrollDownChat.setVisibility(View.VISIBLE);
+        slideIn.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
     }
 
     private void getStatus() {

@@ -361,6 +361,15 @@
     <string name="signInWithFacebook">Sign in with facebook</string>
     <string name="registerInkAccount">Register new account on Ink</string>
     <string name="noGif">You don\'t have any stickers.Go buy some!</string>
+    <string name="myItems">My items</string>
+
+    <!--DO NOT TRANSLATE THESE ONES-->
+    <string name="notVisible">NOT_VISIBLE</string>
+    <string name="visible">VISIBLE</string>
+
+
+
+    <!--CONTINUE TRANSLATION-->
     <string-array name="issueTypes">
         <item name="generalIssue">General</item>
         <item name="bugIssue">Bug</item>
