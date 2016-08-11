@@ -5,19 +5,32 @@
     android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
+        android:id="@+id/friendsItemRootView"
         android:layout_width="match_parent"
         android:layout_height="110dp"
-        android:layout_margin="4dp"
-        android:layout_marginTop="10dp"
+        android:layout_margin="10dp"
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
-        android:elevation="4dp"
+        android:elevation="8dp"
         android:foreground="?android:attr/selectableItemBackground"
-        app:cardCornerRadius="10dp">
+        app:cardCornerRadius="8dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/friendMoreIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:padding="5dp"
+                android:src="@drawable/more_icon" />
 
             <ImageView
                 android:id="@+id/friendImage"

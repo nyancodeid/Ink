@@ -57,7 +57,7 @@ public class GifAdapter extends RecyclerView.Adapter<GifAdapter.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     if (recyclerItemClickListener != null) {
-                        recyclerItemClickListener.OnItemClicked(position);
+                        recyclerItemClickListener.onItemClicked(position,null);
                     }
                 }
             });

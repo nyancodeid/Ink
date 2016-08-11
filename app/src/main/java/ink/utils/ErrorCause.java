@@ -8,4 +8,5 @@ public class ErrorCause {
     public static final String NO_FRIENDS = "noFriends";
     public static final String NO_GIFS = "noGifs";
     public static final String UNAUTHORIZED = "UNAUTHORIZED";
+    public static final String NO_SEARCH_RESULT = "noSearchResult";
 }

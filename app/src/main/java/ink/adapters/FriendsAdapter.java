@@ -5,8 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +13,7 @@ import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
+import ink.interfaces.RecyclerItemClickListener;
 import ink.models.FriendsModel;
 import ink.utils.Animations;
 import ink.utils.CircleTransform;
@@ -27,15 +26,20 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
     private List<FriendsModel> friendsModelList;
     private Context mContext;
+    private RecyclerItemClickListener recyclerItemClickListener;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public ImageView friendImage;
+        private ImageView friendMoreIcon;
+        private View friendsItemRootView;
 
         public ViewHolder(View view) {
             super(view);
             name = (TextView) view.findViewById(R.id.friendName);
             friendImage = (ImageView) view.findViewById(R.id.friendImage);
+            friendMoreIcon = (ImageView) view.findViewById(R.id.friendMoreIcon);
+            friendsItemRootView = view.findViewById(R.id.friendsItemRootView);
         }
     }
 
@@ -53,7 +57,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         FriendsModel friendsModel = friendsModelList.get(position);
         holder.name.setText(friendsModel.getFullName());
         if (!friendsModel.getImageLink().isEmpty()) {
@@ -64,16 +68,24 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
             Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
                     .withBitmap().transform(new CircleTransform()).intoImageView(holder.friendImage);
         }
+        holder.friendMoreIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (recyclerItemClickListener != null) {
+                    recyclerItemClickListener.onAdditionItemClick(position, holder.friendMoreIcon);
+                }
+            }
+        });
+        holder.friendsItemRootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (recyclerItemClickListener != null) {
+                    recyclerItemClickListener.onItemClicked(position, holder.friendsItemRootView);
+                }
+            }
+        });
     }
 
-
-    public void animate(RecyclerView.ViewHolder viewHolder) {
-        final Animation animAnticipateOvershoot = AnimationUtils.loadAnimation(mContext, R.anim.bounce_interpolator);
-        if (viewHolder.itemView.getTag() == null) {
-            viewHolder.itemView.setAnimation(animAnticipateOvershoot);
-            viewHolder.itemView.setTag("Animated");
-        }
-    }
 
     @Override
     public void onViewAttachedToWindow(ViewHolder holder) {
@@ -84,5 +96,9 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     @Override
     public int getItemCount() {
         return friendsModelList.size();
+    }
+
+    public void setOnItemClickListener(RecyclerItemClickListener onItemClickListener) {
+        this.recyclerItemClickListener = onItemClickListener;
     }
 }

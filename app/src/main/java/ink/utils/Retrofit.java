@@ -79,7 +79,14 @@ public class Retrofit {
 
         @POST(Constants.SEARCH_GROUP_URL)
         @FormUrlEncoded
-        Call<ResponseBody> searchGroups(@Field("userId") String userId, @Field("textToSearch") String textToSearch);
+        Call<ResponseBody> searchGroups(@Field("userId") String userId,
+                                        @Field("textToSearch") String textToSearch);
+
+
+        @POST(Constants.SEARCH_PERSON_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> searchPerson(@Field("userId") String currentUserId,
+                                        @Field("textToSearch") String textToSearch);
 
 
         @POST(Constants.GROUP_REQUESTS_URL)

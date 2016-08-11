@@ -82,6 +82,7 @@ public class HomeActivity extends BaseActivity
     private Class<?> mLastClassToOpen;
     private boolean shouldOpenActivity;
     private FloatingActionButton mMakePost;
+    private FloatingActionButton searchFriend;
     private Thread mPingThread;
     private Gson gson;
     private ProgressDialog progressDialog;
@@ -107,6 +108,7 @@ public class HomeActivity extends BaseActivity
         mFab = (FloatingActionMenu) findViewById(R.id.fab);
         mMessages = (FloatingActionButton) findViewById(R.id.messages);
         mMakePost = (FloatingActionButton) findViewById(R.id.makePost);
+        searchFriend = (FloatingActionButton) findViewById(R.id.searchPerson);
         mNewPost = (FloatingActionButton) findViewById(R.id.makePost);
         mFeed = Feed.newInstance();
         mMyFriends = MyFriends.newInstance();
@@ -271,7 +273,7 @@ public class HomeActivity extends BaseActivity
     }
 
 
-    public FloatingActionMenu getFab() {
+    public FloatingActionMenu getHomeFab() {
         return mFab;
     }
 
@@ -505,6 +507,9 @@ public class HomeActivity extends BaseActivity
         profileImageLoading.setVisibility(View.GONE);
     }
 
+    public FloatingActionButton getSearchFriend() {
+        return searchFriend;
+    }
 
     private void setLastClassToOpen(Class<?> classToOpen) {
         mLastClassToOpen = classToOpen;

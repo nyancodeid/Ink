@@ -25,7 +25,6 @@
     <include layout="@layout/content_home" />
 
 
-
     <android.support.design.widget.FloatingActionMenu
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -57,6 +56,17 @@
             fab:fab_colorNormal="#444f65"
             fab:fab_colorPressed="#636e85"
             fab:fab_label="@string/makePostString"
+            fab:fab_size="mini" />
+
+        <fab.FloatingActionButton
+            android:visibility="gone"
+            android:id="@+id/searchPerson"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/search_music_icon"
+            fab:fab_colorNormal="#444f65"
+            fab:fab_colorPressed="#636e85"
+            fab:fab_label="@string/searchPerson"
             fab:fab_size="mini" />
     </android.support.design.widget.FloatingActionMenu>
 </android.support.design.widget.CoordinatorLayout>

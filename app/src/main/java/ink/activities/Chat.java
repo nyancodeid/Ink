@@ -1,6 +1,5 @@
 package ink.activities;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,7 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -65,6 +63,7 @@ import ink.models.UserStatus;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.ErrorCause;
+import ink.utils.Keyboard;
 import ink.utils.Notification;
 import ink.utils.QueHelper;
 import ink.utils.RealmHelper;
@@ -174,8 +173,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                 super.onScrollStateChanged(recyclerView, newState);
                 System.gc();
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(mRecyclerView.getWindowToken(), 0);
+                    Keyboard.hideKeyboard(getApplicationContext(), mRecyclerView);
                 }
 
                 LinearLayoutManager layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
@@ -707,7 +705,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     }
 
     @Override
-    public void OnItemClicked(int position) {
+    public void onItemClicked(int position, View view) {
         System.gc();
         GifModel singleModel = gifModelList.get(position);
         String gifName = gifModelList.get(position).getGifName();
@@ -730,6 +728,28 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         }
         lasChosenGifName = gifName;
         isGifChosen = true;
+    }
+
+
+    /**
+     * UNUSABLE
+     *
+     * @param position
+     */
+    @Override
+    public void onItemLongClick(int position) {
+
+    }
+
+    /**
+     * UNUSABLE
+     *
+     * @param position
+     * @param view
+     */
+    @Override
+    public void onAdditionItemClick(int position, View view) {
+
     }
 
     private void scrollToBottom() {

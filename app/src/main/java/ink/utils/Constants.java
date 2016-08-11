@@ -25,6 +25,7 @@ public class Constants {
     public static final String GET_GROUP_URL = "GetGroups.php";
     public static final String REGISTER_URL = "Register.php";
     public static final String MY_GROUPS_URL = "UserGroups.php";
+    public static final String SEARCH_PERSON_URL = "SearchPerson.php";
     public static final String GROUP_PARTICIPANTS_URL = "GroupParticipants.php";
     public static final String GROUP_MESSAGES_URL = "GroupMessages.php";
     public static final String NOTIFY_OPPONENT = "NotifyOpponent.php";
