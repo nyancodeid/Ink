@@ -275,16 +275,17 @@ public class Music extends BaseActivity implements MusicClickListener {
                 if (searchText.isEmpty()) {
                     Toast.makeText(Music.this, getString(R.string.pleaseInputSearch), Toast.LENGTH_SHORT).show();
                 } else {
+                    dialog.dismiss();
+                    musicLoading.setVisibility(View.VISIBLE);
+                    clearTrackArray();
                     Call<ResponseBody> searchCall = Retrofit.getInstance().getMusicCloudInterface().searchSong(searchText);
                     searchCall.enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             try {
-                                clearTrackArray();
                                 String responseBody = response.body().string();
                                 Track[] tracks = gson.fromJson(responseBody, Track[].class);
                                 loadTracks(tracks);
-                                dialog.dismiss();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
