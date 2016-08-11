@@ -40,14 +40,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         private LinearLayout chatViewBubble;
         private ImageView gifChatView;
         private LinearLayout singleGifViewWrapper;
-        private TextView singleGifViewLoading;
 
         public ViewHolder(View view) {
             super(view);
             message = (TextView) view.findViewById(R.id.messageContainer);
             chatViewBubble = (LinearLayout) view.findViewById(R.id.chatViewBubble);
             singleGifViewWrapper = (LinearLayout) view.findViewById(R.id.singleGifViewWrapper);
-            singleGifViewLoading = (TextView) view.findViewById(R.id.singleGifViewLoading);
 
             deliveryStatus = (TextView) view.findViewById(R.id.deliveryStatus);
             gifChatView = (ImageView) view.findViewById(R.id.gifChatView);
@@ -121,7 +119,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     }
 
-    private void checkForGif(ChatModel chatModel, final ChatAdapter.ViewHolder holder) {
+    private void checkForGif(final ChatModel chatModel, final ChatAdapter.ViewHolder holder) {
         System.gc();
         if (chatModel.hasGif()) {
             holder.singleGifViewWrapper.setVisibility(View.VISIBLE);
@@ -130,7 +128,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                         .setCallback(new FutureCallback<ImageView>() {
                             @Override
                             public void onCompleted(Exception e, ImageView result) {
-                                holder.singleGifViewLoading.setVisibility(View.GONE);
                                 holder.gifChatView.setTag(LOADED);
                             }
                         });
@@ -139,7 +136,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                         .setCallback(new FutureCallback<ImageView>() {
                             @Override
                             public void onCompleted(Exception e, ImageView result) {
-                                holder.singleGifViewLoading.setVisibility(View.GONE);
                                 holder.gifChatView.setTag(LOADED);
                             }
                         });

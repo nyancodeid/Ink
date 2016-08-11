@@ -222,6 +222,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     @OnClick(R.id.scrollDownChat)
     public void scrollDownChat() {
+        mRecyclerView.stopScroll();
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
@@ -233,6 +234,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     private void hideScroller() {
         scrollDownChat.setTag(getString(R.string.notVisible));
+        scrollDownChat.setEnabled(false);
         scrollDownChat.startAnimation(slideOut);
         slideOut.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -253,6 +255,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     }
 
     private void showScroller() {
+        scrollDownChat.setEnabled(true);
         scrollDownChat.setTag(getString(R.string.visible));
         scrollDownChat.startAnimation(slideIn);
         scrollDownChat.setVisibility(View.VISIBLE);

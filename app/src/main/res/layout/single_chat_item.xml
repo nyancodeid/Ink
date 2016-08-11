@@ -11,24 +11,16 @@
     <LinearLayout
         android:id="@+id/singleGifViewWrapper"
         android:layout_width="74dp"
-        android:layout_height="90dp"
+        android:layout_height="74dp"
         android:layout_margin="5dp"
         android:orientation="vertical"
         android:visibility="visible">
+
 
         <ImageView
             android:id="@+id/gifChatView"
             android:layout_width="74dp"
             android:layout_height="74dp" />
-
-        <TextView
-            android:id="@+id/singleGifViewLoading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@string/appFont"
-            android:text="@string/loadingSticker"
-            android:textSize="12sp" />
 
     </LinearLayout>
 
