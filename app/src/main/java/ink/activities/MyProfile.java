@@ -43,6 +43,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.ink.R;
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -413,18 +414,31 @@ public class MyProfile extends BaseActivity {
             mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
             if (shouldLoadImage) {
                 if (isSocialAccount()) {
-                    Ion.with(getApplicationContext()).load(mImageLinkToSend).intoImageView(profileImage);
+                    Ion.with(getApplicationContext()).load(mImageLinkToSend).intoImageView(profileImage).setCallback(new FutureCallback<ImageView>() {
+                        @Override
+                        public void onCompleted(Exception e, ImageView result) {
+                            hideImageLoading();
+                        }
+                    });
                 } else {
-                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).intoImageView(profileImage);
+                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).intoImageView(profileImage)
+                            .setCallback(new FutureCallback<ImageView>() {
+                                @Override
+                                public void onCompleted(Exception e, ImageView result) {
+                                    hideImageLoading();
+                                }
+                            });
                 }
 
             } else {
+                hideImageLoading();
                 mSharedHelper.putFirstName(mFirstNameToSend);
                 mSharedHelper.putLastName(mLastNameToSend);
                 mCollapsingToolbar.setTitle(mFirstNameToSend + " " + mLastNameToSend);
             }
         } else {
             profileImage.setBackgroundResource(R.drawable.no_image);
+            hideImageLoading();
         }
         mPhone.setText(mPhoneNumberToSend);
         mFacebook.setText(mFacebookName);
@@ -434,7 +448,6 @@ public class MyProfile extends BaseActivity {
         mStatusText.setText(mStatusToSend);
         mGender.setText(mGenderToSend);
         isDataDownloaded = true;
-        hideImageLoading();
         hideSnack();
     }
 

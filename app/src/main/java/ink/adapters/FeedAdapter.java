@@ -83,11 +83,11 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         if (feedModel.getUserImage() != null && !feedModel.getUserImage().isEmpty()) {
             if (feedModel.isSocialAccount()) {
                 Ion.with(mContext).load(feedModel.getUserImage())
-                        .withBitmap().transform(new CircleTransform())
+                        .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
                         .intoImageView(holder.feedUserImage);
             } else {
                 Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + feedModel.getUserImage())
-                        .withBitmap().transform(new CircleTransform())
+                        .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
                         .intoImageView(holder.feedUserImage);
             }
 

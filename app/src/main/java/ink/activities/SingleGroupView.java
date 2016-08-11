@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -229,7 +230,7 @@ public class SingleGroupView extends BaseActivity {
 
         if (mGroupImage != null && !mGroupImage.isEmpty()) {
             mGroupImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            Ion.with(this).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + mGroupImage).intoImageView(mGroupImageView).setCallback(new FutureCallback<ImageView>() {
+            Ion.with(this).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + mGroupImage).withBitmap().fitXY().centerCrop().intoImageView(mGroupImageView).setCallback(new FutureCallback<ImageView>() {
                 @Override
                 public void onCompleted(Exception e, ImageView result) {
                     hideGroupImageLoading();
@@ -237,7 +238,7 @@ public class SingleGroupView extends BaseActivity {
             });
         } else {
             mGroupImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            mGroupImageView.setBackgroundResource(R.drawable.no_group_image);
+            mGroupImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.no_group_image));
             hideGroupImageLoading();
         }
         if (mOwnerImage != null && !mOwnerImage.isEmpty()) {
@@ -409,6 +410,15 @@ public class SingleGroupView extends BaseActivity {
         });
     }
 
+
+    @OnClick(R.id.groupImage)
+    public void groupImageView() {
+        Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
+        if (mGroupImage != null && !mGroupImage.isEmpty()) {
+            intent.putExtra("link", Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + mGroupImage);
+            startActivity(intent);
+        }
+    }
 
     @OnClick(R.id.ownerImageView)
     public void ownerImageView() {

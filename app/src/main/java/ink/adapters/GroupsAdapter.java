@@ -2,15 +2,18 @@ package ink.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ink.R;
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.util.List;
@@ -33,6 +36,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
         public TextView groupName, followersCount;
         public ImageView groupImage, ownerImage;
         public CardView groupBackground;
+        private ProgressBar singleItemLoading;
 
         public ViewHolder(View view) {
             super(view);
@@ -41,6 +45,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
             groupImage = (ImageView) view.findViewById(R.id.groupImage);
             ownerImage = (ImageView) view.findViewById(R.id.ownerImage);
             groupBackground = (CardView) view.findViewById(R.id.groupBackground);
+            singleItemLoading = (ProgressBar) view.findViewById(R.id.singleItemLoading);
         }
     }
 
@@ -58,7 +63,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         GroupsModel groupsModel = groupsModelList.get(position);
         String hexColor = groupsModel.getGroupColor();
         if (hexColor.isEmpty()) {
@@ -76,10 +81,16 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
         if (!groupsModel.getGroupImage().isEmpty()) {
             holder.groupImage.setScaleType(ImageView.ScaleType.FIT_XY);
             Ion.with(mContext).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER +
-                    groupsModel.getGroupImage()).intoImageView(holder.groupImage);
+                    groupsModel.getGroupImage()).withBitmap().fitXY().centerCrop().intoImageView(holder.groupImage).setCallback(new FutureCallback<ImageView>() {
+                @Override
+                public void onCompleted(Exception e, ImageView result) {
+                    holder.singleItemLoading.setVisibility(View.GONE);
+                }
+            });
         } else {
             holder.groupImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            holder.groupImage.setBackgroundResource(R.drawable.no_group_image);
+            holder.groupImage.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.no_group_image));
+            holder.singleItemLoading.setVisibility(View.GONE);
         }
         if (groupsModel.getOwnerImage() != null && !groupsModel.getOwnerImage().isEmpty()) {
             if (groupsModel.isSocialAccount()) {

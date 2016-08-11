@@ -26,7 +26,9 @@ import android.widget.Toast;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.ink.R;
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -83,6 +85,7 @@ public class HomeActivity extends BaseActivity
     private Thread mPingThread;
     private Gson gson;
     private ProgressDialog progressDialog;
+    private AVLoadingIndicatorView profileImageLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +152,7 @@ public class HomeActivity extends BaseActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
-
+        profileImageLoading = (AVLoadingIndicatorView) headerView.findViewById(R.id.profileImageLoading);
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, mFeed).commit();
 
@@ -468,17 +471,38 @@ public class HomeActivity extends BaseActivity
         if (mSharedHelper.hasImage()) {
             if (!mSharedHelper.getImageLink().isEmpty()) {
                 if (isSocialAccount()) {
-                    Ion.with(getApplicationContext()).load(mSharedHelper.getImageLink()).withBitmap().transform(new CircleTransform()).intoImageView(mProfileImage);
+                    Ion.with(getApplicationContext()).load(mSharedHelper.getImageLink()).withBitmap().transform(new CircleTransform()).intoImageView(mProfileImage).setCallback(new FutureCallback<ImageView>() {
+                        @Override
+                        public void onCompleted(Exception e, ImageView result) {
+                            hideImageLoading();
+                        }
+                    });
                 } else {
                     Ion.with(getApplicationContext()).load(Constants.MAIN_URL +
-                            Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink()).withBitmap().transform(new CircleTransform()).intoImageView(mProfileImage);
+                            Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink()).withBitmap().transform(new CircleTransform()).intoImageView(mProfileImage)
+                            .setCallback(new FutureCallback<ImageView>() {
+                                @Override
+                                public void onCompleted(Exception e, ImageView result) {
+                                    hideImageLoading();
+                                }
+                            });
                 }
             }
         } else {
-            Ion.with(getApplicationContext()).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(mProfileImage);
+            Ion.with(getApplicationContext()).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(mProfileImage)
+                    .setCallback(new FutureCallback<ImageView>() {
+                        @Override
+                        public void onCompleted(Exception e, ImageView result) {
+                            hideImageLoading();
+                        }
+                    });
         }
 
         super.onResume();
+    }
+
+    private void hideImageLoading() {
+        profileImageLoading.setVisibility(View.GONE);
     }
 
 
