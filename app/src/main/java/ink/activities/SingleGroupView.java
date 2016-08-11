@@ -226,6 +226,7 @@ public class SingleGroupView extends BaseActivity {
         mCollapsingToolbar.setTitle(mGroupName);
 
         if (mGroupImage != null && !mGroupImage.isEmpty()) {
+            mGroupImageView.setScaleType(ImageView.ScaleType.FIT_XY);
             Ion.with(this).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + mGroupImage).intoImageView(mGroupImageView).setCallback(new FutureCallback<ImageView>() {
                 @Override
                 public void onCompleted(Exception e, ImageView result) {
@@ -233,6 +234,7 @@ public class SingleGroupView extends BaseActivity {
                 }
             });
         } else {
+            mGroupImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             mGroupImageView.setBackgroundResource(R.drawable.no_group_image);
             hideGroupImageLoading();
         }
