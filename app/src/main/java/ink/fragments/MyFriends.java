@@ -14,6 +14,9 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,6 +72,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     private Animation slideOut;
     private RelativeLayout personSearchWrapper;
     private boolean isClosed;
+    private Call<ResponseBody> searchPersonCalll;
 
 
     public static MyFriends newInstance() {
@@ -122,7 +126,56 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
                 }
             }
         });
+        personSearchField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!charSequence.toString().trim().isEmpty()) {
+                    doSearch(charSequence.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         getFriends();
+    }
+
+    private void doSearch(final String searchValue) {
+        if (searchPersonCalll != null) {
+            searchPersonCalll.cancel();
+        }
+        searchPersonCalll = Retrofit.getInstance().getInkService().searchPerson(mSharedHelper.getUserId(), searchValue);
+        searchPersonCalll.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    doSearch(searchValue);
+                    return;
+                }
+                if (response.body() == null) {
+                    doSearch(searchValue);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    Log.d("fasfsafasfas", "onResponse: " + responseBody);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
     }
 
 
@@ -249,6 +302,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
 
     private void showSearchField() {
         isClosed = false;
+        closeSearch.setEnabled(true);
         personSearchWrapper.startAnimation(slideIn);
         slideIn.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -270,8 +324,15 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
 
     private void hideSearchField() {
         isClosed = true;
-        Keyboard.hideKeyboard(getActivity(), mRecyclerView);
         personSearchWrapper.startAnimation(slideOut);
+
+        //should be before everything else!
+        parentActivity.getHomeFab().showMenu(true);
+        parentActivity.getHomeFab().showMenuButton(true);
+
+        parentActivity.getHomeFab().setVisibility(View.VISIBLE);
+        Keyboard.hideKeyboard(getActivity(), mRecyclerView);
+        closeSearch.setEnabled(false);
         slideOut.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -281,8 +342,6 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
             @Override
             public void onAnimationEnd(Animation animation) {
                 personSearchWrapper.setVisibility(View.GONE);
-                parentActivity.getHomeFab().setVisibility(View.VISIBLE);
-                parentActivity.getHomeFab().showMenu(true);
             }
 
             @Override

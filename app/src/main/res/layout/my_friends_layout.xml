@@ -47,7 +47,7 @@
                 android:focusableInTouchMode="true"
                 android:hint="@string/searchPerson"
                 android:imeActionLabel="@string/done_button"
-                android:maxLines="2" />
+                android:maxLines="1" />
         </android.support.design.widget.TextInputLayout>
     </RelativeLayout>
 

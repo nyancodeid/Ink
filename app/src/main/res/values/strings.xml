@@ -366,8 +366,6 @@
     <!--DO NOT TRANSLATE THESE ONES-->
     <string name="notVisible">NOT_VISIBLE</string>
     <string name="visible">VISIBLE</string>
-    <string name="haveSentSticker">have sent you a sticker</string>
-    <string name="loadingSticker">Loading...</string>
 
 
     <!--CONTINUE TRANSLATION-->
@@ -380,7 +378,9 @@
         <item name="applicationIssue">Application</item>
     </string-array>
 
-    <string name="title_activity_fullscreen">View Image</string>
+    <string name="haveSentSticker">have sent you a sticker</string>
+    <string name="loadingSticker">Loading...</string>
+    <string name="title_activity_fullscreen">Ink</string>
     <string name="searchPerson">Search person</string>
     <string name="removeFromFriends">Remove from friends</string>
 </resources>
