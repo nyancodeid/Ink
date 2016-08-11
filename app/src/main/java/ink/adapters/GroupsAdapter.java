@@ -18,7 +18,6 @@ import java.util.List;
 import ink.models.GroupsModel;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
-import it.sephiroth.android.library.picasso.Picasso;
 
 /**
  * Created by USER on 2016-07-06.
@@ -73,10 +72,8 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
             holder.groupName.setTextColor(Color.parseColor("#ffffff"));
         }
         if (!groupsModel.getGroupImage().isEmpty()) {
-            Picasso.with(mContext).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER +
-                    groupsModel.getGroupImage()).error(R.drawable.image_laoding_error)
-                    .placeholder(R.drawable.no_image_yet_state).fit()
-                    .centerCrop().into(holder.groupImage);
+            Ion.with(mContext).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER +
+                    groupsModel.getGroupImage()).intoImageView(holder.groupImage);
         } else {
             holder.groupImage.setBackgroundResource(R.drawable.no_group_image);
         }
