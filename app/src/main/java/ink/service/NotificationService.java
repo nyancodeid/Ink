@@ -20,8 +20,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
@@ -31,7 +29,6 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.ink.R;
-import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -164,16 +161,16 @@ public class NotificationService extends FirebaseMessagingService {
         final android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
         builder.setSmallIcon(R.mipmap.ic_launcher);
 
-        if (opponentImage != null && !opponentImage.isEmpty()) {
-            Handler handler = new Handler(getMainLooper());
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Picasso.with(context).load(opponentImage).error(R.drawable.image_laoding_error)
-                            .placeholder(R.drawable.no_image_yet_state).into(getTarget(builder));
-                }
-            });
-        }
+        // TODO: 8/11/2016 check if we can add user image to notification
+//        if (opponentImage != null && !opponentImage.isEmpty()) {
+//            Handler handler = new Handler(getMainLooper());
+//            handler.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Ion.with(context).load(opponentImage).intoImageView(getTarget(builder));
+//                }
+//            });
+//        }
         builder.setAutoCancel(true);
 
 
@@ -217,26 +214,6 @@ public class NotificationService extends FirebaseMessagingService {
         builder.setShowWhen(true);
         android.app.Notification notification = builder.build();
         notificationManagerCompat.notify(Integer.valueOf(requestId), notification);
-    }
-
-
-    private com.squareup.picasso.Target getTarget(final android.support.v7.app.NotificationCompat.Builder builder) {
-        return new com.squareup.picasso.Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                builder.setLargeIcon(bitmap);
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
     }
 
 

@@ -35,7 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.R;
-import com.squareup.picasso.Picasso;
+import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
@@ -349,7 +349,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                 }
                 try {
                     String responseBody = response.body().string();
-                    Log.d("fsafsafasfsafas", "onResponse: "+responseBody);
+                    Log.d("fsafsafasfsafas", "onResponse: " + responseBody);
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -617,8 +617,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                 if (selectedImagePath != null) {
                     mImageLinkToSend = selectedImagePath;
                     isImageChosen = true;
-                    Picasso.with(getApplicationContext()).load(new File(selectedImagePath)).error(R.drawable.image_laoding_error)
-                            .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop().into(groupImage);
+                    Ion.with(getApplicationContext()).load(new File(selectedImagePath)).withBitmap().transform(new CircleTransform()).intoImageView(groupImage);
                 } else {
                     isImageChosen = false;
                 }

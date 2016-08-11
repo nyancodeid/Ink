@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ink.R;
-import com.squareup.picasso.Picasso;
+import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import java.io.IOException;
@@ -172,7 +172,7 @@ public class Music extends BaseActivity implements MusicClickListener {
 
 
         if (image != null && !image.equals("null")) {
-            Picasso.with(getApplicationContext()).load(image).transform(new CircleTransform()).centerCrop().fit().into(currentlyPlayingImage);
+            Ion.with(getApplicationContext()).load(image).withBitmap().transform(new CircleTransform()).intoImageView(currentlyPlayingImage);
         } else {
             currentlyPlayingImage.setBackground(null);
             currentlyPlayingImage.setImageResource(R.drawable.gradient_no_image);

@@ -11,13 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.R;
-import com.squareup.picasso.Picasso;
+import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
 import ink.models.GroupsModel;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
+import it.sephiroth.android.library.picasso.Picasso;
 
 /**
  * Created by USER on 2016-07-06.
@@ -81,18 +82,13 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
         }
         if (groupsModel.getOwnerImage() != null && !groupsModel.getOwnerImage().isEmpty()) {
             if (groupsModel.isSocialAccount()) {
-                Picasso.with(mContext).load(groupsModel.getOwnerImage()).error(R.drawable.image_laoding_error)
-                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
-                        .centerCrop().into(holder.ownerImage);
+                Ion.with(mContext).load(groupsModel.getOwnerImage()).withBitmap().transform(new CircleTransform()).intoImageView(holder.ownerImage);
             } else {
-                Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        groupsModel.getOwnerImage()).error(R.drawable.image_laoding_error)
-                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
-                        .centerCrop().into(holder.ownerImage);
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                        groupsModel.getOwnerImage()).withBitmap().transform(new CircleTransform()).intoImageView(holder.ownerImage);
             }
         } else {
-            Picasso.with(mContext).load(R.drawable.no_image).transform(new CircleTransform()).fit()
-                    .centerCrop().into(holder.ownerImage);
+            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(holder.ownerImage);
         }
         holder.groupBackground.setCardBackgroundColor(Color.parseColor(hexColor));
         holder.groupName.setText(groupsModel.getGroupName());

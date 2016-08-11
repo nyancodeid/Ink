@@ -26,7 +26,7 @@ import android.widget.Toast;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.ink.R;
-import com.squareup.picasso.Picasso;
+import com.koushikdutta.ion.Ion;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -468,18 +468,14 @@ public class HomeActivity extends BaseActivity
         if (mSharedHelper.hasImage()) {
             if (!mSharedHelper.getImageLink().isEmpty()) {
                 if (isSocialAccount()) {
-                    Picasso.with(getApplicationContext()).load(mSharedHelper.getImageLink()).error(R.drawable.image_laoding_error)
-                            .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
-                            .centerCrop().into(mProfileImage);
+                    Ion.with(getApplicationContext()).load(mSharedHelper.getImageLink()).withBitmap().transform(new CircleTransform()).intoImageView(mProfileImage);
                 } else {
-                    Picasso.with(getApplicationContext()).load(Constants.MAIN_URL +
-                            Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink()).error(R.drawable.image_laoding_error)
-                            .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
-                            .centerCrop().into(mProfileImage);
+                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL +
+                            Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink()).withBitmap().transform(new CircleTransform()).intoImageView(mProfileImage);
                 }
             }
         } else {
-            Picasso.with(getApplicationContext()).load(R.drawable.no_image).transform(new CircleTransform()).into(mProfileImage);
+            Ion.with(getApplicationContext()).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(mProfileImage);
         }
 
         super.onResume();

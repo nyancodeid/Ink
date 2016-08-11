@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.ink.R;
-import com.squareup.picasso.Picasso;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,17 +63,14 @@ public class CreateGroupPost extends BaseActivity {
         sharedHelper = new SharedHelper(this);
         if (!sharedHelper.getImageLink().isEmpty()) {
             if (isSocialAccount()) {
-                Picasso.with(this).load(sharedHelper.getImageLink()).error(R.drawable.image_laoding_error)
-                        .placeholder(R.drawable.no_image_yet_state).
-                        transform(new CircleTransform()).fit().centerCrop().into(currentUserImage);
+                Ion.with(this).load(sharedHelper.getImageLink()).withBitmap().transform(new CircleTransform()).intoImageView(currentUserImage);
             } else {
-                Picasso.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + sharedHelper.getImageLink()).error(R.drawable.image_laoding_error)
-                        .placeholder(R.drawable.no_image_yet_state).
-                        transform(new CircleTransform()).fit().centerCrop().into(currentUserImage);
+                Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + sharedHelper.getImageLink()).withBitmap().
+                        transform(new CircleTransform()).intoImageView(currentUserImage);
             }
         } else {
-            Picasso.with(this).load(R.drawable.no_image).
-                    transform(new CircleTransform()).fit().centerCrop().into(currentUserImage);
+            Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").
+                    withBitmap().transform(new CircleTransform()).intoImageView(currentUserImage);
         }
         currentUserName.setText(sharedHelper.getFirstName() + " " + sharedHelper.getLastName());
         sendGroupMessageIcon.setShowAnimation(AnimationUtils.loadAnimation(this, R.anim.fab_scale_up));

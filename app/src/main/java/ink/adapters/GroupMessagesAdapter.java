@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.R;
-import com.squareup.picasso.Picasso;
+import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
@@ -55,18 +55,14 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
         GroupMessagesModel groupMessagesModel = groupMessagesModels.get(position);
 
         if (!groupMessagesModel.getSenderImage().isEmpty()) {
-            Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                    groupMessagesModel.getSenderImage()).error(R.drawable.image_laoding_error)
-                    .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
-                    .centerCrop().into(holder.messageSenderImage);
+            Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                    groupMessagesModel.getSenderImage()).withBitmap().transform(new CircleTransform()).intoImageView(holder.messageSenderImage);
         } else {
-            Picasso.with(mContext).load(R.drawable.no_image).transform(new CircleTransform()).fit()
-                    .centerCrop().into(holder.messageSenderImage);
+            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(holder.messageSenderImage);
         }
         holder.groupMessageBody.setText(groupMessagesModel.getGroupMessage());
         holder.messageSenderName.setText(groupMessagesModel.getSenderName());
     }
-
 
 
     @Override

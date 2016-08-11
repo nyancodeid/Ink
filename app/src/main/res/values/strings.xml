@@ -379,4 +379,6 @@
         <item name="accountIssue">Account</item>
         <item name="applicationIssue">Application</item>
     </string-array>
+
+    <string name="title_activity_fullscreen">View Image</string>
 </resources>

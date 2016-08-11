@@ -60,8 +60,8 @@
             <enum name="end" value="3" />
             <enum name="marquee" value="4" />
         </attr>
-        <attr format="integer" name="menu_labels_maxLines" />
-        <attr format="enum" name="menu_fab_size">
+        <attr name="menu_labels_maxLines" format="integer" />
+        <attr name="menu_fab_size" format="enum">
             <enum name="normal" value="0" />
             <enum name="mini" value="1" />
         </attr>
@@ -78,10 +78,19 @@
             <enum name="up" value="0" />
             <enum name="down" value="1" />
         </attr>
-        <attr format="color" name="menu_backgroundColor" />
-        <attr format="string" name="menu_fab_label" />
-        <attr format="reference" name="menu_fab_show_animation" />
-        <attr format="reference" name="menu_fab_hide_animation" />
+        <attr name="menu_backgroundColor" format="color" />
+        <attr name="menu_fab_label" format="string" />
+        <attr name="menu_fab_show_animation" format="reference" />
+        <attr name="menu_fab_hide_animation" format="reference" />
+    </declare-styleable>
+
+    <!-- Declare custom theme attributes that allow changing which styles are
+         used for button bars depending on the API level.
+         ?android:attr/buttonBarStyle is new as of API 11 so this is
+         necessary to support previous API levels. -->
+    <declare-styleable name="ButtonBarContainerTheme">
+        <attr name="metaButtonBarStyle" format="reference" />
+        <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
 
 </resources>

@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.R;
-import com.squareup.picasso.Picasso;
+import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
@@ -64,18 +64,13 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
 
         if (!requestsModel.getRequesterImage().isEmpty()) {
             if (requestsModel.isSocialAccount()) {
-                Picasso.with(mContext).load(requestsModel.getRequesterImage()).error(R.drawable.image_laoding_error)
-                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
-                        .centerCrop().into(holder.requesterImage);
+                Ion.with(mContext).load(requestsModel.getRequesterImage()).withBitmap().transform(new CircleTransform()).intoImageView(holder.requesterImage);
             } else {
-                Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        requestsModel.getRequesterImage()).error(R.drawable.image_laoding_error)
-                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
-                        .centerCrop().into(holder.requesterImage);
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                        requestsModel.getRequesterImage()).withBitmap().transform(new CircleTransform()).intoImageView(holder.requesterImage);
             }
         } else {
-            Picasso.with(mContext).load(R.drawable.no_image).transform(new CircleTransform()).fit()
-                    .centerCrop().into(holder.requesterImage);
+            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR+"no_image").withBitmap().transform(new CircleTransform()).intoImageView(holder.requesterImage);
         }
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override

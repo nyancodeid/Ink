@@ -22,11 +22,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.R;
-import com.squareup.picasso.Picasso;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
@@ -79,6 +81,8 @@ public class SingleGroupView extends BaseActivity {
     RecyclerView groupMessagesRecycler;
     @Bind(R.id.groupMessagesLoading)
     AVLoadingIndicatorView groupMessagesLoading;
+    @Bind(R.id.groupImageLoading)
+    ProgressBar groupImageLoading;
     @Bind(R.id.noGroupMessageLayout)
     RelativeLayout noGroupMessageLayout;
 
@@ -113,6 +117,7 @@ public class SingleGroupView extends BaseActivity {
         Bundle extras = getIntent().getExtras();
         groupMessagesModels = new ArrayList<>();
         memberModels = new ArrayList<>();
+        groupImageLoading.getIndeterminateDrawable().setColorFilter(Color.parseColor("#ffffff"), android.graphics.PorterDuff.Mode.MULTIPLY);
         memberAdapter = new MemberAdapter(memberModels, this);
         groupMessagesAdapter = new GroupMessagesAdapter(groupMessagesModels, this);
         mJoinGroupButton.setOnClickListener(new View.OnClickListener() {
@@ -221,26 +226,25 @@ public class SingleGroupView extends BaseActivity {
         mCollapsingToolbar.setTitle(mGroupName);
 
         if (mGroupImage != null && !mGroupImage.isEmpty()) {
-            Picasso.with(this).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + mGroupImage).error(R.drawable.image_laoding_error)
-                    .placeholder(R.drawable.no_image_yet_state).fit().centerCrop()
-                    .into(mGroupImageView);
+            Ion.with(this).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + mGroupImage).intoImageView(mGroupImageView).setCallback(new FutureCallback<ImageView>() {
+                @Override
+                public void onCompleted(Exception e, ImageView result) {
+                    hideGroupImageLoading();
+                }
+            });
         } else {
             mGroupImageView.setBackgroundResource(R.drawable.no_group_image);
+            hideGroupImageLoading();
         }
         if (mOwnerImage != null && !mOwnerImage.isEmpty()) {
             if (isSocialAccount) {
-                Picasso.with(this).load(mOwnerImage).error(R.drawable.image_laoding_error)
-                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
-                        .centerCrop().into(mOwnerImageView);
+                Ion.with(this).load(mOwnerImage).withBitmap().transform(new CircleTransform()).intoImageView(mOwnerImageView);
             } else {
-                Picasso.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        mOwnerImage).error(R.drawable.image_laoding_error)
-                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
-                        .centerCrop().into(mOwnerImageView);
+                Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                        mOwnerImage).withBitmap().transform(new CircleTransform()).intoImageView(mOwnerImageView);
             }
         } else {
-            Picasso.with(this).load(R.drawable.no_image).transform(new CircleTransform()).fit()
-                    .centerCrop().into(mOwnerImageView);
+            Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(mOwnerImageView);
         }
 
         if (mGroupColor != null && !mGroupColor.isEmpty()) {
@@ -254,6 +258,10 @@ public class SingleGroupView extends BaseActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    private void hideGroupImageLoading() {
+        groupImageLoading.setVisibility(View.GONE);
     }
 
     private void getParticipants() {
@@ -397,6 +405,18 @@ public class SingleGroupView extends BaseActivity {
         });
     }
 
+
+    @OnClick(R.id.ownerImageView)
+    public void ownerImageView() {
+        Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
+        String parts[] = mGroupOwnerName.split("\\s");
+        String firstName = parts[0];
+        String lastName = parts[1];
+        intent.putExtra("id", mGroupOwnerId);
+        intent.putExtra("firstName", firstName);
+        intent.putExtra("lastName", lastName);
+        startActivity(intent);
+    }
 
     @OnClick(R.id.addMessageToGroup)
     public void addMessage() {

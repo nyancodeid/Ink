@@ -10,8 +10,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.R;
+import com.koushikdutta.ion.Ion;
 import com.mikhaellopez.hfrecyclerview.HFRecyclerView;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -84,35 +84,25 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             itemViewHolder.commenterName.setText(commentModel.getFirstName() + " " + commentModel.getLastName());
             if (commentModel.getCommenterImage() != null && !commentModel.getCommenterImage().isEmpty()) {
                 if (commentModel.isSocialAccount()) {
-                    Picasso.with(context).load(commentModel.getCommenterImage()).error(R.drawable.image_laoding_error)
-                            .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop()
-                            .into(itemViewHolder.commenterImage);
+                    Ion.with(context).load(commentModel.getCommenterImage()).withBitmap().transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
                 } else {
-                    Picasso.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                            commentModel.getCommenterImage()).error(R.drawable.image_laoding_error)
-                            .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop()
-                            .into(itemViewHolder.commenterImage);
+                    Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                            commentModel.getCommenterImage()).withBitmap().transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
                 }
             } else {
-                Picasso.with(context).load(R.drawable.no_image).transform(new CircleTransform()).fit().centerCrop()
-                        .into(itemViewHolder.commenterImage);
+                Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
             }
         } else if (holder instanceof HeaderViewHolder) {
             final HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
             if (ownerImage != null && !ownerImage.isEmpty()) {
                 if (isOwnerSocialAccount) {
-                    Picasso.with(context).load(ownerImage).error(R.drawable.image_laoding_error)
-                            .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop()
-                            .into(headerViewHolder.postOwnerImage);
+                    Ion.with(context).load(ownerImage).withBitmap().transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
                 } else {
-                    Picasso.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                            ownerImage).error(R.drawable.image_laoding_error)
-                            .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop()
-                            .into(headerViewHolder.postOwnerImage);
+                    Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                            ownerImage).withBitmap().transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
                 }
             } else {
-                Picasso.with(context).load(R.drawable.no_image).transform(new CircleTransform()).fit().centerCrop()
-                        .into(headerViewHolder.postOwnerImage);
+                Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
             }
             headerViewHolder.postBody.setText(ownerPostBody);
             headerViewHolder.postDate.setText(date);

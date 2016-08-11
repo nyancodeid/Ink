@@ -38,7 +38,6 @@ import com.google.gson.Gson;
 import com.ink.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.squareup.picasso.Picasso;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -155,7 +154,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         Notification.getInstance().setSendingRemote(false);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(getPackageName() + ".Chat"));
         mChatAdapter = new ChatAdapter(mChatModelArrayList, this);
+
         mRealHelper = RealmHelper.getInstance();
+
+        configureChat();
+
+
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);
         itemAnimator.setRemoveDuration(500);
@@ -194,6 +198,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, mRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
+                ChatModel chatModel = mChatModelArrayList.get(position);
+                if (chatModel.hasGif()) {
+                    Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
+                    intent.putExtra("link", Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl());
+                    startActivity(intent);
+                }
             }
 
             @Override
@@ -277,42 +287,44 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     }
 
     private void getStatus() {
-        final Call<ResponseBody> statusCall = Retrofit.getInstance().getInkService().getUserStatus(mOpponentId);
-        statusCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getStatus();
-                    return;
-                }
-                if (response.body() == null) {
-                    getStatus();
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    final UserStatus userStatus = gifGson.fromJson(responseBody, UserStatus.class);
-                    if (userStatus.success) {
-                        if (userStatus.isOnline) {
-                            statusColor.setVisibility(View.VISIBLE);
-                            statusColor.startAnimation(fadeAnimation);
-                            opponentStatus.setText(getString(R.string.onlineStatus));
-                        } else {
-                            opponentStatus.setText(getString(R.string.lastSeen, Time.convertToLocalTime(userStatus.lastSeenTime)));
-                        }
-                    } else {
+        if (mOpponentId != null && !mOpponentId.isEmpty()) {
+            final Call<ResponseBody> statusCall = Retrofit.getInstance().getInkService().getUserStatus(mOpponentId);
+            statusCall.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response == null) {
                         getStatus();
+                        return;
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    if (response.body() == null) {
+                        getStatus();
+                        return;
+                    }
+                    try {
+                        String responseBody = response.body().string();
+                        final UserStatus userStatus = gifGson.fromJson(responseBody, UserStatus.class);
+                        if (userStatus.success) {
+                            if (userStatus.isOnline) {
+                                statusColor.setVisibility(View.VISIBLE);
+                                statusColor.startAnimation(fadeAnimation);
+                                opponentStatus.setText(getString(R.string.onlineStatus));
+                            } else {
+                                opponentStatus.setText(getString(R.string.lastSeen, Time.convertToLocalTime(userStatus.lastSeenTime)));
+                            }
+                        } else {
+                            getStatus();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getStatus();
-            }
-        });
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    getStatus();
+                }
+            });
+        }
     }
 
     @OnClick(R.id.makeCall)
@@ -609,15 +621,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         System.gc();
         Notification.getInstance().setSendingRemote(true);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-        clearIonCache();
         super.onDestroy();
     }
 
-    private void clearIonCache() {
-        Ion.getDefault(getApplicationContext()).getCache().clear();
-        Ion.getDefault(getApplicationContext()).getBitmapCache().clear();
-        Ion.getDefault(getApplicationContext()).configure().getResponseCache().clear();
-    }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -649,6 +655,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     protected void onResume() {
         System.gc();
         Notification.getInstance().setSendingRemote(false);
+        getStatus();
+        super.onResume();
+    }
+
+    private void configureChat() {
         ActionBar actionBar = getSupportActionBar();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -662,19 +673,14 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                 if (!isImageLoaded) {
                     isImageLoaded = true;
                     if (isSocialAccount) {
-                        Picasso.with(this).load(opponentImage).error(R.drawable.image_laoding_error)
-                                .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
-                                .centerCrop().into(this.opponentImage);
+                        Ion.with(this).load(opponentImage).withBitmap().transform(new CircleTransform()).intoImageView(this.opponentImage);
                     } else {
-                        Picasso.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                                opponentImage).error(R.drawable.image_laoding_error)
-                                .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit()
-                                .centerCrop().into(this.opponentImage);
+                        Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                                opponentImage).withBitmap().transform(new CircleTransform()).intoImageView(this.opponentImage);
                     }
                 }
             } else {
-                Picasso.with(this).load(R.drawable.no_image).transform(new CircleTransform()).fit()
-                        .centerCrop().into(this.opponentImage);
+                Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(this.opponentImage);
             }
             getStatus();
             mCurrentUserId = mSharedHelper.getUserId();
@@ -690,8 +696,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
-        super.onResume();
     }
 
 

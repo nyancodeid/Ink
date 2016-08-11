@@ -19,8 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.R;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
@@ -45,7 +44,6 @@ public class OpponentProfile extends BaseActivity {
     private String mOpponentId;
     private String mFirstName;
     private String mLastName;
-    private Target mTarget;
     private ImageView mProfileImage;
     private CardView imageCard;
     private String mFacebookLink;
@@ -190,12 +188,10 @@ public class OpponentProfile extends BaseActivity {
                             isSocialAccount = jsonObject.optBoolean("isSocialAccount");
                             if (mOpponentImage != null && !mOpponentImage.isEmpty()) {
                                 if (isSocialAccount) {
-                                    Picasso.with(getApplicationContext()).load(mOpponentImage).fit().centerInside().into(mProfileImage, getPicassoCallback(Constants.MAIN_URL +
-                                            Constants.USER_IMAGES_FOLDER + mOpponentImage));
+                                    Ion.with(getApplicationContext()).load(mOpponentImage).intoImageView(mProfileImage);
                                 } else {
-                                    Picasso.with(getApplicationContext()).load(Constants.MAIN_URL +
-                                            Constants.USER_IMAGES_FOLDER + mOpponentImage).fit().centerInside().into(mProfileImage, getPicassoCallback(Constants.MAIN_URL +
-                                            Constants.USER_IMAGES_FOLDER + mOpponentImage));
+                                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL +
+                                            Constants.USER_IMAGES_FOLDER + mOpponentImage).intoImageView(mProfileImage);
                                 }
                             } else {
                                 mProfileImage.setBackgroundResource(R.drawable.no_image);
@@ -277,20 +273,23 @@ public class OpponentProfile extends BaseActivity {
         });
     }
 
-    private com.squareup.picasso.Callback getPicassoCallback(final String link) {
-        com.squareup.picasso.Callback callback = new com.squareup.picasso.Callback() {
-            @Override
-            public void onSuccess() {
-                mOpponentImageLoading.setVisibility(View.GONE);
-            }
 
-            @Override
-            public void onError() {
-                Picasso.with(getApplicationContext()).load(link).fit().centerInside().into(mProfileImage, getPicassoCallback(link));
+    @OnClick(R.id.profileImage)
+    public void profileImage() {
+        Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
+        if (mOpponentImage != null && !mOpponentImage.isEmpty()) {
+            if (isSocialAccount) {
+                intent.putExtra("link", mOpponentImage);
+            } else {
+                intent.putExtra("link", Constants.MAIN_URL +
+                        Constants.USER_IMAGES_FOLDER + mOpponentImage);
             }
-        };
-        return callback;
+        } else {
+            intent.putExtra("link", Constants.NO_IMAGE_URL);
+        }
+        startActivity(intent);
     }
+
 
 
     @Override

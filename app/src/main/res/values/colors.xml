@@ -9,4 +9,6 @@
     <color name="defaultGroupPressedColor">#1C1C1C</color>
     <color name="red">@android:color/holo_red_dark</color>
     <color name="green">#58f409</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

@@ -77,5 +77,8 @@ public class Constants {
     public static final String SOCIAL_TYPE_FACEBOOK = "facebook";
     public static final String SOCIAL_TYPE_GOOGLE = "google";
     public static final String SERVER_AUTH_KEY = "fsahga-s447489asg-gGgashagasgfag-JKGKAJGKAS-gasgasga678sag8as-GASGJASKLG";
+    public static final String NO_IMAGE_NAME = "no_image.png";
+    public static final String NO_IMAGE_URL = MAIN_URL + USER_IMAGES_FOLDER + NO_IMAGE_NAME;
+    public static final String ANDROID_DRAWABLE_DIR = ANDROID_RESOURCE_DIR + "com.ink" + "/drawable/";
 }
 

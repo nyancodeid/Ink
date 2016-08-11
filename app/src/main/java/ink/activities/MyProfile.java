@@ -43,8 +43,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.ink.R;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.PicassoTools;
+import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
@@ -62,10 +61,12 @@ import fab.FloatingActionButton;
 import ink.callbacks.GeneralCallback;
 import ink.utils.Constants;
 import ink.utils.FileUtils;
+import ink.utils.IonCache;
 import ink.utils.PermissionsChecker;
 import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
+import it.sephiroth.android.library.picasso.Picasso;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -264,8 +265,7 @@ public class MyProfile extends BaseActivity {
                     mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
                     showImageLoading();
                     isImageChosen = true;
-                    Picasso.with(getApplicationContext()).load(new File(selectedImagePath)).error(R.drawable.image_laoding_error).fit()
-                            .centerInside().into(profileImage, picassoCallback(selectedImagePath, true));
+                    Ion.with(getApplicationContext()).load(new File(selectedImagePath)).intoImageView(profileImage);
                 } else {
                     isImageChosen = false;
                     mImageLoading.setVisibility(View.GONE);
@@ -287,6 +287,26 @@ public class MyProfile extends BaseActivity {
             cursor.close();
         }
         return result;
+    }
+
+
+    @OnClick(R.id.profileImage)
+    public void profileImage() {
+        Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
+        if (mImageLinkToSend != null && !mImageLinkToSend.isEmpty()) {
+            if (!isImageChosen) {
+                if (isSocialAccount()) {
+                    intent.putExtra("link", mImageLinkToSend);
+                } else {
+                    intent.putExtra("link", Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend);
+                }
+            } else {
+                intent.putExtra("link", mImageLinkToSend);
+            }
+        } else {
+            intent.putExtra("link", Constants.NO_IMAGE_URL);
+        }
+        startActivity(intent);
     }
 
     private void getMyData() {
@@ -393,9 +413,9 @@ public class MyProfile extends BaseActivity {
             mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
             if (shouldLoadImage) {
                 if (isSocialAccount()) {
-                    Picasso.with(getApplicationContext()).load(mImageLinkToSend).fit().centerInside().into(profileImage, picassoCallback(mImageLinkToSend, false));
+                    Ion.with(getApplicationContext()).load(mImageLinkToSend).intoImageView(profileImage);
                 } else {
-                    Picasso.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).fit().centerInside().into(profileImage, picassoCallback(mImageLinkToSend, false));
+                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).intoImageView(profileImage);
                 }
 
             } else {
@@ -912,7 +932,7 @@ public class MyProfile extends BaseActivity {
                                 String imageLink = mSharedHelper.getUserId() + ".png";
                                 Picasso.with(getApplicationContext()).invalidate(mSharedHelper.getImageLink());
                                 mSharedHelper.putImageLink(imageLink);
-                                PicassoTools.clearCache(Picasso.with(getApplicationContext()));
+                                IonCache.clearIonCache(getApplicationContext());
                                 FileUtils.deleteDirectoryTree(getApplicationContext().getCacheDir());
                                 mSharedHelper.putIsSocialAccount(false);
                                 if (isSocialAccount()) {
@@ -1010,33 +1030,6 @@ public class MyProfile extends BaseActivity {
     protected void onDestroy() {
         isDataDownloaded = false;
         super.onDestroy();
-    }
-
-    private com.squareup.picasso.Callback picassoCallback(final String imageLinkToSend, final boolean shouldUseFullPath) {
-        System.gc();
-        com.squareup.picasso.Callback callback = new com.squareup.picasso.Callback() {
-            @Override
-            public void onSuccess() {
-                hideImageLoading();
-            }
-
-            @Override
-            public void onError() {
-                showImageLoading();
-                String finalPath = imageLinkToSend;
-                if (!shouldUseFullPath) {
-                    if (isSocialAccount()) {
-                        finalPath = imageLinkToSend;
-                    } else {
-                        finalPath = Constants.MAIN_URL +
-                                Constants.USER_IMAGES_FOLDER + imageLinkToSend;
-                    }
-
-                }
-                Picasso.with(getApplicationContext()).load(finalPath).fit().centerInside().into(profileImage, picassoCallback(imageLinkToSend, shouldUseFullPath));
-            }
-        };
-        return callback;
     }
 
 

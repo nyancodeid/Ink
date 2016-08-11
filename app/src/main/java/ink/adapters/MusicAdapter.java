@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.R;
-import com.squareup.picasso.Picasso;
+import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
@@ -73,7 +73,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
 
         if (track.mArtworkURL != null && !track.equals("null")) {
             holder.musicImage.setBackground(null);
-            Picasso.with(mContext).load(track.mArtworkURL).error(R.drawable.gradient_no_image).transform(new CircleTransform()).centerCrop().fit().into(holder.musicImage);
+            Ion.with(mContext).load(track.mArtworkURL).withBitmap().transform(new CircleTransform()).intoImageView(holder.musicImage);
         } else {
             holder.musicImage.setBackground(null);
             holder.musicImage.setBackgroundResource(R.drawable.gradient_no_image);

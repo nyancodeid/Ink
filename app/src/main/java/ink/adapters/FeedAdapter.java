@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.R;
-import com.squareup.picasso.Picasso;
+import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
@@ -20,6 +20,7 @@ import ink.models.FeedModel;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.Time;
+
 
 /**
  * Created by USER on 2016-06-20.
@@ -81,21 +82,19 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
         if (feedModel.getUserImage() != null && !feedModel.getUserImage().isEmpty()) {
             if (feedModel.isSocialAccount()) {
-                Picasso.with(mContext).load(feedModel.getUserImage())
-                        .error(R.drawable.image_laoding_error)
-                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform())
-                        .fit().centerCrop().into(holder.feedUserImage);
+                Ion.with(mContext).load(feedModel.getUserImage())
+                        .withBitmap().transform(new CircleTransform())
+                        .intoImageView(holder.feedUserImage);
             } else {
-                Picasso.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + feedModel.getUserImage())
-                        .error(R.drawable.image_laoding_error)
-                        .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform())
-                        .fit().centerCrop().into(holder.feedUserImage);
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + feedModel.getUserImage())
+                        .withBitmap().transform(new CircleTransform())
+                        .intoImageView(holder.feedUserImage);
             }
 
         } else {
-            Picasso.with(mContext).load(R.drawable.no_image)
-                    .transform(new CircleTransform())
-                    .fit().centerCrop().into(holder.feedUserImage);
+            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
+                    .withBitmap().transform(new CircleTransform())
+                    .intoImageView(holder.feedUserImage);
         }
 
         holder.feedContent.setText(feedModel.getContent());
@@ -185,7 +184,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     public void setOnFeedClickListener(FeedItemClick mOnClickListener) {
         this.mOnClickListener = mOnClickListener;
     }
-
 
 
     @Override

@@ -11,8 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.R;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
@@ -59,15 +58,11 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         holder.name.setText(friendsModel.getFullName());
         if (!friendsModel.getImageLink().isEmpty()) {
             String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + friendsModel.getImageLink();
-            Picasso.with(mContext).load(url)
-                    .error(R.drawable.image_laoding_error)
-                    .placeholder(R.drawable.no_image_yet_state)  .transform(new CircleTransform()).fit().centerCrop()
-                    .into(holder.friendImage, picassoCallback(url, holder.friendImage));
+            Ion.with(mContext).load(url)
+                    .withBitmap().transform(new CircleTransform()).intoImageView(holder.friendImage);
         } else {
-            Picasso.with(mContext).load(R.drawable.no_image)
-                    .error(R.drawable.image_laoding_error)
-                    .placeholder(R.drawable.no_image_yet_state)    .transform(new CircleTransform()).fit().centerCrop()
-                    .into(holder.friendImage);
+            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
+                    .withBitmap().transform(new CircleTransform()).intoImageView(holder.friendImage);
         }
     }
 
@@ -79,24 +74,11 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
             viewHolder.itemView.setTag("Animated");
         }
     }
+
     @Override
     public void onViewAttachedToWindow(ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         Animations.animateCircular(holder.itemView);
-    }
-    private com.squareup.picasso.Callback picassoCallback(final String link, final ImageView view) {
-        com.squareup.picasso.Callback callback = new Callback() {
-            @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onError() {
-                Picasso.with(mContext).load(link).transform(new CircleTransform()).into(view);
-            }
-        };
-        return callback;
     }
 
     @Override

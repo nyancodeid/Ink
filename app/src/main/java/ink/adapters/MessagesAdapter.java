@@ -9,8 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.R;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
@@ -64,31 +63,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             if (userMessagesModel.isSocialAccount()) {
                 url = userMessagesModel.getImageLink();
             }
-            Picasso.with(mContext).load(url)
-                    .error(R.drawable.image_laoding_error)
-                    .placeholder(R.drawable.no_image_yet_state).transform(new CircleTransform()).fit().centerCrop()
-                    .into(holder.messagesImage, picassoCallback(url, holder.messagesImage));
+            Ion.with(mContext).load(url)
+                    .withBitmap().transform(new CircleTransform()).intoImageView(holder.messagesImage);
         } else {
-            Picasso.with(mContext).load(R.drawable.no_image)
-                    .transform(new CircleTransform()).fit().centerCrop()
-                    .into(holder.messagesImage);
+            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap()
+                    .transform(new CircleTransform()).intoImageView(holder.messagesImage);
         }
-    }
-
-
-    private com.squareup.picasso.Callback picassoCallback(final String link, final ImageView view) {
-        com.squareup.picasso.Callback callback = new Callback() {
-            @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onError() {
-                Picasso.with(mContext).load(link).transform(new CircleTransform()).into(view);
-            }
-        };
-        return callback;
     }
 
     public void setShouldStartAnimation(boolean shouldStartAnimation) {
