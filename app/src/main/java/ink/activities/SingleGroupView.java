@@ -57,6 +57,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
+// TODO: 8/11/2016 FIX GROUP IMAGES SIZES ACCORDINGLY
 public class SingleGroupView extends BaseActivity {
 
     @Bind(R.id.groupCollapsingToolbar)

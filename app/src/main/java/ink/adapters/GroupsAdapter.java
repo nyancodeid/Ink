@@ -22,6 +22,8 @@ import ink.utils.Constants;
 /**
  * Created by USER on 2016-07-06.
  */
+
+// TODO: 8/11/2016 FIX GROUP IMAGES SIZES ACCORDINGLY
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder> {
 
     private List<GroupsModel> groupsModelList;
