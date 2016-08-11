@@ -72,9 +72,11 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
             holder.groupName.setTextColor(Color.parseColor("#ffffff"));
         }
         if (!groupsModel.getGroupImage().isEmpty()) {
+            holder.groupImage.setScaleType(ImageView.ScaleType.FIT_XY);
             Ion.with(mContext).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER +
                     groupsModel.getGroupImage()).intoImageView(holder.groupImage);
         } else {
+            holder.groupImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
             holder.groupImage.setBackgroundResource(R.drawable.no_group_image);
         }
         if (groupsModel.getOwnerImage() != null && !groupsModel.getOwnerImage().isEmpty()) {
