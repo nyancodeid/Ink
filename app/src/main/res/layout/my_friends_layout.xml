@@ -41,6 +41,10 @@
                 android:id="@+id/personSearchField"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:imeOptions="actionDone"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:hint="@string/searchPerson"
                 android:imeActionLabel="@string/done_button"
                 android:maxLines="2" />

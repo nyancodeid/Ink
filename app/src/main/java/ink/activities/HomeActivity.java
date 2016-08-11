@@ -47,6 +47,7 @@ import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.DeviceChecker;
 import ink.utils.FileUtils;
+import ink.utils.IonCache;
 import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
@@ -397,7 +398,7 @@ public class HomeActivity extends BaseActivity
                 }
                 mSharedHelper.putWarned(true);
                 RealmHelper.getInstance().clearDatabase(getApplicationContext());
-                Toast.makeText(HomeActivity.this, getString(R.string.loggedOutText), Toast.LENGTH_SHORT).show();
+                IonCache.clearIonCache(getApplicationContext());
                 Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -405,11 +406,23 @@ public class HomeActivity extends BaseActivity
                         try {
                             FirebaseInstanceId.getInstance().deleteInstanceId();
                             progressDialog.dismiss();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(HomeActivity.this, getString(R.string.loggedOutText), Toast.LENGTH_SHORT).show();
+                                }
+                            });
                             startActivity(new Intent(getApplicationContext(), Login.class));
                             finish();
                         } catch (IOException e) {
                             e.printStackTrace();
                             progressDialog.dismiss();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(HomeActivity.this, getString(R.string.loggedOutText), Toast.LENGTH_SHORT).show();
+                                }
+                            });
                             startActivity(new Intent(getApplicationContext(), Login.class));
                             finish();
                         }

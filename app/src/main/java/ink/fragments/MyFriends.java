@@ -65,8 +65,8 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     private HomeActivity parentActivity;
     private EditText personSearchField;
     private ImageView closeSearch;
-    private Animation slideInFade;
-    private Animation slideOutFade;
+    private Animation slideIn;
+    private Animation slideOut;
     private RelativeLayout personSearchWrapper;
     private boolean isClosed;
 
@@ -91,8 +91,8 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         mNoFriendsLayout = (RelativeLayout) view.findViewById(R.id.noFriendsLayout);
         personSearchWrapper = (RelativeLayout) view.findViewById(R.id.personSearchWrapper);
         personSearchField = (EditText) view.findViewById(R.id.personSearchField);
-        slideInFade = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_fade);
-        slideOutFade = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_fade);
+        slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in);
+        slideOut = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out);
         mFriendsLoading = (AVLoadingIndicatorView) view.findViewById(R.id.friendsLoading);
         mFriendsAdapter = new FriendsAdapter(mFriendsModelArrayList, getActivity());
 
@@ -217,6 +217,8 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     }
 
     private void showSearch() {
+        personSearchField.requestFocus();
+        personSearchField.requestFocusFromTouch();
         if (parentActivity.getSearchFriend() != null) {
             parentActivity.getSearchFriend().setVisibility(View.VISIBLE);
         }
@@ -247,8 +249,8 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
 
     private void showSearchField() {
         isClosed = false;
-        personSearchWrapper.startAnimation(slideInFade);
-        slideInFade.setAnimationListener(new Animation.AnimationListener() {
+        personSearchWrapper.startAnimation(slideIn);
+        slideIn.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
                 personSearchWrapper.setVisibility(View.VISIBLE);
@@ -269,10 +271,8 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     private void hideSearchField() {
         isClosed = true;
         Keyboard.hideKeyboard(getActivity(), mRecyclerView);
-        parentActivity.getHomeFab().setVisibility(View.VISIBLE);
-        parentActivity.getHomeFab().showMenu(true);
-        personSearchWrapper.startAnimation(slideOutFade);
-        slideOutFade.setAnimationListener(new Animation.AnimationListener() {
+        personSearchWrapper.startAnimation(slideOut);
+        slideOut.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
 
@@ -281,6 +281,8 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
             @Override
             public void onAnimationEnd(Animation animation) {
                 personSearchWrapper.setVisibility(View.GONE);
+                parentActivity.getHomeFab().setVisibility(View.VISIBLE);
+                parentActivity.getHomeFab().showMenu(true);
             }
 
             @Override

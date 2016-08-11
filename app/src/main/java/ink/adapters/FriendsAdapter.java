@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.R;
@@ -32,14 +33,16 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         public TextView name;
         public ImageView friendImage;
         private ImageView friendMoreIcon;
-        private View friendsItemRootView;
+        private View cardView;
+        private RelativeLayout friendsRootView;
 
         public ViewHolder(View view) {
             super(view);
             name = (TextView) view.findViewById(R.id.friendName);
             friendImage = (ImageView) view.findViewById(R.id.friendImage);
             friendMoreIcon = (ImageView) view.findViewById(R.id.friendMoreIcon);
-            friendsItemRootView = view.findViewById(R.id.friendsItemRootView);
+            friendsRootView = (RelativeLayout) view.findViewById(R.id.friendsRootView);
+            cardView = view.findViewById(R.id.friendsCardView);
         }
     }
 
@@ -76,11 +79,11 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                 }
             }
         });
-        holder.friendsItemRootView.setOnClickListener(new View.OnClickListener() {
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (recyclerItemClickListener != null) {
-                    recyclerItemClickListener.onItemClicked(position, holder.friendsItemRootView);
+                    recyclerItemClickListener.onItemClicked(position, holder.friendsRootView);
                 }
             }
         });
