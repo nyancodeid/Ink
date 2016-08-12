@@ -424,6 +424,7 @@ public class MakePost extends BaseActivity {
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
                         progressDialog.dismiss();
+                        LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "Comments"));
                         finish();
                     } else {
                         showFailureDialog();

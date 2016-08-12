@@ -4,15 +4,18 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -105,6 +108,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     private String postId;
     private String postBody;
     private Snackbar snackbar;
+    private BroadcastReceiver broadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,6 +178,13 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         });
         mCommentAdapter.setOnItemClickListener(this);
 
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                finish();
+            }
+        };
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + "Comments"));
 
         mAaddCommentButton.setEnabled(false);
         getComments(mPostId, false);
@@ -323,6 +334,18 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 addComment(commentBody, userImage, commenterId, postId);
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (broadcastReceiver != null) {
+            try {
+                LocalBroadcastManager.getInstance(Comments.this).unregisterReceiver(broadcastReceiver);
+            } catch (Exception e) {
+
+            }
+        }
+        super.onDestroy();
     }
 
     @Override
@@ -678,6 +701,14 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 }
                 try {
                     String responseBody = response.body().string();
+
+                    getComments(mPostId, false);
+                    snackbar.setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            snackbar.dismiss();
+                        }
+                    });
                     if (type.equals(Constants.COMMENT_TYPE_EDIT)) {
                         snackbar.setText(getString(R.string.changesWasSaved));
                         snackbar.show();

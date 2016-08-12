@@ -321,7 +321,7 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> commentOptions(@Field("type") String type,
                                           @Field("commentId") String commentId,
-                                          @Field("$newCommentBody") String $newCommentBody);
+                                          @Field("newCommentBody") String $newCommentBody);
 
 
     }
