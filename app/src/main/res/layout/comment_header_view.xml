@@ -51,9 +51,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_toRightOf="@+id/postOwnerImage"
                 android:fontFamily="@string/appFont"
-                android:minHeight="96dp"
                 android:paddingLeft="10dp"
-                android:paddingTop="20dp"
                 android:textColor="#000000" />
 
             <TextView
@@ -63,7 +61,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/commentAttachmentLayout"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="5dp"
                 android:fontFamily="@string/appFont"
                 android:text="@string/postedAt"
                 android:textSize="12sp" />
@@ -129,13 +127,14 @@
                 android:layout_below="@+id/postBody"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="5dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:visibility="gone">
 
                 <ImageView
+                    android:id="@+id/locationVector"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/location_vector" />
@@ -144,9 +143,13 @@
                     android:id="@+id/commentAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/locationVector"
+                    android:fontFamily="@string/appFont"
                     android:gravity="start"
-                    android:text="@string/loadingText" />
+                    android:text="@string/loadingText"
+                    android:textStyle="italic" />
             </RelativeLayout>
 
 
@@ -158,13 +161,14 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="5dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:visibility="gone">
 
                 <ImageView
+                    android:id="@+id/attachVector"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/attach_vector" />
@@ -173,9 +177,13 @@
                     android:id="@+id/commentAttachmentName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/attachVector"
+                    android:fontFamily="@string/appFont"
                     android:gravity="start"
-                    android:text="@string/loadingText" />
+                    android:text="@string/loadingText"
+                    android:textStyle="italic" />
             </RelativeLayout>
 
         </RelativeLayout>

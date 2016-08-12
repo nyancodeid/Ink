@@ -84,7 +84,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             itemViewHolder.commenterName.setText(commentModel.getFirstName() + " " + commentModel.getLastName());
             if (commentModel.getCommenterImage() != null && !commentModel.getCommenterImage().isEmpty()) {
                 if (commentModel.isSocialAccount()) {
-                    Ion.with(context).load(commentModel.getCommenterImage()).withBitmap().transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
+                    Ion.with(context).load(commentModel.getCommenterImage()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
                 } else {
                     Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
                             commentModel.getCommenterImage()).withBitmap().transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
@@ -96,10 +96,10 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             final HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
             if (ownerImage != null && !ownerImage.isEmpty()) {
                 if (isOwnerSocialAccount) {
-                    Ion.with(context).load(ownerImage).withBitmap().transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
+                    Ion.with(context).load(ownerImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
                 } else {
                     Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                            ownerImage).withBitmap().transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
+                            ownerImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
                 }
             } else {
                 Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);

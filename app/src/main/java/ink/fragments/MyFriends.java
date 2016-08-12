@@ -302,12 +302,12 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
 
     private void showSearchField() {
         isClosed = false;
+        personSearchWrapper.setVisibility(View.VISIBLE);
         closeSearch.setEnabled(true);
         personSearchWrapper.startAnimation(slideIn);
         slideIn.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                personSearchWrapper.setVisibility(View.VISIBLE);
             }
 
             @Override

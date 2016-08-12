@@ -2,12 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/commentRootLayout"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/commentRootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/chat_background_color"
     tools:context="ink.activities.Comments">
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/commentRefresher"
         android:layout_width="wrap_content"
@@ -27,7 +28,9 @@
         android:id="@+id/commentsLoading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_above="@+id/commentCard"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="2dp"
         android:visibility="visible" />
 
 
