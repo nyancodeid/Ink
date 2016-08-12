@@ -373,9 +373,37 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 if (item.getTitle().toString().equals(getString(R.string.edit))) {
 
                 } else if (item.getTitle().toString().equals(R.string.delete)) {
-
+                    deletePost();
                 }
                 return false;
+            }
+        });
+    }
+
+    private void deletePost() {
+        Call<ResponseBody> deletePostCall = Retrofit.getInstance().getInkService().deletePost(mPostId, mAttachment);
+        deletePostCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    deletePost();
+                    return;
+                }
+                if (response.body() == null) {
+                    deletePost();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    Log.d("fsafsafasfsa", "onResponse: " + responseBody);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
             }
         });
     }

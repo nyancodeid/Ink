@@ -387,4 +387,6 @@
     <string name="userExistMessage">User already exist with same login,please choose different login</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="deleting">Deleting...</string>
+    <string name="deletingPost">Deleting your post,please wait...</string>
 </resources>

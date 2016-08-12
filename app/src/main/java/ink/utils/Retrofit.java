@@ -88,6 +88,10 @@ public class Retrofit {
         Call<ResponseBody> searchPerson(@Field("userId") String currentUserId,
                                         @Field("textToSearch") String textToSearch);
 
+        @POST(Constants.DELETE_POST_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> deletePost(@Field("postId") String postId,
+                                      @Field("attachmentName") String attachmentName);
 
         @POST(Constants.GROUP_REQUESTS_URL)
         @FormUrlEncoded

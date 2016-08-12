@@ -1,6 +1,7 @@
 package ink.fragments;
 
 import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,6 +61,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private AnimatedCircleLoadingView feedsLoading;
     private RelativeLayout noPostsWrapper;
     private boolean isOnCreate;
+    private ProgressDialog deleteDialog;
 
     public static Feed newInstance() {
         Feed feed = new Feed();
@@ -84,6 +87,10 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         feedsLoading = (AnimatedCircleLoadingView) view.findViewById(R.id.circle_loading_view);
         noPostsWrapper = (RelativeLayout) view.findViewById(R.id.noPostsWrapper);
         feedsLoading.startIndeterminate();
+        deleteDialog = new ProgressDialog(getActivity());
+        deleteDialog.setTitle(getString(R.string.deleting));
+        deleteDialog.setMessage(getString(R.string.deletingPost));
+        deleteDialog.setCancelable(false);
 
         feedRefresh.setOnRefreshListener(this);
         mAdapter = new FeedAdapter(mFeedModelArrayList, getActivity());
@@ -266,15 +273,19 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     }
 
     @Override
-    public void onMoreClicked(int position, View view) {
+    public void onMoreClicked(final int position, View view) {
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
         popupMenu.getMenu().add(getString(R.string.edit));
+        popupMenu.getMenu().add(getString(R.string.delete));
         popupMenu.show();
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getTitle().toString().equals(getString(R.string.edit))) {
 
+                } else if (item.getTitle().toString().equals(R.string.delete)) {
+                    deleteDialog.show();
+                    deletePost(mFeedModelArrayList.get(position).getId(), mFeedModelArrayList.get(position).getFileName());
                 }
                 return false;
             }
@@ -299,6 +310,37 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         }
         getFeeds();
         super.onResume();
+    }
+
+
+    private void deletePost(final String postId, final String attachmentName) {
+        Call<ResponseBody> deletePostCall = Retrofit.getInstance().getInkService().deletePost(postId, attachmentName);
+        deletePostCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    deletePost(postId, attachmentName);
+                    return;
+                }
+                if (response.body() == null) {
+                    deletePost(postId, attachmentName);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    deleteDialog.show();
+                    Log.d("fsafsafasfsa", "onResponse: " + responseBody);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    deleteDialog.show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                deleteDialog.show();
+            }
+        });
     }
 
     private void like(final String postId, final int isLiking, final TextView likeCountTV, final int position) {
