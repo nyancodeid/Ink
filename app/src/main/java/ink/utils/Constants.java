@@ -66,6 +66,8 @@ public class Constants {
     public static final String ACTION_UPDATE = "update";
     public static final String ACTION_DELETE = "delete";
     public static final String ACTION_INSERT = "insert";
+    public static final String POST_TYPE_CREATE = "TYPE_INSERT";
+    public static final String POST_TYPE_EDIT = "TYPE_EDIT";
     public static final String ANDROID_RESOURCE_DIR = "android.resource://";
     public static final String HUAWEI_MODEL = "HUAWEI";
     public static final String SERVER_TIME_ZONE = "America/Los_Angeles";

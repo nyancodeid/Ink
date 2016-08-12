@@ -96,6 +96,12 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     private boolean hasComments;
     private String ownerId;
     private ProgressDialog deleteDialog;
+    private String hasAttachment;
+    private String hasAddress;
+    private String attachmentName;
+    private String addressName;
+    private String postId;
+    private String postBody;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +133,14 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
             mLikesCount = extras.getString("likesCount");
             isLiked = extras.getBoolean("isLiked");
             ownerId = extras.getString("ownerId");
+
+            hasAttachment = extras.getString("hasAttachment");
+            hasAddress = extras.getString("hasAddress");
+            attachmentName = extras.getString("attachmentName");
+            addressName = extras.getString("addressName");
+            postId = extras.getString("postId");
+            postBody = extras.getString("postBody");
+
         }
         mCommentAdapter = new CommentAdapter(ownerId, mCommentModels, this, mUserImage,
                 mPostBody, mAttachment, mLocation, mDate, mName, mLikesCount, isLiked, isOwnerSocialAccount);
@@ -374,6 +388,15 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
             public void onItemClick(MenuItem clickedItem) {
                 switch (clickedItem.getItemId()) {
                     case 0:
+                        Intent intent = new Intent(getApplicationContext(), MakePost.class);
+                        intent.putExtra("isEditing", true);
+                        intent.putExtra("hasAttachment", hasAttachment);
+                        intent.putExtra("hasAddress", hasAddress);
+                        intent.putExtra("attachmentName", attachmentName);
+                        intent.putExtra("addressName", addressName);
+                        intent.putExtra("postId", postId);
+                        intent.putExtra("postBody", postBody);
+                        startActivity(intent);
 
                         // TODO: 8/12/2016  edit handle
                         break;

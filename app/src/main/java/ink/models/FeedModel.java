@@ -16,6 +16,8 @@ public class FeedModel {
     private boolean isLiked;
     private String likesCount;
     private boolean isSocialAccount;
+    private boolean hasAddress;
+    private boolean hasAttachment;
 
 
     public FeedModel(boolean isSocialAccount, String id, String userImage, String fileName, String content, String posterId,
@@ -131,5 +133,21 @@ public class FeedModel {
 
     public void setLikesCount(String likesCount) {
         this.likesCount = likesCount;
+    }
+
+    public boolean hasAddress() {
+        return hasAddress;
+    }
+
+    public void setHasAddress(boolean hasAddress) {
+        this.hasAddress = hasAddress;
+    }
+
+    public boolean hasAttachment() {
+        return hasAttachment;
+    }
+
+    public void setHasAttachment(boolean hasAttachment) {
+        this.hasAttachment = hasAttachment;
     }
 }

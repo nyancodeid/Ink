@@ -289,21 +289,32 @@ public class Retrofit {
 
         @Multipart
         @POST(Constants.MAKE_POST_URL)
-        Call<ResponseBody> makePost(@PartMap Map<String, RequestBody> map, @Part("user_id") String userId,
+        Call<ResponseBody> makePost(@PartMap Map<String, RequestBody> map,
+                                    @Part("user_id") String userId,
                                     @Part("postBody") String postBody,
                                     @Part("googleAddress") String googleAddress,
                                     @Part("imageLink") String userImageLink,
                                     @Part("firstName") String firstName,
-                                    @Part("lastName") String lastName, @Part("timezone") String timezone);
+                                    @Part("lastName") String lastName,
+                                    @Part("timezone") String timezone,
+                                    @Part("type") String type,
+                                    @Field("postId") String postId,
+                                    @Field("shouldDelete") String shouldDelete);
 
 
         @POST(Constants.MAKE_POST_URL)
         @FormUrlEncoded
-        Call<ResponseBody> makePost(@Field("user_id") String userId, @Field("postBody") String postBody,
+        Call<ResponseBody> makePost(@Field("user_id") String userId,
+                                    @Field("postBody") String postBody,
                                     @Field("googleAddress") String googleAddress,
                                     @Field("imageLink") String userImageLink,
                                     @Field("firstName") String firstName,
-                                    @Field("lastName") String lastName, @Field("timezone") String timezone);
+                                    @Field("lastName") String lastName,
+                                    @Field("timezone") String timezone,
+                                    @Field("type") String type,
+                                    @Field("editedFileName") String editedFileName,
+                                    @Field("postId") String postId,
+                                    @Field("shouldDelete") String shouldDelete);
 
 
     }

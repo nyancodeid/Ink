@@ -35,6 +35,7 @@ import java.util.List;
 
 import ink.activities.Comments;
 import ink.activities.HomeActivity;
+import ink.activities.MakePost;
 import ink.adapters.FeedAdapter;
 import ink.interfaces.FeedItemClick;
 import ink.interfaces.ItemClickListener;
@@ -62,7 +63,6 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private RelativeLayout noPostsWrapper;
     private ProgressDialog deleteDialog;
     private int mOffset = 0;
-    private Call<ResponseBody> feedCal;
     private HomeActivity parentActivity;
     private RelativeLayout newFeedsLayout;
 
@@ -137,12 +137,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 }
             });
         }
-        if (feedCal != null) {
-            if (feedCal.isExecuted()) {
-                feedCal.cancel();
-            }
-        }
-        feedCal = Retrofit.getInstance().getInkService().getPosts(mSharedHelper.getUserId(), String.valueOf(offset), String.valueOf(count));
+        Call<ResponseBody> feedCal = Retrofit.getInstance().getInkService().getPosts(mSharedHelper.getUserId(), String.valueOf(offset), String.valueOf(count));
         feedCal.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -155,9 +150,6 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                     return;
                 }
 
-                if (newDataLoading) {
-                    mOffset += 10;
-                }
                 try {
                     String responseBody = response.body().string();
                     JSONArray jsonArray = new JSONArray(responseBody);
@@ -204,7 +196,9 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                             newFeedsLayout.setVisibility(View.GONE);
                         }
                     }
-                    response.body().close();
+                    if (newDataLoading) {
+                        mOffset += 10;
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -239,6 +233,14 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         intent.putExtra("isLiked", clickedModel.isLiked());
         intent.putExtra("isSocialAccount", clickedModel.isSocialAccount());
         intent.putExtra("ownerId", clickedModel.getPosterId());
+
+        intent.putExtra("hasAttachment", clickedModel.hasAttachment());
+        intent.putExtra("hasAddress", clickedModel.hasAddress());
+        intent.putExtra("attachmentName", clickedModel.getFileName());
+        intent.putExtra("addressName", clickedModel.getAddress());
+        intent.putExtra("postId", clickedModel.getId());
+        intent.putExtra("postBody", clickedModel.getContent());
+
         startActivity(intent);
     }
 
@@ -320,8 +322,17 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             public void onItemClick(MenuItem clickedItem) {
                 switch (clickedItem.getItemId()) {
                     case 0:
+                        FeedModel eachModel = mFeedModelArrayList.get(position);
+                        Intent intent = new Intent(getActivity(), MakePost.class);
+                        intent.putExtra("isEditing", true);
+                        intent.putExtra("hasAttachment", eachModel.hasAttachment());
+                        intent.putExtra("hasAddress", eachModel.hasAddress());
+                        intent.putExtra("attachmentName", eachModel.getFileName());
+                        intent.putExtra("addressName", eachModel.getAddress());
+                        intent.putExtra("postId", eachModel.getId());
+                        intent.putExtra("postBody", eachModel.getContent());
+                        startActivity(intent);
 
-                        // TODO: 8/12/2016  edit handle
                         break;
                     case 1:
                         System.gc();

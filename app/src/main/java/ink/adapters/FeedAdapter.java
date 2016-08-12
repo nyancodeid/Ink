@@ -122,16 +122,20 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         }
 
         if (feedModel.getFileName() != null && !feedModel.getFileName().isEmpty()) {
+            feedModel.setHasAttachment(true);
             holder.feedAttachmentLayout.setVisibility(View.VISIBLE);
             holder.feedAttachmentName.setText(feedModel.getFileName());
         } else {
+            feedModel.setHasAttachment(false);
             holder.feedAttachmentLayout.setVisibility(View.GONE);
         }
 
         if (feedModel.getAddress() != null && !feedModel.getAddress().isEmpty()) {
+            feedModel.setHasAddress(true);
             holder.feedAddressLayout.setVisibility(View.VISIBLE);
             holder.feedAddress.setText(feedModel.getAddress());
         } else {
+            feedModel.setHasAddress(false);
             holder.feedAddressLayout.setVisibility(View.GONE);
         }
         if (!feedModel.getLikesCount().equals("0")) {
