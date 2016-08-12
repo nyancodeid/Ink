@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView;
 import com.ink.R;
@@ -275,21 +276,25 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     @Override
     public void onMoreClicked(final int position, View view) {
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
-        popupMenu.getMenu().add(getString(R.string.edit));
-        popupMenu.getMenu().add(getString(R.string.delete));
-        popupMenu.show();
+        popupMenu.getMenu().add(0, 0, 0, getString(R.string.edit));
+        popupMenu.getMenu().add(0, 1, 0, getString(R.string.delete));
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (item.getTitle().toString().equals(getString(R.string.edit))) {
-
-                } else if (item.getTitle().toString().equals(R.string.delete)) {
-                    deleteDialog.show();
-                    deletePost(mFeedModelArrayList.get(position).getId(), mFeedModelArrayList.get(position).getFileName());
+                switch (item.getItemId()) {
+                    case 0:
+                        // TODO: 8/12/2016 handle edit
+                        return true;
+                    case 1:
+                        Toast.makeText(getActivity(), "", Toast.LENGTH_SHORT).show();
+                        deleteDialog.show();
+                        deletePost(mFeedModelArrayList.get(position).getId(), mFeedModelArrayList.get(position).getFileName());
+                        return true;
                 }
                 return false;
             }
         });
+        popupMenu.show();
     }
 
     private void openGoogleMaps(String address) {
@@ -328,17 +333,17 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 }
                 try {
                     String responseBody = response.body().string();
-                    deleteDialog.show();
+                    deleteDialog.dismiss();
                     Log.d("fsafsafasfsa", "onResponse: " + responseBody);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    deleteDialog.show();
+                    deleteDialog.dismiss();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                deleteDialog.show();
+                deleteDialog.dismiss();
             }
         });
     }

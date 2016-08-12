@@ -383,7 +383,6 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     public void onAdditionItemClick(int position, View view) {
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
         popupMenu.getMenu().add(getString(R.string.removeFromFriends));
-        popupMenu.show();
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -393,5 +392,6 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
                 return false;
             }
         });
+        popupMenu.show();
     }
 }

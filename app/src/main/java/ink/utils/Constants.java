@@ -47,6 +47,7 @@ public class Constants {
     public static final String GET_POSTS_URL = "GetPosts.php";
     public static final String UPDATE_DETAILS = "UpdateDetails.php";
     public static final String MAKE_POST_URL = "MakePost.php";
+    public static final String DELETE_POST_URL = "DeletePost.php";
     public static final String LIKE_URL = "LikePost.php";
     public static final String GET_COMMENTS_URL = "GetComments.php";
     public static final String SOCIAL_LOGIN_URL = "SocialLogin.php";
@@ -81,6 +82,5 @@ public class Constants {
     public static final String NO_IMAGE_NAME = "no_image.png";
     public static final String NO_IMAGE_URL = MAIN_URL + USER_IMAGES_FOLDER + NO_IMAGE_NAME;
     public static final String ANDROID_DRAWABLE_DIR = ANDROID_RESOURCE_DIR + "com.ink" + "/drawable/";
-    public static final String DELETE_POST_URL = "DeletePost.php";
 }
 
