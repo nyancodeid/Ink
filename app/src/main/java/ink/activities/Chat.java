@@ -733,8 +733,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     /**
      * UNUSABLE
+     *  @param position
      *
-     * @param position
      */
     @Override
     public void onItemLongClick(int position) {

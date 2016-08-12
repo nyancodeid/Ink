@@ -16,6 +16,7 @@ import com.mikhaellopez.hfrecyclerview.HFRecyclerView;
 import java.util.List;
 
 import ink.interfaces.CommentClickHandler;
+import ink.interfaces.RecyclerItemClickListener;
 import ink.models.CommentModel;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
@@ -40,6 +41,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
     private SharedHelper sharedHelper;
     private boolean isOwnerSocialAccount;
     String ownerId;
+    private RecyclerItemClickListener onItemClickListener;
 
     public CommentAdapter(String ownerId, List<CommentModel> data,
                           Context context, String ownerImage,
@@ -84,6 +86,23 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             CommentModel commentModel = getItem(position);
             itemViewHolder.commenterBody.setText(commentModel.getCommentBody());
             itemViewHolder.commenterName.setText(commentModel.getFirstName() + " " + commentModel.getLastName());
+            itemViewHolder.commentRootLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onItemClicked(position, null);
+                    }
+                }
+            });
+            itemViewHolder.commentRootLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onItemLongClick(position);
+                    }
+                    return true;
+                }
+            });
             if (commentModel.getCommenterImage() != null && !commentModel.getCommenterImage().isEmpty()) {
                 if (commentModel.isSocialAccount()) {
                     Ion.with(context).load(commentModel.getCommenterImage()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
@@ -216,17 +235,23 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         private TextView commenterBody;
         private ImageView commenterImage;
         private TextView commenterName;
+        private RelativeLayout commentRootLayout;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             commenterBody = (TextView) itemView.findViewById(R.id.commenterBody);
             commenterName = (TextView) itemView.findViewById(R.id.commenterName);
             commenterImage = (ImageView) itemView.findViewById(R.id.commenterImage);
+            commentRootLayout = (RelativeLayout) itemView.findViewById(R.id.commentRootLayout);
         }
     }
 
     public void setOnLikeClickListener(CommentClickHandler onLikeClickListener) {
         this.commentClickHandler = onLikeClickListener;
+    }
+
+    public void setOnItemClickListener(RecyclerItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     public void setIsLiked(boolean isLiked) {

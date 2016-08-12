@@ -396,4 +396,9 @@
     <string name="newFeeds">New feeds</string>
     <string name="saving">Saving</string>
     <string name="savingChanges">Saving your changes...</string>
+    <string name="editComment">Edit Comment</string>
+    <string name="deleteComment">Delete Comment</string>
+    <string name="inputNewComment">Input new comment</string>
+    <string name="changesWasSaved">Changes was saved</string>
+    <string name="commentWasDeleted">Comment was deleted</string>
 </resources>

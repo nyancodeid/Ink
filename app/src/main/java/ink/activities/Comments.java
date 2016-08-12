@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -28,6 +29,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -50,10 +52,10 @@ import ink.adapters.CommentAdapter;
 import ink.decorators.DividerItemDecoration;
 import ink.interfaces.CommentClickHandler;
 import ink.interfaces.ItemClickListener;
+import ink.interfaces.RecyclerItemClickListener;
 import ink.models.CommentModel;
 import ink.utils.Animations;
 import ink.utils.Constants;
-import ink.utils.RecyclerTouchListener;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -61,7 +63,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, CommentClickHandler {
+public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, CommentClickHandler, RecyclerItemClickListener {
 
     @Bind(R.id.commentBody)
     EditText mCommentBody;
@@ -102,6 +104,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     private String addressName;
     private String postId;
     private String postBody;
+    private Snackbar snackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +120,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         deleteDialog.setTitle(getString(R.string.deleting));
         deleteDialog.setMessage(getString(R.string.deletingPost));
         deleteDialog.setCancelable(false);
+        snackbar = Snackbar.make(mCommentRefresher, getString(R.string.savingChanges), Snackbar.LENGTH_INDEFINITE);
         if (actionBar != null) {
             actionBar.setTitle(getString(R.string.comments));
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -168,33 +172,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 }
             }
         });
-        mCommentRecycler.addOnItemTouchListener(new RecyclerTouchListener(this, mCommentRecycler, new RecyclerTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                int actualPosition = position - 1;
-                try {
-                    CommentModel singleModel = mCommentModels.get(actualPosition);
-                    String currentId = singleModel.getCommenterId();
-                    if (currentId.equals(mSharedHelper.getUserId())) {
-                        Intent intent = new Intent(getApplicationContext(), MyProfile.class);
-                        startActivity(intent);
-                    } else {
-                        Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
-                        intent.putExtra("id", currentId);
-                        intent.putExtra("firstName", singleModel.getFirstName());
-                        intent.putExtra("lastName", singleModel.getLastName());
-                        startActivity(intent);
-                    }
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    //the header or footer was clicked nothing else.
-                }
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));
+        mCommentAdapter.setOnItemClickListener(this);
 
 
         mAaddCommentButton.setEnabled(false);
@@ -252,7 +230,6 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 try {
                     isResponseReceived = true;
                     String responseBody = response.body().string();
-                    Log.d("fsafsafasfsafas", "onResponse: " + responseBody);
                     JSONArray jsonArray = new JSONArray(responseBody);
                     if (jsonArray.length() <= 0) {
                         mCommentsLoading.setVisibility(View.GONE);
@@ -591,4 +568,139 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         });
     }
 
+    @Override
+    public void onItemClicked(int position, View view) {
+        Log.d("fsafsafasfas", "onItemLongClick: " + "on item  click");
+        int actualPosition = position - 1;
+        try {
+            CommentModel singleModel = mCommentModels.get(actualPosition);
+            String currentId = singleModel.getCommenterId();
+            if (currentId.equals(mSharedHelper.getUserId())) {
+                Intent intent = new Intent(getApplicationContext(), MyProfile.class);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
+                intent.putExtra("id", currentId);
+                intent.putExtra("firstName", singleModel.getFirstName());
+                intent.putExtra("lastName", singleModel.getLastName());
+                startActivity(intent);
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            //the header or footer was clicked nothing else.
+        }
+    }
+
+    @Override
+    public void onItemLongClick(int position) {
+        System.gc();
+        int actualPosition = position - 1;
+        try {
+            final CommentModel commentModel = mCommentModels.get(actualPosition);
+            View view = getLayoutInflater().inflate(R.layout.comment_options, null);
+            final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(Comments.this);
+            bottomSheetDialog.setContentView(view);
+
+            LinearLayout editComment = (LinearLayout) view.findViewById(R.id.editComment);
+            LinearLayout deleteComment = (LinearLayout) view.findViewById(R.id.deleteComment);
+            editComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bottomSheetDialog.dismiss();
+                    View newCommentView = getLayoutInflater().inflate(R.layout.new_comment_body, null);
+                    final EditText newCommentBody = (EditText) newCommentView.findViewById(R.id.newCommentBody);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Comments.this);
+                    builder.setView(newCommentView);
+                    builder.setCancelable(false);
+                    builder.setPositiveButton(getString(R.string.saveText), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //just override for dialog not to close automatically
+                        }
+                    });
+                    builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //just override for dialog not to close automatically
+                        }
+                    });
+
+                    final AlertDialog dialog = builder.create();
+                    dialog.show();
+
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String finalBody = newCommentBody.getText().toString().trim();
+                            if (finalBody.isEmpty()) {
+                                newCommentBody.setError(getString(R.string.fieldEmptyError));
+                            } else {
+                                dialog.dismiss();
+                                snackbar.show();
+                                callCommentServer(Constants.COMMENT_TYPE_EDIT, commentModel.getCommentId(), finalBody);
+                            }
+                        }
+                    });
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
+                }
+            });
+
+            deleteComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bottomSheetDialog.dismiss();
+                    snackbar.show();
+                    callCommentServer(Constants.COMMENT_TYPE_DELETE, commentModel.getCommentId(), "");
+                }
+            });
+            bottomSheetDialog.show();
+        } catch (ArrayIndexOutOfBoundsException e) {
+
+        }
+    }
+
+    private void callCommentServer(final String type, final String commentId, final String newCommmentBody) {
+        Call<ResponseBody> commentOptionsCall = Retrofit.getInstance().getInkService().commentOptions(type, commentId, newCommmentBody);
+        commentOptionsCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    callCommentServer(type, commentId, newCommmentBody);
+                    return;
+                }
+                if (response.body() == null) {
+                    callCommentServer(type, commentId, newCommmentBody);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    if (type.equals(Constants.COMMENT_TYPE_EDIT)) {
+                        snackbar.setText(getString(R.string.changesWasSaved));
+                        snackbar.show();
+                    } else {
+                        snackbar.setText(getString(R.string.commentWasDeleted));
+                        snackbar.show();
+                    }
+                    Log.d("fasfsafsafa", "onResponse: " + responseBody);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                callCommentServer(type, commentId, newCommmentBody);
+            }
+        });
+    }
+
+    @Override
+    public void onAdditionItemClick(int position, View view) {
+
+    }
 }

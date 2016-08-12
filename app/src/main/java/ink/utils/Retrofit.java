@@ -317,6 +317,13 @@ public class Retrofit {
                                     @Field("shouldDelete") String shouldDelete);
 
 
+        @POST(Constants.COMMENT_OPTIONS_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> commentOptions(@Field("type") String type,
+                                          @Field("commentId") String commentId,
+                                          @Field("$newCommentBody") String $newCommentBody);
+
+
     }
 
     public interface MusicCloudInterface {
