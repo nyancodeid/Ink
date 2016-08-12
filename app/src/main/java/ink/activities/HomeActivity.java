@@ -533,6 +533,10 @@ public class HomeActivity extends BaseActivity
     }
 
 
+    public Toolbar getToolbar() {
+        return mToolbar;
+    }
+
     private void pingTime() {
         Call<ResponseBody> pingTimeCall = Retrofit.getInstance().getInkService().pingTime(mSharedHelper.getUserId());
         pingTimeCall.enqueue(new Callback<ResponseBody>() {

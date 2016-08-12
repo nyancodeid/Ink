@@ -205,8 +205,4 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     public int getItemCount() {
         return feedList.size();
     }
-
-
-    public void setShouldStartAnimation(boolean shouldStartAnimation) {
-    }
 }

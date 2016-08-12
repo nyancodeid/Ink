@@ -3,19 +3,20 @@ package ink.activities;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -48,6 +49,7 @@ import fab.FloatingActionButton;
 import ink.adapters.CommentAdapter;
 import ink.decorators.DividerItemDecoration;
 import ink.interfaces.CommentClickHandler;
+import ink.interfaces.ItemClickListener;
 import ink.models.CommentModel;
 import ink.utils.Animations;
 import ink.utils.Constants;
@@ -93,7 +95,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     private boolean isResponseReceived;
     private boolean hasComments;
     private String ownerId;
-
+    private ProgressDialog deleteDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +107,10 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         ActionBar actionBar = getSupportActionBar();
         mCommentModels = new ArrayList<>();
         mCommentRefresher.setOnRefreshListener(this);
+        deleteDialog = new ProgressDialog(Comments.this);
+        deleteDialog.setTitle(getString(R.string.deleting));
+        deleteDialog.setMessage(getString(R.string.deletingPost));
+        deleteDialog.setCancelable(false);
         if (actionBar != null) {
             actionBar.setTitle(getString(R.string.comments));
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -363,21 +369,38 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onMoreClick(int position, View view) {
-        PopupMenu popupMenu = new PopupMenu(Comments.this, view);
-        popupMenu.getMenu().add(getString(R.string.edit));
-        popupMenu.getMenu().add(getString(R.string.delete));
-        popupMenu.show();
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        ink.utils.PopupMenu.showPopUp(Comments.this, view, new ItemClickListener<MenuItem>() {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getTitle().toString().equals(getString(R.string.edit))) {
+            public void onItemClick(MenuItem clickedItem) {
+                switch (clickedItem.getItemId()) {
+                    case 0:
 
-                } else if (item.getTitle().toString().equals(R.string.delete)) {
-                    deletePost();
+                        // TODO: 8/12/2016  edit handle
+                        break;
+                    case 1:
+                        System.gc();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Comments.this);
+                        builder.setTitle(getString(R.string.deletePost));
+                        builder.setMessage(getString(R.string.areYouSure));
+                        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                deleteDialog.show();
+                                deletePost();
+                            }
+                        });
+                        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        builder.show();
+                        break;
                 }
-                return false;
             }
-        });
+        }, getString(R.string.edit), getString(R.string.delete));
     }
 
     private void deletePost() {
@@ -395,8 +418,16 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 }
                 try {
                     String responseBody = response.body().string();
-                    Log.d("fsafsafasfsa", "onResponse: " + responseBody);
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        finish();
+                    } else {
+                        Snackbar.make(mCommentsLoading, getString(R.string.couldNotDeletePost), Snackbar.LENGTH_LONG).show();
+                    }
                 } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }

@@ -245,7 +245,9 @@ public class Retrofit {
 
         @POST(Constants.GET_POSTS_URL)
         @FormUrlEncoded
-        Call<ResponseBody> getPosts(@Field("user_id") String userId);
+        Call<ResponseBody> getPosts(@Field("user_id") String userId,
+                                    @Field("offset") String offset,
+                                    @Field("count") String count);
 
 
         @POST(Constants.GET_COMMENTS_URL)

@@ -19,16 +19,36 @@
             android:scrollbars="vertical" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
+    <RelativeLayout
+        android:id="@+id/newFeedsLayout"
+        android:layout_width="88dp"
+        android:layout_height="25dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:alpha="0.8"
+        android:background="@drawable/new_feed_background"
+        android:visibility="gone">
 
-    <com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/circle_loading_view"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_centerInParent="true"
-        android:background="@android:color/transparent"
-        app:mainColor="@color/colorPrimary"
-        app:secondaryColor="@color/colorPrimaryDark"
-        app:textColor="@android:color/white" />
+        <TextView
+            android:id="@+id/newFeedText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:fontFamily="@string/appFont"
+            android:paddingRight="5dp"
+            android:text="@string/newFeeds"
+            android:textColor="#ffffff"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/newFeedText"
+            android:src="@drawable/down_arrow_white" />
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/noPostsWrapper"

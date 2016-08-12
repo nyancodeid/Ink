@@ -8,14 +8,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,9 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.github.jlmd.animatedcircleloadingview.AnimatedCircleLoadingView;
 import com.ink.R;
 
 import org.json.JSONArray;
@@ -37,8 +34,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ink.activities.Comments;
+import ink.activities.HomeActivity;
 import ink.adapters.FeedAdapter;
 import ink.interfaces.FeedItemClick;
+import ink.interfaces.ItemClickListener;
 import ink.models.FeedModel;
 import ink.utils.Animations;
 import ink.utils.Constants;
@@ -53,16 +52,19 @@ import retrofit2.Response;
  * Created by USER on 2016-06-21.
  */
 public class Feed extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener, FeedItemClick {
+    private static final String TAG = Feed.class.getSimpleName();
     private List<FeedModel> mFeedModelArrayList = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private FeedAdapter mAdapter;
     private FeedModel mFeedModel;
     private SwipeRefreshLayout feedRefresh;
     private SharedHelper mSharedHelper;
-    private AnimatedCircleLoadingView feedsLoading;
     private RelativeLayout noPostsWrapper;
-    private boolean isOnCreate;
     private ProgressDialog deleteDialog;
+    private int mOffset = 0;
+    private Call<ResponseBody> feedCal;
+    private HomeActivity parentActivity;
+    private RelativeLayout newFeedsLayout;
 
     public static Feed newInstance() {
         Feed feed = new Feed();
@@ -80,14 +82,13 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        isOnCreate = true;
+        parentActivity = ((HomeActivity) getActivity());
         mSharedHelper = new SharedHelper(getActivity());
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        newFeedsLayout = (RelativeLayout) view.findViewById(R.id.newFeedsLayout);
         feedRefresh = (SwipeRefreshLayout) view.findViewById(R.id.feedRefresh);
         feedRefresh.setColorSchemeColors(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.colorPrimary));
-        feedsLoading = (AnimatedCircleLoadingView) view.findViewById(R.id.circle_loading_view);
         noPostsWrapper = (RelativeLayout) view.findViewById(R.id.noPostsWrapper);
-        feedsLoading.startIndeterminate();
         deleteDialog = new ProgressDialog(getActivity());
         deleteDialog.setTitle(getString(R.string.deleting));
         deleteDialog.setMessage(getString(R.string.deletingPost));
@@ -95,7 +96,6 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
         feedRefresh.setOnRefreshListener(this);
         mAdapter = new FeedAdapter(mFeedModelArrayList, getActivity());
-        mAdapter.setShouldStartAnimation(true);
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);
         itemAnimator.setRemoveDuration(500);
@@ -104,36 +104,68 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         mRecyclerView.setItemAnimator(itemAnimator);
         mAdapter.setOnFeedClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                int lastItem = layoutManager.findLastCompletelyVisibleItemPosition();
+                newFeedsLayout.setVisibility(View.GONE);
+                if (lastItem == mAdapter.getItemCount() - 1) {
+                    parentActivity.getToolbar().setTitle(getString(R.string.loadingFeeds));
+                    getFeeds(mOffset, 10, false, true, true);
+                }
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
     @Override
     public void onRefresh() {
-        mAdapter.setShouldStartAnimation(true);
-        getFeeds();
+        getFeeds(0, mOffset, true, false, false);
     }
 
-    private void getFeeds() {
-        Call<ResponseBody> feedCal = Retrofit.getInstance().getInkService().getPosts(mSharedHelper.getUserId());
+    private void getFeeds(final int offset,
+                          final int count,
+                          final boolean clearItems,
+                          final boolean newDataLoading,
+                          final boolean showNewFeed) {
+        if (clearItems) {
+            feedRefresh.post(new Runnable() {
+                @Override
+                public void run() {
+                    feedRefresh.setRefreshing(true);
+                }
+            });
+        }
+        if (feedCal != null) {
+            if (feedCal.isExecuted()) {
+                feedCal.cancel();
+            }
+        }
+        feedCal = Retrofit.getInstance().getInkService().getPosts(mSharedHelper.getUserId(), String.valueOf(offset), String.valueOf(count));
         feedCal.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    getFeeds();
+                    getFeeds(offset, count, clearItems, newDataLoading, showNewFeed);
                     return;
                 }
                 if (response.body() == null) {
-                    getFeeds();
+                    getFeeds(offset, count, clearItems, newDataLoading, showNewFeed);
                     return;
                 }
 
-
+                if (newDataLoading) {
+                    mOffset += 10;
+                }
                 try {
                     String responseBody = response.body().string();
                     JSONArray jsonArray = new JSONArray(responseBody);
-
-                    if (mFeedModelArrayList != null) {
-                        mFeedModelArrayList.clear();
-                        mAdapter.notifyDataSetChanged();
+                    if (clearItems) {
+                        if (mFeedModelArrayList != null) {
+                            mFeedModelArrayList.clear();
+                            mAdapter.notifyDataSetChanged();
+                        }
                     }
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject eachObject = jsonArray.optJSONObject(i);
@@ -154,18 +186,25 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         mFeedModelArrayList.add(mFeedModel);
                         mAdapter.notifyDataSetChanged();
                     }
-
-                    if (feedsLoading.getVisibility() == View.VISIBLE) {
-                        feedsLoading.setVisibility(View.GONE);
-                        feedsLoading.stopOk();
-                    }
-                    feedRefresh.setRefreshing(false);
                     mAdapter.notifyDataSetChanged();
+                    feedRefresh.setRefreshing(false);
+
                     if (mFeedModelArrayList.size() == 0) {
                         noPostsWrapper.setVisibility(View.VISIBLE);
                     } else {
                         noPostsWrapper.setVisibility(View.GONE);
                     }
+                    if (!clearItems) {
+                        parentActivity.getToolbar().setTitle(HomeActivity.FEED);
+                    }
+                    if (showNewFeed) {
+                        if (jsonArray.length() > 0) {
+                            newFeedsLayout.setVisibility(View.VISIBLE);
+                        } else {
+                            newFeedsLayout.setVisibility(View.GONE);
+                        }
+                    }
+                    response.body().close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -175,7 +214,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getFeeds();
+                getFeeds(offset, count, clearItems, newDataLoading, showNewFeed);
             }
         });
     }
@@ -184,6 +223,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     public void onCardViewClick(int position) {
         startCommentActivity(position);
     }
+
 
     private void startCommentActivity(int position) {
         FeedModel clickedModel = mFeedModelArrayList.get(position);
@@ -275,26 +315,38 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     @Override
     public void onMoreClicked(final int position, View view) {
-        PopupMenu popupMenu = new PopupMenu(getActivity(), view);
-        popupMenu.getMenu().add(0, 0, 0, getString(R.string.edit));
-        popupMenu.getMenu().add(0, 1, 0, getString(R.string.delete));
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        ink.utils.PopupMenu.showPopUp(getActivity(), view, new ItemClickListener<MenuItem>() {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
+            public void onItemClick(MenuItem clickedItem) {
+                switch (clickedItem.getItemId()) {
                     case 0:
-                        // TODO: 8/12/2016 handle edit
-                        return true;
+
+                        // TODO: 8/12/2016  edit handle
+                        break;
                     case 1:
-                        Toast.makeText(getActivity(), "", Toast.LENGTH_SHORT).show();
-                        deleteDialog.show();
-                        deletePost(mFeedModelArrayList.get(position).getId(), mFeedModelArrayList.get(position).getFileName());
-                        return true;
+                        System.gc();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(getString(R.string.deletePost));
+                        builder.setMessage(getString(R.string.areYouSure));
+                        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                deleteDialog.show();
+                                deletePost(mFeedModelArrayList.get(position).getId(), mFeedModelArrayList.get(position).getFileName());
+                            }
+                        });
+                        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        builder.show();
+                        break;
                 }
-                return false;
             }
-        });
-        popupMenu.show();
+        }, getString(R.string.edit), getString(R.string.delete));
     }
 
     private void openGoogleMaps(String address) {
@@ -309,11 +361,10 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     @Override
     public void onResume() {
-        if (isOnCreate) {
-            mAdapter.setShouldStartAnimation(false);
-            isOnCreate = false;
+        if (mOffset == 0) {
+            mOffset = 10;
         }
-        getFeeds();
+        getFeeds(0, mOffset, true, false, false);
         super.onResume();
     }
 
@@ -333,11 +384,21 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 }
                 try {
                     String responseBody = response.body().string();
-                    deleteDialog.dismiss();
-                    Log.d("fsafsafasfsa", "onResponse: " + responseBody);
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        deleteDialog.dismiss();
+                        Snackbar.make(mRecyclerView, getString(R.string.postDeleted), Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        deleteDialog.dismiss();
+                        Snackbar.make(mRecyclerView, getString(R.string.couldNotDeletePost), Snackbar.LENGTH_LONG).show();
+                    }
+                    getFeeds(0, mOffset, true, false, false);
                 } catch (IOException e) {
                     e.printStackTrace();
                     deleteDialog.dismiss();
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
 

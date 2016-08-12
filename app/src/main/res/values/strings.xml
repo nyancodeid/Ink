@@ -382,11 +382,16 @@
     <string name="loadingSticker">Loading...</string>
     <string name="title_activity_fullscreen">Ink</string>
     <string name="searchPerson">Search person</string>
-    <string name="removeFromFriends">Remove from friends</string>
+    <string name="removeFromFriends">Remove friend</string>
     <string name="userExist">User Exist</string>
     <string name="userExistMessage">User already exist with same login,please choose different login</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="deleting">Deleting...</string>
     <string name="deletingPost">Deleting your post,please wait...</string>
+    <string name="postDeleted">Post was deleted</string>
+    <string name="couldNotDeletePost">Could not delete post.Please try again...</string>
+    <string name="deletePost">Delete this post</string>
+    <string name="loadingFeeds">Loading new feeds...</string>
+    <string name="newFeeds">New feeds</string>
 </resources>

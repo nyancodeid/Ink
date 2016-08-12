@@ -80,6 +80,7 @@ public class MakePost extends BaseActivity {
     private String mGoogleAddress = "";
     private ProgressDialog progressDialog;
     private boolean isEditing;
+    private String postId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +105,7 @@ public class MakePost extends BaseActivity {
         if (extras != null) {
             if (extras.containsKey("isEditing")) {
                 isEditing = extras.getBoolean("isEditing");
+                postId = extras.getString("postId");
             }
         }
 
