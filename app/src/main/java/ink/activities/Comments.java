@@ -19,6 +19,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -81,6 +82,8 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     RecyclerView mCommentRecycler;
     @Bind(R.id.commentRefresher)
     SwipeRefreshLayout mCommentRefresher;
+    @Bind(R.id.commentCard)
+    CardView commentCard;
     private String mPostId;
     private String mUserImage;
     private String mPostBody;
@@ -660,7 +663,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                             } else {
                                 dialog.dismiss();
                                 snackbar.show();
-                                Keyboard.hideKeyboard(getApplicationContext(), mCommentRecycler);
+                                Keyboard.hideKeyboard(getApplicationContext(), commentCard);
                                 callCommentServer(Constants.COMMENT_TYPE_EDIT, commentModel.getCommentId(), finalBody);
                             }
                         }
