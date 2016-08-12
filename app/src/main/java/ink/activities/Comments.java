@@ -59,6 +59,7 @@ import ink.interfaces.RecyclerItemClickListener;
 import ink.models.CommentModel;
 import ink.utils.Animations;
 import ink.utils.Constants;
+import ink.utils.Keyboard;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -659,6 +660,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                             } else {
                                 dialog.dismiss();
                                 snackbar.show();
+                                Keyboard.hideKeyboard(getApplicationContext(), mCommentRecycler);
                                 callCommentServer(Constants.COMMENT_TYPE_EDIT, commentModel.getCommentId(), finalBody);
                             }
                         }
