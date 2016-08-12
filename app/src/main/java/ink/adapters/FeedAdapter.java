@@ -102,7 +102,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         if (feedModel.getPosterId().equals(sharedHelper.getUserId())) {
             holder.feedMoreIcon.setVisibility(View.VISIBLE);
         } else {
-            holder.feedMoreIcon.setVisibility(View.VISIBLE);
+            holder.feedMoreIcon.setVisibility(View.GONE);
         }
         holder.feedMoreIcon.setOnClickListener(new View.OnClickListener() {
             @Override

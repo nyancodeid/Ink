@@ -386,4 +386,5 @@
     <string name="userExist">User Exist</string>
     <string name="userExistMessage">User already exist with same login,please choose different login</string>
     <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>

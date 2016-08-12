@@ -120,6 +120,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
             mDate = extras.getString("date");
             mLikesCount = extras.getString("likesCount");
             isLiked = extras.getBoolean("isLiked");
+            ownerId = extras.getString("ownerId");
         }
         mCommentAdapter = new CommentAdapter(ownerId, mCommentModels, this, mUserImage,
                 mPostBody, mAttachment, mLocation, mDate, mName, mLikesCount, isLiked, isOwnerSocialAccount);
@@ -364,11 +365,14 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     public void onMoreClick(int position, View view) {
         PopupMenu popupMenu = new PopupMenu(Comments.this, view);
         popupMenu.getMenu().add(getString(R.string.edit));
+        popupMenu.getMenu().add(getString(R.string.delete));
         popupMenu.show();
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getTitle().toString().equals(getString(R.string.edit))) {
+
+                } else if (item.getTitle().toString().equals(R.string.delete)) {
 
                 }
                 return false;
