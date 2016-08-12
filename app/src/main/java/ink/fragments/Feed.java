@@ -372,6 +372,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     @Override
     public void onResume() {
+        System.gc();
         if (mOffset == 0) {
             mOffset = 10;
         }
