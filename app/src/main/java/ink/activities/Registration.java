@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.ink.R;
 
@@ -20,6 +21,8 @@ import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import ink.utils.ErrorCause;
+import ink.utils.Keyboard;
 import ink.utils.Retrofit;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -38,7 +41,8 @@ public class Registration extends BaseActivity implements View.OnClickListener {
     Button mRegister;
     @Bind(R.id.rootRegistrationLayout)
     LinearLayout mRootRegistrationLayout;
-
+    @Bind(R.id.registrationScrollView)
+    ScrollView registrationScrollView;
     private View mRegisterLoading;
 
     @Bind(R.id.firstName)
@@ -65,7 +69,7 @@ public class Registration extends BaseActivity implements View.OnClickListener {
     /**
      * Register user to the server
      */
-    private void register(final String login, final String password, String firstName, String lastName) {
+    private void register(final String login, final String password, final String firstName, final String lastName) {
         if (!mLogin.getText().toString().isEmpty()
                 && !mPassword.getText().toString().isEmpty()
                 && !mConfirmPassword.getText().toString().isEmpty()
@@ -73,6 +77,15 @@ public class Registration extends BaseActivity implements View.OnClickListener {
                 && !mFirstName.getText().toString().isEmpty()
                 && !mLastName.getText().toString().isEmpty()
                 && !mPassword.getText().toString().isEmpty()) {
+
+            Keyboard.hideKeyboard(this, mRootRegistrationLayout);
+            registrationScrollView.post(new Runnable() {
+                @Override
+                public void run() {
+                    registrationScrollView.smoothScrollTo(0, 0);
+                }
+            });
+
             mRegisterLoading.setVisibility(View.VISIBLE);
             mRootRegistrationLayout.setEnabled(false);
             final Call<ResponseBody> register = Retrofit.getInstance().getInkService().register(login,
@@ -81,6 +94,14 @@ public class Registration extends BaseActivity implements View.OnClickListener {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     mRegisterLoading.setVisibility(View.GONE);
+                    if (response == null) {
+                        register(login, password, firstName, lastName);
+                        return;
+                    }
+                    if (response.body() == null) {
+                        register(login, password, firstName, lastName);
+                        return;
+                    }
                     try {
                         try {
                             String responseString = response.body().string();
@@ -101,6 +122,21 @@ public class Registration extends BaseActivity implements View.OnClickListener {
                                     }
                                 });
                                 builder.show();
+                            } else {
+                                String cause = jsonObject.optString("cause");
+                                if (cause.equals(ErrorCause.USER_ALREADY_EXIST)) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(Registration.this);
+                                    builder.setTitle(getString(R.string.userExist));
+                                    builder.setMessage(getString(R.string.userExistMessage));
+                                    builder.setCancelable(false);
+                                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    builder.show();
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

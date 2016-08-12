@@ -383,4 +383,6 @@
     <string name="title_activity_fullscreen">Ink</string>
     <string name="searchPerson">Search person</string>
     <string name="removeFromFriends">Remove from friends</string>
+    <string name="userExist">User Exist</string>
+    <string name="userExistMessage">User already exist with same login,please choose different login</string>
 </resources>
