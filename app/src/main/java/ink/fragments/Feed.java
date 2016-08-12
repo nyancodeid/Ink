@@ -12,8 +12,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -172,7 +174,24 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     @Override
     public void onCardViewClick(int position) {
+        startCommentActivity(position);
+    }
 
+    private void startCommentActivity(int position) {
+        FeedModel clickedModel = mFeedModelArrayList.get(position);
+        Intent intent = new Intent(getActivity(), Comments.class);
+        intent.putExtra("postId", clickedModel.getId());
+        intent.putExtra("userImage", clickedModel.getUserImage());
+        intent.putExtra("postBody", clickedModel.getContent());
+        intent.putExtra("attachment", clickedModel.getFileName());
+        intent.putExtra("location", clickedModel.getAddress());
+        intent.putExtra("name", clickedModel.getFirstName() + " " + clickedModel.getLastName());
+        intent.putExtra("date", clickedModel.getDatePosted());
+        intent.putExtra("likesCount", clickedModel.getLikesCount());
+        intent.putExtra("isLiked", clickedModel.isLiked());
+        intent.putExtra("isSocialAccount", clickedModel.isSocialAccount());
+        intent.putExtra("ownerId", clickedModel.getPosterId());
+        startActivity(intent);
     }
 
     @Override
@@ -243,19 +262,23 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     @Override
     public void onCommentClicked(int position, View commentView) {
         Animations.animateCircular(commentView);
-        FeedModel clickedModel = mFeedModelArrayList.get(position);
-        Intent intent = new Intent(getActivity(), Comments.class);
-        intent.putExtra("postId", clickedModel.getId());
-        intent.putExtra("userImage", clickedModel.getUserImage());
-        intent.putExtra("postBody", clickedModel.getContent());
-        intent.putExtra("attachment", clickedModel.getFileName());
-        intent.putExtra("location", clickedModel.getAddress());
-        intent.putExtra("name", clickedModel.getFirstName() + " " + clickedModel.getLastName());
-        intent.putExtra("date", clickedModel.getDatePosted());
-        intent.putExtra("likesCount", clickedModel.getLikesCount());
-        intent.putExtra("isLiked", clickedModel.isLiked());
-        intent.putExtra("isSocialAccount", clickedModel.isSocialAccount());
-        startActivity(intent);
+        startCommentActivity(position);
+    }
+
+    @Override
+    public void onMoreClicked(int position, View view) {
+        PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+        popupMenu.getMenu().add(getString(R.string.edit));
+        popupMenu.show();
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getTitle().toString().equals(getString(R.string.edit))) {
+
+                }
+                return false;
+            }
+        });
     }
 
     private void openGoogleMaps(String address) {

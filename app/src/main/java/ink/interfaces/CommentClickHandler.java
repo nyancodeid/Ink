@@ -1,5 +1,6 @@
 package ink.interfaces;
 
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,4 +13,6 @@ public interface CommentClickHandler {
     void onAddressClick(int position);
 
     void onAttachmentClick(int position);
+
+    void onMoreClick(int position, View view);
 }

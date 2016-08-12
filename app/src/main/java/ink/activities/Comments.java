@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -91,6 +92,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     View contentView;
     private boolean isResponseReceived;
     private boolean hasComments;
+    private String ownerId;
 
 
     @Override
@@ -119,8 +121,8 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
             mLikesCount = extras.getString("likesCount");
             isLiked = extras.getBoolean("isLiked");
         }
-        mCommentAdapter = new CommentAdapter(mCommentModels, this, mUserImage,
-                mPostBody, mAttachment, mLocation, mDate, mName, mLikesCount, isLiked,isOwnerSocialAccount);
+        mCommentAdapter = new CommentAdapter(ownerId, mCommentModels, this, mUserImage,
+                mPostBody, mAttachment, mLocation, mDate, mName, mLikesCount, isLiked, isOwnerSocialAccount);
         mCommentAdapter.setOnLikeClickListener(this);
         mCommentRefresher.setColorSchemeColors(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
@@ -356,6 +358,22 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     @Override
     public void onAttachmentClick(int position) {
         showPromptDialog(mAttachment);
+    }
+
+    @Override
+    public void onMoreClick(int position, View view) {
+        PopupMenu popupMenu = new PopupMenu(Comments.this, view);
+        popupMenu.getMenu().add(getString(R.string.edit));
+        popupMenu.show();
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getTitle().toString().equals(getString(R.string.edit))) {
+
+                }
+                return false;
+            }
+        });
     }
 
     private void openGoogleMaps(String address) {

@@ -39,8 +39,9 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
     private boolean isLiked;
     private SharedHelper sharedHelper;
     private boolean isOwnerSocialAccount;
+    String ownerId;
 
-    public CommentAdapter(List<CommentModel> data,
+    public CommentAdapter(String ownerId, List<CommentModel> data,
                           Context context, String ownerImage,
                           String ownerPostBody, String attachment,
                           String location, String date, String name,
@@ -48,6 +49,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         super(data, true, false);
         this.context = context;
         this.isLiked = isLiked;
+        this.ownerId = ownerId;
         this.likesCount = likesCount;
         this.name = name;
         this.date = date;
@@ -94,6 +96,19 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             }
         } else if (holder instanceof HeaderViewHolder) {
             final HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
+            if (ownerId.equals(sharedHelper.getUserId())) {
+                ((HeaderViewHolder) holder).commentMoreIcon.setVisibility(View.VISIBLE);
+            } else {
+                ((HeaderViewHolder) holder).commentMoreIcon.setVisibility(View.GONE);
+            }
+            ((HeaderViewHolder) holder).commentMoreIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (commentClickHandler != null) {
+                        commentClickHandler.onMoreClick(position, ((HeaderViewHolder) holder).commentMoreIcon);
+                    }
+                }
+            });
             if (ownerImage != null && !ownerImage.isEmpty()) {
                 if (isOwnerSocialAccount) {
                     Ion.with(context).load(ownerImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
@@ -178,6 +193,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         private ImageView postOwnerImage, likeIcon;
         private TextView postBody, postDate, commenterName, commentAttachmentName, commentAddress, likesCountTV;
         private RelativeLayout commentLikeWrapper, commentAddressLayout, commentAttachmentLayout;
+        private ImageView commentMoreIcon;
 
         public HeaderViewHolder(View itemView) {
             super(itemView);
@@ -185,6 +201,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             likeIcon = (ImageView) itemView.findViewById(R.id.commentLikeIcon);
             postBody = (TextView) itemView.findViewById(R.id.postBody);
             commentAttachmentName = (TextView) itemView.findViewById(R.id.commentAttachmentName);
+            commentMoreIcon = (ImageView) itemView.findViewById(R.id.commentMoreIcon);
             postDate = (TextView) itemView.findViewById(R.id.postDate);
             commentAddress = (TextView) itemView.findViewById(R.id.commentAddress);
             commenterName = (TextView) itemView.findViewById(R.id.commenterName);

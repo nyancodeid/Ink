@@ -19,4 +19,6 @@ public interface FeedItemClick {
     void onLikeClick(int position, ImageView likeView, TextView likeCountTV);
 
     void onCommentClicked(int position, View commentView);
+
+    void onMoreClicked(int position, View view);
 }

@@ -79,6 +79,7 @@ public class MakePost extends BaseActivity {
     private File chosenFile;
     private String mGoogleAddress = "";
     private ProgressDialog progressDialog;
+    private boolean isEditing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +99,14 @@ public class MakePost extends BaseActivity {
         if (!isPermissionsGranted()) {
             requestPermission();
         }
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if (extras.containsKey("isEditing")) {
+                isEditing = extras.getBoolean("isEditing");
+            }
+        }
+
         mBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -204,9 +213,9 @@ public class MakePost extends BaseActivity {
 
     @OnClick(R.id.attachmentWidget)
     public void attachmentWidget() {
-        if(PermissionsChecker.isStoragePermissionGranted(this)){
+        if (PermissionsChecker.isStoragePermissionGranted(this)) {
             showAttachmentDialog();
-        }else{
+        } else {
             Snackbar.make(mCheckWrapper, getString(R.string.storagePermissions), Snackbar.LENGTH_LONG).show();
         }
     }

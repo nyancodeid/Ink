@@ -22,6 +22,19 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                android:id="@+id/commentMoreIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:padding="5dp"
+                android:src="@drawable/more_icon" />
+
+            <ImageView
                 android:id="@+id/postOwnerImage"
                 android:layout_width="36dp"
                 android:layout_height="36dp"

@@ -19,6 +19,7 @@ import ink.interfaces.FeedItemClick;
 import ink.models.FeedModel;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
+import ink.utils.SharedHelper;
 import ink.utils.Time;
 
 
@@ -30,8 +31,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     private List<FeedModel> feedList;
     private Context mContext;
     private FeedItemClick mOnClickListener;
-    private boolean shouldStartAnimation;
-    private int lastPosition;
+    private SharedHelper sharedHelper;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView feedContent, userPostedTitle,
@@ -39,6 +39,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         private ImageView feedUserImage, likeIcon, commentIcon;
         private CardView feedItemCard;
         private RelativeLayout feedAddressLayout, feedAttachmentLayout, likeWrapper, commentWrapper;
+        private ImageView feedMoreIcon;
 
         public ViewHolder(View view) {
             super(view);
@@ -51,6 +52,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             feedUserImage = (ImageView) view.findViewById(R.id.feedUserImage);
             commentIcon = (ImageView) view.findViewById(R.id.commentIcon);
             likeIcon = (ImageView) view.findViewById(R.id.likeIcon);
+            feedMoreIcon = (ImageView) view.findViewById(R.id.feedMoreIcon);
             feedAddressLayout = (RelativeLayout) view.findViewById(R.id.feedAddressLayout);
             likeWrapper = (RelativeLayout) view.findViewById(R.id.likeWrapper);
             commentWrapper = (RelativeLayout) view.findViewById(R.id.commentWrapper);
@@ -65,6 +67,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     public FeedAdapter(List<FeedModel> feedList, Context context) {
         mContext = context;
         this.feedList = feedList;
+        sharedHelper = new SharedHelper(context);
     }
 
 
@@ -96,7 +99,19 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                     .withBitmap().transform(new CircleTransform())
                     .intoImageView(holder.feedUserImage);
         }
-
+        if (feedModel.getPosterId().equals(sharedHelper.getUserId())) {
+            holder.feedMoreIcon.setVisibility(View.VISIBLE);
+        } else {
+            holder.feedMoreIcon.setVisibility(View.VISIBLE);
+        }
+        holder.feedMoreIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mOnClickListener != null) {
+                    mOnClickListener.onMoreClicked(position, holder.feedMoreIcon);
+                }
+            }
+        });
         holder.feedContent.setText(feedModel.getContent());
         holder.whenPosted.setText(Time.convertToLocalTime(feedModel.getDatePosted()));
         holder.userPostedTitle.setText(feedModel.getFirstName() + " " + feedModel.getLastName());
@@ -193,6 +208,5 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
 
     public void setShouldStartAnimation(boolean shouldStartAnimation) {
-        this.shouldStartAnimation = shouldStartAnimation;
     }
 }
