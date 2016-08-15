@@ -175,6 +175,20 @@ public class Retrofit {
                                             @Field("user_id") String userId);
 
 
+        @POST(Constants.GROUP_MESSAGES_OPTIONS_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> changeGroupMessages(@Field("type") String type,
+                                               @Field("message") String message,
+                                               @Field("messageId") String messageId);
+
+        @POST(Constants.GROUP_OPTIONS_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> changeGroup(@Field("type") String type,
+                                       @Field("groupId") String groupId,
+                                       @Field("groupName") String groupName,
+                                       @Field("groupDescription") String groupDescription);
+
+
         @POST(Constants.RESPOND_TO_REQUEST_URL)
         @FormUrlEncoded
         Call<ResponseBody> respondToRequest(@Field("respondType") String respondType,
@@ -185,7 +199,8 @@ public class Retrofit {
 
         @POST(Constants.GET_GROUP_URL)
         @FormUrlEncoded
-        Call<ResponseBody> getGroups(@Field("user_id") String userId);
+        Call<ResponseBody> getGroups(@Field("user_id") String userId,
+                                     @Field("type") String type);
 
         @POST(Constants.USER_COINS_URL)
         @FormUrlEncoded

@@ -28,6 +28,7 @@ public class Constants {
     public static final String SEARCH_PERSON_URL = "SearchPerson.php";
     public static final String GROUP_PARTICIPANTS_URL = "GroupParticipants.php";
     public static final String GROUP_MESSAGES_URL = "GroupMessages.php";
+    public static final String GROUP_MESSAGES_OPTIONS_URL = "GroupMessagesOptions.php";
     public static final String NOTIFY_OPPONENT = "NotifyOpponent.php";
     public static final String RESPOND_TO_REQUEST_URL = "RespondToRequest.php";
     public static final String LOGIN_URL = "Login.php";
@@ -42,6 +43,7 @@ public class Constants {
     public static final String STATUS_NOT_DELIVERED = "not sent";
     public static final String SINGLE_USER_MESSAGES = "SingleUserMessages.php";
     public static final String CHAT_MESSAGES = "ChatMessages.php";
+    public static final String GROUP_OPTIONS_URL = "GroupOptions.php";
     public static final String REGISTER_TOKEN = "RegisterToken.php";
     public static final String REQUEST_DELETE_URL = "RequestDeleteMessage.php";
     public static final String GET_POSTS_URL = "GetPosts.php";
@@ -77,11 +79,17 @@ public class Constants {
     public static final String TYPE_CALL = "type=call";
     public static final String COMMENT_TYPE_DELETE = "delete";
     public static final String COMMENT_TYPE_EDIT = "edit";
+    public static final String GROUP_TYPE_ALL = "all";
+    public static final String GROUP_TYPE_MINE = "mine";
+    public static final String GROUP_TYPE_EDIT = "edit";
+    public static final String GROUP_TYPE_DELETE = "delete";
     public static final String SUBJECT_FEEDBACK = "Feedback";
     public static final String SUBJECT_REQUEST_SUPPORT = "Support Needed";
     public static final String FEEDBACK_EMAIL = "support@vaentertaiment.xyz";
     public static final String CONTACT_EMAIL = "contact@vaentertaiment.xyz";
     public static final String SOCIAL_TYPE_FACEBOOK = "facebook";
+    public static final String GROUP_MESSAGES_TYPE_EDIT = "edit";
+    public static final String GROUP_MESSAGES_TYPE_DELETE = "delete";
     public static final String SOCIAL_TYPE_GOOGLE = "google";
     public static final String SERVER_AUTH_KEY = "fsahga-s447489asg-gGgashagasgfag-JKGKAJGKAS-gasgasga678sag8as-GASGJASKLG";
     public static final String NO_IMAGE_NAME = "no_image.png";

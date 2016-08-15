@@ -82,7 +82,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof ItemViewHolder) {
-            ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
+            final ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             CommentModel commentModel = getItem(position);
             itemViewHolder.commenterBody.setText(commentModel.getCommentBody());
             itemViewHolder.commenterName.setText(commentModel.getFirstName() + " " + commentModel.getLastName());
@@ -103,6 +103,12 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
                     return true;
                 }
             });
+
+            if (sharedHelper.getUserId().equals(commentModel.getCommenterId())) {
+                itemViewHolder.commentMoreIcon.setVisibility(View.VISIBLE);
+            } else {
+                itemViewHolder.commentMoreIcon.setVisibility(View.GONE);
+            }
             if (commentModel.getCommenterImage() != null && !commentModel.getCommenterImage().isEmpty()) {
                 if (commentModel.isSocialAccount()) {
                     Ion.with(context).load(commentModel.getCommenterImage()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
@@ -113,6 +119,14 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             } else {
                 Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
             }
+            itemViewHolder.commentMoreIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onAdditionItemClick(position, itemViewHolder.commentMoreIcon);
+                    }
+                }
+            });
         } else if (holder instanceof HeaderViewHolder) {
             final HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
             if (ownerId.equals(sharedHelper.getUserId())) {
@@ -234,11 +248,13 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
     class ItemViewHolder extends RecyclerView.ViewHolder {
         private TextView commenterBody;
         private ImageView commenterImage;
+        private ImageView commentMoreIcon;
         private TextView commenterName;
         private RelativeLayout commentRootLayout;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
+            commentMoreIcon = (ImageView) itemView.findViewById(R.id.commentMoreIcon);
             commenterBody = (TextView) itemView.findViewById(R.id.commenterBody);
             commenterName = (TextView) itemView.findViewById(R.id.commenterName);
             commenterImage = (ImageView) itemView.findViewById(R.id.commenterImage);

@@ -2,9 +2,11 @@ package ink.activities;
 
 import android.app.Dialog;
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +16,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -56,6 +59,7 @@ import ink.adapters.GroupsAdapter;
 import ink.callbacks.GeneralCallback;
 import ink.models.GroupsModel;
 import ink.utils.CircleTransform;
+import ink.utils.Constants;
 import ink.utils.RecyclerTouchListener;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
@@ -91,6 +95,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
     private List<GroupsModel> groupsModels;
     private GroupsModel groupsModel;
     private GroupsAdapter groupsAdapter;
+    private String lastChosenType = Constants.GROUP_TYPE_ALL;
 
 
     @Override
@@ -133,7 +138,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setItemAnimator(itemAnimator);
 
-
+        LocalBroadcastManager.getInstance(this).registerReceiver(getGroupsReceiver,new IntentFilter(getPackageName()+"Groups"));
         mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, mRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -160,7 +165,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
         mRecyclerView.setAdapter(groupsAdapter);
 
 
-        getGroups();
+        getGroups(Constants.GROUP_TYPE_ALL);
     }
 
 
@@ -184,7 +189,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                     }
                 });
                 mRecyclerView.setVisibility(View.VISIBLE);
-                getGroups();
+                getGroups(lastChosenType);
                 return true;  // Return true to collapse action view
             }
 
@@ -196,7 +201,15 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
         });
 
         if (item.getItemId() == R.id.myGroups) {
-
+            if (item.getTitle().equals(getString(R.string.myGroup))) {
+                lastChosenType = Constants.GROUP_TYPE_MINE;
+                item.setTitle(getString(R.string.allGroups));
+                getGroups(lastChosenType);
+            } else if (item.getTitle().equals(getString(R.string.allGroups))) {
+                lastChosenType = Constants.GROUP_TYPE_ALL;
+                item.setTitle(getString(R.string.myGroup));
+                getGroups(lastChosenType);
+            }
         } else if (item.getItemId() == R.id.search) {
 
         } else if (item.getItemId() == R.id.requests) {
@@ -310,6 +323,13 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
         }
     }
 
+    private BroadcastReceiver getGroupsReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            getGroups(lastChosenType);
+        }
+    };
+
     private void showResult() {
         if (nothingFoundLayout.getVisibility() == View.VISIBLE) {
             nothingFoundLayout.setVisibility(View.GONE);
@@ -334,17 +354,23 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
         nothingFoundLayout.setVisibility(View.VISIBLE);
     }
 
-    private void getGroups() {
-        Call<ResponseBody> groupsCall = Retrofit.getInstance().getInkService().getGroups(mSharedHelper.getUserId());
+    private void getGroups(final String type) {
+        groupSwipe.post(new Runnable() {
+            @Override
+            public void run() {
+                groupSwipe.setRefreshing(true);
+            }
+        });
+        Call<ResponseBody> groupsCall = Retrofit.getInstance().getInkService().getGroups(mSharedHelper.getUserId(), type);
         groupsCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    getGroups();
+                    getGroups(type);
                     return;
                 }
                 if (response.body() == null) {
-                    getGroups();
+                    getGroups(type);
                     return;
                 }
                 try {
@@ -386,7 +412,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                             showNoGroupLayout();
                         }
                     } else {
-                        getGroups();
+                        getGroups(type);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -397,7 +423,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getGroups();
+                getGroups(type);
             }
         });
     }
@@ -495,7 +521,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
             public void onClick(View view) {
             }
         }).show();
-        getGroups();
+        getGroups(lastChosenType);
     }
 
     private void publishCreatedGroup(final String groupName, final String groupDescription) {
@@ -689,6 +715,6 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
         if (nothingFoundLayout.getVisibility() == View.VISIBLE) {
             nothingFoundLayout.setVisibility(View.GONE);
         }
-        getGroups();
+        getGroups(lastChosenType);
     }
 }

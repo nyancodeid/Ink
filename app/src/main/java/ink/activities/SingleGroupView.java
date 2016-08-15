@@ -1,5 +1,6 @@
 package ink.activities;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,9 +20,11 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -45,6 +48,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.adapters.GroupMessagesAdapter;
 import ink.adapters.MemberAdapter;
+import ink.interfaces.RecyclerItemClickListener;
 import ink.models.GroupMessagesModel;
 import ink.models.MemberModel;
 import ink.utils.CircleTransform;
@@ -58,9 +62,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-// TODO: 8/11/2016 FIX GROUP IMAGES SIZES ACCORDINGLY
-public class SingleGroupView extends BaseActivity {
+public class SingleGroupView extends BaseActivity implements RecyclerItemClickListener {
 
     @Bind(R.id.groupCollapsingToolbar)
     CollapsingToolbarLayout mCollapsingToolbar;
@@ -110,6 +112,8 @@ public class SingleGroupView extends BaseActivity {
     private MemberModel memberModel;
     private MemberAdapter memberAdapter;
     private List<MemberModel> memberModels;
+    private boolean hasAnythingChanged;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +127,9 @@ public class SingleGroupView extends BaseActivity {
         groupImageLoading.getIndeterminateDrawable().setColorFilter(Color.parseColor("#ffffff"), android.graphics.PorterDuff.Mode.MULTIPLY);
         memberAdapter = new MemberAdapter(memberModels, this);
         groupMessagesAdapter = new GroupMessagesAdapter(groupMessagesModels, this);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
         mJoinGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -190,6 +197,7 @@ public class SingleGroupView extends BaseActivity {
 
             }
         }));
+        groupMessagesAdapter.setOnClickListener(this);
         groupMessagesRecycler.setAdapter(groupMessagesAdapter);
         if (extras != null) {
             mGroupName = extras.getString("groupName");
@@ -442,8 +450,160 @@ public class SingleGroupView extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        finish();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (hasAnythingChanged) {
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(getPackageName() + "Groups"));
+                }
+                finish();
+                break;
+            case R.id.editGroup:
+                showEditDialog();
+                break;
+            case R.id.deleteGroup:
+                deleteGroup();
+                break;
+            case R.id.refreshMessages:
+                getGroupMessages();
+                break;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showEditDialog() {
+        System.gc();
+        View editGroupView = getLayoutInflater().inflate(R.layout.edit_group_layout, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(SingleGroupView.this);
+        builder.setView(editGroupView);
+        builder.setTitle(getString(R.string.editGroup));
+
+        final EditText groupName = (EditText) editGroupView.findViewById(R.id.editGroupName);
+        final EditText groupDescription = (EditText) editGroupView.findViewById(R.id.editGroupDescription);
+        groupName.setText(mGroupName);
+        groupDescription.setText(mGroupDescription);
+
+        builder.setPositiveButton(getString(R.string.saveText), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
+        });
+        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!groupName.getText().toString().trim().isEmpty() && !groupDescription.getText().toString().trim().isEmpty()) {
+                    alertDialog.dismiss();
+                    saveGroupChanges(Constants.GROUP_TYPE_EDIT, groupName.getText().toString().trim(), groupDescription.getText().toString().trim());
+                } else {
+                    if (groupName.getText().toString().trim().isEmpty()) {
+                        groupName.setError(getString(R.string.groupNameError));
+                    }
+                    if (groupDescription.getText().toString().trim().isEmpty()) {
+                        groupDescription.setError(getString(R.string.groupDescriptionError));
+                    }
+                }
+            }
+        });
+
+        alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+    }
+
+    private void saveGroupChanges(final String type, final String groupName, final String groupDescription) {
+        if (type.equals(Constants.GROUP_TYPE_DELETE)) {
+            progressDialog.setTitle(getString(R.string.deleting));
+            progressDialog.setMessage(getString(R.string.deletingGroup));
+        } else {
+            progressDialog.setTitle(getString(R.string.saving));
+            progressDialog.setMessage(getString(R.string.savingChanges));
+        }
+        progressDialog.show();
+        Call<ResponseBody> groupCall = Retrofit.getInstance().getInkService().changeGroup(type, mGroupId, groupName, groupDescription);
+        groupCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    saveGroupChanges(type, groupName, groupDescription);
+                    return;
+                }
+                if (response.body() == null) {
+                    saveGroupChanges(type, groupName, groupDescription);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (type.equals(Constants.GROUP_TYPE_EDIT)) {
+                        if (success) {
+                            mCollapsingToolbar.setTitle(groupName);
+                            mGroupSingleDescription.setText(groupDescription);
+                            progressDialog.dismiss();
+                            Snackbar.make(mOwnerImageView, getString(R.string.groupInformationUpdated), Snackbar.LENGTH_SHORT).show();
+                            hasAnythingChanged = true;
+                        }
+                    } else if (type.equals(Constants.GROUP_TYPE_DELETE)) {
+                        if (success) {
+                            progressDialog.dismiss();
+                            LocalBroadcastManager.getInstance(SingleGroupView.this).sendBroadcast(new Intent(getPackageName() + "Groups"));
+                            finish();
+                        }
+                    }
+                } catch (IOException e) {
+                    progressDialog.dismiss();
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+    private void deleteGroup() {
+        System.gc();
+        AlertDialog.Builder builder = new AlertDialog.Builder(SingleGroupView.this);
+        builder.setTitle(getString(R.string.deleteGroup));
+        builder.setMessage(getString(R.string.deleteGroupWarning));
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                saveGroupChanges(Constants.GROUP_TYPE_DELETE, "", "");
+            }
+        });
+        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (mSharedHelper.getUserId().equals(mGroupOwnerId)) {
+            getMenuInflater().inflate(R.menu.single_group_menu, menu);
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void getGroupMessages() {
@@ -515,8 +675,31 @@ public class SingleGroupView extends BaseActivity {
         });
     }
 
+
+    @Override
+    public void onBackPressed() {
+        if (hasAnythingChanged) {
+            LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(getPackageName() + "Groups"));
+        }
+        super.onBackPressed();
+    }
+
     private void hideMessageLoading() {
         groupMessagesLoading.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onItemClicked(int position, View view) {
+        // TODO: 8/15/2016  handle item click
+    }
+
+    @Override
+    public void onItemLongClick(int position) {
+
+    }
+
+    @Override
+    public void onAdditionItemClick(int position, View view) {
+        // TODO: 8/15/2016  add pop up
+    }
 }

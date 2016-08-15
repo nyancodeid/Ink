@@ -401,4 +401,13 @@
     <string name="inputNewComment">Input new comment</string>
     <string name="changesWasSaved">Changes was saved</string>
     <string name="commentWasDeleted">Comment was deleted</string>
+    <string name="allGroups">Groups Aavailable To Me</string>
+    <string name="deleteGroup">Delete Group</string>
+    <string name="editGroup">Edit group</string>
+    <string name="editGroupName">New group name</string>
+    <string name="editGroupDescription">New group description</string>
+    <string name="deleteGroupWarning">You are about to delete the group.All messages,information and participants of your group will be completelly removed,are you sure?</string>
+    <string name="groupInformationUpdated">Group information was updated</string>
+    <string name="deletingGroup">Deleting group,please wait...</string>
+    <string name="refreshMessages">Refresh messages</string>
 </resources>
