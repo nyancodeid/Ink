@@ -274,6 +274,12 @@ public class Login extends BaseActivity implements View.OnClickListener {
         final AppCompatCheckBox appCompatCheckBox = (AppCompatCheckBox) optionsView.findViewById(R.id.privacyCheckBox);
         TextView acceptPrivacyText = (TextView) optionsView.findViewById(R.id.acceptPrivacyText);
 
+        acceptPrivacyText.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         RelativeLayout inkSignInWrapper = (RelativeLayout) optionsView.findViewById(R.id.inkSignInWrapper);
         alertDialog = builder.show();
@@ -300,6 +306,12 @@ public class Login extends BaseActivity implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 if (!appCompatCheckBox.isChecked()) {
+                    Snackbar.make(appCompatCheckBox, getString(R.string.youMustAccept), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    }).show();
                     return;
                 }
                 if (finalAlertDialog != null) {
