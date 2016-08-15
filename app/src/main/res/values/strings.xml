@@ -411,4 +411,8 @@
     <string name="deletingGroup">Deleting group,please wait...</string>
     <string name="refreshMessages">Refresh messages</string>
     <string name="editMessage">Edit message</string>
+    <string name="privacyPolicy">By using any of above social network sign in,you are agree to terms and conditions within privacy and policy of the current application.
+    \n to see the privacy and policy within terms and conditions,click here.</string>
+    <string name="privacyPolicyShort">I accept the privacy and policy \nas well as terms and conditions</string>
+    <string name="youMustAccept">You must accept privacy and policy as well as terms and conditions</string>
 </resources>

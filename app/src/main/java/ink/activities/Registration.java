@@ -3,6 +3,7 @@ package ink.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.ink.R;
 
@@ -49,6 +51,10 @@ public class Registration extends BaseActivity implements View.OnClickListener {
     EditText mFirstName;
     @Bind(R.id.lastName)
     EditText mLastName;
+    @Bind(R.id.acceptPrivacyText)
+    TextView acceptPrivacyText;
+    @Bind(R.id.privacyCheckBox)
+    android.support.v7.widget.AppCompatCheckBox privacyCheckBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +82,7 @@ public class Registration extends BaseActivity implements View.OnClickListener {
                 && mPassword.getText().toString().equals(mConfirmPassword.getText().toString())
                 && !mFirstName.getText().toString().isEmpty()
                 && !mLastName.getText().toString().isEmpty()
-                && !mPassword.getText().toString().isEmpty()) {
+                && !mPassword.getText().toString().isEmpty() && privacyCheckBox.isChecked()) {
 
             Keyboard.hideKeyboard(this, mRootRegistrationLayout);
             registrationScrollView.post(new Runnable() {
@@ -154,6 +160,14 @@ public class Registration extends BaseActivity implements View.OnClickListener {
             });
 
         } else {
+            if (!privacyCheckBox.isChecked()) {
+                Snackbar.make(mFirstName, getString(R.string.youMustAccept), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                }).show();
+            }
             if (mLogin.getText().toString().isEmpty()) {
                 mLogin.setError(getString(R.string.error_field_required));
             }

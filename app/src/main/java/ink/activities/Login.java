@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,9 +39,9 @@ import java.util.Map;
 
 import ink.callbacks.GeneralCallback;
 import ink.utils.Constants;
-import ink.utils.SocialSignIn;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
+import ink.utils.SocialSignIn;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -338,7 +337,6 @@ public class Login extends BaseActivity implements View.OnClickListener {
             if (apiAvailability.isUserResolvableError(resultCode)) {
                 apiAvailability.getErrorDialog(this, resultCode, 1000).show();
             } else {
-                Log.i("Fffsfasfas", "This device is not supported.");
                 finish();
             }
             return false;
