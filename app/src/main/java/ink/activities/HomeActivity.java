@@ -2,14 +2,17 @@ package ink.activities;
 
 import android.app.ActivityManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -166,6 +169,7 @@ public class HomeActivity extends BaseActivity
         mProfileImage.setOnClickListener(this);
         mUserNameTV = (TextView) headerView.findViewById(R.id.userNameTextView);
         navigationView.setNavigationItemSelectedListener(this);
+        LocalBroadcastManager.getInstance(this).registerReceiver(feedUpdateReceiver, new IntentFilter(getPackageName() + "HomeActivity"));
     }
 
 
@@ -233,6 +237,15 @@ public class HomeActivity extends BaseActivity
             }
         }
     }
+
+    private BroadcastReceiver feedUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mFeed != null) {
+                mFeed.triggerFeedUpdate();
+            }
+        }
+    };
 
     private void getCoins() {
         Call<ResponseBody> coinsCall = Retrofit.getInstance().getInkService().getCoins(mSharedHelper.getUserId());

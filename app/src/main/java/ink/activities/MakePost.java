@@ -425,6 +425,7 @@ public class MakePost extends BaseActivity {
                     if (success) {
                         progressDialog.dismiss();
                         LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "Comments"));
+                        LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
                         finish();
                     } else {
                         showFailureDialog();

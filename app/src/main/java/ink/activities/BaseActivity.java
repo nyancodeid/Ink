@@ -30,7 +30,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             accountDeleteListener.onAccountDeleted();
         }
     }
-
     protected boolean isSocialAccountRegistered() {
         return sharedHelper.isRegistered();
     }

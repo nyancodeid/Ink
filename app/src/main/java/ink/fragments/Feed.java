@@ -117,6 +117,11 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
+        System.gc();
+        if (mOffset == 0) {
+            mOffset = 10;
+        }
+        getFeeds(0, mOffset, true, false, false);
     }
 
     @Override
@@ -130,12 +135,15 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                           final boolean newDataLoading,
                           final boolean showNewFeed) {
         if (clearItems) {
-            feedRefresh.post(new Runnable() {
-                @Override
-                public void run() {
-                    feedRefresh.setRefreshing(true);
-                }
-            });
+            if (feedRefresh != null) {
+                feedRefresh.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        feedRefresh.setRefreshing(true);
+                    }
+                });
+            }
+
         }
         Call<ResponseBody> feedCal = Retrofit.getInstance().getInkService().getPosts(mSharedHelper.getUserId(), String.valueOf(offset), String.valueOf(count));
         feedCal.enqueue(new Callback<ResponseBody>() {
@@ -370,13 +378,9 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         }
     }
 
+
     @Override
     public void onResume() {
-        System.gc();
-        if (mOffset == 0) {
-            mOffset = 10;
-        }
-        getFeeds(0, mOffset, true, false, false);
         super.onResume();
     }
 
@@ -463,5 +467,13 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 like(postId, isLiking, likeCountTV, position);
             }
         });
+    }
+
+    public void triggerFeedUpdate() {
+        System.gc();
+        if (mOffset == 0) {
+            mOffset = 10;
+        }
+        getFeeds(0, mOffset, true, false, false);
     }
 }
