@@ -138,7 +138,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mRecyclerView.setItemAnimator(itemAnimator);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(getGroupsReceiver,new IntentFilter(getPackageName()+"Groups"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(getGroupsReceiver, new IntentFilter(getPackageName() + "Groups"));
         mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, mRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -447,28 +447,13 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
         builder.setTitle(getString(R.string.createGroup));
         View groupView = getLayoutInflater().inflate(R.layout.add_group_view, null);
         Button pickBackgroundColor = (Button) groupView.findViewById(R.id.pickBackgroundColor);
-        Button publishGroup = (Button) groupView.findViewById(R.id.publishGroup);
+
         final EditText groupName = (EditText) groupView.findViewById(R.id.groupName);
         final EditText groupDescription = (EditText) groupView.findViewById(R.id.groupDescription);
         NestedScrollView nestedScrollView = (NestedScrollView) groupView.findViewById(R.id.nestedScrollView);
         nestedScrollView.setVerticalScrollBarEnabled(true);
         Button pickImage = (Button) groupView.findViewById(R.id.pickImage);
         groupImage = (ImageView) groupView.findViewById(R.id.groupImage);
-        publishGroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (groupName.getText().toString().trim().isEmpty()) {
-                    groupName.setError(getString(R.string.groupNameError));
-                    return;
-                }
-                if (groupDescription.getText().toString().trim().isEmpty()) {
-                    groupDescription.setError(getString(R.string.groupDescriptionError));
-                    return;
-                }
-                publishCreatedGroup(groupName.getText().toString().trim()
-                        , groupDescription.getText().toString().trim());
-            }
-        });
         groupImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -501,14 +486,41 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
             }
         });
         builder.setView(groupView);
+        builder.setPositiveButton(getString(R.string.publishGroup), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
         builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
             }
         });
-        addGroupDialog = builder.show();
+        addGroupDialog = builder.create();
         addGroupDialog.show();
+        addGroupDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (groupName.getText().toString().trim().isEmpty()) {
+                    groupName.setError(getString(R.string.groupNameError));
+                    return;
+                }
+                if (groupDescription.getText().toString().trim().isEmpty()) {
+                    groupDescription.setError(getString(R.string.groupDescriptionError));
+                    return;
+                }
+                publishCreatedGroup(groupName.getText().toString().trim()
+                        , groupDescription.getText().toString().trim());
+            }
+        });
+        addGroupDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addGroupDialog.dismiss();
+            }
+        });
 
     }
 

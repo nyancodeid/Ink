@@ -172,7 +172,7 @@ public class Music extends BaseActivity implements MusicClickListener {
 
 
         if (image != null && !image.equals("null")) {
-            Ion.with(getApplicationContext()).load(image).withBitmap().transform(new CircleTransform()).intoImageView(currentlyPlayingImage);
+            Ion.with(getApplicationContext()).load(image).withBitmap().placeholder(R.drawable.time_loading_vector).transform(new CircleTransform()).intoImageView(currentlyPlayingImage);
         } else {
             currentlyPlayingImage.setBackground(null);
             currentlyPlayingImage.setImageResource(R.drawable.gradient_no_image);

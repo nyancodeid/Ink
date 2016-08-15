@@ -58,6 +58,7 @@ import ink.interfaces.RecyclerItemClickListener;
 import ink.models.CommentModel;
 import ink.utils.Animations;
 import ink.utils.Constants;
+import ink.utils.InputField;
 import ink.utils.Keyboard;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
@@ -399,8 +400,6 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                         intent.putExtra("postId", postId);
                         intent.putExtra("postBody", postBody);
                         startActivity(intent);
-
-                        // TODO: 8/12/2016  edit handle
                         break;
                     case 1:
                         System.gc();
@@ -677,45 +676,17 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 public void onItemClick(MenuItem clickedItem) {
                     switch (clickedItem.getItemId()) {
                         case 0:
-                            View newCommentView = getLayoutInflater().inflate(R.layout.new_comment_body, null);
-                            final EditText newCommentBody = (EditText) newCommentView.findViewById(R.id.newCommentBody);
-                            AlertDialog.Builder builder = new AlertDialog.Builder(Comments.this);
-                            builder.setView(newCommentView);
-                            builder.setCancelable(false);
-                            builder.setPositiveButton(getString(R.string.saveText), new DialogInterface.OnClickListener() {
+                            InputField.createInputFieldView(Comments.this, new InputField.ClickHandler() {
                                 @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    //just override for dialog not to close automatically
+                                public void onPositiveClicked(Object result) {
+                                    snackbar.show();
+                                    Keyboard.hideKeyboard(getApplicationContext(), commentCard);
+                                    callCommentServer(Constants.COMMENT_TYPE_EDIT, commentModel.getCommentId(), String.valueOf(result));
                                 }
-                            });
-                            builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    //just override for dialog not to close automatically
-                                }
-                            });
 
-                            final AlertDialog dialog = builder.create();
-                            dialog.show();
+                                @Override
+                                public void onNegativeClicked(Object result) {
 
-                            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    String finalBody = newCommentBody.getText().toString().trim();
-                                    if (finalBody.isEmpty()) {
-                                        newCommentBody.setError(getString(R.string.fieldEmptyError));
-                                    } else {
-                                        dialog.dismiss();
-                                        snackbar.show();
-                                        Keyboard.hideKeyboard(getApplicationContext(), commentCard);
-                                        callCommentServer(Constants.COMMENT_TYPE_EDIT, commentModel.getCommentId(), finalBody);
-                                    }
-                                }
-                            });
-                            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    dialog.dismiss();
                                 }
                             });
                             break;

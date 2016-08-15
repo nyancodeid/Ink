@@ -32,14 +32,14 @@ public class MediaPlayerManager {
         mMediaPlayer.setOnPreparedListener(new android.media.MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(android.media.MediaPlayer mp) {
-                // TODO: 8/1/2016 handle preperation
+
             }
         });
 
         mMediaPlayer.setOnCompletionListener(new android.media.MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(android.media.MediaPlayer mp) {
-                // TODO: 8/1/2016 handle completion with icon
+
             }
         });
     }

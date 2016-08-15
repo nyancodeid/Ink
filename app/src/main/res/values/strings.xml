@@ -410,4 +410,5 @@
     <string name="groupInformationUpdated">Group information was updated</string>
     <string name="deletingGroup">Deleting group,please wait...</string>
     <string name="refreshMessages">Refresh messages</string>
+    <string name="editMessage">Edit message</string>
 </resources>

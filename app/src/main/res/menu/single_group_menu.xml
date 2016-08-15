@@ -12,9 +12,4 @@
         android:title="@string/deleteGroup"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/refreshMessages"
-        android:orderInCategory="3"
-        android:title="@string/refreshMessages"
-        app:showAsAction="never" />
 </menu>

@@ -9,17 +9,20 @@ import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,12 +51,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.adapters.GroupMessagesAdapter;
 import ink.adapters.MemberAdapter;
+import ink.interfaces.ItemClickListener;
 import ink.interfaces.RecyclerItemClickListener;
 import ink.models.GroupMessagesModel;
 import ink.models.MemberModel;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
-import ink.utils.RecyclerTouchListener;
+import ink.utils.InputField;
+import ink.utils.PopupMenu;
 import ink.utils.Retrofit;
 import ink.utils.ScrollAwareFABButtonehavior;
 import ink.utils.SharedHelper;
@@ -62,7 +67,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SingleGroupView extends BaseActivity implements RecyclerItemClickListener {
+public class SingleGroupView extends BaseActivity implements RecyclerItemClickListener, AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener {
 
     @Bind(R.id.groupCollapsingToolbar)
     CollapsingToolbarLayout mCollapsingToolbar;
@@ -90,6 +95,10 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     ProgressBar groupImageLoading;
     @Bind(R.id.noGroupMessageLayout)
     RelativeLayout noGroupMessageLayout;
+    @Bind(R.id.singleGroupSwipe)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    @Bind(R.id.singleGroupAppBar)
+    AppBarLayout singleGroupAppBar;
 
     private String mGroupName = "";
     private boolean isSocialAccount;
@@ -126,6 +135,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         memberModels = new ArrayList<>();
         groupImageLoading.getIndeterminateDrawable().setColorFilter(Color.parseColor("#ffffff"), android.graphics.PorterDuff.Mode.MULTIPLY);
         memberAdapter = new MemberAdapter(memberModels, this);
+        singleGroupAppBar.addOnOffsetChangedListener(this);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         groupMessagesAdapter = new GroupMessagesAdapter(groupMessagesModels, this);
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
@@ -171,32 +182,6 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         groupMessagesRecycler.setLayoutManager(new LinearLayoutManager(this));
         groupMessagesRecycler.setItemAnimator(itemAnimator);
 
-
-        groupMessagesRecycler.addOnItemTouchListener(new RecyclerTouchListener(this, groupMessagesRecycler, new RecyclerTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                GroupMessagesModel singleModel = groupMessagesModels.get(position);
-                if (singleModel.getSenderId().equals(mSharedHelper.getUserId())) {
-                    Intent intent = new Intent(getApplicationContext(), MyProfile.class);
-                    startActivity(intent);
-                } else {
-                    String name = singleModel.getSenderName();
-                    String[] splited = name.split("\\s+");
-                    String firstName = splited[0];
-                    String lastName = splited[1];
-                    Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
-                    intent.putExtra("id", singleModel.getSenderId());
-                    intent.putExtra("firstName", firstName);
-                    intent.putExtra("lastName", lastName);
-                    startActivity(intent);
-                }
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));
         groupMessagesAdapter.setOnClickListener(this);
         groupMessagesRecycler.setAdapter(groupMessagesAdapter);
         if (extras != null) {
@@ -291,12 +276,11 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         itemAnimator.setRemoveDuration(500);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(itemAnimator);
-        recyclerView.setAdapter(memberAdapter);
         final AVLoadingIndicatorView membersLoading = (AVLoadingIndicatorView) memberView.findViewById(R.id.membersLoading);
         recyclerView.setAdapter(memberAdapter);
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
+        memberAdapter.setOnClickListener(new RecyclerItemClickListener() {
             @Override
-            public void onClick(View view, int position) {
+            public void onItemClicked(int position, View view) {
                 if (memberModels.get(position).getMemberId().equals(mSharedHelper.getUserId())) {
                     startActivity(new Intent(getApplicationContext(), MyProfile.class));
                 } else {
@@ -313,10 +297,15 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             }
 
             @Override
-            public void onLongClick(View view, int position) {
+            public void onItemLongClick(int position) {
 
             }
-        }));
+
+            @Override
+            public void onAdditionItemClick(int position, View view) {
+
+            }
+        });
 
         builder.setView(memberView);
         builder.setNegativeButton(getString(R.string.close), new DialogInterface.OnClickListener() {
@@ -463,9 +452,6 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             case R.id.deleteGroup:
                 deleteGroup();
                 break;
-            case R.id.refreshMessages:
-                getGroupMessages();
-                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -607,6 +593,9 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     }
 
     private void getGroupMessages() {
+        if (noGroupMessageLayout.getVisibility() == View.VISIBLE) {
+            noGroupMessageLayout.setVisibility(View.GONE);
+        }
         groupMessagesLoading.setVisibility(View.VISIBLE);
         if (groupMessagesModels != null) {
             groupMessagesModels.clear();
@@ -662,6 +651,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                     }
 
                 } catch (IOException e) {
+                    mSwipeRefreshLayout.setRefreshing(false);
                     e.printStackTrace();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -685,12 +675,29 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     }
 
     private void hideMessageLoading() {
+        mSwipeRefreshLayout.setRefreshing(false);
         groupMessagesLoading.setVisibility(View.GONE);
     }
 
     @Override
     public void onItemClicked(int position, View view) {
-        // TODO: 8/15/2016  handle item click
+
+        GroupMessagesModel singleModel = groupMessagesModels.get(position);
+        if (singleModel.getSenderId().equals(mSharedHelper.getUserId())) {
+            Intent intent = new Intent(getApplicationContext(), MyProfile.class);
+            startActivity(intent);
+        } else {
+            String name = singleModel.getSenderName();
+            String[] splited = name.split("\\s+");
+            String firstName = splited[0];
+            String lastName = splited[1];
+            Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
+            intent.putExtra("id", singleModel.getSenderId());
+            intent.putExtra("firstName", firstName);
+            intent.putExtra("lastName", lastName);
+            startActivity(intent);
+        }
+
     }
 
     @Override
@@ -701,5 +708,105 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     @Override
     public void onAdditionItemClick(int position, View view) {
         // TODO: 8/15/2016  add pop up
+        final GroupMessagesModel groupMessagesModel = groupMessagesModels.get(position);
+        PopupMenu.showPopUp(SingleGroupView.this, view, new ItemClickListener<MenuItem>() {
+            @Override
+            public void onItemClick(MenuItem clickedItem) {
+                switch (clickedItem.getItemId()) {
+                    case 0:
+                        InputField.createInputFieldView(SingleGroupView.this, new InputField.ClickHandler() {
+                            @Override
+                            public void onPositiveClicked(Object result) {
+                                updateGroupMessage(String.valueOf(result), groupMessagesModel.getGroupMessageId());
+                            }
+
+                            @Override
+                            public void onNegativeClicked(Object result) {
+
+                            }
+                        });
+                        break;
+                    case 1:
+                        deleteComment(groupMessagesModel.getGroupMessageId());
+                        break;
+                }
+            }
+        }, getString(R.string.editMessage), getString(R.string.deleteMessage));
+    }
+
+    private void updateGroupMessage(final String message, final String messageId) {
+        Call<ResponseBody> groupOptionsCall = Retrofit.getInstance().getInkService().changeGroupMessages(Constants.GROUP_MESSAGES_TYPE_EDIT,
+                message, messageId);
+        groupOptionsCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    updateGroupMessage(message, messageId);
+                    return;
+                }
+                if (response.body() == null) {
+                    updateGroupMessage(message, messageId);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    Log.d("fasfasfasfsa", "onResponse: " + responseBody);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void deleteComment(final String messageId) {
+        Call<ResponseBody> groupOptionsCall = Retrofit.getInstance().getInkService().changeGroupMessages(Constants.GROUP_MESSAGES_TYPE_DELETE,
+                "", messageId);
+        groupOptionsCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    updateGroupMessage("", messageId);
+                    return;
+                }
+                if (response.body() == null) {
+                    updateGroupMessage("", messageId);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    getGroupMessages();
+                    Log.d("fasfasfasfsa", "onResponse: " + responseBody);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        singleGroupAppBar.removeOnOffsetChangedListener(this);
+        super.onDestroy();
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        mSwipeRefreshLayout.setEnabled(verticalOffset == 0);
+    }
+
+    @Override
+    public void onRefresh() {
+        getGroupMessages();
     }
 }

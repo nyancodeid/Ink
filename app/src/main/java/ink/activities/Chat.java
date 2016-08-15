@@ -312,7 +312,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                         } else {
                             getStatus();
                         }
-                    } catch (IOException e) {
+                    } catch (Exception e) {
+                        getStatus();
                         e.printStackTrace();
                     }
                 }
@@ -671,10 +672,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                 if (!isImageLoaded) {
                     isImageLoaded = true;
                     if (isSocialAccount) {
-                        Ion.with(this).load(opponentImage).withBitmap().transform(new CircleTransform()).intoImageView(this.opponentImage);
+                        Ion.with(this).load(opponentImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(this.opponentImage);
                     } else {
                         Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                                opponentImage).withBitmap().transform(new CircleTransform()).intoImageView(this.opponentImage);
+                                opponentImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(this.opponentImage);
                     }
                 }
             } else {
@@ -733,8 +734,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     /**
      * UNUSABLE
-     *  @param position
      *
+     * @param position
      */
     @Override
     public void onItemLongClick(int position) {

@@ -124,7 +124,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         if (chatModel.hasGif()) {
             holder.singleGifViewWrapper.setVisibility(View.VISIBLE);
             if (holder.gifChatView.getTag() == null) {
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl()).intoImageView(holder.gifChatView)
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.gifChatView)
                         .setCallback(new FutureCallback<ImageView>() {
                             @Override
                             public void onCompleted(Exception e, ImageView result) {
@@ -132,7 +132,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                             }
                         });
             } else if (!holder.gifChatView.getTag().equals(LOADED)) {
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl()).intoImageView(holder.gifChatView)
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.gifChatView)
                         .setCallback(new FutureCallback<ImageView>() {
                             @Override
                             public void onCompleted(Exception e, ImageView result) {

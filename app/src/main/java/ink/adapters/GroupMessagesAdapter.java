@@ -1,12 +1,12 @@
 package ink.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.R;
@@ -18,6 +18,7 @@ import ink.interfaces.RecyclerItemClickListener;
 import ink.models.GroupMessagesModel;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
+import ink.utils.SharedHelper;
 
 /**
  * Created by USER on 2016-07-10.
@@ -27,20 +28,21 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
     private List<GroupMessagesModel> groupMessagesModels;
     private Context mContext;
     private RecyclerItemClickListener onClickListener;
+    private SharedHelper sharedHelper;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView messageSenderName, groupMessageBody;
         public ImageView messageSenderImage;
         private ImageView groupMessageMoreIcon;
-        private RelativeLayout rootLayout;
+        private CardView groupMessageCard;
 
         public ViewHolder(View view) {
             super(view);
             messageSenderName = (TextView) view.findViewById(R.id.messageSenderName);
             groupMessageBody = (TextView) view.findViewById(R.id.groupMessageBody);
+            groupMessageCard = (CardView) view.findViewById(R.id.groupMessageCard);
             messageSenderImage = (ImageView) view.findViewById(R.id.messageSenderImage);
             groupMessageMoreIcon = (ImageView) view.findViewById(R.id.groupMessageMoreIcon);
-            rootLayout = (RelativeLayout) view.findViewById(R.id.rootLayout);
         }
     }
 
@@ -48,6 +50,7 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
     public GroupMessagesAdapter(List<GroupMessagesModel> groupMessagesModels, Context context) {
         mContext = context;
         this.groupMessagesModels = groupMessagesModels;
+        sharedHelper = new SharedHelper(context);
     }
 
     @Override
@@ -77,11 +80,16 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
                 }
             }
         });
-        holder.rootLayout.setOnClickListener(new View.OnClickListener() {
+        if (sharedHelper.getUserId().equals(groupMessagesModel.getSenderId())) {
+            holder.groupMessageMoreIcon.setVisibility(View.VISIBLE);
+        } else {
+            holder.groupMessageMoreIcon.setVisibility(View.GONE);
+        }
+        holder.groupMessageCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (onClickListener != null) {
-                    onClickListener.onItemClicked(position, holder.rootLayout);
+                    onClickListener.onItemClicked(position, holder.messageSenderImage);
                 }
             }
         });
