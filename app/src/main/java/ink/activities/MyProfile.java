@@ -738,7 +738,7 @@ public class MyProfile extends BaseActivity {
                                         }
                                     });
                                     Intent intent = new Intent(getApplicationContext(), Login.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -751,7 +751,7 @@ public class MyProfile extends BaseActivity {
                                     });
                                     fireAccountDeleteListener();
                                     Intent intent = new Intent(getApplicationContext(), Login.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);
                                     finish();
                                 }

@@ -31,11 +31,13 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public ImageView friendImage;
+        private ImageView friendMoreIcon;
 
         public ViewHolder(View view) {
             super(view);
             name = (TextView) view.findViewById(R.id.friendName);
             friendImage = (ImageView) view.findViewById(R.id.friendImage);
+            friendMoreIcon = (ImageView) view.findViewById(R.id.friendMoreIcon);
         }
     }
 
@@ -54,6 +56,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.friendMoreIcon.setVisibility(View.GONE);
         MemberModel memberModel = memberModels.get(position);
         holder.name.setText(memberModel.getMemberName());
         if (memberModel.getMemberImage() != null && !memberModel.getMemberImage().isEmpty()) {
