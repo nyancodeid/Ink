@@ -22,7 +22,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -123,6 +122,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     private List<MemberModel> memberModels;
     private boolean hasAnythingChanged;
     private ProgressDialog progressDialog;
+    private Snackbar snackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +133,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         Bundle extras = getIntent().getExtras();
         groupMessagesModels = new ArrayList<>();
         memberModels = new ArrayList<>();
+        snackbar = Snackbar.make(mOwnerImageView, getString(R.string.savingChanges), Snackbar.LENGTH_INDEFINITE);
         groupImageLoading.getIndeterminateDrawable().setColorFilter(Color.parseColor("#ffffff"), android.graphics.PorterDuff.Mode.MULTIPLY);
         memberAdapter = new MemberAdapter(memberModels, this);
         singleGroupAppBar.addOnOffsetChangedListener(this);
@@ -593,6 +594,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     }
 
     private void getGroupMessages() {
+        System.gc();
         if (noGroupMessageLayout.getVisibility() == View.VISIBLE) {
             noGroupMessageLayout.setVisibility(View.GONE);
         }
@@ -717,6 +719,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                         InputField.createInputFieldView(SingleGroupView.this, new InputField.ClickHandler() {
                             @Override
                             public void onPositiveClicked(Object result) {
+                                snackbar.show();
                                 updateGroupMessage(String.valueOf(result), groupMessagesModel.getGroupMessageId());
                             }
 
@@ -727,6 +730,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                         });
                         break;
                     case 1:
+                        snackbar.setText(getString(R.string.deleting));
                         deleteComment(groupMessagesModel.getGroupMessageId());
                         break;
                 }
@@ -750,8 +754,26 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                 }
                 try {
                     String responseBody = response.body().string();
-                    Log.d("fasfasfasfsa", "onResponse: " + responseBody);
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        getGroupMessages();
+                        snackbar.setText(getString(R.string.changesWasSaved));
+                        snackbar.setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                snackbar.dismiss();
+                            }
+                        });
+                        snackbar.show();
+                    } else {
+                        snackbar.dismiss();
+                    }
                 } catch (IOException e) {
+                    snackbar.dismiss();
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    snackbar.dismiss();
                     e.printStackTrace();
                 }
             }
@@ -779,9 +801,26 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                 }
                 try {
                     String responseBody = response.body().string();
-                    getGroupMessages();
-                    Log.d("fasfasfasfsa", "onResponse: " + responseBody);
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        getGroupMessages();
+                        snackbar.setText(getString(R.string.messageDeleted));
+                        snackbar.setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                snackbar.dismiss();
+                            }
+                        });
+                        snackbar.show();
+                    } else {
+                        snackbar.show();
+                    }
                 } catch (IOException e) {
+                    snackbar.show();
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    snackbar.show();
                     e.printStackTrace();
                 }
             }
