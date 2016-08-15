@@ -176,6 +176,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
                         ArrayList<UserSearchResult> userSearchResults = userSearchResponse.userSearchResults;
                         if (mFriendsModelArrayList != null) {
                             mFriendsModelArrayList.clear();
+
                         }
                         for (int i = 0; i < userSearchResults.size(); i++) {
                             UserSearchResult userSearchResult = userSearchResults.get(i);
