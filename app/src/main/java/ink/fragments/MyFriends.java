@@ -29,6 +29,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.ink.R;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -45,6 +46,8 @@ import ink.activities.OpponentProfile;
 import ink.adapters.FriendsAdapter;
 import ink.interfaces.RecyclerItemClickListener;
 import ink.models.FriendsModel;
+import ink.models.UserSearchResponse;
+import ink.models.UserSearchResult;
 import ink.utils.ErrorCause;
 import ink.utils.Keyboard;
 import ink.utils.Retrofit;
@@ -73,6 +76,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     private RelativeLayout personSearchWrapper;
     private boolean isClosed;
     private Call<ResponseBody> searchPersonCalll;
+    private Gson userSearchGson;
 
 
     public static MyFriends newInstance() {
@@ -99,7 +103,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         slideOut = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out);
         mFriendsLoading = (AVLoadingIndicatorView) view.findViewById(R.id.friendsLoading);
         mFriendsAdapter = new FriendsAdapter(mFriendsModelArrayList, getActivity());
-
+        userSearchGson = new Gson();
         parentActivity = ((HomeActivity) getActivity());
         showSearch();
         parentActivity.getSearchFriend().setOnClickListener(this);
@@ -148,6 +152,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     }
 
     private void doSearch(final String searchValue) {
+        System.gc();
         if (searchPersonCalll != null) {
             searchPersonCalll.cancel();
         }
@@ -165,7 +170,27 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
                 }
                 try {
                     String responseBody = response.body().string();
-                    Log.d("fasfsafasfas", "onResponse: " + responseBody);
+                    Log.d("fsafsafasfas", "onResponse: "+responseBody);
+                    UserSearchResponse userSearchResponse = userSearchGson.fromJson(responseBody, UserSearchResponse.class);
+                    if (userSearchResponse.success) {
+                        ArrayList<UserSearchResult> userSearchResults = userSearchResponse.userSearchResults;
+                        if (mFriendsModelArrayList != null) {
+                            mFriendsModelArrayList.clear();
+                        }
+                        for (int i = 0; i < userSearchResults.size(); i++) {
+                            UserSearchResult userSearchResult = userSearchResults.get(i);
+                            mFriendsModel = new FriendsModel(userSearchResult.firstName + userSearchResult.lastName,
+                                    userSearchResult.imageLink, "", userSearchResult.userId, userSearchResult.firstName, userSearchResult.lastName);
+                            mFriendsModelArrayList.add(mFriendsModel);
+                            mFriendsAdapter.notifyDataSetChanged();
+                        }
+                    } else {
+                        if (userSearchResponse.cause.equals(ErrorCause.NO_SEARCH_RESULT)) {
+
+                        } else {
+
+                        }
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -215,6 +240,9 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
                                 builder.show();
                             }
                         } else {
+                            if (mFriendsModelArrayList != null) {
+                                mFriendsModelArrayList.clear();
+                            }
                             JSONArray friendsArray = jsonObject.optJSONArray("friends");
                             for (int i = 0; i < friendsArray.length(); i++) {
                                 JSONObject eachObject = friendsArray.optJSONObject(i);
@@ -301,6 +329,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     }
 
     private void showSearchField() {
+        getFriends();
         isClosed = false;
         personSearchWrapper.setVisibility(View.VISIBLE);
         closeSearch.setEnabled(true);
