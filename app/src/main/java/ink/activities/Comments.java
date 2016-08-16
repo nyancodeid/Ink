@@ -104,14 +104,15 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     private boolean hasComments;
     private String ownerId;
     private ProgressDialog deleteDialog;
-    private String hasAttachment;
-    private String hasAddress;
+    private boolean hasAttachment;
+    private boolean hasAddress;
     private String attachmentName;
     private String addressName;
     private String postId;
     private String postBody;
     private Snackbar snackbar;
     private BroadcastReceiver broadcastReceiver;
+    private boolean shouldUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,8 +146,8 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
             isLiked = extras.getBoolean("isLiked");
             ownerId = extras.getString("ownerId");
 
-            hasAttachment = extras.getString("hasAttachment");
-            hasAddress = extras.getString("hasAddress");
+            hasAttachment = extras.getBoolean("hasAttachment");
+            hasAddress = extras.getBoolean("hasAddress");
             attachmentName = extras.getString("attachmentName");
             addressName = extras.getString("addressName");
             postId = extras.getString("postId");
@@ -218,6 +219,9 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (shouldUpdate) {
+            LocalBroadcastManager.getInstance(Comments.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
+        }
         finish();
         return super.onOptionsItemSelected(item);
     }
@@ -509,6 +513,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     }
 
     private void like(final String postId, final int isLiking, final TextView likeCountTV) {
+        shouldUpdate = true;
         final Call<ResponseBody> likeCall = Retrofit.getInstance().getInkService().likePost(mSharedHelper.getUserId(), postId, isLiking);
         likeCall.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -537,8 +542,10 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                         likeCountTV.setVisibility(View.GONE);
                     }
                 } catch (IOException e) {
+                    shouldUpdate = false;
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    shouldUpdate = false;
                     e.printStackTrace();
                 }
 
@@ -701,5 +708,13 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         } catch (ArrayIndexOutOfBoundsException e) {
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (shouldUpdate) {
+            LocalBroadcastManager.getInstance(Comments.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
+        }
+        super.onBackPressed();
     }
 }
