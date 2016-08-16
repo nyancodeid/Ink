@@ -417,4 +417,9 @@
     <string name="noFriendSearchResult">No person was found,try to filter your search</string>
     <string name="sendFriendRequest">Send friend request</string>
     <string name="youHaveSentAlreadyRequest">You have already requested to be friend</string>
+    <string name="sendingFrindRequest">Sending friend request...</string>
+    <string name="requestSent">Request was sent</string>
+    <string name="errorSendingRequest">Error while sending friend request</string>
+    <string name="tobeFriend">asked to be friend with you</string>
+    <string name="friendRequestInfo">To accept the request,click here</string>
 </resources>

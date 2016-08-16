@@ -57,10 +57,10 @@ public class Constants {
     public static final String SOCIAL_LOGIN_URL = "SocialLogin.php";
     public static final String ADD_COMMENT_URL = "AddComment.php";
     public static final int TEXT_VIEW_DEFAULT_COLOR = android.R.color.tab_indicator_text;
-    public static final String TYPE_MESSAGE = "message";
-    public static final String TYPE_REQUEST = "request";
+    public static final String NOTIFICATION_TYPE_MESSAGE = "message";
+    public static final String NOTIFICATION_TYPE_GROUP_REQUEST = "request";
     public static final String NOTIFICATION_TYPE_FRIEND_REQUEST = "NOTIFICATION_TYPE_FRIEND_REQUEST";
-    public static final String TYPE_CHAT_ROULETTE = "chatRoulette";
+    public static final String NOTIFICATION_TYPE_CHAT_ROULETTE = "chatRoulette";
     public static final String WAITERS_QUE = "WaitRoomQue.php";
     public static final String GET_WAITERS = "GetWaitersQue.php";
     public static final String TYPE_ACCEPT_REQUEST = "0";
@@ -78,7 +78,7 @@ public class Constants {
     public static final String SERVER_TIME_ZONE = "America/Los_Angeles";
     public static final String CLOUD_CLIENT_ID = "15bf6f497229585b1cf45983d3d65b10";
     public static final String CLOUD_API_URL = "https://api.soundcloud.com";
-    public static final String TYPE_CALL = "type=call";
+    public static final String NOTIFICATION_TYPE_CALL = "type=call";
     public static final String COMMENT_TYPE_DELETE = "delete";
     public static final String COMMENT_TYPE_EDIT = "edit";
     public static final String GROUP_TYPE_ALL = "all";

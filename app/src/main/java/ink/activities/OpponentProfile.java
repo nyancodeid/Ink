@@ -1,7 +1,9 @@
 package ink.activities;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -11,7 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,6 +94,7 @@ public class OpponentProfile extends BaseActivity {
     FloatingActionButton block;
     private String mOpponentImage;
     private boolean isFriend;
+    private android.app.Dialog requestFriendProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +108,12 @@ public class OpponentProfile extends BaseActivity {
         sharedHelper = new SharedHelper(this);
         imageCard = (CardView) findViewById(R.id.imageCard);
         ViewGroup.LayoutParams mCardNewLayoutParams = imageCard.getLayoutParams();
+        requestFriendProgress = new Dialog(this);
+        requestFriendProgress.setContentView(R.layout.request_friend_dialog);
+        requestFriendProgress.setCancelable(false);
+        requestFriendProgress.setCanceledOnTouchOutside(false);
+        requestFriendProgress.getWindow().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, android.R.color.transparent)));
+
         ActionBar actionBar = getSupportActionBar();
         if (extras != null) {
             mOpponentId = extras.getString("id");
@@ -179,6 +187,7 @@ public class OpponentProfile extends BaseActivity {
 
                     }
                 }).show();
+                mProfileFab.close(true);
             } else {
                 if (hasFriendRequested) {
                     Snackbar.make(mTriangleView, getString(R.string.youHaveSentAlreadyRequest), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
@@ -187,7 +196,10 @@ public class OpponentProfile extends BaseActivity {
 
                         }
                     }).show();
+                    mProfileFab.close(true);
                 } else {
+
+                    mProfileFab.close(true);
                     requestFriend();
                 }
             }
@@ -195,6 +207,7 @@ public class OpponentProfile extends BaseActivity {
     }
 
     private void requestFriend() {
+        requestFriendProgress.show();
         Call<ResponseBody> requestFriendCall = Retrofit.getInstance().getInkService().requestFriend(sharedHelper.getUserId(), mOpponentId,
                 sharedHelper.getFirstName() + " " + sharedHelper.getLastName());
         requestFriendCall.enqueue(new Callback<ResponseBody>() {
@@ -210,8 +223,22 @@ public class OpponentProfile extends BaseActivity {
                 }
                 try {
                     String responseBody = response.body().string();
-                    Log.d("Fasfsafasfsa", "onResponse: " + responseBody);
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    requestFriendProgress.dismiss();
+                    if (success) {
+                        hasFriendRequested = true;
+                        Snackbar.make(mTriangleView, getString(R.string.requestSent), Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        Snackbar.make(mTriangleView, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
+                    }
                 } catch (IOException e) {
+                    requestFriendProgress.dismiss();
+                    Snackbar.make(mTriangleView, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    requestFriendProgress.dismiss();
+                    Snackbar.make(mTriangleView, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
@@ -397,4 +424,15 @@ public class OpponentProfile extends BaseActivity {
         startActivity(facebookIntent);
     }
 
+    @Override
+    protected void onDestroy() {
+        if (requestFriendProgress != null) {
+            if (requestFriendProgress.isShowing()) {
+                requestFriendProgress.dismiss();
+                requestFriendProgress = null;
+            }
+        }
+
+        super.onDestroy();
+    }
 }

@@ -202,6 +202,10 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         if (searchPersonCalll != null) {
             searchPersonCalll.cancel();
         }
+        if (mNoFriendsLayout.getVisibility() == View.VISIBLE) {
+            mNoFriendsLayout.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        }
         startSearchAnimation();
         searchPersonCalll = Retrofit.getInstance().getInkService().searchPerson(mSharedHelper.getUserId(), searchValue);
         searchPersonCalll.enqueue(new Callback<ResponseBody>() {
