@@ -313,8 +313,8 @@ public class HomeActivity extends BaseActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.notifications) {
+            startActivity(new Intent(getApplicationContext(),RequestsView.class));
         } else if (id == R.id.shop) {
             startActivity(new Intent(getApplicationContext(), Shop.class));
         }

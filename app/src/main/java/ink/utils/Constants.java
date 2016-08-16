@@ -52,6 +52,8 @@ public class Constants {
     public static final String MAKE_POST_URL = "MakePost.php";
     public static final String DELETE_POST_URL = "DeletePost.php";
     public static final String COMMENT_OPTIONS_URL = "CommentOptions.php";
+    public static final String REQUEST_RESPONSE_TYPE_GROUP = "group";
+    public static final String REQUEST_RESPONSE_TYPE_FRIEND_REQUEST = "friendRequest";
     public static final String LIKE_URL = "LikePost.php";
     public static final String GET_COMMENTS_URL = "GetComments.php";
     public static final String SOCIAL_LOGIN_URL = "SocialLogin.php";

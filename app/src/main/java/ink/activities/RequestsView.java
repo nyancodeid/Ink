@@ -110,15 +110,24 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
                         noRequestsLayout.setVisibility(View.GONE);
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject eachObject = jsonArray.getJSONObject(i);
-                            String groupOwnerId = eachObject.optString("group_owner_id");
+
                             String requesterId = eachObject.optString("requester_id");
                             String requesterName = eachObject.optString("requester_name");
                             String requesterImage = eachObject.optString("requester_image");
-                            String requestedGroupId = eachObject.optString("requested_group_id");
                             String requestId = eachObject.optString("request_id");
                             boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
                             String isFriend = eachObject.optString("isFriend");
-                            String groupName = eachObject.optString("group_name");
+
+                            String type = eachObject.optString("type");
+                            String groupName = "";
+                            String groupOwnerId = "";
+                            String requestedGroupId = "";
+                            if (type.equals(Constants.REQUEST_RESPONSE_TYPE_GROUP)) {
+                                groupName = eachObject.optString("group_name");
+                                groupOwnerId = eachObject.optString("group_owner_id");
+                                requestedGroupId = eachObject.optString("requested_group_id");
+                            }
+
                             requestsModel = new RequestsModel(isSocialAccount, Boolean.valueOf(isFriend), groupOwnerId, requesterId, requesterName, requesterImage, requestedGroupId,
                                     requestId, groupName);
                             requestsModels.add(requestsModel);
@@ -145,18 +154,30 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onRefresh() {
+
         getMyRequests();
     }
 
     @Override
     public void onAcceptClicked(int position) {
-        acceptRequest(position);
+        RequestsModel requestsModel = requestsModels.get(position);
+        if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_GROUP)) {
+            acceptRequest(position);
+        } else if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_FRIEND_REQUEST)) {
+
+        }
+
     }
 
 
     @Override
     public void onDeclineClicked(int position) {
-        denyRequest(position);
+        if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_GROUP)) {
+            denyRequest(position);
+        } else if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_FRIEND_REQUEST)) {
+
+        }
+
     }
 
     @Override

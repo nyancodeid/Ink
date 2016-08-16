@@ -70,7 +70,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                         requestsModel.getRequesterImage()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.requesterImage);
             }
         } else {
-            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR+"no_image").withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.requesterImage);
+            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.requesterImage);
         }
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,8 +96,15 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                 }
             }
         });
-        holder.requesterMessage.setText(requestsModel.getRequesterName() + " " + mContext.getString(R.string.personRequestedText) + " " +
-                requestsModel.getGroupName() + " " + mContext.getString(R.string.groupText));
+
+        if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_GROUP)) {
+            holder.requesterMessage.setText(requestsModel.getRequesterName() + " " + mContext.getString(R.string.personRequestedText) + " " +
+                    requestsModel.getGroupName() + " " + mContext.getString(R.string.groupText));
+        } else if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_FRIEND_REQUEST)) {
+            holder.requesterMessage.setText(requestsModel.getRequesterName() + " " + mContext.getString(R.string.tobeFriend));
+        }
+
+
     }
 
 
