@@ -421,7 +421,7 @@
     <string name="requestSent">Request was sent</string>
     <string name="errorSendingRequest">Error while sending friend request</string>
     <string name="tobeFriend">asked to be a friend with you</string>
-    <string name="friendRequestInfo">To accept the request,click here</string>
+    <string name="friendRequestInfo">To view the request,click here</string>
     <string name="notificationTitle">Notifications</string>
     <string name="leaveGroup">Leave Group</string>
     <string name="leaveGroupMessage">You are about to leave this group.Are you sure?</string>
