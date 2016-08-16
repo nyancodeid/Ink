@@ -36,8 +36,11 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="15dp"
         android:background="#3F51B5"
+        android:clickable="true"
         android:drawableRight="@drawable/decline_icon"
+        android:focusable="true"
         android:fontFamily="@string/appFont"
+        android:foreground="?attr/selectableItemBackground"
         android:padding="5dp"
         android:text="@string/declineText"
         android:textAllCaps="false"
@@ -54,10 +57,20 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="15dp"
         android:background="#3F51B5"
+        android:clickable="true"
         android:drawableRight="@drawable/accept_icon"
+        android:focusable="true"
         android:fontFamily="@string/appFont"
+        android:foreground="?attr/selectableItemBackground"
         android:padding="5dp"
         android:text="@string/acceptText"
         android:textAllCaps="false"
         android:textColor="#ffffff" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/acceptRequest"
+        android:layout_marginTop="10dp"
+        android:background="#b3b3b3"></View>
 </RelativeLayout>

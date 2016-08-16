@@ -426,4 +426,6 @@
     <string name="leaveGroup">Leave Group</string>
     <string name="leaveGroupMessage">You are about to leave this group.Are you sure?</string>
     <string name="leaving">Leaving the group,please wait...</string>
+    <string name="friendRequestDenied">Friend request denied</string>
+    <string name="friendRequestAccepted">Friend request accepted</string>
 </resources>

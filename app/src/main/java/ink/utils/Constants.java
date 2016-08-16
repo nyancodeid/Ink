@@ -31,6 +31,8 @@ public class Constants {
     public static final String GROUP_MESSAGES_OPTIONS_URL = "GroupMessagesOptions.php";
     public static final String NOTIFY_OPPONENT = "NotifyOpponent.php";
     public static final String RESPOND_TO_REQUEST_URL = "RespondToRequest.php";
+    public static final String RESPOND_TYPE_ACCEPT_FRIEND_REQUEST = "acceptFriendRequest";
+    public static final String RESPOND_TYPE_DENY_FRIEND_REQUEST = "denyFriendRequest";
     public static final String LOGIN_URL = "Login.php";
     public static final String FRIENDS_URL = "UserFriends.php";
     public static final String SINGLE_USER_URL = "SingleUser.php";
@@ -66,8 +68,8 @@ public class Constants {
     public static final String NOTIFICATION_TYPE_CHAT_ROULETTE = "chatRoulette";
     public static final String WAITERS_QUE = "WaitRoomQue.php";
     public static final String GET_WAITERS = "GetWaitersQue.php";
-    public static final String TYPE_ACCEPT_REQUEST = "0";
-    public static final String TYPE_DENY_REQUEST = "1";
+    public static final String TYPE_ACCEPT_REQUEST = "acceptGroupRequest";
+    public static final String TYPE_DENY_REQUEST = "denyGroupRequest";
     public static final String STATUS_WAITING_NOT_AVAILABLE = "waiting_not_available";
     public static final String STATUS_AVAILABLE = "available";
     public static final String STATUS_IN_CHAT = "inChat";

@@ -143,34 +143,13 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
+        mJoinGroupButton.setEnabled(false);
         mJoinGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isMember) {
-                    if (!isRequested) {
-                        requestJoin();
-                    }
-                } else {
-                    if (!mSharedHelper.getUserId().equals(mGroupOwnerId)) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(SingleGroupView.this);
-                        builder.setTitle(getString(R.string.leaveGroup));
-                        builder.setMessage(getString(R.string.leaveGroupMessage));
-                        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                leaveGroup();
-                            }
-                        });
-                        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        });
-                    }
-
+                if (!isRequested) {
+                    requestJoin();
                 }
-
             }
         });
         broadcastReceiver = new BroadcastReceiver() {
@@ -227,12 +206,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             mAddMessageToGroup.setVisibility(View.GONE);
             mJoinGroupButton.setText(getString(R.string.joinGroup));
         } else {
-            if (mSharedHelper.getUserId().equals(mGroupOwnerId)) {
-                mJoinGroupButton.setVisibility(View.GONE);
-            } else {
-                mJoinGroupButton.setVisibility(View.VISIBLE);
-                mJoinGroupButton.setText(getString(R.string.leaveGroup));
-            }
+            mJoinGroupButton.setEnabled(true);
+            mJoinGroupButton.setVisibility(View.GONE);
             mAddMessageToGroup.setVisibility(View.VISIBLE);
             CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) mAddMessageToGroup.getLayoutParams();
             p.setBehavior(new ScrollAwareFABButtonehavior(this));
@@ -534,6 +509,9 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             case R.id.deleteGroup:
                 deleteGroup();
                 break;
+            case R.id.leaveGroup:
+                showWarning();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -670,6 +648,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     public boolean onCreateOptionsMenu(Menu menu) {
         if (mSharedHelper.getUserId().equals(mGroupOwnerId)) {
             getMenuInflater().inflate(R.menu.single_group_menu, menu);
+        } else if (isMember) {
+            getMenuInflater().inflate(R.menu.leave_group_menu, menu);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -915,6 +895,26 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         });
     }
 
+    private void showWarning() {
+        if (!mSharedHelper.getUserId().equals(mGroupOwnerId)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(SingleGroupView.this);
+            builder.setTitle(getString(R.string.leaveGroup));
+            builder.setMessage(getString(R.string.leaveGroupMessage));
+            builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    leaveGroup();
+                }
+            });
+            builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            builder.show();
+        }
+    }
 
     @Override
     protected void onDestroy() {
