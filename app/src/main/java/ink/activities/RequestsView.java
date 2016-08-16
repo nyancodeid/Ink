@@ -117,8 +117,9 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
                             String requestedGroupId = eachObject.optString("requested_group_id");
                             String requestId = eachObject.optString("request_id");
                             boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
+                            String isFriend = eachObject.optString("isFriend");
                             String groupName = eachObject.optString("group_name");
-                            requestsModel = new RequestsModel(isSocialAccount,groupOwnerId, requesterId, requesterName, requesterImage, requestedGroupId,
+                            requestsModel = new RequestsModel(isSocialAccount, Boolean.valueOf(isFriend), groupOwnerId, requesterId, requesterName, requesterImage, requestedGroupId,
                                     requestId, groupName);
                             requestsModels.add(requestsModel);
                             requestsAdapter.notifyDataSetChanged();
@@ -169,6 +170,7 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
         intent.putExtra("id", singleModel.getRequesterId());
         intent.putExtra("firstName", firstName);
         intent.putExtra("lastName", lastName);
+        intent.putExtra("isFriend", singleModel.isFriend());
         startActivity(intent);
     }
 

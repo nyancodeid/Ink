@@ -229,7 +229,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     private void getComments(final String postId, final boolean shouldFocus) {
         isResponseReceived = false;
-        Call<ResponseBody> commentsCall = Retrofit.getInstance().getInkService().getComments(postId);
+        Call<ResponseBody> commentsCall = Retrofit.getInstance().getInkService().getComments(mSharedHelper.getUserId(), postId);
         commentsCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -263,10 +263,11 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                             String commentBody = eachObject.optString("comment_body");
                             String postId = eachObject.optString("post_id");
                             String commentId = eachObject.optString("comment_id");
+                            String isFriend = eachObject.optString("isFriend");
                             String firstName = eachObject.optString("commenter_first_name");
                             String lastName = eachObject.optString("commenter_last_name");
                             boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
-                            mCommentModel = new CommentModel(isSocialAccount, commentId,
+                            mCommentModel = new CommentModel(isSocialAccount, Boolean.valueOf(isFriend), commentId,
                                     commenterId, commenterImage, commentBody, postId, firstName,
                                     lastName);
                             mCommentModels.add(mCommentModel);
@@ -604,7 +605,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onItemClicked(int position, View view) {
-        Log.d("fsafsafasfas", "onItemLongClick: " + "on item  click");
+
         int actualPosition = position - 1;
         try {
             CommentModel singleModel = mCommentModels.get(actualPosition);
@@ -617,6 +618,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 intent.putExtra("id", currentId);
                 intent.putExtra("firstName", singleModel.getFirstName());
                 intent.putExtra("lastName", singleModel.getLastName());
+                intent.putExtra("isFriend", singleModel.isFriend());
                 startActivity(intent);
             }
         } catch (ArrayIndexOutOfBoundsException e) {

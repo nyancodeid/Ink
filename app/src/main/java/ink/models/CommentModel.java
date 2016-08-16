@@ -12,14 +12,16 @@ public class CommentModel {
     private String firstName;
     private String lastName;
     private boolean isSocialAccount;
+    private boolean isFriend;
 
 
-    public CommentModel(boolean isSocialAccount,String commentId, String commenterId,
+    public CommentModel(boolean isSocialAccount, boolean isFriend, String commentId, String commenterId,
                         String commenterImage,
                         String commentBody,
                         String postId, String firstName,
                         String lastName) {
         this.commentId = commentId;
+        this.isFriend = isFriend;
         this.isSocialAccount = isSocialAccount;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -87,6 +89,14 @@ public class CommentModel {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    public void setFriend(boolean friend) {
+        isFriend = friend;
     }
 
     public void setLastName(String lastName) {

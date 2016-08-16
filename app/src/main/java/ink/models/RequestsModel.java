@@ -12,12 +12,14 @@ public class RequestsModel {
     private String requestId;
     private String groupName;
     private boolean isSocialAccount;
+    private boolean isFriend;
 
 
-    public RequestsModel(boolean isSocialAccount, String groupOwnerId, String requesterId,
+    public RequestsModel(boolean isSocialAccount,boolean isFriend, String groupOwnerId, String requesterId,
                          String requesterName, String requesterImage,
                          String requestedGroupId, String requestId, String groupName) {
         this.groupOwnerId = groupOwnerId;
+        this.isFriend = isFriend;
         this.isSocialAccount = isSocialAccount;
         this.groupName = groupName;
         this.requesterId = requesterId;
@@ -25,6 +27,14 @@ public class RequestsModel {
         this.requesterImage = requesterImage;
         this.requestedGroupId = requestedGroupId;
         this.requestId = requestId;
+    }
+
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    public void setFriend(boolean friend) {
+        isFriend = friend;
     }
 
     public boolean isSocialAccount() {

@@ -30,6 +30,7 @@ import java.io.IOException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import fab.FloatingActionButton;
 import ink.utils.Constants;
 import ink.utils.ScrollAwareFABBehavior;
 import okhttp3.ResponseBody;
@@ -80,7 +81,12 @@ public class OpponentProfile extends BaseActivity {
     AVLoadingIndicatorView mOpponentImageLoading;
     @Bind(R.id.addressWrapper)
     RelativeLayout mAddressWrapper;
+    @Bind(R.id.sendMessage)
+    FloatingActionButton sendMessage;
+    @Bind(R.id.block)
+    FloatingActionButton block;
     private String mOpponentImage;
+    private boolean isFriend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +104,7 @@ public class OpponentProfile extends BaseActivity {
             mOpponentId = extras.getString("id");
             mFirstName = extras.getString("firstName");
             mLastName = extras.getString("lastName");
+            isFriend = extras.getBoolean("isFriend");
             if (extras.containsKey("disableButton")) {
                 if (extras.getBoolean("disableButton")) {
                     mProfileFab.setVisibility(View.GONE);
@@ -112,6 +119,10 @@ public class OpponentProfile extends BaseActivity {
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 actionBar.setTitle(mFirstName + " " + mLastName);
             }
+        }
+        if (!isFriend) {
+            sendMessage.setImageResource(R.drawable.request_friend_icon);
+            sendMessage.setLabelText(getString(R.string.sendFriendRequest));
         }
         getSingleUser();
     }
@@ -289,7 +300,6 @@ public class OpponentProfile extends BaseActivity {
         }
         startActivity(intent);
     }
-
 
 
     @Override

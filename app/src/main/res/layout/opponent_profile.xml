@@ -40,8 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
-                    android:minHeight="200dp"
-                    android:scaleType="fitXY" />
+                    android:minHeight="200dp"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"

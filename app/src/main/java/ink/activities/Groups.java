@@ -154,6 +154,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                 intent.putExtra("ownerImage", groupsModels.get(position).getOwnerImage());
                 intent.putExtra("isSocialAccount", groupsModels.get(position).isSocialAccount());
                 intent.putExtra("isMember", groupsModels.get(position).isMember());
+                intent.putExtra("isFriend", groupsModels.get(position).isFriend());
                 startActivity(intent);
             }
 
@@ -210,7 +211,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                 item.setTitle(getString(R.string.myGroup));
                 getGroups(lastChosenType);
             }
-        } else if (item.getItemId() == R.id.search) {
+        } else if (item.getItemId() == R.id.searchFriendIcon) {
 
         } else if (item.getItemId() == R.id.requests) {
             startActivity(new Intent(getApplicationContext(), RequestsView.class));
@@ -228,7 +229,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
+                (SearchView) menu.findItem(R.id.searchFriendIcon).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -297,8 +298,9 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                                 String ownerImage = eachObject.optString("owner_image");
                                 boolean isMember = eachObject.optBoolean("isMember");
                                 boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
+                                String isFriend = eachObject.optString("isFriend");
 
-                                groupsModel = new GroupsModel(isSocialAccount, groupId, groupImage, groupName, groupOwnerName, groupDescription,
+                                groupsModel = new GroupsModel(Boolean.valueOf(isFriend), isSocialAccount, groupId, groupImage, groupName, groupOwnerName, groupDescription,
                                         groupOwnerId, groupColor, participantsCount, ownerImage, isMember);
                                 groupsModels.add(groupsModel);
                                 groupsAdapter.notifyDataSetChanged();
@@ -400,8 +402,9 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                                 String ownerImage = eachObject.optString("owner_image");
                                 boolean isMember = eachObject.optBoolean("isMember");
                                 boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
+                                String isFriend = eachObject.optString("isFriend");
 
-                                groupsModel = new GroupsModel(isSocialAccount, groupId, groupImage, groupName, groupOwnerName, groupDescription,
+                                groupsModel = new GroupsModel(Boolean.valueOf(isFriend), isSocialAccount, groupId, groupImage, groupName, groupOwnerName, groupDescription,
                                         groupOwnerId, groupColor, participantsCount, ownerImage, isMember);
                                 groupsModels.add(groupsModel);
                                 groupsAdapter.notifyDataSetChanged();

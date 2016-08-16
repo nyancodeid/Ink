@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -16,7 +17,6 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +31,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ink.R;
-import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +43,7 @@ import java.util.List;
 import ink.activities.HomeActivity;
 import ink.activities.OpponentProfile;
 import ink.adapters.FriendsAdapter;
+import ink.animations.CircularPathAnimation;
 import ink.interfaces.RecyclerItemClickListener;
 import ink.models.FriendsModel;
 import ink.models.UserSearchResponse;
@@ -60,13 +60,12 @@ import retrofit2.Response;
 /**
  * Created by USER on 2016-06-21.
  */
-public class MyFriends extends Fragment implements View.OnClickListener, RecyclerItemClickListener {
+public class MyFriends extends Fragment implements View.OnClickListener, RecyclerItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private SharedHelper mSharedHelper;
     private List<FriendsModel> mFriendsModelArrayList = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private FriendsAdapter mFriendsAdapter;
     private FriendsModel mFriendsModel;
-    private AVLoadingIndicatorView mFriendsLoading;
     private RelativeLayout mNoFriendsLayout;
     private HomeActivity parentActivity;
     private EditText personSearchField;
@@ -77,6 +76,11 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     private boolean isClosed;
     private Call<ResponseBody> searchPersonCalll;
     private Gson userSearchGson;
+    private SwipeRefreshLayout friendsSwipe;
+    private CircularPathAnimation circularPathAnimation;
+    private RelativeLayout searchWrapper;
+    private ImageView searchFriendIcon;
+    private TextView searchText;
 
 
     public static MyFriends newInstance() {
@@ -97,15 +101,26 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         mRecyclerView = (RecyclerView) view.findViewById(R.id.friendsRecyclerView);
         closeSearch = (ImageView) view.findViewById(R.id.closeSearch);
         mNoFriendsLayout = (RelativeLayout) view.findViewById(R.id.noFriendsLayout);
+        friendsSwipe = (SwipeRefreshLayout) view.findViewById(R.id.friendsSwipe);
+        searchFriendIcon = (ImageView) view.findViewById(R.id.searchFriendIcon);
+        searchText = (TextView) view.findViewById(R.id.searchText);
         personSearchWrapper = (RelativeLayout) view.findViewById(R.id.personSearchWrapper);
         personSearchField = (EditText) view.findViewById(R.id.personSearchField);
         slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in);
         slideOut = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out);
-        mFriendsLoading = (AVLoadingIndicatorView) view.findViewById(R.id.friendsLoading);
         mFriendsAdapter = new FriendsAdapter(mFriendsModelArrayList, getActivity());
+
+        searchWrapper = (RelativeLayout) view.findViewById(R.id.searchWrapper);
+
+        circularPathAnimation = new CircularPathAnimation(searchWrapper, 30);
+        circularPathAnimation.setRepeatCount(Animation.INFINITE);
+        circularPathAnimation.setRepeatMode(Animation.RESTART);
+        circularPathAnimation.setDuration(1000);
+
         userSearchGson = new Gson();
         parentActivity = ((HomeActivity) getActivity());
         showSearch();
+        friendsSwipe.setOnRefreshListener(this);
         parentActivity.getSearchFriend().setOnClickListener(this);
         closeSearch.setOnClickListener(this);
         mFriendsModelArrayList.clear();
@@ -151,11 +166,43 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         getFriends();
     }
 
+
+    private void startSearchAnimation() {
+        if (searchWrapper.getVisibility() == View.GONE) {
+            searchWrapper.setVisibility(View.VISIBLE);
+        }
+        searchText.setText(getString(R.string.searching));
+        searchFriendIcon.setImageResource(0);
+        searchFriendIcon.setBackgroundResource(R.drawable.searching_friend);
+        searchFriendIcon.startAnimation(circularPathAnimation);
+    }
+
+    private void stopSearchAnimation(boolean showNoResult) {
+        searchFriendIcon.setImageResource(0);
+        if (showNoResult) {
+            if (searchWrapper.getVisibility() == View.GONE) {
+                searchWrapper.setVisibility(View.VISIBLE);
+            }
+            searchText.setText(getString(R.string.noFriendSearchResult));
+            searchFriendIcon.setBackgroundResource(R.drawable.no_friend_result);
+            searchFriendIcon.clearAnimation();
+        } else {
+            if (searchWrapper.getVisibility() == View.VISIBLE) {
+                searchWrapper.setVisibility(View.GONE);
+            }
+            searchText.setText(getString(R.string.searching));
+            searchFriendIcon.clearAnimation();
+        }
+
+    }
+
     private void doSearch(final String searchValue) {
         System.gc();
+        clearAdapter();
         if (searchPersonCalll != null) {
             searchPersonCalll.cancel();
         }
+        startSearchAnimation();
         searchPersonCalll = Retrofit.getInstance().getInkService().searchPerson(mSharedHelper.getUserId(), searchValue);
         searchPersonCalll.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -170,29 +217,26 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
                 }
                 try {
                     String responseBody = response.body().string();
-                    Log.d("fsafsafasfas", "onResponse: "+responseBody);
                     UserSearchResponse userSearchResponse = userSearchGson.fromJson(responseBody, UserSearchResponse.class);
                     if (userSearchResponse.success) {
                         ArrayList<UserSearchResult> userSearchResults = userSearchResponse.userSearchResults;
-                        if (mFriendsModelArrayList != null) {
-                            mFriendsModelArrayList.clear();
-
-                        }
                         for (int i = 0; i < userSearchResults.size(); i++) {
                             UserSearchResult userSearchResult = userSearchResults.get(i);
-                            mFriendsModel = new FriendsModel(userSearchResult.firstName + userSearchResult.lastName,
+                            mFriendsModel = new FriendsModel(userSearchResult.isFriend, Boolean.valueOf(userSearchResult.isSocialAccount), userSearchResult.firstName + " " + userSearchResult.lastName,
                                     userSearchResult.imageLink, "", userSearchResult.userId, userSearchResult.firstName, userSearchResult.lastName);
                             mFriendsModelArrayList.add(mFriendsModel);
                             mFriendsAdapter.notifyDataSetChanged();
                         }
+                        stopSearchAnimation(false);
                     } else {
                         if (userSearchResponse.cause.equals(ErrorCause.NO_SEARCH_RESULT)) {
-
+                            stopSearchAnimation(true);
                         } else {
-
+                            stopSearchAnimation(false);
                         }
                     }
                 } catch (IOException e) {
+                    stopSearchAnimation(false);
                     e.printStackTrace();
                 }
             }
@@ -204,6 +248,13 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         });
     }
 
+    private void clearAdapter() {
+        if (mFriendsModelArrayList != null) {
+            mFriendsModelArrayList.clear();
+            mFriendsAdapter.notifyDataSetChanged();
+        }
+    }
+
 
     private void handleAnimation(Intent intent, Pair<View, String>... pairs) {
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), pairs);
@@ -211,6 +262,13 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     }
 
     private void getFriends() {
+        friendsSwipe.post(new Runnable() {
+            @Override
+            public void run() {
+                friendsSwipe.setRefreshing(true);
+            }
+        });
+        clearAdapter();
         final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().getFriends(mSharedHelper.getUserId());
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -221,12 +279,12 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
                         JSONObject jsonObject = new JSONObject(responseString);
                         boolean success = jsonObject.optBoolean("success");
                         if (!success) {
-                            mFriendsLoading.setVisibility(View.GONE);
+                            friendsSwipe.setRefreshing(false);
                             String cause = jsonObject.optString("cause");
                             String finalErrorMessage;
                             if (cause.equals(ErrorCause.NO_FRIENDS)) {
                                 mNoFriendsLayout.setVisibility(View.VISIBLE);
-                                mFriendsLoading.setVisibility(View.GONE);
+                                friendsSwipe.setRefreshing(false);
                                 mRecyclerView.setVisibility(View.GONE);
                             } else {
                                 finalErrorMessage = getString(R.string.serverErrorText);
@@ -251,6 +309,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
                                 String lastname = eachObject.optString("last_name");
                                 String phoneNumber = eachObject.optString("phone_number");
                                 String imageLink = eachObject.optString("image_link");
+                                String isSocialAccount = eachObject.optString("isSocialAccount");
                                 if (firstName.isEmpty()) {
                                     firstName = getString(R.string.noFirstname);
                                 }
@@ -262,18 +321,18 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
                                     phoneNumber = getString(R.string.noPhone);
                                 }
                                 String friendId = eachObject.optString("friend_id");
-                                mFriendsModel = new FriendsModel(name, imageLink, phoneNumber, friendId, firstName, lastname);
+                                mFriendsModel = new FriendsModel(true, Boolean.valueOf(isSocialAccount), name, imageLink, phoneNumber, friendId, firstName, lastname);
                                 mFriendsModelArrayList.add(mFriendsModel);
                                 mFriendsAdapter.notifyDataSetChanged();
                             }
-                            mFriendsLoading.setVisibility(View.GONE);
+                            friendsSwipe.setRefreshing(false);
                         }
                     } catch (JSONException e) {
-                        mFriendsLoading.setVisibility(View.GONE);
+                        friendsSwipe.setRefreshing(false);
                         e.printStackTrace();
                     }
                 } catch (IOException e) {
-                    mFriendsLoading.setVisibility(View.GONE);
+                    friendsSwipe.setRefreshing(false);
                     e.printStackTrace();
                 }
 
@@ -353,6 +412,8 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     }
 
     private void hideSearchField() {
+        getFriends();
+        stopSearchAnimation(false);
         isClosed = true;
         personSearchWrapper.startAnimation(slideOut);
 
@@ -389,6 +450,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         intent.putExtra("firstName", mFriendsModelArrayList.get(position).getFirstName());
         intent.putExtra("lastName", mFriendsModelArrayList.get(position).getLastName());
         intent.putExtra("phoneNumber", mFriendsModelArrayList.get(position).getPhoneNumber());
+        intent.putExtra("isFriend", mFriendsModelArrayList.get(position).isFriend());
         intent.putExtra("id", opponentId);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             RelativeLayout relativeLayout = (RelativeLayout) view;
@@ -423,5 +485,10 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
             }
         });
         popupMenu.show();
+    }
+
+    @Override
+    public void onRefresh() {
+        getFriends();
     }
 }

@@ -2,6 +2,7 @@ package ink.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -152,6 +153,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             } else {
                 Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
             }
+            headerViewHolder.postBody.setMovementMethod(LinkMovementMethod.getInstance());
             headerViewHolder.postBody.setText(ownerPostBody);
             headerViewHolder.postDate.setText(date);
 

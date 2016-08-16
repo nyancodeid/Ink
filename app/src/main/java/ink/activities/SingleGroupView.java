@@ -123,6 +123,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     private boolean hasAnythingChanged;
     private ProgressDialog progressDialog;
     private Snackbar snackbar;
+    private boolean isFriendWithOwner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,6 +198,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             mCount = extras.getString("count");
             mOwnerImage = extras.getString("ownerImage");
             isMember = extras.getBoolean("isMember");
+            isFriendWithOwner = extras.getBoolean("isFriend");
         }
         if (!isMember) {
             mJoinGroupButton.setVisibility(View.VISIBLE);
@@ -292,6 +294,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                     Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
                     intent.putExtra("id", memberModels.get(position).getMemberId());
                     intent.putExtra("firstName", firstName);
+                    intent.putExtra("isFriend", memberModels.get(position).isFriend());
                     intent.putExtra("lastName", lastName);
                     startActivity(intent);
                 }
@@ -316,7 +319,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             }
         });
         builder.show();
-        Call<ResponseBody> participantCall = Retrofit.getInstance().getInkService().getParticipants(mGroupId);
+        Call<ResponseBody> participantCall = Retrofit.getInstance().getInkService().getParticipants(mSharedHelper.getUserId(), mGroupId);
         participantCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -345,7 +348,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                             String memberImage = eachObject.optString("participant_image");
                             String memberItemId = eachObject.optString("participant_item_id");
                             String memberGroupId = eachObject.optString("participant_group_id");
-                            memberModel = new MemberModel(memberId, memberName, memberImage, memberItemId
+                            String isFriend = eachObject.optString("isFriend");
+                            memberModel = new MemberModel(Boolean.valueOf(isFriend), memberId, memberName, memberImage, memberItemId
                                     , memberGroupId);
                             memberModels.add(memberModel);
                             memberAdapter.notifyDataSetChanged();
@@ -427,6 +431,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         intent.putExtra("id", mGroupOwnerId);
         intent.putExtra("firstName", firstName);
         intent.putExtra("lastName", lastName);
+        intent.putExtra("isFriend", isFriendWithOwner);
         startActivity(intent);
     }
 
@@ -638,7 +643,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                                 String senderImage = eachObject.optString("sender_image");
                                 String senderName = eachObject.optString("sender_name");
                                 String groupMessageId = eachObject.optString("group_message_id");
-                                groupMessagesModel = new GroupMessagesModel(groupId, groupMessage,
+                                String isFriend = eachObject.optString("isFriend");
+                                groupMessagesModel = new GroupMessagesModel(Boolean.valueOf(isFriend), groupId, groupMessage,
                                         senderId, senderImage, senderName, groupMessageId, isRequested);
                                 groupMessagesModels.add(groupMessagesModel);
                                 groupMessagesAdapter.notifyDataSetChanged();
@@ -696,6 +702,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
             intent.putExtra("id", singleModel.getSenderId());
             intent.putExtra("firstName", firstName);
+            intent.putExtra("isFriend", singleModel.isFriend());
             intent.putExtra("lastName", lastName);
             startActivity(intent);
         }

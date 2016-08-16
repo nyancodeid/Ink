@@ -167,7 +167,8 @@ public class Retrofit {
 
         @POST(Constants.GROUP_PARTICIPANTS_URL)
         @FormUrlEncoded
-        Call<ResponseBody> getParticipants(@Field("groupId") String groupId);
+        Call<ResponseBody> getParticipants(@Field("userId") String userId,
+                                           @Field("groupId") String groupId);
 
         @POST(Constants.GROUP_MESSAGES_URL)
         @FormUrlEncoded
@@ -267,7 +268,8 @@ public class Retrofit {
 
         @POST(Constants.GET_COMMENTS_URL)
         @FormUrlEncoded
-        Call<ResponseBody> getComments(@Field("post_id") String postId);
+        Call<ResponseBody> getComments(@Field("userId") String userId,
+                                       @Field("post_id") String postId);
 
         @POST(Constants.SOCIAL_LOGIN_URL)
         @FormUrlEncoded

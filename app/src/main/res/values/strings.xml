@@ -413,4 +413,7 @@
     \n to see the privacy and policy within terms and conditions,click here.</string>
     <string name="privacyPolicyShort">I accept the privacy and policy \nas well as terms and conditions</string>
     <string name="youMustAccept">You must accept privacy and policy as well as terms and conditions to proceed</string>
+    <string name="searching">Searching...</string>
+    <string name="noFriendSearchResult">No person was found,try to filter your search</string>
+    <string name="sendFriendRequest">Send friend request</string>
 </resources>
