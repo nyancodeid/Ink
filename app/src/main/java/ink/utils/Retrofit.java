@@ -65,6 +65,8 @@ public class Retrofit {
         @POST(Constants.LOGIN_URL)
         Call<ResponseBody> login(@Field("login") String login, @Field("password") String password);
 
+
+
         @POST(Constants.FRIENDS_URL)
         @FormUrlEncoded
         Call<ResponseBody> getFriends(@Field("user_id") String userId);
@@ -191,10 +193,10 @@ public class Retrofit {
 
         @POST(Constants.GROUP_OPTIONS_URL)
         @FormUrlEncoded
-        Call<ResponseBody> changeGroup(@Field("type") String type,
-                                       @Field("groupId") String groupId,
-                                       @Field("groupName") String groupName,
-                                       @Field("groupDescription") String groupDescription);
+        Call<ResponseBody> groupOptions(@Field("type") String type,
+                                        @Field("groupId") String groupId,
+                                        @Field("groupName") String groupName,
+                                        @Field("groupDescription") String groupDescription);
 
 
         @POST(Constants.RESPOND_TO_REQUEST_URL)

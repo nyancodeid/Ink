@@ -45,6 +45,7 @@ public class Constants {
     public static final String SINGLE_USER_MESSAGES = "SingleUserMessages.php";
     public static final String CHAT_MESSAGES = "ChatMessages.php";
     public static final String GROUP_OPTIONS_URL = "GroupOptions.php";
+    public static final String GROUP_OPTIONS_LEAVE = "leaveGroup";
     public static final String REGISTER_TOKEN = "RegisterToken.php";
     public static final String REQUEST_DELETE_URL = "RequestDeleteMessage.php";
     public static final String GET_POSTS_URL = "GetPosts.php";

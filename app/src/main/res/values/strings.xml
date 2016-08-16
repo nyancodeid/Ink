@@ -40,7 +40,7 @@
     <string name="friendsText">Friends</string>
     <string name="settingsString">Settings</string>
     <string name="logoutString">Logout</string>
-    <string name="serverErrorText">There was an problem with server.Please reload again</string>
+    <string name="serverErrorText">There was an problem with server.Please try again</string>
     <string name="noFirstname">No First Name</string>
     <string name="noLastname">No Last Name</string>
     <string name="noPhone">No Phone Number</string>
@@ -196,7 +196,7 @@
     <string name="groupCreated">Group created</string>
     <string name="participantText">Participant(s)</string>
     <string name="noGroupsYet">No groups yet.Find any and join now!</string>
-    <string name="joinText">Join Group</string>
+    <string name="joinGroup">Join Group</string>
     <string name="messagePosted">Message posted</string>
     <string name="noGroupMessages">No group posts</string>
     <string name="search_title">Search</string>
@@ -423,4 +423,7 @@
     <string name="tobeFriend">asked to be a friend with you</string>
     <string name="friendRequestInfo">To accept the request,click here</string>
     <string name="notificationTitle">Notifications</string>
+    <string name="leaveGroup">Leave Group</string>
+    <string name="leaveGroupMessage">You are about to leave this group.Are you sure?</string>
+    <string name="leaving">Leaving the group,please wait...</string>
 </resources>

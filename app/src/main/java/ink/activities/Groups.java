@@ -27,7 +27,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -213,9 +212,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
             }
         } else if (item.getItemId() == R.id.searchFriendIcon) {
 
-        } else if (item.getItemId() == R.id.requests) {
-            startActivity(new Intent(getApplicationContext(), RequestsView.class));
-        } else {
+        } else if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return super.onOptionsItemSelected(item);
@@ -377,7 +374,6 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                 }
                 try {
                     String responseBody = response.body().string();
-                    Log.d("fsafsafasfsafas", "onResponse: " + responseBody);
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {

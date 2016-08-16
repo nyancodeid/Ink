@@ -16,12 +16,13 @@ public class RequestsModel {
     private String type;
 
 
-    public RequestsModel(boolean isSocialAccount,boolean isFriend, String groupOwnerId, String requesterId,
+    public RequestsModel(String type, boolean isSocialAccount, boolean isFriend, String groupOwnerId, String requesterId,
                          String requesterName, String requesterImage,
                          String requestedGroupId, String requestId,
                          String groupName) {
         this.groupOwnerId = groupOwnerId;
         this.isFriend = isFriend;
+        this.type = type;
         this.isSocialAccount = isSocialAccount;
         this.groupName = groupName;
         this.requesterId = requesterId;

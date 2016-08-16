@@ -146,9 +146,31 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         mJoinGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isRequested) {
-                    requestJoin();
+                if (!isMember) {
+                    if (!isRequested) {
+                        requestJoin();
+                    }
+                } else {
+                    if (!mSharedHelper.getUserId().equals(mGroupOwnerId)) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(SingleGroupView.this);
+                        builder.setTitle(getString(R.string.leaveGroup));
+                        builder.setMessage(getString(R.string.leaveGroupMessage));
+                        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                leaveGroup();
+                            }
+                        });
+                        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                    }
+
                 }
+
             }
         });
         broadcastReceiver = new BroadcastReceiver() {
@@ -203,8 +225,14 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         if (!isMember) {
             mJoinGroupButton.setVisibility(View.VISIBLE);
             mAddMessageToGroup.setVisibility(View.GONE);
+            mJoinGroupButton.setText(getString(R.string.joinGroup));
         } else {
-            mJoinGroupButton.setVisibility(View.GONE);
+            if (mSharedHelper.getUserId().equals(mGroupOwnerId)) {
+                mJoinGroupButton.setVisibility(View.GONE);
+            } else {
+                mJoinGroupButton.setVisibility(View.VISIBLE);
+                mJoinGroupButton.setText(getString(R.string.leaveGroup));
+            }
             mAddMessageToGroup.setVisibility(View.VISIBLE);
             CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) mAddMessageToGroup.getLayoutParams();
             p.setBehavior(new ScrollAwareFABButtonehavior(this));
@@ -259,6 +287,54 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    private void leaveGroup() {
+        progressDialog.setTitle(getString(R.string.leaveGroup));
+        progressDialog.setMessage(getString(R.string.leaving));
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+        Call<ResponseBody> leaveCall = Retrofit.getInstance().getInkService().groupOptions(Constants.GROUP_OPTIONS_LEAVE, mSharedHelper.getUserId(), "", "");
+        leaveCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    leaveGroup();
+                    return;
+                }
+                if (response.body() == null) {
+                    leaveGroup();
+                    return;
+                }
+
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        progressDialog.dismiss();
+                        LocalBroadcastManager.getInstance(SingleGroupView.this).sendBroadcast(new Intent(getPackageName() + "Groups"));
+                        finish();
+                    } else {
+                        progressDialog.dismiss();
+                        Snackbar.make(mGroupImageView, getString(R.string.serverErrorText), Snackbar.LENGTH_LONG).show();
+                    }
+                } catch (IOException e) {
+                    progressDialog.dismiss();
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    progressDialog.dismiss();
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                leaveGroup();
+            }
+        });
+
     }
 
     private void hideGroupImageLoading() {
@@ -522,7 +598,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             progressDialog.setMessage(getString(R.string.savingChanges));
         }
         progressDialog.show();
-        Call<ResponseBody> groupCall = Retrofit.getInstance().getInkService().changeGroup(type, mGroupId, groupName, groupDescription);
+        Call<ResponseBody> groupCall = Retrofit.getInstance().getInkService().groupOptions(type, mGroupId, groupName, groupDescription);
         groupCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -630,7 +706,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                         if (isRequested) {
                             mJoinGroupButton.setText(getString(R.string.pending));
                         } else {
-                            mJoinGroupButton.setText(getString(R.string.joinText));
+                            mJoinGroupButton.setText(getString(R.string.joinGroup));
                         }
                         if (hasMessages) {
                             noGroupMessageLayout.setVisibility(View.GONE);
