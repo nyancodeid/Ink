@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.utils.Constants;
+import ink.utils.Retrofit;
 import ink.utils.ScrollAwareFABBehavior;
+import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,6 +52,9 @@ public class OpponentProfile extends BaseActivity {
     private CardView imageCard;
     private String mFacebookLink;
     private boolean isSocialAccount;
+    private boolean hasFriendRequested;
+    private boolean isDataLoaded;
+    private SharedHelper sharedHelper;
 
     //Butter knife binders.
     @Bind(R.id.addressTV)
@@ -97,6 +103,7 @@ public class OpponentProfile extends BaseActivity {
         mProfileFab.setEnabled(false);
         Bundle extras = getIntent().getExtras();
         mProfileImage = (ImageView) findViewById(R.id.profileImage);
+        sharedHelper = new SharedHelper(this);
         imageCard = (CardView) findViewById(R.id.imageCard);
         ViewGroup.LayoutParams mCardNewLayoutParams = imageCard.getLayoutParams();
         ActionBar actionBar = getSupportActionBar();
@@ -155,14 +162,65 @@ public class OpponentProfile extends BaseActivity {
 
     @OnClick(R.id.sendMessage)
     public void WriteMessage() {
-        Intent intent = new Intent(getApplicationContext(), Chat.class);
-        intent.putExtra("firstName", mFirstName);
-        intent.putExtra("lastName", mLastName);
-        intent.putExtra("opponentId", mOpponentId);
-        intent.putExtra("isSocialAccount", isSocialAccount);
-        intent.putExtra("opponentImage", mOpponentImage);
-        startActivity(intent);
-        mProfileFab.close(true);
+        if (isFriend) {
+            Intent intent = new Intent(getApplicationContext(), Chat.class);
+            intent.putExtra("firstName", mFirstName);
+            intent.putExtra("lastName", mLastName);
+            intent.putExtra("opponentId", mOpponentId);
+            intent.putExtra("isSocialAccount", isSocialAccount);
+            intent.putExtra("opponentImage", mOpponentImage);
+            startActivity(intent);
+            mProfileFab.close(true);
+        } else {
+            if (!isDataLoaded) {
+                Snackbar.make(mTriangleView, getString(R.string.waitTillLoad), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                }).show();
+            } else {
+                if (hasFriendRequested) {
+                    Snackbar.make(mTriangleView, getString(R.string.youHaveSentAlreadyRequest), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    }).show();
+                } else {
+                    requestFriend();
+                }
+            }
+        }
+    }
+
+    private void requestFriend() {
+        Call<ResponseBody> requestFriendCall = Retrofit.getInstance().getInkService().requestFriend(sharedHelper.getUserId(), mOpponentId,
+                sharedHelper.getFirstName() + " " + sharedHelper.getLastName());
+        requestFriendCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    requestFriend();
+                    return;
+                }
+                if (response.body() == null) {
+                    requestFriend();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    Log.d("Fasfsafasfsa", "onResponse: " + responseBody);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                requestFriend();
+            }
+        });
     }
 
     @OnClick(R.id.block)
@@ -171,7 +229,7 @@ public class OpponentProfile extends BaseActivity {
     }
 
     private void getSingleUser() {
-        Call<ResponseBody> call = ink.utils.Retrofit.getInstance().getInkService().getSingleUserDetails(mOpponentId);
+        Call<ResponseBody> call = ink.utils.Retrofit.getInstance().getInkService().getSingleUserDetails(mOpponentId, sharedHelper.getUserId());
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -194,6 +252,7 @@ public class OpponentProfile extends BaseActivity {
                             String relationship = jsonObject.optString("relationship");
                             String status = jsonObject.optString("status");
                             String facebookName = jsonObject.optString("facebook_name");
+                            hasFriendRequested = jsonObject.optBoolean("hasFriendRequested");
                             boolean shouldHighlightFacebook = true;
                             boolean shouldHighlightAddress = true;
                             isSocialAccount = jsonObject.optBoolean("isSocialAccount");
@@ -272,6 +331,7 @@ public class OpponentProfile extends BaseActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    isDataLoaded = true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

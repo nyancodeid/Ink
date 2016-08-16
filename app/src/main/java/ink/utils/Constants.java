@@ -34,6 +34,7 @@ public class Constants {
     public static final String LOGIN_URL = "Login.php";
     public static final String FRIENDS_URL = "UserFriends.php";
     public static final String SINGLE_USER_URL = "SingleUser.php";
+    public static final String SEND_FRIEND_REQUEST_URL = "SendFriendRequest.php";
     public static final String MESSAGES_URL = "Messages.php";
     public static final String UPLOADED_FILES_DIR = "UserUploads/";
     public static final String SEND_MESSAGE_URL = "SendMessage.php";
@@ -58,6 +59,7 @@ public class Constants {
     public static final int TEXT_VIEW_DEFAULT_COLOR = android.R.color.tab_indicator_text;
     public static final String TYPE_MESSAGE = "message";
     public static final String TYPE_REQUEST = "request";
+    public static final String NOTIFICATION_TYPE_FRIEND_REQUEST = "NOTIFICATION_TYPE_FRIEND_REQUEST";
     public static final String TYPE_CHAT_ROULETTE = "chatRoulette";
     public static final String WAITERS_QUE = "WaitRoomQue.php";
     public static final String GET_WAITERS = "GetWaitersQue.php";

@@ -416,4 +416,5 @@
     <string name="searching">Searching...</string>
     <string name="noFriendSearchResult">No person was found,try to filter your search</string>
     <string name="sendFriendRequest">Send friend request</string>
+    <string name="youHaveSentAlreadyRequest">You have already requested to be friend</string>
 </resources>

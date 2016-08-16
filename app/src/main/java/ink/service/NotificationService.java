@@ -64,7 +64,8 @@ public class NotificationService extends FirebaseMessagingService {
         if (response.get("type") == null) {
             return;
         }
-        if (response.get("type").equals(Constants.TYPE_MESSAGE)) {
+        String type = response.get("type");
+        if (type.equals(Constants.TYPE_MESSAGE)) {
             Looper looper = Looper.getMainLooper();
             Handler handler = new Handler(looper);
             handler.post(new Runnable() {
@@ -90,21 +91,24 @@ public class NotificationService extends FirebaseMessagingService {
                 LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
                 localBroadcastManager.sendBroadcast(intent);
             }
-        } else if (response.get("type").equals(Constants.TYPE_REQUEST)) {
+        } else if (type.equals(Constants.TYPE_REQUEST)) {
             sendRequestNotification(getApplicationContext(), response.get("requesterName"),
                     response.get("requestedGroup"), response.get("requestId"));
-        } else if (response.get("type").equals(Constants.TYPE_CHAT_ROULETTE)) {
+        } else if (type.equals(Constants.TYPE_CHAT_ROULETTE)) {
             Intent intent = new Intent(getPackageName() + "WaitRoom");
             intent.putExtra("currentUserId", response.get("currentUserId"));
             intent.putExtra("opponentId", response.get("opponentId"));
             intent.putExtra("message", response.get("message"));
             intent.putExtra("isDisconnected", response.get("isDisconnected"));
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        } else if (response.get("type").equals(Constants.TYPE_CALL)) {
+        } else if (type.equals(Constants.TYPE_CALL)) {
 //            Intent intent = new Intent(this, IncomingCallScreenActivity.class);
 //            intent.putExtra("CALL_ID", response.get("callId"));
 //            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //            startActivity(intent);
+        } else if (type.equals(Constants.NOTIFICATION_TYPE_FRIEND_REQUEST)) {
+            Log.d(TAG, "onMessageReceived: "+"user with id "+response.get("requesterId")+" with the name "+response.get("requesterName")+" with the image"
+            +response.get("requesterImage")+" requested to be friend with you");
         }
     }
     // [END receive_message]
