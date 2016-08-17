@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,6 +14,7 @@ import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
+import fab.FloatingActionButton;
 import ink.interfaces.RequestListener;
 import ink.models.RequestsModel;
 import ink.utils.CircleTransform;
@@ -32,16 +32,16 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView requesterMessage;
         public ImageView requesterImage;
-        public Button accept, decline;
+        public FloatingActionButton accept, decline;
         public RelativeLayout requestRootLayout;
 
         public ViewHolder(View view) {
             super(view);
             requesterMessage = (TextView) view.findViewById(R.id.requesterMessage);
             requesterImage = (ImageView) view.findViewById(R.id.requesterImage);
-            accept = (Button) view.findViewById(R.id.acceptRequest);
+            accept = (FloatingActionButton) view.findViewById(R.id.acceptRequest);
             requestRootLayout = (RelativeLayout) view.findViewById(R.id.requestRootLayout);
-            decline = (Button) view.findViewById(R.id.declineRequest);
+            decline = (FloatingActionButton) view.findViewById(R.id.declineRequest);
         }
     }
 

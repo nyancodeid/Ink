@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/requestRootLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -19,58 +20,67 @@
         android:id="@+id/requesterMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/requesterImage"
         android:layout_alignTop="@+id/requesterImage"
         android:layout_marginRight="5dp"
         android:layout_toRightOf="@+id/requesterImage"
         android:fontFamily="@string/appFont"
         android:text="@string/loadingText" />
 
-    <Button
-        android:id="@+id/declineRequest"
-        style="?attr/selectableItemBackground"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/actionLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/requesterMessage"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="15dp"
-        android:background="#3F51B5"
-        android:clickable="true"
-        android:drawableRight="@drawable/decline_icon"
-        android:focusable="true"
-        android:fontFamily="@string/appFont"
-        android:foreground="?attr/selectableItemBackground"
-        android:padding="5dp"
-        android:text="@string/declineText"
-        android:textAllCaps="false"
-        android:textColor="#ffffff" />
+        android:layout_below="@+id/requesterImage"
+        android:layout_margin="5dp"
+        android:background="@drawable/circle_transparent_background">
 
 
-    <Button
-        android:id="@+id/acceptRequest"
-        style="?attr/selectableItemBackground"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/requesterMessage"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="15dp"
-        android:background="#3F51B5"
-        android:clickable="true"
-        android:drawableRight="@drawable/accept_icon"
-        android:focusable="true"
-        android:fontFamily="@string/appFont"
-        android:foreground="?attr/selectableItemBackground"
-        android:padding="5dp"
-        android:text="@string/acceptText"
-        android:textAllCaps="false"
-        android:textColor="#ffffff" />
+        <fab.FloatingActionButton
+            android:id="@+id/declineRequest"
+            style="?attr/selectableItemBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+
+            android:layout_marginLeft="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@string/appFont"
+            android:foreground="?attr/selectableItemBackground"
+            android:src="@drawable/decline_icon"
+            android:text="@string/declineText"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            app:fab_colorRipple="#cccccc"
+            app:fab_size="mini" />
+
+
+        <fab.FloatingActionButton
+            android:id="@+id/acceptRequest"
+            style="?attr/selectableItemBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:background="#3F51B5"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@string/appFont"
+            android:foreground="?attr/selectableItemBackground"
+            android:padding="5dp"
+            android:src="@drawable/accept_icon"
+            android:text="@string/acceptText"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            app:fab_colorNormal="#3F51B5"
+            app:fab_colorRipple="#cccccc"
+            app:fab_size="mini" />
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/acceptRequest"
+        android:layout_below="@+id/actionLayout"
         android:layout_marginTop="10dp"
         android:background="#b3b3b3"></View>
 </RelativeLayout>
