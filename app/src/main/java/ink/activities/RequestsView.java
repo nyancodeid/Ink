@@ -185,7 +185,7 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
         });
         RequestsModel requestsModel = requestsModels.get(position);
         Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.RESPOND_TYPE_ACCEPT_FRIEND_REQUEST, sharedHelper.getUserId(),
-                "", "", requestsModel.getRequesterId());
+                sharedHelper.getFirstName() + " " + sharedHelper.getLastName(), "", requestsModel.getRequesterId());
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -226,7 +226,7 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onDeclineClicked(int position) {
-        DimDialog.showDimDialog(RequestsView.this,getString(R.string.declining));
+        DimDialog.showDimDialog(RequestsView.this, getString(R.string.declining));
         RequestsModel requestsModel = requestsModels.get(position);
         if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_GROUP)) {
             denyGroupRequest(position);

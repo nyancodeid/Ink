@@ -441,5 +441,6 @@
     <string name="locationShareWith">Request location with</string>
     <string name="couldNotFetchName">Could not fetch name</string>
     <string name="warning">Warning</string>
-    <string name="leavingSession">You are about to leave the session.If you do so,the session will be closed until you request new one.Close the session?</string>
+    <string name="leavingSession">You have an active location session.If you leave,the session will be closed until you request new one.Close the session?</string>
+    <string name="acceptedYourFriendRequest">accepted your friend request</string>
 </resources>

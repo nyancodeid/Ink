@@ -1,12 +1,12 @@
 /**
  * Copyright 2016 Google Inc. All Rights Reserved.
- * <p>
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,6 +35,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import java.util.Map;
 
 import ink.activities.Chat;
+import ink.activities.HomeActivity;
 import ink.activities.ReplyView;
 import ink.activities.RequestsView;
 import ink.utils.Constants;
@@ -134,6 +135,10 @@ public class NotificationService extends FirebaseMessagingService {
 
             case Constants.NOTIFICATION_TYPE_LOCATION_REQUEST_ACCEPTED:
 
+                break;
+            case Constants.NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED:
+                sendGeneralNotification(getApplicationContext(),response.get("requesterId"),response.get("requesterName")+" "+
+                getString(R.string.acceptedYourFriendRequest),"");
                 break;
         }
 
@@ -274,4 +279,30 @@ public class NotificationService extends FirebaseMessagingService {
         notificationManagerCompat.notify(Integer.valueOf(requestId), notification);
     }
 
+    private void sendGeneralNotification(Context context, String uniqueId,
+                                         String title, String contentText) {
+
+        NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+
+        Intent requestsViewIntent = new Intent(context, HomeActivity.class);
+        requestsViewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+
+        PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(uniqueId), requestsViewIntent, 0);
+        android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setAutoCancel(true);
+
+
+        builder.setContentTitle(title);
+        builder.setContentText(contentText);
+        builder.setGroup(GROUP_KEY_MESSAGES);
+        builder.setDefaults(android.app.Notification.DEFAULT_ALL);
+        builder.setContentIntent(requestsViewPending);
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(contentText));
+        builder.setShowWhen(true);
+        android.app.Notification notification = builder.build();
+        notificationManagerCompat.notify(Integer.valueOf(uniqueId), notification);
+    }
 }

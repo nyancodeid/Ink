@@ -76,6 +76,12 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
             Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
                     .withBitmap().transform(new CircleTransform()).intoImageView(holder.friendImage);
         }
+
+        if (friendsModel.isFriend()) {
+            holder.friendMoreIcon.setVisibility(View.VISIBLE);
+        } else {
+            holder.friendMoreIcon.setVisibility(View.GONE);
+        }
         holder.friendMoreIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
