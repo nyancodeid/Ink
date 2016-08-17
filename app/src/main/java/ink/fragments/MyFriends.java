@@ -1,12 +1,17 @@
 package ink.fragments;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -27,7 +32,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ink.R;
@@ -48,8 +52,10 @@ import ink.interfaces.RecyclerItemClickListener;
 import ink.models.FriendsModel;
 import ink.models.UserSearchResponse;
 import ink.models.UserSearchResult;
+import ink.utils.DimDialog;
 import ink.utils.ErrorCause;
 import ink.utils.Keyboard;
+import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -81,6 +87,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     private RelativeLayout searchWrapper;
     private ImageView searchFriendIcon;
     private TextView searchText;
+    private BroadcastReceiver updateReceiver;
 
 
     public static MyFriends newInstance() {
@@ -132,6 +139,15 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
 
         mFriendsAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mFriendsAdapter);
+
+
+        updateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                getFriends();
+            }
+        };
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateReceiver, new IntentFilter(getActivity().getPackageName()+"MyFriends"));
 
         personSearchField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -477,18 +493,83 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
 
     @Override
     public void onAdditionItemClick(int position, View view) {
+        final FriendsModel friendsModel = mFriendsModelArrayList.get(position);
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
         popupMenu.getMenu().add(getString(R.string.removeFromFriends));
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getTitle().toString().equals(getString(R.string.removeFromFriends))) {
-                    Toast.makeText(getActivity(), "Remove friend", Toast.LENGTH_SHORT).show();
+                    DimDialog.showDimDialog(getActivity(), getString(R.string.removingFriend));
+                    removeFriend(friendsModel.getFriendId());
                 }
                 return false;
             }
         });
         popupMenu.show();
+    }
+
+    private void removeFriend(final String friendId) {
+
+        System.gc();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(getString(R.string.removeFriend));
+        builder.setMessage(getString(R.string.removefriendHint));
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                RealmHelper.getInstance().removeMessage(friendId, mSharedHelper.getUserId());
+                Call<ResponseBody> removeFriendCall = Retrofit.getInstance().getInkService().removeFriend(mSharedHelper.getUserId(), friendId);
+                removeFriendCall.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response == null) {
+                            removeFriend(friendId);
+                            return;
+                        }
+                        if (response.body() == null) {
+                            removeFriend(friendId);
+                            return;
+                        }
+                        try {
+                            String responseBody = response.body().string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            boolean success = jsonObject.optBoolean("success");
+                            DimDialog.hideDialog();
+                            if (success) {
+                                Snackbar.make(personSearchField, getString(R.string.friendRemoved), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
+                                getFriends();
+                            }
+                        } catch (IOException e) {
+                            DimDialog.hideDialog();
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            DimDialog.hideDialog();
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        removeFriend(friendId);
+                    }
+                });
+            }
+        });
+        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.show();
+
+
     }
 
     @Override

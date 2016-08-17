@@ -430,4 +430,8 @@
     <string name="friendRequestAccepted">Friend request accepted</string>
     <string name="accepting">Accepting</string>
     <string name="declining">Declining</string>
+    <string name="removingFriend">Removing friend...</string>
+    <string name="friendRemoved">Friend removed</string>
+    <string name="removeFriend">Remove friend?</string>
+    <string name="removefriendHint">Are you sure you want to remove your friend?</string>
 </resources>

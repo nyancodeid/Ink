@@ -201,12 +201,12 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             isMember = extras.getBoolean("isMember");
             isFriendWithOwner = extras.getBoolean("isFriend");
         }
+        mJoinGroupButton.setEnabled(true);
         if (!isMember) {
             mJoinGroupButton.setVisibility(View.VISIBLE);
             mAddMessageToGroup.setVisibility(View.GONE);
             mJoinGroupButton.setText(getString(R.string.joinGroup));
         } else {
-            mJoinGroupButton.setEnabled(true);
             mJoinGroupButton.setVisibility(View.GONE);
             mAddMessageToGroup.setVisibility(View.VISIBLE);
             CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) mAddMessageToGroup.getLayoutParams();
@@ -790,7 +790,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                             public void onNegativeClicked(Object result) {
 
                             }
-                        }, groupMessagesModel.getGroupMessage());
+                        },groupMessagesModel.getGroupMessage());
                         break;
                     case 1:
                         snackbar.setText(getString(R.string.deleting));

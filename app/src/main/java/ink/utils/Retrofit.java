@@ -66,7 +66,6 @@ public class Retrofit {
         Call<ResponseBody> login(@Field("login") String login, @Field("password") String password);
 
 
-
         @POST(Constants.FRIENDS_URL)
         @FormUrlEncoded
         Call<ResponseBody> getFriends(@Field("user_id") String userId);
@@ -211,6 +210,11 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getGroups(@Field("user_id") String userId,
                                      @Field("type") String type);
+
+        @POST(Constants.REMOVE_FRIEND_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> removeFriend(@Field("ownerId") String ownerId,
+                                        @Field("friendId") String friendId);
 
         @POST(Constants.USER_COINS_URL)
         @FormUrlEncoded
