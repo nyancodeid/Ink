@@ -212,6 +212,7 @@ public class OpponentProfile extends BaseActivity {
         builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                DimDialog.showDimDialog(OpponentProfile.this, getString(R.string.removingFriend));
                 RealmHelper.getInstance().removeMessage(friendId, sharedHelper.getUserId());
                 Call<ResponseBody> removeFriendCall = Retrofit.getInstance().getInkService().removeFriend(sharedHelper.getUserId(), friendId);
                 removeFriendCall.enqueue(new Callback<ResponseBody>() {
