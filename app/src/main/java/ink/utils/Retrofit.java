@@ -333,8 +333,8 @@ public class Retrofit {
                                     @Part("lastName") String lastName,
                                     @Part("timezone") String timezone,
                                     @Part("type") String type,
-                                    @Field("postId") String postId,
-                                    @Field("shouldDelete") String shouldDelete);
+                                    @Part("postId") String postId,
+                                    @Part("shouldDelete") String shouldDelete);
 
 
         @POST(Constants.MAKE_POST_URL)

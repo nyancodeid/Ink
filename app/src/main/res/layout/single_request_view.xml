@@ -73,14 +73,9 @@
             android:textAllCaps="false"
             android:textColor="#ffffff"
             app:fab_colorNormal="#3F51B5"
+            app:fab_colorPressed="#3F51B5"
             app:fab_colorRipple="#cccccc"
             app:fab_size="mini" />
     </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/actionLayout"
-        android:layout_marginTop="10dp"
-        android:background="#b3b3b3"></View>
 </RelativeLayout>

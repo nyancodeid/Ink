@@ -772,7 +772,6 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
 
     @Override
     public void onAdditionItemClick(int position, View view) {
-        // TODO: 8/15/2016  add pop up
         final GroupMessagesModel groupMessagesModel = groupMessagesModels.get(position);
         PopupMenu.showPopUp(SingleGroupView.this, view, new ItemClickListener<MenuItem>() {
             @Override
