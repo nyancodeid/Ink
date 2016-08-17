@@ -23,7 +23,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -719,7 +718,6 @@ public class MyProfile extends BaseActivity {
                 }
                 try {
                     String responseBody = response.body().string();
-                    Log.d("fsafasfasfas", "onResponse: "+"fsafasfasfas");
                     if (responseBody.equals("deleted")) {
                         mSharedHelper.clean();
                         try {
