@@ -353,6 +353,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         gifChooserDialog.setContentView(view);
         final RecyclerView gifsRecycler = (RecyclerView) view.findViewById(R.id.gifsRecycler);
         ImageView closeGifChoser = (ImageView) view.findViewById(R.id.closeGifChoser);
+        TextView noGifsText = (TextView) view.findViewById(R.id.noGifsText);
         closeGifChoser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -365,7 +366,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         gifsRecycler.setLayoutManager(gridLayoutManager);
 
         gifsRecycler.setAdapter(gifAdapter);
-        getUserGifs();
+        getUserGifs(noGifsText);
         gifChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
@@ -383,18 +384,18 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         gifChooserDialog.show();
     }
 
-    private void getUserGifs() {
+    private void getUserGifs(final TextView noGifsText) {
         Call<ResponseBody> gifCall = Retrofit.getInstance().getInkService().getUserGifs(mSharedHelper.getUserId(),
                 Constants.SERVER_AUTH_KEY);
         gifCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    getUserGifs();
+                    getUserGifs(noGifsText);
                     return;
                 }
                 if (response.body() == null) {
-                    getUserGifs();
+                    getUserGifs(noGifsText);
                     return;
                 }
                 try {
@@ -409,8 +410,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                                 gifModelList.add(gifModel);
                                 gifAdapter.notifyDataSetChanged();
                             }
+                            noGifsText.setVisibility(View.GONE);
                         } else {
-                            showNoGifSnackbar();
+                            noGifsText.setVisibility(View.VISIBLE);
                         }
                     } else {
 
@@ -422,22 +424,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getUserGifs();
+                getUserGifs(noGifsText);
             }
         });
     }
 
-    private void showNoGifSnackbar() {
-        Snackbar.make(opponentImage, getString(R.string.noGif), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (gifChooserDialog != null) {
-                    System.gc();
-                    gifChooserDialog.dismiss();
-                }
-            }
-        }).show();
-    }
 
     @OnClick(R.id.sendChatMessage)
     public void sendChatMessage() {
