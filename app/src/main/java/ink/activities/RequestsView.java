@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -30,6 +29,7 @@ import ink.adapters.RequestsAdapter;
 import ink.interfaces.RequestListener;
 import ink.models.RequestsModel;
 import ink.utils.Constants;
+import ink.utils.DimDialog;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -166,6 +166,7 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onAcceptClicked(int position) {
+        DimDialog.showDimDialog(RequestsView.this, getString(R.string.accepting));
         RequestsModel requestsModel = requestsModels.get(position);
         if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_GROUP)) {
             acceptGroupRequest(position);
@@ -198,16 +199,18 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
                 }
                 try {
                     String responseBody = response.body().string();
-                    Log.d("Fsafsafsafas", "onResponse: "+responseBody);
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
+                    DimDialog.hideDialog();
                     if (success) {
-                        Snackbar.make(requestsRecycler,getString(R.string.friendRequestAccepted),Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(requestsRecycler, getString(R.string.friendRequestAccepted), Snackbar.LENGTH_LONG).show();
                         getMyRequests();
                     }
                 } catch (IOException e) {
+                    DimDialog.hideDialog();
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    DimDialog.hideDialog();
                     e.printStackTrace();
                 }
 
@@ -223,6 +226,7 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onDeclineClicked(int position) {
+        DimDialog.showDimDialog(RequestsView.this,getString(R.string.declining));
         RequestsModel requestsModel = requestsModels.get(position);
         if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_GROUP)) {
             denyGroupRequest(position);
@@ -258,12 +262,15 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
-                        Snackbar.make(requestsRecycler,getString(R.string.friendRequestDenied),Snackbar.LENGTH_LONG).show();
+                        DimDialog.hideDialog();
+                        Snackbar.make(requestsRecycler, getString(R.string.friendRequestDenied), Snackbar.LENGTH_LONG).show();
                         getMyRequests();
                     }
                 } catch (IOException e) {
+                    DimDialog.hideDialog();
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    DimDialog.hideDialog();
                     e.printStackTrace();
                 }
             }
@@ -295,6 +302,12 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        DimDialog.hideDialog();
+        super.onDestroy();
     }
 
     private void acceptGroupRequest(final int position) {
@@ -330,9 +343,12 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
                     } else {
                         denyGroupRequest(position);
                     }
+                    DimDialog.hideDialog();
                 } catch (IOException e) {
+                    DimDialog.hideDialog();
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    DimDialog.hideDialog();
                     e.printStackTrace();
                 }
             }
@@ -372,6 +388,7 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        DimDialog.hideDialog();
                         Snackbar.make(noRequestsLayout, getString(R.string.requestDenied), Snackbar.LENGTH_SHORT).show();
                         requestsModels.clear();
                         getMyRequests();
@@ -379,8 +396,10 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
                         denyGroupRequest(position);
                     }
                 } catch (IOException e) {
+                    DimDialog.hideDialog();
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    DimDialog.hideDialog();
                     e.printStackTrace();
                 }
             }

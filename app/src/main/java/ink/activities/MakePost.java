@@ -271,7 +271,7 @@ public class MakePost extends BaseActivity {
         try {
             startActivityForResult(Intent.createChooser(intent, "Select a File to Upload"), PICKFILE_REQUEST_CODE);
         } catch (android.content.ActivityNotFoundException ex) {
-            // Potentially direct the user to the Market with a Dialog
+            // Potentially direct the user to the Market with a AlertDialogView
             Toast.makeText(this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();
         }
     }

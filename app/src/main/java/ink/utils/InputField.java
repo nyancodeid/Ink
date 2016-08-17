@@ -24,6 +24,7 @@ public class InputField {
         final EditText newCommentBody = (EditText) newCommentView.findViewById(R.id.newCommentBody);
         if (text != null) {
             newCommentBody.setText(text);
+            newCommentBody.setSelection(text.length());
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(newCommentView);

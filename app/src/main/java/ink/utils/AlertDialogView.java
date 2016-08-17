@@ -1,4 +1,4 @@
-package ink.activities;
+package ink.utils;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,7 +8,7 @@ import android.support.v7.app.AlertDialog;
 /**
  * Created by USER on 2016-08-07.
  */
-public class Dialog {
+public class AlertDialogView {
 
     public static void buildAlertDialog(Context context,
                                         String title,

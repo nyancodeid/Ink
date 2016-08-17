@@ -1,9 +1,7 @@
 package ink.activities;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -15,7 +13,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,6 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.utils.Constants;
+import ink.utils.DimDialog;
 import ink.utils.Retrofit;
 import ink.utils.ScrollAwareFABBehavior;
 import ink.utils.SharedHelper;
@@ -94,7 +92,6 @@ public class OpponentProfile extends BaseActivity {
     FloatingActionButton block;
     private String mOpponentImage;
     private boolean isFriend;
-    private android.app.Dialog requestFriendProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,12 +104,6 @@ public class OpponentProfile extends BaseActivity {
         mProfileImage = (ImageView) findViewById(R.id.profileImage);
         sharedHelper = new SharedHelper(this);
         imageCard = (CardView) findViewById(R.id.imageCard);
-        ViewGroup.LayoutParams mCardNewLayoutParams = imageCard.getLayoutParams();
-        requestFriendProgress = new Dialog(this);
-        requestFriendProgress.setContentView(R.layout.request_friend_dialog);
-        requestFriendProgress.setCancelable(false);
-        requestFriendProgress.setCanceledOnTouchOutside(false);
-        requestFriendProgress.getWindow().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, android.R.color.transparent)));
 
         ActionBar actionBar = getSupportActionBar();
         if (extras != null) {
@@ -207,7 +198,7 @@ public class OpponentProfile extends BaseActivity {
     }
 
     private void requestFriend() {
-        requestFriendProgress.show();
+        DimDialog.showDimDialog(this, getString(R.string.sendingFriendRequest));
         Call<ResponseBody> requestFriendCall = Retrofit.getInstance().getInkService().requestFriend(sharedHelper.getUserId(), mOpponentId,
                 sharedHelper.getFirstName() + " " + sharedHelper.getLastName());
         requestFriendCall.enqueue(new Callback<ResponseBody>() {
@@ -225,7 +216,7 @@ public class OpponentProfile extends BaseActivity {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
-                    requestFriendProgress.dismiss();
+                    DimDialog.hideDialog();
                     if (success) {
                         hasFriendRequested = true;
                         Snackbar.make(mTriangleView, getString(R.string.requestSent), Snackbar.LENGTH_SHORT).show();
@@ -233,11 +224,11 @@ public class OpponentProfile extends BaseActivity {
                         Snackbar.make(mTriangleView, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
-                    requestFriendProgress.dismiss();
+                    DimDialog.hideDialog();
                     Snackbar.make(mTriangleView, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
                     e.printStackTrace();
                 } catch (JSONException e) {
-                    requestFriendProgress.dismiss();
+                    DimDialog.hideDialog();
                     Snackbar.make(mTriangleView, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
@@ -426,13 +417,7 @@ public class OpponentProfile extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        if (requestFriendProgress != null) {
-            if (requestFriendProgress.isShowing()) {
-                requestFriendProgress.dismiss();
-                requestFriendProgress = null;
-            }
-        }
-
+        DimDialog.hideDialog();
         super.onDestroy();
     }
 }
