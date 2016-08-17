@@ -697,7 +697,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                                 public void onNegativeClicked(Object result) {
 
                                 }
-                            });
+                            }, commentModel.getCommentBody());
                             break;
                         case 1:
                             snackbar.show();

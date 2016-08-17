@@ -14,11 +14,17 @@ import com.ink.R;
  * Created by PC-Comp on 8/15/2016.
  */
 public class InputField {
-    public static void createInputFieldView(final Context context, @Nullable final ClickHandler clickHandler) {
+
+    public static void createInputFieldView(final Context context,
+                                            @Nullable final ClickHandler clickHandler,
+                                            @Nullable String text) {
 
 
         View newCommentView = ((Activity) context).getLayoutInflater().inflate(R.layout.new_comment_body, null);
         final EditText newCommentBody = (EditText) newCommentView.findViewById(R.id.newCommentBody);
+        if (text != null) {
+            newCommentBody.setText(text);
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(newCommentView);
         builder.setCancelable(false);

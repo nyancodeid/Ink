@@ -790,7 +790,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                             public void onNegativeClicked(Object result) {
 
                             }
-                        });
+                        }, groupMessagesModel.getGroupMessage());
                         break;
                     case 1:
                         snackbar.setText(getString(R.string.deleting));
