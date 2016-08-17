@@ -434,4 +434,12 @@
     <string name="friendRemoved">Friend removed</string>
     <string name="removeFriend">Remove friend?</string>
     <string name="removefriendHint">Are you sure you want to remove your friend?</string>
+    <string name="requestLocation">Request friend location</string>
+    <string name="failedRequestLocation">Failed to open session,please try again...</string>
+    <string name="sendingRequest">Sending location request...</string>
+    <string name="requestSentWaiting">Request was sent.Your friend will receive notification.Waiting for friend acceptance...</string>
+    <string name="locationShareWith">Request location with</string>
+    <string name="couldNotFetchName">Could not fetch name</string>
+    <string name="warning">Warning</string>
+    <string name="leavingSession">You are about to leave the session.If you do so,the session will be closed until you request new one.Close the session?</string>
 </resources>

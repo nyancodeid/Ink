@@ -20,6 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -94,8 +95,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     TextView opponentStatus;
     @Bind(R.id.statusColor)
     ImageView statusColor;
-    @Bind(R.id.makeCall)
-    RelativeLayout makeCall;
     @Bind(R.id.sendMessageGifView)
     ImageView sendMessageGifView;
     @Bind(R.id.sendMessageGifViewWrapper)
@@ -132,7 +131,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     private Animation slideOut;
     private boolean hasFriendCheckLoaded;
     private boolean isFriend;
-    private BroadcastReceiver finishReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -285,6 +283,14 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         });
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.location_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
     private void getStatus() {
         if (mOpponentId != null && !mOpponentId.isEmpty()) {
             final Call<ResponseBody> statusCall = Retrofit.getInstance().getInkService().getUserStatus(mOpponentId);
@@ -327,11 +333,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         }
     }
 
-    @OnClick(R.id.makeCall)
-    public void makeCall() {
-
-
-    }
 
     @OnClick(R.id.trashIcon)
     public void trashIcon() {
@@ -598,8 +599,23 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        finish();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            case R.id.requestLocation:
+                startLocationSession();
+                break;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startLocationSession() {
+        Intent intent = new Intent(getApplicationContext(), FriendLocationActivity.class);
+        intent.putExtra("opponentId", mOpponentId);
+        intent.putExtra("opponentName", firstName + " " + lastName);
+        intent.putExtra("requestType", Constants.LOCATION_REQUEST_TYPE_INSERT);
+        startActivity(intent);
     }
 
     private TextWatcher chatTextWatcher = new TextWatcher() {

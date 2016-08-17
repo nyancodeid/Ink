@@ -81,6 +81,15 @@ public class Retrofit {
                                          @Field("requestedUserId") String requestedUserId,
                                          @Field("requesterName") String requesterFullName);
 
+
+        @POST(Constants.REQUEST_LOCATION_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> requestFriendLocation(@Field("requesterId") String requesterId,
+                                                 @Field("requestedUserId") String requestedUserId,
+                                                 @Field("requesterName") String requesterFullName,
+                                                 @Field("requestedUserName") String requestedUserName,
+                                                 @Field("requestType") String requestType);
+
         @POST(Constants.MESSAGES_URL)
         @FormUrlEncoded
         Call<ResponseBody> getMessages(@Field("user_id") String userId, @Field("opponent_id") String opponentId);

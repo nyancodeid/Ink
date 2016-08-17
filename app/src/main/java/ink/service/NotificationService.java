@@ -1,12 +1,12 @@
 /**
  * Copyright 2016 Google Inc. All Rights Reserved.
- * <p/>
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -116,7 +116,24 @@ public class NotificationService extends FirebaseMessagingService {
                 Log.d(TAG, "onMessageReceived: " + "user with id " + response.get("requesterId") + " with the name " + response.get("requesterName") + " with the image"
                         + response.get("requesterImage") + " requested to be friend with you");
 
-                sendFriendRequestNotification(getApplicationContext(),response.get("requesterName"),response.get("requestId"));
+                sendFriendRequestNotification(getApplicationContext(), response.get("requesterName"), response.get("requestId"));
+                break;
+
+            case Constants.NOTIFICATION_TYPE_REQUESTING_LOCATION:
+                String requesterName = response.get("requesterName");
+                String requesterId = response.get("requesterId");
+
+                break;
+
+            case Constants.NOTIFICATION_TYPE_LOCATION_SESSION_ENDED:
+
+                break;
+            case Constants.NOTIFICATION_TYPE_LOCATION_REQUEST_DECLINED:
+
+                break;
+
+            case Constants.NOTIFICATION_TYPE_LOCATION_REQUEST_ACCEPTED:
+
                 break;
         }
 

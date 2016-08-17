@@ -38,6 +38,7 @@ public class Constants {
     public static final String FRIENDS_URL = "UserFriends.php";
     public static final String SINGLE_USER_URL = "SingleUser.php";
     public static final String SEND_FRIEND_REQUEST_URL = "SendFriendRequest.php";
+    public static final String REQUEST_LOCATION_URL = "RequestLocation.php";
     public static final String MESSAGES_URL = "Messages.php";
     public static final String UPLOADED_FILES_DIR = "UserUploads/";
     public static final String SEND_MESSAGE_URL = "SendMessage.php";
@@ -67,6 +68,10 @@ public class Constants {
     public static final String NOTIFICATION_TYPE_GROUP_REQUEST = "request";
     public static final String NOTIFICATION_TYPE_FRIEND_REQUEST = "NOTIFICATION_TYPE_FRIEND_REQUEST";
     public static final String NOTIFICATION_TYPE_CHAT_ROULETTE = "chatRoulette";
+    public static final String NOTIFICATION_TYPE_REQUESTING_LOCATION = "requestingLocation";
+    public static final String NOTIFICATION_TYPE_LOCATION_SESSION_ENDED= "locationSessionEnded";
+    public static final String NOTIFICATION_TYPE_LOCATION_REQUEST_DECLINED = "requestLocationDeclined";
+    public static final String NOTIFICATION_TYPE_LOCATION_REQUEST_ACCEPTED = "requestLocationAccepted";
     public static final String WAITERS_QUE = "WaitRoomQue.php";
     public static final String GET_WAITERS = "GetWaitersQue.php";
     public static final String TYPE_ACCEPT_REQUEST = "acceptGroupRequest";
@@ -104,5 +109,9 @@ public class Constants {
     public static final String NO_IMAGE_URL = MAIN_URL + USER_IMAGES_FOLDER + NO_IMAGE_NAME;
     public static final String ANDROID_DRAWABLE_DIR = ANDROID_RESOURCE_DIR + "com.ink" + "/drawable/";
     public static final String CHECK_IS_FRIEND_URL = "CheckIsFriend.php";
+    public static final String LOCATION_REQUEST_TYPE_INSERT = "insertRequest";
+    public static final String LOCATION_REQUEST_TYPE_ACCEPT= "acceptRequest";
+    public static final String LOCATION_REQUEST_TYPE_DECLINE= "declineRequest";
+    public static final String LOCATION_REQUEST_TYPE_DELETE ="delete";
 }
 

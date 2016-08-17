@@ -147,7 +147,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
                 getFriends();
             }
         };
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateReceiver, new IntentFilter(getActivity().getPackageName()+"MyFriends"));
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateReceiver, new IntentFilter(getActivity().getPackageName() + "MyFriends"));
 
         personSearchField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -289,6 +289,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
             }
         });
         clearAdapter();
+        stopSearchAnimation(false);
         final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().getFriends(mSharedHelper.getUserId());
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -305,7 +306,6 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
                             if (cause.equals(ErrorCause.NO_FRIENDS)) {
                                 mNoFriendsLayout.setVisibility(View.VISIBLE);
                                 friendsSwipe.setRefreshing(false);
-                                mRecyclerView.setVisibility(View.GONE);
                             } else {
                                 finalErrorMessage = getString(R.string.serverErrorText);
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
