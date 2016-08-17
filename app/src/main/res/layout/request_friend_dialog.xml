@@ -16,8 +16,9 @@
         style="@style/SpinKitView.ChasingDots"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/addingCommentText"
+        android:layout_below="@+id/dimDialogText"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
+        android:padding="5dp"
         app:SpinKit_Color="#ffffff" />
 </RelativeLayout>
