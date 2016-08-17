@@ -240,7 +240,7 @@ public class OpponentProfile extends BaseActivity {
                                 }).show();
 
                                 LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + ".Chat"));
-
+                                LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + "MyFriends"));
                                 finish();
                             }
                         } catch (IOException e) {
