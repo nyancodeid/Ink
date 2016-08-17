@@ -632,6 +632,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
             }
         });
         View requestLocationView = getLayoutInflater().inflate(R.layout.activity_friend_location, null);
+        locationRequestSheet.setContentView(requestLocationView);
         requestStatus = (TextView) requestLocationView.findViewById(R.id.requestStatus);
         locationRequestSheet.show();
         locationSessionIcon.setVisibility(View.GONE);
