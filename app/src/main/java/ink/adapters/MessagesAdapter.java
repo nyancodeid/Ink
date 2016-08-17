@@ -64,7 +64,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                 url = userMessagesModel.getImageLink();
             }
             Ion.with(mContext).load(url)
-                    .withBitmap().transform(new CircleTransform()).intoImageView(holder.messagesImage);
+                    .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.messagesImage);
         } else {
             Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap()
                     .transform(new CircleTransform()).intoImageView(holder.messagesImage);

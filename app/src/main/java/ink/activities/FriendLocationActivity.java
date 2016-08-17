@@ -18,7 +18,6 @@ import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import ink.service.FriendLocationSessionService;
 import ink.service.LocationRequestSessionDestroyer;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
@@ -29,6 +28,7 @@ import retrofit2.Response;
 
 public class FriendLocationActivity extends BaseActivity {
 
+    private static final String TAG = "fasfsafasfasfas";
     @Bind(R.id.requestStatus)
     TextView requestStatus;
     private SharedHelper sharedHelper;
@@ -74,9 +74,6 @@ public class FriendLocationActivity extends BaseActivity {
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
-                        Intent intent = new Intent(getApplicationContext(), FriendLocationSessionService.class);
-                        intent.putExtra("opponentId", opponentId);
-                        startService(intent);
                         requestStatus.setText(getString(R.string.requestSentWaiting));
                     } else {
                         Snackbar.make(requestStatus, getString(R.string.failedRequestLocation), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
@@ -100,6 +97,8 @@ public class FriendLocationActivity extends BaseActivity {
             }
         });
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -127,7 +126,7 @@ public class FriendLocationActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        stopService(new Intent(getApplicationContext(), FriendLocationSessionService.class));
+        destroySession();
         super.onDestroy();
     }
 

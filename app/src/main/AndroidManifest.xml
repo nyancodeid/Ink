@@ -74,8 +74,6 @@
             </intent-filter>
         </service>
         <service android:name="ink.service.LocationRequestSessionDestroyer"></service>
-        <service android:name="ink.service.ChatRouletteDestroyService" />
-        <service android:name="ink.service.FriendLocationSessionService" />
         <service android:name="ink.service.BackgroundTaskService" />
         <service android:name="ink.service.RemoveChatRouletteService" />
         <service android:name="ink.service.SendTokenService" />

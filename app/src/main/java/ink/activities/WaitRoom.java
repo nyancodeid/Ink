@@ -45,7 +45,6 @@ import fab.FloatingActionButton;
 import ink.adapters.ChatAdapter;
 import ink.callbacks.GeneralCallback;
 import ink.models.ChatModel;
-import ink.service.ChatRouletteDestroyService;
 import ink.service.RemoveChatRouletteService;
 import ink.utils.Constants;
 import ink.utils.Retrofit;
@@ -528,10 +527,6 @@ public class WaitRoom extends BaseActivity {
 
     private void handleOpponentFound(final String opponentId) {
         foundOpponentId = opponentId;
-        Intent intent = new Intent(getApplicationContext(), ChatRouletteDestroyService.class);
-        intent.putExtra("opponentId", opponentId);
-        startService(intent);
-
         waitersQueAction(Constants.ACTION_UPDATE, Constants.STATUS_IN_CHAT, new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
