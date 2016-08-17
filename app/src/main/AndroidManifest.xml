@@ -73,6 +73,7 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+        <service android:name="ink.service.LocationRequestSessionDestroyer"></service>
         <service android:name="ink.service.BackgroundTaskService" />
         <service android:name="ink.service.RemoveChatRouletteService" />
         <service android:name="ink.service.SendTokenService" />
@@ -92,12 +93,12 @@
             android:theme="@style/AppTheme.Profile" />
         <activity android:name="ink.activities.Messages" />
         <activity
-            android:configChanges="keyboardHidden|orientation|screenSize"
             android:name="ink.activities.MakePost"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:configChanges="keyboardHidden|orientation|screenSize"
             android:name="ink.activities.MapsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
@@ -171,7 +172,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_fullscreen"
             android:screenOrientation="portrait"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme" />
     </application>
 
 </manifest>

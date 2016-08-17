@@ -64,12 +64,23 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         FriendsModel friendsModel = friendsModelList.get(position);
         holder.name.setText(friendsModel.getFullName());
         if (!friendsModel.getImageLink().isEmpty()) {
-            String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + friendsModel.getImageLink();
+            String url;
+            if (friendsModel.isSocialAccount()) {
+                url = friendsModel.getImageLink();
+            } else {
+                url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + friendsModel.getImageLink();
+            }
             Ion.with(mContext).load(url)
-                    .withBitmap().transform(new CircleTransform()).intoImageView(holder.friendImage);
+                    .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.friendImage);
         } else {
             Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
                     .withBitmap().transform(new CircleTransform()).intoImageView(holder.friendImage);
+        }
+
+        if (friendsModel.isFriend()) {
+            holder.friendMoreIcon.setVisibility(View.VISIBLE);
+        } else {
+            holder.friendMoreIcon.setVisibility(View.GONE);
         }
         holder.friendMoreIcon.setOnClickListener(new View.OnClickListener() {
             @Override

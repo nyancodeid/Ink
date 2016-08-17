@@ -32,6 +32,7 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
         MultiDex.install(this);
     }
 
+    
     @Override
     public String getClientID() {
         return CREATIVE_SDK_CLIENT_ID;

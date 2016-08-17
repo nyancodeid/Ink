@@ -104,14 +104,15 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     private boolean hasComments;
     private String ownerId;
     private ProgressDialog deleteDialog;
-    private String hasAttachment;
-    private String hasAddress;
+    private boolean hasAttachment;
+    private boolean hasAddress;
     private String attachmentName;
     private String addressName;
     private String postId;
     private String postBody;
     private Snackbar snackbar;
     private BroadcastReceiver broadcastReceiver;
+    private boolean shouldUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,8 +146,8 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
             isLiked = extras.getBoolean("isLiked");
             ownerId = extras.getString("ownerId");
 
-            hasAttachment = extras.getString("hasAttachment");
-            hasAddress = extras.getString("hasAddress");
+            hasAttachment = extras.getBoolean("hasAttachment");
+            hasAddress = extras.getBoolean("hasAddress");
             attachmentName = extras.getString("attachmentName");
             addressName = extras.getString("addressName");
             postId = extras.getString("postId");
@@ -218,6 +219,9 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (shouldUpdate) {
+            LocalBroadcastManager.getInstance(Comments.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
+        }
         finish();
         return super.onOptionsItemSelected(item);
     }
@@ -225,7 +229,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     private void getComments(final String postId, final boolean shouldFocus) {
         isResponseReceived = false;
-        Call<ResponseBody> commentsCall = Retrofit.getInstance().getInkService().getComments(postId);
+        Call<ResponseBody> commentsCall = Retrofit.getInstance().getInkService().getComments(mSharedHelper.getUserId(), postId);
         commentsCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -259,10 +263,11 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                             String commentBody = eachObject.optString("comment_body");
                             String postId = eachObject.optString("post_id");
                             String commentId = eachObject.optString("comment_id");
+                            String isFriend = eachObject.optString("isFriend");
                             String firstName = eachObject.optString("commenter_first_name");
                             String lastName = eachObject.optString("commenter_last_name");
                             boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
-                            mCommentModel = new CommentModel(isSocialAccount, commentId,
+                            mCommentModel = new CommentModel(isSocialAccount, Boolean.valueOf(isFriend), commentId,
                                     commenterId, commenterImage, commentBody, postId, firstName,
                                     lastName);
                             mCommentModels.add(mCommentModel);
@@ -509,6 +514,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     }
 
     private void like(final String postId, final int isLiking, final TextView likeCountTV) {
+        shouldUpdate = true;
         final Call<ResponseBody> likeCall = Retrofit.getInstance().getInkService().likePost(mSharedHelper.getUserId(), postId, isLiking);
         likeCall.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -537,8 +543,10 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                         likeCountTV.setVisibility(View.GONE);
                     }
                 } catch (IOException e) {
+                    shouldUpdate = false;
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    shouldUpdate = false;
                     e.printStackTrace();
                 }
 
@@ -597,7 +605,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onItemClicked(int position, View view) {
-        Log.d("fsafsafasfas", "onItemLongClick: " + "on item  click");
+
         int actualPosition = position - 1;
         try {
             CommentModel singleModel = mCommentModels.get(actualPosition);
@@ -610,6 +618,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 intent.putExtra("id", currentId);
                 intent.putExtra("firstName", singleModel.getFirstName());
                 intent.putExtra("lastName", singleModel.getLastName());
+                intent.putExtra("isFriend", singleModel.isFriend());
                 startActivity(intent);
             }
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -688,7 +697,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                                 public void onNegativeClicked(Object result) {
 
                                 }
-                            });
+                            }, commentModel.getCommentBody());
                             break;
                         case 1:
                             snackbar.show();
@@ -701,5 +710,13 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         } catch (ArrayIndexOutOfBoundsException e) {
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (shouldUpdate) {
+            LocalBroadcastManager.getInstance(Comments.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
+        }
+        super.onBackPressed();
     }
 }

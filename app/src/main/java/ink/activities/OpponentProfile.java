@@ -8,12 +8,12 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,8 +30,13 @@ import java.io.IOException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import fab.FloatingActionButton;
 import ink.utils.Constants;
+import ink.utils.DimDialog;
+import ink.utils.RealmHelper;
+import ink.utils.Retrofit;
 import ink.utils.ScrollAwareFABBehavior;
+import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,6 +53,9 @@ public class OpponentProfile extends BaseActivity {
     private CardView imageCard;
     private String mFacebookLink;
     private boolean isSocialAccount;
+    private boolean hasFriendRequested;
+    private boolean isDataLoaded;
+    private SharedHelper sharedHelper;
 
     //Butter knife binders.
     @Bind(R.id.addressTV)
@@ -80,7 +88,14 @@ public class OpponentProfile extends BaseActivity {
     AVLoadingIndicatorView mOpponentImageLoading;
     @Bind(R.id.addressWrapper)
     RelativeLayout mAddressWrapper;
+    @Bind(R.id.sendMessage)
+    FloatingActionButton sendMessage;
+    @Bind(R.id.block)
+    FloatingActionButton block;
+    @Bind(R.id.removeFriend)
+    FloatingActionButton removeFriend;
     private String mOpponentImage;
+    private boolean isFriend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,27 +106,31 @@ public class OpponentProfile extends BaseActivity {
         mProfileFab.setEnabled(false);
         Bundle extras = getIntent().getExtras();
         mProfileImage = (ImageView) findViewById(R.id.profileImage);
+        sharedHelper = new SharedHelper(this);
         imageCard = (CardView) findViewById(R.id.imageCard);
-        ViewGroup.LayoutParams mCardNewLayoutParams = imageCard.getLayoutParams();
+
         ActionBar actionBar = getSupportActionBar();
         if (extras != null) {
             mOpponentId = extras.getString("id");
             mFirstName = extras.getString("firstName");
             mLastName = extras.getString("lastName");
+            isFriend = extras.getBoolean("isFriend");
             if (extras.containsKey("disableButton")) {
                 if (extras.getBoolean("disableButton")) {
-                    mProfileFab.setVisibility(View.GONE);
-                } else {
-
+                    sendMessage.setVisibility(View.GONE);
                 }
-            } else {
-                enableButton();
             }
+            enableButton();
             mUsername.setText(mFirstName + " " + mLastName);
             if (actionBar != null) {
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 actionBar.setTitle(mFirstName + " " + mLastName);
             }
+        }
+        if (!isFriend) {
+            sendMessage.setImageResource(R.drawable.request_friend_icon);
+            sendMessage.setLabelText(getString(R.string.sendFriendRequest));
+            removeFriend.setVisibility(View.GONE);
         }
         getSingleUser();
     }
@@ -123,6 +142,11 @@ public class OpponentProfile extends BaseActivity {
         mProfileFab.setLayoutParams(p);
     }
 
+
+    @OnClick(R.id.removeFriend)
+    public void removeFriend() {
+        removeFriend(mOpponentId);
+    }
 
     @OnClick(R.id.facebookWrapper)
     public void facebook() {
@@ -144,14 +168,149 @@ public class OpponentProfile extends BaseActivity {
 
     @OnClick(R.id.sendMessage)
     public void WriteMessage() {
-        Intent intent = new Intent(getApplicationContext(), Chat.class);
-        intent.putExtra("firstName", mFirstName);
-        intent.putExtra("lastName", mLastName);
-        intent.putExtra("opponentId", mOpponentId);
-        intent.putExtra("isSocialAccount", isSocialAccount);
-        intent.putExtra("opponentImage", mOpponentImage);
-        startActivity(intent);
-        mProfileFab.close(true);
+        if (isFriend) {
+            Intent intent = new Intent(getApplicationContext(), Chat.class);
+            intent.putExtra("firstName", mFirstName);
+            intent.putExtra("lastName", mLastName);
+            intent.putExtra("opponentId", mOpponentId);
+            intent.putExtra("isSocialAccount", isSocialAccount);
+            intent.putExtra("opponentImage", mOpponentImage);
+            startActivity(intent);
+            mProfileFab.close(true);
+        } else {
+            if (!isDataLoaded) {
+                Snackbar.make(mTriangleView, getString(R.string.waitTillLoad), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                }).show();
+                mProfileFab.close(true);
+            } else {
+                if (hasFriendRequested) {
+                    Snackbar.make(mTriangleView, getString(R.string.youHaveSentAlreadyRequest), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    }).show();
+                    mProfileFab.close(true);
+                } else {
+
+                    mProfileFab.close(true);
+                    requestFriend();
+                }
+            }
+        }
+    }
+
+    private void removeFriend(final String friendId) {
+        System.gc();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.removeFriend));
+        builder.setMessage(getString(R.string.removefriendHint));
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                DimDialog.showDimDialog(OpponentProfile.this, getString(R.string.removingFriend));
+                RealmHelper.getInstance().removeMessage(friendId, sharedHelper.getUserId());
+                Call<ResponseBody> removeFriendCall = Retrofit.getInstance().getInkService().removeFriend(sharedHelper.getUserId(), friendId);
+                removeFriendCall.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response == null) {
+                            removeFriend(friendId);
+                            return;
+                        }
+                        if (response.body() == null) {
+                            removeFriend(friendId);
+                            return;
+                        }
+                        try {
+                            String responseBody = response.body().string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            boolean success = jsonObject.optBoolean("success");
+                            DimDialog.hideDialog();
+                            if (success) {
+                                Snackbar.make(mTriangleView, getString(R.string.friendRemoved), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
+
+                                LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + ".Chat"));
+                                LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + "MyFriends"));
+                                finish();
+                            }
+                        } catch (IOException e) {
+                            DimDialog.hideDialog();
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            DimDialog.hideDialog();
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        removeFriend(friendId);
+                    }
+                });
+            }
+        });
+        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.show();
+
+    }
+
+    private void requestFriend() {
+        DimDialog.showDimDialog(this, getString(R.string.sendingFriendRequest));
+        Call<ResponseBody> requestFriendCall = Retrofit.getInstance().getInkService().requestFriend(sharedHelper.getUserId(), mOpponentId,
+                sharedHelper.getFirstName() + " " + sharedHelper.getLastName());
+        requestFriendCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    requestFriend();
+                    return;
+                }
+                if (response.body() == null) {
+                    requestFriend();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    DimDialog.hideDialog();
+                    if (success) {
+                        hasFriendRequested = true;
+                        Snackbar.make(mTriangleView, getString(R.string.requestSent), Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        Snackbar.make(mTriangleView, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    DimDialog.hideDialog();
+                    Snackbar.make(mTriangleView, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    DimDialog.hideDialog();
+                    Snackbar.make(mTriangleView, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                requestFriend();
+            }
+        });
     }
 
     @OnClick(R.id.block)
@@ -160,7 +319,7 @@ public class OpponentProfile extends BaseActivity {
     }
 
     private void getSingleUser() {
-        Call<ResponseBody> call = ink.utils.Retrofit.getInstance().getInkService().getSingleUserDetails(mOpponentId);
+        Call<ResponseBody> call = ink.utils.Retrofit.getInstance().getInkService().getSingleUserDetails(mOpponentId, sharedHelper.getUserId());
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -183,6 +342,7 @@ public class OpponentProfile extends BaseActivity {
                             String relationship = jsonObject.optString("relationship");
                             String status = jsonObject.optString("status");
                             String facebookName = jsonObject.optString("facebook_name");
+                            hasFriendRequested = jsonObject.optBoolean("hasFriendRequested");
                             boolean shouldHighlightFacebook = true;
                             boolean shouldHighlightAddress = true;
                             isSocialAccount = jsonObject.optBoolean("isSocialAccount");
@@ -261,6 +421,7 @@ public class OpponentProfile extends BaseActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    isDataLoaded = true;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -291,9 +452,9 @@ public class OpponentProfile extends BaseActivity {
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + "MyFriends"));
         supportFinishAfterTransition();
         return super.onOptionsItemSelected(item);
     }
@@ -327,4 +488,15 @@ public class OpponentProfile extends BaseActivity {
         startActivity(facebookIntent);
     }
 
+    @Override
+    protected void onDestroy() {
+        DimDialog.hideDialog();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + "MyFriends"));
+        super.onBackPressed();
+    }
 }

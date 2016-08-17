@@ -138,6 +138,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                         intent.putExtra("id", finalOpponentId);
                         intent.putExtra("firstName", userMessagesModels.get(position).getFirstName());
                         intent.putExtra("lastName", userMessagesModels.get(position).getLastName());
+                        intent.putExtra("isFriend", userMessagesModels.get(position).isFriend());
                         startActivity(intent);
                     }
                 });
@@ -244,6 +245,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                         String firstName = eachObject.optString("firstName");
                         String lastName = eachObject.optString("lastName");
                         String imageName = eachObject.optString("imageName");
+                        String isFriend = eachObject.optString("isFriend");
                         String date = eachObject.optString("date");
                         boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
                         String deleteUserId = eachObject.optString("delete_user_id");
@@ -301,7 +303,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                             String messageOld = message;
                             message = "You: " + messageOld;
                         }
-                        userMessagesModel = new UserMessagesModel(isSocialAccount, userId, opponentId, messageId, message,
+                        userMessagesModel = new UserMessagesModel(isSocialAccount, Boolean.valueOf(isFriend), userId, opponentId, messageId, message,
                                 firstName, lastName, imageName, splittedDate + "\n" + splittedTime, imageName);
                         userMessagesModels.add(userMessagesModel);
                         messagesAdapter.notifyDataSetChanged();

@@ -20,6 +20,7 @@
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbarik"
+
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
@@ -28,24 +29,6 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
-                    <RelativeLayout
-                        android:id="@+id/makeCall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="15dp"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:padding="10dp">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/audi_call_icon" />
-                    </RelativeLayout>
 
                     <TextView
                         android:id="@+id/chatTitle"
@@ -73,7 +56,6 @@
                         android:layout_marginBottom="2dp"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="35dp"
-                        android:layout_toLeftOf="@+id/makeCall"
                         android:layout_toRightOf="@+id/opponentImage"
                         android:ellipsize="end"
                         android:fontFamily="@string/appFont"
@@ -108,11 +90,11 @@
             android:id="@+id/scrollDownChat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:tag="@string/notVisible"
             android:layout_above="@id/writeField"
             android:layout_alignParentRight="true"
             android:padding="10dp"
             android:src="@drawable/scroll_down_icon"
+            android:tag="@string/notVisible"
             android:visibility="gone" />
 
         <android.support.v4.widget.NestedScrollView
@@ -247,6 +229,16 @@
                     android:foreground="?attr/selectableItemBackground"
                     android:padding="8dp"
                     android:src="@drawable/attach_vector" />
+
+                <ImageView
+                    android:id="@+id/locationSessionIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/messageBody"
+                    android:layout_centerHorizontal="true"
+                    android:padding="5dp"
+                    android:src="@drawable/location_session_icon"
+                    android:visibility="gone" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
     </RelativeLayout>

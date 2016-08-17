@@ -31,9 +31,14 @@ public class Constants {
     public static final String GROUP_MESSAGES_OPTIONS_URL = "GroupMessagesOptions.php";
     public static final String NOTIFY_OPPONENT = "NotifyOpponent.php";
     public static final String RESPOND_TO_REQUEST_URL = "RespondToRequest.php";
+    public static final String REMOVE_FRIEND_URL = "RemoveFriend.php";
+    public static final String RESPOND_TYPE_ACCEPT_FRIEND_REQUEST = "acceptFriendRequest";
+    public static final String RESPOND_TYPE_DENY_FRIEND_REQUEST = "denyFriendRequest";
     public static final String LOGIN_URL = "Login.php";
     public static final String FRIENDS_URL = "UserFriends.php";
     public static final String SINGLE_USER_URL = "SingleUser.php";
+    public static final String SEND_FRIEND_REQUEST_URL = "SendFriendRequest.php";
+    public static final String REQUEST_LOCATION_URL = "RequestLocation.php";
     public static final String MESSAGES_URL = "Messages.php";
     public static final String UPLOADED_FILES_DIR = "UserUploads/";
     public static final String SEND_MESSAGE_URL = "SendMessage.php";
@@ -44,6 +49,7 @@ public class Constants {
     public static final String SINGLE_USER_MESSAGES = "SingleUserMessages.php";
     public static final String CHAT_MESSAGES = "ChatMessages.php";
     public static final String GROUP_OPTIONS_URL = "GroupOptions.php";
+    public static final String GROUP_OPTIONS_LEAVE = "leaveGroup";
     public static final String REGISTER_TOKEN = "RegisterToken.php";
     public static final String REQUEST_DELETE_URL = "RequestDeleteMessage.php";
     public static final String GET_POSTS_URL = "GetPosts.php";
@@ -51,18 +57,26 @@ public class Constants {
     public static final String MAKE_POST_URL = "MakePost.php";
     public static final String DELETE_POST_URL = "DeletePost.php";
     public static final String COMMENT_OPTIONS_URL = "CommentOptions.php";
+    public static final String REQUEST_RESPONSE_TYPE_GROUP = "group";
+    public static final String REQUEST_RESPONSE_TYPE_FRIEND_REQUEST = "friendRequest";
     public static final String LIKE_URL = "LikePost.php";
     public static final String GET_COMMENTS_URL = "GetComments.php";
     public static final String SOCIAL_LOGIN_URL = "SocialLogin.php";
     public static final String ADD_COMMENT_URL = "AddComment.php";
     public static final int TEXT_VIEW_DEFAULT_COLOR = android.R.color.tab_indicator_text;
-    public static final String TYPE_MESSAGE = "message";
-    public static final String TYPE_REQUEST = "request";
-    public static final String TYPE_CHAT_ROULETTE = "chatRoulette";
+    public static final String NOTIFICATION_TYPE_MESSAGE = "message";
+    public static final String NOTIFICATION_TYPE_GROUP_REQUEST = "request";
+    public static final String NOTIFICATION_TYPE_FRIEND_REQUEST = "NOTIFICATION_TYPE_FRIEND_REQUEST";
+    public static final String NOTIFICATION_TYPE_CHAT_ROULETTE = "chatRoulette";
+    public static final String NOTIFICATION_TYPE_REQUESTING_LOCATION = "requestingLocation";
+    public static final String NOTIFICATION_TYPE_LOCATION_SESSION_ENDED = "locationSessionEnded";
+    public static final String NOTIFICATION_TYPE_LOCATION_REQUEST_DECLINED = "requestLocationDeclined";
+    public static final String NOTIFICATION_TYPE_LOCATION_REQUEST_ACCEPTED = "requestLocationAccepted";
+    public static final String NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED = "friendRequestAccepted";
     public static final String WAITERS_QUE = "WaitRoomQue.php";
     public static final String GET_WAITERS = "GetWaitersQue.php";
-    public static final String TYPE_ACCEPT_REQUEST = "0";
-    public static final String TYPE_DENY_REQUEST = "1";
+    public static final String TYPE_ACCEPT_REQUEST = "acceptGroupRequest";
+    public static final String TYPE_DENY_REQUEST = "denyGroupRequest";
     public static final String STATUS_WAITING_NOT_AVAILABLE = "waiting_not_available";
     public static final String STATUS_AVAILABLE = "available";
     public static final String STATUS_IN_CHAT = "inChat";
@@ -76,7 +90,7 @@ public class Constants {
     public static final String SERVER_TIME_ZONE = "America/Los_Angeles";
     public static final String CLOUD_CLIENT_ID = "15bf6f497229585b1cf45983d3d65b10";
     public static final String CLOUD_API_URL = "https://api.soundcloud.com";
-    public static final String TYPE_CALL = "type=call";
+    public static final String NOTIFICATION_TYPE_CALL = "type=call";
     public static final String COMMENT_TYPE_DELETE = "delete";
     public static final String COMMENT_TYPE_EDIT = "edit";
     public static final String GROUP_TYPE_ALL = "all";
@@ -95,5 +109,10 @@ public class Constants {
     public static final String NO_IMAGE_NAME = "no_image.png";
     public static final String NO_IMAGE_URL = MAIN_URL + USER_IMAGES_FOLDER + NO_IMAGE_NAME;
     public static final String ANDROID_DRAWABLE_DIR = ANDROID_RESOURCE_DIR + "com.ink" + "/drawable/";
+    public static final String CHECK_IS_FRIEND_URL = "CheckIsFriend.php";
+    public static final String LOCATION_REQUEST_TYPE_INSERT = "insertRequest";
+    public static final String LOCATION_REQUEST_TYPE_ACCEPT = "acceptRequest";
+    public static final String LOCATION_REQUEST_TYPE_DECLINE = "declineRequest";
+    public static final String LOCATION_REQUEST_TYPE_DELETE = "delete";
 }
 

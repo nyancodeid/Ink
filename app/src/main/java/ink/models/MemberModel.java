@@ -9,14 +9,24 @@ public class MemberModel {
     private String memberImage;
     private String memberItemId;
     private String memberGroupId;
+    private boolean isFriend;
 
 
-    public MemberModel(String memberId, String memberName, String memberImage, String memberItemId, String memberGroupId) {
+    public MemberModel(boolean isFriend,String memberId, String memberName, String memberImage, String memberItemId, String memberGroupId) {
         this.memberId = memberId;
+        this.isFriend = isFriend;
         this.memberName = memberName;
         this.memberImage = memberImage;
         this.memberItemId = memberItemId;
         this.memberGroupId = memberGroupId;
+    }
+
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    public void setFriend(boolean friend) {
+        isFriend = friend;
     }
 
     public String getMemberId() {

@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,6 +14,7 @@ import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
+import fab.FloatingActionButton;
 import ink.interfaces.RequestListener;
 import ink.models.RequestsModel;
 import ink.utils.CircleTransform;
@@ -32,16 +32,16 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView requesterMessage;
         public ImageView requesterImage;
-        public Button accept, decline;
+        public FloatingActionButton accept, decline;
         public RelativeLayout requestRootLayout;
 
         public ViewHolder(View view) {
             super(view);
             requesterMessage = (TextView) view.findViewById(R.id.requesterMessage);
             requesterImage = (ImageView) view.findViewById(R.id.requesterImage);
-            accept = (Button) view.findViewById(R.id.acceptRequest);
+            accept = (FloatingActionButton) view.findViewById(R.id.acceptRequest);
             requestRootLayout = (RelativeLayout) view.findViewById(R.id.requestRootLayout);
-            decline = (Button) view.findViewById(R.id.declineRequest);
+            decline = (FloatingActionButton) view.findViewById(R.id.declineRequest);
         }
     }
 
@@ -70,7 +70,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                         requestsModel.getRequesterImage()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.requesterImage);
             }
         } else {
-            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR+"no_image").withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.requesterImage);
+            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.requesterImage);
         }
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,8 +96,15 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                 }
             }
         });
-        holder.requesterMessage.setText(requestsModel.getRequesterName() + " " + mContext.getString(R.string.personRequestedText) + " " +
-                requestsModel.getGroupName() + " " + mContext.getString(R.string.groupText));
+
+        if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_GROUP)) {
+            holder.requesterMessage.setText(requestsModel.getRequesterName() + " " + mContext.getString(R.string.personRequestedText) + " " +
+                    requestsModel.getGroupName() + " " + mContext.getString(R.string.groupText));
+        } else if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_FRIEND_REQUEST)) {
+            holder.requesterMessage.setText(requestsModel.getRequesterName() + " " + mContext.getString(R.string.tobeFriend));
+        }
+
+
     }
 
 

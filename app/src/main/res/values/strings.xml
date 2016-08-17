@@ -40,7 +40,7 @@
     <string name="friendsText">Friends</string>
     <string name="settingsString">Settings</string>
     <string name="logoutString">Logout</string>
-    <string name="serverErrorText">There was an problem with server.Please reload again</string>
+    <string name="serverErrorText">There was an problem with server.Please try again</string>
     <string name="noFirstname">No First Name</string>
     <string name="noLastname">No Last Name</string>
     <string name="noPhone">No Phone Number</string>
@@ -196,7 +196,7 @@
     <string name="groupCreated">Group created</string>
     <string name="participantText">Participant(s)</string>
     <string name="noGroupsYet">No groups yet.Find any and join now!</string>
-    <string name="joinText">Join Group</string>
+    <string name="joinGroup">Join Group</string>
     <string name="messagePosted">Message posted</string>
     <string name="noGroupMessages">No group posts</string>
     <string name="search_title">Search</string>
@@ -293,9 +293,7 @@
     <string name="noImageChosen">Here you will see your edited image result</string>
     <string name="imageEditorHint">To use the editor,first you need to pick up an image.
         You can do it by clicking the  button located at the bottom (the arrow is pointing right now to the button) and you will be able to access your
-        phone\'s pictures directories in multiple way as you will be prompted to choose the one which best suits you,meanwhile if you want to edit already
-        edited image again,you will  be prompted to click on the image to do so.Thus,as soon as you edit any picture and afterwards you\'ll click the \'DONE\'
-        button from the editor menu,the image will be saved into your default pictures directory.Everything is automatized for your comfort.
+        phone\'s pictures directories in multiple way as you will be prompted to choose the one which best suits you.
     </string>
     <string name="imageEditor">Image Editor</string>
     <string name="noImagePickerAppFound">No applications found to handle the images.Did you uninstall the gallery seriosly?</string>
@@ -415,4 +413,34 @@
     \n to see the privacy and policy within terms and conditions,click here.</string>
     <string name="privacyPolicyShort">I accept the privacy and policy \nas well as terms and conditions</string>
     <string name="youMustAccept">You must accept privacy and policy as well as terms and conditions to proceed</string>
+    <string name="searching">Searching...</string>
+    <string name="noFriendSearchResult">No person was found,try to filter your search</string>
+    <string name="sendFriendRequest">Send friend request</string>
+    <string name="youHaveSentAlreadyRequest">You have already requested to be friend</string>
+    <string name="sendingFriendRequest">Sending friend request...</string>
+    <string name="requestSent">Request was sent</string>
+    <string name="errorSendingRequest">Error while sending friend request</string>
+    <string name="tobeFriend">asked to be a friend with you</string>
+    <string name="friendRequestInfo">To view the request,click here</string>
+    <string name="notificationTitle">Notifications</string>
+    <string name="leaveGroup">Leave Group</string>
+    <string name="leaveGroupMessage">You are about to leave this group.Are you sure?</string>
+    <string name="leaving">Leaving the group,please wait...</string>
+    <string name="friendRequestDenied">Friend request denied</string>
+    <string name="friendRequestAccepted">Friend request accepted</string>
+    <string name="accepting">Accepting</string>
+    <string name="declining">Declining</string>
+    <string name="removingFriend">Removing friend...</string>
+    <string name="friendRemoved">Friend removed</string>
+    <string name="removeFriend">Remove friend?</string>
+    <string name="removefriendHint">Are you sure you want to remove your friend?</string>
+    <string name="requestLocation">Request friend location</string>
+    <string name="failedRequestLocation">Failed to open session,please try again...</string>
+    <string name="sendingRequest">Sending location request...</string>
+    <string name="requestSentWaiting">Request was sent.Your friend will receive notification.Waiting for friend acceptance...</string>
+    <string name="locationShareWith">Request location with</string>
+    <string name="couldNotFetchName">Could not fetch name</string>
+    <string name="warning">Warning</string>
+    <string name="leavingSession">You have an active location session.If you leave,the session will be closed until you request new one.Close the session?</string>
+    <string name="acceptedYourFriendRequest">accepted your friend request</string>
 </resources>

@@ -312,7 +312,7 @@ public class MyProfile extends BaseActivity {
 
     private void getMyData() {
         final Call<ResponseBody> myDataResponse = Retrofit.getInstance()
-                .getInkService().getSingleUserDetails(mSharedHelper.getUserId());
+                .getInkService().getSingleUserDetails(mSharedHelper.getUserId(), "");
         myDataResponse.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -679,6 +679,7 @@ public class MyProfile extends BaseActivity {
 
     @OnClick(R.id.deleteAccont)
     public void deleteAccount() {
+        // TODO: 8/17/2016  check why server not deleting accont
         showWarning();
     }
 

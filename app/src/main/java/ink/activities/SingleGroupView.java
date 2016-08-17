@@ -123,6 +123,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     private boolean hasAnythingChanged;
     private ProgressDialog progressDialog;
     private Snackbar snackbar;
+    private boolean isFriendWithOwner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +143,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
+        mJoinGroupButton.setEnabled(false);
         mJoinGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -197,10 +199,13 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             mCount = extras.getString("count");
             mOwnerImage = extras.getString("ownerImage");
             isMember = extras.getBoolean("isMember");
+            isFriendWithOwner = extras.getBoolean("isFriend");
         }
+        mJoinGroupButton.setEnabled(true);
         if (!isMember) {
             mJoinGroupButton.setVisibility(View.VISIBLE);
             mAddMessageToGroup.setVisibility(View.GONE);
+            mJoinGroupButton.setText(getString(R.string.joinGroup));
         } else {
             mJoinGroupButton.setVisibility(View.GONE);
             mAddMessageToGroup.setVisibility(View.VISIBLE);
@@ -259,6 +264,54 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         }
     }
 
+    private void leaveGroup() {
+        progressDialog.setTitle(getString(R.string.leaveGroup));
+        progressDialog.setMessage(getString(R.string.leaving));
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+        Call<ResponseBody> leaveCall = Retrofit.getInstance().getInkService().groupOptions(Constants.GROUP_OPTIONS_LEAVE, mSharedHelper.getUserId(), "", "");
+        leaveCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    leaveGroup();
+                    return;
+                }
+                if (response.body() == null) {
+                    leaveGroup();
+                    return;
+                }
+
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        progressDialog.dismiss();
+                        LocalBroadcastManager.getInstance(SingleGroupView.this).sendBroadcast(new Intent(getPackageName() + "Groups"));
+                        finish();
+                    } else {
+                        progressDialog.dismiss();
+                        Snackbar.make(mGroupImageView, getString(R.string.serverErrorText), Snackbar.LENGTH_LONG).show();
+                    }
+                } catch (IOException e) {
+                    progressDialog.dismiss();
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    progressDialog.dismiss();
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                leaveGroup();
+            }
+        });
+
+    }
+
     private void hideGroupImageLoading() {
         groupImageLoading.setVisibility(View.GONE);
     }
@@ -292,6 +345,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                     Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
                     intent.putExtra("id", memberModels.get(position).getMemberId());
                     intent.putExtra("firstName", firstName);
+                    intent.putExtra("isFriend", memberModels.get(position).isFriend());
                     intent.putExtra("lastName", lastName);
                     startActivity(intent);
                 }
@@ -316,7 +370,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             }
         });
         builder.show();
-        Call<ResponseBody> participantCall = Retrofit.getInstance().getInkService().getParticipants(mGroupId);
+        Call<ResponseBody> participantCall = Retrofit.getInstance().getInkService().getParticipants(mSharedHelper.getUserId(), mGroupId);
         participantCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -345,7 +399,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                             String memberImage = eachObject.optString("participant_image");
                             String memberItemId = eachObject.optString("participant_item_id");
                             String memberGroupId = eachObject.optString("participant_group_id");
-                            memberModel = new MemberModel(memberId, memberName, memberImage, memberItemId
+                            String isFriend = eachObject.optString("isFriend");
+                            memberModel = new MemberModel(Boolean.valueOf(isFriend), memberId, memberName, memberImage, memberItemId
                                     , memberGroupId);
                             memberModels.add(memberModel);
                             memberAdapter.notifyDataSetChanged();
@@ -427,6 +482,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         intent.putExtra("id", mGroupOwnerId);
         intent.putExtra("firstName", firstName);
         intent.putExtra("lastName", lastName);
+        intent.putExtra("isFriend", isFriendWithOwner);
         startActivity(intent);
     }
 
@@ -452,6 +508,9 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                 break;
             case R.id.deleteGroup:
                 deleteGroup();
+                break;
+            case R.id.leaveGroup:
+                showWarning();
                 break;
         }
 
@@ -517,7 +576,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             progressDialog.setMessage(getString(R.string.savingChanges));
         }
         progressDialog.show();
-        Call<ResponseBody> groupCall = Retrofit.getInstance().getInkService().changeGroup(type, mGroupId, groupName, groupDescription);
+        Call<ResponseBody> groupCall = Retrofit.getInstance().getInkService().groupOptions(type, mGroupId, groupName, groupDescription);
         groupCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -589,6 +648,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     public boolean onCreateOptionsMenu(Menu menu) {
         if (mSharedHelper.getUserId().equals(mGroupOwnerId)) {
             getMenuInflater().inflate(R.menu.single_group_menu, menu);
+        } else if (isMember) {
+            getMenuInflater().inflate(R.menu.leave_group_menu, menu);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -625,7 +686,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                         if (isRequested) {
                             mJoinGroupButton.setText(getString(R.string.pending));
                         } else {
-                            mJoinGroupButton.setText(getString(R.string.joinText));
+                            mJoinGroupButton.setText(getString(R.string.joinGroup));
                         }
                         if (hasMessages) {
                             noGroupMessageLayout.setVisibility(View.GONE);
@@ -638,7 +699,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                                 String senderImage = eachObject.optString("sender_image");
                                 String senderName = eachObject.optString("sender_name");
                                 String groupMessageId = eachObject.optString("group_message_id");
-                                groupMessagesModel = new GroupMessagesModel(groupId, groupMessage,
+                                String isFriend = eachObject.optString("isFriend");
+                                groupMessagesModel = new GroupMessagesModel(Boolean.valueOf(isFriend), groupId, groupMessage,
                                         senderId, senderImage, senderName, groupMessageId, isRequested);
                                 groupMessagesModels.add(groupMessagesModel);
                                 groupMessagesAdapter.notifyDataSetChanged();
@@ -696,6 +758,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
             intent.putExtra("id", singleModel.getSenderId());
             intent.putExtra("firstName", firstName);
+            intent.putExtra("isFriend", singleModel.isFriend());
             intent.putExtra("lastName", lastName);
             startActivity(intent);
         }
@@ -709,7 +772,6 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
 
     @Override
     public void onAdditionItemClick(int position, View view) {
-        // TODO: 8/15/2016  add pop up
         final GroupMessagesModel groupMessagesModel = groupMessagesModels.get(position);
         PopupMenu.showPopUp(SingleGroupView.this, view, new ItemClickListener<MenuItem>() {
             @Override
@@ -727,7 +789,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                             public void onNegativeClicked(Object result) {
 
                             }
-                        });
+                        },groupMessagesModel.getGroupMessage());
                         break;
                     case 1:
                         snackbar.setText(getString(R.string.deleting));
@@ -832,6 +894,26 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         });
     }
 
+    private void showWarning() {
+        if (!mSharedHelper.getUserId().equals(mGroupOwnerId)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(SingleGroupView.this);
+            builder.setTitle(getString(R.string.leaveGroup));
+            builder.setMessage(getString(R.string.leaveGroupMessage));
+            builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    leaveGroup();
+                }
+            });
+            builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            builder.show();
+        }
+    }
 
     @Override
     protected void onDestroy() {

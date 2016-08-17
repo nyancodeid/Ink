@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -194,6 +195,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                 try {
                     try {
                         String responseString = response.body().string();
+                        Log.d("fsafsafasfas", "onResponse: " + responseString);
                         JSONObject jsonObject = new JSONObject(responseString);
                         boolean success = jsonObject.optBoolean("success");
                         AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);

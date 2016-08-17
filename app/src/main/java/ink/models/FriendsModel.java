@@ -10,10 +10,14 @@ public class FriendsModel {
     private String friendId;
     private String firstName;
     private String lastName;
+    private boolean isFriend;
+    private boolean isSocialAccount;
 
 
-    public FriendsModel(String fullName, String imageLink, String phoneNumber, String friendId, String firstName, String lastName) {
+    public FriendsModel(boolean isFriend, boolean isSocialAccount, String fullName, String imageLink, String phoneNumber, String friendId, String firstName, String lastName) {
         this.fullName = fullName;
+        this.isFriend = isFriend;
+        this.isSocialAccount = isSocialAccount;
         this.friendId = friendId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -67,5 +71,21 @@ public class FriendsModel {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    public boolean isSocialAccount() {
+        return isSocialAccount;
+    }
+
+    public void setSocialAccount(boolean socialAccount) {
+        isSocialAccount = socialAccount;
+    }
+
+    public void setFriend(boolean friend) {
+        isFriend = friend;
     }
 }

@@ -35,6 +35,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import java.util.Map;
 
 import ink.activities.Chat;
+import ink.activities.HomeActivity;
 import ink.activities.ReplyView;
 import ink.activities.RequestsView;
 import ink.utils.Constants;
@@ -64,48 +65,83 @@ public class NotificationService extends FirebaseMessagingService {
         if (response.get("type") == null) {
             return;
         }
-        if (response.get("type").equals(Constants.TYPE_MESSAGE)) {
-            Looper looper = Looper.getMainLooper();
-            Handler handler = new Handler(looper);
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
+        String type = response.get("type");
 
-                    RealmHelper.getInstance().insertMessage(response.get("user_id"), response.get("opponent_id"),
-                            response.get("message"), response.get("message_id"), response.get("date"), response.get("message_id"),
-                            Constants.STATUS_DELIVERED, response.get("user_image"), response.get("opponent_image"),
-                            response.get("delete_opponent_id"), response.get("delete_user_id"), Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"));
+        switch (type) {
+            case Constants.NOTIFICATION_TYPE_MESSAGE:
+                Looper looper = Looper.getMainLooper();
+                Handler handler = new Handler(looper);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        RealmHelper.getInstance().insertMessage(response.get("user_id"), response.get("opponent_id"),
+                                response.get("message"), response.get("message_id"), response.get("date"), response.get("message_id"),
+                                Constants.STATUS_DELIVERED, response.get("user_image"), response.get("opponent_image"),
+                                response.get("delete_opponent_id"), response.get("delete_user_id"), Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"));
+                    }
+                });
+
+                if (Notification.getInstance().isSendingRemote()) {
+                    sendNotification("New Message", response.get("user_id"),
+                            StringEscapeUtils.unescapeJava(response.get("message")), getApplicationContext(),
+                            response.get("message_id"), response.get("opponent_id"),
+                            response.get("opponent_image"), response.get("opponent_image").isEmpty() ? "" : response.get("opponent_image"), response.get("name"),
+                            response.get("delete_user_id"), response.get("delete_opponent_id"), Boolean.valueOf(response.get("isSocialAccount")), response.get("lastName"), Boolean.valueOf(response.get("hasGif")));
+                } else {
+                    Intent intent = new Intent(getPackageName() + ".Chat");
+                    intent.putExtra("data", remoteMessage);
+                    intent.putExtra("type", "showMessage");
+                    LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+                    localBroadcastManager.sendBroadcast(intent);
                 }
-            });
+                break;
+            case Constants.NOTIFICATION_TYPE_GROUP_REQUEST:
+                sendGroupRequestNotification(getApplicationContext(), response.get("requesterName"),
+                        response.get("requestedGroup"), response.get("requestId"));
+                break;
 
-            if (Notification.getInstance().isSendingRemote()) {
-                sendNotification("New Message", response.get("user_id"),
-                        StringEscapeUtils.unescapeJava(response.get("message")), getApplicationContext(),
-                        response.get("message_id"), response.get("opponent_id"),
-                        response.get("opponent_image"), response.get("opponent_image").isEmpty() ? "" : response.get("opponent_image"), response.get("name"),
-                        response.get("delete_user_id"), response.get("delete_opponent_id"), Boolean.valueOf(response.get("isSocialAccount")), response.get("lastName"), Boolean.valueOf(response.get("hasGif")));
-            } else {
-                Intent intent = new Intent(getPackageName() + ".Chat");
-                intent.putExtra("data", remoteMessage);
-                LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
-                localBroadcastManager.sendBroadcast(intent);
-            }
-        } else if (response.get("type").equals(Constants.TYPE_REQUEST)) {
-            sendRequestNotification(getApplicationContext(), response.get("requesterName"),
-                    response.get("requestedGroup"), response.get("requestId"));
-        } else if (response.get("type").equals(Constants.TYPE_CHAT_ROULETTE)) {
-            Intent intent = new Intent(getPackageName() + "WaitRoom");
-            intent.putExtra("currentUserId", response.get("currentUserId"));
-            intent.putExtra("opponentId", response.get("opponentId"));
-            intent.putExtra("message", response.get("message"));
-            intent.putExtra("isDisconnected", response.get("isDisconnected"));
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-        } else if (response.get("type").equals(Constants.TYPE_CALL)) {
-//            Intent intent = new Intent(this, IncomingCallScreenActivity.class);
-//            intent.putExtra("CALL_ID", response.get("callId"));
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startActivity(intent);
+            case Constants.NOTIFICATION_TYPE_CHAT_ROULETTE:
+                Intent intent = new Intent(getPackageName() + "WaitRoom");
+                intent.putExtra("currentUserId", response.get("currentUserId"));
+                intent.putExtra("opponentId", response.get("opponentId"));
+                intent.putExtra("message", response.get("message"));
+                intent.putExtra("isDisconnected", response.get("isDisconnected"));
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                break;
+            case Constants.NOTIFICATION_TYPE_CALL:
+
+                break;
+
+            case Constants.NOTIFICATION_TYPE_FRIEND_REQUEST:
+                Log.d(TAG, "onMessageReceived: " + "user with id " + response.get("requesterId") + " with the name " + response.get("requesterName") + " with the image"
+                        + response.get("requesterImage") + " requested to be friend with you");
+
+                sendFriendRequestNotification(getApplicationContext(), response.get("requesterName"), response.get("requestId"));
+                break;
+
+            case Constants.NOTIFICATION_TYPE_REQUESTING_LOCATION:
+                String requesterName = response.get("requesterName");
+                String requesterId = response.get("requesterId");
+
+                break;
+
+            case Constants.NOTIFICATION_TYPE_LOCATION_SESSION_ENDED:
+
+                break;
+            case Constants.NOTIFICATION_TYPE_LOCATION_REQUEST_DECLINED:
+
+                break;
+
+            case Constants.NOTIFICATION_TYPE_LOCATION_REQUEST_ACCEPTED:
+
+                break;
+            case Constants.NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED:
+                sendGeneralNotification(getApplicationContext(),response.get("requesterId"),response.get("requesterName")+" "+
+                getString(R.string.acceptedYourFriendRequest),"");
+                break;
         }
+
     }
     // [END receive_message]
 
@@ -188,8 +224,8 @@ public class NotificationService extends FirebaseMessagingService {
         notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
     }
 
-    public void sendRequestNotification(Context context, String requesterName, String requestedGroup,
-                                        String requestId) {
+    public void sendGroupRequestNotification(Context context, String requesterName, String requestedGroup,
+                                             String requestId) {
 
         NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
@@ -216,5 +252,57 @@ public class NotificationService extends FirebaseMessagingService {
         notificationManagerCompat.notify(Integer.valueOf(requestId), notification);
     }
 
+    public void sendFriendRequestNotification(Context context, String requesterName,
+                                              String requestId) {
 
+        NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+
+        Intent requestsViewIntent = new Intent(context, RequestsView.class);
+        requestsViewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+
+        PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(requestId), requestsViewIntent, 0);
+        android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setAutoCancel(true);
+
+
+        builder.setContentTitle(requesterName + " " + getString(R.string.tobeFriend));
+        builder.setContentText(getString(R.string.friendRequestInfo));
+        builder.setGroup(GROUP_KEY_MESSAGES);
+        builder.setDefaults(android.app.Notification.DEFAULT_ALL);
+        builder.setContentIntent(requestsViewPending);
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.friendRequestInfo)));
+        builder.setShowWhen(true);
+        android.app.Notification notification = builder.build();
+        notificationManagerCompat.notify(Integer.valueOf(requestId), notification);
+    }
+
+    private void sendGeneralNotification(Context context, String uniqueId,
+                                         String title, String contentText) {
+
+        NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+
+        Intent requestsViewIntent = new Intent(context, HomeActivity.class);
+        requestsViewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+
+        PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(uniqueId), requestsViewIntent, 0);
+        android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setAutoCancel(true);
+
+
+        builder.setContentTitle(title);
+        builder.setContentText(contentText);
+        builder.setGroup(GROUP_KEY_MESSAGES);
+        builder.setDefaults(android.app.Notification.DEFAULT_ALL);
+        builder.setContentIntent(requestsViewPending);
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(contentText));
+        builder.setShowWhen(true);
+        android.app.Notification notification = builder.build();
+        notificationManagerCompat.notify(Integer.valueOf(uniqueId), notification);
+    }
 }

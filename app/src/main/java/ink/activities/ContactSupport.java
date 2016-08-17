@@ -31,6 +31,7 @@ import fab.FloatingActionButton;
 import ink.callbacks.GeneralCallback;
 import ink.mail.GMailSender;
 import ink.utils.Constants;
+import ink.utils.AlertDialogView;
 import ink.utils.PermissionsChecker;
 import ink.utils.UserDetails;
 import ink.utils.Validator;
@@ -168,7 +169,7 @@ public class ContactSupport extends BaseActivity {
                             @Override
                             public void run() {
                                 progressDialog.dismiss();
-                                Dialog.buildAlertDialog(ContactSupport.this,
+                                AlertDialogView.buildAlertDialog(ContactSupport.this,
                                         getString(R.string.messageSent),
                                         getString(R.string.supportMessageHint),
                                         false);
@@ -183,7 +184,7 @@ public class ContactSupport extends BaseActivity {
                             @Override
                             public void run() {
                                 progressDialog.dismiss();
-                                Dialog.buildAlertDialog(ContactSupport.this,
+                                AlertDialogView.buildAlertDialog(ContactSupport.this,
                                         getString(R.string.failedToSent),
                                         getString(R.string.failedToSentMessage),
                                         false);

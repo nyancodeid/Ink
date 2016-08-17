@@ -15,8 +15,9 @@ public class GroupsModel {
     private String ownerImage;
     private boolean isMember;
     boolean isSocialAccount;
+    private boolean isFriend;
 
-    public GroupsModel(boolean isSocialAccount,String groupId,
+    public GroupsModel(boolean isFriend, boolean isSocialAccount, String groupId,
                        String groupImage,
                        String groupName, String groupOwnerName,
                        String groupDescription, String groupOwnerId,
@@ -25,6 +26,7 @@ public class GroupsModel {
         this.groupId = groupId;
         this.isSocialAccount = isSocialAccount;
         this.isMember = isMember;
+        this.isFriend = isFriend;
         this.ownerImage = ownerImage;
         this.participantsCount = participantsCount;
         this.groupImage = groupImage;
@@ -35,6 +37,13 @@ public class GroupsModel {
         this.groupColor = groupColor;
     }
 
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    public void setFriend(boolean friend) {
+        isFriend = friend;
+    }
 
     public String getGroupId() {
         return groupId;

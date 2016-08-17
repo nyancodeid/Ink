@@ -99,7 +99,7 @@
                             android:focusable="true"
                             android:foreground="?attr/selectableItemBackground"
                             android:padding="10dp"
-                            android:text="@string/joinText"
+                            android:text="@string/joinGroup"
                             android:textColor="@color/defaultGroupColor"
                             android:visibility="gone" />
                     </RelativeLayout>

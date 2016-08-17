@@ -29,6 +29,7 @@ import ink.adapters.RequestsAdapter;
 import ink.interfaces.RequestListener;
 import ink.models.RequestsModel;
 import ink.utils.Constants;
+import ink.utils.DimDialog;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -78,12 +79,15 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
             requestsModels.clear();
             requestsAdapter.notifyDataSetChanged();
         }
-        requestSwipe.post(new Runnable() {
-            @Override
-            public void run() {
-                requestSwipe.setRefreshing(true);
-            }
-        });
+        if (!requestSwipe.isRefreshing()) {
+            requestSwipe.post(new Runnable() {
+                @Override
+                public void run() {
+                    requestSwipe.setRefreshing(true);
+                }
+            });
+        }
+
         Call<ResponseBody> myRequestsCall = Retrofit.getInstance().getInkService().getMyRequests(sharedHelper.getUserId());
         myRequestsCall.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -110,15 +114,25 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
                         noRequestsLayout.setVisibility(View.GONE);
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject eachObject = jsonArray.getJSONObject(i);
-                            String groupOwnerId = eachObject.optString("group_owner_id");
+
                             String requesterId = eachObject.optString("requester_id");
                             String requesterName = eachObject.optString("requester_name");
                             String requesterImage = eachObject.optString("requester_image");
-                            String requestedGroupId = eachObject.optString("requested_group_id");
                             String requestId = eachObject.optString("request_id");
                             boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
-                            String groupName = eachObject.optString("group_name");
-                            requestsModel = new RequestsModel(isSocialAccount,groupOwnerId, requesterId, requesterName, requesterImage, requestedGroupId,
+                            String isFriend = eachObject.optString("isFriend");
+
+                            String type = eachObject.optString("type");
+                            String groupName = "";
+                            String groupOwnerId = "";
+                            String requestedGroupId = "";
+                            if (type.equals(Constants.REQUEST_RESPONSE_TYPE_GROUP)) {
+                                groupName = eachObject.optString("group_name");
+                                groupOwnerId = eachObject.optString("group_owner_id");
+                                requestedGroupId = eachObject.optString("requested_group_id");
+                            }
+
+                            requestsModel = new RequestsModel(type, isSocialAccount, Boolean.valueOf(isFriend), groupOwnerId, requesterId, requesterName, requesterImage, requestedGroupId,
                                     requestId, groupName);
                             requestsModels.add(requestsModel);
                             requestsAdapter.notifyDataSetChanged();
@@ -129,8 +143,10 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
                         getMyRequests();
                     }
                 } catch (IOException e) {
+                    requestSwipe.setRefreshing(false);
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    requestSwipe.setRefreshing(false);
                     e.printStackTrace();
                 }
             }
@@ -144,18 +160,126 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onRefresh() {
+
         getMyRequests();
     }
 
     @Override
     public void onAcceptClicked(int position) {
-        acceptRequest(position);
+        DimDialog.showDimDialog(RequestsView.this, getString(R.string.accepting));
+        RequestsModel requestsModel = requestsModels.get(position);
+        if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_GROUP)) {
+            acceptGroupRequest(position);
+        } else if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_FRIEND_REQUEST)) {
+            acceptFriendRequest(position);
+        }
+
+    }
+
+    private void acceptFriendRequest(final int position) {
+        requestSwipe.post(new Runnable() {
+            @Override
+            public void run() {
+                requestSwipe.setRefreshing(true);
+            }
+        });
+        RequestsModel requestsModel = requestsModels.get(position);
+        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.RESPOND_TYPE_ACCEPT_FRIEND_REQUEST, sharedHelper.getUserId(),
+                sharedHelper.getFirstName() + " " + sharedHelper.getLastName(), "", requestsModel.getRequesterId());
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    acceptFriendRequest(position);
+                    return;
+                }
+                if (response.body() == null) {
+                    acceptFriendRequest(position);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    DimDialog.hideDialog();
+                    if (success) {
+                        Snackbar.make(requestsRecycler, getString(R.string.friendRequestAccepted), Snackbar.LENGTH_LONG).show();
+                        getMyRequests();
+                    }
+                } catch (IOException e) {
+                    DimDialog.hideDialog();
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    DimDialog.hideDialog();
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                acceptFriendRequest(position);
+            }
+        });
     }
 
 
     @Override
     public void onDeclineClicked(int position) {
-        denyRequest(position);
+        DimDialog.showDimDialog(RequestsView.this, getString(R.string.declining));
+        RequestsModel requestsModel = requestsModels.get(position);
+        if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_GROUP)) {
+            denyGroupRequest(position);
+        } else if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_FRIEND_REQUEST)) {
+            denyFriendRequest(position);
+        }
+
+    }
+
+    private void denyFriendRequest(final int position) {
+        requestSwipe.post(new Runnable() {
+            @Override
+            public void run() {
+                requestSwipe.setRefreshing(true);
+            }
+        });
+        RequestsModel requestsModel = requestsModels.get(position);
+        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.RESPOND_TYPE_DENY_FRIEND_REQUEST, requestsModel.getRequestId(), "",
+                "", "");
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    denyFriendRequest(position);
+                    return;
+                }
+                if (response.body() == null) {
+                    denyFriendRequest(position);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        DimDialog.hideDialog();
+                        Snackbar.make(requestsRecycler, getString(R.string.friendRequestDenied), Snackbar.LENGTH_LONG).show();
+                        getMyRequests();
+                    }
+                } catch (IOException e) {
+                    DimDialog.hideDialog();
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    DimDialog.hideDialog();
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                denyFriendRequest(position);
+            }
+        });
     }
 
     @Override
@@ -169,6 +293,7 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
         intent.putExtra("id", singleModel.getRequesterId());
         intent.putExtra("firstName", firstName);
         intent.putExtra("lastName", lastName);
+        intent.putExtra("isFriend", singleModel.isFriend());
         startActivity(intent);
     }
 
@@ -179,7 +304,19 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
         return super.onOptionsItemSelected(item);
     }
 
-    private void acceptRequest(final int position) {
+    @Override
+    protected void onDestroy() {
+        DimDialog.hideDialog();
+        super.onDestroy();
+    }
+
+    private void acceptGroupRequest(final int position) {
+        requestSwipe.post(new Runnable() {
+            @Override
+            public void run() {
+                requestSwipe.setRefreshing(true);
+            }
+        });
         final RequestsModel requestsModel = requestsModels.get(position);
         Call<ResponseBody> requestCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.TYPE_ACCEPT_REQUEST,
                 requestsModel.getRequesterId(), requestsModel.getRequesterName(), requestsModel.getRequesterImage(),
@@ -188,11 +325,11 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    acceptRequest(position);
+                    acceptGroupRequest(position);
                     return;
                 }
                 if (response.body() == null) {
-                    acceptRequest(position);
+                    acceptGroupRequest(position);
                     return;
                 }
                 try {
@@ -204,23 +341,32 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
                         requestsModels.clear();
                         getMyRequests();
                     } else {
-                        denyRequest(position);
+                        denyGroupRequest(position);
                     }
+                    DimDialog.hideDialog();
                 } catch (IOException e) {
+                    DimDialog.hideDialog();
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    DimDialog.hideDialog();
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                acceptRequest(position);
+                acceptGroupRequest(position);
             }
         });
     }
 
-    private void denyRequest(final int position) {
+    private void denyGroupRequest(final int position) {
+        requestSwipe.post(new Runnable() {
+            @Override
+            public void run() {
+                requestSwipe.setRefreshing(true);
+            }
+        });
         RequestsModel requestsModel = requestsModels.get(position);
         Call<ResponseBody> requestCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.TYPE_DENY_REQUEST,
                 requestsModel.getRequesterId(), requestsModel.getRequesterName(), requestsModel.getRequesterImage(),
@@ -230,11 +376,11 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                 if (response == null) {
-                    denyRequest(position);
+                    denyGroupRequest(position);
                     return;
                 }
                 if (response.body() == null) {
-                    denyRequest(position);
+                    denyGroupRequest(position);
                     return;
                 }
                 try {
@@ -242,22 +388,25 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        DimDialog.hideDialog();
                         Snackbar.make(noRequestsLayout, getString(R.string.requestDenied), Snackbar.LENGTH_SHORT).show();
                         requestsModels.clear();
                         getMyRequests();
                     } else {
-                        denyRequest(position);
+                        denyGroupRequest(position);
                     }
                 } catch (IOException e) {
+                    DimDialog.hideDialog();
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    DimDialog.hideDialog();
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                denyRequest(position);
+                denyGroupRequest(position);
             }
         });
     }

@@ -65,13 +65,30 @@ public class Retrofit {
         @POST(Constants.LOGIN_URL)
         Call<ResponseBody> login(@Field("login") String login, @Field("password") String password);
 
+
         @POST(Constants.FRIENDS_URL)
         @FormUrlEncoded
         Call<ResponseBody> getFriends(@Field("user_id") String userId);
 
         @POST(Constants.SINGLE_USER_URL)
         @FormUrlEncoded
-        Call<ResponseBody> getSingleUserDetails(@Field("user_id") String userId);
+        Call<ResponseBody> getSingleUserDetails(@Field("user_id") String userId,
+                                                @Field("currentUserId") String currentUserId);
+
+        @POST(Constants.SEND_FRIEND_REQUEST_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> requestFriend(@Field("requesterId") String requesterId,
+                                         @Field("requestedUserId") String requestedUserId,
+                                         @Field("requesterName") String requesterFullName);
+
+
+        @POST(Constants.REQUEST_LOCATION_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> requestFriendLocation(@Field("requesterId") String requesterId,
+                                                 @Field("requestedUserId") String requestedUserId,
+                                                 @Field("requesterName") String requesterFullName,
+                                                 @Field("requestedUserName") String requestedUserName,
+                                                 @Field("requestType") String requestType);
 
         @POST(Constants.MESSAGES_URL)
         @FormUrlEncoded
@@ -167,7 +184,8 @@ public class Retrofit {
 
         @POST(Constants.GROUP_PARTICIPANTS_URL)
         @FormUrlEncoded
-        Call<ResponseBody> getParticipants(@Field("groupId") String groupId);
+        Call<ResponseBody> getParticipants(@Field("userId") String userId,
+                                           @Field("groupId") String groupId);
 
         @POST(Constants.GROUP_MESSAGES_URL)
         @FormUrlEncoded
@@ -183,10 +201,10 @@ public class Retrofit {
 
         @POST(Constants.GROUP_OPTIONS_URL)
         @FormUrlEncoded
-        Call<ResponseBody> changeGroup(@Field("type") String type,
-                                       @Field("groupId") String groupId,
-                                       @Field("groupName") String groupName,
-                                       @Field("groupDescription") String groupDescription);
+        Call<ResponseBody> groupOptions(@Field("type") String type,
+                                        @Field("groupId") String groupId,
+                                        @Field("groupName") String groupName,
+                                        @Field("groupDescription") String groupDescription);
 
 
         @POST(Constants.RESPOND_TO_REQUEST_URL)
@@ -201,6 +219,16 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getGroups(@Field("user_id") String userId,
                                      @Field("type") String type);
+
+        @POST(Constants.REMOVE_FRIEND_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> removeFriend(@Field("ownerId") String ownerId,
+                                        @Field("friendId") String friendId);
+
+        @POST(Constants.CHECK_IS_FRIEND_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> isFriendCheck(@Field("userId") String userId,
+                                         @Field("friendId") String friendId);
 
         @POST(Constants.USER_COINS_URL)
         @FormUrlEncoded
@@ -267,7 +295,8 @@ public class Retrofit {
 
         @POST(Constants.GET_COMMENTS_URL)
         @FormUrlEncoded
-        Call<ResponseBody> getComments(@Field("post_id") String postId);
+        Call<ResponseBody> getComments(@Field("userId") String userId,
+                                       @Field("post_id") String postId);
 
         @POST(Constants.SOCIAL_LOGIN_URL)
         @FormUrlEncoded
@@ -313,8 +342,8 @@ public class Retrofit {
                                     @Part("lastName") String lastName,
                                     @Part("timezone") String timezone,
                                     @Part("type") String type,
-                                    @Field("postId") String postId,
-                                    @Field("shouldDelete") String shouldDelete);
+                                    @Part("postId") String postId,
+                                    @Part("shouldDelete") String shouldDelete);
 
 
         @POST(Constants.MAKE_POST_URL)

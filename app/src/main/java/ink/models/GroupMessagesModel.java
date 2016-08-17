@@ -11,19 +11,29 @@ public class GroupMessagesModel {
     private String senderName;
     private String groupMessageId;
     private boolean isRequested;
+    private boolean isFriend;
 
 
-    public GroupMessagesModel(String groupId, String groupMessage,
+    public GroupMessagesModel(boolean isFriend,String groupId, String groupMessage,
                               String senderId, String senderImage,
                               String senderName, String groupMessageId,
                               boolean isRequested) {
         this.groupId = groupId;
+        this.isFriend = isFriend;
         this.isRequested = isRequested;
         this.groupMessage = groupMessage;
         this.senderId = senderId;
         this.senderImage = senderImage;
         this.senderName = senderName;
         this.groupMessageId = groupMessageId;
+    }
+
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    public void setFriend(boolean friend) {
+        isFriend = friend;
     }
 
     public String getGroupId() {

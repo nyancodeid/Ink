@@ -4,18 +4,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/friendsRecyclerView"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/friendsSwipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:layout_above="@+id/personSearchWrapper">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/friendsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <RelativeLayout
+        android:id="@+id/searchWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/searchFriendIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/searching_friend"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/searchText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/searchFriendIcon"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@string/appFont"
+            android:text="@string/searching" />
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/personSearchWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:minHeight="40dp"
         android:visibility="gone">
 
         <ImageView
@@ -35,32 +68,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/closeSearch"
-            android:layout_margin="5dp">
+            android:layout_margin="2dp">
 
             <AutoCompleteTextView
                 android:id="@+id/personSearchField"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:imeOptions="actionDone"
                 android:clickable="true"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:hint="@string/searchPerson"
                 android:imeActionLabel="@string/done_button"
+                android:imeOptions="actionDone"
                 android:maxLines="1" />
         </android.support.design.widget.TextInputLayout>
     </RelativeLayout>
-
-    <com.wang.avi.AVLoadingIndicatorView
-        android:id="@+id/friendsLoading"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="16dp"
-        android:visibility="visible"
-        app:indicator="BallClipRotateMultiple"
-        app:indicator_color="@color/colorPrimary" />
 
     <RelativeLayout
         android:id="@+id/noFriendsLayout"
@@ -86,6 +108,5 @@
             android:text="@string/noFriendsAvailable"
             android:textColor="#000000"
             android:textSize="20sp" />
-
     </RelativeLayout>
 </RelativeLayout>

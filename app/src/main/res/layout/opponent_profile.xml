@@ -40,8 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
-                    android:minHeight="200dp"
-                    android:scaleType="fitXY" />
+                    android:minHeight="200dp" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -320,6 +319,16 @@
         fab:menu_colorNormal="@color/colorPrimary"
         fab:menu_colorPressed="@color/colorPrimaryDark"
         fab:menu_colorRipple="#cccccc">
+
+        <fab.FloatingActionButton
+            android:id="@+id/removeFriend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/remove_friend_icon"
+            fab:fab_colorNormal="#444f65"
+            fab:fab_colorPressed="#636e85"
+            fab:fab_label="@string/removeFromFriends"
+            fab:fab_size="mini" />
 
         <fab.FloatingActionButton
             android:id="@+id/block"
