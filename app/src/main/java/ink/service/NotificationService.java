@@ -90,6 +90,7 @@ public class NotificationService extends FirebaseMessagingService {
                 } else {
                     Intent intent = new Intent(getPackageName() + ".Chat");
                     intent.putExtra("data", remoteMessage);
+                    intent.putExtra("type", "showMessage");
                     LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
                     localBroadcastManager.sendBroadcast(intent);
                 }

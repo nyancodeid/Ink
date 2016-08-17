@@ -20,7 +20,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -131,6 +130,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     private Gson gson;
     private Animation slideIn;
     private Animation slideOut;
+    private boolean hasFriendCheckLoaded;
+    private boolean isFriend;
+    private BroadcastReceiver finishReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,9 +153,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_in);
         slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_out);
         Notification.getInstance().setSendingRemote(false);
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(getPackageName() + ".Chat"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(generalReceiver, new IntentFilter(getPackageName() + ".Chat"));
         mChatAdapter = new ChatAdapter(mChatModelArrayList, this);
-
         mRealHelper = RealmHelper.getInstance();
 
         configureChat();
@@ -478,12 +479,24 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     @OnClick(R.id.opponentImage)
     public void opponentImage() {
-        Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
-        intent.putExtra("id", mOpponentId);
-        intent.putExtra("firstName", firstName);
-        intent.putExtra("lastName", lastName);
-        intent.putExtra("disableButton", true);
-        startActivity(intent);
+        if (!hasFriendCheckLoaded) {
+            getIsFriend();
+            Snackbar.make(sendMessageGifView, getString(R.string.waitTillLoad), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            }).show();
+        } else {
+            Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
+            intent.putExtra("id", mOpponentId);
+            intent.putExtra("firstName", firstName);
+            intent.putExtra("lastName", lastName);
+            intent.putExtra("disableButton", true);
+            intent.putExtra("isFriend", isFriend);
+            startActivity(intent);
+        }
+
     }
 
     private void attemptToQue(String message, int itemLocation, String deleteOpponentId,
@@ -501,7 +514,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                     public void onMessageSent(String response, int sentItemLocation) {
                         System.gc();
                         try {
-                            Log.d("fsafsafasfas", "onMessageSent: " + response);
                             JSONObject jsonObject = new JSONObject(response);
                             boolean success = jsonObject.optBoolean("success");
                             if (success) {
@@ -619,32 +631,37 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     protected void onDestroy() {
         System.gc();
         Notification.getInstance().setSendingRemote(true);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(generalReceiver);
         super.onDestroy();
     }
 
 
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver generalReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
             if (extras != null) {
-                RemoteMessage remoteMessage = extras.getParcelable("data");
-                Map<String, String> response = remoteMessage.getData();
-
-                if (mOpponentId.equals(response.get("user_id"))) {
-                    mChatModel = new ChatModel(Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"), response.get("message_id"), response.get("user_id"),
-                            response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
-                            response.get("user_image"), response.get("opponent_image"), response.get("date"));
-                    mChatModelArrayList.add(mChatModel);
-                    mChatAdapter.notifyDataSetChanged();
-                    mRecyclerView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            scrollToBottom();
-                        }
-                    });
+                String type = extras.getString("type");
+                if (type.equals("showMessage")) {
+                    RemoteMessage remoteMessage = extras.getParcelable("data");
+                    Map<String, String> response = remoteMessage.getData();
+                    if (mOpponentId.equals(response.get("user_id"))) {
+                        mChatModel = new ChatModel(Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"), response.get("message_id"), response.get("user_id"),
+                                response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
+                                response.get("user_image"), response.get("opponent_image"), response.get("date"));
+                        mChatModelArrayList.add(mChatModel);
+                        mChatAdapter.notifyDataSetChanged();
+                        mRecyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                scrollToBottom();
+                            }
+                        });
+                    }
+                } else if (type.equals("finish")) {
+                    finish();
                 }
+
 
             }
         }
@@ -655,7 +672,44 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         System.gc();
         Notification.getInstance().setSendingRemote(false);
         getStatus();
+        getIsFriend();
         super.onResume();
+    }
+
+    private void getIsFriend() {
+        hasFriendCheckLoaded = false;
+        if (mOpponentId != null && !mOpponentId.isEmpty()) {
+            Call<ResponseBody> isFriendCheckCall = Retrofit.getInstance().getInkService().isFriendCheck(mSharedHelper.getUserId(), mOpponentId);
+            isFriendCheckCall.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response == null) {
+                        getIsFriend();
+                        return;
+                    }
+                    if (response.body() == null) {
+                        getIsFriend();
+                        return;
+                    }
+                    try {
+                        String responseBody = response.body().string();
+                        JSONObject jsonObject = new JSONObject(responseBody);
+                        isFriend = jsonObject.optBoolean("isFriend");
+                        hasFriendCheckLoaded = true;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    getIsFriend();
+                }
+            });
+        }
+
     }
 
     private void configureChat() {

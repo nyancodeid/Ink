@@ -117,13 +117,10 @@ public class OpponentProfile extends BaseActivity {
             isFriend = extras.getBoolean("isFriend");
             if (extras.containsKey("disableButton")) {
                 if (extras.getBoolean("disableButton")) {
-                    mProfileFab.setVisibility(View.GONE);
-                } else {
-
+                    sendMessage.setVisibility(View.GONE);
                 }
-            } else {
-                enableButton();
             }
+            enableButton();
             mUsername.setText(mFirstName + " " + mLastName);
             if (actionBar != null) {
                 actionBar.setDisplayHomeAsUpEnabled(true);
@@ -240,6 +237,9 @@ public class OpponentProfile extends BaseActivity {
 
                                     }
                                 }).show();
+
+                                LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + ".Chat"));
+
                                 finish();
                             }
                         } catch (IOException e) {

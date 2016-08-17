@@ -216,6 +216,11 @@ public class Retrofit {
         Call<ResponseBody> removeFriend(@Field("ownerId") String ownerId,
                                         @Field("friendId") String friendId);
 
+        @POST(Constants.CHECK_IS_FRIEND_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> isFriendCheck(@Field("userId") String userId,
+                                         @Field("friendId") String friendId);
+
         @POST(Constants.USER_COINS_URL)
         @FormUrlEncoded
         Call<ResponseBody> getCoins(@Field("user_id") String userId);
