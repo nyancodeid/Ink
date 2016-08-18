@@ -172,8 +172,140 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
             acceptGroupRequest(position);
         } else if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_FRIEND_REQUEST)) {
             acceptFriendRequest(position);
+        } else if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_LOCATION_REQUEST)) {
+            acceptLocationRequest(position);
         }
 
+    }
+
+
+    @Override
+    public void onDeclineClicked(int position) {
+        DimDialog.showDimDialog(RequestsView.this, getString(R.string.declining));
+        RequestsModel requestsModel = requestsModels.get(position);
+        if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_GROUP)) {
+            denyGroupRequest(position);
+        } else if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_FRIEND_REQUEST)) {
+            denyFriendRequest(position);
+        } else if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_LOCATION_REQUEST)) {
+            declineLocationRequest(position);
+        }
+
+    }
+
+    private void acceptLocationRequest(final int position) {
+        requestSwipe.post(new Runnable() {
+            @Override
+            public void run() {
+                requestSwipe.setRefreshing(true);
+            }
+        });
+        final RequestsModel requestsModel = requestsModels.get(position);
+        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.RESPOND_TYPE_ACCEPT_LOCATION_REQUEST, sharedHelper.getUserId(),
+                sharedHelper.getFirstName() + " " + sharedHelper.getLastName(), requestsModel.getRequestId(), requestsModel.getRequesterId());
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    acceptLocationRequest(position);
+                    return;
+                }
+                if (response.body() == null) {
+                    acceptLocationRequest(position);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    DimDialog.hideDialog();
+                    if (success) {
+                        // TODO: 8/18/2016 start session chat
+                        String fullNameParts[] = requestsModel.getRequesterName().split("\\s");
+                        String firstName;
+                        String lastName;
+                        try {
+                            firstName = fullNameParts[0];
+                            lastName = fullNameParts[1];
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            e.printStackTrace();
+                            firstName = requestsModel.getRequesterName();
+                            lastName = "";
+                        }
+
+                        Intent intent = new Intent(getApplicationContext(), Chat.class);
+                        intent.putExtra("firstName", firstName);
+                        intent.putExtra("lastName", lastName);
+                        intent.putExtra("hasSession", true);
+                        intent.putExtra("opponentId", requestsModel.getRequesterId());
+                        intent.putExtra("opponentImage", requestsModel.getRequesterImage());
+                        intent.putExtra("isSocialAccount", requestsModel.isSocialAccount());
+                        startActivity(intent);
+
+                    }
+                } catch (IOException e) {
+                    DimDialog.hideDialog();
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    DimDialog.hideDialog();
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                acceptFriendRequest(position);
+            }
+        });
+    }
+
+    private void declineLocationRequest(final int position) {
+        requestSwipe.post(new Runnable() {
+            @Override
+            public void run() {
+                requestSwipe.setRefreshing(true);
+            }
+        });
+        RequestsModel requestsModel = requestsModels.get(position);
+        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.RESPOND_TYPE_DENY_LOCATION_REQUEST, requestsModel.getRequestId(),
+                sharedHelper.getFirstName() + " "
+                        + sharedHelper.getLastName(),
+                requestsModel.getRequesterId(), sharedHelper.getUserId());
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    declineLocationRequest(position);
+                    return;
+                }
+                if (response.body() == null) {
+                    declineLocationRequest(position);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        DimDialog.hideDialog();
+                        Snackbar.make(requestsRecycler, getString(R.string.friendRequestDenied), Snackbar.LENGTH_LONG).show();
+                        getMyRequests();
+                    }
+                } catch (IOException e) {
+                    DimDialog.hideDialog();
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    DimDialog.hideDialog();
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                declineLocationRequest(position);
+            }
+        });
     }
 
     private void acceptFriendRequest(final int position) {
@@ -223,18 +355,6 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
         });
     }
 
-
-    @Override
-    public void onDeclineClicked(int position) {
-        DimDialog.showDimDialog(RequestsView.this, getString(R.string.declining));
-        RequestsModel requestsModel = requestsModels.get(position);
-        if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_GROUP)) {
-            denyGroupRequest(position);
-        } else if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_FRIEND_REQUEST)) {
-            denyFriendRequest(position);
-        }
-
-    }
 
     private void denyFriendRequest(final int position) {
         requestSwipe.post(new Runnable() {

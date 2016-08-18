@@ -421,7 +421,7 @@
     <string name="requestSent">Request was sent</string>
     <string name="errorSendingRequest">Error while sending friend request</string>
     <string name="tobeFriend">asked to be a friend with you</string>
-    <string name="friendRequestInfo">To view the request,click here</string>
+    <string name="toViewTheRequest">To view the request,click here</string>
     <string name="notificationTitle">Notifications</string>
     <string name="leaveGroup">Leave Group</string>
     <string name="leaveGroupMessage">You are about to leave this group.Are you sure?</string>
@@ -438,7 +438,7 @@
     <string name="failedRequestLocation">Failed to open session,please try again...</string>
     <string name="sendingRequest">Sending location request...</string>
     <string name="requestSentWaiting">Request was sent.Your friend will receive notification.Waiting for friend acceptance...</string>
-    <string name="locationShareWith">Request location with</string>
+    <string name="locationShareWith">Location share session with</string>
     <string name="locationRequestAccepted">Request accepted.Session with %1$s</string>
     <string name="couldNotFetchName">Could not fetch name</string>
     <string name="warning">Warning</string>
@@ -454,4 +454,13 @@
     <string name="signInWithVk">Sign in with Vkontakte</string>
     <string name="closeSession">Close session</string>
     <string name="minimize">Minimize</string>
+    <string name="acceptedLocationRequest">accepted location request</string>
+    <string name="requestedShareLocation">requested to share location with you</string>
+    <string name="declinedLocationRequest">declined your request</string>
+    <string name="leftTheSession">has left the session,session will be closed</string>
+    <string name="drawRoute">Draw route to friend</string>
+    <string name="sendLocationUpdate">Send location update to friend</string>
+    <string name="locationSent">Location sent</string>
+    <string name="locationSendError">Location was not send,please try again</string>
+    <string name="updatedLocation">updated the location</string>
 </resources>

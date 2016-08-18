@@ -60,6 +60,20 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public void putLastSessionUserId(String value) {
+        mEditor.putString("lastSessionUserId", value);
+        mEditor.commit();
+    }
+
+    public String getLastSessionUserId() {
+        return mSharedPreferences.getString("lastSessionUserId", null);
+    }
+
+    public void removeLastSessionUserId() {
+        mEditor.remove("lastSessionUserId");
+        mEditor.commit();
+    }
+
     public boolean shouldShowShowCase() {
         return mSharedPreferences.getBoolean("shouldShowShowCase", true);
     }

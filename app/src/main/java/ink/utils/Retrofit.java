@@ -88,11 +88,18 @@ public class Retrofit {
                                                  @Field("requestedUserId") String requestedUserId,
                                                  @Field("requesterName") String requesterFullName,
                                                  @Field("requestedUserName") String requestedUserName,
-                                                 @Field("requestType") String requestType);
+                                                 @Field("requestType") String requestType,
+                                                 @Field("requesterImage") String requester_image);
 
         @POST(Constants.MESSAGES_URL)
         @FormUrlEncoded
         Call<ResponseBody> getMessages(@Field("user_id") String userId, @Field("opponent_id") String opponentId);
+
+        @POST(Constants.SEND_LOCATION_UPDATE_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> sendLocationUpdate(@Field("opponent_id") String opponentId,
+                                       @Field("longitude") String longitude,
+                                       @Field("latitude") String latitude);
 
         @POST(Constants.SEARCH_GROUP_URL)
         @FormUrlEncoded

@@ -9,7 +9,7 @@ public class Constants {
     public static final String GROUP_IMAGES_FOLDER = "GroupImages/";
     public static final String ANIMATED_STICKERS_FOLDER = "AnimatedStickers/";
     public static final String ADD_GROUP_URL = "AddGroup.php";
-    public static final String GROUP_REQUESTS_URL = "GetGroupRequests.php";
+    public static final String GROUP_REQUESTS_URL = "GetUserRequests.php";
     public static final String USER_GIFS_URL = "GetUserGifs.php";
     public static final String DELETE_ACCOUNT_URL = "DeleteAccount.php";
     public static final String SEARCH_GROUP_URL = "SearchGroups.php";
@@ -34,10 +34,13 @@ public class Constants {
     public static final String REMOVE_FRIEND_URL = "RemoveFriend.php";
     public static final String RESPOND_TYPE_ACCEPT_FRIEND_REQUEST = "acceptFriendRequest";
     public static final String RESPOND_TYPE_DENY_FRIEND_REQUEST = "denyFriendRequest";
+    public static final String RESPOND_TYPE_DENY_LOCATION_REQUEST = "denyLocationRequest";
+    public static final String RESPOND_TYPE_ACCEPT_LOCATION_REQUEST = "acceptLocationRequest";
     public static final String LOGIN_URL = "Login.php";
     public static final String FRIENDS_URL = "UserFriends.php";
     public static final String SINGLE_USER_URL = "SingleUser.php";
     public static final String SEND_FRIEND_REQUEST_URL = "SendFriendRequest.php";
+    public static final String SEND_LOCATION_UPDATE_URL = "SendLocationUpdate.php";
     public static final String REQUEST_LOCATION_URL = "RequestLocation.php";
     public static final String MESSAGES_URL = "Messages.php";
     public static final String UPLOADED_FILES_DIR = "UserUploads/";
@@ -59,6 +62,7 @@ public class Constants {
     public static final String COMMENT_OPTIONS_URL = "CommentOptions.php";
     public static final String REQUEST_RESPONSE_TYPE_GROUP = "group";
     public static final String REQUEST_RESPONSE_TYPE_FRIEND_REQUEST = "friendRequest";
+    public static final String REQUEST_RESPONSE_TYPE_LOCATION_REQUEST = "locationRequest";
     public static final String LIKE_URL = "LikePost.php";
     public static final String GET_COMMENTS_URL = "GetComments.php";
     public static final String SOCIAL_LOGIN_URL = "SocialLogin.php";
@@ -73,6 +77,7 @@ public class Constants {
     public static final String NOTIFICATION_TYPE_LOCATION_REQUEST_DECLINED = "requestLocationDeclined";
     public static final String NOTIFICATION_TYPE_LOCATION_REQUEST_ACCEPTED = "requestLocationAccepted";
     public static final String NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED = "friendRequestAccepted";
+    public static final String NOTIFICATION_TYPE_LOCATION_UPDATES = "locationUpdate";
     public static final String WAITERS_QUE = "WaitRoomQue.php";
     public static final String GET_WAITERS = "GetWaitersQue.php";
     public static final String TYPE_ACCEPT_REQUEST = "acceptGroupRequest";

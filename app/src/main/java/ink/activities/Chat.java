@@ -16,6 +16,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -136,6 +137,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
     RelativeLayout closeSession;
     @Bind(R.id.minimize)
     RelativeLayout minimize;
+    @Bind(R.id.shareLocationFab)
+    FloatingActionMenu shareLocationFab;
 
     private String mOpponentId;
     String mCurrentUserId;
@@ -172,6 +175,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
     private Menu menuItem;
     private Animation slideUp;
     private Animation slideDown;
+    private boolean hasSession;
+    private String lastKnownUserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,6 +202,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
         LocalBroadcastManager.getInstance(this).registerReceiver(generalReceiver, new IntentFilter(getPackageName() + ".Chat"));
         mChatAdapter = new ChatAdapter(mChatModelArrayList, this);
         mRealHelper = RealmHelper.getInstance();
+
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -281,6 +287,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
     public void locationSessionIcon() {
         locationRequestLayout.setEnabled(false);
         locationRequestLayout.setVisibility(View.VISIBLE);
+        shareLocationFab.setVisibility(View.VISIBLE);
         locationRequestLayout.startAnimation(slideUp);
         slideUp.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -299,6 +306,16 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
             }
         });
 
+    }
+
+    @OnClick(R.id.drawRoute)
+    public void drawRoute() {
+        shareLocationFab.close(true);
+    }
+
+    @OnClick(R.id.sendLocationUpdate)
+    public void sendLocationUpdate() {
+        shareLocationFab.close(true);
     }
 
     @OnClick(R.id.scrollDownChat)
@@ -676,7 +693,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
             }
             return super.onOptionsItemSelected(item);
         } else if (item.getItemId() == R.id.requestLocation) {
-            startLocationSession();
+            startLocationSession(true);
             return false;
 
         } else {
@@ -699,6 +716,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
             @Override
             public void onAnimationEnd(Animation animation) {
                 locationRequestLayout.setVisibility(View.GONE);
+                shareLocationFab.setVisibility(View.GONE);
             }
 
             @Override
@@ -710,28 +728,36 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
     }
 
     @OnClick(R.id.closeSession)
-    public void closeSession() {
+    public void closeSessionClicker() {
+        closeSession();
+    }
+
+    private void closeSession() {
         showMenuItem();
         destroySession(false);
-        locationRequestLayout.setEnabled(false);
-        slideDown.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+        if (locationRequestLayout.getVisibility() == View.VISIBLE) {
+            locationRequestLayout.setEnabled(false);
+            slideDown.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                locationRequestLayout.setVisibility(View.GONE);
-            }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    locationRequestLayout.setVisibility(View.GONE);
+                    shareLocationFab.setVisibility(View.GONE);
+                }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
+                @Override
+                public void onAnimationRepeat(Animation animation) {
 
-            }
-        });
-        locationRequestLayout.startAnimation(slideDown);
-        locationSessionIcon.setVisibility(View.GONE);
+                }
+            });
+            locationRequestLayout.startAnimation(slideDown);
+            locationSessionIcon.setVisibility(View.GONE);
+        }
+
     }
 
     private void showMenuItem() {
@@ -743,10 +769,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
         }
     }
 
-    private void startLocationSession() {
+    private void startLocationSession(boolean callToServer) {
         System.gc();
-        hideMenuItem();
         locationRequestLayout.setVisibility(View.VISIBLE);
+        shareLocationFab.setVisibility(View.VISIBLE);
         slideUp.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -765,7 +791,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
         });
         locationRequestLayout.startAnimation(slideUp);
         locationSessionIcon.setVisibility(View.VISIBLE);
-        requestLocation();
+        mSharedHelper.putLastSessionUserId(mOpponentId);
+        if (callToServer) {
+            requestLocation();
+        }
+
 
     }
 
@@ -781,7 +811,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
 
     private void requestLocation() {
         Call<ResponseBody> friendLocationCall = Retrofit.getInstance().getInkService().requestFriendLocation(mSharedHelper.getUserId(), mOpponentId,
-                mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), firstName + " " + lastName, Constants.LOCATION_REQUEST_TYPE_INSERT);
+                mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), firstName + " " + lastName, Constants.LOCATION_REQUEST_TYPE_INSERT, mSharedHelper.getImageLink());
         friendLocationCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -797,6 +827,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
+                    hideMenuItem();
                     if (success) {
                         isSessionOpened = true;
                         requestStatus.setText(getString(R.string.requestSentWaiting));
@@ -826,6 +857,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
 
     private void destroySession(boolean finish) {
         isSessionOpened = false;
+        mSharedHelper.removeLastSessionUserId();
         Intent intent = new Intent(getApplicationContext(), LocationRequestSessionDestroyer.class);
         intent.putExtra("opponentId", mOpponentId);
         startService(intent);
@@ -894,30 +926,82 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
             Bundle extras = intent.getExtras();
             if (extras != null) {
                 String type = extras.getString("type");
-                if (type.equals("showMessage")) {
-                    RemoteMessage remoteMessage = extras.getParcelable("data");
-                    Map<String, String> response = remoteMessage.getData();
-                    if (mOpponentId.equals(response.get("user_id"))) {
-                        mChatModel = new ChatModel(Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"), response.get("message_id"), response.get("user_id"),
-                                response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
-                                response.get("user_image"), response.get("opponent_image"), response.get("date"));
-                        mChatModelArrayList.add(mChatModel);
-                        mChatAdapter.notifyDataSetChanged();
-                        mRecyclerView.post(new Runnable() {
+
+                switch (type) {
+                    case "showMessage":
+                        RemoteMessage remoteMessage = extras.getParcelable("data");
+                        Map<String, String> response = remoteMessage.getData();
+                        if (mOpponentId.equals(response.get("user_id"))) {
+                            mChatModel = new ChatModel(Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"), response.get("message_id"), response.get("user_id"),
+                                    response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
+                                    response.get("user_image"), response.get("opponent_image"), response.get("date"));
+                            mChatModelArrayList.add(mChatModel);
+                            mChatAdapter.notifyDataSetChanged();
+                            mRecyclerView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    scrollToBottom();
+                                }
+                            });
+                        }
+                        break;
+                    case "finish":
+                        finish();
+                        break;
+                    case "locationSession":
+                        boolean hasAccepted = extras.getBoolean("hasAccepted");
+                        String opponentName = extras.getString("requesterName");
+                        if (hasAccepted) {
+                            Snackbar.make(chatTitle, opponentName + " " + getString(R.string.acceptedLocationRequest), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            }).show();
+                            requestStatus.setText(getString(R.string.locationRequestAccepted, opponentName));
+                            lastKnownUserName = opponentName;
+                        } else {
+                            closeSession();
+                            lastKnownUserName = opponentName;
+                            opponentName = extras.getString("requesterName");
+                            Snackbar.make(chatTitle, opponentName + " " + getString(R.string.declinedLocationRequest), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            }).show();
+                        }
+                        break;
+                    case Constants.NOTIFICATION_TYPE_LOCATION_SESSION_ENDED:
+                        closeSession();
+                        opponentName = extras.getString("requesterName");
+                        Snackbar.make(chatTitle, opponentName + " " + getString(R.string.leftTheSession), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                             @Override
-                            public void run() {
-                                scrollToBottom();
+                            public void onClick(View view) {
+
                             }
                         });
-                    }
-                } else if (type.equals("finish")) {
-                    finish();
-                }
+                        break;
+                    case Constants.NOTIFICATION_TYPE_LOCATION_UPDATES:
+                        double latitude = Double.valueOf(extras.getString("latitude"));
+                        double longitude = Double.valueOf(extras.getString("longitude"));
+                        updateMapLocation(latitude, longitude);
+                        Snackbar.make(chatTitle, lastKnownUserName + " " + getString(R.string.updatedLocation), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
 
+                            }
+                        }).show();
+                        break;
+                }
 
             }
         }
     };
+
+    private void updateMapLocation(double latitude, double longitude) {
+
+    }
 
     @Override
     protected void onResume() {
@@ -981,6 +1065,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
         if (bundle != null) {
             firstName = bundle.getString("firstName");
             lastName = bundle.getString("lastName");
+            if (bundle.containsKey("hasSession")) {
+                hasSession = bundle.getBoolean("hasSession");
+            }
             mOpponentId = bundle.getString("opponentId");
             String opponentImage = bundle.getString("opponentImage");
             boolean isSocialAccount = bundle.getBoolean("isSocialAccount");
@@ -1012,6 +1099,73 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        if (hasSession) {
+            isSessionOpened = true;
+            startLocationSession(false);
+            requestStatus.setText(getString(R.string.locationShareWith) + " " + firstName + " " + lastName);
+            Location location = getLastKnownLocation(mGoogleMap);
+            if (location != null) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                sendLocationUpdate(mOpponentId, String.valueOf(latitude), String.valueOf(longitude), false);
+            }
+
+
+        }
+    }
+
+    private void sendLocationUpdate(final String mOpponentId, final String latitude, final String longitude, final boolean showSnack) {
+        Call<ResponseBody> locationUpdateCall = Retrofit.getInstance().getInkService().sendLocationUpdate(mOpponentId,
+                longitude, latitude);
+        locationUpdateCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    sendLocationUpdate(mOpponentId, latitude, longitude, showSnack);
+                    return;
+                }
+                if (response.body() == null) {
+                    sendLocationUpdate(mOpponentId, latitude, longitude, showSnack);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        if (showSnack) {
+                            Snackbar.make(chatTitle, getString(R.string.locationSent), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            }).show();
+                        }
+
+                    } else {
+                        if (showSnack) {
+                            Snackbar.make(chatTitle, getString(R.string.locationSendError), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            }).show();
+                        }
+
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    sendLocationUpdate(mOpponentId, latitude, longitude, showSnack);
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                sendLocationUpdate(mOpponentId, latitude, longitude, showSnack);
+            }
+        });
     }
 
 
@@ -1156,7 +1310,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_CODE);
     }
 
-    public void getLastKnownLocation(GoogleMap googleMap) {
+    public Location getLastKnownLocation(GoogleMap googleMap) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -1165,7 +1319,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             requestPermission();
-            return;
+            return mLastLocation;
         }
         googleMap.setMyLocationEnabled(true);
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
@@ -1176,6 +1330,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, OnM
                     mLastLocation.getLongitude()), 20));
         }
         googleMap.setMyLocationEnabled(true);
+        return mLastLocation;
     }
 
     @Override

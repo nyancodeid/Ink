@@ -48,6 +48,7 @@ import ink.interfaces.AccountDeleteListener;
 import ink.models.CoinsResponse;
 import ink.models.PingResponse;
 import ink.service.BackgroundTaskService;
+import ink.service.LocationRequestSessionDestroyer;
 import ink.service.SendTokenService;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
@@ -484,6 +485,13 @@ public class HomeActivity extends BaseActivity
             if (coinsText != null) {
                 coinsText.setText(getString(R.string.coinsText, User.get().getCoins()));
             }
+        }
+        String lastSessionId = mSharedHelper.getLastSessionUserId();
+        if (lastSessionId != null) {
+            Intent intent = new Intent(getApplicationContext(), LocationRequestSessionDestroyer.class);
+            intent.putExtra("opponentId", lastSessionId);
+            mSharedHelper.removeLastSessionUserId();
+            startService(intent);
         }
         mUserNameTV.setText(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
         if (mSharedHelper.hasImage()) {

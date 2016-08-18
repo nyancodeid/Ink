@@ -330,7 +330,46 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/requestStatus"
-                android:layout_margin="16dp" />
+                android:layout_marginTop="16dp" />
+
+
+            <android.support.design.widget.FloatingActionMenu
+                android:id="@+id/shareLocationFab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/fab_add"
+                fab:menu_colorNormal="@color/colorPrimary"
+                fab:menu_colorPressed="@color/colorPrimaryDark"
+                fab:menu_colorRipple="#cccccc">
+
+                <fab.FloatingActionButton
+                    android:id="@+id/drawRoute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_message_white_24dp"
+                    fab:fab_colorNormal="#444f65"
+                    fab:fab_colorPressed="#636e85"
+                    fab:fab_label="@string/drawRoute"
+                    fab:fab_size="mini" />
+
+                <fab.FloatingActionButton
+                    android:id="@+id/sendLocationUpdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_create_white_24dp"
+                    fab:fab_colorNormal="#444f65"
+                    fab:fab_colorPressed="#636e85"
+                    fab:fab_label="@string/sendLocationUpdate"
+                    fab:fab_size="mini" />
+
+            </android.support.design.widget.FloatingActionMenu>
+
+
         </RelativeLayout>
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
