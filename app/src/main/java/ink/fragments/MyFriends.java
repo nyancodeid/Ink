@@ -144,7 +144,9 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         updateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                getFriends();
+                if (!isDetached()) {
+                    getFriends();
+                }
             }
         };
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateReceiver, new IntentFilter(getActivity().getPackageName() + "MyFriends"));
@@ -171,6 +173,9 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (!charSequence.toString().trim().isEmpty()) {
                     doSearch(charSequence.toString());
+                }else{
+                    stopSearchAnimation(false);
+
                 }
             }
 
