@@ -173,7 +173,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (!charSequence.toString().trim().isEmpty()) {
                     doSearch(charSequence.toString());
-                }else{
+                } else {
                     stopSearchAnimation(false);
 
                 }
@@ -327,6 +327,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
                             if (mFriendsModelArrayList != null) {
                                 mFriendsModelArrayList.clear();
                             }
+                            mNoFriendsLayout.setVisibility(View.GONE);
                             JSONArray friendsArray = jsonObject.optJSONArray("friends");
                             for (int i = 0; i < friendsArray.length(); i++) {
                                 JSONObject eachObject = friendsArray.optJSONObject(i);
