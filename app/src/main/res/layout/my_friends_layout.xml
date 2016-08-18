@@ -80,7 +80,8 @@
                 android:hint="@string/searchPerson"
                 android:imeActionLabel="@string/done_button"
                 android:imeOptions="actionDone"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
     </RelativeLayout>
 
