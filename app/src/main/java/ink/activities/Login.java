@@ -36,7 +36,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.ink.R;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
-import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
@@ -157,7 +156,6 @@ public class Login extends BaseActivity implements View.OnClickListener {
     }
 
     private static final String[] vkScopes = new String[]{
-            VKScope.EMAIL
     };
 
     /**
