@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -95,6 +96,10 @@ public class Login extends BaseActivity implements View.OnClickListener {
         FirebaseInstanceId.getInstance().getToken();
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(getString(R.string.logging));
+        progressDialog.setProgressDrawable(ContextCompat.getDrawable(this, R.drawable.progress_dialog_circle));
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setIndeterminateDrawable(ContextCompat.getDrawable(this, R.drawable.progress_dialog_circle));
         progressDialog.setMessage(getString(R.string.loggingPleasWait));
         if (!checkPlayServices()) {
             return;
@@ -367,6 +372,9 @@ public class Login extends BaseActivity implements View.OnClickListener {
         vkSignInWrapper.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (finalAlertDialog != null) {
+                    finalAlertDialog.dismiss();
+                }
                 openVkLogin();
             }
         });

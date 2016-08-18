@@ -24,14 +24,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.ink.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.vk.sdk.VKSdk;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -403,7 +401,6 @@ public class HomeActivity extends BaseActivity
                 boolean editorHintValue = mSharedHelper.isEditorHintShown();
                 mSharedHelper.clean();
                 mSharedHelper.putShouldShowIntro(false);
-                VKSdk.logout();
                 if (editorHintValue) {
                     mSharedHelper.putEditorHintShow(true);
                 }
@@ -417,23 +414,11 @@ public class HomeActivity extends BaseActivity
                         try {
                             FirebaseInstanceId.getInstance().deleteInstanceId();
                             progressDialog.dismiss();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(HomeActivity.this, getString(R.string.loggedOutText), Toast.LENGTH_SHORT).show();
-                                }
-                            });
                             startActivity(new Intent(getApplicationContext(), Login.class));
                             finish();
                         } catch (IOException e) {
                             e.printStackTrace();
                             progressDialog.dismiss();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(HomeActivity.this, getString(R.string.loggedOutText), Toast.LENGTH_SHORT).show();
-                                }
-                            });
                             startActivity(new Intent(getApplicationContext(), Login.class));
                             finish();
                         }
