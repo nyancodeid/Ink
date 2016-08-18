@@ -1,13 +1,23 @@
 package ink.activities;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
@@ -28,9 +38,17 @@ import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.ink.R;
@@ -45,6 +63,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.Bind;
@@ -52,6 +71,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.adapters.ChatAdapter;
 import ink.adapters.GifAdapter;
+import ink.callbacks.GeneralCallback;
 import ink.callbacks.QueCallback;
 import ink.interfaces.RecyclerItemClickListener;
 import ink.models.ChatModel;
@@ -66,6 +86,7 @@ import ink.utils.Constants;
 import ink.utils.ErrorCause;
 import ink.utils.Keyboard;
 import ink.utils.Notification;
+import ink.utils.PermissionsChecker;
 import ink.utils.QueHelper;
 import ink.utils.RealmHelper;
 import ink.utils.RecyclerTouchListener;
@@ -77,8 +98,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Chat extends BaseActivity implements RecyclerItemClickListener {
+public class Chat extends BaseActivity implements RecyclerItemClickListener, OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    private static final int REQUEST_LOCATION_CODE = 454;
     @Bind(R.id.sendChatMessage)
     fab.FloatingActionButton mSendChatMessage;
     @Bind(R.id.messageBody)
@@ -106,6 +128,14 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     ImageView scrollDownChat;
     @Bind(R.id.locationSessionIcon)
     ImageView locationSessionIcon;
+    @Bind(R.id.locationRequestLayout)
+    RelativeLayout locationRequestLayout;
+    @Bind(R.id.requestStatus)
+    TextView requestStatus;
+    @Bind(R.id.closeSession)
+    RelativeLayout closeSession;
+    @Bind(R.id.minimize)
+    RelativeLayout minimize;
 
     private String mOpponentId;
     String mCurrentUserId;
@@ -135,8 +165,13 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     private boolean hasFriendCheckLoaded;
     private boolean isFriend;
     private boolean isSessionOpened;
-    private TextView requestStatus;
-    private BottomSheetDialog locationRequestSheet;
+    private Location mLastLocation;
+    private GoogleApiClient mGoogleApiClient;
+    private GoogleMap mGoogleMap;
+    private Thread mWorkerThread;
+    private Menu menuItem;
+    private Animation slideUp;
+    private Animation slideDown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,10 +191,19 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         gifGson = new Gson();
         slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_in);
         slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_out);
+        slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_slow);
+        slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_slow);
         Notification.getInstance().setSendingRemote(false);
         LocalBroadcastManager.getInstance(this).registerReceiver(generalReceiver, new IntentFilter(getPackageName() + ".Chat"));
         mChatAdapter = new ChatAdapter(mChatModelArrayList, this);
         mRealHelper = RealmHelper.getInstance();
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
 
         configureChat();
 
@@ -235,11 +279,26 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     @OnClick(R.id.locationSessionIcon)
     public void locationSessionIcon() {
-        if (locationRequestSheet != null) {
-            if (!locationRequestSheet.isShowing()) {
-                locationRequestSheet.show();
+        locationRequestLayout.setEnabled(false);
+        locationRequestLayout.setVisibility(View.VISIBLE);
+        locationRequestLayout.startAnimation(slideUp);
+        slideUp.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
             }
-        }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                locationRequestLayout.setEnabled(true);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
     }
 
     @OnClick(R.id.scrollDownChat)
@@ -302,6 +361,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.location_menu, menu);
+        menuItem = menu;
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -368,6 +428,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         gifChooserDialog.setContentView(view);
         final RecyclerView gifsRecycler = (RecyclerView) view.findViewById(R.id.gifsRecycler);
         ImageView closeGifChoser = (ImageView) view.findViewById(R.id.closeGifChoser);
+        ProgressBar gifLoadingProgress = (ProgressBar) view.findViewById(R.id.gifLoadingProgress);
         TextView noGifsText = (TextView) view.findViewById(R.id.noGifsText);
         closeGifChoser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -381,7 +442,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         gifsRecycler.setLayoutManager(gridLayoutManager);
 
         gifsRecycler.setAdapter(gifAdapter);
-        getUserGifs(noGifsText);
+        getUserGifs(noGifsText, gifLoadingProgress);
         gifChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
@@ -399,23 +460,24 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         gifChooserDialog.show();
     }
 
-    private void getUserGifs(final TextView noGifsText) {
+    private void getUserGifs(final TextView noGifsText, final ProgressBar gifLoadingProgress) {
         Call<ResponseBody> gifCall = Retrofit.getInstance().getInkService().getUserGifs(mSharedHelper.getUserId(),
                 Constants.SERVER_AUTH_KEY);
         gifCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    getUserGifs(noGifsText);
+                    getUserGifs(noGifsText, gifLoadingProgress);
                     return;
                 }
                 if (response.body() == null) {
-                    getUserGifs(noGifsText);
+                    getUserGifs(noGifsText, gifLoadingProgress);
                     return;
                 }
                 try {
                     String responseBody = response.body().string();
                     GifResponse gifResponse = gson.fromJson(responseBody, GifResponse.class);
+                    gifLoadingProgress.setVisibility(View.INVISIBLE);
                     if (gifResponse.success) {
                         if (!gifResponse.cause.equals(ErrorCause.NO_GIFS)) {
                             ArrayList<GifResponseModel> gifResponseModels = gifResponse.gifResponseModels;
@@ -439,7 +501,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getUserGifs(noGifsText);
+                getUserGifs(noGifsText, gifLoadingProgress);
             }
         });
     }
@@ -605,38 +667,115 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
+
+        if (item.getItemId() == android.R.id.home) {
+            if (isSessionOpened) {
+                showWarning();
+            } else {
                 finish();
-                break;
-            case R.id.requestLocation:
-                startLocationSession();
-                break;
+            }
+            return super.onOptionsItemSelected(item);
+        } else if (item.getItemId() == R.id.requestLocation) {
+            startLocationSession();
+            return false;
+
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+    }
+
+
+    @OnClick(R.id.minimize)
+    public void minimize() {
+        locationSessionIcon.setVisibility(View.VISIBLE);
+
+        locationRequestLayout.setEnabled(false);
+        slideDown.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                locationRequestLayout.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        locationRequestLayout.startAnimation(slideDown);
+    }
+
+    @OnClick(R.id.closeSession)
+    public void closeSession() {
+        showMenuItem();
+        destroySession(false);
+        locationRequestLayout.setEnabled(false);
+        slideDown.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                locationRequestLayout.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        locationRequestLayout.startAnimation(slideDown);
+        locationSessionIcon.setVisibility(View.GONE);
+    }
+
+    private void showMenuItem() {
+        if (menuItem != null) {
+            for (int i = 0; i < menuItem.size(); i++) {
+                menuItem.getItem(i).setVisible(true);
+            }
+
+        }
     }
 
     private void startLocationSession() {
         System.gc();
-        locationRequestSheet = new BottomSheetDialog(this);
-        locationRequestSheet.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        hideMenuItem();
+        locationRequestLayout.setVisibility(View.VISIBLE);
+        slideUp.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                locationSessionIcon.setVisibility(View.VISIBLE);
+            public void onAnimationStart(Animation animation) {
+                locationRequestLayout.setEnabled(false);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                locationRequestLayout.setEnabled(true);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
             }
         });
-        locationRequestSheet.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialogInterface) {
-                locationSessionIcon.setVisibility(View.VISIBLE);
-            }
-        });
-        View requestLocationView = getLayoutInflater().inflate(R.layout.activity_friend_location, null);
-        locationRequestSheet.setContentView(requestLocationView);
-        requestStatus = (TextView) requestLocationView.findViewById(R.id.requestStatus);
-        locationRequestSheet.show();
-        locationSessionIcon.setVisibility(View.GONE);
+        locationRequestLayout.startAnimation(slideUp);
+        locationSessionIcon.setVisibility(View.VISIBLE);
         requestLocation();
+
+    }
+
+    private void hideMenuItem() {
+        if (menuItem != null) {
+            for (int i = 0; i < menuItem.size(); i++) {
+                menuItem.getItem(i).setVisible(false);
+            }
+
+        }
     }
 
 
@@ -685,11 +824,15 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     }
 
 
-    private void destroySession() {
+    private void destroySession(boolean finish) {
+        isSessionOpened = false;
         Intent intent = new Intent(getApplicationContext(), LocationRequestSessionDestroyer.class);
         intent.putExtra("opponentId", mOpponentId);
         startService(intent);
-        finish();
+        if (finish) {
+            finish();
+        }
+
     }
 
     private void showWarning() {
@@ -699,7 +842,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                destroySession();
+                destroySession(true);
             }
         });
         builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -929,5 +1072,138 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     private void scrollToBottom() {
         mRecyclerView.smoothScrollToPosition(mChatAdapter.getItemCount());
+    }
+
+    @Override
+    public void onMapReady(final GoogleMap googleMap) {
+        mGoogleMap = googleMap;
+        boolean isGranted = PermissionsChecker.isLocationPermissionGranted(this);
+        if (isGranted) {
+            getLastKnownLocation(googleMap);
+        } else {
+            requestPermission();
+        }
+        googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+            }
+        });
+    }
+
+
+    private void getAddress(final double latitude, final double longitude, final GeneralCallback generalCallback) {
+        if (mWorkerThread != null) {
+            mWorkerThread = null;
+        }
+        mWorkerThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Geocoder geocoder;
+                List<Address> addresses;
+                geocoder = new Geocoder(Chat.this, Locale.getDefault());
+                Looper mainLooper = Looper.getMainLooper();
+                String strAdd = "";
+                try {
+                    addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                    if (addresses != null) {
+                        Address returnedAddress = addresses.get(0);
+                        StringBuilder strReturnedAddress = new StringBuilder("");
+
+                        for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
+                            strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                        }
+                        strAdd = strReturnedAddress.toString();
+
+                        Handler handler = new Handler(mainLooper);
+                        final String finalStrAdd = strAdd;
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                generalCallback.onSuccess(finalStrAdd);
+                            }
+                        });
+                        mWorkerThread = null;
+                    } else {
+                        Handler handler = new Handler(mainLooper);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                generalCallback.onFailure(null);
+                                mWorkerThread = null;
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Handler handler = new Handler(mainLooper);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            generalCallback.onFailure(null);
+                            mWorkerThread = null;
+                        }
+                    });
+                }
+
+
+            }
+        });
+        mWorkerThread.start();
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_CODE);
+    }
+
+    public void getLastKnownLocation(GoogleMap googleMap) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            requestPermission();
+            return;
+        }
+        googleMap.setMyLocationEnabled(true);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if (mLastLocation != null) {
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(),
+                    mLastLocation.getLongitude()), 20));
+        }
+        googleMap.setMyLocationEnabled(true);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_LOCATION_CODE: {
+                if (PermissionsChecker.isLocationPermissionGranted(this)) {
+                    getLastKnownLocation(mGoogleMap);
+                } else {
+                    Snackbar.make(sendMessageGifView, getString(R.string.permissionsRequired), Snackbar.LENGTH_LONG).show();
+                }
+            }
+
+        }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }

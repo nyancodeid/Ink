@@ -12,6 +12,7 @@ import android.os.Process;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -30,6 +31,10 @@ import com.google.gson.Gson;
 import com.ink.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -88,6 +93,7 @@ public class HomeActivity extends BaseActivity
     private Thread mPingThread;
     private Gson gson;
     private ProgressDialog progressDialog;
+    private Menu menuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -301,6 +307,7 @@ public class HomeActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
+        menuItem = menu;
         return true;
     }
 
@@ -310,10 +317,9 @@ public class HomeActivity extends BaseActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.notifications) {
-            startActivity(new Intent(getApplicationContext(),RequestsView.class));
+            startActivity(new Intent(getApplicationContext(), RequestsView.class));
         } else if (id == R.id.shop) {
             startActivity(new Intent(getApplicationContext(), Shop.class));
         }
@@ -467,6 +473,7 @@ public class HomeActivity extends BaseActivity
 
     @Override
     protected void onResume() {
+        getMyRequests();
         if (!mSharedHelper.isMessagesDownloaded()) {
             startMessageDownloadService();
         }
@@ -592,6 +599,51 @@ public class HomeActivity extends BaseActivity
         }
     }
 
+
+    private void getMyRequests() {
+        Call<ResponseBody> myRequestsCall = Retrofit.getInstance().getInkService().getMyRequests(mSharedHelper.getUserId());
+        myRequestsCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    getMyRequests();
+                    return;
+                }
+                if (response.body() == null) {
+                    getMyRequests();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        JSONArray jsonArray = jsonObject.optJSONArray("requests");
+                        if (jsonArray.length() <= 0) {
+                            if (menuItem != null) {
+                                menuItem.getItem(0).setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.notification_icon));
+                            }
+                        } else {
+                            if (menuItem != null) {
+                                menuItem.getItem(0).setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_notification_icon));
+                            }
+                        }
+                    } else {
+                        getMyRequests();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                getMyRequests();
+            }
+        });
+    }
 
     @Override
     public void onAccountDeleted() {

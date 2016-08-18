@@ -439,6 +439,7 @@
     <string name="sendingRequest">Sending location request...</string>
     <string name="requestSentWaiting">Request was sent.Your friend will receive notification.Waiting for friend acceptance...</string>
     <string name="locationShareWith">Request location with</string>
+    <string name="locationRequestAccepted">Request accepted.Session with %1$s</string>
     <string name="couldNotFetchName">Could not fetch name</string>
     <string name="warning">Warning</string>
     <string name="leavingSession">You have an active location session.If you leave,the session will be closed until you request new one.Close the session?</string>
@@ -451,4 +452,6 @@
     <string name="errorGoogleSignIn">Could not sign you in,try to sing in again</string>
     <string name="vkLoginError">Could not log you in,please try again</string>
     <string name="signInWithVk">Sign in with Vkontakte</string>
+    <string name="closeSession">Close session</string>
+    <string name="minimize">Minimize</string>
 </resources>

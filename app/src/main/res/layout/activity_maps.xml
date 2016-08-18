@@ -18,17 +18,18 @@
             style="?attr/selectableItemBackground"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="@drawable/ic_close_white_36dp"
+            android:background="@drawable/close_vector"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground" />
+            android:foreground="?android:attr/selectableItemBackground"
+            android:padding="10dp" />
+
         <TextView
             android:id="@+id/mapsToolbarTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/mapsToolbar"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="15dp"
             android:layout_marginTop="5dp"
             android:ellipsize="end"
             android:fontFamily="@string/appFont"
@@ -36,7 +37,6 @@
             android:text="@string/selectLocation"
             android:textColor="#ffffff" />
     </android.support.v7.widget.Toolbar>
-
 
 
     <RelativeLayout
