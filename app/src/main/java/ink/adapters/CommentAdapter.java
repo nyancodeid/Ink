@@ -155,6 +155,10 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             }
             headerViewHolder.postBody.setMovementMethod(LinkMovementMethod.getInstance());
             headerViewHolder.postBody.setText(ownerPostBody);
+
+            int index = ownerPostBody.indexOf(":");
+            headerViewHolder.postBody.setText(ownerPostBody.substring(index + 1, ownerPostBody.length()));
+
             headerViewHolder.postDate.setText(date);
 
 
@@ -197,7 +201,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
                     if (commentClickHandler != null) {
                         int actualPosition = position - 1;
                         commentClickHandler.onLikeClicked(actualPosition, headerViewHolder.likesCountTV,
-                                headerViewHolder.likeIcon);
+                                headerViewHolder.likeIcon, headerViewHolder.commentLikeWrapper);
                     }
                 }
             });

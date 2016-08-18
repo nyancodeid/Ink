@@ -126,7 +126,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         if (feedModel.getFileName() != null && !feedModel.getFileName().isEmpty()) {
             feedModel.setHasAttachment(true);
             holder.feedAttachmentLayout.setVisibility(View.VISIBLE);
-            holder.feedAttachmentName.setText(feedModel.getFileName());
+            String fileName = feedModel.getFileName();
+            int index = fileName.indexOf(":");
+            holder.feedAttachmentName.setText(fileName.substring(index+1, fileName.length()));
         } else {
             feedModel.setHasAttachment(false);
             holder.feedAttachmentLayout.setVisibility(View.GONE);
@@ -188,7 +190,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             @Override
             public void onClick(View view) {
                 if (mOnClickListener != null) {
-                    mOnClickListener.onLikeClick(position, holder.likeIcon, holder.likesCountTV);
+                    mOnClickListener.onLikeClick(position, holder.likeIcon, holder.likesCountTV, holder.likeWrapper);
                 }
             }
         });

@@ -16,7 +16,7 @@ public interface FeedItemClick {
 
     void onCardLongClick(int position);
 
-    void onLikeClick(int position, ImageView likeView, TextView likeCountTV);
+    void onLikeClick(int position, ImageView likeView, TextView likeCountTV, View likeWrapper);
 
     void onCommentClicked(int position, View commentView);
 

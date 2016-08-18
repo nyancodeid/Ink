@@ -301,17 +301,18 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     }
 
     @Override
-    public void onLikeClick(int position, ImageView likeView, TextView likeCountTV) {
+    public void onLikeClick(int position, ImageView likeView, TextView likeCountTV, View likeWrapper) {
         Animations.animateCircular(likeView);
         boolean isLiked = mFeedModelArrayList.get(position).isLiked();
+        likeWrapper.setEnabled(false);
         if (isLiked) {
             //must dislike
-            like(mFeedModelArrayList.get(position).getId(), 1, likeCountTV, position);
+            like(mFeedModelArrayList.get(position).getId(), 1, likeCountTV, position, likeWrapper);
             likeView.setBackgroundResource(R.drawable.like_inactive);
             mFeedModelArrayList.get(position).setLiked(false);
         } else {
             //must like
-            like(mFeedModelArrayList.get(position).getId(), 0, likeCountTV, position);
+            like(mFeedModelArrayList.get(position).getId(), 0, likeCountTV, position, likeWrapper);
             likeView.setBackgroundResource(R.drawable.like_active);
             mFeedModelArrayList.get(position).setLiked(true);
         }
@@ -425,17 +426,17 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         });
     }
 
-    private void like(final String postId, final int isLiking, final TextView likeCountTV, final int position) {
+    private void like(final String postId, final int isLiking, final TextView likeCountTV, final int position, final View likeWrapper) {
         final Call<ResponseBody> likeCall = Retrofit.getInstance().getInkService().likePost(mSharedHelper.getUserId(), postId, isLiking);
         likeCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    like(postId, isLiking, likeCountTV, position);
+                    like(postId, isLiking, likeCountTV, position, likeWrapper);
                     return;
                 }
                 if (response.body() == null) {
-                    like(postId, isLiking, likeCountTV, position);
+                    like(postId, isLiking, likeCountTV, position, likeWrapper);
                     return;
                 }
 
@@ -444,6 +445,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                     JSONObject jsonObject = new JSONObject(responseBody);
                     String likesCount = jsonObject.optString("likes_count");
                     mFeedModelArrayList.get(position).setLikesCount(likesCount);
+                    likeWrapper.setEnabled(true);
                     if (!likesCount.equals("0")) {
                         likeCountTV.setVisibility(View.VISIBLE);
                         if (Integer.parseInt(likesCount) > 1) {
@@ -464,7 +466,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                like(postId, isLiking, likeCountTV, position);
+                like(postId, isLiking, likeCountTV, position,likeWrapper);
             }
         });
     }

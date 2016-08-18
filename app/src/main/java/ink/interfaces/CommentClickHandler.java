@@ -8,7 +8,7 @@ import android.widget.TextView;
  * Created by USER on 2016-07-06.
  */
 public interface CommentClickHandler {
-    void onLikeClicked(int position, TextView likesCountTV, ImageView likeView);
+    void onLikeClicked(int position, TextView likesCountTV, ImageView likeView, View likeWrapper);
 
     void onAddressClick(int position);
 
