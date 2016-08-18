@@ -689,17 +689,22 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                         case 0:
                             InputField.createInputFieldView(Comments.this, new InputField.ClickHandler() {
                                 @Override
-                                public void onPositiveClicked(Object result) {
+                                public void onPositiveClicked(Object... result) {
                                     snackbar.show();
+                                    AlertDialog dialog = (AlertDialog) result[1];
+                                    dialog.dismiss();
                                     Keyboard.hideKeyboard(getApplicationContext(), commentCard);
-                                    callCommentServer(Constants.COMMENT_TYPE_EDIT, commentModel.getCommentId(), String.valueOf(result));
+                                    callCommentServer(Constants.COMMENT_TYPE_EDIT, commentModel.getCommentId(), String.valueOf(result[0]));
+
+
                                 }
 
                                 @Override
-                                public void onNegativeClicked(Object result) {
-
+                                public void onNegativeClicked(Object... result) {
+                                    AlertDialog dialog = (AlertDialog) result[1];
+                                    dialog.dismiss();
                                 }
-                            }, commentModel.getCommentBody());
+                            }, commentModel.getCommentBody(), null, null);
                             break;
                         case 1:
                             snackbar.show();

@@ -13,7 +13,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,7 +33,18 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.ink.R;
+import com.vk.sdk.VKAccessToken;
+import com.vk.sdk.VKCallback;
+import com.vk.sdk.VKScope;
+import com.vk.sdk.VKSdk;
+import com.vk.sdk.api.VKApi;
+import com.vk.sdk.api.VKApiConst;
+import com.vk.sdk.api.VKError;
+import com.vk.sdk.api.VKParameters;
+import com.vk.sdk.api.VKRequest;
+import com.vk.sdk.api.VKResponse;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -73,6 +83,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(this);
+        VKSdk.initialize(getApplicationContext());
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
@@ -88,6 +99,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
         if (!checkPlayServices()) {
             return;
         }
+
         if (mSharedHelper.isLoggedIn()) {
             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
             finish();
@@ -135,6 +147,13 @@ public class Login extends BaseActivity implements View.OnClickListener {
         mProgressView = findViewById(R.id.loading_progress);
     }
 
+    private void openVkLogin() {
+        VKSdk.login(this, vkScopes);
+    }
+
+    private static final String[] vkScopes = new String[]{
+            VKScope.EMAIL
+    };
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -200,7 +219,6 @@ public class Login extends BaseActivity implements View.OnClickListener {
                 try {
                     try {
                         String responseString = response.body().string();
-                        Log.d("fsafsafasfas", "onResponse: " + responseString);
                         JSONObject jsonObject = new JSONObject(responseString);
                         boolean success = jsonObject.optBoolean("success");
                         AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
@@ -278,6 +296,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
         });
         RelativeLayout googleSignInWrapper = (RelativeLayout) optionsView.findViewById(R.id.googleSignInWrapper);
         RelativeLayout facebookSignInWrapper = (RelativeLayout) optionsView.findViewById(R.id.facebookSignInWrapper);
+        RelativeLayout vkSignInWrapper = (RelativeLayout) optionsView.findViewById(R.id.vkSignInWrapper);
         final AppCompatCheckBox appCompatCheckBox = (AppCompatCheckBox) optionsView.findViewById(R.id.privacyCheckBox);
         TextView acceptPrivacyText = (TextView) optionsView.findViewById(R.id.acceptPrivacyText);
 
@@ -343,6 +362,12 @@ public class Login extends BaseActivity implements View.OnClickListener {
 
                     }
                 });
+            }
+        });
+        vkSignInWrapper.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openVkLogin();
             }
         });
         inkSignInWrapper.setOnClickListener(new OnClickListener() {
@@ -420,16 +445,66 @@ public class Login extends BaseActivity implements View.OnClickListener {
                 String fullName = account.getDisplayName();
                 String email = account.getEmail();
                 String[] nameParts = fullName.split("\\s");
-                String firstName = nameParts[0];
-                String lastName = nameParts[1];
-                Uri accountImageUri = account.getPhotoUrl();
-                if (accountImageUri == null) {
-                    accountImageUri = Uri.parse("http://104.196.103.60/Ink/UserImages/no_image.png");
+                try {
+                    String firstName = nameParts[0];
+                    String lastName = nameParts[1];
+                    Uri accountImageUri = account.getPhotoUrl();
+                    if (accountImageUri == null) {
+                        accountImageUri = Uri.parse(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + "no_image.png");
+                    }
+                    loginUser(email, firstName, lastName, accountImageUri.toString(), "", "", Constants.SOCIAL_TYPE_GOOGLE);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                    Snackbar.make(mRegisterWrapper, getString(R.string.errorGoogleSignIn), Snackbar.LENGTH_INDEFINITE).setAction("OK", new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
                 }
-                loginUser(email, firstName, lastName, accountImageUri.toString(), "", "", Constants.SOCIAL_TYPE_GOOGLE);
+
             }
         }
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        if (!VKSdk.onActivityResult(requestCode, resultCode, data, new VKCallback<VKAccessToken>() {
+            @Override
+            public void onResult(final VKAccessToken res) {
+                String id = res.userId;
+                progressDialog.show();
+                VKRequest request = VKApi.users().get(VKParameters.from(VKApiConst.USER_ID, id, VKApiConst.FIELDS, "photo_max_orig", "has_photo"));
+                request.executeWithListener(new VKRequest.VKRequestListener() {
+                    @Override
+                    public void onComplete(VKResponse response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response.responseString);
+                            JSONArray result = jsonObject.optJSONArray("response");
+                            JSONObject userJson = result.optJSONObject(0);
+                            String userId = userJson.optString("id");
+                            String firstName = userJson.optString("first_name");
+                            String lastName = userJson.optString("last_name");
+                            String userPhoto = userJson.optString("photo_max_orig");
+                            loginUser(userId, firstName, lastName, userPhoto, "", "", Constants.SOCIAL_TYPE_VK);
+                        } catch (JSONException e) {
+                            progressDialog.dismiss();
+                            e.printStackTrace();
+                        }
+                        super.onComplete(response);
+                    }
+
+                    @Override
+                    public void onError(VKError error) {
+                        Snackbar.make(mRegisterWrapper, getString(R.string.vkLoginError), Snackbar.LENGTH_LONG).show();
+                        super.onError(error);
+                    }
+
+                });
+            }
+
+            @Override
+            public void onError(VKError error) {
+
+            }
+        }))
+            mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     private void loginUser(final String login,

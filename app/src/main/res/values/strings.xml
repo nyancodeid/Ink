@@ -444,5 +444,11 @@
     <string name="leavingSession">You have an active location session.If you leave,the session will be closed until you request new one.Close the session?</string>
     <string name="acceptedYourFriendRequest">accepted your friend request</string>
     <string name="intelligentText">Intelligent chatting for you</string>
+    <integer name="com_vk_sdk_AppId">5593776</integer>
     <string name="thinFont">sans-serif-thin</string>
+    <string name="inputLogin">Input login</string>
+    <string name="noLogin">No unique identifier is attached to account,please input login</string>
+    <string name="errorGoogleSignIn">Could not sign you in,try to sing in again</string>
+    <string name="vkLoginError">Could not log you in,please try again</string>
+    <string name="signInWithVk">Sign in with Vkontakte</string>
 </resources>

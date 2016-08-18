@@ -117,6 +117,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.vk.sdk.VKServiceActivity"
+            android:label="ServiceActivity"
+            android:theme="@style/VK.Transparent" />
+        <activity
             android:name="ink.activities.Groups"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity

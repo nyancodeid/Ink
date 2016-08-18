@@ -102,6 +102,7 @@ public class Constants {
     public static final String FEEDBACK_EMAIL = "support@vaentertaiment.xyz";
     public static final String CONTACT_EMAIL = "contact@vaentertaiment.xyz";
     public static final String SOCIAL_TYPE_FACEBOOK = "facebook";
+    public static final String SOCIAL_TYPE_VK = "vkontakte";
     public static final String GROUP_MESSAGES_TYPE_EDIT = "edit";
     public static final String GROUP_MESSAGES_TYPE_DELETE = "delete";
     public static final String SOCIAL_TYPE_GOOGLE = "google";

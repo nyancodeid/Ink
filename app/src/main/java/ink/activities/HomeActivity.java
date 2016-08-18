@@ -31,6 +31,7 @@ import com.google.gson.Gson;
 import com.ink.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.vk.sdk.VKSdk;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -402,7 +403,7 @@ public class HomeActivity extends BaseActivity
                 boolean editorHintValue = mSharedHelper.isEditorHintShown();
                 mSharedHelper.clean();
                 mSharedHelper.putShouldShowIntro(false);
-
+                VKSdk.logout();
                 if (editorHintValue) {
                     mSharedHelper.putEditorHintShow(true);
                 }

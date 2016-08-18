@@ -78,6 +78,15 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public void putVkAccessToken(String value) {
+        mEditor.putString("vkAccessToken", value);
+        mEditor.commit();
+    }
+
+    public String getVkAccessToken() {
+        return mSharedPreferences.getString("vkAccessToken", "noAccessToken");
+    }
+
     public void setTokenRefreshed(boolean isRefreshed) {
         mEditor.putBoolean("refreshed", isRefreshed);
         mEditor.commit();

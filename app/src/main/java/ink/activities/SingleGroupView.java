@@ -780,16 +780,19 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                     case 0:
                         InputField.createInputFieldView(SingleGroupView.this, new InputField.ClickHandler() {
                             @Override
-                            public void onPositiveClicked(Object result) {
+                            public void onPositiveClicked(Object... result) {
                                 snackbar.show();
-                                updateGroupMessage(String.valueOf(result), groupMessagesModel.getGroupMessageId());
+                                AlertDialog dialog = (AlertDialog) result[1];
+                                dialog.dismiss();
+                                updateGroupMessage(String.valueOf(result[0]), groupMessagesModel.getGroupMessageId());
                             }
 
                             @Override
-                            public void onNegativeClicked(Object result) {
-
+                            public void onNegativeClicked(Object... result) {
+                                AlertDialog dialog = (AlertDialog) result[1];
+                                dialog.dismiss();
                             }
-                        },groupMessagesModel.getGroupMessage());
+                        }, groupMessagesModel.getGroupMessage(), null, null);
                         break;
                     case 1:
                         snackbar.setText(getString(R.string.deleting));
