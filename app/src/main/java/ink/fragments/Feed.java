@@ -188,7 +188,12 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         mAdapter.notifyDataSetChanged();
                     }
                     mAdapter.notifyDataSetChanged();
-                    feedRefresh.setRefreshing(false);
+                    feedRefresh.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            feedRefresh.setRefreshing(false);
+                        }
+                    });
 
                     if (mFeedModelArrayList.size() == 0) {
                         noPostsWrapper.setVisibility(View.VISIBLE);
@@ -209,8 +214,21 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         mOffset += 10;
                     }
                 } catch (IOException e) {
+                    feedRefresh.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            feedRefresh.setRefreshing(false);
+                        }
+                    });
+
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    feedRefresh.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            feedRefresh.setRefreshing(false);
+                        }
+                    });
                     e.printStackTrace();
                 }
             }

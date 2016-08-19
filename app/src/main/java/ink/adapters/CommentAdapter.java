@@ -177,6 +177,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
                 }
 
             } else {
+                headerViewHolder.imageHolder.setVisibility(View.GONE);
                 headerViewHolder.commentAttachmentLayout.setVisibility(View.GONE);
             }
 

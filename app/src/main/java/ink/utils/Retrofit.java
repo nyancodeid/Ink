@@ -2,7 +2,6 @@ package ink.utils;
 
 import java.util.Map;
 
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -345,7 +344,7 @@ public class Retrofit {
 
         @Multipart
         @POST(Constants.MAKE_POST_URL)
-        Call<ResponseBody> makePost(@PartMap Map<String, RequestBody> map,
+        Call<ResponseBody> makePost(@PartMap Map<String, ProgressRequestBody> map,
                                     @Part("user_id") String userId,
                                     @Part("postBody") String postBody,
                                     @Part("googleAddress") String googleAddress,

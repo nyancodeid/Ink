@@ -44,18 +44,17 @@ import butterknife.OnClick;
 import ink.utils.Constants;
 import ink.utils.FileUtils;
 import ink.utils.PermissionsChecker;
+import ink.utils.ProgressRequestBody;
 import ink.utils.Regex;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import ink.utils.Time;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MakePost extends BaseActivity {
+public class MakePost extends BaseActivity implements ProgressRequestBody.UploadCallbacks {
     private static final int PICKFILE_REQUEST_CODE = 5584;
     private static final int STORAGE_PERMISSION_REQUEST = 45485;
     private static final long MAX_FILE_SIZE = 20971520;
@@ -104,6 +103,10 @@ public class MakePost extends BaseActivity {
         progressDialog.setMessage(getString(R.string.postingYourShare));
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setProgress(0);
+        progressDialog.setMax(100);
 
         if (!isPermissionsGranted()) {
             requestPermission();
@@ -392,9 +395,10 @@ public class MakePost extends BaseActivity {
 
 
     private void makePost(File chosenFile, String postBody, String chosenGoogleAddress) {
+        System.gc();
         if (chosenFile != null) {
-            Map<String, RequestBody> map = new HashMap<>();
-            RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), chosenFile);
+            Map<String, ProgressRequestBody> map = new HashMap<>();
+            ProgressRequestBody requestBody = new ProgressRequestBody(chosenFile, this);
             map.put("file\"; filename=\"" + chosenFile.getName() + "\"", requestBody);
             callToServerWithBody(map, postBody, chosenGoogleAddress);
         } else {
@@ -450,7 +454,7 @@ public class MakePost extends BaseActivity {
         });
     }
 
-    private void callToServerWithBody(final Map<String, RequestBody> map, final String postBody, final String googleAddress) {
+    private void callToServerWithBody(final Map<String, ProgressRequestBody> map, final String postBody, final String googleAddress) {
 
         String finalType = Constants.POST_TYPE_CREATE;
         if (isEditing) {
@@ -542,5 +546,24 @@ public class MakePost extends BaseActivity {
         });
         builder.show();
 
+    }
+
+    @Override
+    public void onProgressUpdate(int percentage) {
+        progressDialog.setProgress(percentage);
+    }
+
+    @Override
+    public void onError() {
+
+    }
+
+    @Override
+    public void onFinish() {
+        if (progressDialog != null) {
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+        }
     }
 }

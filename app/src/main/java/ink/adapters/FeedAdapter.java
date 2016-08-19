@@ -141,6 +141,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                 holder.imageHolder.setVisibility(View.GONE);
             }
         } else {
+            holder.imageHolder.setVisibility(View.GONE);
             feedModel.setHasAttachment(false);
             holder.feedAttachmentLayout.setVisibility(View.GONE);
         }
