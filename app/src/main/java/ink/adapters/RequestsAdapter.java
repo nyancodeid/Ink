@@ -102,6 +102,8 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
                     requestsModel.getGroupName() + " " + mContext.getString(R.string.groupText));
         } else if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_FRIEND_REQUEST)) {
             holder.requesterMessage.setText(requestsModel.getRequesterName() + " " + mContext.getString(R.string.tobeFriend));
+        } else if (requestsModel.getType().equals(Constants.REQUEST_RESPONSE_TYPE_LOCATION_REQUEST)) {
+            holder.requesterMessage.setText(requestsModel.getRequesterName() + " " + mContext.getString(R.string.requestedShareLocation));
         }
 
 

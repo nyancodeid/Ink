@@ -1,6 +1,7 @@
 package ink.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class RealmHelper {
     private Realm mRealm;
     private List<MessageModel> mModelArray = new ArrayList<>();
     private RealmConfiguration mRealmConfiguration;
+    private boolean exists = false;
 
     public static RealmHelper getInstance() {
         return ourInstance;
@@ -87,6 +89,16 @@ public class RealmHelper {
         });
     }
 
+    public void removeMessage(final String messageId) {
+        mRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                realm.where(MessageModel.class).equalTo("messageId", messageId).findAll().deleteAllFromRealm();
+            }
+        });
+    }
+
+
     public void updateMessages(final String messageId, final String deliveryStatus, final String lastPosition, final String opponentId) {
         mRealm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -100,6 +112,30 @@ public class RealmHelper {
                 }
             }
         });
+    }
+
+    public boolean isMessageExist(final String messageId) {
+        exists = false;
+
+        mRealm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmResults<MessageModel> resultQuery = realm.where(MessageModel.class).equalTo("messageId", messageId).findAll();
+
+                try {
+                    Log.d("fasfsafasfa", "execute: " + resultQuery.size());
+                    Log.d("fasfsafasfa", "execute: " + resultQuery.get(0));
+                    Log.d("fasfsafasfa", "execute: " + resultQuery);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (resultQuery.size() > 0) {
+                    exists = true;
+                }
+            }
+        });
+        return exists;
     }
 
     public List<MessageModel> getMessages(final String opponentId, final String userId) {

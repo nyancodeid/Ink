@@ -144,7 +144,9 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         updateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                getFriends();
+                if (!isDetached()) {
+                    getFriends();
+                }
             }
         };
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateReceiver, new IntentFilter(getActivity().getPackageName() + "MyFriends"));
@@ -171,6 +173,9 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (!charSequence.toString().trim().isEmpty()) {
                     doSearch(charSequence.toString());
+                } else {
+                    stopSearchAnimation(false);
+
                 }
             }
 
@@ -322,6 +327,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
                             if (mFriendsModelArrayList != null) {
                                 mFriendsModelArrayList.clear();
                             }
+                            mNoFriendsLayout.setVisibility(View.GONE);
                             JSONArray friendsArray = jsonObject.optJSONArray("friends");
                             for (int i = 0; i < friendsArray.length(); i++) {
                                 JSONObject eachObject = friendsArray.optJSONObject(i);
@@ -500,7 +506,6 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getTitle().toString().equals(getString(R.string.removeFromFriends))) {
-                    DimDialog.showDimDialog(getActivity(), getString(R.string.removingFriend));
                     removeFriend(friendsModel.getFriendId());
                 }
                 return false;
@@ -518,6 +523,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                DimDialog.showDimDialog(getActivity(), getString(R.string.removingFriend));
                 RealmHelper.getInstance().removeMessage(friendId, mSharedHelper.getUserId());
                 Call<ResponseBody> removeFriendCall = Retrofit.getInstance().getInkService().removeFriend(mSharedHelper.getUserId(), friendId);
                 removeFriendCall.enqueue(new Callback<ResponseBody>() {

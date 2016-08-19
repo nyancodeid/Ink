@@ -54,7 +54,7 @@ public class BuyCoins extends BaseActivity {
                     } else {
                         getCoinsPack();
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

@@ -33,12 +33,29 @@ public class Time {
         }
         SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         sourceFormat.setTimeZone(TimeZone.getTimeZone(Constants.SERVER_TIME_ZONE));
-        Date parsed;
+        Date parsed = null;
         try {
             parsed = sourceFormat.parse(timeToConvert);
         } catch (ParseException e) {
             e.printStackTrace();
-            return "";
+            if (Constants.SERVER_TIME_ZONE.equals(TimeZone.getDefault())) {
+                return timeToConvert;
+            }
+            String finalResult = timeToConvert.replaceAll("/", "-");
+
+            try {
+                parsed = sourceFormat.parse(finalResult);
+            } catch (ParseException e1) {
+                e1.printStackTrace();
+                return "N/A";
+            }
+
+            TimeZone tz = TimeZone.getDefault();
+            SimpleDateFormat destFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            destFormat.setTimeZone(tz);
+
+            String result = destFormat.format(parsed);
+            return result;
         }
 
         TimeZone tz = TimeZone.getDefault();

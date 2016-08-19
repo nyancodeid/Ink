@@ -94,6 +94,8 @@ public class OpponentProfile extends BaseActivity {
     FloatingActionButton block;
     @Bind(R.id.removeFriend)
     FloatingActionButton removeFriend;
+    @Bind(R.id.callUserPhone)
+    ImageView callUserPhone;
     private String mOpponentImage;
     private boolean isFriend;
 
@@ -168,6 +170,7 @@ public class OpponentProfile extends BaseActivity {
 
     @OnClick(R.id.sendMessage)
     public void WriteMessage() {
+        mProfileFab.close(true);
         if (isFriend) {
             Intent intent = new Intent(getApplicationContext(), Chat.class);
             intent.putExtra("firstName", mFirstName);
@@ -176,7 +179,6 @@ public class OpponentProfile extends BaseActivity {
             intent.putExtra("isSocialAccount", isSocialAccount);
             intent.putExtra("opponentImage", mOpponentImage);
             startActivity(intent);
-            mProfileFab.close(true);
         } else {
             if (!isDataLoaded) {
                 Snackbar.make(mTriangleView, getString(R.string.waitTillLoad), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
@@ -196,12 +198,20 @@ public class OpponentProfile extends BaseActivity {
                     }).show();
                     mProfileFab.close(true);
                 } else {
-
                     mProfileFab.close(true);
                     requestFriend();
                 }
             }
         }
+    }
+
+    @OnClick(R.id.callUserPhone)
+    public void callUserPhone() {
+        String phoneNumber = mPhone.getText().toString();
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        startActivity(intent);
+
     }
 
     private void removeFriend(final String friendId) {
@@ -377,6 +387,8 @@ public class OpponentProfile extends BaseActivity {
 
                             if (phoneNumber.isEmpty()) {
                                 phoneNumber = getString(R.string.noPhone);
+                            } else {
+                                callUserPhone.setVisibility(View.VISIBLE);
                             }
                             if (mFacebookLink.isEmpty()) {
                                 mFacebookLink = getString(R.string.noFacebook);
@@ -454,7 +466,6 @@ public class OpponentProfile extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + "MyFriends"));
         supportFinishAfterTransition();
         return super.onOptionsItemSelected(item);
     }
@@ -494,9 +505,4 @@ public class OpponentProfile extends BaseActivity {
         super.onDestroy();
     }
 
-    @Override
-    public void onBackPressed() {
-        LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + "MyFriends"));
-        super.onBackPressed();
-    }
 }

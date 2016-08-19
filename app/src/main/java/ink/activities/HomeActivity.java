@@ -12,6 +12,7 @@ import android.os.Process;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,13 +25,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.ink.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -44,6 +48,7 @@ import ink.interfaces.AccountDeleteListener;
 import ink.models.CoinsResponse;
 import ink.models.PingResponse;
 import ink.service.BackgroundTaskService;
+import ink.service.LocationRequestSessionDestroyer;
 import ink.service.SendTokenService;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
@@ -89,6 +94,7 @@ public class HomeActivity extends BaseActivity
     private Thread mPingThread;
     private Gson gson;
     private ProgressDialog progressDialog;
+    private Menu menuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -302,6 +308,7 @@ public class HomeActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
+        menuItem = menu;
         return true;
     }
 
@@ -311,10 +318,9 @@ public class HomeActivity extends BaseActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.notifications) {
-            startActivity(new Intent(getApplicationContext(),RequestsView.class));
+            startActivity(new Intent(getApplicationContext(), RequestsView.class));
         } else if (id == R.id.shop) {
             startActivity(new Intent(getApplicationContext(), Shop.class));
         }
@@ -402,7 +408,6 @@ public class HomeActivity extends BaseActivity
                 boolean editorHintValue = mSharedHelper.isEditorHintShown();
                 mSharedHelper.clean();
                 mSharedHelper.putShouldShowIntro(false);
-
                 if (editorHintValue) {
                     mSharedHelper.putEditorHintShow(true);
                 }
@@ -416,23 +421,11 @@ public class HomeActivity extends BaseActivity
                         try {
                             FirebaseInstanceId.getInstance().deleteInstanceId();
                             progressDialog.dismiss();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(HomeActivity.this, getString(R.string.loggedOutText), Toast.LENGTH_SHORT).show();
-                                }
-                            });
                             startActivity(new Intent(getApplicationContext(), Login.class));
                             finish();
                         } catch (IOException e) {
                             e.printStackTrace();
                             progressDialog.dismiss();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(HomeActivity.this, getString(R.string.loggedOutText), Toast.LENGTH_SHORT).show();
-                                }
-                            });
                             startActivity(new Intent(getApplicationContext(), Login.class));
                             finish();
                         }
@@ -481,6 +474,7 @@ public class HomeActivity extends BaseActivity
 
     @Override
     protected void onResume() {
+        getMyRequests();
         if (!mSharedHelper.isMessagesDownloaded()) {
             startMessageDownloadService();
         }
@@ -491,6 +485,13 @@ public class HomeActivity extends BaseActivity
             if (coinsText != null) {
                 coinsText.setText(getString(R.string.coinsText, User.get().getCoins()));
             }
+        }
+        String lastSessionId = mSharedHelper.getLastSessionUserId();
+        if (lastSessionId != null) {
+            Intent intent = new Intent(getApplicationContext(), LocationRequestSessionDestroyer.class);
+            intent.putExtra("opponentId", lastSessionId);
+            mSharedHelper.removeLastSessionUserId();
+            startService(intent);
         }
         mUserNameTV.setText(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
         if (mSharedHelper.hasImage()) {
@@ -606,6 +607,51 @@ public class HomeActivity extends BaseActivity
         }
     }
 
+
+    private void getMyRequests() {
+        Call<ResponseBody> myRequestsCall = Retrofit.getInstance().getInkService().getMyRequests(mSharedHelper.getUserId());
+        myRequestsCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    getMyRequests();
+                    return;
+                }
+                if (response.body() == null) {
+                    getMyRequests();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        JSONArray jsonArray = jsonObject.optJSONArray("requests");
+                        if (jsonArray.length() <= 0) {
+                            if (menuItem != null) {
+                                menuItem.getItem(0).setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.notification_icon));
+                            }
+                        } else {
+                            if (menuItem != null) {
+                                menuItem.getItem(0).setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_notification_icon));
+                            }
+                        }
+                    } else {
+                        getMyRequests();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                getMyRequests();
+            }
+        });
+    }
 
     @Override
     public void onAccountDeleted() {

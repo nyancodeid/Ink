@@ -3,10 +3,13 @@ package ink.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.PorterDuff;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.ink.R;
 
@@ -17,11 +20,20 @@ public class InputField {
 
     public static void createInputFieldView(final Context context,
                                             @Nullable final ClickHandler clickHandler,
-                                            @Nullable String text) {
+                                            @Nullable String text, @Nullable String hint,
+                                            @Nullable String additionalText) {
 
 
         View newCommentView = ((Activity) context).getLayoutInflater().inflate(R.layout.new_comment_body, null);
         final EditText newCommentBody = (EditText) newCommentView.findViewById(R.id.newCommentBody);
+        newCommentBody.getBackground().mutate().setColorFilter(ContextCompat.getColor(context, R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+        final TextView additionTextField = (TextView) newCommentView.findViewById(R.id.additionTextField);
+        if (additionalText != null) {
+            additionTextField.setText(additionalText);
+        }
+        if (hint != null) {
+            newCommentBody.setHint(hint);
+        }
         if (text != null) {
             newCommentBody.setText(text);
             newCommentBody.setSelection(text.length());
@@ -53,9 +65,8 @@ public class InputField {
                     newCommentBody.setError(context.getString(R.string.fieldEmptyError));
                 } else {
                     if (clickHandler != null) {
-                        clickHandler.onPositiveClicked(finalBody);
+                        clickHandler.onPositiveClicked(finalBody, dialog);
                     }
-                    dialog.dismiss();
                 }
             }
         });
@@ -63,16 +74,15 @@ public class InputField {
             @Override
             public void onClick(View view) {
                 if (clickHandler != null) {
-                    clickHandler.onNegativeClicked(null);
+                    clickHandler.onNegativeClicked(null, dialog);
                 }
-                dialog.dismiss();
             }
         });
     }
 
     public interface ClickHandler {
-        void onPositiveClicked(Object result);
+        void onPositiveClicked(Object... result);
 
-        void onNegativeClicked(Object result);
+        void onNegativeClicked(Object... result);
     }
 }

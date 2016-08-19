@@ -1,10 +1,13 @@
 package ink.activities;
 
+import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
@@ -28,8 +31,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
@@ -39,11 +44,15 @@ import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +61,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.adapters.ChatAdapter;
 import ink.adapters.GifAdapter;
-import ink.callbacks.QueCallback;
+import ink.interfaces.ItemClickListener;
 import ink.interfaces.RecyclerItemClickListener;
 import ink.models.ChatModel;
 import ink.models.GifModel;
@@ -60,15 +69,17 @@ import ink.models.GifResponse;
 import ink.models.GifResponseModel;
 import ink.models.MessageModel;
 import ink.models.UserStatus;
-import ink.service.LocationRequestSessionDestroyer;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.ErrorCause;
+import ink.utils.FileUtils;
 import ink.utils.Keyboard;
 import ink.utils.Notification;
+import ink.utils.ProgressRequestBody;
 import ink.utils.QueHelper;
 import ink.utils.RealmHelper;
 import ink.utils.RecyclerTouchListener;
+import ink.utils.Regex;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import ink.utils.Time;
@@ -77,8 +88,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Chat extends BaseActivity implements RecyclerItemClickListener {
+public class Chat extends BaseActivity implements RecyclerItemClickListener, ProgressRequestBody.UploadCallbacks {
 
+    private static final int PICK_FILE_REQUEST_CODE = 400;
     @Bind(R.id.sendChatMessage)
     fab.FloatingActionButton mSendChatMessage;
     @Bind(R.id.messageBody)
@@ -106,6 +118,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     ImageView scrollDownChat;
     @Bind(R.id.locationSessionIcon)
     ImageView locationSessionIcon;
+    @Bind(R.id.attachmentIcon)
+    ImageView attachmentIcon;
 
     private String mOpponentId;
     String mCurrentUserId;
@@ -116,7 +130,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     private ChatModel mChatModel;
     private String mUserImage = "";
     private String mOpponentImage = "";
-    private AlertDialog.Builder mBuilder;
     private String mDeleteUserId;
     private String mDeleteOpponentId;
     private Gson gifGson;
@@ -134,19 +147,19 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     private Animation slideOut;
     private boolean hasFriendCheckLoaded;
     private boolean isFriend;
-    private boolean isSessionOpened;
-    private TextView requestStatus;
-    private BottomSheetDialog locationRequestSheet;
+    private ProgressDialog progressDialog;
+    private boolean scrolledToBottom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chat_background));
         setContentView(R.layout.activity_chat);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarik);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarChat);
         setSupportActionBar(toolbar);
-        mBuilder = new AlertDialog.Builder(this);
+
         fadeAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_scale);
+
         ButterKnife.bind(this);
         mSharedHelper = new SharedHelper(this);
         gson = new Gson();
@@ -154,9 +167,19 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         gifAdapter = new GifAdapter(gifModelList, this);
         gifAdapter.setOnItemClickListener(this);
         gifGson = new Gson();
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle(getString(R.string.updatingMessages));
+        progressDialog.setMessage(getString(R.string.updatingYourMessages));
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+
         slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_in);
         slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_out);
+
+
         Notification.getInstance().setSendingRemote(false);
+
         LocalBroadcastManager.getInstance(this).registerReceiver(generalReceiver, new IntentFilter(getPackageName() + ".Chat"));
         mChatAdapter = new ChatAdapter(mChatModelArrayList, this);
         mRealHelper = RealmHelper.getInstance();
@@ -201,30 +224,92 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, mRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                ChatModel chatModel = mChatModelArrayList.get(position);
-                if (chatModel.hasGif()) {
-                    Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
-                    intent.putExtra("link", Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl());
-                    startActivity(intent);
+                final ChatModel chatModel = mChatModelArrayList.get(position);
+                if (chatModel.isClickable()) {
+                    if (chatModel.hasGif()) {
+                        Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
+                        intent.putExtra("link", Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl());
+                        startActivity(intent);
+                    } else if (chatModel.isAttachment()) {
+                        System.gc();
+                        if (FileUtils.isImageType(chatModel.getMessage())) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
+                            builder.setTitle(getString(R.string.downloadQuestion));
+                            builder.setMessage(getString(R.string.downloadTheFile) + " " + chatModel.getMessage().replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
+                            builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+                            builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    String downloadFileName = chatModel.getMessage();
+
+                                    queDownload(downloadFileName);
+                                }
+                            });
+                            builder.setNeutralButton(getString(R.string.viewImage), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
+                                    intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + chatModel.getMessage());
+                                    startActivity(intent);
+                                }
+                            });
+                            builder.show();
+                        } else {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
+                            builder.setTitle(getString(R.string.downloadQuestion));
+                            builder.setMessage(getString(R.string.downloadTheFile) + " " + chatModel.getMessage().replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
+                            builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+                            builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    String downloadFileName = chatModel.getMessage();
+
+                                    queDownload(downloadFileName);
+                                }
+                            });
+                            builder.show();
+                        }
+
+                    }
+                } else {
+                    Snackbar.make(chatTitle, getString(R.string.waitTillSent), Snackbar.LENGTH_SHORT).show();
                 }
+
             }
 
             @Override
-            public void onLongClick(View view, int position) {
-                ChatModel chatModel = mChatModelArrayList.get(position);
+            public void onLongClick(View view, final int position) {
+                System.gc();
+                final ChatModel chatModel = mChatModelArrayList.get(position);
                 String date = chatModel.getDate();
-                if (!mCurrentUserId.equals(chatModel.getUserId())) {
-                    date = Time.convertToLocalTime(date);
-                }
-                mBuilder.setTitle("Message Details");
-                mBuilder.setMessage("Date of message:" + date);
-                mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
+                builder.setTitle("Message Details");
+                builder.setMessage("Date of message : " + date);
+                builder.setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
                     }
                 });
-                mBuilder.show();
+                builder.setNegativeButton(getString(R.string.deleteMessage), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        showDeleteWarning(chatModel.getMessageId(), position);
+                    }
+                });
+
+                builder.show();
             }
         }));
 
@@ -233,13 +318,83 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     }
 
-    @OnClick(R.id.locationSessionIcon)
-    public void locationSessionIcon() {
-        if (locationRequestSheet != null) {
-            if (!locationRequestSheet.isShowing()) {
-                locationRequestSheet.show();
+    private void queDownload(String fileName) {
+        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(
+                Uri.parse(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + fileName));
+        request.setTitle(fileName.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setVisibleInDownloadsUi(true);
+        downloadManager.enqueue(request);
+
+    }
+
+    private void showDeleteWarning(final String messageId, final int position) {
+        System.gc();
+        AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
+        builder.setTitle(getString(R.string.warning));
+        builder.setMessage(getString(R.string.deleteMessageWarning));
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                deleteMessage(messageId, position);
             }
-        }
+        });
+        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.show();
+    }
+
+    private void deleteMessage(final String messageId, final int positionOfItem) {
+        progressDialog.setTitle(getString(R.string.deleting));
+        progressDialog.setMessage(getString(R.string.deletingMessage));
+        progressDialog.show();
+        Call<ResponseBody> deleteMessageCall = Retrofit.getInstance().getInkService().deleteMessage(messageId, mSharedHelper.getUserId(), mOpponentId);
+        deleteMessageCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    deleteMessage(messageId, positionOfItem);
+                    return;
+                }
+                if (response.body() == null) {
+                    deleteMessage(messageId, positionOfItem);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+
+                    if (success) {
+                        mChatModelArrayList.remove(positionOfItem);
+                        RealmHelper.getInstance().removeMessage(messageId);
+                        mChatAdapter.notifyDataSetChanged();
+                        getMessages();
+                        progressDialog.dismiss();
+                        Snackbar.make(chatTitle, getString(R.string.messageDeleted), Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        progressDialog.dismiss();
+                        Snackbar.make(chatTitle, getString(R.string.messagedeleteError), Snackbar.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    deleteMessage(messageId, positionOfItem);
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    deleteMessage(messageId, positionOfItem);
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                deleteMessage(messageId, positionOfItem);
+            }
+        });
     }
 
     @OnClick(R.id.scrollDownChat)
@@ -301,7 +456,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.location_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -362,12 +516,45 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     @OnClick(R.id.attachmentIcon)
     public void attachmentIcon() {
         System.gc();
+
+        ink.utils.PopupMenu.showPopUp(Chat.this, attachmentIcon, new ItemClickListener<MenuItem>() {
+            @Override
+            public void onItemClick(MenuItem clickedItem) {
+                switch (clickedItem.getItemId()) {
+                    case 0:
+                        openGifChooser();
+                        break;
+                    case 1:
+                        openIntentPicker();
+                        break;
+                }
+            }
+        }, getString(R.string.sendSticker), getString(R.string.sendFile));
+
+    }
+
+    private void openIntentPicker() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");      //all files
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        try {
+            startActivityForResult(Intent.createChooser(intent, "Select a File to Upload"), PICK_FILE_REQUEST_CODE);
+        } catch (android.content.ActivityNotFoundException ex) {
+            // Potentially direct the user to the Market with a AlertDialogView
+            Toast.makeText(this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openGifChooser() {
+        System.gc();
         gifModelList.clear();
         gifChooserDialog = new BottomSheetDialog(this);
         View view = getLayoutInflater().inflate(R.layout.user_gifs_view, null);
         gifChooserDialog.setContentView(view);
         final RecyclerView gifsRecycler = (RecyclerView) view.findViewById(R.id.gifsRecycler);
         ImageView closeGifChoser = (ImageView) view.findViewById(R.id.closeGifChoser);
+        ProgressBar gifLoadingProgress = (ProgressBar) view.findViewById(R.id.gifLoadingProgress);
         TextView noGifsText = (TextView) view.findViewById(R.id.noGifsText);
         closeGifChoser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -381,7 +568,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         gifsRecycler.setLayoutManager(gridLayoutManager);
 
         gifsRecycler.setAdapter(gifAdapter);
-        getUserGifs(noGifsText);
+        getUserGifs(noGifsText, gifLoadingProgress);
         gifChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
@@ -399,23 +586,24 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         gifChooserDialog.show();
     }
 
-    private void getUserGifs(final TextView noGifsText) {
+    private void getUserGifs(final TextView noGifsText, final ProgressBar gifLoadingProgress) {
         Call<ResponseBody> gifCall = Retrofit.getInstance().getInkService().getUserGifs(mSharedHelper.getUserId(),
                 Constants.SERVER_AUTH_KEY);
         gifCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    getUserGifs(noGifsText);
+                    getUserGifs(noGifsText, gifLoadingProgress);
                     return;
                 }
                 if (response.body() == null) {
-                    getUserGifs(noGifsText);
+                    getUserGifs(noGifsText, gifLoadingProgress);
                     return;
                 }
                 try {
                     String responseBody = response.body().string();
                     GifResponse gifResponse = gson.fromJson(responseBody, GifResponse.class);
+                    gifLoadingProgress.setVisibility(View.INVISIBLE);
                     if (gifResponse.success) {
                         if (!gifResponse.cause.equals(ErrorCause.NO_GIFS)) {
                             ArrayList<GifResponseModel> gifResponseModels = gifResponse.gifResponseModels;
@@ -425,12 +613,17 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                                 gifModelList.add(gifModel);
                                 gifAdapter.notifyDataSetChanged();
                             }
-                            noGifsText.setVisibility(View.GONE);
+                            if (gifModelList.size() <= 0) {
+                                noGifsText.setVisibility(View.VISIBLE);
+                            } else {
+                                noGifsText.setVisibility(View.GONE);
+                            }
+
                         } else {
                             noGifsText.setVisibility(View.VISIBLE);
                         }
                     } else {
-
+                        noGifsText.setVisibility(View.VISIBLE);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -439,7 +632,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getUserGifs(noGifsText);
+                getUserGifs(noGifsText, gifLoadingProgress);
             }
         });
     }
@@ -452,10 +645,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         }
         String message = StringEscapeUtils.escapeJava(mWriteEditText.getText().toString().trim());
         dismissStickerChooser();
-        ChatModel tempChat = new ChatModel(isGifChosen, lasChosenGifName, null, mCurrentUserId, mOpponentId, StringEscapeUtils.unescapeJava(message.trim()),
+        ChatModel tempChat = new ChatModel(false, isGifChosen, lasChosenGifName, null, mCurrentUserId, mOpponentId, StringEscapeUtils.unescapeJava(message.trim()),
                 false, Constants.STATUS_NOT_DELIVERED,
                 mUserImage, mOpponentImage, "");
         mChatModelArrayList.add(tempChat);
+        tempChat.setClickable(false);
+
         int itemLocation = mChatModelArrayList.indexOf(tempChat);
 
         attemptToQue(message.trim(), itemLocation, mDeleteOpponentId, mDeleteUserId, isGifChosen, lasChosenGifName);
@@ -515,41 +710,42 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                 mOpponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl);
 
         QueHelper queHelper = new QueHelper();
-        queHelper.attachToQue(mCurrentUserId, mOpponentId, message, itemLocation, isGifChosen, gifUrl,
-                new QueCallback() {
-                    @Override
-                    public void onMessageSent(String response, int sentItemLocation) {
-                        System.gc();
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            boolean success = jsonObject.optBoolean("success");
-                            if (success) {
-                                String messageId = jsonObject.optString("message_id");
-                                mChatModelArrayList.get(sentItemLocation).setMessageId(messageId);
-                                mChatModelArrayList.get(sentItemLocation).setClickable(true);
-                                mChatModelArrayList.get(sentItemLocation).setDeliveryStatus(Constants.STATUS_DELIVERED);
-                                mChatModelArrayList.get(sentItemLocation).setDate(Time.convertToLocalTime(jsonObject.optString("date")));
-                                mChatAdapter.notifyItemChanged(sentItemLocation);
-                                RealmHelper.getInstance().updateMessages(messageId,
-                                        Constants.STATUS_DELIVERED, String.valueOf(sentItemLocation),
-                                        mOpponentId);
+        queHelper.attachToQue(mOpponentId, message, itemLocation, isGifChosen, gifUrl, Chat.this);
 
-                            } else {
 
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
+    }
 
-                    @Override
-                    public void onMessageSentFail(QueHelper failedHelperInstance, String failedMessage, int failedItemLocation) {
-                        failedHelperInstance.attachToQue(mCurrentUserId, mOpponentId, failedMessage, failedItemLocation, hasGif, gifUrl, this);
-                    }
-                });
+    private void handleMessageSent(String response, int sentItemLocation) {
+        System.gc();
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            boolean success = jsonObject.optBoolean("success");
+            if (success) {
+                String messageId = jsonObject.optString("message_id");
+                mChatModelArrayList.get(sentItemLocation).setMessageId(messageId);
+                mChatModelArrayList.get(sentItemLocation).setClickable(true);
+                mChatModelArrayList.get(sentItemLocation).setDeliveryStatus(Constants.STATUS_DELIVERED);
+                mChatModelArrayList.get(sentItemLocation).setDate(Time.convertToLocalTime(jsonObject.optString("date")));
+                mChatAdapter.notifyItemChanged(sentItemLocation);
+                RealmHelper.getInstance().updateMessages(messageId,
+                        Constants.STATUS_DELIVERED, String.valueOf(sentItemLocation),
+                        mOpponentId);
+                if (mNoMessageLayout.getVisibility() == View.VISIBLE) {
+                    mNoMessageLayout.setVisibility(View.GONE);
+                }
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void getMessages() {
+        if (mChatModelArrayList != null) {
+            mChatModelArrayList.clear();
+        }
+        mChatAdapter.notifyDataSetChanged();
+
         List<MessageModel> messageModels = mRealHelper.getMessages(mOpponentId, mCurrentUserId);
         if (messageModels.isEmpty()) {
             mNoMessageLayout.setVisibility(View.VISIBLE);
@@ -578,10 +774,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                     }
                 }
 
-                mChatModel = new ChatModel(isGifChosen, gifUrl, messageId, userId, opponentId, message, true,
+                mChatModel = new ChatModel(Regex.isAttachment(message), isGifChosen, gifUrl, messageId, userId, opponentId, message, true,
                         eachModel.getDeliveryStatus(), userImage, opponentImage, date);
                 mChatModelArrayList.add(mChatModel);
-                if (eachModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED)) {
+                if (eachModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED) && !Regex.isAttachment(message)) {
                     int itemLocation = mChatModelArrayList.indexOf(mChatModel);
                     attemptToQue(message, itemLocation,
                             deleteOpponentId, deleteUserId, isGifChosen, lasChosenGifName);
@@ -605,111 +801,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-            case R.id.requestLocation:
-                startLocationSession();
-                break;
-        }
+
+        finish();
         return super.onOptionsItemSelected(item);
     }
 
-    private void startLocationSession() {
-        System.gc();
-        locationRequestSheet = new BottomSheetDialog(this);
-        locationRequestSheet.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                locationSessionIcon.setVisibility(View.VISIBLE);
-            }
-        });
-        locationRequestSheet.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialogInterface) {
-                locationSessionIcon.setVisibility(View.VISIBLE);
-            }
-        });
-        View requestLocationView = getLayoutInflater().inflate(R.layout.activity_friend_location, null);
-        locationRequestSheet.setContentView(requestLocationView);
-        requestStatus = (TextView) requestLocationView.findViewById(R.id.requestStatus);
-        locationRequestSheet.show();
-        locationSessionIcon.setVisibility(View.GONE);
-        requestLocation();
-    }
-
-
-    private void requestLocation() {
-        Call<ResponseBody> friendLocationCall = Retrofit.getInstance().getInkService().requestFriendLocation(mSharedHelper.getUserId(), mOpponentId,
-                mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), firstName + " " + lastName, Constants.LOCATION_REQUEST_TYPE_INSERT);
-        friendLocationCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    requestLocation();
-                    return;
-                }
-                if (response.body() == null) {
-                    requestLocation();
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (success) {
-                        isSessionOpened = true;
-                        requestStatus.setText(getString(R.string.requestSentWaiting));
-                    } else {
-                        Snackbar.make(requestStatus, getString(R.string.failedRequestLocation), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                finish();
-                            }
-                        }).show();
-                    }
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                requestLocation();
-            }
-        });
-    }
-
-
-    private void destroySession() {
-        Intent intent = new Intent(getApplicationContext(), LocationRequestSessionDestroyer.class);
-        intent.putExtra("opponentId", mOpponentId);
-        startService(intent);
-        finish();
-    }
-
-    private void showWarning() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.warning));
-        builder.setMessage(getString(R.string.leavingSession));
-        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                destroySession();
-            }
-        });
-        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        builder.show();
-    }
 
     private TextWatcher chatTextWatcher = new TextWatcher() {
         @Override
@@ -744,37 +840,51 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         super.onDestroy();
     }
 
-
     private BroadcastReceiver generalReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
             if (extras != null) {
                 String type = extras.getString("type");
-                if (type.equals("showMessage")) {
-                    RemoteMessage remoteMessage = extras.getParcelable("data");
-                    Map<String, String> response = remoteMessage.getData();
-                    if (mOpponentId.equals(response.get("user_id"))) {
-                        mChatModel = new ChatModel(Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"), response.get("message_id"), response.get("user_id"),
-                                response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
-                                response.get("user_image"), response.get("opponent_image"), response.get("date"));
-                        mChatModelArrayList.add(mChatModel);
-                        mChatAdapter.notifyDataSetChanged();
-                        mRecyclerView.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                scrollToBottom();
-                            }
-                        });
-                    }
-                } else if (type.equals("finish")) {
-                    finish();
+
+                switch (type) {
+                    case "showMessage":
+                        RemoteMessage remoteMessage = extras.getParcelable("data");
+                        Map<String, String> response = remoteMessage.getData();
+                        if (mOpponentId.equals(response.get("user_id"))) {
+                            mChatModel = new ChatModel(Regex.isAttachment(response.get("message")), Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"), response.get("message_id"), response.get("user_id"),
+                                    response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
+                                    response.get("user_image"), response.get("opponent_image"), Time.convertToLocalTime(response.get("date")));
+                            mChatModelArrayList.add(mChatModel);
+                            mChatAdapter.notifyDataSetChanged();
+                            mRecyclerView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    scrollToBottom();
+                                }
+                            });
+                        }
+                        break;
+                    case "finish":
+                        finish();
+                        break;
+                    case Constants.TYPE_MESSAGE_SENT:
+                        String responseBody = extras.getString("response");
+                        String sentItemLocation = extras.getString("sentItemLocation");
+                        handleMessageSent(responseBody, Integer.valueOf(sentItemLocation));
+                        break;
+
+                    case Constants.DELETE_MESSAGE_REQUESTED:
+                        String messageId = extras.getString("messageId");
+                        RealmHelper.getInstance().removeMessage(messageId);
+                        getMessages();
+                        break;
+
                 }
-
-
             }
         }
     };
+
 
     @Override
     protected void onResume() {
@@ -821,16 +931,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     }
 
-    @Override
-    public void onBackPressed() {
-        if (isSessionOpened) {
-            showWarning();
-        } else {
-            super.onBackPressed();
-            finish();
-        }
-    }
-
 
     private void configureChat() {
         ActionBar actionBar = getSupportActionBar();
@@ -841,6 +941,30 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
             mOpponentId = bundle.getString("opponentId");
             String opponentImage = bundle.getString("opponentImage");
             boolean isSocialAccount = bundle.getBoolean("isSocialAccount");
+
+            if (bundle.containsKey("messageId")) {
+                String messageId = bundle.getString("messageId");
+                boolean isMessageExist = RealmHelper.getInstance().isMessageExist(messageId);
+                if (!isMessageExist) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle(getString(R.string.messageMissing));
+                    builder.setMessage(getString(R.string.messageMissingText));
+                    builder.setPositiveButton(getString(R.string.updateMessages), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            progressDialog.show();
+                            getMyMessages(mSharedHelper.getUserId());
+                        }
+                    });
+                    builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.show();
+                }
+            }
 
             if (opponentImage != null && !opponentImage.isEmpty()) {
                 if (!isImageLoaded) {
@@ -870,7 +994,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
-
 
     @Override
     protected void onPause() {
@@ -927,7 +1050,226 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     }
 
+    private void getMyMessages(final String userId) {
+        Call<ResponseBody> myMessagesResponse = Retrofit.getInstance().getInkService().getChatMessages(userId);
+        myMessagesResponse.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    getMyMessages(userId);
+                    return;
+                }
+                if (response.body() == null) {
+                    getMyMessages(userId);
+                    return;
+                }
+                try {
+                    String responseString = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseString);
+                    JSONArray messagesArray = jsonObject.optJSONArray("messages");
+                    RealmHelper realmHelper = RealmHelper.getInstance();
+                    if (messagesArray.length() > 0) {
+                        for (int i = 0; i < messagesArray.length(); i++) {
+                            JSONObject eachObject = messagesArray.optJSONObject(i);
+                            String userId = eachObject.optString("user_id");
+                            String opponentId = eachObject.optString("opponent_id");
+                            String message = eachObject.optString("message");
+                            String messageId = eachObject.optString("message_id");
+                            String date = Time.convertToLocalTime(eachObject.optString("date"));
+                            String deliveryStatus = Constants.STATUS_DELIVERED;
+                            String userIdImage = eachObject.optString("user_id_image");
+                            String opponentImage = eachObject.optString("opponent_id_image");
+                            String deleteUserId = eachObject.optString("delete_user_id");
+                            String deleteOpponentId = eachObject.optString("delete_opponent_id");
+
+                            boolean hasGif = eachObject.optBoolean("hasGif");
+                            String gifUrl = eachObject.optString("gifUrl");
+                            String isAnimated = eachObject.optString("isAnimated");
+                            String hasSound = eachObject.optString("hasSound");
+
+                            realmHelper.insertMessage(userId,
+                                    opponentId, message, messageId, date, messageId,
+                                    deliveryStatus,
+                                    userIdImage, opponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl);
+
+                        }
+
+                        getMessages();
+
+                        Snackbar.make(chatTitle, getString(R.string.messagesUpdated), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                            }
+                        }).show();
+                    } else {
+                        Snackbar.make(chatTitle, getString(R.string.noMessages), Snackbar.LENGTH_LONG).show();
+                    }
+                    progressDialog.dismiss();
+                } catch (IOException e) {
+                    progressDialog.dismiss();
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    progressDialog.dismiss();
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                getMyMessages(userId);
+            }
+        });
+    }
+
     private void scrollToBottom() {
         mRecyclerView.smoothScrollToPosition(mChatAdapter.getItemCount());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        handlePickedResult(data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    private void handlePickedResult(Intent data) {
+        if (data != null) {
+            Uri uri = data.getData();
+            // Get the path
+            String path = null;
+            AlertDialog.Builder fileErrorDialog = new AlertDialog.Builder(Chat.this);
+            fileErrorDialog.setTitle(getString(R.string.fileError));
+            fileErrorDialog.setMessage(getString(R.string.couldNotOpenFile));
+            fileErrorDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            try {
+                path = FileUtils.getPath(this, uri);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+                fileErrorDialog.show();
+                return;
+            }
+            // Get the file instance
+            // File file = new File(path);
+            // Initiate the upload
+
+            if (path != null) {
+                File file = new File(path);
+                if (!file.exists()) {
+                    fileErrorDialog.show();
+                    return;
+                }
+                if (file.length() > MakePost.MAX_FILE_SIZE) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
+                    builder.setTitle(getString(R.string.sizeExceeded)).show();
+                    builder.setMessage(getString(R.string.sizeExceededMessage));
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.show();
+                    return;
+                }
+
+                ChatModel tempChat = new ChatModel(true, false, "", null, mCurrentUserId, mOpponentId, "userid=" + mSharedHelper.getUserId() + ":" +
+                        Constants.TYPE_MESSAGE_ATTACHMENT +
+                        file.getName(),
+                        false, Constants.STATUS_NOT_DELIVERED,
+                        mUserImage, mOpponentImage, "");
+                mChatModelArrayList.add(tempChat);
+                tempChat.setClickable(false);
+
+                int itemLocation = mChatModelArrayList.indexOf(tempChat);
+
+                RealmHelper.getInstance().insertMessage(mCurrentUserId, mOpponentId,
+                        "userid=" + mSharedHelper.getUserId() + ":" +
+                                Constants.TYPE_MESSAGE_ATTACHMENT +
+                                file.getName(), "0", "",
+                        String.valueOf(itemLocation),
+                        Constants.STATUS_NOT_DELIVERED, mUserImage,
+                        mOpponentImage, mDeleteOpponentId, mDeleteUserId, false, "");
+
+                sendMessageWithAttachment(file, itemLocation);
+
+            } else {
+                fileErrorDialog.show();
+            }
+        }
+    }
+
+    private void sendMessageWithAttachment(final File file, final int sentItemLocation) {
+        System.gc();
+        if (mNoMessageLayout.getVisibility() == View.VISIBLE) {
+            mNoMessageLayout.setVisibility(View.GONE);
+        }
+        Map<String, ProgressRequestBody> map = new HashMap<>();
+        ProgressRequestBody requestBody = new ProgressRequestBody(file, this);
+        map.put("file\"; filename=\"" + file.getName() + "\"", requestBody);
+
+
+        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().sendMessageWithAttachment(map, mSharedHelper.getUserId(), mOpponentId,
+                "userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT + file.getName(), Time.getTimeZone(), false, "");
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    sendMessageWithAttachment(file, sentItemLocation);
+                    return;
+                }
+                if (response.body() == null) {
+                    sendMessageWithAttachment(file, sentItemLocation);
+                    return;
+                }
+
+                try {
+                    String responseString = response.body().string();
+                    handleMessageSent(responseString, Integer.valueOf(sentItemLocation));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onProgressUpdate(int percentage) {
+        if (mChatAdapter != null) {
+            mChatAdapter.setUpdate(percentage);
+            if (!scrolledToBottom) {
+                scrollToBottom();
+                scrolledToBottom = true;
+            }
+            mChatAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onError() {
+        if (mChatAdapter != null) {
+            mChatAdapter.stopUpdate();
+            mChatAdapter.notifyDataSetChanged();
+        }
+        scrolledToBottom = false;
+    }
+
+    @Override
+    public void onFinish() {
+        if (mChatAdapter != null) {
+            mChatAdapter.stopUpdate();
+            mChatAdapter.notifyDataSetChanged();
+        }
+        scrolledToBottom = false;
     }
 }

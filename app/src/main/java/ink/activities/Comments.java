@@ -362,17 +362,18 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     }
 
     @Override
-    public void onLikeClicked(int position, TextView likesCountTV, ImageView likeView) {
+    public void onLikeClicked(int position, TextView likesCountTV, ImageView likeView, View likeWrapper) {
         Animations.animateCircular(likeView);
+        likeWrapper.setEnabled(false);
         if (isLiked) {
             //must dislike
-            like(mPostId, 1, likesCountTV);
+            like(mPostId, 1, likesCountTV, likeWrapper);
             likeView.setBackgroundResource(R.drawable.like_inactive);
             mCommentAdapter.setIsLiked(false);
             isLiked = false;
         } else {
             //must like
-            like(mPostId, 0, likesCountTV);
+            like(mPostId, 0, likesCountTV, likeWrapper);
             likeView.setBackgroundResource(R.drawable.like_active);
             mCommentAdapter.setIsLiked(true);
             isLiked = true;
@@ -430,6 +431,14 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 }
             }
         }, getString(R.string.edit), getString(R.string.delete));
+    }
+
+    @Override
+    public void onImageClicked(int position) {
+
+        Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
+        intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + attachmentName);
+        startActivity(intent);
     }
 
     private void deletePost() {
@@ -513,18 +522,18 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     }
 
-    private void like(final String postId, final int isLiking, final TextView likeCountTV) {
+    private void like(final String postId, final int isLiking, final TextView likeCountTV, final View likeWrapper) {
         shouldUpdate = true;
         final Call<ResponseBody> likeCall = Retrofit.getInstance().getInkService().likePost(mSharedHelper.getUserId(), postId, isLiking);
         likeCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    like(postId, isLiking, likeCountTV);
+                    like(postId, isLiking, likeCountTV, likeWrapper);
                     return;
                 }
                 if (response.body() == null) {
-                    like(postId, isLiking, likeCountTV);
+                    like(postId, isLiking, likeCountTV, likeWrapper);
                     return;
                 }
 
@@ -532,6 +541,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     String likesCount = jsonObject.optString("likes_count");
+                    likeWrapper.setEnabled(true);
                     if (!likesCount.equals("0")) {
                         likeCountTV.setVisibility(View.VISIBLE);
                         if (Integer.parseInt(likesCount) > 1) {
@@ -554,7 +564,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                like(postId, isLiking, likeCountTV);
+                like(postId, isLiking, likeCountTV, likeWrapper);
             }
         });
     }
@@ -687,17 +697,22 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                         case 0:
                             InputField.createInputFieldView(Comments.this, new InputField.ClickHandler() {
                                 @Override
-                                public void onPositiveClicked(Object result) {
+                                public void onPositiveClicked(Object... result) {
                                     snackbar.show();
+                                    AlertDialog dialog = (AlertDialog) result[1];
+                                    dialog.dismiss();
                                     Keyboard.hideKeyboard(getApplicationContext(), commentCard);
-                                    callCommentServer(Constants.COMMENT_TYPE_EDIT, commentModel.getCommentId(), String.valueOf(result));
+                                    callCommentServer(Constants.COMMENT_TYPE_EDIT, commentModel.getCommentId(), String.valueOf(result[0]));
+
+
                                 }
 
                                 @Override
-                                public void onNegativeClicked(Object result) {
-
+                                public void onNegativeClicked(Object... result) {
+                                    AlertDialog dialog = (AlertDialog) result[1];
+                                    dialog.dismiss();
                                 }
-                            }, commentModel.getCommentBody());
+                            }, commentModel.getCommentBody(), null, null);
                             break;
                         case 1:
                             snackbar.show();

@@ -11,6 +11,9 @@ import java.net.URISyntaxException;
  * Created by USER on 2016-07-04.
  */
 public class FileUtils {
+
+    public static final String[] IMAGE_TYPES = new String[]{"jpg", "png", "gif", "jpeg"};
+
     public static String getPath(Context context, Uri uri) throws URISyntaxException {
         if ("content".equalsIgnoreCase(uri.getScheme())) {
             String[] projection = {"_data"};
@@ -50,6 +53,19 @@ public class FileUtils {
             }
 
         }
+    }
+
+    public static boolean isImageType(String fileName) {
+        boolean success = false;
+        int lastIndex = fileName.lastIndexOf(".");
+        String fileExtension = fileName.substring(lastIndex + 1, fileName.length());
+        for (int i = 0; i < IMAGE_TYPES.length; i++) {
+            if (fileExtension.equals(IMAGE_TYPES[i])) {
+                success = true;
+                break;
+            }
+        }
+        return success;
     }
 
     public static boolean deleteRecursiveFile(File file) {

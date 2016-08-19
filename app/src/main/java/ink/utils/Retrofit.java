@@ -2,7 +2,6 @@ package ink.utils;
 
 import java.util.Map;
 
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -88,11 +87,18 @@ public class Retrofit {
                                                  @Field("requestedUserId") String requestedUserId,
                                                  @Field("requesterName") String requesterFullName,
                                                  @Field("requestedUserName") String requestedUserName,
-                                                 @Field("requestType") String requestType);
+                                                 @Field("requestType") String requestType,
+                                                 @Field("requesterImage") String requester_image);
 
         @POST(Constants.MESSAGES_URL)
         @FormUrlEncoded
         Call<ResponseBody> getMessages(@Field("user_id") String userId, @Field("opponent_id") String opponentId);
+
+        @POST(Constants.SEND_LOCATION_UPDATE_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> sendLocationUpdate(@Field("opponent_id") String opponentId,
+                                              @Field("longitude") String longitude,
+                                              @Field("latitude") String latitude);
 
         @POST(Constants.SEARCH_GROUP_URL)
         @FormUrlEncoded
@@ -143,10 +149,8 @@ public class Retrofit {
         @POST(Constants.SEND_MESSAGE_URL)
         @FormUrlEncoded
         Call<ResponseBody> sendMessage(@Field("user_id") String userId,
-                                       @Field("opponent_id")
-                                       String opponentId,
-                                       @Field("message")
-                                       String message,
+                                       @Field("opponent_id") String opponentId,
+                                       @Field("message") String message,
                                        @Field("timezone") String timezone,
                                        @Field("hasGif") boolean hasGif,
                                        @Field("gifUrl") String gifUrl);
@@ -269,6 +273,11 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getChatMessages(@Field("user_id") String userId);
 
+        @POST(Constants.DELETE_MESSAGE_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> deleteMessage(@Field("messageId") String messageId,
+                                         @Field("currentUserId") String currentUserId,
+                                         @Field("opponentId") String opponentId);
 
         @POST(Constants.REGISTER_TOKEN)
         @FormUrlEncoded
@@ -333,7 +342,7 @@ public class Retrofit {
 
         @Multipart
         @POST(Constants.MAKE_POST_URL)
-        Call<ResponseBody> makePost(@PartMap Map<String, RequestBody> map,
+        Call<ResponseBody> makePost(@PartMap Map<String, ProgressRequestBody> map,
                                     @Part("user_id") String userId,
                                     @Part("postBody") String postBody,
                                     @Part("googleAddress") String googleAddress,
@@ -345,6 +354,16 @@ public class Retrofit {
                                     @Part("postId") String postId,
                                     @Part("shouldDelete") String shouldDelete);
 
+
+        @Multipart
+        @POST(Constants.SEND_MESSAGE_URL)
+        Call<ResponseBody> sendMessageWithAttachment(@PartMap Map<String, ProgressRequestBody> map,
+                                                     @Part("user_id") String userId,
+                                                     @Part("opponent_id") String opponentId,
+                                                     @Part("message") String message,
+                                                     @Part("timezone") String timezone,
+                                                     @Part("hasGif") boolean hasGif,
+                                                     @Part("gifUrl") String gifUrl);
 
         @POST(Constants.MAKE_POST_URL)
         @FormUrlEncoded

@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -64,18 +65,15 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
     private String finalOpponentId;
     private Snackbar deleteRequestSnack;
-    private boolean isOnCreate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
         ButterKnife.bind(this);
-        isOnCreate = true;
         mMessagesSwipe.setColorSchemeColors(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
         userMessagesModels = new ArrayList<>();
         messagesAdapter = new MessagesAdapter(userMessagesModels, this);
-        messagesAdapter.setShouldStartAnimation(true);
         mMessagesSwipe.setOnRefreshListener(this);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -101,10 +99,13 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 } else {
                     finalId = userMessagesModels.get(position).getUserId();
                 }
+
+                Log.d("fasfsafasfa", "onClick: " + userMessagesModels.get(position).getMessageId());
                 Intent intent = new Intent(getApplicationContext(), Chat.class);
                 intent.putExtra("firstName", userMessagesModels.get(position).getFirstName());
                 intent.putExtra("lastName", userMessagesModels.get(position).getLastName());
                 intent.putExtra("opponentId", finalId);
+                intent.putExtra("messageId", userMessagesModels.get(position).getMessageId());
                 intent.putExtra("isSocialAccount", userMessagesModels.get(position).isSocialAccount());
                 intent.putExtra("opponentImage", userMessagesModels.get(position).getImageName());
                 startActivity(intent);
@@ -301,7 +302,15 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                         String splittedTime = splittedDates[1];
                         if (userId.equals(mSharedHelper.getUserId())) {
                             String messageOld = message;
-                            message = "You: " + messageOld;
+                            if (messageOld.trim().isEmpty()) {
+                                messageOld = getString(R.string.sentSticker);
+                            }
+                            message = getString(R.string.you) + " " + messageOld;
+                        } else {
+                            String messageOld = message;
+                            if (messageOld.isEmpty()) {
+                                message = firstName + " " + lastName + " " + getString(R.string.sentSticker);
+                            }
                         }
                         userMessagesModel = new UserMessagesModel(isSocialAccount, Boolean.valueOf(isFriend), userId, opponentId, messageId, message,
                                 firstName, lastName, imageName, splittedDate + "\n" + splittedTime, imageName);
@@ -344,10 +353,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
     @Override
     protected void onResume() {
         System.gc();
-        if (isOnCreate) {
-            messagesAdapter.setShouldStartAnimation(false);
-            isOnCreate = false;
-        }
         getUserMessages();
         super.onResume();
     }

@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ink.activities.Comments;
+import ink.activities.FullscreenActivity;
 import ink.activities.HomeActivity;
 import ink.activities.MakePost;
 import ink.adapters.FeedAdapter;
@@ -161,8 +162,9 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
                 try {
                     String responseBody = response.body().string();
-                    Log.d("Fasfsafasfas", "onResponse: "+responseBody);
+                    Log.d("Fsafsafasfasfa", "onResponse: "+responseBody);
                     JSONArray jsonArray = new JSONArray(responseBody);
+
                     if (clearItems) {
                         if (mFeedModelArrayList != null) {
                             mFeedModelArrayList.clear();
@@ -189,7 +191,12 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         mAdapter.notifyDataSetChanged();
                     }
                     mAdapter.notifyDataSetChanged();
-                    feedRefresh.setRefreshing(false);
+                    feedRefresh.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            feedRefresh.setRefreshing(false);
+                        }
+                    });
 
                     if (mFeedModelArrayList.size() == 0) {
                         noPostsWrapper.setVisibility(View.VISIBLE);
@@ -210,8 +217,21 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         mOffset += 10;
                     }
                 } catch (IOException e) {
+                    feedRefresh.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            feedRefresh.setRefreshing(false);
+                        }
+                    });
+
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    feedRefresh.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            feedRefresh.setRefreshing(false);
+                        }
+                    });
                     e.printStackTrace();
                 }
             }
@@ -290,7 +310,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(
                 Uri.parse(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + fileName));
-        request.setTitle(fileName);
+        request.setTitle(fileName.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT,""));
+
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setVisibleInDownloadsUi(true);
         downloadManager.enqueue(request);
@@ -303,17 +324,18 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     }
 
     @Override
-    public void onLikeClick(int position, ImageView likeView, TextView likeCountTV) {
+    public void onLikeClick(int position, ImageView likeView, TextView likeCountTV, View likeWrapper) {
         Animations.animateCircular(likeView);
         boolean isLiked = mFeedModelArrayList.get(position).isLiked();
+        likeWrapper.setEnabled(false);
         if (isLiked) {
             //must dislike
-            like(mFeedModelArrayList.get(position).getId(), 1, likeCountTV, position);
+            like(mFeedModelArrayList.get(position).getId(), 1, likeCountTV, position, likeWrapper);
             likeView.setBackgroundResource(R.drawable.like_inactive);
             mFeedModelArrayList.get(position).setLiked(false);
         } else {
             //must like
-            like(mFeedModelArrayList.get(position).getId(), 0, likeCountTV, position);
+            like(mFeedModelArrayList.get(position).getId(), 0, likeCountTV, position, likeWrapper);
             likeView.setBackgroundResource(R.drawable.like_active);
             mFeedModelArrayList.get(position).setLiked(true);
         }
@@ -368,6 +390,14 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 }
             }
         }, getString(R.string.edit), getString(R.string.delete));
+    }
+
+    @Override
+    public void onImageClicked(int position) {
+        FeedModel feedModel = mFeedModelArrayList.get(position);
+        Intent intent = new Intent(getActivity(), FullscreenActivity.class);
+        intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + feedModel.getFileName());
+        startActivity(intent);
     }
 
     private void openGoogleMaps(String address) {
@@ -427,17 +457,17 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         });
     }
 
-    private void like(final String postId, final int isLiking, final TextView likeCountTV, final int position) {
+    private void like(final String postId, final int isLiking, final TextView likeCountTV, final int position, final View likeWrapper) {
         final Call<ResponseBody> likeCall = Retrofit.getInstance().getInkService().likePost(mSharedHelper.getUserId(), postId, isLiking);
         likeCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    like(postId, isLiking, likeCountTV, position);
+                    like(postId, isLiking, likeCountTV, position, likeWrapper);
                     return;
                 }
                 if (response.body() == null) {
-                    like(postId, isLiking, likeCountTV, position);
+                    like(postId, isLiking, likeCountTV, position, likeWrapper);
                     return;
                 }
 
@@ -446,6 +476,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                     JSONObject jsonObject = new JSONObject(responseBody);
                     String likesCount = jsonObject.optString("likes_count");
                     mFeedModelArrayList.get(position).setLikesCount(likesCount);
+                    likeWrapper.setEnabled(true);
                     if (!likesCount.equals("0")) {
                         likeCountTV.setVisibility(View.VISIBLE);
                         if (Integer.parseInt(likesCount) > 1) {
@@ -466,7 +497,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                like(postId, isLiking, likeCountTV, position);
+                like(postId, isLiking, likeCountTV, position, likeWrapper);
             }
         });
     }

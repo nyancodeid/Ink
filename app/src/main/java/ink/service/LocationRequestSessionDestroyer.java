@@ -45,7 +45,7 @@ public class LocationRequestSessionDestroyer extends Service {
     }
 
     private void destroySession() {
-        Call<ResponseBody> locationCall = Retrofit.getInstance().getInkService().requestFriendLocation(sharedHelper.getUserId(), opponentId, "", "", Constants.LOCATION_REQUEST_TYPE_DELETE);
+        Call<ResponseBody> locationCall = Retrofit.getInstance().getInkService().requestFriendLocation(sharedHelper.getUserId(), opponentId, sharedHelper.getFirstName() + " " + sharedHelper.getLastName(), "", Constants.LOCATION_REQUEST_TYPE_DELETE, "");
         locationCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

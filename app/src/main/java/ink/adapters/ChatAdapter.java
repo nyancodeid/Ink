@@ -20,6 +20,7 @@ import java.util.List;
 import ink.models.ChatModel;
 import ink.utils.Constants;
 import ink.utils.Dp;
+import ink.utils.Regex;
 import ink.utils.SharedHelper;
 
 /**
@@ -33,22 +34,24 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     private List<ChatModel> chatModelList;
     private Context mContext;
     private String mCurrentUserId;
+    private int percentage;
+    private boolean updating = false;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView message;
         private TextView deliveryStatus;
         private LinearLayout chatViewBubble;
-        private ImageView gifChatView;
-        private LinearLayout singleGifViewWrapper;
+        private ImageView imageView;
+        private LinearLayout imageViewWrapper;
 
         public ViewHolder(View view) {
             super(view);
             message = (TextView) view.findViewById(R.id.messageContainer);
             chatViewBubble = (LinearLayout) view.findViewById(R.id.chatViewBubble);
-            singleGifViewWrapper = (LinearLayout) view.findViewById(R.id.singleGifViewWrapper);
+            imageViewWrapper = (LinearLayout) view.findViewById(R.id.singleGifViewWrapper);
 
             deliveryStatus = (TextView) view.findViewById(R.id.deliveryStatus);
-            gifChatView = (ImageView) view.findViewById(R.id.gifChatView);
+            imageView = (ImageView) view.findViewById(R.id.gifChatView);
         }
     }
 
@@ -80,12 +83,19 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         ChatModel chatModel = chatModelList.get(position);
-        holder.message.setText(chatModel.getMessage());
+
+        System.gc();
+
+        String messageBody = chatModel.getMessage().replaceAll("userid=" + mCurrentUserId + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "");
+        holder.message.setText(messageBody);
+
+
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.chatViewBubble.getLayoutParams();
         LinearLayout.LayoutParams deliveryStatusParams = (LinearLayout.LayoutParams) holder.deliveryStatus.getLayoutParams();
-        LinearLayout.LayoutParams gifChatViewLayoutParams = (LinearLayout.LayoutParams) holder.singleGifViewWrapper.getLayoutParams();
+        LinearLayout.LayoutParams gifChatViewLayoutParams = (LinearLayout.LayoutParams) holder.imageViewWrapper.getLayoutParams();
 
         checkForGif(chatModel, holder);
+
         if (mCurrentUserId.equals(chatModel.getUserId())) {
             layoutParams.gravity = Gravity.RIGHT;
             layoutParams.rightMargin = Dp.toDps(mContext, 16);
@@ -93,7 +103,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             gifChatViewLayoutParams.gravity = Gravity.RIGHT;
 
             holder.chatViewBubble.setLayoutParams(layoutParams);
-            holder.gifChatView.setLayoutParams(gifChatViewLayoutParams);
+            holder.imageView.setLayoutParams(gifChatViewLayoutParams);
 
             holder.chatViewBubble.setBackground(ContextCompat.getDrawable(mContext, R.drawable.outgoing_message_bg));
             if (chatModel.getDeliveryStatus().equals(Constants.STATUS_DELIVERED)) {
@@ -105,7 +115,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 holder.deliveryStatus.setText(mContext.getString(R.string.sentText));
             } else if (chatModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED)) {
                 holder.deliveryStatus.setVisibility(View.VISIBLE);
-                holder.deliveryStatus.setText(mContext.getString(R.string.sendingNowText));
+                if (updating) {
+                    holder.deliveryStatus.setText(mContext.getString(R.string.sendingNowText) + percentage + " %");
+                } else {
+                    holder.deliveryStatus.setText(mContext.getString(R.string.sendingNowText));
+                }
+
             }
         } else {
             holder.chatViewBubble.setBackground(ContextCompat.getDrawable(mContext, R.drawable.incoming_message_bg));
@@ -113,7 +128,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             gifChatViewLayoutParams.gravity = Gravity.LEFT;
 
             holder.chatViewBubble.setLayoutParams(layoutParams);
-            holder.gifChatView.setLayoutParams(gifChatViewLayoutParams);
+            holder.imageView.setLayoutParams(gifChatViewLayoutParams);
             holder.deliveryStatus.setVisibility(View.INVISIBLE);
         }
 
@@ -122,21 +137,22 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     private void checkForGif(final ChatModel chatModel, final ChatAdapter.ViewHolder holder) {
         System.gc();
         if (chatModel.hasGif()) {
-            holder.singleGifViewWrapper.setVisibility(View.VISIBLE);
-            if (holder.gifChatView.getTag() == null) {
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.gifChatView)
+            holder.imageView.setImageResource(0);
+            holder.imageViewWrapper.setVisibility(View.VISIBLE);
+            if (holder.imageView.getTag() == null) {
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.imageView)
                         .setCallback(new FutureCallback<ImageView>() {
                             @Override
                             public void onCompleted(Exception e, ImageView result) {
-                                holder.gifChatView.setTag(LOADED);
+                                holder.imageView.setTag(LOADED);
                             }
                         });
-            } else if (!holder.gifChatView.getTag().equals(LOADED)) {
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.gifChatView)
+            } else if (!holder.imageView.getTag().equals(LOADED)) {
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.imageView)
                         .setCallback(new FutureCallback<ImageView>() {
                             @Override
                             public void onCompleted(Exception e, ImageView result) {
-                                holder.gifChatView.setTag(LOADED);
+                                holder.imageView.setTag(LOADED);
                             }
                         });
             }
@@ -145,13 +161,27 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             } else {
                 holder.chatViewBubble.setVisibility(View.VISIBLE);
             }
+        } else if (Regex.isAttachment(chatModel.getMessage())) {
+//            if (FileUtils.isImageType(chatModel.getMessage())) {
+//                holder.imageView.setImageResource(0);
+//                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + chatModel.getMessage()).withBitmap().placeholder(R.drawable.no_background_image).
+//                        intoImageView(holder.imageView);
+//                holder.imageViewWrapper.setVisibility(View.VISIBLE);
+//            } else {
+//
+//            }
+            holder.imageView.setImageResource(0);
+            holder.imageView.setBackgroundResource(R.drawable.chat_attachment_icon);
+            holder.imageViewWrapper.setVisibility(View.VISIBLE);
+
         } else {
+            holder.imageView.setImageResource(0);
             if (chatModel.getMessage().trim().isEmpty()) {
                 holder.chatViewBubble.setVisibility(View.GONE);
             } else {
                 holder.chatViewBubble.setVisibility(View.VISIBLE);
             }
-            holder.singleGifViewWrapper.setVisibility(View.GONE);
+            holder.imageViewWrapper.setVisibility(View.GONE);
         }
     }
 
@@ -161,5 +191,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         return chatModelList.size();
     }
 
+    public void setUpdate(int percentage) {
+        this.percentage = percentage;
+        updating = true;
+    }
+
+    public void stopUpdate() {
+        updating = false;
+    }
 
 }

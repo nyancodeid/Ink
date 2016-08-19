@@ -60,6 +60,20 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public void putLastSessionUserId(String value) {
+        mEditor.putString("lastSessionUserId", value);
+        mEditor.commit();
+    }
+
+    public String getLastSessionUserId() {
+        return mSharedPreferences.getString("lastSessionUserId", null);
+    }
+
+    public void removeLastSessionUserId() {
+        mEditor.remove("lastSessionUserId");
+        mEditor.commit();
+    }
+
     public boolean shouldShowShowCase() {
         return mSharedPreferences.getBoolean("shouldShowShowCase", true);
     }
@@ -76,6 +90,15 @@ public class SharedHelper {
     public void putToken(String token) {
         mEditor.putString("token", token);
         mEditor.commit();
+    }
+
+    public void putVkAccessToken(String value) {
+        mEditor.putString("vkAccessToken", value);
+        mEditor.commit();
+    }
+
+    public String getVkAccessToken() {
+        return mSharedPreferences.getString("vkAccessToken", "noAccessToken");
     }
 
     public void setTokenRefreshed(boolean isRefreshed) {

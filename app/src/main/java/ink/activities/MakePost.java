@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -43,20 +44,20 @@ import butterknife.OnClick;
 import ink.utils.Constants;
 import ink.utils.FileUtils;
 import ink.utils.PermissionsChecker;
+import ink.utils.ProgressRequestBody;
+import ink.utils.Regex;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import ink.utils.Time;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MakePost extends BaseActivity {
-    private static final int PICKFILE_REQUEST_CODE = 5584;
+public class MakePost extends BaseActivity implements ProgressRequestBody.UploadCallbacks {
+    private static final int PICK_FILE_REQUEST_CODE = 5584;
     private static final int STORAGE_PERMISSION_REQUEST = 45485;
-    private static final long MAX_FILE_SIZE = 20971520;
+    public static final long MAX_FILE_SIZE = 20971520;
     @Bind(R.id.closeWrapper)
     RelativeLayout mCloseWrapper;
     @Bind(R.id.checkWrapper)
@@ -102,6 +103,10 @@ public class MakePost extends BaseActivity {
         progressDialog.setMessage(getString(R.string.postingYourShare));
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setProgress(0);
+        progressDialog.setMax(100);
 
         if (!isPermissionsGranted()) {
             requestPermission();
@@ -166,7 +171,9 @@ public class MakePost extends BaseActivity {
                     canProceed = false;
                 } else {
                     canProceed = true;
+                    Log.d("fsafasfasfasfa", "onTextChanged: " + Regex.isLink(charSequence.toString()));
                 }
+
             }
 
             @Override
@@ -269,7 +276,7 @@ public class MakePost extends BaseActivity {
         intent.addCategory(Intent.CATEGORY_OPENABLE);
 
         try {
-            startActivityForResult(Intent.createChooser(intent, "Select a File to Upload"), PICKFILE_REQUEST_CODE);
+            startActivityForResult(Intent.createChooser(intent, "Select a File to Upload"), PICK_FILE_REQUEST_CODE);
         } catch (android.content.ActivityNotFoundException ex) {
             // Potentially direct the user to the Market with a AlertDialogView
             Toast.makeText(this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();
@@ -388,9 +395,10 @@ public class MakePost extends BaseActivity {
 
 
     private void makePost(File chosenFile, String postBody, String chosenGoogleAddress) {
+        System.gc();
         if (chosenFile != null) {
-            Map<String, RequestBody> map = new HashMap<>();
-            RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), chosenFile);
+            Map<String, ProgressRequestBody> map = new HashMap<>();
+            ProgressRequestBody requestBody = new ProgressRequestBody(chosenFile, this);
             map.put("file\"; filename=\"" + chosenFile.getName() + "\"", requestBody);
             callToServerWithBody(map, postBody, chosenGoogleAddress);
         } else {
@@ -446,7 +454,7 @@ public class MakePost extends BaseActivity {
         });
     }
 
-    private void callToServerWithBody(final Map<String, RequestBody> map, final String postBody, final String googleAddress) {
+    private void callToServerWithBody(final Map<String, ProgressRequestBody> map, final String postBody, final String googleAddress) {
 
         String finalType = Constants.POST_TYPE_CREATE;
         if (isEditing) {
@@ -538,5 +546,24 @@ public class MakePost extends BaseActivity {
         });
         builder.show();
 
+    }
+
+    @Override
+    public void onProgressUpdate(int percentage) {
+        progressDialog.setProgress(percentage);
+    }
+
+    @Override
+    public void onError() {
+
+    }
+
+    @Override
+    public void onFinish() {
+        if (progressDialog != null) {
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+        }
     }
 }

@@ -123,33 +123,91 @@ public class NotificationService extends FirebaseMessagingService {
             case Constants.NOTIFICATION_TYPE_REQUESTING_LOCATION:
                 String requesterName = response.get("requesterName");
                 String requesterId = response.get("requesterId");
-
+                sendLocationRequestNotification(getApplicationContext(), requesterId, requesterName);
                 break;
 
             case Constants.NOTIFICATION_TYPE_LOCATION_SESSION_ENDED:
-
+                requesterName = response.get("requesterName");
+                intent = new Intent(getPackageName() + ".Chat");
+                intent.putExtra("requesterName", requesterName);
+                intent.putExtra("type", Constants.NOTIFICATION_TYPE_LOCATION_SESSION_ENDED);
+                LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+                localBroadcastManager.sendBroadcast(intent);
                 break;
             case Constants.NOTIFICATION_TYPE_LOCATION_REQUEST_DECLINED:
-
+                requesterName = response.get("requesterName");
+                intent = new Intent(getPackageName() + ".Chat");
+                intent.putExtra("requesterName", requesterName);
+                intent.putExtra("type", "locationSession");
+                intent.putExtra("hasAccepted", false);
+                localBroadcastManager = LocalBroadcastManager.getInstance(this);
+                localBroadcastManager.sendBroadcast(intent);
                 break;
 
             case Constants.NOTIFICATION_TYPE_LOCATION_REQUEST_ACCEPTED:
-
+                requesterName = response.get("requesterName");
+                intent = new Intent(getPackageName() + ".Chat");
+                intent.putExtra("requesterName", requesterName);
+                intent.putExtra("type", "locationSession");
+                intent.putExtra("hasAccepted", true);
+                localBroadcastManager = LocalBroadcastManager.getInstance(this);
+                localBroadcastManager.sendBroadcast(intent);
                 break;
             case Constants.NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED:
-                sendGeneralNotification(getApplicationContext(),response.get("requesterId"),response.get("requesterName")+" "+
-                getString(R.string.acceptedYourFriendRequest),"");
+                sendGeneralNotification(getApplicationContext(), response.get("requesterId"), response.get("requesterName") + " " +
+                        getString(R.string.acceptedYourFriendRequest), "", HomeActivity.class);
+                break;
+            case Constants.NOTIFICATION_TYPE_LOCATION_UPDATES:
+                String latitude = response.get("latitude");
+                String longitude = response.get("longitude");
+
+                intent = new Intent(getPackageName() + ".Chat");
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
+                intent.putExtra("type", Constants.NOTIFICATION_TYPE_LOCATION_UPDATES);
+                localBroadcastManager = LocalBroadcastManager.getInstance(this);
+                localBroadcastManager.sendBroadcast(intent);
+                break;
+            case Constants.DELETE_MESSAGE_REQUESTED:
+                String messageId = response.get("messageId");
+                intent = new Intent(getPackageName() + ".Chat");
+                intent.putExtra("messageId", messageId);
+                intent.putExtra("type", Constants.DELETE_MESSAGE_REQUESTED);
+                localBroadcastManager = LocalBroadcastManager.getInstance(this);
+                localBroadcastManager.sendBroadcast(intent);
                 break;
         }
 
     }
-    // [END receive_message]
 
-    /**
-     * Create and show a simple notification containing the received FCM message.
-     *
-     * @param messageBody FCM message body received.
-     */
+
+    private void sendLocationRequestNotification(Context context, String requestId, String requesterName) {
+
+        NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+
+        Intent requestsViewIntent = new Intent(context, RequestsView.class);
+        requestsViewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+
+        PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(requestId), requestsViewIntent, 0);
+        android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setAutoCancel(true);
+
+
+        builder.setContentTitle(requesterName + " " + getString(R.string.requestedShareLocation));
+        builder.setContentText(getString(R.string.requestedTextBody));
+        builder.setGroup(GROUP_KEY_MESSAGES);
+        builder.setDefaults(android.app.Notification.DEFAULT_ALL);
+        builder.setContentIntent(requestsViewPending);
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.toViewTheRequest)));
+        builder.setShowWhen(true);
+        android.app.Notification notification = builder.build();
+        notificationManagerCompat.notify(Integer.valueOf(requestId), notification);
+    }
+
+
     public void sendNotification(String title, String opponentId,
                                  String messageBody, final Context context,
                                  String messageId, String currentUserId,
@@ -166,7 +224,6 @@ public class NotificationService extends FirebaseMessagingService {
             messageBody = userName + " " + getString(R.string.haveSentSticker);
         }
 
-        Log.d(TAG, "sendNotification: " + opponentImage);
         Intent chatIntent = new Intent(context, Chat.class);
         chatIntent.setAction(opponentId);
         chatIntent.putExtra("firstName", userName);
@@ -180,7 +237,6 @@ public class NotificationService extends FirebaseMessagingService {
 
 
         Intent intent = new Intent(context, ReplyView.class);
-        intent.putExtra("message", messageBody);
         intent.putExtra("mOpponentId", opponentId);
         intent.putExtra("mCurrentUserId", currentUserId);
         intent.putExtra("userImage", userImage);
@@ -214,11 +270,11 @@ public class NotificationService extends FirebaseMessagingService {
                 pendingIntent));
 
         builder.setContentTitle(getString(R.string.newMessage) + " " + userName);
-        builder.setContentText(messageBody);
+        builder.setContentText(messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
         builder.setGroup(GROUP_KEY_MESSAGES);
         builder.setDefaults(android.app.Notification.DEFAULT_ALL);
         builder.setContentIntent(chatPending);
-        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody));
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "")));
         builder.setShowWhen(true);
         android.app.Notification notification = builder.build();
         notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
@@ -269,22 +325,23 @@ public class NotificationService extends FirebaseMessagingService {
 
 
         builder.setContentTitle(requesterName + " " + getString(R.string.tobeFriend));
-        builder.setContentText(getString(R.string.friendRequestInfo));
+        builder.setContentText(getString(R.string.toViewTheRequest));
         builder.setGroup(GROUP_KEY_MESSAGES);
         builder.setDefaults(android.app.Notification.DEFAULT_ALL);
         builder.setContentIntent(requestsViewPending);
-        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.friendRequestInfo)));
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.toViewTheRequest)));
         builder.setShowWhen(true);
         android.app.Notification notification = builder.build();
         notificationManagerCompat.notify(Integer.valueOf(requestId), notification);
     }
 
     private void sendGeneralNotification(Context context, String uniqueId,
-                                         String title, String contentText) {
+                                         String title, String contentText,
+                                         Class<?> resultClass) {
 
         NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
-        Intent requestsViewIntent = new Intent(context, HomeActivity.class);
+        Intent requestsViewIntent = new Intent(context, resultClass);
         requestsViewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 

@@ -1,13 +1,14 @@
 package ink.activities;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.ink.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -20,7 +21,7 @@ public class FullscreenActivity extends BaseActivity {
     private String fullUrlToLoad;
 
     @Bind(R.id.fullscreen_content)
-    ImageView mContentView;
+    com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView mImageView;
     @Bind(R.id.imageLoadingProgress)
     LinearLayout imageLoadingProgress;
     @Bind(R.id.loadingProgressBar)
@@ -35,7 +36,7 @@ public class FullscreenActivity extends BaseActivity {
         ButterKnife.bind(this);
         Bundle extras = getIntent().getExtras();
         mVisible = true;
-        mContentView = (ImageView) findViewById(R.id.fullscreen_content);
+        mImageView = (com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView) findViewById(R.id.fullscreen_content);
 
         actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -50,15 +51,18 @@ public class FullscreenActivity extends BaseActivity {
                     loadingProgressBar.setMax((int) total);
                     loadingProgressBar.setProgress((int) downloaded);
                 }
-            }).intoImageView(mContentView).setCallback(new FutureCallback<ImageView>() {
+            }).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
                 @Override
-                public void onCompleted(Exception e, ImageView result) {
+                public void onCompleted(Exception e, Bitmap result) {
+                    mImageView.setImage(ImageSource.bitmap(result));
                     imageLoadingProgress.setVisibility(View.GONE);
                 }
             });
+
         }
 
-        mContentView.setOnClickListener(new View.OnClickListener() {
+
+        mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggle();
@@ -86,7 +90,7 @@ public class FullscreenActivity extends BaseActivity {
         if (actionBar != null) {
             actionBar.show();
         }
-        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        mImageView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         mVisible = true;
 
