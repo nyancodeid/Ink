@@ -307,7 +307,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(
                 Uri.parse(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + fileName));
-        request.setTitle(fileName);
+        request.setTitle(fileName.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT,""));
+
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setVisibleInDownloadsUi(true);
         downloadManager.enqueue(request);

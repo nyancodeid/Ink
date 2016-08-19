@@ -85,7 +85,7 @@ public class SendMessageService extends Service {
                             mOpponentId);
 
                     Intent intent = new Intent(getPackageName() + ".Chat");
-                    intent.putExtra("responseString", responseString);
+                    intent.putExtra("response", responseString);
                     intent.putExtra("sentItemLocation", sentItemLocation);
                     intent.putExtra("type", Constants.TYPE_MESSAGE_SENT);
                     LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());

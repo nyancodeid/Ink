@@ -233,8 +233,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                     }
                     messagesAdapter.notifyDataSetChanged();
                     String responseBody = response.body().string();
-                    Log.d("fsafasfsafasfa", "onResponse: "+responseBody);
-
                     JSONObject jsonObject = new JSONObject(responseBody);
                     JSONArray messages = jsonObject.optJSONArray("messages");
 

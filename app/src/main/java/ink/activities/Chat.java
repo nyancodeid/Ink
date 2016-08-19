@@ -23,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -148,6 +149,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     private boolean hasFriendCheckLoaded;
     private boolean isFriend;
     private ProgressDialog progressDialog;
+    private boolean scrolledToBottom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,31 +226,37 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
             @Override
             public void onClick(View view, int position) {
                 final ChatModel chatModel = mChatModelArrayList.get(position);
-                if (chatModel.hasGif()) {
-                    Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
-                    intent.putExtra("link", Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl());
-                    startActivity(intent);
-                } else if (chatModel.isAttachment()) {
-                    System.gc();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
-                    builder.setTitle(getString(R.string.downloadQuestion));
-                    builder.setMessage(getString(R.string.downloadTheFile) + " " + chatModel.getMessage().replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
-                    builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            String downloadFileName = chatModel.getMessage();
+                if (chatModel.isClickable()) {
+                    if (chatModel.hasGif()) {
+                        Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
+                        intent.putExtra("link", Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl());
+                        startActivity(intent);
+                    } else if (chatModel.isAttachment()) {
+                        System.gc();
+                        Log.d("fasfsafasfas", "onClick: " + chatModel.getMessage());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
+                        builder.setTitle(getString(R.string.downloadQuestion));
+                        builder.setMessage(getString(R.string.downloadTheFile) + " " + chatModel.getMessage().replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
+                        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                String downloadFileName = chatModel.getMessage();
 
-                            queDownload(downloadFileName);
-                        }
-                    });
-                    builder.show();
+                                queDownload(downloadFileName);
+                            }
+                        });
+                        builder.show();
+                    }
+                } else {
+                    Snackbar.make(chatTitle, getString(R.string.waitTillSent), Snackbar.LENGTH_SHORT).show();
                 }
+
             }
 
             @Override
@@ -286,7 +294,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(
                 Uri.parse(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + fileName));
-        request.setTitle(fileName);
+        request.setTitle(fileName.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setVisibleInDownloadsUi(true);
         downloadManager.enqueue(request);
@@ -613,6 +621,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                 false, Constants.STATUS_NOT_DELIVERED,
                 mUserImage, mOpponentImage, "");
         mChatModelArrayList.add(tempChat);
+        tempChat.setClickable(false);
+
         int itemLocation = mChatModelArrayList.indexOf(tempChat);
 
         attemptToQue(message.trim(), itemLocation, mDeleteOpponentId, mDeleteUserId, isGifChosen, lasChosenGifName);
@@ -1145,7 +1155,17 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                         false, Constants.STATUS_NOT_DELIVERED,
                         mUserImage, mOpponentImage, "");
                 mChatModelArrayList.add(tempChat);
+                tempChat.setClickable(false);
+
                 int itemLocation = mChatModelArrayList.indexOf(tempChat);
+
+                RealmHelper.getInstance().insertMessage(mCurrentUserId, mOpponentId,
+                        "userid=" + mSharedHelper.getUserId() + ":" +
+                                Constants.TYPE_MESSAGE_ATTACHMENT +
+                                file.getName(), "0", "",
+                        String.valueOf(itemLocation),
+                        Constants.STATUS_NOT_DELIVERED, mUserImage,
+                        mOpponentImage, mDeleteOpponentId, mDeleteUserId, false, "");
 
                 sendMessageWithAttachment(file, itemLocation);
 
@@ -1157,6 +1177,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
 
     private void sendMessageWithAttachment(final File file, final int sentItemLocation) {
         System.gc();
+        if (mNoMessageLayout.getVisibility() == View.VISIBLE) {
+            mNoMessageLayout.setVisibility(View.GONE);
+        }
         Map<String, ProgressRequestBody> map = new HashMap<>();
         ProgressRequestBody requestBody = new ProgressRequestBody(file, this);
         map.put("file\"; filename=\"" + file.getName() + "\"", requestBody);
@@ -1193,16 +1216,31 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
 
     @Override
     public void onProgressUpdate(int percentage) {
-
+        if (mChatAdapter != null) {
+            mChatAdapter.setUpdate(percentage);
+            if(!scrolledToBottom){
+                scrollToBottom();
+                scrolledToBottom=true;
+            }
+            mChatAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
     public void onError() {
-
+        if (mChatAdapter != null) {
+            mChatAdapter.stopUpdate();
+            mChatAdapter.notifyDataSetChanged();
+        }
+        scrolledToBottom=false;
     }
 
     @Override
     public void onFinish() {
-
+        if (mChatAdapter != null) {
+            mChatAdapter.stopUpdate();
+            mChatAdapter.notifyDataSetChanged();
+        }
+        scrolledToBottom=false;
     }
 }

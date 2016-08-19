@@ -16,6 +16,7 @@ import java.util.List;
 import ink.models.UserMessagesModel;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
+import ink.utils.SharedHelper;
 
 /**
  * Created by USER on 2016-07-02.
@@ -24,6 +25,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
     private List<UserMessagesModel> userMessagesModels;
     private Context mContext;
+    private SharedHelper mSharedHelper;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView messagesUserName, messageBody, messageDate;
@@ -42,6 +44,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     public MessagesAdapter(List<UserMessagesModel> friendsModelList, Context context) {
         mContext = context;
         this.userMessagesModels = friendsModelList;
+        mSharedHelper = new SharedHelper(context);
     }
 
     @Override
@@ -56,7 +59,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         UserMessagesModel userMessagesModel = userMessagesModels.get(position);
         holder.messagesUserName.setText(userMessagesModel.getFirstName() + " " + userMessagesModel.getLastName());
 
-        holder.messageBody.setText(userMessagesModel.getMessage());
+        holder.messageBody.setText(userMessagesModel.getMessage().replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
         holder.messageDate.setText(userMessagesModel.getDate());
         if (!userMessagesModel.getImageName().isEmpty()) {
             String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + userMessagesModel.getImageLink();
