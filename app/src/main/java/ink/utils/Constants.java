@@ -40,6 +40,7 @@ public class Constants {
     public static final String FRIENDS_URL = "UserFriends.php";
     public static final String SINGLE_USER_URL = "SingleUser.php";
     public static final String SEND_FRIEND_REQUEST_URL = "SendFriendRequest.php";
+    public static final String DELETE_MESSAGE_URL = "DeleteMessage.php";
     public static final String SEND_LOCATION_UPDATE_URL = "SendLocationUpdate.php";
     public static final String REQUEST_LOCATION_URL = "RequestLocation.php";
     public static final String MESSAGES_URL = "Messages.php";
@@ -70,6 +71,7 @@ public class Constants {
     public static final int TEXT_VIEW_DEFAULT_COLOR = android.R.color.tab_indicator_text;
     public static final String NOTIFICATION_TYPE_MESSAGE = "message";
     public static final String NOTIFICATION_TYPE_GROUP_REQUEST = "request";
+    public static final String TYPE_MESSAGE_SENT = "messageSent";
     public static final String NOTIFICATION_TYPE_FRIEND_REQUEST = "NOTIFICATION_TYPE_FRIEND_REQUEST";
     public static final String NOTIFICATION_TYPE_CHAT_ROULETTE = "chatRoulette";
     public static final String NOTIFICATION_TYPE_REQUESTING_LOCATION = "requestingLocation";
@@ -120,5 +122,6 @@ public class Constants {
     public static final String LOCATION_REQUEST_TYPE_ACCEPT = "acceptRequest";
     public static final String LOCATION_REQUEST_TYPE_DECLINE = "declineRequest";
     public static final String LOCATION_REQUEST_TYPE_DELETE = "delete";
+    public static final String DELETE_MESSAGE_REQUESTED = "deleteSingleMessageRequested";
 }
 

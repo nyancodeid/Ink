@@ -98,8 +98,8 @@ public class Retrofit {
         @POST(Constants.SEND_LOCATION_UPDATE_URL)
         @FormUrlEncoded
         Call<ResponseBody> sendLocationUpdate(@Field("opponent_id") String opponentId,
-                                       @Field("longitude") String longitude,
-                                       @Field("latitude") String latitude);
+                                              @Field("longitude") String longitude,
+                                              @Field("latitude") String latitude);
 
         @POST(Constants.SEARCH_GROUP_URL)
         @FormUrlEncoded
@@ -276,6 +276,11 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getChatMessages(@Field("user_id") String userId);
 
+        @POST(Constants.DELETE_MESSAGE_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> deleteMessage(@Field("messageId") String messageId,
+                                         @Field("currentUserId") String currentUserId,
+                                         @Field("opponentId") String opponentId);
 
         @POST(Constants.REGISTER_TOKEN)
         @FormUrlEncoded

@@ -6,10 +6,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import ink.callbacks.QueCallback;
 import ink.utils.Constants;
 import ink.utils.QueHelper;
 import ink.utils.RealmHelper;
@@ -54,33 +50,7 @@ public class SendReplyService extends Service {
                 deleteUserId, false, "");
 
         QueHelper queHelper = new QueHelper();
-        queHelper.attachToQue(mCurrentUserId, mOpponentId, message, finalId, false, "",
-                new QueCallback() {
-                    @Override
-                    public void onMessageSent(String response, int sentItemLocation) {
-                        System.gc();
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            boolean success = jsonObject.optBoolean("success");
-                            if (success) {
-                                String messageId = jsonObject.optString("message_id");
-                                RealmHelper.getInstance().updateMessages(messageId,
-                                        Constants.STATUS_DELIVERED, String.valueOf(sentItemLocation),
-                                        mOpponentId);
-
-                            } else {
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onMessageSentFail(QueHelper failedHelperInstance, String failedMessage, int failedItemLocation) {
-                        failedHelperInstance.attachToQue(mCurrentUserId, mOpponentId, failedMessage, failedItemLocation, false, "", this);
-                    }
-                });
+        queHelper.attachToQue( mOpponentId, message, finalId, false, ""
+                , getApplicationContext());
     }
-
-
 }

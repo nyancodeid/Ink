@@ -463,4 +463,16 @@
     <string name="locationSent">Location sent</string>
     <string name="locationSendError">Location was not send,please try again</string>
     <string name="updatedLocation">updated the location</string>
+    <string name="sentSticker">sent sticker</string>
+    <string name="you">You:</string>
+    <string name="noMessages">You dont have any messages</string>
+    <string name="messageMissing">Message missing</string>
+    <string name="messageMissingText">One of the messages are missing and was not delivered to you from the server,please update now to get the last messsages</string>
+    <string name="updateMessages">Update now</string>
+    <string name="updatingMessages">Updating</string>
+    <string name="updatingYourMessages">Updating your messages,please wait...</string>
+    <string name="messagesUpdated">Messages was updated</string>
+    <string name="deleteMessageWarning">If you delete the message,ti will be also removed from opponent side without any recovery options,delete the message?</string>
+    <string name="messagedeleteError">Could not delete message,please try again</string>
+    <string name="deletingMessage">Deleting message,please wait...</string>
 </resources>

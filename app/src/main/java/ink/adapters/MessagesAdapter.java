@@ -24,7 +24,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
     private List<UserMessagesModel> userMessagesModels;
     private Context mContext;
-    private boolean shouldStartAnimation;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView messagesUserName, messageBody, messageDate;
@@ -56,6 +55,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         UserMessagesModel userMessagesModel = userMessagesModels.get(position);
         holder.messagesUserName.setText(userMessagesModel.getFirstName() + " " + userMessagesModel.getLastName());
+
         holder.messageBody.setText(userMessagesModel.getMessage());
         holder.messageDate.setText(userMessagesModel.getDate());
         if (!userMessagesModel.getImageName().isEmpty()) {
@@ -69,10 +69,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap()
                     .transform(new CircleTransform()).intoImageView(holder.messagesImage);
         }
-    }
-
-    public void setShouldStartAnimation(boolean shouldStartAnimation) {
-        this.shouldStartAnimation = shouldStartAnimation;
     }
 
     @Override

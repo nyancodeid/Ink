@@ -8,5 +8,5 @@ import ink.utils.QueHelper;
 public abstract class QueCallback {
     public abstract void onMessageSent(String response, int sentItemLocation);
 
-    public  abstract void onMessageSentFail(QueHelper failedHelperInstance, String failedMessage, int failedItemLocation);
+    public abstract void onMessageSentFail(QueHelper failedHelperInstance, String failedMessage, int failedItemLocation);
 }

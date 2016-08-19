@@ -80,6 +80,7 @@
         <service android:name="ink.service.RemoveChatRouletteService" />
         <service android:name="ink.service.SendTokenService" />
         <service android:name="ink.service.SendReplyService" />
+        <service android:name="ink.service.SendMessageService"></service>
 
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
 
