@@ -127,7 +127,7 @@ public class HomeActivity extends BaseActivity
         progressDialog.setTitle(getString(R.string.loggingout));
         progressDialog.setMessage(getString(R.string.loggingoutPleaseWait));
         setOnAccountDeleteListener(this);
-
+        mSharedHelper.putShouldLoadImage(true);
         try {
             testTimezone();
         } catch (ParseException e) {

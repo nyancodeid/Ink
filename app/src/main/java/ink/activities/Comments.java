@@ -121,7 +121,6 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         setContentView(R.layout.activity_comments);
         ButterKnife.bind(this);
         mSharedHelper = new SharedHelper(this);
-        mSharedHelper.putShouldLoadImage(true);
         Bundle extras = getIntent().getExtras();
         ActionBar actionBar = getSupportActionBar();
         mCommentModels = new ArrayList<>();
