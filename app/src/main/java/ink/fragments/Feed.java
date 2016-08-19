@@ -15,7 +15,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,12 +37,14 @@ import ink.activities.Comments;
 import ink.activities.FullscreenActivity;
 import ink.activities.HomeActivity;
 import ink.activities.MakePost;
+import ink.activities.OpponentProfile;
 import ink.adapters.FeedAdapter;
 import ink.interfaces.FeedItemClick;
 import ink.interfaces.ItemClickListener;
 import ink.models.FeedModel;
 import ink.utils.Animations;
 import ink.utils.Constants;
+import ink.utils.PopupMenu;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -112,10 +113,10 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 int lastItem = layoutManager.findLastCompletelyVisibleItemPosition();
                 newFeedsLayout.setVisibility(View.GONE);
-                if (lastItem == mAdapter.getItemCount() - 1) {
-                    parentActivity.getToolbar().setTitle(getString(R.string.loadingFeeds));
-                    getFeeds(mOffset, 10, false, true, true);
-                }
+//                if (lastItem == mAdapter.getItemCount() - 1) {
+//                    parentActivity.getToolbar().setTitle(getString(R.string.loadingFeeds));
+//                    getFeeds(mOffset, 10, false, true, true);
+//                }
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
@@ -162,7 +163,6 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
                 try {
                     String responseBody = response.body().string();
-                    Log.d("Fsafsafasfasfa", "onResponse: "+responseBody);
                     JSONArray jsonArray = new JSONArray(responseBody);
 
                     if (clearItems) {
@@ -185,7 +185,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         boolean isLiked = eachObject.optBoolean("is_liked");
                         String likesCount = eachObject.optString("likes_count");
                         boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
-                        mFeedModel = new FeedModel(isSocialAccount, id, imageLink, fileName, postBody,
+                        boolean isFriend = eachObject.optBoolean("isFriend");
+                        mFeedModel = new FeedModel(isFriend, isSocialAccount, id, imageLink, fileName, postBody,
                                 posterId, address, datePosted, firstName, lastName, isLiked, likesCount);
                         mFeedModelArrayList.add(mFeedModel);
                         mAdapter.notifyDataSetChanged();
@@ -271,6 +272,10 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         intent.putExtra("postId", clickedModel.getId());
         intent.putExtra("postBody", clickedModel.getContent());
 
+        intent.putExtra("isPostOwner", clickedModel.isPostOwner());
+        intent.putExtra("isFriend", clickedModel.isFriend());
+
+
         startActivity(intent);
     }
 
@@ -310,7 +315,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(
                 Uri.parse(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + fileName));
-        request.setTitle(fileName.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT,""));
+        request.setTitle(fileName.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
 
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setVisibleInDownloadsUi(true);
@@ -349,47 +354,61 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     @Override
     public void onMoreClicked(final int position, View view) {
-        ink.utils.PopupMenu.showPopUp(getActivity(), view, new ItemClickListener<MenuItem>() {
-            @Override
-            public void onItemClick(MenuItem clickedItem) {
-                switch (clickedItem.getItemId()) {
-                    case 0:
-                        FeedModel eachModel = mFeedModelArrayList.get(position);
-                        Intent intent = new Intent(getActivity(), MakePost.class);
-                        intent.putExtra("isEditing", true);
-                        intent.putExtra("hasAttachment", eachModel.hasAttachment());
-                        intent.putExtra("hasAddress", eachModel.hasAddress());
-                        intent.putExtra("attachmentName", eachModel.getFileName());
-                        intent.putExtra("addressName", eachModel.getAddress());
-                        intent.putExtra("postId", eachModel.getId());
-                        intent.putExtra("postBody", eachModel.getContent());
-                        startActivity(intent);
+        final FeedModel singleModel = mFeedModelArrayList.get(position);
+        if (singleModel.isPostOwner()) {
+            ink.utils.PopupMenu.showPopUp(getActivity(), view, new ItemClickListener<MenuItem>() {
+                @Override
+                public void onItemClick(MenuItem clickedItem) {
+                    switch (clickedItem.getItemId()) {
+                        case 0:
+                            Intent intent = new Intent(getActivity(), MakePost.class);
+                            intent.putExtra("isEditing", true);
+                            intent.putExtra("hasAttachment", singleModel.hasAttachment());
+                            intent.putExtra("hasAddress", singleModel.hasAddress());
+                            intent.putExtra("attachmentName", singleModel.getFileName());
+                            intent.putExtra("addressName", singleModel.getAddress());
+                            intent.putExtra("postId", singleModel.getId());
+                            intent.putExtra("postBody", singleModel.getContent());
+                            startActivity(intent);
 
-                        break;
-                    case 1:
-                        System.gc();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setTitle(getString(R.string.deletePost));
-                        builder.setMessage(getString(R.string.areYouSure));
-                        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                                deleteDialog.show();
-                                deletePost(mFeedModelArrayList.get(position).getId(), mFeedModelArrayList.get(position).getFileName());
-                            }
-                        });
-                        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        });
-                        builder.show();
-                        break;
+                            break;
+                        case 1:
+                            System.gc();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            builder.setTitle(getString(R.string.deletePost));
+                            builder.setMessage(getString(R.string.areYouSure));
+                            builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                    deleteDialog.show();
+                                    deletePost(mFeedModelArrayList.get(position).getId(), mFeedModelArrayList.get(position).getFileName());
+                                }
+                            });
+                            builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+                            builder.show();
+                            break;
+                    }
                 }
-            }
-        }, getString(R.string.edit), getString(R.string.delete));
+            }, getString(R.string.edit), getString(R.string.delete));
+        } else {
+            PopupMenu.showPopUp(getActivity(), view, new ItemClickListener<MenuItem>() {
+                @Override
+                public void onItemClick(MenuItem clickedItem) {
+                    Intent intent = new Intent(getActivity(), OpponentProfile.class);
+                    intent.putExtra("id", singleModel.getPosterId());
+                    intent.putExtra("firstName", singleModel.getFirstName());
+                    intent.putExtra("lastName", singleModel.getLastName());
+                    intent.putExtra("isFriend", singleModel.isFriend());
+                    startActivity(intent);
+                }
+            }, getString(R.string.viewProfile));
+        }
     }
 
     @Override

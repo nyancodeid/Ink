@@ -44,6 +44,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
     private boolean isOwnerSocialAccount;
     String ownerId;
     private RecyclerItemClickListener onItemClickListener;
+    private boolean showingNoComments = false;
 
     public CommentAdapter(String ownerId, List<CommentModel> data,
                           Context context, String ownerImage,
@@ -132,9 +133,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         } else if (holder instanceof HeaderViewHolder) {
             final HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
             if (ownerId.equals(sharedHelper.getUserId())) {
-                ((HeaderViewHolder) holder).commentMoreIcon.setVisibility(View.VISIBLE);
             } else {
-                ((HeaderViewHolder) holder).commentMoreIcon.setVisibility(View.GONE);
             }
             ((HeaderViewHolder) holder).commentMoreIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -170,7 +169,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
 
                 if (FileUtils.isImageType(attachment)) {
                     headerViewHolder.imageHolder.setVisibility(View.VISIBLE);
-                    Ion.with(context).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + attachment).withBitmap().placeholder(R.drawable.no_background_image)
+                    Ion.with(context).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + attachment).withBitmap().placeholder(R.drawable.big_image_place_holder)
                             .intoImageView(headerViewHolder.imageHolder);
                 } else {
                     headerViewHolder.imageHolder.setVisibility(View.GONE);
@@ -245,6 +244,11 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
                     }
                 }
             });
+            if (showingNoComments) {
+                headerViewHolder.noCommentWrapper.setVisibility(View.VISIBLE);
+            } else {
+                headerViewHolder.noCommentWrapper.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -253,6 +257,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         private TextView postBody, postDate, commenterName, commentAttachmentName, commentAddress, likesCountTV;
         private RelativeLayout commentLikeWrapper, commentAddressLayout, commentAttachmentLayout;
         private ImageView commentMoreIcon;
+        private RelativeLayout noCommentWrapper;
 
         public HeaderViewHolder(View itemView) {
             super(itemView);
@@ -268,6 +273,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             likesCountTV = (TextView) itemView.findViewById(R.id.commentLikesCount);
             commentLikeWrapper = (RelativeLayout) itemView.findViewById(R.id.commentLikeWrapper);
             commentAddressLayout = (RelativeLayout) itemView.findViewById(R.id.commentAddresslayout);
+            noCommentWrapper = (RelativeLayout) itemView.findViewById(R.id.noCommentWrapper);
             commentAttachmentLayout = (RelativeLayout) itemView.findViewById(R.id.commentAttachmentLayout);
         }
     }
@@ -295,6 +301,10 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
 
     public void setOnItemClickListener(RecyclerItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
+    }
+
+    public void setShowingNoComments(boolean showingNoComments) {
+        this.showingNoComments = showingNoComments;
     }
 
     public void setIsLiked(boolean isLiked) {

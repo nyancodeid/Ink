@@ -18,15 +18,18 @@ public class FeedModel {
     private boolean isSocialAccount;
     private boolean hasAddress;
     private boolean hasAttachment;
+    private boolean isPostOwner;
+    private boolean isFriend;
 
 
-    public FeedModel(boolean isSocialAccount, String id, String userImage, String fileName, String content, String posterId,
+    public FeedModel(boolean isFriend, boolean isSocialAccount, String id, String userImage, String fileName, String content, String posterId,
                      String address,
                      String datePosted, String firstName,
                      String lastName, boolean isLiked, String likesCount) {
         this.id = id;
         this.isSocialAccount = isSocialAccount;
         this.likesCount = likesCount;
+        this.isFriend = isFriend;
         this.isLiked = isLiked;
         this.firstName = firstName;
         this.fileName = fileName;
@@ -149,5 +152,21 @@ public class FeedModel {
 
     public void setHasAttachment(boolean hasAttachment) {
         this.hasAttachment = hasAttachment;
+    }
+
+    public boolean isPostOwner() {
+        return isPostOwner;
+    }
+
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    public void setFriend(boolean friend) {
+        isFriend = friend;
+    }
+
+    public void setPostOwner(boolean postOwner) {
+        isPostOwner = postOwner;
     }
 }

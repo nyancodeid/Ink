@@ -171,11 +171,14 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!charSequence.toString().trim().isEmpty()) {
+                if (!charSequence.toString().trim().isEmpty() && charSequence.length() > 0) {
                     doSearch(charSequence.toString());
                 } else {
                     stopSearchAnimation(false);
-
+                    if (mFriendsModelArrayList != null) {
+                        mFriendsModelArrayList.clear();
+                        mFriendsAdapter.notifyDataSetChanged();
+                    }
                 }
             }
 

@@ -494,13 +494,21 @@ public class HomeActivity extends BaseActivity
             startService(intent);
         }
         mUserNameTV.setText(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
+        if (mSharedHelper.shouldLoadImage()) {
+            loadImage();
+        }
+        super.onResume();
+    }
+
+    private void loadImage() {
         if (mSharedHelper.hasImage()) {
+
             if (!mSharedHelper.getImageLink().isEmpty()) {
                 if (isSocialAccount()) {
                     Ion.with(getApplicationContext()).load(mSharedHelper.getImageLink()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(mProfileImage).setCallback(new FutureCallback<ImageView>() {
                         @Override
                         public void onCompleted(Exception e, ImageView result) {
-
+                            mSharedHelper.putShouldLoadImage(false);
                         }
                     });
                 } else {
@@ -509,7 +517,7 @@ public class HomeActivity extends BaseActivity
                             .setCallback(new FutureCallback<ImageView>() {
                                 @Override
                                 public void onCompleted(Exception e, ImageView result) {
-
+                                    mSharedHelper.putShouldLoadImage(false);
                                 }
                             });
                 }
@@ -519,11 +527,10 @@ public class HomeActivity extends BaseActivity
                     .setCallback(new FutureCallback<ImageView>() {
                         @Override
                         public void onCompleted(Exception e, ImageView result) {
+                            mSharedHelper.putShouldLoadImage(false);
                         }
                     });
         }
-
-        super.onResume();
     }
 
 

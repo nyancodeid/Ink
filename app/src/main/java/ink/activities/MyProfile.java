@@ -178,7 +178,27 @@ public class MyProfile extends BaseActivity {
                 }
             }
         });
-        getMyData();
+        if (!mSharedHelper.isUserProfileCached()) {
+            getMyData();
+        } else {
+            getCachedData();
+        }
+
+    }
+
+    private void getCachedData() {
+        mFirstNameToSend = mSharedHelper.getFirstName();
+        mLastNameToSend = mSharedHelper.getLastName();
+        mGenderToSend = mSharedHelper.getUserGender();
+        mPhoneNumberToSend = mSharedHelper.getUserPhoneNumber();
+        mFacebookProfileToSend = mSharedHelper.getUserFacebookLink();
+        mFacebookName = mSharedHelper.getUserFacebookName();
+        mImageLinkToSend = mSharedHelper.getImageLink();
+        mSkypeToSend = mSharedHelper.getUserSkype();
+        mAddressToSend = mSharedHelper.getUserAddress();
+        mRelationshipToSend = mSharedHelper.getUserRelationship();
+        mStatusToSend = mSharedHelper.getUserStatus();
+        attachValues(true);
     }
 
     private void registerFacebookCallback() {
@@ -355,6 +375,8 @@ public class MyProfile extends BaseActivity {
                     mRelationshipToSend = jsonObject.optString("relationship");
                     mStatusToSend = jsonObject.optString("status");
 
+                    cacheUserData();
+
                     attachValues(true);
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MyProfile.this);
@@ -374,6 +396,21 @@ public class MyProfile extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void cacheUserData() {
+        mSharedHelper.putFirstName(mFirstNameToSend);
+        mSharedHelper.putLastName(mLastNameToSend);
+        mSharedHelper.putUserGender(mGenderToSend);
+        mSharedHelper.putUserPhoneNumber(mPhoneNumberToSend);
+        mSharedHelper.putUserFacebookLink(mFacebookProfileToSend);
+        mSharedHelper.putUserFacebookName(mFacebookName);
+        mSharedHelper.putImageLink(mImageLinkToSend);
+        mSharedHelper.putUserSkype(mSkypeToSend);
+        mSharedHelper.putUserAddress(mAddressToSend);
+        mSharedHelper.putUserRelationship(mRelationshipToSend);
+        mSharedHelper.putUserStatus(mStatusToSend);
+        mSharedHelper.putShouldLoadImage(true);
     }
 
     private void attachValues(boolean shouldLoadImage) {
@@ -957,6 +994,7 @@ public class MyProfile extends BaseActivity {
                                 }
 
                             }
+                            cacheUserData();
                         } else {
                             hideImageLoading();
                             hideSnack();

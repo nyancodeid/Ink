@@ -33,7 +33,6 @@ import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.R;
@@ -60,6 +59,7 @@ import ink.utils.Animations;
 import ink.utils.Constants;
 import ink.utils.InputField;
 import ink.utils.Keyboard;
+import ink.utils.PopupMenu;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -71,8 +71,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     @Bind(R.id.commentBody)
     EditText mCommentBody;
-    @Bind(R.id.noCommentWrapper)
-    RelativeLayout mNoCommentWrapper;
+
     @Bind(R.id.commentsLoading)
     ProgressBar mCommentsLoading;
     @Bind(R.id.addCommentButton)
@@ -105,6 +104,8 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     private String ownerId;
     private ProgressDialog deleteDialog;
     private boolean hasAttachment;
+    private boolean isPostOwner;
+    private boolean isFriend;
     private boolean hasAddress;
     private String attachmentName;
     private String addressName;
@@ -120,6 +121,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         setContentView(R.layout.activity_comments);
         ButterKnife.bind(this);
         mSharedHelper = new SharedHelper(this);
+        mSharedHelper.putShouldLoadImage(true);
         Bundle extras = getIntent().getExtras();
         ActionBar actionBar = getSupportActionBar();
         mCommentModels = new ArrayList<>();
@@ -152,8 +154,10 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
             addressName = extras.getString("addressName");
             postId = extras.getString("postId");
             postBody = extras.getString("postBody");
-
+            isPostOwner = extras.getBoolean("isPostOwner");
+            isFriend = extras.getBoolean("isFriend");
         }
+
         mCommentAdapter = new CommentAdapter(ownerId, mCommentModels, this, mUserImage,
                 mPostBody, mAttachment, mLocation, mDate, mName, mLikesCount, isLiked, isOwnerSocialAccount);
         mCommentAdapter.setOnLikeClickListener(this);
@@ -161,7 +165,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);
         itemAnimator.setRemoveDuration(500);
-        mCommentRecycler.setHasFixedSize(true);
+
         mCommentRecycler.setLayoutManager(new LinearLayoutManager(this));
         mCommentRecycler.setItemAnimator(itemAnimator);
         mCommentRecycler.addItemDecoration(new DividerItemDecoration(this));
@@ -251,7 +255,9 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                     JSONArray jsonArray = new JSONArray(responseBody);
                     if (jsonArray.length() <= 0) {
                         mCommentsLoading.setVisibility(View.GONE);
-                        mNoCommentWrapper.setVisibility(View.VISIBLE);
+                        mCommentAdapter.setShowingNoComments(true);
+                        mCommentAdapter.notifyDataSetChanged();
+
                         mCommentRefresher.setRefreshing(false);
                         hasComments = false;
                     } else {
@@ -273,7 +279,9 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                             mCommentModels.add(mCommentModel);
                             mCommentAdapter.notifyDataSetChanged();
                         }
-                        mNoCommentWrapper.setVisibility(View.GONE);
+                        mCommentAdapter.setShowingNoComments(false);
+                        mCommentAdapter.notifyDataSetChanged();
+
                         mCommentsLoading.setVisibility(View.GONE);
                         mCommentRefresher.setRefreshing(false);
                         if (shouldFocus) {
@@ -282,7 +290,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                                 addCommentDialog.dismiss();
                             }
                             mCommentBody.setText("");
-                            focusUp();
+//                            focusUp();
                         }
                     }
                 } catch (IOException e) {
@@ -302,7 +310,10 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     @OnClick(R.id.addCommentButton)
     public void addCommentButton() {
         isResponseReceived = false;
-        mNoCommentWrapper.setVisibility(View.GONE);
+
+        mCommentAdapter.setShowingNoComments(false);
+        mCommentAdapter.notifyDataSetChanged();
+
         addCommentDialog.show();
         addComment(mCommentBody.getText().toString().trim(), mSharedHelper.getImageLink(), mSharedHelper.getUserId(), mPostId);
     }
@@ -326,6 +337,13 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        Snackbar.make(mCommentRefresher, getString(R.string.commentAdded), Snackbar.LENGTH_SHORT).
+                                setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
                         getComments(postId, true);
                     } else {
                         addCommentDialog.dismiss();
@@ -392,45 +410,61 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onMoreClick(int position, View view) {
-        ink.utils.PopupMenu.showPopUp(Comments.this, view, new ItemClickListener<MenuItem>() {
-            @Override
-            public void onItemClick(MenuItem clickedItem) {
-                switch (clickedItem.getItemId()) {
-                    case 0:
-                        Intent intent = new Intent(getApplicationContext(), MakePost.class);
-                        intent.putExtra("isEditing", true);
-                        intent.putExtra("hasAttachment", hasAttachment);
-                        intent.putExtra("hasAddress", hasAddress);
-                        intent.putExtra("attachmentName", attachmentName);
-                        intent.putExtra("addressName", addressName);
-                        intent.putExtra("postId", postId);
-                        intent.putExtra("postBody", postBody);
-                        startActivity(intent);
-                        break;
-                    case 1:
-                        System.gc();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Comments.this);
-                        builder.setTitle(getString(R.string.deletePost));
-                        builder.setMessage(getString(R.string.areYouSure));
-                        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                                deleteDialog.show();
-                                deletePost();
-                            }
-                        });
-                        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        });
-                        builder.show();
-                        break;
+        if (isPostOwner) {
+            ink.utils.PopupMenu.showPopUp(Comments.this, view, new ItemClickListener<MenuItem>() {
+                @Override
+                public void onItemClick(MenuItem clickedItem) {
+                    switch (clickedItem.getItemId()) {
+                        case 0:
+                            Intent intent = new Intent(getApplicationContext(), MakePost.class);
+                            intent.putExtra("isEditing", true);
+                            intent.putExtra("hasAttachment", hasAttachment);
+                            intent.putExtra("hasAddress", hasAddress);
+                            intent.putExtra("attachmentName", attachmentName);
+                            intent.putExtra("addressName", addressName);
+                            intent.putExtra("postId", postId);
+                            intent.putExtra("postBody", postBody);
+                            startActivity(intent);
+                            break;
+                        case 1:
+                            System.gc();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Comments.this);
+                            builder.setTitle(getString(R.string.deletePost));
+                            builder.setMessage(getString(R.string.areYouSure));
+                            builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                    deleteDialog.show();
+                                    deletePost();
+                                }
+                            });
+                            builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+                            builder.show();
+                            break;
+                    }
                 }
-            }
-        }, getString(R.string.edit), getString(R.string.delete));
+            }, getString(R.string.edit), getString(R.string.delete));
+        } else {
+            PopupMenu.showPopUp(Comments.this, view, new ItemClickListener<MenuItem>() {
+                @Override
+                public void onItemClick(MenuItem clickedItem) {
+                    String nameParts[] = mName.split("\\s");
+                    Intent intent = new Intent(Comments.this, OpponentProfile.class);
+                    intent.putExtra("id", ownerId);
+                    intent.putExtra("firstName", nameParts[0]);
+                    intent.putExtra("lastName", nameParts[1]);
+                    intent.putExtra("isFriend", isFriend);
+                    startActivity(intent);
+                }
+            }, getString(R.string.viewProfile));
+        }
+
     }
 
     @Override
@@ -595,17 +629,13 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 if (keypadHeight > screenHeight * 0.15) {
                     if (isResponseReceived) {
                         if (!hasComments) {
-                            if (mNoCommentWrapper.getVisibility() == View.VISIBLE) {
-                                mNoCommentWrapper.setVisibility(View.GONE);
-                            }
+                            //hide no comments
                         }
                     }
                 } else {
                     if (isResponseReceived) {
                         if (!hasComments) {
-                            if (mNoCommentWrapper.getVisibility() == View.GONE) {
-                                mNoCommentWrapper.setVisibility(View.VISIBLE);
-                            }
+                            //show no comments
                         }
                     }
                 }

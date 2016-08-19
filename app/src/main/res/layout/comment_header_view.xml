@@ -222,6 +222,7 @@
     </android.support.v7.widget.CardView>
 
     <TextView
+        android:id="@+id/commentsText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/commentItemCard"
@@ -229,4 +230,30 @@
         android:layout_marginTop="15dp"
         android:fontFamily="@string/appFont"
         android:text="@string/commentText" />
+
+    <RelativeLayout
+        android:id="@+id/noCommentWrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/commentCard"
+        android:layout_below="@+id/commentsText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="20dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/noCommentIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/no_comments" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/noCommentIcon"
+            android:layout_centerHorizontal="true"
+            android:text="@string/noComments" />
+    </RelativeLayout>
 </RelativeLayout>

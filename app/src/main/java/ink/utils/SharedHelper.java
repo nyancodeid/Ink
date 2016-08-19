@@ -3,17 +3,22 @@ package ink.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.ink.R;
+
 /**
  * Created by USER on 2016-06-20.
  */
 public class SharedHelper {
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
+    private Context context;
 
     public SharedHelper(Context context) {
         mSharedPreferences = context.getSharedPreferences("ink_session", Context.MODE_PRIVATE);
         mEditor = mSharedPreferences.edit();
+        this.context = context;
     }
+
 
     public boolean hasImage() {
         return mSharedPreferences.getString("imageLink", "").isEmpty() ? false : true;
@@ -87,6 +92,82 @@ public class SharedHelper {
         return mSharedPreferences.contains("user_id");
     }
 
+    public boolean isUserProfileCached() {
+        return mSharedPreferences.contains("userStatus");
+    }
+
+    public String getUserStatus() {
+        return mSharedPreferences.getString("userStatus", context.getString(R.string.noStatusText));
+    }
+
+    public void putUserStatus(String value) {
+        mEditor.putString("userStatus", value);
+        mEditor.commit();
+    }
+
+    public String getUserAddress() {
+        return mSharedPreferences.getString("userAddress", context.getString(R.string.noAddress));
+    }
+
+    public void putUserAddress(String value) {
+        mEditor.putString("userAddress", value);
+        mEditor.commit();
+    }
+
+    public String getUserPhoneNumber() {
+        return mSharedPreferences.getString("userPhoneNumber", context.getString(R.string.noPhone));
+    }
+
+    public void putUserPhoneNumber(String value) {
+        mEditor.putString("userPhoneNumber", value);
+        mEditor.commit();
+    }
+
+    public String getUserRelationship() {
+        return mSharedPreferences.getString("userRelationship", context.getString(R.string.noRelationship));
+    }
+
+    public void putUserRelationship(String value) {
+        mEditor.putString("userRelationship", value);
+        mEditor.commit();
+    }
+
+    public String getUserGender() {
+        return mSharedPreferences.getString("userGender", context.getString(R.string.noGender));
+    }
+
+    public void putUserGender(String value) {
+        mEditor.putString("userGender", value);
+        mEditor.commit();
+    }
+
+    public String getUserFacebookName() {
+        return mSharedPreferences.getString("userFacebookName", context.getString(R.string.noFacebook));
+    }
+
+    public void putUserFacebookName(String value) {
+        mEditor.putString("userFacebookName", value);
+        mEditor.commit();
+    }
+
+    public String getUserFacebookLink() {
+        return mSharedPreferences.getString("userFacebookLink", context.getString(R.string.noFacebook));
+    }
+
+    public void putUserFacebookLink(String value) {
+        mEditor.putString("userFacebookLink", value);
+        mEditor.commit();
+    }
+
+    public String getUserSkype() {
+        return mSharedPreferences.getString("userSkype", context.getString(R.string.noSkype));
+    }
+
+    public void putUserSkype(String value) {
+        mEditor.putString("userSkype", value);
+        mEditor.commit();
+    }
+
     public void putToken(String token) {
         mEditor.putString("token", token);
         mEditor.commit();
@@ -94,6 +175,15 @@ public class SharedHelper {
 
     public void putVkAccessToken(String value) {
         mEditor.putString("vkAccessToken", value);
+        mEditor.commit();
+    }
+
+    public boolean shouldLoadImage() {
+        return mSharedPreferences.getBoolean("shouldLoadImage", true);
+    }
+
+    public void putShouldLoadImage(boolean value) {
+        mEditor.putBoolean("shouldLoadImage", value);
         mEditor.commit();
     }
 

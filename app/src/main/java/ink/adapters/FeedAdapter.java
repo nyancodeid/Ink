@@ -104,9 +104,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                     .intoImageView(holder.feedUserImage);
         }
         if (feedModel.getPosterId().equals(sharedHelper.getUserId())) {
-            holder.feedMoreIcon.setVisibility(View.VISIBLE);
+            feedModel.setPostOwner(true);
         } else {
-            holder.feedMoreIcon.setVisibility(View.GONE);
+            feedModel.setPostOwner(false);
         }
         holder.feedMoreIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,7 +135,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
             if (FileUtils.isImageType(feedModel.getFileName())) {
                 holder.imageHolder.setVisibility(View.VISIBLE);
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + feedModel.getFileName()).withBitmap().placeholder(R.drawable.no_background_image)
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + feedModel.getFileName()).withBitmap().placeholder(R.drawable.big_image_place_holder)
                         .intoImageView(holder.imageHolder);
             } else {
                 holder.imageHolder.setVisibility(View.GONE);
