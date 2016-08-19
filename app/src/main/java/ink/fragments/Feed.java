@@ -15,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -161,7 +162,9 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
                 try {
                     String responseBody = response.body().string();
+                    Log.d("Fsafsafasfasfa", "onResponse: "+responseBody);
                     JSONArray jsonArray = new JSONArray(responseBody);
+
                     if (clearItems) {
                         if (mFeedModelArrayList != null) {
                             mFeedModelArrayList.clear();
