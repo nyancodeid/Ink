@@ -20,7 +20,6 @@ import java.util.List;
 import ink.models.ChatModel;
 import ink.utils.Constants;
 import ink.utils.Dp;
-import ink.utils.FileUtils;
 import ink.utils.Regex;
 import ink.utils.SharedHelper;
 
@@ -163,16 +162,17 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 holder.chatViewBubble.setVisibility(View.VISIBLE);
             }
         } else if (Regex.isAttachment(chatModel.getMessage())) {
-            if (FileUtils.isImageType(chatModel.getMessage())) {
-                holder.imageView.setImageResource(0);
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + chatModel.getMessage()).withBitmap().placeholder(R.drawable.no_background_image).
-                        intoImageView(holder.imageView);
-                holder.imageViewWrapper.setVisibility(View.VISIBLE);
-            } else {
-                holder.imageView.setImageResource(0);
-                holder.imageView.setBackgroundResource(R.drawable.chat_attachment_icon);
-                holder.imageViewWrapper.setVisibility(View.VISIBLE);
-            }
+//            if (FileUtils.isImageType(chatModel.getMessage())) {
+//                holder.imageView.setImageResource(0);
+//                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + chatModel.getMessage()).withBitmap().placeholder(R.drawable.no_background_image).
+//                        intoImageView(holder.imageView);
+//                holder.imageViewWrapper.setVisibility(View.VISIBLE);
+//            } else {
+//
+//            }
+            holder.imageView.setImageResource(0);
+            holder.imageView.setBackgroundResource(R.drawable.chat_attachment_icon);
+            holder.imageViewWrapper.setVisibility(View.VISIBLE);
 
         } else {
             holder.imageView.setImageResource(0);

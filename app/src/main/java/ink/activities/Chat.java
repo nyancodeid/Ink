@@ -23,7 +23,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -233,25 +232,54 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                         startActivity(intent);
                     } else if (chatModel.isAttachment()) {
                         System.gc();
-                        Log.d("fasfsafasfas", "onClick: " + chatModel.getMessage());
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
-                        builder.setTitle(getString(R.string.downloadQuestion));
-                        builder.setMessage(getString(R.string.downloadTheFile) + " " + chatModel.getMessage().replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
-                        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        });
-                        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                String downloadFileName = chatModel.getMessage();
+                        if (FileUtils.isImageType(chatModel.getMessage())) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
+                            builder.setTitle(getString(R.string.downloadQuestion));
+                            builder.setMessage(getString(R.string.downloadTheFile) + " " + chatModel.getMessage().replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
+                            builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+                            builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    String downloadFileName = chatModel.getMessage();
 
-                                queDownload(downloadFileName);
-                            }
-                        });
-                        builder.show();
+                                    queDownload(downloadFileName);
+                                }
+                            });
+                            builder.setNeutralButton(getString(R.string.viewImage), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
+                                    intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + chatModel.getMessage());
+                                    startActivity(intent);
+                                }
+                            });
+                            builder.show();
+                        } else {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
+                            builder.setTitle(getString(R.string.downloadQuestion));
+                            builder.setMessage(getString(R.string.downloadTheFile) + " " + chatModel.getMessage().replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
+                            builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+                            builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    String downloadFileName = chatModel.getMessage();
+
+                                    queDownload(downloadFileName);
+                                }
+                            });
+                            builder.show();
+                        }
+
                     }
                 } else {
                     Snackbar.make(chatTitle, getString(R.string.waitTillSent), Snackbar.LENGTH_SHORT).show();
@@ -705,6 +733,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                 if (mNoMessageLayout.getVisibility() == View.VISIBLE) {
                     mNoMessageLayout.setVisibility(View.GONE);
                 }
+
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1218,9 +1247,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     public void onProgressUpdate(int percentage) {
         if (mChatAdapter != null) {
             mChatAdapter.setUpdate(percentage);
-            if(!scrolledToBottom){
+            if (!scrolledToBottom) {
                 scrollToBottom();
-                scrolledToBottom=true;
+                scrolledToBottom = true;
             }
             mChatAdapter.notifyDataSetChanged();
         }
@@ -1232,7 +1261,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
             mChatAdapter.stopUpdate();
             mChatAdapter.notifyDataSetChanged();
         }
-        scrolledToBottom=false;
+        scrolledToBottom = false;
     }
 
     @Override
@@ -1241,6 +1270,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
             mChatAdapter.stopUpdate();
             mChatAdapter.notifyDataSetChanged();
         }
-        scrolledToBottom=false;
+        scrolledToBottom = false;
     }
 }

@@ -479,4 +479,5 @@
     <string name="sendFile">Send File</string>
     <string name="couldNotOpenFile">Could not open file,if you picked from file explorer,try using another file explorer,if you have picked an image,use gallery instead</string>
     <string name="waitTillSent">Please wait till message sent</string>
+    <string name="viewImage">View Image</string>
 </resources>
