@@ -108,9 +108,6 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
         progressDialog.setProgress(0);
         progressDialog.setMax(100);
 
-        if (!isPermissionsGranted()) {
-            requestPermission();
-        }
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -265,6 +262,9 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
         if (PermissionsChecker.isStoragePermissionGranted(this)) {
             showAttachmentDialog();
         } else {
+            if (!isPermissionsGranted()) {
+                requestPermission();
+            }
             Snackbar.make(mCheckWrapper, getString(R.string.storagePermissions), Snackbar.LENGTH_LONG).show();
         }
     }
@@ -390,6 +390,8 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (!isPermissionsGranted()) {
             Snackbar.make(mCheckWrapper, getString(R.string.storagePermissions), Snackbar.LENGTH_LONG).show();
+        } else {
+            showAttachmentDialog();
         }
     }
 

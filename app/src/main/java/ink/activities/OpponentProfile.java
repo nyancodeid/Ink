@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ink.R;
 import com.koushikdutta.ion.Ion;
@@ -242,12 +243,10 @@ public class OpponentProfile extends BaseActivity {
                             boolean success = jsonObject.optBoolean("success");
                             DimDialog.hideDialog();
                             if (success) {
-                                Snackbar.make(mTriangleView, getString(R.string.friendRemoved), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
+                                Toast.makeText(OpponentProfile.this, getString(R.string.friendRemoved), Toast.LENGTH_SHORT).show();
 
-                                    }
-                                }).show();
+                                LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + "Comments"));
+                                LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
 
                                 LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + ".Chat"));
                                 LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + "MyFriends"));
