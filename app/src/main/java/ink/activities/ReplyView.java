@@ -40,7 +40,6 @@ public class ReplyView extends BaseActivity {
         ButterKnife.bind(this);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            String message = extras.getString("message");
             mOpponentId = extras.getString("mOpponentId");
             mCurrentUserId = extras.getString("mCurrentUserId");
             userImage = extras.getString("userImage");

@@ -15,9 +15,10 @@ public class ChatModel {
     private String date;
     private boolean hasGif;
     private String gifUrl;
+    private boolean isAttachment;
 
 
-    public ChatModel(boolean hasGif, String gifUrl, String messageId, String userId,
+    public ChatModel(boolean isAttachment, boolean hasGif, String gifUrl, String messageId, String userId,
                      String opponentId, String message,
                      boolean isClickable, String deliveryStatus,
                      String userImage, String opponentImage, String date) {
@@ -27,6 +28,7 @@ public class ChatModel {
         this.gifUrl = gifUrl;
         this.opponentImage = opponentImage;
         this.isClickable = isClickable;
+        this.isAttachment = isAttachment;
         this.deliveryStatus = deliveryStatus;
         this.messageId = messageId;
         this.userId = userId;
@@ -34,6 +36,14 @@ public class ChatModel {
         this.message = message;
     }
 
+
+    public boolean isAttachment() {
+        return isAttachment;
+    }
+
+    public void setAttachment(boolean attachment) {
+        isAttachment = attachment;
+    }
 
     public boolean isClickable() {
         return isClickable;

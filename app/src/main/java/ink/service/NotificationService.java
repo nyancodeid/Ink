@@ -237,7 +237,6 @@ public class NotificationService extends FirebaseMessagingService {
 
 
         Intent intent = new Intent(context, ReplyView.class);
-        intent.putExtra("message", messageBody);
         intent.putExtra("mOpponentId", opponentId);
         intent.putExtra("mCurrentUserId", currentUserId);
         intent.putExtra("userImage", userImage);
@@ -271,11 +270,11 @@ public class NotificationService extends FirebaseMessagingService {
                 pendingIntent));
 
         builder.setContentTitle(getString(R.string.newMessage) + " " + userName);
-        builder.setContentText(messageBody);
+        builder.setContentText(messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
         builder.setGroup(GROUP_KEY_MESSAGES);
         builder.setDefaults(android.app.Notification.DEFAULT_ALL);
         builder.setContentIntent(chatPending);
-        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody));
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "")));
         builder.setShowWhen(true);
         android.app.Notification notification = builder.build();
         notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);

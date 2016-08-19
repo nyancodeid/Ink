@@ -55,9 +55,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MakePost extends BaseActivity implements ProgressRequestBody.UploadCallbacks {
-    private static final int PICKFILE_REQUEST_CODE = 5584;
+    private static final int PICK_FILE_REQUEST_CODE = 5584;
     private static final int STORAGE_PERMISSION_REQUEST = 45485;
-    private static final long MAX_FILE_SIZE = 20971520;
+    public static final long MAX_FILE_SIZE = 20971520;
     @Bind(R.id.closeWrapper)
     RelativeLayout mCloseWrapper;
     @Bind(R.id.checkWrapper)
@@ -276,7 +276,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
         intent.addCategory(Intent.CATEGORY_OPENABLE);
 
         try {
-            startActivityForResult(Intent.createChooser(intent, "Select a File to Upload"), PICKFILE_REQUEST_CODE);
+            startActivityForResult(Intent.createChooser(intent, "Select a File to Upload"), PICK_FILE_REQUEST_CODE);
         } catch (android.content.ActivityNotFoundException ex) {
             // Potentially direct the user to the Market with a AlertDialogView
             Toast.makeText(this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();

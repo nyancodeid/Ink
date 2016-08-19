@@ -19,4 +19,12 @@ public class Regex {
         }
         return success;
     }
+
+    public static boolean isAttachment(String value) {
+        boolean success = false;
+        if (value.contains(":" + Constants.TYPE_MESSAGE_ATTACHMENT)) {
+            success = true;
+        }
+        return success;
+    }
 }

@@ -149,10 +149,8 @@ public class Retrofit {
         @POST(Constants.SEND_MESSAGE_URL)
         @FormUrlEncoded
         Call<ResponseBody> sendMessage(@Field("user_id") String userId,
-                                       @Field("opponent_id")
-                                       String opponentId,
-                                       @Field("message")
-                                       String message,
+                                       @Field("opponent_id") String opponentId,
+                                       @Field("message") String message,
                                        @Field("timezone") String timezone,
                                        @Field("hasGif") boolean hasGif,
                                        @Field("gifUrl") String gifUrl);
@@ -356,6 +354,16 @@ public class Retrofit {
                                     @Part("postId") String postId,
                                     @Part("shouldDelete") String shouldDelete);
 
+
+        @Multipart
+        @POST(Constants.SEND_MESSAGE_URL)
+        Call<ResponseBody> sendMessageWithAttachment(@PartMap Map<String, ProgressRequestBody> map,
+                                                     @Part("user_id") String userId,
+                                                     @Part("opponent_id") String opponentId,
+                                                     @Part("message") String message,
+                                                     @Part("timezone") String timezone,
+                                                     @Part("hasGif") boolean hasGif,
+                                                     @Part("gifUrl") String gifUrl);
 
         @POST(Constants.MAKE_POST_URL)
         @FormUrlEncoded

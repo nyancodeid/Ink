@@ -1,11 +1,13 @@
 package ink.activities;
 
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
@@ -32,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
@@ -45,8 +48,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +61,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.adapters.ChatAdapter;
 import ink.adapters.GifAdapter;
+import ink.interfaces.ItemClickListener;
 import ink.interfaces.RecyclerItemClickListener;
 import ink.models.ChatModel;
 import ink.models.GifModel;
@@ -65,11 +72,14 @@ import ink.models.UserStatus;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.ErrorCause;
+import ink.utils.FileUtils;
 import ink.utils.Keyboard;
 import ink.utils.Notification;
+import ink.utils.ProgressRequestBody;
 import ink.utils.QueHelper;
 import ink.utils.RealmHelper;
 import ink.utils.RecyclerTouchListener;
+import ink.utils.Regex;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import ink.utils.Time;
@@ -78,9 +88,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Chat extends BaseActivity implements RecyclerItemClickListener {
+public class Chat extends BaseActivity implements RecyclerItemClickListener, ProgressRequestBody.UploadCallbacks {
 
-    private static final int REQUEST_LOCATION_CODE = 454;
+    private static final int PICK_FILE_REQUEST_CODE = 400;
     @Bind(R.id.sendChatMessage)
     fab.FloatingActionButton mSendChatMessage;
     @Bind(R.id.messageBody)
@@ -108,6 +118,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     ImageView scrollDownChat;
     @Bind(R.id.locationSessionIcon)
     ImageView locationSessionIcon;
+    @Bind(R.id.attachmentIcon)
+    ImageView attachmentIcon;
 
     private String mOpponentId;
     String mCurrentUserId;
@@ -211,11 +223,31 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, mRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                ChatModel chatModel = mChatModelArrayList.get(position);
+                final ChatModel chatModel = mChatModelArrayList.get(position);
                 if (chatModel.hasGif()) {
                     Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
                     intent.putExtra("link", Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl());
                     startActivity(intent);
+                } else if (chatModel.isAttachment()) {
+                    System.gc();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
+                    builder.setTitle(getString(R.string.downloadQuestion));
+                    builder.setMessage(getString(R.string.downloadTheFile) + " " + chatModel.getMessage().replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
+                    builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String downloadFileName = chatModel.getMessage();
+
+                            queDownload(downloadFileName);
+                        }
+                    });
+                    builder.show();
                 }
             }
 
@@ -247,6 +279,17 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
         mSendChatMessage.setEnabled(false);
         mWriteEditText.addTextChangedListener(chatTextWatcher);
+
+    }
+
+    private void queDownload(String fileName) {
+        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(
+                Uri.parse(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + fileName));
+        request.setTitle(fileName);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setVisibleInDownloadsUi(true);
+        downloadManager.enqueue(request);
 
     }
 
@@ -437,6 +480,38 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     @OnClick(R.id.attachmentIcon)
     public void attachmentIcon() {
         System.gc();
+
+        ink.utils.PopupMenu.showPopUp(Chat.this, attachmentIcon, new ItemClickListener<MenuItem>() {
+            @Override
+            public void onItemClick(MenuItem clickedItem) {
+                switch (clickedItem.getItemId()) {
+                    case 0:
+                        openGifChooser();
+                        break;
+                    case 1:
+                        openIntentPicker();
+                        break;
+                }
+            }
+        }, getString(R.string.sendSticker), getString(R.string.sendFile));
+
+    }
+
+    private void openIntentPicker() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");      //all files
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        try {
+            startActivityForResult(Intent.createChooser(intent, "Select a File to Upload"), PICK_FILE_REQUEST_CODE);
+        } catch (android.content.ActivityNotFoundException ex) {
+            // Potentially direct the user to the Market with a AlertDialogView
+            Toast.makeText(this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openGifChooser() {
+        System.gc();
         gifModelList.clear();
         gifChooserDialog = new BottomSheetDialog(this);
         View view = getLayoutInflater().inflate(R.layout.user_gifs_view, null);
@@ -512,7 +587,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                             noGifsText.setVisibility(View.VISIBLE);
                         }
                     } else {
-
+                        noGifsText.setVisibility(View.VISIBLE);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -534,7 +609,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         }
         String message = StringEscapeUtils.escapeJava(mWriteEditText.getText().toString().trim());
         dismissStickerChooser();
-        ChatModel tempChat = new ChatModel(isGifChosen, lasChosenGifName, null, mCurrentUserId, mOpponentId, StringEscapeUtils.unescapeJava(message.trim()),
+        ChatModel tempChat = new ChatModel(false, isGifChosen, lasChosenGifName, null, mCurrentUserId, mOpponentId, StringEscapeUtils.unescapeJava(message.trim()),
                 false, Constants.STATUS_NOT_DELIVERED,
                 mUserImage, mOpponentImage, "");
         mChatModelArrayList.add(tempChat);
@@ -617,9 +692,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                 RealmHelper.getInstance().updateMessages(messageId,
                         Constants.STATUS_DELIVERED, String.valueOf(sentItemLocation),
                         mOpponentId);
-
-            } else {
-
+                if (mNoMessageLayout.getVisibility() == View.VISIBLE) {
+                    mNoMessageLayout.setVisibility(View.GONE);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -660,10 +735,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                     }
                 }
 
-                mChatModel = new ChatModel(isGifChosen, gifUrl, messageId, userId, opponentId, message, true,
+                mChatModel = new ChatModel(Regex.isAttachment(message), isGifChosen, gifUrl, messageId, userId, opponentId, message, true,
                         eachModel.getDeliveryStatus(), userImage, opponentImage, date);
                 mChatModelArrayList.add(mChatModel);
-                if (eachModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED)) {
+                if (eachModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED) && !Regex.isAttachment(message)) {
                     int itemLocation = mChatModelArrayList.indexOf(mChatModel);
                     attemptToQue(message, itemLocation,
                             deleteOpponentId, deleteUserId, isGifChosen, lasChosenGifName);
@@ -738,7 +813,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                         RemoteMessage remoteMessage = extras.getParcelable("data");
                         Map<String, String> response = remoteMessage.getData();
                         if (mOpponentId.equals(response.get("user_id"))) {
-                            mChatModel = new ChatModel(Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"), response.get("message_id"), response.get("user_id"),
+                            mChatModel = new ChatModel(Regex.isAttachment(response.get("message")), Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"), response.get("message_id"), response.get("user_id"),
                                     response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
                                     response.get("user_image"), response.get("opponent_image"), Time.convertToLocalTime(response.get("date")));
                             mChatModelArrayList.add(mChatModel);
@@ -881,61 +956,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         }
     }
 
-    private void sendLocationUpdate(final String mOpponentId, final String latitude, final String longitude, final boolean showSnack) {
-        Call<ResponseBody> locationUpdateCall = Retrofit.getInstance().getInkService().sendLocationUpdate(mOpponentId,
-                longitude, latitude);
-        locationUpdateCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    sendLocationUpdate(mOpponentId, latitude, longitude, showSnack);
-                    return;
-                }
-                if (response.body() == null) {
-                    sendLocationUpdate(mOpponentId, latitude, longitude, showSnack);
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (success) {
-                        if (showSnack) {
-                            Snackbar.make(chatTitle, getString(R.string.locationSent), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-
-                                }
-                            }).show();
-                        }
-
-                    } else {
-                        if (showSnack) {
-                            Snackbar.make(chatTitle, getString(R.string.locationSendError), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-
-                                }
-                            }).show();
-                        }
-
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    sendLocationUpdate(mOpponentId, latitude, longitude, showSnack);
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                sendLocationUpdate(mOpponentId, latitude, longitude, showSnack);
-            }
-        });
-    }
-
-
     @Override
     protected void onPause() {
         System.gc();
@@ -1067,4 +1087,122 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         mRecyclerView.smoothScrollToPosition(mChatAdapter.getItemCount());
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        handlePickedResult(data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    private void handlePickedResult(Intent data) {
+        if (data != null) {
+            Uri uri = data.getData();
+            // Get the path
+            String path = null;
+            AlertDialog.Builder fileErrorDialog = new AlertDialog.Builder(Chat.this);
+            fileErrorDialog.setTitle(getString(R.string.fileError));
+            fileErrorDialog.setMessage(getString(R.string.couldNotOpenFile));
+            fileErrorDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            try {
+                path = FileUtils.getPath(this, uri);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+                fileErrorDialog.show();
+                return;
+            }
+            // Get the file instance
+            // File file = new File(path);
+            // Initiate the upload
+
+            if (path != null) {
+                File file = new File(path);
+                if (!file.exists()) {
+                    fileErrorDialog.show();
+                    return;
+                }
+                if (file.length() > MakePost.MAX_FILE_SIZE) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
+                    builder.setTitle(getString(R.string.sizeExceeded)).show();
+                    builder.setMessage(getString(R.string.sizeExceededMessage));
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.show();
+                    return;
+                }
+
+                ChatModel tempChat = new ChatModel(true, false, "", null, mCurrentUserId, mOpponentId, "userid=" + mSharedHelper.getUserId() + ":" +
+                        Constants.TYPE_MESSAGE_ATTACHMENT +
+                        file.getName(),
+                        false, Constants.STATUS_NOT_DELIVERED,
+                        mUserImage, mOpponentImage, "");
+                mChatModelArrayList.add(tempChat);
+                int itemLocation = mChatModelArrayList.indexOf(tempChat);
+
+                sendMessageWithAttachment(file, itemLocation);
+
+            } else {
+                fileErrorDialog.show();
+            }
+        }
+    }
+
+    private void sendMessageWithAttachment(final File file, final int sentItemLocation) {
+        System.gc();
+        Map<String, ProgressRequestBody> map = new HashMap<>();
+        ProgressRequestBody requestBody = new ProgressRequestBody(file, this);
+        map.put("file\"; filename=\"" + file.getName() + "\"", requestBody);
+
+
+        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().sendMessageWithAttachment(map, mSharedHelper.getUserId(), mOpponentId,
+                "userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT + file.getName(), Time.getTimeZone(), false, "");
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    sendMessageWithAttachment(file, sentItemLocation);
+                    return;
+                }
+                if (response.body() == null) {
+                    sendMessageWithAttachment(file, sentItemLocation);
+                    return;
+                }
+
+                try {
+                    String responseString = response.body().string();
+                    handleMessageSent(responseString, Integer.valueOf(sentItemLocation));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    public void onProgressUpdate(int percentage) {
+
+    }
+
+    @Override
+    public void onError() {
+
+    }
+
+    @Override
+    public void onFinish() {
+
+    }
 }

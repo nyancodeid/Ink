@@ -59,6 +59,7 @@ public class Constants {
     public static final String GET_POSTS_URL = "GetPosts.php";
     public static final String UPDATE_DETAILS = "UpdateDetails.php";
     public static final String MAKE_POST_URL = "MakePost.php";
+    public static final String TYPE_MESSAGE_ATTACHMENT = "TYPE_MESSAGE_ATTACHMENT";
     public static final String DELETE_POST_URL = "DeletePost.php";
     public static final String COMMENT_OPTIONS_URL = "CommentOptions.php";
     public static final String REQUEST_RESPONSE_TYPE_GROUP = "group";

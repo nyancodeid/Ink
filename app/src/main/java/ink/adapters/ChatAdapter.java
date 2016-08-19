@@ -80,7 +80,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         ChatModel chatModel = chatModelList.get(position);
-        holder.message.setText(chatModel.getMessage());
+        holder.message.setText(chatModel.getMessage().replaceAll("userid=" + mCurrentUserId + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.chatViewBubble.getLayoutParams();
         LinearLayout.LayoutParams deliveryStatusParams = (LinearLayout.LayoutParams) holder.deliveryStatus.getLayoutParams();
         LinearLayout.LayoutParams gifChatViewLayoutParams = (LinearLayout.LayoutParams) holder.singleGifViewWrapper.getLayoutParams();

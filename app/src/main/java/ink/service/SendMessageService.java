@@ -48,7 +48,7 @@ public class SendMessageService extends Service {
 
             attachToQue(mOpponentId, message, hasGif, gifUrl, String.valueOf(sentItemLocation), mCurrentUserId);
         }
-        return START_NOT_STICKY;
+        return super.onStartCommand(intent, flags, startId);
     }
 
 
@@ -85,7 +85,7 @@ public class SendMessageService extends Service {
                             mOpponentId);
 
                     Intent intent = new Intent(getPackageName() + ".Chat");
-                    intent.putExtra("response", responseString);
+                    intent.putExtra("responseString", responseString);
                     intent.putExtra("sentItemLocation", sentItemLocation);
                     intent.putExtra("type", Constants.TYPE_MESSAGE_SENT);
                     LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
@@ -95,7 +95,6 @@ public class SendMessageService extends Service {
                     attachToQue(mOpponentId, message, hasGif, gifUrl, sentItemLocation, mCurrentUserId);
                     e.printStackTrace();
                 } catch (JSONException e) {
-                    attachToQue(mOpponentId, message, hasGif, gifUrl, sentItemLocation, mCurrentUserId);
                     e.printStackTrace();
                 }
             }

@@ -475,4 +475,7 @@
     <string name="deleteMessageWarning">If you delete the message,ti will be also removed from opponent side without any recovery options,delete the message?</string>
     <string name="messagedeleteError">Could not delete message,please try again</string>
     <string name="deletingMessage">Deleting message,please wait...</string>
+    <string name="sendSticker">Send Sticker</string>
+    <string name="sendFile">Send File</string>
+    <string name="couldNotOpenFile">Could not open file,if you picked from file explorer,try using another file explorer,if you have picked an image,use gallery instead</string>
 </resources>
