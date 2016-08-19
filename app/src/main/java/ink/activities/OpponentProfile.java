@@ -170,6 +170,7 @@ public class OpponentProfile extends BaseActivity {
 
     @OnClick(R.id.sendMessage)
     public void WriteMessage() {
+        mProfileFab.close(true);
         if (isFriend) {
             Intent intent = new Intent(getApplicationContext(), Chat.class);
             intent.putExtra("firstName", mFirstName);
@@ -178,7 +179,6 @@ public class OpponentProfile extends BaseActivity {
             intent.putExtra("isSocialAccount", isSocialAccount);
             intent.putExtra("opponentImage", mOpponentImage);
             startActivity(intent);
-            mProfileFab.close(true);
         } else {
             if (!isDataLoaded) {
                 Snackbar.make(mTriangleView, getString(R.string.waitTillLoad), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
@@ -198,7 +198,6 @@ public class OpponentProfile extends BaseActivity {
                     }).show();
                     mProfileFab.close(true);
                 } else {
-
                     mProfileFab.close(true);
                     requestFriend();
                 }

@@ -53,7 +53,7 @@ public class RealmHelper {
                               final String deleteUserId,
                               final boolean hasGif, final String gifUrl) {
 
-        mRealm.executeTransaction(new Realm.Transaction() {
+        mRealm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 MessageModel messageModel = realm.createObject(MessageModel.class);
@@ -77,7 +77,7 @@ public class RealmHelper {
     }
 
     public void removeMessage(final String opponentId, final String userId) {
-        mRealm.executeTransaction(new Realm.Transaction() {
+        mRealm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 realm.where(MessageModel.class).equalTo("opponentId", opponentId).equalTo("userId", userId)
@@ -88,7 +88,7 @@ public class RealmHelper {
     }
 
     public void updateMessages(final String messageId, final String deliveryStatus, final String lastPosition, final String opponentId) {
-        mRealm.executeTransaction(new Realm.Transaction() {
+        mRealm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 RealmResults<MessageModel> resultQuery = realm.where(MessageModel.class).equalTo("opponentId", opponentId)
@@ -104,7 +104,7 @@ public class RealmHelper {
 
     public List<MessageModel> getMessages(final String opponentId, final String userId) {
         mModelArray.clear();
-        mRealm.executeTransaction(new Realm.Transaction() {
+        mRealm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 RealmResults<MessageModel> realmResults = realm.where(MessageModel.class).equalTo("opponentId", opponentId).equalTo("userId", userId)
