@@ -20,6 +20,7 @@ import ink.interfaces.FeedItemClick;
 import ink.models.FeedModel;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
+import ink.utils.FileUtils;
 import ink.utils.SharedHelper;
 import ink.utils.Time;
 
@@ -41,6 +42,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         private CardView feedItemCard;
         private RelativeLayout feedAddressLayout, feedAttachmentLayout, likeWrapper, commentWrapper;
         private ImageView feedMoreIcon;
+        private ImageView imageHolder;
 
         public ViewHolder(View view) {
             super(view);
@@ -54,6 +56,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             commentIcon = (ImageView) view.findViewById(R.id.commentIcon);
             likeIcon = (ImageView) view.findViewById(R.id.likeIcon);
             feedMoreIcon = (ImageView) view.findViewById(R.id.feedMoreIcon);
+            imageHolder = (ImageView) view.findViewById(R.id.imageHolder);
             feedAddressLayout = (RelativeLayout) view.findViewById(R.id.feedAddressLayout);
             likeWrapper = (RelativeLayout) view.findViewById(R.id.likeWrapper);
             commentWrapper = (RelativeLayout) view.findViewById(R.id.commentWrapper);
@@ -128,7 +131,15 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             holder.feedAttachmentLayout.setVisibility(View.VISIBLE);
             String fileName = feedModel.getFileName();
             int index = fileName.indexOf(":");
-            holder.feedAttachmentName.setText(fileName.substring(index+1, fileName.length()));
+            holder.feedAttachmentName.setText(fileName.substring(index + 1, fileName.length()));
+
+            if (FileUtils.isImageType(feedModel.getFileName())) {
+                holder.imageHolder.setVisibility(View.VISIBLE);
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + feedModel.getFileName()).withBitmap().placeholder(R.drawable.no_background_image)
+                        .intoImageView(holder.imageHolder);
+            } else {
+                holder.imageHolder.setVisibility(View.GONE);
+            }
         } else {
             feedModel.setHasAttachment(false);
             holder.feedAttachmentLayout.setVisibility(View.GONE);
@@ -199,6 +210,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             public void onClick(View view) {
                 if (mOnClickListener != null) {
                     mOnClickListener.onCommentClicked(position, holder.commentIcon);
+                }
+            }
+        });
+        holder.imageHolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mOnClickListener != null) {
+                    mOnClickListener.onImageClicked(position);
                 }
             }
         });

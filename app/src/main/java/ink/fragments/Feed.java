@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ink.activities.Comments;
+import ink.activities.FullscreenActivity;
 import ink.activities.HomeActivity;
 import ink.activities.MakePost;
 import ink.adapters.FeedAdapter;
@@ -369,6 +370,14 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         }, getString(R.string.edit), getString(R.string.delete));
     }
 
+    @Override
+    public void onImageClicked(int position) {
+        FeedModel feedModel = mFeedModelArrayList.get(position);
+        Intent intent = new Intent(getActivity(), FullscreenActivity.class);
+        intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + feedModel.getFileName());
+        startActivity(intent);
+    }
+
     private void openGoogleMaps(String address) {
         String uri = "geo:0,0?q=" + address;
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
@@ -466,7 +475,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                like(postId, isLiking, likeCountTV, position,likeWrapper);
+                like(postId, isLiking, likeCountTV, position, likeWrapper);
             }
         });
     }

@@ -433,6 +433,14 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         }, getString(R.string.edit), getString(R.string.delete));
     }
 
+    @Override
+    public void onImageClicked(int position) {
+
+        Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
+        intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + attachmentName);
+        startActivity(intent);
+    }
+
     private void deletePost() {
         Call<ResponseBody> deletePostCall = Retrofit.getInstance().getInkService().deletePost(mPostId, mAttachment);
         deletePostCall.enqueue(new Callback<ResponseBody>() {

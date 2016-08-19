@@ -15,4 +15,6 @@ public interface CommentClickHandler {
     void onAttachmentClick(int position);
 
     void onMoreClick(int position, View view);
+
+    void onImageClicked(int position);
 }

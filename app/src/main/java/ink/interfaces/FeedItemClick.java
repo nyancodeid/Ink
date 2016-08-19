@@ -21,4 +21,6 @@ public interface FeedItemClick {
     void onCommentClicked(int position, View commentView);
 
     void onMoreClicked(int position, View view);
+
+    void onImageClicked(int position);
 }

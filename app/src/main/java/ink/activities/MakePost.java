@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -43,6 +44,7 @@ import butterknife.OnClick;
 import ink.utils.Constants;
 import ink.utils.FileUtils;
 import ink.utils.PermissionsChecker;
+import ink.utils.Regex;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import ink.utils.Time;
@@ -166,7 +168,9 @@ public class MakePost extends BaseActivity {
                     canProceed = false;
                 } else {
                     canProceed = true;
+                    Log.d("fsafasfasfasfa", "onTextChanged: " + Regex.isLink(charSequence.toString()));
                 }
+
             }
 
             @Override

@@ -21,6 +21,7 @@ import ink.interfaces.RecyclerItemClickListener;
 import ink.models.CommentModel;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
+import ink.utils.FileUtils;
 import ink.utils.SharedHelper;
 
 /**
@@ -156,19 +157,37 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             headerViewHolder.postBody.setMovementMethod(LinkMovementMethod.getInstance());
             headerViewHolder.postBody.setText(ownerPostBody);
 
-            int index = ownerPostBody.indexOf(":");
-            headerViewHolder.postBody.setText(ownerPostBody.substring(index + 1, ownerPostBody.length()));
+            headerViewHolder.postBody.setText(ownerPostBody);
 
             headerViewHolder.postDate.setText(date);
 
 
             if (attachment != null && !attachment.isEmpty()) {
                 headerViewHolder.commentAttachmentLayout.setVisibility(View.VISIBLE);
-                headerViewHolder.commentAttachmentName.setText(attachment);
+                String fileName = attachment;
+                int index = fileName.indexOf(":");
+                headerViewHolder.commentAttachmentName.setText(fileName.substring(index + 1, fileName.length()));
+
+                if (FileUtils.isImageType(attachment)) {
+                    headerViewHolder.imageHolder.setVisibility(View.VISIBLE);
+                    Ion.with(context).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + attachment).withBitmap().placeholder(R.drawable.no_background_image)
+                            .intoImageView(headerViewHolder.imageHolder);
+                } else {
+                    headerViewHolder.imageHolder.setVisibility(View.GONE);
+                }
+
             } else {
                 headerViewHolder.commentAttachmentLayout.setVisibility(View.GONE);
             }
 
+            headerViewHolder.imageHolder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (commentClickHandler != null) {
+                        commentClickHandler.onImageClicked(position);
+                    }
+                }
+            });
             if (location != null && !location.isEmpty()) {
                 headerViewHolder.commentAddressLayout.setVisibility(View.VISIBLE);
                 headerViewHolder.commentAddress.setText(location);
@@ -229,7 +248,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
     }
 
     class HeaderViewHolder extends RecyclerView.ViewHolder {
-        private ImageView postOwnerImage, likeIcon;
+        private ImageView postOwnerImage, likeIcon, imageHolder;
         private TextView postBody, postDate, commenterName, commentAttachmentName, commentAddress, likesCountTV;
         private RelativeLayout commentLikeWrapper, commentAddressLayout, commentAttachmentLayout;
         private ImageView commentMoreIcon;
@@ -238,6 +257,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             super(itemView);
             postOwnerImage = (ImageView) itemView.findViewById(R.id.postOwnerImage);
             likeIcon = (ImageView) itemView.findViewById(R.id.commentLikeIcon);
+            imageHolder = (ImageView) itemView.findViewById(R.id.imageHolder);
             postBody = (TextView) itemView.findViewById(R.id.postBody);
             commentAttachmentName = (TextView) itemView.findViewById(R.id.commentAttachmentName);
             commentMoreIcon = (ImageView) itemView.findViewById(R.id.commentMoreIcon);
