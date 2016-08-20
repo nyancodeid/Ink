@@ -79,6 +79,7 @@ public class WaitRoom extends BaseActivity {
     private ChatAdapter chatAdapter;
     private ChatModel chatModel;
     private List<ChatModel> chatModels;
+    private boolean mIsDisconnected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -381,6 +382,7 @@ public class WaitRoom extends BaseActivity {
             if (extras != null) {
                 String isDisconnected = extras.getString("isDisconnected");
                 if (isDisconnected.equals("1")) {
+                    mIsDisconnected = false;
                     actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), Color.parseColor("#25AE88")));
                     actualStatus.setText(getString(R.string.opponentFound));
                     progressBar.setVisibility(View.GONE);
@@ -396,6 +398,7 @@ public class WaitRoom extends BaseActivity {
                     chatAdapter.notifyDataSetChanged();
                     scrollToBottom();
                 } else {
+                    mIsDisconnected = true;
                     disconnectFromOpponent();
                 }
             }
@@ -408,32 +411,38 @@ public class WaitRoom extends BaseActivity {
         connectDisconnectButton.setTag(getString(R.string.connect));
         connectDisconnectButton.setImageResource(R.drawable.connect_icon);
         chatRouletteMessageBody.setEnabled(false);
+
+        showBottomSheet();
+
         waitersQueAction(Constants.ACTION_UPDATE, Constants.STATUS_WAITING_NOT_AVAILABLE, new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
                 shouldWaitForWaiters = false;
-                final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(WaitRoom.this);
-                bottomSheetDialog.setTitle(getString(R.string.userDisconnected));
-                LayoutInflater inflater = getLayoutInflater();
-                View bottomSheetView = inflater.inflate(R.layout.disconnect_bottom_view, null);
-                bottomSheetDialog.setContentView(bottomSheetView);
-                Button closeBottomSheet = (Button) bottomSheetView.findViewById(R.id.closeBottomSheet);
-                closeBottomSheet.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        LocalBroadcastManager.getInstance(WaitRoom.this).unregisterReceiver(messagesReceiver);
-                        bottomSheetDialog.dismiss();
-                    }
-                });
-                bottomSheetDialog.show();
-                actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                actualStatus.setText(getString(R.string.notConnectedToOpponent));
             }
 
             @Override
             public void onFailure(String s) {
             }
         });
+    }
+
+    private void showBottomSheet() {
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(WaitRoom.this);
+        bottomSheetDialog.setTitle(getString(R.string.userDisconnected));
+        LayoutInflater inflater = getLayoutInflater();
+        View bottomSheetView = inflater.inflate(R.layout.disconnect_bottom_view, null);
+        bottomSheetDialog.setContentView(bottomSheetView);
+        Button closeBottomSheet = (Button) bottomSheetView.findViewById(R.id.closeBottomSheet);
+        closeBottomSheet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LocalBroadcastManager.getInstance(WaitRoom.this).unregisterReceiver(messagesReceiver);
+                bottomSheetDialog.dismiss();
+            }
+        });
+        bottomSheetDialog.show();
+        actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+        actualStatus.setText(getString(R.string.notConnectedToOpponent));
     }
 
 
@@ -530,6 +539,14 @@ public class WaitRoom extends BaseActivity {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onResume() {
+        if (mIsDisconnected) {
+            disconnectFromOpponent();
+        }
+        super.onResume();
     }
 
     private void handleOpponentFound(final String opponentId) {
