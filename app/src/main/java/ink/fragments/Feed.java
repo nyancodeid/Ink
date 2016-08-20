@@ -295,7 +295,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         System.gc();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.downloadQuestion));
-        builder.setMessage(getString(R.string.downloadTheFile) + " " + fileName + " ?");
+        builder.setMessage(getString(R.string.downloadTheFile) + " " + fileName.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
         builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

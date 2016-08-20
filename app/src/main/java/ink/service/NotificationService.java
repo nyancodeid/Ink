@@ -170,11 +170,17 @@ public class NotificationService extends FirebaseMessagingService {
                 break;
             case Constants.DELETE_MESSAGE_REQUESTED:
                 String messageId = response.get("messageId");
-                intent = new Intent(getPackageName() + ".Chat");
-                intent.putExtra("messageId", messageId);
-                intent.putExtra("type", Constants.DELETE_MESSAGE_REQUESTED);
-                localBroadcastManager = LocalBroadcastManager.getInstance(this);
-                localBroadcastManager.sendBroadcast(intent);
+                if (Notification.getInstance().isSendingRemote()) {
+                    RealmHelper.getInstance().removeMessage(messageId);
+                } else {
+                    intent = new Intent(getPackageName() + ".Chat");
+                    intent.putExtra("messageId", messageId);
+                    intent.putExtra("type", Constants.DELETE_MESSAGE_REQUESTED);
+                    localBroadcastManager = LocalBroadcastManager.getInstance(this);
+                    localBroadcastManager.sendBroadcast(intent);
+                }
+
+
                 break;
         }
 
