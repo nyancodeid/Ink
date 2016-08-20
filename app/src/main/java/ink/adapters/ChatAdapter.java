@@ -86,7 +86,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         System.gc();
 
-        String messageBody = chatModel.getMessage().replaceAll("userid=" + mCurrentUserId + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "");
+        String messageBody = chatModel.getMessage().replaceAll("userid=" + chatModel.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "").replaceAll("userid=" + chatModel.getOpponentId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "");
         holder.message.setText(messageBody);
 
 

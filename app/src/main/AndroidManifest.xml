@@ -40,35 +40,35 @@
             android:value="@string/facebook_app_id" />
 
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.Login"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
             android:label="@string/app_name"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.Intro"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.Registration"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.HomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
             android:label="@string/feedText"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.OpponentProfile"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
             android:theme="@style/AppTheme" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.Chat"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name="ink.service.NotificationService">
@@ -89,6 +89,7 @@
         <service android:name="ink.service.SendMessageService"></service>
 
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
+        <receiver android:name="ink.broadcast.DismissBroadcast"></receiver>
 
         <activity
             android:name="ink.activities.ReplyView"
@@ -97,15 +98,15 @@
             android:theme="@style/Theme.Transparent"
             android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.MyProfile"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
             android:theme="@style/AppTheme.Profile" />
         <activity android:name="ink.activities.Messages" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.MakePost"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="ink.activities.MapsActivity"
@@ -115,12 +116,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
         <activity
-            android:excludeFromRecents="true"
-            android:name="ink.activities.Comments" />
+            android:name="ink.activities.Comments"
+            android:excludeFromRecents="true" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.SplashScreen"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -129,32 +130,32 @@
             </intent-filter>
         </activity>
         <activity
-            android:excludeFromRecents="true"
             android:name="com.vk.sdk.VKServiceActivity"
+            android:excludeFromRecents="true"
             android:label="ServiceActivity"
             android:theme="@style/VK.Transparent" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.Groups"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.Settings"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.ChatRoulette"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.SingleGroupView"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
             android:theme="@style/AppTheme.Profile" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.CreateGroupPost"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
 
@@ -163,47 +164,47 @@
             android:value="ink.activities.SearchResultsActivity" />
 
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.RequestsView"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.WaitRoom"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait" />
         <activity
-            android:excludeFromRecents="true"
-            android:name="ink.activities.Shop" />
+            android:name="ink.activities.Shop"
+            android:excludeFromRecents="true" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.BuyCoins"
+            android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.Music"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.ImageEditor"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.SendFeedback"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true" />
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.ContactSupport"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="80f8d0846bb012e567f21fdf7ebbc38efe19d99e" />
 
         <activity
-            android:excludeFromRecents="true"
             android:name="ink.activities.FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:excludeFromRecents="true"
             android:label="@string/title_activity_fullscreen"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />

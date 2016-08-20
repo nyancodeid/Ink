@@ -45,7 +45,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.ink.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -107,8 +106,6 @@ public class MyProfile extends BaseActivity {
     private boolean isDataDownloaded;
     @Bind(R.id.editProfile)
     FloatingActionButton mEditSaveButton;
-    @Bind(R.id.imageLoading)
-    AVLoadingIndicatorView mImageLoading;
     private Menu mCancelMenuItem;
     @Bind(R.id.editImageNameFab)
     FloatingActionButton mEditImageNameFab;
@@ -201,6 +198,7 @@ public class MyProfile extends BaseActivity {
         attachValues(true);
     }
 
+
     private void registerFacebookCallback() {
         mCallbackManager = CallbackManager.Factory.create();
 
@@ -268,7 +266,6 @@ public class MyProfile extends BaseActivity {
                 try {
                     selectedImagePath = getRealPathFromURI(selectedImageUri);
                 } catch (Exception e) {
-                    mImageLoading.setVisibility(View.GONE);
                     selectedImagePath = null;
                     AlertDialog.Builder builder = new AlertDialog.Builder(MyProfile.this);
                     builder.setTitle(getString(R.string.notSupported));
@@ -284,12 +281,10 @@ public class MyProfile extends BaseActivity {
                 if (selectedImagePath != null) {
                     mImageLinkToSend = selectedImagePath;
                     mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
-                    showImageLoading();
                     isImageChosen = true;
-                    Ion.with(getApplicationContext()).load(new File(selectedImagePath)).intoImageView(profileImage);
+                    Ion.with(getApplicationContext()).load(new File(selectedImagePath)).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(profileImage);
                 } else {
                     isImageChosen = false;
-                    mImageLoading.setVisibility(View.GONE);
                 }
             }
         }
@@ -405,7 +400,6 @@ public class MyProfile extends BaseActivity {
         mSharedHelper.putUserPhoneNumber(mPhoneNumberToSend);
         mSharedHelper.putUserFacebookLink(mFacebookProfileToSend);
         mSharedHelper.putUserFacebookName(mFacebookName);
-        mSharedHelper.putImageLink(mImageLinkToSend);
         mSharedHelper.putUserSkype(mSkypeToSend);
         mSharedHelper.putUserAddress(mAddressToSend);
         mSharedHelper.putUserRelationship(mRelationshipToSend);
@@ -451,31 +445,28 @@ public class MyProfile extends BaseActivity {
             mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
             if (shouldLoadImage) {
                 if (isSocialAccount()) {
-                    Ion.with(getApplicationContext()).load(mImageLinkToSend).intoImageView(profileImage).setCallback(new FutureCallback<ImageView>() {
+                    Ion.with(getApplicationContext()).load(mImageLinkToSend).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(profileImage).setCallback(new FutureCallback<ImageView>() {
                         @Override
                         public void onCompleted(Exception e, ImageView result) {
-                            hideImageLoading();
+
                         }
                     });
                 } else {
-                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).intoImageView(profileImage)
+                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(profileImage)
                             .setCallback(new FutureCallback<ImageView>() {
                                 @Override
                                 public void onCompleted(Exception e, ImageView result) {
-                                    hideImageLoading();
                                 }
                             });
                 }
 
             } else {
-                hideImageLoading();
                 mSharedHelper.putFirstName(mFirstNameToSend);
                 mSharedHelper.putLastName(mLastNameToSend);
                 mCollapsingToolbar.setTitle(mFirstNameToSend + " " + mLastNameToSend);
             }
         } else {
             profileImage.setBackgroundResource(R.drawable.no_image);
-            hideImageLoading();
         }
         mPhone.setText(mPhoneNumberToSend);
         mFacebook.setText(mFacebookName);
@@ -905,7 +896,6 @@ public class MyProfile extends BaseActivity {
     }
 
     private void sendUpdatesToServer() {
-        showImageLoading();
         showSnack(mProfileFab);
         isDataDownloaded = false;
         if (mStatusText.getText().toString().equals(getString(R.string.noStatusText))) {
@@ -976,7 +966,6 @@ public class MyProfile extends BaseActivity {
                         if (success) {
                             mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
                             attachValues(false);
-                            hideImageLoading();
                             hideSnack();
                             String imageId = jsonObject.optString("image_id");
                             if (imageId != null && !imageId.isEmpty()) {
@@ -996,7 +985,6 @@ public class MyProfile extends BaseActivity {
                             }
                             cacheUserData();
                         } else {
-                            hideImageLoading();
                             hideSnack();
                             promptBuilder = new AlertDialog.Builder(MyProfile.this);
                             promptBuilder.setTitle(getString(R.string.error));
@@ -1010,7 +998,6 @@ public class MyProfile extends BaseActivity {
                             promptBuilder.show();
                         }
                     } catch (JSONException e) {
-                        hideImageLoading();
                         hideSnack();
                         promptBuilder = new AlertDialog.Builder(MyProfile.this);
                         promptBuilder.setTitle(getString(R.string.error));
@@ -1085,13 +1072,7 @@ public class MyProfile extends BaseActivity {
     }
 
 
-    private void showImageLoading() {
-        mImageLoading.setVisibility(View.VISIBLE);
-    }
 
-    private void hideImageLoading() {
-        mImageLoading.setVisibility(View.GONE);
-    }
 
     private void showSnack(View view) {
         updateSnackbar = Snackbar.make(view, getString(R.string.updating), Snackbar.LENGTH_INDEFINITE);

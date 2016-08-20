@@ -447,6 +447,7 @@
     <string name="intelligentText">Intelligent chatting for you</string>
     <integer name="com_vk_sdk_AppId">5593776</integer>
     <string name="thinFont">sans-serif-thin</string>
+    <string name="normalFont">sans-serif</string>
     <string name="inputLogin">Input login</string>
     <string name="noLogin">No unique identifier is attached to account,please input login</string>
     <string name="errorGoogleSignIn">Could not sign you in,try to sing in again</string>
@@ -482,4 +483,6 @@
     <string name="viewImage">View Image</string>
     <string name="commentAdded">Comment added</string>
     <string name="waitingToFindOpponent">Waiting to find an opponent</string>
+    <string name="newMessagesFrom">new messages from</string>
+    <string name="lastMessage">last message :</string>
 </resources>

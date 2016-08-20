@@ -38,6 +38,7 @@ import ink.activities.Chat;
 import ink.activities.HomeActivity;
 import ink.activities.ReplyView;
 import ink.activities.RequestsView;
+import ink.broadcast.DismissBroadcast;
 import ink.utils.Constants;
 import ink.utils.Notification;
 import ink.utils.RealmHelper;
@@ -83,17 +84,38 @@ public class NotificationService extends FirebaseMessagingService {
                 });
 
                 if (Notification.getInstance().isSendingRemote()) {
+                    Intent intent = new Intent(getPackageName() + ".Chat");
+                    intent.putExtra("data", remoteMessage);
+                    intent.putExtra("type", "showMessage");
+                    LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+                    localBroadcastManager.sendBroadcast(intent);
+
                     sendNotification("New Message", response.get("user_id"),
                             StringEscapeUtils.unescapeJava(response.get("message")), getApplicationContext(),
                             response.get("message_id"), response.get("opponent_id"),
                             response.get("opponent_image"), response.get("opponent_image").isEmpty() ? "" : response.get("opponent_image"), response.get("name"),
                             response.get("delete_user_id"), response.get("delete_opponent_id"), Boolean.valueOf(response.get("isSocialAccount")), response.get("lastName"), Boolean.valueOf(response.get("hasGif")));
                 } else {
-                    Intent intent = new Intent(getPackageName() + ".Chat");
-                    intent.putExtra("data", remoteMessage);
-                    intent.putExtra("type", "showMessage");
-                    LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
-                    localBroadcastManager.sendBroadcast(intent);
+                    String activeOpponentId = Notification.getInstance().getActiveOpponentId();
+                    if (activeOpponentId.equals(response.get("opponent_id")) || activeOpponentId.equals(response.get("user_id"))) {
+                        Intent intent = new Intent(getPackageName() + ".Chat");
+                        intent.putExtra("data", remoteMessage);
+                        intent.putExtra("type", "showMessage");
+                        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+                        localBroadcastManager.sendBroadcast(intent);
+                    } else {
+                        Intent intent = new Intent(getPackageName() + ".Chat");
+                        intent.putExtra("data", remoteMessage);
+                        intent.putExtra("type", "showMessage");
+                        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+                        localBroadcastManager.sendBroadcast(intent);
+                        sendNotification("New Message", response.get("user_id"),
+                                StringEscapeUtils.unescapeJava(response.get("message")), getApplicationContext(),
+                                response.get("message_id"), response.get("opponent_id"),
+                                response.get("opponent_image"), response.get("opponent_image").isEmpty() ? "" : response.get("opponent_image"), response.get("name"),
+                                response.get("delete_user_id"), response.get("delete_opponent_id"), Boolean.valueOf(response.get("isSocialAccount")), response.get("lastName"), Boolean.valueOf(response.get("hasGif")));
+                    }
+
                 }
                 break;
             case Constants.NOTIFICATION_TYPE_GROUP_REQUEST:
@@ -221,45 +243,117 @@ public class NotificationService extends FirebaseMessagingService {
                                  String userName, String deleteUserId, String deleteOpponentId,
                                  boolean isSocialAccount, String lastName, boolean hasGif) {
 
-        NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+        if (mSharedHelper.getLastNotificationId(opponentId) != null) {
+            Log.d(TAG, "sendNotification: " + "notification id not null" + mSharedHelper.getLastNotificationId(opponentId));
+            if (mSharedHelper.getLastNotificationId(opponentId).equals(opponentId)) {
+                Log.d(TAG, "sendNotification: " + "notification id equals to each other" + mSharedHelper.getLastNotificationId(opponentId));
+                int notificationCount = mSharedHelper.getLastNotificationCount(opponentId);
 
-        if (hasGif && !messageBody.trim().isEmpty()) {
-            String oldMesssage = messageBody;
-            messageBody = oldMesssage + "\n\n" + userImage + " " + getString(R.string.haveSentSticker);
-        } else if (hasGif && messageBody.trim().isEmpty()) {
-            messageBody = userName + " " + getString(R.string.haveSentSticker);
-        }
+                NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
-        Intent chatIntent = new Intent(context, Chat.class);
-        chatIntent.setAction(opponentId);
-        chatIntent.putExtra("firstName", userName);
-        chatIntent.putExtra("lastName", lastName);
-        chatIntent.putExtra("isSocialAccount", isSocialAccount);
-        chatIntent.putExtra("opponentId", opponentId);
-        chatIntent.putExtra("opponentImage", opponentImage);
+                if (hasGif && !messageBody.trim().isEmpty()) {
+                    String oldMesssage = messageBody;
+                    messageBody = oldMesssage + "\n\n" + userImage + " " + getString(R.string.haveSentSticker);
+                } else if (hasGif && messageBody.trim().isEmpty()) {
+                    messageBody = userName + " " + getString(R.string.haveSentSticker);
+                }
 
-        chatIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                Intent chatIntent = new Intent(context, Chat.class);
+                chatIntent.setAction(opponentId);
+                chatIntent.putExtra("firstName", userName);
+                chatIntent.putExtra("lastName", lastName);
+                chatIntent.putExtra("isSocialAccount", isSocialAccount);
+                chatIntent.putExtra("opponentId", opponentId);
+                chatIntent.putExtra("opponentImage", opponentImage);
+                chatIntent.putExtra("notificationId", opponentId);
+
+                chatIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
 
-        Intent intent = new Intent(context, ReplyView.class);
-        intent.putExtra("mOpponentId", opponentId);
-        intent.putExtra("mCurrentUserId", currentUserId);
-        intent.putExtra("userImage", userImage);
-        intent.putExtra("opponentImage", opponentImage);
-        intent.putExtra("username", userName);
-        intent.putExtra("deleteUserId", deleteUserId);
-        intent.putExtra("deleteOpponentId", deleteUserId);
+                Intent intent = new Intent(context, ReplyView.class);
+                intent.putExtra("mOpponentId", opponentId);
+                intent.putExtra("mCurrentUserId", currentUserId);
+                intent.putExtra("userImage", userImage);
+                intent.putExtra("opponentImage", opponentImage);
+                intent.putExtra("username", userName);
+                intent.putExtra("deleteUserId", deleteUserId);
+                intent.putExtra("deleteOpponentId", deleteUserId);
+                chatIntent.putExtra("notificationId", opponentId);
 
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
-                | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        PendingIntent chatPending = PendingIntent.getActivity(context, Integer.valueOf(opponentId), chatIntent, 0);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, Integer.valueOf(opponentId), intent, 0);
-        final android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
-        builder.setSmallIcon(R.mipmap.ic_launcher);
+                PendingIntent chatPending = PendingIntent.getActivity(context, Integer.valueOf(opponentId), chatIntent, 0);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, Integer.valueOf(opponentId), intent, 0);
+                final android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
+                builder.setSmallIcon(R.mipmap.ic_launcher);
 
-        // TODO: 8/11/2016 check if we can add user image to notification
+                // TODO: 8/11/2016 check if we can add user image to notification
+                builder.setAutoCancel(true);
+
+
+                builder.addAction(new NotificationCompat.Action(R.drawable.ic_send_black_24dp, context.getString(R.string.reply),
+                        pendingIntent));
+
+                Intent dismissIntent = new Intent(this, DismissBroadcast.class);
+                PendingIntent dismissPendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 0, dismissIntent, 0);
+                builder.setDeleteIntent(dismissPendingIntent);
+
+
+                builder.setContentTitle(notificationCount + " " + getString(R.string.newMessagesFrom) + " " + userName);
+                builder.setContentText(getString(R.string.lastMessage) + messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
+                builder.setGroup(GROUP_KEY_MESSAGES);
+                builder.setDefaults(android.app.Notification.DEFAULT_ALL);
+                builder.setContentIntent(chatPending);
+                builder.setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.lastMessage) + messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "")));
+                builder.setShowWhen(true);
+                android.app.Notification notification = builder.build();
+                notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+            } else {
+                Log.d(TAG, "sendNotification: " + "notification id not equals to each other" + mSharedHelper.getLastNotificationId(opponentId) + " opponent id is" + opponentId);
+                mSharedHelper.putLastNotificationId(opponentId);
+                NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+
+                if (hasGif && !messageBody.trim().isEmpty()) {
+                    String oldMesssage = messageBody;
+                    messageBody = oldMesssage + "\n\n" + userImage + " " + getString(R.string.haveSentSticker);
+                } else if (hasGif && messageBody.trim().isEmpty()) {
+                    messageBody = userName + " " + getString(R.string.haveSentSticker);
+                }
+
+                Intent chatIntent = new Intent(context, Chat.class);
+                chatIntent.setAction(opponentId);
+                chatIntent.putExtra("firstName", userName);
+                chatIntent.putExtra("lastName", lastName);
+                chatIntent.putExtra("isSocialAccount", isSocialAccount);
+                chatIntent.putExtra("opponentId", opponentId);
+                chatIntent.putExtra("opponentImage", opponentImage);
+                chatIntent.putExtra("notificationId", opponentId);
+
+                chatIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+
+                Intent intent = new Intent(context, ReplyView.class);
+                intent.putExtra("mOpponentId", opponentId);
+                intent.putExtra("mCurrentUserId", currentUserId);
+                intent.putExtra("userImage", userImage);
+                intent.putExtra("opponentImage", opponentImage);
+                intent.putExtra("username", userName);
+                intent.putExtra("deleteUserId", deleteUserId);
+                intent.putExtra("deleteOpponentId", deleteUserId);
+                chatIntent.putExtra("notificationId", opponentId);
+
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                PendingIntent chatPending = PendingIntent.getActivity(context, Integer.valueOf(opponentId), chatIntent, 0);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, Integer.valueOf(opponentId), intent, 0);
+                final android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
+                builder.setSmallIcon(R.mipmap.ic_launcher);
+
+                // TODO: 8/11/2016 check if we can add user image to notification
 //        if (opponentImage != null && !opponentImage.isEmpty()) {
 //            Handler handler = new Handler(getMainLooper());
 //            handler.post(new Runnable() {
@@ -269,22 +363,102 @@ public class NotificationService extends FirebaseMessagingService {
 //                }
 //            });
 //        }
-        builder.setAutoCancel(true);
+                builder.setAutoCancel(true);
 
 
-        builder.addAction(new NotificationCompat.Action(R.drawable.ic_send_black_24dp, context.getString(R.string.reply),
-                pendingIntent));
+                builder.addAction(new NotificationCompat.Action(R.drawable.ic_send_black_24dp, context.getString(R.string.reply),
+                        pendingIntent));
 
-        builder.setContentTitle(getString(R.string.newMessage) + " " + userName);
-        builder.setContentText(messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
-        builder.setGroup(GROUP_KEY_MESSAGES);
-        builder.setDefaults(android.app.Notification.DEFAULT_ALL);
-        builder.setContentIntent(chatPending);
-        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "")));
-        builder.setShowWhen(true);
-        android.app.Notification notification = builder.build();
-        notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+                Intent dismissIntent = new Intent(this, DismissBroadcast.class);
+                PendingIntent dismissPendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 0, dismissIntent, 0);
+                builder.setDeleteIntent(dismissPendingIntent);
+
+
+                builder.setContentTitle(getString(R.string.newMessage) + " " + userName);
+                builder.setContentText(messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
+                builder.setGroup(GROUP_KEY_MESSAGES);
+                builder.setDefaults(android.app.Notification.DEFAULT_ALL);
+                builder.setContentIntent(chatPending);
+                builder.setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "")));
+                builder.setShowWhen(true);
+                android.app.Notification notification = builder.build();
+                notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+            }
+        } else {
+            Log.d(TAG, "sendNotification: " + "notification id is null" + mSharedHelper.getLastNotificationId(opponentId) + " oppoent id is" + opponentId);
+            NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+            mSharedHelper.putLastNotificationId(opponentId);
+            if (hasGif && !messageBody.trim().isEmpty()) {
+                String oldMesssage = messageBody;
+                messageBody = oldMesssage + "\n\n" + userImage + " " + getString(R.string.haveSentSticker);
+            } else if (hasGif && messageBody.trim().isEmpty()) {
+                messageBody = userName + " " + getString(R.string.haveSentSticker);
+            }
+
+            Intent chatIntent = new Intent(context, Chat.class);
+            chatIntent.setAction(opponentId);
+            chatIntent.putExtra("firstName", userName);
+            chatIntent.putExtra("lastName", lastName);
+            chatIntent.putExtra("isSocialAccount", isSocialAccount);
+            chatIntent.putExtra("opponentId", opponentId);
+            chatIntent.putExtra("opponentImage", opponentImage);
+            chatIntent.putExtra("notificationId", opponentId);
+
+            chatIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+
+            Intent intent = new Intent(context, ReplyView.class);
+            intent.putExtra("mOpponentId", opponentId);
+            intent.putExtra("mCurrentUserId", currentUserId);
+            intent.putExtra("userImage", userImage);
+            intent.putExtra("opponentImage", opponentImage);
+            intent.putExtra("username", userName);
+            intent.putExtra("deleteUserId", deleteUserId);
+            intent.putExtra("deleteOpponentId", deleteUserId);
+            chatIntent.putExtra("notificationId", opponentId);
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            PendingIntent chatPending = PendingIntent.getActivity(context, Integer.valueOf(opponentId), chatIntent, 0);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, Integer.valueOf(opponentId), intent, 0);
+            final android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
+            builder.setSmallIcon(R.mipmap.ic_launcher);
+
+            // TODO: 8/11/2016 check if we can add user image to notification
+//        if (opponentImage != null && !opponentImage.isEmpty()) {
+//            Handler handler = new Handler(getMainLooper());
+//            handler.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Ion.with(context).load(opponentImage).intoImageView(getTarget(builder));
+//                }
+//            });
+//        }
+            builder.setAutoCancel(true);
+
+
+            builder.addAction(new NotificationCompat.Action(R.drawable.ic_send_black_24dp, context.getString(R.string.reply),
+                    pendingIntent));
+
+            Intent dismissIntent = new Intent(this, DismissBroadcast.class);
+            PendingIntent dismissPendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 0, dismissIntent, 0);
+            builder.setDeleteIntent(dismissPendingIntent);
+
+
+            builder.setContentTitle(getString(R.string.newMessage) + " " + userName);
+            builder.setContentText(messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
+            builder.setGroup(GROUP_KEY_MESSAGES);
+            builder.setDefaults(android.app.Notification.DEFAULT_ALL);
+            builder.setContentIntent(chatPending);
+            builder.setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "")));
+            builder.setShowWhen(true);
+            android.app.Notification notification = builder.build();
+            notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+        }
     }
+
 
     public void sendGroupRequestNotification(Context context, String requesterName, String requestedGroup,
                                              String requestId) {

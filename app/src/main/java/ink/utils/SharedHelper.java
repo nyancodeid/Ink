@@ -12,6 +12,7 @@ public class SharedHelper {
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
     private Context context;
+    private int notificationCount = 0;
 
     public SharedHelper(Context context) {
         mSharedPreferences = context.getSharedPreferences("ink_session", Context.MODE_PRIVATE);
@@ -30,6 +31,20 @@ public class SharedHelper {
 
     public void putImageLink(String imageLink) {
         mEditor.putString("imageLink", imageLink);
+        mEditor.commit();
+    }
+
+    public String getLastNotificationId(String notificationId) {
+        return mSharedPreferences.getString(notificationId, null);
+    }
+
+    public int getLastNotificationCount(String notificationId) {
+        return mSharedPreferences.getInt("notificationCount" + notificationId, 1);
+    }
+
+    public void removeLastNotificationId(String notificationId) {
+        mEditor.remove(notificationId);
+        mEditor.remove("notificationCount" + notificationId);
         mEditor.commit();
     }
 
@@ -65,10 +80,6 @@ public class SharedHelper {
         mEditor.commit();
     }
 
-    public void putLastSessionUserId(String value) {
-        mEditor.putString("lastSessionUserId", value);
-        mEditor.commit();
-    }
 
     public String getLastSessionUserId() {
         return mSharedPreferences.getString("lastSessionUserId", null);
@@ -276,8 +287,11 @@ public class SharedHelper {
         return mSharedPreferences.getString("lastName", "");
     }
 
+
     public void putLastNotificationId(String id) {
-        mEditor.putString(id, "notification_id");
+        notificationCount += 1;
+        mEditor.putString(id, id);
+        mEditor.putInt("notificationCount" + id, notificationCount);
         mEditor.commit();
     }
 
@@ -290,12 +304,4 @@ public class SharedHelper {
         mEditor.commit();
     }
 
-    public String getNotificationId(String id) {
-        return mSharedPreferences.getString(id, null);
-    }
-
-    public void removeNotificationId(String id) {
-        mEditor.remove(id);
-        mEditor.commit();
-    }
 }

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -180,11 +181,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
 
         Notification.getInstance().setSendingRemote(false);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(generalReceiver, new IntentFilter(getPackageName() + ".Chat"));
+
         mChatAdapter = new ChatAdapter(mChatModelArrayList, this);
         mRealHelper = RealmHelper.getInstance();
 
-        configureChat();
+        configureChat(getIntent());
 
 
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
@@ -221,6 +222,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         });
 
 
+        scheduleTask();
         mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, mRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -235,7 +237,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                         if (FileUtils.isImageType(chatModel.getMessage())) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
                             builder.setTitle(getString(R.string.downloadQuestion));
-                            builder.setMessage(getString(R.string.downloadTheFile) + " " + chatModel.getMessage().replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
+                            builder.setMessage(getString(R.string.downloadTheFile) + " " + chatModel.getMessage().replaceAll("userid=" + chatModel.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "")
+                                    .replaceAll("userid=" + chatModel.getOpponentId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
                             builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -247,7 +250,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     String downloadFileName = chatModel.getMessage();
 
-                                    queDownload(downloadFileName);
+                                    queDownload(downloadFileName, chatModel);
                                 }
                             });
                             builder.setNeutralButton(getString(R.string.viewImage), new DialogInterface.OnClickListener() {
@@ -262,7 +265,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                         } else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
                             builder.setTitle(getString(R.string.downloadQuestion));
-                            builder.setMessage(getString(R.string.downloadTheFile) + " " + chatModel.getMessage().replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
+                            builder.setMessage(getString(R.string.downloadTheFile) + " " + chatModel.getMessage().replaceAll("userid=" + chatModel.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "")
+                                    .replaceAll("userid=" + chatModel.getOpponentId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
                             builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -274,7 +278,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     String downloadFileName = chatModel.getMessage();
 
-                                    queDownload(downloadFileName);
+                                    queDownload(downloadFileName, chatModel);
                                 }
                             });
                             builder.show();
@@ -301,6 +305,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                         dialogInterface.dismiss();
                     }
                 });
+
+                // TODO: 2016-08-20 dont let to delete opponent message
                 builder.setNegativeButton(getString(R.string.deleteMessage), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -318,11 +324,21 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
 
     }
 
-    private void queDownload(String fileName) {
+    private void scheduleTask() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getStatus();
+            }
+        }, 2000);
+    }
+
+    private void queDownload(String fileName, ChatModel chatModel) {
         DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(
                 Uri.parse(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + fileName));
-        request.setTitle(fileName.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
+        request.setTitle(fileName.replaceAll("userid=" + chatModel.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "").replaceAll("userid=" + chatModel.getOpponentId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setVisibleInDownloadsUi(true);
         downloadManager.enqueue(request);
@@ -347,6 +363,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
             }
         });
         builder.show();
+    }
+
+    @Override
+    protected void onStart() {
+        LocalBroadcastManager.getInstance(this).registerReceiver(generalReceiver, new IntentFilter(getPackageName() + ".Chat"));
+        super.onStart();
     }
 
     private void deleteMessage(final String messageId, final int positionOfItem) {
@@ -483,8 +505,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                                 statusColor.startAnimation(fadeAnimation);
                                 opponentStatus.setText(getString(R.string.onlineStatus));
                             } else {
+                                statusColor.setVisibility(View.INVISIBLE);
                                 opponentStatus.setText(getString(R.string.lastSeen, Time.convertToLocalTime(userStatus.lastSeenTime)));
                             }
+                            scheduleTask();
                         } else {
                             getStatus();
                         }
@@ -890,6 +914,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     protected void onResume() {
         System.gc();
         Notification.getInstance().setSendingRemote(false);
+        Notification.getInstance().setActiveOpponentId(mOpponentId);
         getStatus();
         getIsFriend();
         super.onResume();
@@ -931,16 +956,24 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
 
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        configureChat(intent);
+        super.onNewIntent(intent);
+    }
 
-    private void configureChat() {
+    private void configureChat(Intent intent) {
         ActionBar actionBar = getSupportActionBar();
-        Bundle bundle = getIntent().getExtras();
+        Bundle bundle = intent.getExtras();
         if (bundle != null) {
             firstName = bundle.getString("firstName");
             lastName = bundle.getString("lastName");
             mOpponentId = bundle.getString("opponentId");
             String opponentImage = bundle.getString("opponentImage");
             boolean isSocialAccount = bundle.getBoolean("isSocialAccount");
+            if (bundle.containsKey("notificationId")) {
+                mSharedHelper.removeLastNotificationId(bundle.getString("notificationId"));
+            }
 
             if (bundle.containsKey("messageId")) {
                 String messageId = bundle.getString("messageId");
@@ -979,7 +1012,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
             } else {
                 Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(this.opponentImage);
             }
-            getStatus();
             mCurrentUserId = mSharedHelper.getUserId();
             if (mChatModelArrayList != null) {
                 mChatModelArrayList.clear();

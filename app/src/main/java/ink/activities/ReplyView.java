@@ -16,6 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.service.SendReplyService;
+import ink.utils.SharedHelper;
 
 public class ReplyView extends BaseActivity {
 
@@ -32,6 +33,7 @@ public class ReplyView extends BaseActivity {
     private String userName;
     private String mDeleteUserId;
     private String mDeleteOpponentId;
+    private SharedHelper sharedHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class ReplyView extends BaseActivity {
         setContentView(R.layout.activity_notification);
         ButterKnife.bind(this);
         Bundle extras = getIntent().getExtras();
+        sharedHelper = new SharedHelper(this);
         if (extras != null) {
             mOpponentId = extras.getString("mOpponentId");
             mCurrentUserId = extras.getString("mCurrentUserId");
@@ -48,6 +51,9 @@ public class ReplyView extends BaseActivity {
             mDeleteUserId = extras.getString("deleteUserId");
             mDeleteOpponentId = extras.getString("deleteOpponentId");
 
+            if (extras.containsKey("notificationId")) {
+                sharedHelper.removeLastNotificationId(extras.getString("notificationId"));
+            }
 
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             notificationManager.cancel(Integer.valueOf(mOpponentId));

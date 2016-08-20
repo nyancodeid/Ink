@@ -297,6 +297,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
             }
         });
         clearAdapter();
+        mFriendsAdapter.notifyDataSetChanged();
         stopSearchAnimation(false);
         final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().getFriends(mSharedHelper.getUserId());
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
@@ -440,7 +441,18 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         });
     }
 
+    @Override
+    public void onResume() {
+        if (searchWrapper.getVisibility() != View.VISIBLE) {
+            stopSearchAnimation(false);
+        }
+        super.onResume();
+    }
+
     private void hideSearchField() {
+        mFriendsModelArrayList.clear();
+        mFriendsAdapter.notifyDataSetChanged();
+
         getFriends();
         stopSearchAnimation(false);
         isClosed = true;

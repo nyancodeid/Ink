@@ -213,7 +213,7 @@ public class Music extends BaseActivity implements MusicClickListener {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                getAllTracks();
             }
         });
     }
