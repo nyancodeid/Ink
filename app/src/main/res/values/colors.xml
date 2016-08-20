@@ -2,6 +2,7 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
+    <color name="darkGreen">#25AE88</color>
     <color name="colorAccent">#3F51B5</color>
     <color name="linesColor">#b3b3b3</color>
     <color name="chat_background_color">#30cccccc</color>
