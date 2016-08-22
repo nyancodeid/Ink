@@ -30,8 +30,8 @@ import ink.mail.GMailSender;
 import ink.utils.Constants;
 import ink.utils.Device;
 import ink.utils.PermissionsChecker;
+import ink.utils.Regex;
 import ink.utils.UserDetails;
-import ink.utils.Validator;
 
 public class SendFeedback extends BaseActivity {
     private static final int ACCOUNTS_REQUEST_CODE = 1;
@@ -129,7 +129,7 @@ public class SendFeedback extends BaseActivity {
                         userInputEmail.setError(getString(R.string.emalEmpty));
                     } else {
                         String inputEmail = userInputEmail.getText().toString().trim();
-                        if (!Validator.isValidEmail(inputEmail)) {
+                        if (!Regex.isValidEmail(inputEmail)) {
                             userInputEmail.setError(getString(R.string.incorrectEmail));
                         } else {
                             mSenderEmail = inputEmail;

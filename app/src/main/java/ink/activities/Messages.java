@@ -12,7 +12,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -100,12 +99,10 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                     finalId = userMessagesModels.get(position).getUserId();
                 }
 
-                Log.d("fasfsafasfa", "onClick: " + userMessagesModels.get(position).getMessageId());
                 Intent intent = new Intent(getApplicationContext(), Chat.class);
                 intent.putExtra("firstName", userMessagesModels.get(position).getFirstName());
                 intent.putExtra("lastName", userMessagesModels.get(position).getLastName());
                 intent.putExtra("opponentId", finalId);
-                intent.putExtra("messageId", userMessagesModels.get(position).getMessageId());
                 intent.putExtra("isSocialAccount", userMessagesModels.get(position).isSocialAccount());
                 intent.putExtra("opponentImage", userMessagesModels.get(position).getImageName());
                 startActivity(intent);
@@ -324,6 +321,8 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                     mMessagesLoadingProgress.setVisibility(View.GONE);
                     if (userMessagesModels.size() <= 0) {
                         mNoMessageLayout.setVisibility(View.VISIBLE);
+                    }else{
+                        mNoMessageLayout.setVisibility(View.GONE);
                     }
                     hideSnack(true);
                 } catch (IOException e) {

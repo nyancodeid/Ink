@@ -1,5 +1,7 @@
 package ink.utils;
 
+import android.text.TextUtils;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,5 +28,13 @@ public class Regex {
             success = true;
         }
         return success;
+    }
+
+    public final static boolean isValidEmail(String target) {
+        if (TextUtils.isEmpty(target)) {
+            return false;
+        } else {
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+        }
     }
 }

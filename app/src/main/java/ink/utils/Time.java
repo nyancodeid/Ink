@@ -37,29 +37,11 @@ public class Time {
         try {
             parsed = sourceFormat.parse(timeToConvert);
         } catch (ParseException e) {
-            e.printStackTrace();
-            if (Constants.SERVER_TIME_ZONE.equals(TimeZone.getDefault())) {
-                return timeToConvert;
-            }
-            String finalResult = timeToConvert.replaceAll("/", "-");
-
-            try {
-                parsed = sourceFormat.parse(finalResult);
-            } catch (ParseException e1) {
-                e1.printStackTrace();
-                return "N/A";
-            }
-
-            TimeZone tz = TimeZone.getDefault();
-            SimpleDateFormat destFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            destFormat.setTimeZone(tz);
-
-            String result = destFormat.format(parsed);
-            return result;
+            return "N/A";
         }
 
         TimeZone tz = TimeZone.getDefault();
-        SimpleDateFormat destFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat destFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         destFormat.setTimeZone(tz);
 
         String result = destFormat.format(parsed);

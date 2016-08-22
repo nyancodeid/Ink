@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
@@ -16,6 +17,7 @@ import com.koushikdutta.ion.ProgressCallback;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import ink.utils.FileUtils;
 
 public class FullscreenActivity extends BaseActivity {
     private String fullUrlToLoad;
@@ -26,6 +28,8 @@ public class FullscreenActivity extends BaseActivity {
     LinearLayout imageLoadingProgress;
     @Bind(R.id.loadingProgressBar)
     ProgressBar loadingProgressBar;
+    @Bind(R.id.gifHolder)
+    ImageView gifHolder;
     private boolean mVisible;
     private ActionBar actionBar;
 
@@ -45,19 +49,41 @@ public class FullscreenActivity extends BaseActivity {
 
         if (extras != null) {
             fullUrlToLoad = extras.getString("link");
-            Ion.with(this).load(fullUrlToLoad).progressHandler(new ProgressCallback() {
-                @Override
-                public void onProgress(long downloaded, long total) {
-                    loadingProgressBar.setMax((int) total);
-                    loadingProgressBar.setProgress((int) downloaded);
-                }
-            }).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                @Override
-                public void onCompleted(Exception e, Bitmap result) {
-                    mImageView.setImage(ImageSource.bitmap(result));
-                    imageLoadingProgress.setVisibility(View.GONE);
-                }
-            });
+
+            if (FileUtils.isGif(fullUrlToLoad)) {
+                gifHolder.setVisibility(View.VISIBLE);
+                mImageView.setVisibility(View.GONE);
+
+                Ion.with(this).load(fullUrlToLoad).progressHandler(new ProgressCallback() {
+                    @Override
+                    public void onProgress(long downloaded, long total) {
+                        loadingProgressBar.setMax((int) total);
+                        loadingProgressBar.setProgress((int) downloaded);
+                    }
+                }).intoImageView(gifHolder).setCallback(new FutureCallback<ImageView>() {
+                    @Override
+                    public void onCompleted(Exception e, ImageView result) {
+                        imageLoadingProgress.setVisibility(View.GONE);
+                    }
+                });
+            } else {
+                gifHolder.setVisibility(View.GONE);
+                mImageView.setVisibility(View.VISIBLE);
+                Ion.with(this).load(fullUrlToLoad).progressHandler(new ProgressCallback() {
+                    @Override
+                    public void onProgress(long downloaded, long total) {
+                        loadingProgressBar.setMax((int) total);
+                        loadingProgressBar.setProgress((int) downloaded);
+                    }
+                }).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                    @Override
+                    public void onCompleted(Exception e, Bitmap result) {
+                        mImageView.setImage(ImageSource.bitmap(result));
+                        imageLoadingProgress.setVisibility(View.GONE);
+                    }
+                });
+            }
+
 
         }
 

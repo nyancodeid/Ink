@@ -38,15 +38,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import fab.FloatingActionButton;
 import ink.fragments.Feed;
 import ink.fragments.MyFriends;
 import ink.interfaces.AccountDeleteListener;
 import ink.models.CoinsResponse;
-import ink.models.PingResponse;
 import ink.service.BackgroundTaskService;
 import ink.service.LocationRequestSessionDestroyer;
 import ink.service.SendTokenService;
@@ -55,6 +52,7 @@ import ink.utils.Constants;
 import ink.utils.DeviceChecker;
 import ink.utils.FileUtils;
 import ink.utils.IonCache;
+import ink.utils.PingHelper;
 import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
@@ -78,7 +76,6 @@ public class HomeActivity extends BaseActivity
     private Feed mFeed;
     private MyFriends mMyFriends;
     private Toolbar mToolbar;
-    private Timer timer = new Timer();
     private DrawerLayout mDrawer;
     public static String PROFILE;
     public static String FEED;
@@ -91,8 +88,6 @@ public class HomeActivity extends BaseActivity
     private boolean shouldOpenActivity;
     private FloatingActionButton mMakePost;
     private FloatingActionButton searchFriend;
-    private Thread mPingThread;
-    private Gson gson;
     private ProgressDialog progressDialog;
     private Menu menuItem;
 
@@ -101,7 +96,6 @@ public class HomeActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        gson = new Gson();
         setSupportActionBar(mToolbar);
         PROFILE = getString(R.string.profileText);
         FEED = getString(R.string.feedText);
@@ -112,7 +106,10 @@ public class HomeActivity extends BaseActivity
         mToolbar.setTitle(FEED);
         mSharedHelper = new SharedHelper(this);
 
-        initThread();
+        if (!PingHelper.get().isPinging()) {
+            PingHelper.get().startPinging(mSharedHelper.getUserId());
+        }
+
         mFab = (FloatingActionMenu) findViewById(R.id.fab);
         mMessages = (FloatingActionButton) findViewById(R.id.messages);
         mMakePost = (FloatingActionButton) findViewById(R.id.makePost);
@@ -190,18 +187,6 @@ public class HomeActivity extends BaseActivity
         return false;
     }
 
-    private void initThread() {
-        mPingThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-                if (mPingThread.getState() != Thread.State.TERMINATED) {
-                    pingTime();
-                }
-            }
-        });
-        mPingThread.start();
-    }
 
     private void checkIsWarned() {
         if (!mSharedHelper.isDeviceWarned()) {
@@ -551,67 +536,13 @@ public class HomeActivity extends BaseActivity
         return mToolbar;
     }
 
-    private void pingTime() {
-        Call<ResponseBody> pingTimeCall = Retrofit.getInstance().getInkService().pingTime(mSharedHelper.getUserId());
-        pingTimeCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    pingTime();
-                    return;
-                }
-                if (response.body() == null) {
-                    pingTime();
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    try {
-                        PingResponse pingResponse = gson.fromJson(responseBody, PingResponse.class);
-                        if (pingResponse.success) {
-                            if (timer == null) {
-                                timer = new Timer();
-                            }
-                            timer.schedule(new TimerTask() {
-                                @Override
-                                public void run() {
-                                    pingTime();
-                                }
-                            }, PING_TIME);
-                        } else {
-                            pingTime();
-                        }
-                    } catch (Exception e) {
-                        destroyPinger();
-                        e.printStackTrace();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                pingTime();
-            }
-        });
-    }
 
     @Override
     protected void onDestroy() {
-        destroyPinger();
+        if (PingHelper.get().isPinging()) {
+            PingHelper.get().destroyPinging();
+        }
         super.onDestroy();
-    }
-
-    private void destroyPinger() {
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-        if (mPingThread != null) {
-            mPingThread.interrupt();
-            mPingThread = null;
-        }
     }
 
 
@@ -662,6 +593,5 @@ public class HomeActivity extends BaseActivity
 
     @Override
     public void onAccountDeleted() {
-        destroyPinger();
     }
 }

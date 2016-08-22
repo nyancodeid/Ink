@@ -12,6 +12,13 @@
         android:layout_height="match_parent"
         android:gravity="center" />
 
+    <ImageView
+        android:id="@+id/gifHolder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/imageLoadingProgress"
         android:layout_width="match_parent"
@@ -34,4 +41,5 @@
             android:layout_gravity="top"
             android:indeterminate="false" />
     </LinearLayout>
+
 </FrameLayout>

@@ -67,7 +67,7 @@ public class BackgroundTaskService extends Service {
                             String opponentId = eachObject.optString("opponent_id");
                             String message = eachObject.optString("message");
                             String messageId = eachObject.optString("message_id");
-                            String date = Time.convertToLocalTime(eachObject.optString("date"));
+                            String date = eachObject.optString("date");
                             String deliveryStatus = Constants.STATUS_DELIVERED;
                             String userIdImage = eachObject.optString("user_id_image");
                             String opponentImage = eachObject.optString("opponent_id_image");
@@ -79,10 +79,19 @@ public class BackgroundTaskService extends Service {
                             String isAnimated = eachObject.optString("isAnimated");
                             String hasSound = eachObject.optString("hasSound");
 
-                            realmHelper.insertMessage(userId,
-                                    opponentId, message, messageId, date, messageId,
-                                    deliveryStatus,
-                                    userIdImage, opponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl);
+                            if (mSharedHelper.getUserId().equals(userId)) {
+
+                                realmHelper.insertMessage(userId,
+                                        opponentId, message, messageId, Time.convertToLocalTime(date), messageId,
+                                        deliveryStatus,
+                                        userIdImage, opponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl);
+                            } else {
+
+                                realmHelper.insertMessage(userId,
+                                        opponentId, message, messageId, date, messageId,
+                                        deliveryStatus,
+                                        userIdImage, opponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl);
+                            }
                         }
                     }
                     mSharedHelper.setMessagesDownloaded();

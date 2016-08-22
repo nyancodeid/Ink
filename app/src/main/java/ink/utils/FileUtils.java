@@ -68,6 +68,16 @@ public class FileUtils {
         return success;
     }
 
+    public static boolean isGif(String fileName) {
+        int lastIndex = fileName.lastIndexOf(".");
+        String fileExtension = fileName.substring(lastIndex + 1, fileName.length());
+        if (fileExtension.equals("gif")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static boolean deleteRecursiveFile(File file) {
 
         boolean deletedAll = true;

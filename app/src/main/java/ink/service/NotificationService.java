@@ -20,6 +20,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
@@ -29,6 +30,8 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.ink.R;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -39,6 +42,7 @@ import ink.activities.HomeActivity;
 import ink.activities.ReplyView;
 import ink.activities.RequestsView;
 import ink.broadcast.DismissBroadcast;
+import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.Notification;
 import ink.utils.RealmHelper;
@@ -83,7 +87,7 @@ public class NotificationService extends FirebaseMessagingService {
                     }
                 });
 
-                if (Notification.getInstance().isSendingRemote()) {
+                if (Notification.get().isSendingRemote()) {
                     Intent intent = new Intent(getPackageName() + ".Chat");
                     intent.putExtra("data", remoteMessage);
                     intent.putExtra("type", "showMessage");
@@ -96,7 +100,7 @@ public class NotificationService extends FirebaseMessagingService {
                             response.get("opponent_image"), response.get("opponent_image").isEmpty() ? "" : response.get("opponent_image"), response.get("name"),
                             response.get("delete_user_id"), response.get("delete_opponent_id"), Boolean.valueOf(response.get("isSocialAccount")), response.get("lastName"), Boolean.valueOf(response.get("hasGif")));
                 } else {
-                    String activeOpponentId = Notification.getInstance().getActiveOpponentId();
+                    String activeOpponentId = Notification.get().getActiveOpponentId();
                     if (activeOpponentId.equals(response.get("opponent_id")) || activeOpponentId.equals(response.get("user_id"))) {
                         Intent intent = new Intent(getPackageName() + ".Chat");
                         intent.putExtra("data", remoteMessage);
@@ -192,7 +196,7 @@ public class NotificationService extends FirebaseMessagingService {
                 break;
             case Constants.DELETE_MESSAGE_REQUESTED:
                 String messageId = response.get("messageId");
-                if (Notification.getInstance().isSendingRemote()) {
+                if (Notification.get().isSendingRemote()) {
                     RealmHelper.getInstance().removeMessage(messageId);
                 } else {
                     intent = new Intent(getPackageName() + ".Chat");
@@ -236,20 +240,19 @@ public class NotificationService extends FirebaseMessagingService {
     }
 
 
-    public void sendNotification(String title, String opponentId,
+    public void sendNotification(String title, final String opponentId,
                                  String messageBody, final Context context,
                                  String messageId, String currentUserId,
                                  String userImage, final String opponentImage,
                                  String userName, String deleteUserId, String deleteOpponentId,
                                  boolean isSocialAccount, String lastName, boolean hasGif) {
-
         if (mSharedHelper.getLastNotificationId(opponentId) != null) {
             Log.d(TAG, "sendNotification: " + "notification id not null" + mSharedHelper.getLastNotificationId(opponentId));
             if (mSharedHelper.getLastNotificationId(opponentId).equals(opponentId)) {
                 Log.d(TAG, "sendNotification: " + "notification id equals to each other" + mSharedHelper.getLastNotificationId(opponentId));
                 int notificationCount = mSharedHelper.getLastNotificationCount(opponentId);
 
-                NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+                final NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
                 if (hasGif && !messageBody.trim().isEmpty()) {
                     String oldMesssage = messageBody;
@@ -287,7 +290,7 @@ public class NotificationService extends FirebaseMessagingService {
                 PendingIntent chatPending = PendingIntent.getActivity(context, Integer.valueOf(opponentId), chatIntent, 0);
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, Integer.valueOf(opponentId), intent, 0);
                 final android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
-                builder.setSmallIcon(R.mipmap.ic_launcher);
+                builder.setSmallIcon(R.drawable.ic_message_white_24dp);
 
                 // TODO: 8/11/2016 check if we can add user image to notification
                 builder.setAutoCancel(true);
@@ -308,12 +311,34 @@ public class NotificationService extends FirebaseMessagingService {
                 builder.setContentIntent(chatPending);
                 builder.setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.lastMessage) + messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "")));
                 builder.setShowWhen(true);
-                android.app.Notification notification = builder.build();
+                final android.app.Notification notification = builder.build();
+
+
+                if (opponentImage != null && !opponentImage.isEmpty()) {
+                    if (isSocialAccount) {
+                        Ion.with(getApplicationContext()).load(opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                            @Override
+                            public void onCompleted(Exception e, Bitmap result) {
+                                builder.setLargeIcon(result);
+                                notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+                            }
+                        });
+                    } else {
+                        Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                            @Override
+                            public void onCompleted(Exception e, Bitmap result) {
+                                builder.setLargeIcon(result);
+                                notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+                            }
+                        });
+                    }
+
+                }
                 notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
             } else {
                 Log.d(TAG, "sendNotification: " + "notification id not equals to each other" + mSharedHelper.getLastNotificationId(opponentId) + " opponent id is" + opponentId);
                 mSharedHelper.putLastNotificationId(opponentId);
-                NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+                final NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
                 if (hasGif && !messageBody.trim().isEmpty()) {
                     String oldMesssage = messageBody;
@@ -351,18 +376,9 @@ public class NotificationService extends FirebaseMessagingService {
                 PendingIntent chatPending = PendingIntent.getActivity(context, Integer.valueOf(opponentId), chatIntent, 0);
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, Integer.valueOf(opponentId), intent, 0);
                 final android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
-                builder.setSmallIcon(R.mipmap.ic_launcher);
+                builder.setSmallIcon(R.drawable.ic_message_white_24dp);
 
                 // TODO: 8/11/2016 check if we can add user image to notification
-//        if (opponentImage != null && !opponentImage.isEmpty()) {
-//            Handler handler = new Handler(getMainLooper());
-//            handler.post(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Ion.with(context).load(opponentImage).intoImageView(getTarget(builder));
-//                }
-//            });
-//        }
                 builder.setAutoCancel(true);
 
 
@@ -381,12 +397,35 @@ public class NotificationService extends FirebaseMessagingService {
                 builder.setContentIntent(chatPending);
                 builder.setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "")));
                 builder.setShowWhen(true);
-                android.app.Notification notification = builder.build();
+                final android.app.Notification notification = builder.build();
+
+
+                if (opponentImage != null && !opponentImage.isEmpty()) {
+                    if (isSocialAccount) {
+                        Ion.with(getApplicationContext()).load(opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                            @Override
+                            public void onCompleted(Exception e, Bitmap result) {
+                                builder.setLargeIcon(result);
+                                notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+                            }
+                        });
+                    } else {
+                        Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                            @Override
+                            public void onCompleted(Exception e, Bitmap result) {
+                                builder.setLargeIcon(result);
+                                notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+                            }
+                        });
+                    }
+
+                }
+
                 notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
             }
         } else {
             Log.d(TAG, "sendNotification: " + "notification id is null" + mSharedHelper.getLastNotificationId(opponentId) + " oppoent id is" + opponentId);
-            NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+            final NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
             mSharedHelper.putLastNotificationId(opponentId);
             if (hasGif && !messageBody.trim().isEmpty()) {
                 String oldMesssage = messageBody;
@@ -424,18 +463,11 @@ public class NotificationService extends FirebaseMessagingService {
             PendingIntent chatPending = PendingIntent.getActivity(context, Integer.valueOf(opponentId), chatIntent, 0);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, Integer.valueOf(opponentId), intent, 0);
             final android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
-            builder.setSmallIcon(R.mipmap.ic_launcher);
+            builder.setSmallIcon(R.drawable.ic_message_white_24dp);
 
             // TODO: 8/11/2016 check if we can add user image to notification
-//        if (opponentImage != null && !opponentImage.isEmpty()) {
-//            Handler handler = new Handler(getMainLooper());
-//            handler.post(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Ion.with(context).load(opponentImage).intoImageView(getTarget(builder));
-//                }
-//            });
-//        }
+
+
             builder.setAutoCancel(true);
 
 
@@ -454,7 +486,30 @@ public class NotificationService extends FirebaseMessagingService {
             builder.setContentIntent(chatPending);
             builder.setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "")));
             builder.setShowWhen(true);
-            android.app.Notification notification = builder.build();
+            final android.app.Notification notification = builder.build();
+
+
+            if (opponentImage != null && !opponentImage.isEmpty()) {
+                if (isSocialAccount) {
+                    Ion.with(getApplicationContext()).load(opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                        @Override
+                        public void onCompleted(Exception e, Bitmap result) {
+                            builder.setLargeIcon(result);
+                            notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+                        }
+                    });
+                } else {
+                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                        @Override
+                        public void onCompleted(Exception e, Bitmap result) {
+                            builder.setLargeIcon(result);
+                            notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+                        }
+                    });
+                }
+
+            }
+
             notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
         }
     }

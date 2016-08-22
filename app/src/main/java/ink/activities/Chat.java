@@ -45,7 +45,6 @@ import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,6 +61,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.adapters.ChatAdapter;
 import ink.adapters.GifAdapter;
+import ink.callbacks.GeneralCallback;
 import ink.interfaces.ItemClickListener;
 import ink.interfaces.RecyclerItemClickListener;
 import ink.models.ChatModel;
@@ -76,6 +76,7 @@ import ink.utils.ErrorCause;
 import ink.utils.FileUtils;
 import ink.utils.Keyboard;
 import ink.utils.Notification;
+import ink.utils.PingHelper;
 import ink.utils.ProgressRequestBody;
 import ink.utils.QueHelper;
 import ink.utils.RealmHelper;
@@ -179,7 +180,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_out);
 
 
-        Notification.getInstance().setSendingRemote(false);
+        Notification.get().setSendingRemote(false);
 
 
         mChatAdapter = new ChatAdapter(mChatModelArrayList, this);
@@ -298,7 +299,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                 String date = chatModel.getDate();
                 AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
                 builder.setTitle("Message Details");
-                builder.setMessage("Date of message : " + date);
                 builder.setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -306,14 +306,19 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                     }
                 });
 
-                // TODO: 2016-08-20 dont let to delete opponent message
-                builder.setNegativeButton(getString(R.string.deleteMessage), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                        showDeleteWarning(chatModel.getMessageId(), position);
-                    }
-                });
+                if (mCurrentUserId.equals(chatModel.getUserId())) {
+                    builder.setMessage("Date of message : " + date);
+                    builder.setNegativeButton(getString(R.string.deleteMessage), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            showDeleteWarning(chatModel.getMessageId(), position);
+                        }
+                    });
+                } else {
+                    builder.setMessage("Date of message : " + Time.convertToLocalTime(date));
+                }
+
 
                 builder.show();
             }
@@ -396,7 +401,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                         mChatModelArrayList.remove(positionOfItem);
                         RealmHelper.getInstance().removeMessage(messageId);
                         mChatAdapter.notifyDataSetChanged();
-                        getMessages();
                         progressDialog.dismiss();
                         Snackbar.make(chatTitle, getString(R.string.messageDeleted), Snackbar.LENGTH_SHORT).show();
                     } else {
@@ -506,6 +510,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                                 opponentStatus.setText(getString(R.string.onlineStatus));
                             } else {
                                 statusColor.setVisibility(View.INVISIBLE);
+                                statusColor.clearAnimation();
                                 opponentStatus.setText(getString(R.string.lastSeen, Time.convertToLocalTime(userStatus.lastSeenTime)));
                             }
                             scheduleTask();
@@ -770,56 +775,66 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         }
         mChatAdapter.notifyDataSetChanged();
 
-        List<MessageModel> messageModels = mRealHelper.getMessages(mOpponentId, mCurrentUserId);
-        if (messageModels.isEmpty()) {
-            mNoMessageLayout.setVisibility(View.VISIBLE);
-        } else {
+        mRealHelper.getMessages(mOpponentId, mCurrentUserId, new GeneralCallback<List<MessageModel>>() {
+            @Override
+            public void onSuccess(List<MessageModel> messageModels) {
+                if (messageModels.isEmpty()) {
+                    mNoMessageLayout.setVisibility(View.VISIBLE);
+                } else {
 
-            for (int i = 0; i < messageModels.size(); i++) {
-                MessageModel eachModel = messageModels.get(i);
-                String messageId = eachModel.getMessageId();
-                String opponentId = eachModel.getOpponentId();
-                String message = StringEscapeUtils.unescapeJava(eachModel.getMessage());
-                String userId = eachModel.getUserId();
-                String userImage = eachModel.getUserImage();
-                String opponentImage = eachModel.getOpponentImage();
-                String date = eachModel.getDate();
-                boolean isGifChosen = eachModel.hasGif();
-                String gifUrl = eachModel.getGifUrl();
+                    for (int i = 0; i < messageModels.size(); i++) {
+                        MessageModel eachModel = messageModels.get(i);
+                        String messageId = eachModel.getMessageId();
+                        String opponentId = eachModel.getOpponentId();
+                        String message = StringEscapeUtils.unescapeJava(eachModel.getMessage());
+                        String userId = eachModel.getUserId();
+                        String userImage = eachModel.getUserImage();
+                        String opponentImage = eachModel.getOpponentImage();
+                        String date = eachModel.getDate();
+                        boolean isGifChosen = eachModel.hasGif();
+                        String gifUrl = eachModel.getGifUrl();
 
-                String deleteUserId = eachModel.getDeleteUserId();
-                String deleteOpponentId = eachModel.getDeleteOpponentId();
-                mDeleteOpponentId = eachModel.getDeleteOpponentId();
-                mDeleteUserId = eachModel.getDeleteUserId();
+                        String deleteUserId = eachModel.getDeleteUserId();
+                        String deleteOpponentId = eachModel.getDeleteOpponentId();
+                        mDeleteOpponentId = eachModel.getDeleteOpponentId();
+                        mDeleteUserId = eachModel.getDeleteUserId();
 
-                if (deleteOpponentId != null && deleteUserId != null) {
-                    if (deleteOpponentId.equals(mSharedHelper.getUserId()) || deleteUserId.equals(mSharedHelper.getUserId())) {
-                        continue;
+                        if (deleteOpponentId != null && deleteUserId != null) {
+                            if (deleteOpponentId.equals(mSharedHelper.getUserId()) || deleteUserId.equals(mSharedHelper.getUserId())) {
+                                continue;
+                            }
+                        }
+
+                        mChatModel = new ChatModel(Regex.isAttachment(message), isGifChosen, gifUrl, messageId, userId, opponentId, message, true,
+                                eachModel.getDeliveryStatus(), userImage, opponentImage, date);
+                        mChatModelArrayList.add(mChatModel);
+                        if (eachModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED) && !Regex.isAttachment(message)) {
+                            int itemLocation = mChatModelArrayList.indexOf(mChatModel);
+                            attemptToQue(message, itemLocation,
+                                    deleteOpponentId, deleteUserId, isGifChosen, lasChosenGifName);
+                        }
+                        mChatAdapter.notifyDataSetChanged();
                     }
-                }
 
-                mChatModel = new ChatModel(Regex.isAttachment(message), isGifChosen, gifUrl, messageId, userId, opponentId, message, true,
-                        eachModel.getDeliveryStatus(), userImage, opponentImage, date);
-                mChatModelArrayList.add(mChatModel);
-                if (eachModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED) && !Regex.isAttachment(message)) {
-                    int itemLocation = mChatModelArrayList.indexOf(mChatModel);
-                    attemptToQue(message, itemLocation,
-                            deleteOpponentId, deleteUserId, isGifChosen, lasChosenGifName);
+                    if (mChatModelArrayList.size() <= 0) {
+                        mNoMessageLayout.setVisibility(View.VISIBLE);
+                    }
+                    mRecyclerView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            scrollToBottom();
+                        }
+                    });
+
                 }
-                mChatAdapter.notifyDataSetChanged();
             }
 
-            if (mChatModelArrayList.size() <= 0) {
-                mNoMessageLayout.setVisibility(View.VISIBLE);
-            }
-            mRecyclerView.post(new Runnable() {
-                @Override
-                public void run() {
-                    scrollToBottom();
-                }
-            });
+            @Override
+            public void onFailure(List<MessageModel> messageModels) {
 
-        }
+            }
+        });
+
     }
 
 
@@ -859,7 +874,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     @Override
     protected void onDestroy() {
         System.gc();
-        Notification.getInstance().setSendingRemote(true);
+        Notification.get().setSendingRemote(true);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(generalReceiver);
         super.onDestroy();
     }
@@ -878,7 +893,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                         if (mOpponentId.equals(response.get("user_id"))) {
                             mChatModel = new ChatModel(Regex.isAttachment(response.get("message")), Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"), response.get("message_id"), response.get("user_id"),
                                     response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
-                                    response.get("user_image"), response.get("opponent_image"), Time.convertToLocalTime(response.get("date")));
+                                    response.get("user_image"), response.get("opponent_image"), response.get("date"));
                             mChatModelArrayList.add(mChatModel);
                             mChatAdapter.notifyDataSetChanged();
                             mRecyclerView.post(new Runnable() {
@@ -913,10 +928,13 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     @Override
     protected void onResume() {
         System.gc();
-        Notification.getInstance().setSendingRemote(false);
-        Notification.getInstance().setActiveOpponentId(mOpponentId);
+        Notification.get().setSendingRemote(false);
+        Notification.get().setActiveOpponentId(mOpponentId);
         getStatus();
         getIsFriend();
+        if (!PingHelper.get().isPinging()) {
+            PingHelper.get().startPinging(mSharedHelper.getUserId());
+        }
         super.onResume();
     }
 
@@ -975,30 +993,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                 mSharedHelper.removeLastNotificationId(bundle.getString("notificationId"));
             }
 
-            if (bundle.containsKey("messageId")) {
-                String messageId = bundle.getString("messageId");
-                boolean isMessageExist = RealmHelper.getInstance().isMessageExist(messageId);
-                if (!isMessageExist) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle(getString(R.string.messageMissing));
-                    builder.setMessage(getString(R.string.messageMissingText));
-                    builder.setPositiveButton(getString(R.string.updateMessages), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            progressDialog.show();
-                            getMyMessages(mSharedHelper.getUserId());
-                        }
-                    });
-                    builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    builder.show();
-                }
-            }
-
             if (opponentImage != null && !opponentImage.isEmpty()) {
                 if (!isImageLoaded) {
                     isImageLoaded = true;
@@ -1030,7 +1024,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     @Override
     protected void onPause() {
         System.gc();
-        Notification.getInstance().setSendingRemote(true);
+        Notification.get().setSendingRemote(true);
         super.onPause();
     }
 
@@ -1080,78 +1074,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     @Override
     public void onAdditionItemClick(int position, View view) {
 
-    }
-
-    private void getMyMessages(final String userId) {
-        Call<ResponseBody> myMessagesResponse = Retrofit.getInstance().getInkService().getChatMessages(userId);
-        myMessagesResponse.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getMyMessages(userId);
-                    return;
-                }
-                if (response.body() == null) {
-                    getMyMessages(userId);
-                    return;
-                }
-                try {
-                    String responseString = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseString);
-                    JSONArray messagesArray = jsonObject.optJSONArray("messages");
-                    RealmHelper realmHelper = RealmHelper.getInstance();
-                    if (messagesArray.length() > 0) {
-                        for (int i = 0; i < messagesArray.length(); i++) {
-                            JSONObject eachObject = messagesArray.optJSONObject(i);
-                            String userId = eachObject.optString("user_id");
-                            String opponentId = eachObject.optString("opponent_id");
-                            String message = eachObject.optString("message");
-                            String messageId = eachObject.optString("message_id");
-                            String date = Time.convertToLocalTime(eachObject.optString("date"));
-                            String deliveryStatus = Constants.STATUS_DELIVERED;
-                            String userIdImage = eachObject.optString("user_id_image");
-                            String opponentImage = eachObject.optString("opponent_id_image");
-                            String deleteUserId = eachObject.optString("delete_user_id");
-                            String deleteOpponentId = eachObject.optString("delete_opponent_id");
-
-                            boolean hasGif = eachObject.optBoolean("hasGif");
-                            String gifUrl = eachObject.optString("gifUrl");
-                            String isAnimated = eachObject.optString("isAnimated");
-                            String hasSound = eachObject.optString("hasSound");
-
-                            realmHelper.insertMessage(userId,
-                                    opponentId, message, messageId, date, messageId,
-                                    deliveryStatus,
-                                    userIdImage, opponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl);
-
-                        }
-
-                        getMessages();
-
-                        Snackbar.make(chatTitle, getString(R.string.messagesUpdated), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-
-                            }
-                        }).show();
-                    } else {
-                        Snackbar.make(chatTitle, getString(R.string.noMessages), Snackbar.LENGTH_LONG).show();
-                    }
-                    progressDialog.dismiss();
-                } catch (IOException e) {
-                    progressDialog.dismiss();
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    progressDialog.dismiss();
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getMyMessages(userId);
-            }
-        });
     }
 
     private void scrollToBottom() {
