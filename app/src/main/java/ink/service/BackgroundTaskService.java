@@ -94,7 +94,7 @@ public class BackgroundTaskService extends Service {
                             }
                         }
                     }
-                    mSharedHelper.setMessagesDownloaded();
+//                    mSharedHelper.setMessagesDownloaded();
                     stopSelf();
 
                 } catch (IOException e) {

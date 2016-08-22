@@ -105,6 +105,10 @@ public class HomeActivity extends BaseActivity
         SETTINGS = getString(R.string.settingsString);
         mToolbar.setTitle(FEED);
         mSharedHelper = new SharedHelper(this);
+        if (!mSharedHelper.isMessagesDownloaded()) {
+            startMessageDownloadService();
+        }
+
 
         if (!PingHelper.get().isPinging()) {
             PingHelper.get().startPinging(mSharedHelper.getUserId());
@@ -460,9 +464,6 @@ public class HomeActivity extends BaseActivity
     @Override
     protected void onResume() {
         getMyRequests();
-        if (!mSharedHelper.isMessagesDownloaded()) {
-            startMessageDownloadService();
-        }
         if (mSharedHelper.isTokenRefreshed()) {
             startTokenService();
         }
