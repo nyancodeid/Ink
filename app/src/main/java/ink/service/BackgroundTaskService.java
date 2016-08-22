@@ -43,6 +43,7 @@ public class BackgroundTaskService extends Service {
     }
 
     private void getMyMessages(final String userId) {
+        RealmHelper.getInstance().clearDatabase(this);
         Call<ResponseBody> myMessagesResponse = Retrofit.getInstance().getInkService().getChatMessages(userId);
         myMessagesResponse.enqueue(new Callback<ResponseBody>() {
             @Override
