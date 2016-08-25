@@ -47,12 +47,10 @@
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity
             android:name="ink.activities.Intro"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            />
+            android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name="ink.activities.Registration"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-         />
+            android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name="ink.activities.HomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -113,9 +111,7 @@
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
-        <activity
-            android:name="ink.activities.Comments"
-    />
+        <activity android:name="ink.activities.Comments" />
         <activity
             android:name="ink.activities.SplashScreen"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -134,12 +130,10 @@
             android:theme="@style/VK.Transparent" />
         <activity
             android:name="ink.activities.Groups"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-           />
+            android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name="ink.activities.Settings"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-/>
+            android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name="ink.activities.ChatRoulette"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -163,16 +157,13 @@
 
         <activity
             android:name="ink.activities.RequestsView"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-             />
+            android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name="ink.activities.WaitRoom"
             android:configChanges="keyboardHidden|orientation|screenSize"
 
             android:screenOrientation="portrait" />
-        <activity
-            android:name="ink.activities.Shop"
-           />
+        <activity android:name="ink.activities.Shop" />
         <activity
             android:name="ink.activities.BuyCoins"
 
@@ -180,21 +171,46 @@
             android:theme="@style/Theme.Transparent" />
         <activity
             android:name="ink.activities.Music"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-          />
+            android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name="ink.activities.ImageEditor"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-         />
+            android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name="ink.activities.SendFeedback"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-        />
+            android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name="ink.activities.ContactSupport"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-          />
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name="ink.friendsmash.HomeActivity"
+            android:label="@string/title_activity_home"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="ink.friendsmash.GameActivity"
+            android:hardwareAccelerated="true"
+            android:label="@string/title_activity_home"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="ink.friendsmash.ScoreboardActivity"
+            android:label="@string/title_activity_home"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationName"
+            android:value="@string/app_name" />
+
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider1713388275578207"
+            android:exported="true" />
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="80f8d0846bb012e567f21fdf7ebbc38efe19d99e" />

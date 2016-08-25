@@ -380,6 +380,10 @@ public class HomeActivity extends BaseActivity
                 shouldOpenActivity = false;
                 break;
 
+            case R.id.friendSmashGame:
+                shouldOpenActivity = true;
+                setLastClassToOpen(ink.friendsmash.HomeActivity.class);
+                break;
             case R.id.sendFeedback:
                 shouldOpenActivity = true;
                 setLastClassToOpen(SendFeedback.class);

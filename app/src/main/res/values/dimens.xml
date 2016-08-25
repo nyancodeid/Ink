@@ -7,6 +7,19 @@
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
+
+    <dimen name="icon_width">96dp</dimen>
+    <dimen name="scoreboard_entry_top_margin">4dp</dimen>
+    <dimen name="scoreboard_background_imageview_margin_top">20dp</dimen>
+    <dimen name="scoreboard_background_imageview_margin_side">20dp</dimen>
+    <dimen name="scoreboard_profile_picture_view_width">69dp</dimen>
+    <dimen name="scoreboard_profile_picture_view_margin_top">9dp</dimen>
+    <dimen name="scoreboard_profile_picture_view_margin_left">10dp</dimen>
+    <dimen name="scoreboard_profile_picture_view_margin_right">10dp</dimen>
+    <dimen name="scoreboard_textviews_linearlayout_margin_top">20dp</dimen>
+    <dimen name="scoreboard_textviews_linearlayout_margin_left">86dp</dimen>
+    <dimen name="scoreboard_textviews_linearlayout_margin_right">86dp</dimen>
+
     <dimen name="fab_size_normal">56dp</dimen>
     <dimen name="fab_size_mini">40dp</dimen>
     <dimen name="labels_text_size">14sp</dimen>

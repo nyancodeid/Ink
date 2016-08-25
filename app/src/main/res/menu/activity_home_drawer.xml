@@ -49,6 +49,15 @@
         </item>
     </group>
 
+    <item android:title="@string/games">
+        <menu>
+            <item
+                android:id="@+id/friendSmashGame"
+                android:icon="@drawable/friend_smash_icon"
+                android:title="@string/friendSmashText" />
+        </menu>
+    </item>
+
     <item android:title="@string/community">
         <menu>
             <item
