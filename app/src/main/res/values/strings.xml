@@ -384,7 +384,7 @@
     <string name="userExist">User Exist</string>
     <string name="userExistMessage">User already exist with same login,please choose different login</string>
     <string name="edit">Edit</string>
-    <string name="welcome_message">Welcome, Player</string>
+    <string name="welcome_message">Welcome to Friend Smash!\nLogin to your facebook account and start fighting your friends!</string>
     <string name="you_scored_message"></string>
     <string name="delete">Delete</string>
     <string name="game_over">Awww unlucky...Game is over</string>

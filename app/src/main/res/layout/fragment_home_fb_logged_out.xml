@@ -17,13 +17,14 @@
  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
-
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res-out"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:custom="http://schemas.android.com/apk/res-out"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/friend_smash_login_background"
@@ -32,35 +33,21 @@
         <ImageView
             android:id="@+id/title_banner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="100dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/welcome_panel" />
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/welcomeTextView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@string/appFont"
+            android:gravity="center"
+            android:text="@string/welcome_message"
+            android:textColor="#000000" />
 
-            <ImageView
-                android:id="@+id/imageView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="18dip" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="120dp"
-                android:layout_marginTop="14dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/welcomeTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/welcome_message" />
-
-
-            </LinearLayout>
-
-        </RelativeLayout>
 
         <TextView
             android:id="@+id/youScoredTextView"
@@ -70,31 +57,26 @@
             android:paddingTop="4dp"
             android:text="@string/you_scored_message" />
 
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/loginButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@string/appFont" />
 
         <FrameLayout
+            android:id="@+id/progressContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:clickable="true">
 
-            <com.facebook.login.widget.LoginButton
-                android:id="@+id/loginButton"
+            <ProgressBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" />
-
         </FrameLayout>
 
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/progressContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-    </FrameLayout>
-
-</FrameLayout>
+</ScrollView>

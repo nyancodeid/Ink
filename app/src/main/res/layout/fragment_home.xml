@@ -98,8 +98,7 @@
     <FrameLayout
         android:id="@+id/progressContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/chat_background"
+        android:layout_height="wrap_content"
         android:clickable="true">
 
         <ProgressBar

@@ -59,7 +59,6 @@ public class FBLoggedOutHomeFragment extends Fragment {
 		LoginButton loginButton = (LoginButton) v.findViewById(R.id.loginButton);
 		getHomeActivity().getFacebookLogin().setUpLoginButton(loginButton);
 		loginButton.setFragment(this);
-
 		return v;
 	}
 
