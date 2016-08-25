@@ -80,7 +80,7 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
     }
 
     public int getCoins() {
-        return coins;
+        return User.get().getCoins();
     }
 
     public void setCoins(int coins) {
@@ -210,7 +210,6 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
         AppEventsLogger.activateApp(this);
         sharedHelper = new SharedHelper(this);
         AdobeCSDKFoundation.initializeCSDKFoundation(getApplicationContext());
-        loadInventory();
         VKAccessTokenTracker vkAccessTokenTracker = new VKAccessTokenTracker() {
             @Override
             public void onVKAccessTokenChanged(@Nullable VKAccessToken oldToken, @Nullable VKAccessToken newToken) {

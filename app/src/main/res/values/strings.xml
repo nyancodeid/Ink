@@ -385,7 +385,7 @@
     <string name="userExistMessage">User already exist with same login,please choose different login</string>
     <string name="edit">Edit</string>
     <string name="welcome_message">Welcome, Player</string>
-    <string name="you_scored_message">You killed it!</string>
+    <string name="you_scored_message"></string>
     <string name="delete">Delete</string>
     <string name="game_over">Awww unlucky...Game is over</string>
     <string name="deleting">Deleting...</string>

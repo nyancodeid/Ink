@@ -1,15 +1,15 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
- * <p>
+ * <p/>
  * You are hereby granted a non-exclusive, worldwide, royalty-free license to use,
  * copy, modify, and distribute this software in source code or binary form for use
  * in connection with the web services and APIs provided by Facebook.
- * <p>
+ * <p/>
  * As with any software that integrates with the Facebook platform, your use of
  * this software is subject to the Facebook Developer Principles and Policies
  * [http://developers.facebook.com/policy/]. This copyright notice shall be
  * included in all copies or substantial portions of the software.
- * <p>
+ * <p/>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -69,7 +69,7 @@ import ink.friendsmash.integration.GraphAPICall;
 import ink.friendsmash.integration.GraphAPICallback;
 
 /**
- *  Fragment shown once a user starts playing a game
+ * Fragment shown once a user starts playing a game
  */
 public class GameFragment extends Fragment {
 
@@ -157,7 +157,7 @@ public class GameFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-
+        ((StartupApplication) getActivity().getApplication()).loadInventory();
         View v = inflater.inflate(R.layout.fragment_game, parent, false);
 
         gameFrame = (FrameLayout) v.findViewById(R.id.gameFrame);

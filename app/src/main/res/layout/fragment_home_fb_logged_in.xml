@@ -32,8 +32,7 @@
         <ImageView
             android:id="@+id/title_banner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/no_image" />
+            android:layout_height="wrap_content"/>
 
         <RelativeLayout
             android:id="@+id/profileContainer"
