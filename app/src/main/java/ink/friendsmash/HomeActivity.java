@@ -1,15 +1,15 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
- * <p/>
+ * <p>
  * You are hereby granted a non-exclusive, worldwide, royalty-free license to use,
  * copy, modify, and distribute this software in source code or binary form for use
  * in connection with the web services and APIs provided by Facebook.
- * <p/>
+ * <p>
  * As with any software that integrates with the Facebook platform, your use of
  * this software is subject to the Facebook Developer Principles and Policies
  * [http://developers.facebook.com/policy/]. This copyright notice shall be
  * included in all copies or substantial portions of the software.
- * <p/>
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -52,11 +52,12 @@ import ink.friendsmash.integration.FriendSmashEventsLogger;
 import ink.friendsmash.integration.GameRequest;
 import ink.friendsmash.integration.GraphAPICall;
 import ink.friendsmash.integration.GraphAPICallback;
+import ink.utils.User;
 
 /**
- *  Entry point for the app that represents the home screen with the Play button etc. and
- *  also the login screen for the social version of the app - these screens will switch
- *  within this activity using Fragments.
+ * Entry point for the app that represents the home screen with the Play button etc. and
+ * also the login screen for the social version of the app - these screens will switch
+ * within this activity using Fragments.
  */
 public class HomeActivity extends FragmentActivity {
     private static final int FB_LOGGED_OUT_HOME = 0;
@@ -65,6 +66,7 @@ public class HomeActivity extends FragmentActivity {
     private Fragment[] fragments = new Fragment[FRAGMENT_COUNT];
 
     private FriendSmashEventsLogger eventsLogger;
+    private GraphAPICall myFriendsCall;
 
     public FriendSmashEventsLogger getEventsLogger() {
         return eventsLogger;
@@ -245,26 +247,30 @@ public class HomeActivity extends FragmentActivity {
         if (FacebookLogin.isAccessTokenValid()) {
             if (fragments[FB_LOGGED_OUT_HOME] != null) {
                 // TODO: 8/26/2016  hide progress
+
             }
-
-            GraphAPICall myFriendsCall = GraphAPICall.callMeFriends("name,first_name", new GraphAPICallback() {
-                @Override
-                public void handleResponse(GraphResponse response) {
-                    JSONArray friendsData = GraphAPICall.getDataFromResponse(response);
-                    ((StartupApplication) getApplication()).setFriends(friendsData);
-                }
-
-                @Override
-                public void handleError(FacebookRequestError error) {
-                    showError(error.toString());
-                }
-            });
 
             GraphAPICall meCall = GraphAPICall.callMe("first_name", new GraphAPICallback() {
                 @Override
                 public void handleResponse(GraphResponse response) {
                     JSONObject user = response.getJSONObject();
                     ((StartupApplication) getApplication()).setCurrentFBUser(user);
+                    String userId = user.optString("id");
+                    User.get().setFacebookUserId(userId);
+                    myFriendsCall = GraphAPICall.callMeFriends("name,first_name", userId, new GraphAPICallback() {
+                        @Override
+                        public void handleResponse(GraphResponse response) {
+                            Log.d("fsafsafsafsafa", "handleResponse: " + response.getRawResponse());
+                            JSONArray friendsData = GraphAPICall.getDataFromResponse(response);
+                            ((StartupApplication) getApplication()).setFriends(friendsData);
+                        }
+
+                        @Override
+                        public void handleError(FacebookRequestError error) {
+                            showError(error.toString());
+                        }
+                    });
+
                     //saveUserToParse();
                     // it causes strange behaviour with AccessTokenTracker
                 }

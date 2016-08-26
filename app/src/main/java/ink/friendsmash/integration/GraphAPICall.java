@@ -1,15 +1,15 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
- *
+ * <p>
  * You are hereby granted a non-exclusive, worldwide, royalty-free license to use,
  * copy, modify, and distribute this software in source code or binary form for use
  * in connection with the web services and APIs provided by Facebook.
- *
+ * <p>
  * As with any software that integrates with the Facebook platform, your use of
  * this software is subject to the Facebook Developer Principles and Policies
  * [http://developers.facebook.com/policy/]. This copyright notice shall be
  * included in all copies or substantial portions of the software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -28,6 +28,7 @@ import com.facebook.FacebookRequestError;
 import com.facebook.GraphRequest;
 import com.facebook.GraphRequestBatch;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,7 +98,7 @@ public class GraphAPICall {
      * included in the response and many others.
      * See https://developers.facebook.com/docs/graph-api/using-graph-api/
      */
-    public void addParam (String param, String value) {
+    public void addParam(String param, String value) {
         Bundle params = graphRequest.getParameters();
         params.putString(param, value);
         graphRequest.setParameters(params);
@@ -107,7 +108,7 @@ public class GraphAPICall {
      * Registers callback and checks if valid access token is available, as it is
      * required to make a Graph API call.
      */
-    private void setUp (GraphAPICallback callback) {
+    private void setUp(GraphAPICallback callback) {
         graphAPICallback = callback;
         if (!FacebookLogin.isAccessTokenValid()) {
             Log.e(StartupApplication.TAG, "Cannot call Graph API without a valid AccessToken");
@@ -117,7 +118,7 @@ public class GraphAPICall {
     /**
      * Creates a GraphRequest with the specified path
      */
-    private void createPathRequest (final String path) {
+    private void createPathRequest(final String path) {
         AccessToken token = AccessToken.getCurrentAccessToken();
         graphRequest = GraphRequest.newGraphPathRequest(token,
                 path, new GraphRequest.Callback() {
@@ -131,7 +132,7 @@ public class GraphAPICall {
     /**
      * Creates a GraphRequest for /me Graph API call
      */
-    private void createMeRequest () {
+    private void createMeRequest() {
         AccessToken token = AccessToken.getCurrentAccessToken();
         graphRequest = GraphRequest.newMeRequest(token,
                 new GraphRequest.GraphJSONObjectCallback() {
@@ -142,18 +143,20 @@ public class GraphAPICall {
                 });
     }
 
-    /**
-     * Creates a GraphRequest for /me/friends Graph API call
-     */
-    private void createMyFriendsRequest () {
-        AccessToken token = AccessToken.getCurrentAccessToken();
-        graphRequest = GraphRequest.newMyFriendsRequest(token,
-                new GraphRequest.GraphJSONArrayCallback() {
-                    @Override
-                    public void onCompleted(JSONArray users, GraphResponse response) {
+
+    private void createMyFriendsRequest(String userId) {
+        graphRequest = new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/" + userId + "/taggable_friends",
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                        Log.d("fsafsafsafsafa", "onCompleted: " + response);
                         handleResponse(response);
                     }
-                });
+                }
+        );
     }
 
     /**
@@ -203,7 +206,7 @@ public class GraphAPICall {
      * See https://developers.facebook.com/docs/graph-api/using-graph-api/#paging for more details
      * on paging.
      */
-    private void handleResponse (GraphResponse response) {
+    private void handleResponse(GraphResponse response) {
         FacebookRequestError error = response.getError();
         if (error != null) {
             Log.e(StartupApplication.TAG, error.toString());
@@ -232,7 +235,7 @@ public class GraphAPICall {
      * See https://developers.facebook.com/docs/graph-api/using-graph-api/#paging for more details
      * on paging.
      */
-    private void callNextPage (GraphResponse response) {
+    private void callNextPage(GraphResponse response) {
         graphRequest = response.getRequestForPagedResults(GraphResponse.PagingDirection.NEXT);
         if (graphRequest != null) {
             graphRequest.setCallback(new GraphRequest.Callback() {
@@ -268,7 +271,7 @@ public class GraphAPICall {
      * Response is passed to the specified GraphAPICallback.
      * /me call returns the information about the current user
      */
-    public static GraphAPICall callMe (String fields, GraphAPICallback callback) {
+    public static GraphAPICall callMe(String fields, GraphAPICallback callback) {
         GraphAPICall call = new GraphAPICall(callback);
         call.createMeRequest();
         call.addParam(PARAM_FIELDS, fields);
@@ -280,7 +283,7 @@ public class GraphAPICall {
      * Response is passed to the specified GraphAPICallback.
      * /{user-id} returns the information about specific user
      */
-    public static GraphAPICall callUser (String userId, String fields, GraphAPICallback callback) {
+    public static GraphAPICall callUser(String userId, String fields, GraphAPICallback callback) {
         GraphAPICall call = new GraphAPICall(userId, callback);
         call.addParam(PARAM_FIELDS, fields);
         return call;
@@ -292,10 +295,10 @@ public class GraphAPICall {
      * Note user_friends permission is required to make this call
      * /me/friends returns the information about current user's friends who are also playing the game
      */
-    public static GraphAPICall callMeFriends(String fields, GraphAPICallback callback) {
+    public static GraphAPICall callMeFriends(String fields, String userId, GraphAPICallback callback) {
         if (FacebookLogin.isPermissionGranted(FacebookLoginPermission.USER_FRIENDS)) {
             GraphAPICall call = new GraphAPICall(callback);
-            call.createMyFriendsRequest();
+            call.createMyFriendsRequest(userId);
             call.addParam(PARAM_FIELDS, fields);
             return call;
         } else {
@@ -341,7 +344,7 @@ public class GraphAPICall {
      * POST /me/scores publishes current user's score. Used in Friend Smash to track the top score.
      * See https://developers.facebook.com/docs/games/scores for details about Scores API
      */
-    public static GraphAPICall publishScore (int score, GraphAPICallback callback) {
+    public static GraphAPICall publishScore(int score, GraphAPICallback callback) {
         if (FacebookLogin.isPermissionGranted(FacebookLoginPermission.PUBLISH_ACTIONS)) {
             GraphAPICall call = new GraphAPICall(callback);
             call.createPublishScoreRequest(score);
@@ -381,7 +384,7 @@ public class GraphAPICall {
      * https://developers.facebook.com/docs/reference/android/current/class/GraphRequestBatch/
      * for Android implementation.
      */
-    public static GraphRequestBatch createRequestBatch (GraphAPICall... requests) {
+    public static GraphRequestBatch createRequestBatch(GraphAPICall... requests) {
         GraphRequestBatch batch = new GraphRequestBatch();
         for (GraphAPICall request : requests) {
             if (request != null) {

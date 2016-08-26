@@ -60,6 +60,7 @@ import ink.friendsmash.integration.GameRequest;
 import ink.friendsmash.integration.GraphAPICall;
 import ink.friendsmash.integration.GraphAPICallback;
 import ink.friendsmash.integration.Sharing;
+import ink.utils.User;
 
 /**
  * Fragment to be shown once the user is logged in on the social version of the game or
@@ -480,7 +481,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadFriendsFromFacebook(final FriendsLoadedCallback callback) {
-        GraphAPICall friendsRequest = GraphAPICall.callMeFriends("name,first_name", new GraphAPICallback() {
+        GraphAPICall friendsRequest = GraphAPICall.callMeFriends("name,first_name", User.get().getFacebookUserId(), new GraphAPICallback() {
             @Override
             public void handleResponse(GraphResponse response) {
                 application.setFriends(GraphAPICall.getDataFromResponse(response));
@@ -649,7 +650,7 @@ public class HomeFragment extends Fragment {
 
     private void requestPublishPermissions() {
         Log.d(StartupApplication.TAG, "Requesting publish permissions.");
-        getHomeActivity().getFacebookLogin().requestPermission(FacebookLoginPermission.PUBLISH_ACTIONS);
+
     }
 
     private void requestFriendsPermission(int requestCode) {

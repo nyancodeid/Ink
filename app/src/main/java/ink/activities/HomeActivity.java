@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.login.LoginManager;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.ink.R;
@@ -405,6 +406,7 @@ public class HomeActivity extends BaseActivity
                     mSharedHelper.putEditorHintShow(true);
                 }
                 mSharedHelper.putWarned(true);
+                LoginManager.getInstance().logOut();
                 RealmHelper.getInstance().clearDatabase(getApplicationContext());
                 IonCache.clearIonCache(getApplicationContext());
                 Thread thread = new Thread(new Runnable() {

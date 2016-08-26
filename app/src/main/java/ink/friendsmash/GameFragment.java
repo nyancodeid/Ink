@@ -1,15 +1,15 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
- * <p/>
+ * <p>
  * You are hereby granted a non-exclusive, worldwide, royalty-free license to use,
  * copy, modify, and distribute this software in source code or binary form for use
  * in connection with the web services and APIs provided by Facebook.
- * <p/>
+ * <p>
  * As with any software that integrates with the Facebook platform, your use of
  * this software is subject to the Facebook Developer Principles and Policies
  * [http://developers.facebook.com/policy/]. This copyright notice shall be
  * included in all copies or substantial portions of the software.
- * <p/>
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -28,14 +28,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -73,18 +70,6 @@ import ink.friendsmash.integration.GraphAPICallback;
  */
 public class GameFragment extends Fragment {
 
-    private static final Pair[] CELEBS = {
-            Pair.create("Einstein", "drawable/nonfriend_1"),
-            Pair.create("Xzibit", "drawable/nonfriend_2"),
-            Pair.create("Goldsmith", "drawable/nonfriend_3"),
-            Pair.create("Sinatra", "drawable/nonfriend_4"),
-            Pair.create("George", "drawable/nonfriend_5"),
-            Pair.create("Jacko", "drawable/nonfriend_6"),
-            Pair.create("Rick", "drawable/nonfriend_7"),
-            Pair.create("Keanu", "drawable/nonfriend_8"),
-            Pair.create("Arnie", "drawable/nonfriend_9"),
-            Pair.create("Jean-Luc", "drawable/nonfriend_10"),
-    };
 
     private static final int CELEB_FREQUENCY = 5;
     private static final int COIN_FREQUENCY = 8;
@@ -119,7 +104,7 @@ public class GameFragment extends Fragment {
 
     private int friendToSmashIndex = -1;
     private int celebToSmashIndex = -1;
-    private boolean isSocialMode = false;
+    private boolean isSocialMode = true;
 
     private String friendToSmashIDProvided = null;
     private String friendToSmashFirstName = null;
@@ -146,12 +131,6 @@ public class GameFragment extends Fragment {
         if (friends != null && friends.length() > 0) {
             isSocialMode = true;
             friendToSmashIndex = getRandomFriendIndex();
-        } else {
-            isSocialMode = false;
-            celebToSmashIndex = getRandomCelebIndex();
-
-            ((StartupApplication) getActivity().getApplication()).setLastFriendSmashedID(null);
-            ((StartupApplication) getActivity().getApplication()).setLastFriendSmashedName(CELEBS[celebToSmashIndex].first.toString());
         }
     }
 
@@ -220,8 +199,6 @@ public class GameFragment extends Fragment {
                 friendToSmashFirstName = friend.optString("first_name");
             }
             smashPlayerNameTextView.setText("Smash " + friendToSmashFirstName + " !");
-        } else {
-            smashPlayerNameTextView.setText("Smash " + CELEBS[celebToSmashIndex].first + " !");
         }
     }
 
@@ -231,11 +208,6 @@ public class GameFragment extends Fragment {
         return friendIndex;
     }
 
-    private int getRandomCelebIndex() {
-        Random randomGenerator = new Random(System.currentTimeMillis());
-        int celebIndex = randomGenerator.nextInt(CELEBS.length);
-        return celebIndex;
-    }
 
     private void setFriendImageAndFire(UserImageView imageView, Bitmap friendBitmap, boolean extraImage) {
         imageView.setImageBitmap(friendBitmap);
@@ -245,14 +217,6 @@ public class GameFragment extends Fragment {
         fireImage(imageView, extraImage);
     }
 
-    private void setCelebImageAndFire(UserImageView imageView, int celebIndex, boolean extraImage) {
-        int imageResource = getResources().getIdentifier((String) CELEBS[celebIndex].second, null, getActivity().getPackageName());
-
-        Drawable image = ContextCompat.getDrawable(getActivity(), imageResource);
-        imageView.setImageDrawable(image);
-
-        fireImage(imageView, extraImage);
-    }
 
     private void setCoinImageAndFire(UserImageView imageView, boolean extraImage) {
         imageView.setImageResource(R.drawable.coins_icon);
@@ -443,16 +407,8 @@ public class GameFragment extends Fragment {
 
                         fetchFriendBitmapAndFireImages(userImageView, friendToSmashID, extraImage);
                     }
-                } else {
-                    setCelebImageAndFire(userImageView, celebToSmashIndex, extraImage);
                 }
             }
-        } else {
-            int randomCelebToSmashIndex;
-            do {
-                randomCelebToSmashIndex = randomGenerator.nextInt(CELEBS.length);
-            } while (randomCelebToSmashIndex == celebToSmashIndex);
-            setCelebImageAndFire(userImageView, randomCelebToSmashIndex, extraImage);
         }
     }
 
