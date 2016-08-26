@@ -3,18 +3,18 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@drawable/logged_in_background"
     android:layout_height="match_parent"
     android:fillViewport="true">
 
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/chat_background"
             android:orientation="vertical">
 
             <ImageView
@@ -25,7 +25,8 @@
             <RelativeLayout
                 android:id="@+id/profileContainer"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
 
                 <com.facebook.login.widget.ProfilePictureView
                     android:id="@+id/userImage"
@@ -57,30 +58,31 @@
                             android:id="@+id/coinImage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/coins_icon" />
+                            android:padding="5dp"
+                            android:src="@drawable/small_coins_icon" />
 
                         <TextView
                             android:id="@+id/numCoins"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="8dip"
-                            android:paddingTop="4dip"
-                            android:text="" />
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@string/appFont"
+                            android:text="@string/loadingText" />
 
                         <ImageView
                             android:id="@+id/bombButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="10dip"
-                            android:src="@drawable/bomb_vector" />
+                            android:layout_marginLeft="15dp"
+                            android:padding="5dp"
+                            android:src="@drawable/small_bomnb_vector" />
 
                         <TextView
                             android:id="@+id/numBombs"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="8dip"
-                            android:paddingTop="4dip"
-                            android:text="" />
+                            android:layout_marginTop="5dp"
+                            android:text="@string/loadingText" />
 
                     </LinearLayout>
 
@@ -95,56 +97,154 @@
                 android:layout_height="wrap_content">
 
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/mainButtonsContainer"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_marginTop="16dp">
 
-                    <ImageView
+                    <RelativeLayout
                         android:id="@+id/playButton"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="40dp"
-                        android:paddingLeft="70dp"
-                        android:src="@drawable/playnow_button" />
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
 
-
-                    <ImageView
-                        android:id="@+id/scoresButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:paddingLeft="70dp"
-                        android:src="@drawable/leaderboard_button" />
-
-                    <ImageView
-                        android:id="@+id/challengeButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:paddingLeft="70dp"
-                        android:src="@drawable/challenge_button" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:paddingLeft="70dp">
-
-                        <com.facebook.login.widget.LoginButton
-                            android:id="@+id/loginButton"
+                        <ImageView
+                            android:id="@+id/playImageView"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="16dp"
+                            android:src="@drawable/playnow_button" />
 
-                    </LinearLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="25dp"
+                            android:layout_toRightOf="@+id/playImageView"
+                            android:fontFamily="@string/appFont"
+                            android:text="@string/start_fight"
+                            android:textColor="#6b0000"
+                            android:textSize="18sp" />
 
-                </LinearLayout>
+                    </RelativeLayout>
+
+                    <View
+                        android:id="@+id/playButtonDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/playButton"
+                        android:layout_marginTop="5dp"
+                        android:background="#b3b3b3">
+
+                    </View>
+
+
+                    <RelativeLayout
+                        android:id="@+id/scoresButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/playButton"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/leaderboardImageView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="16dp"
+                            android:src="@drawable/leaderboard_button" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="25dp"
+                            android:layout_toRightOf="@+id/leaderboardImageView"
+                            android:fontFamily="@string/appFont"
+                            android:text="@string/leaderboard_text"
+                            android:textColor="#6b0000"
+                            android:textSize="18sp" />
+
+                    </RelativeLayout>
+
+                    <View
+                        android:id="@+id/scoresDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/scoresButton"
+                        android:layout_marginTop="5dp"
+                        android:background="#b3b3b3">
+
+                    </View>
+
+
+                    <RelativeLayout
+                        android:id="@+id/challengeButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/scoresButton"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:id="@+id/challengeImageView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginTop="16dp"
+                            android:src="@drawable/challenge_button" />
+
+                        <TextView
+                            android:id="@+id/challengeTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="15dp"
+                            android:layout_toRightOf="@+id/challengeImageView"
+                            android:fontFamily="@string/appFont"
+                            android:text="@string/challenge_friend"
+                            android:textColor="#6b0000"
+                            android:textSize="18sp" />
+                    </RelativeLayout>
+
+                    <View
+                        android:id="@+id/challengeDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/challengeButton"
+                        android:layout_marginTop="5dp"
+                        android:background="#b3b3b3">
+
+                    </View>
+
+                    <com.facebook.login.widget.LoginButton
+                        android:id="@+id/loginButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/challengeDivider"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="30dp" />
+
+                </RelativeLayout>
 
                 <RelativeLayout
                     android:id="@+id/challengeContainer"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
 
                     <ImageView
                         android:id="@+id/mfsClicker"
@@ -200,9 +300,9 @@
             android:id="@+id/gameOverContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/chat_background"
             android:clickable="true"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <com.facebook.login.widget.ProfilePictureView
                 android:id="@+id/youSmashedUserImage"
@@ -250,18 +350,5 @@
 
         </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/progressContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:clickable="true">
-
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-        </FrameLayout>
-
-    </FrameLayout>
+    </RelativeLayout>
 </ScrollView>

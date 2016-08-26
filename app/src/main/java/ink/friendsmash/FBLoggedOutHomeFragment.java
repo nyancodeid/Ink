@@ -35,8 +35,7 @@ import com.ink.R;
  *  Fragment to be displayed if the user is logged out of Facebook
  */
 public class FBLoggedOutHomeFragment extends Fragment {
-	
-	View progressContainer;
+
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -53,8 +52,6 @@ public class FBLoggedOutHomeFragment extends Fragment {
 
 		View v = inflater.inflate(R.layout.fragment_home_fb_logged_out, parent, false);
 
-		progressContainer = v.findViewById(R.id.progressContainer);
-		progressContainer.setVisibility(View.INVISIBLE);
 
 		LoginButton loginButton = (LoginButton) v.findViewById(R.id.loginButton);
 		getHomeActivity().getFacebookLogin().setUpLoginButton(loginButton);

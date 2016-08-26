@@ -22,7 +22,6 @@
     android:id="@+id/gameFrame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/chat_background"
     android:orientation="vertical">
 
     <LinearLayout
@@ -75,7 +74,6 @@
         android:id="@+id/progressContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/chat_background"
         android:clickable="true">
 
         <ProgressBar

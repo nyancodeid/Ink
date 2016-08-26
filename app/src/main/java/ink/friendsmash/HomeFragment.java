@@ -1,15 +1,15 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
- * <p/>
+ * <p>
  * You are hereby granted a non-exclusive, worldwide, royalty-free license to use,
  * copy, modify, and distribute this software in source code or binary form for use
  * in connection with the web services and APIs provided by Facebook.
- * <p/>
+ * <p>
  * As with any software that integrates with the Facebook platform, your use of
  * this software is subject to the Facebook Developer Principles and Policies
  * [http://developers.facebook.com/policy/]. This copyright notice shall be
  * included in all copies or substantial portions of the software.
- * <p/>
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -33,7 +33,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -74,10 +73,9 @@ public class HomeFragment extends Fragment {
 
     private StartupApplication application;
 
-    private LinearLayout mainButtonsContainer;
+    private RelativeLayout mainButtonsContainer;
     private RelativeLayout challengeContainer;
     private LinearLayout gameOverContainer;
-    private FrameLayout progressContainer;
 
     private TextView scoredTextView;
     private ProfilePictureView userImage;
@@ -87,9 +85,9 @@ public class HomeFragment extends Fragment {
     private GridView invitesGridView;
     private GridView requestsGridView;
 
-    private ImageView playButton;
-    private ImageView scoresButton;
-    private ImageView challengeButton;
+    private RelativeLayout playButton;
+    private RelativeLayout scoresButton;
+    private RelativeLayout challengeButton;
     private ImageView challengeRequestToggle;
 
     private TextView numBombs;
@@ -130,21 +128,19 @@ public class HomeFragment extends Fragment {
 
         personalizeHomeFragment();
 
-        scoresButton = (ImageView) v.findViewById(R.id.scoresButton);
-        scoresButton.setOnTouchListener(new View.OnTouchListener() {
+        scoresButton = (RelativeLayout) v.findViewById(R.id.scoresButton);
+        scoresButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View view) {
                 onScoresButtonTouched();
-                return false;
             }
         });
 
-        challengeButton = (ImageView) v.findViewById(R.id.challengeButton);
-        challengeButton.setOnTouchListener(new View.OnTouchListener() {
+        challengeButton = (RelativeLayout) v.findViewById(R.id.challengeButton);
+        challengeButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onClick(View view) {
                 onChallengeButtonTouched();
-                return false;
             }
         });
 
@@ -207,7 +203,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        mainButtonsContainer = (LinearLayout) v.findViewById(R.id.mainButtonsContainer);
+        mainButtonsContainer = (RelativeLayout) v.findViewById(R.id.mainButtonsContainer);
         challengeContainer = (RelativeLayout) v.findViewById(R.id.challengeContainer);
 
         challengeContainer.setVisibility(View.INVISIBLE);
@@ -226,9 +222,8 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        progressContainer = (FrameLayout) v.findViewById(R.id.progressContainer);
 
-        playButton = (ImageView) v.findViewById(R.id.playButton);
+        playButton = (RelativeLayout) v.findViewById(R.id.playButton);
         playButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -255,7 +250,7 @@ public class HomeFragment extends Fragment {
 
         hideGameOverContainer();
 
-        progressContainer.setVisibility(View.INVISIBLE);
+        // TODO: 8/26/2016 hide progress
 
         return v;
     }

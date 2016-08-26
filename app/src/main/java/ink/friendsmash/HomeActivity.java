@@ -27,7 +27,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -216,7 +215,7 @@ public class HomeActivity extends FragmentActivity {
         switch (fragmentIndex) {
             case FB_LOGGED_OUT_HOME:
                 if (fragments[FB_LOGGED_OUT_HOME] != null) {
-                    ((FBLoggedOutHomeFragment) fragments[FB_LOGGED_OUT_HOME]).progressContainer.setVisibility(View.INVISIBLE);
+                    // TODO: 8/26/2016  hide progress
                 }
                 ((StartupApplication) getApplication()).setLoggedIn(false);
                 break;
@@ -244,9 +243,8 @@ public class HomeActivity extends FragmentActivity {
 
     private void fetchUserInformationAndLogin() {
         if (FacebookLogin.isAccessTokenValid()) {
-            if (fragments[FB_LOGGED_OUT_HOME] != null &&
-                    ((FBLoggedOutHomeFragment) fragments[FB_LOGGED_OUT_HOME]).progressContainer != null) {
-                ((FBLoggedOutHomeFragment) fragments[FB_LOGGED_OUT_HOME]).progressContainer.setVisibility(View.VISIBLE);
+            if (fragments[FB_LOGGED_OUT_HOME] != null) {
+                // TODO: 8/26/2016  hide progress
             }
 
             GraphAPICall myFriendsCall = GraphAPICall.callMeFriends("name,first_name", new GraphAPICallback() {

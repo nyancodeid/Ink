@@ -509,4 +509,7 @@
     <string name="lastMessage">last message :</string>
     <string name="games">Games</string>
     <string name="friendSmashText">Friend Smash</string>
+    <string name="start_fight">Start Fight</string>
+    <string name="leaderboard_text">Leaderboard</string>
+    <string name="challenge_friend">Challenge Friend</string>
 </resources>

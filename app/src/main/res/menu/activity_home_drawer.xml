@@ -53,7 +53,7 @@
         <menu>
             <item
                 android:id="@+id/friendSmashGame"
-                android:icon="@drawable/playnow_button"
+                android:icon="@drawable/smash_friend_menu_icon"
                 android:title="@string/friendSmashText" />
         </menu>
     </item>
