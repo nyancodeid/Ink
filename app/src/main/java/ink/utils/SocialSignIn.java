@@ -17,6 +17,7 @@ import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.plus.Plus;
 
 import org.json.JSONObject;
 
@@ -51,6 +52,23 @@ public class SocialSignIn {
         mGoogleApiClient.connect();
         context.startActivityForResult(signInIntent, requestCode);
 
+    }
+
+
+    public GoogleApiClient socialGooglePlusSignIn(Activity context, int requestCode) {
+        // Configure sign-in to request the user's ID, email address, and basic profile. ID and
+// basic profile are included in DEFAULT_SIGN_IN.
+
+// Build a GoogleApiClient with access to SocialSignIn.API and the options above.
+        mGoogleApiClient = new GoogleApiClient.Builder(context)
+                .addApi(Plus.API, null)
+                .addScope(Plus.SCOPE_PLUS_LOGIN)
+                .build();
+
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        mGoogleApiClient.connect();
+        context.startActivityForResult(signInIntent, requestCode);
+        return mGoogleApiClient;
     }
 
     public void facebookLogin(Context context, CallbackManager callbackManager,

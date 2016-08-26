@@ -456,6 +456,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
                 GoogleSignInAccount account = result.getSignInAccount();
+                getFriends();
                 // Get account information
                 progressDialog.show();
                 String fullName = account.getDisplayName();
@@ -522,6 +523,35 @@ public class Login extends BaseActivity implements View.OnClickListener {
         }))
             mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
+
+    private void getFriends() {
+//        Plus.People.List listPeople = plus.people().list(
+//                "me", "visible");
+//        listPeople.setMaxResults(5L);
+//
+//        PeopleFeed peopleFeed = listPeople.execute();
+//        List<Person> people = peopleFeed.getItems();
+//
+//// Loop through until we arrive at an empty page
+//        while (people != null) {
+//            for (Person person : people) {
+//                System.out.println(person.getDisplayName());
+//            }
+//
+//            // We will know we are on the last page when the next page token is
+//            // null.
+//            // If this is the case, break.
+//            if (peopleFeed.getNextPageToken() == null) {
+//                break;
+//            }
+//
+//            // Prepare the next page of results
+//            listPeople.setPageToken(peopleFeed.getNextPageToken());
+//
+//            // Execute and process the next page request
+//            peopleFeed = listPeople.execute();
+//            people = peopleFeed.getItems();
+        }
 
     private void loginUser(final String login,
                            final String firstName,
