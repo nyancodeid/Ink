@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Process;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +20,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +30,9 @@ import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.plus.People;
+import com.google.android.gms.plus.Plus;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.ink.R;
@@ -125,7 +130,7 @@ public class HomeActivity extends BaseActivity
 //            }
 //        });
 //
-        googleApiClient = SocialSignIn.get().googleSignIn(this, 5252);
+        googleApiClient = SocialSignIn.get().buildGoogleApiClient(this);
 
         mFab = (FloatingActionMenu) findViewById(R.id.fab);
         mMessages = (FloatingActionButton) findViewById(R.id.messages);
@@ -614,4 +619,15 @@ public class HomeActivity extends BaseActivity
     public void onAccountDeleted() {
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Plus.PeopleApi.loadVisible(googleApiClient, "me").setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
+            @Override
+            public void onResult(@NonNull People.LoadPeopleResult loadPeopleResult) {
+                Log.d("Fsafsafsafsafas", "onResult: " + loadPeopleResult.getNextPageToken());
+            }
+        });
+//
+    }
 }
