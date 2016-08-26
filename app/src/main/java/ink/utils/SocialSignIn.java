@@ -3,6 +3,7 @@ package ink.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -54,7 +55,6 @@ public class SocialSignIn {
 // Build a GoogleApiClient with access to SocialSignIn.API and the options above.
         mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
 
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
@@ -76,17 +76,25 @@ public class SocialSignIn {
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
                     public void onConnected(@Nullable Bundle bundle) {
-                        Toast.makeText(activity, "", Toast.LENGTH_SHORT).show();
                         Plus.PeopleApi.loadVisible(mGoogleApiClient, "me").setResultCallback(new ResultCallbacks<People.LoadPeopleResult>() {
                             @Override
                             public void onSuccess(@NonNull People.LoadPeopleResult loadPeopleResult) {
+                                Toast.makeText(activity, "", Toast.LENGTH_SHORT).show();
                                 Person person = loadPeopleResult.getPersonBuffer().get(0);
                                 Log.d("fasfafasfsafasfas", "onSuccess: " + person);
                             }
 
                             @Override
                             public void onFailure(@NonNull Status status) {
-
+                                if (status.hasResolution()) {
+                                    try {
+                                        // !!!
+                                        status.startResolutionForResult(activity, 100);
+                                    } catch (IntentSender.SendIntentException e) {
+                                        mGoogleApiClient.connect();
+                                    }
+                                }
+                                Log.d("fasfafasfsafasfas", "onFailure: " + status);
                             }
 
                         });
