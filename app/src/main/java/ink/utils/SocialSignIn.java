@@ -61,7 +61,7 @@ public class SocialSignIn {
 
 // Build a GoogleApiClient with access to SocialSignIn.API and the options above.
         mGoogleApiClient = new GoogleApiClient.Builder(context)
-                .addApi(Plus.API, null)
+                .addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
 
