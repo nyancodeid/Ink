@@ -35,15 +35,14 @@ public class SocialSignIn {
     private GoogleApiClient mGoogleApiClient;
     private static final SocialSignIn socialSignIn = new SocialSignIn();
 
-    public void googleSignIn(Activity context, int requestCode) {
-        // Configure sign-in to request the user's ID, email address, and basic profile. ID and
-// basic profile are included in DEFAULT_SIGN_IN.
+    public GoogleApiClient googleSignIn(Activity context, int requestCode) {
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestScopes(Plus.SCOPE_PLUS_LOGIN)
                 .requestEmail()
                 .requestProfile()
                 .build();
 
-// Build a GoogleApiClient with access to SocialSignIn.API and the options above.
         mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
@@ -51,25 +50,9 @@ public class SocialSignIn {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         mGoogleApiClient.connect();
         context.startActivityForResult(signInIntent, requestCode);
-
-    }
-
-
-    public GoogleApiClient socialGooglePlusSignIn(Activity context, int requestCode) {
-        // Configure sign-in to request the user's ID, email address, and basic profile. ID and
-// basic profile are included in DEFAULT_SIGN_IN.
-
-// Build a GoogleApiClient with access to SocialSignIn.API and the options above.
-        mGoogleApiClient = new GoogleApiClient.Builder(context)
-                .addApi(Plus.API)
-                .addScope(Plus.SCOPE_PLUS_LOGIN)
-                .build();
-
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        mGoogleApiClient.connect();
-        context.startActivityForResult(signInIntent, requestCode);
         return mGoogleApiClient;
     }
+
 
     public void facebookLogin(Context context, CallbackManager callbackManager,
                               @Nullable final GeneralCallback<Map<String, String>> resultCallback) {
