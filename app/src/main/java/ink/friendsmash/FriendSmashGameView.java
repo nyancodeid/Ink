@@ -48,7 +48,7 @@ public class FriendSmashGameView extends BaseActivity {
     private int iconWidth;
     private int screenWidth;
     private int screenHeight;
-    public static final int IMAGES_MAX_FREQUENCY = 8;
+    public static final int IMAGES_MAX_FREQUENCY = 6;
     private long fireImagesSpeedTime = 1000;
     private int firedImagesCount = 0;
     private int desiredCurrentFrequency = 0;
@@ -125,6 +125,7 @@ public class FriendSmashGameView extends BaseActivity {
                     userImageViews.remove(view);
                     timesSmashed++;
                     scoreText.setText(getString(R.string.score_text, timesSmashed));
+                    handler.post(fireImagesRunnable);
                 } else {
                     timesSmashed = 0;
                     wrongImageSmashed(userImageView);
