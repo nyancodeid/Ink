@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -98,6 +100,7 @@ public class FriendSmashLoginView extends BaseActivity {
         }
     }
 
+
     private void handleGoogleCircleResult() {
         Plus.PeopleApi.loadVisible(mGoogleApiClient, null
         ).setResultCallback(new ResultCallbacks<People.LoadPeopleResult>() {
@@ -121,7 +124,6 @@ public class FriendSmashLoginView extends BaseActivity {
                             eachFriendObject.put("image", imageUrl);
                             friendsArray.put(eachFriendObject);
                             loginUser(friendsArray);
-                            loadPeopleResult.getPersonBuffer().release();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

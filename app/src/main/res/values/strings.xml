@@ -519,5 +519,9 @@
     <string name="smash_player_text">Smash %1$s Player! </string>
     <string name="score_text">Score:%1$d</string>
     <string name="fetchingFriends">Fetching friends...</string>
+    <string name="boomShakkaLakkaText">BOOM SHAKKA LAKKA</string>
+    <string name="impressive">IMPRESSIVE!</string>
+    <string name="weGood">WE GOOD...WE GOOD</string>
+    <string name="whosYourDaddy">WHO IS YOUR DADDY????</string>
 
 </resources>

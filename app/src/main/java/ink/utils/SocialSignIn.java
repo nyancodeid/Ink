@@ -106,7 +106,6 @@ public class SocialSignIn {
                                         }
                                     }
                                     if (resultCallbacks != null) {
-                                        loadPeopleResult.getPersonBuffer().release();
                                         resultCallbacks.onSuccess(friendsArray);
                                     }
                                 } else {

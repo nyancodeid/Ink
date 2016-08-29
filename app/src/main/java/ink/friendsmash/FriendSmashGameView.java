@@ -1,20 +1,30 @@
 package ink.friendsmash;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.FloatEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.SpannableString;
+import android.text.format.DateUtils;
+import android.util.Property;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
+import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.R;
@@ -30,6 +40,7 @@ import java.util.Random;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import ink.activities.BaseActivity;
+import ink.animations.AnimatedColorSpan;
 
 public class FriendSmashGameView extends BaseActivity {
 
@@ -38,7 +49,11 @@ public class FriendSmashGameView extends BaseActivity {
     @Bind(R.id.scoreText)
     TextView scoreText;
     @Bind(R.id.gameFrameView)
-    FrameLayout gameFrameView;
+    RelativeLayout gameFrameView;
+    @Bind(R.id.liveHolder)
+    LinearLayout liveHolder;
+    @Bind(R.id.encourageText)
+    TextView encourageText;
     private JSONArray friends;
     private Runnable fireImagesRunnable;
     private String friendToSmashId;
@@ -55,13 +70,19 @@ public class FriendSmashGameView extends BaseActivity {
     private int timesSmashed = 0;
     private Random frequencyRandom;
     private Random friendIndexRandom;
+    private MediaPlayer soundPlayer;
+    private int countTilLSound = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_smash_game_view);
         ButterKnife.bind(this);
+        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/cartoon_font.ttf");
+        encourageText.setTypeface(tf, Typeface.BOLD);
+
         friends = FriendSmashHelper.get().getFriends();
+        soundPlayer = MediaPlayer.create(this, R.raw.hit_sound);
         Random random = new Random();
         userImageViews = new ArrayList<>();
         int randomFriendId = random.nextInt(friends.length());
@@ -124,7 +145,29 @@ public class FriendSmashGameView extends BaseActivity {
                     view.setVisibility(View.GONE);
                     userImageViews.remove(view);
                     timesSmashed++;
+                    countTilLSound++;
                     scoreText.setText(getString(R.string.score_text, timesSmashed));
+                    switch (countTilLSound) {
+                        case 2:
+                            showEncourageText(getString(R.string.weGood));
+                            break;
+                        case 10:
+                            showEncourageText(getString(R.string.impressive));
+                            break;
+                        case 15:
+                            showEncourageText(getString(R.string.boomShakkaLakkaText));
+                            if (soundPlayer.isPlaying()) {
+                                soundPlayer.stop();
+                                soundPlayer.start();
+                            } else {
+                                soundPlayer.start();
+                            }
+                            break;
+                        case 25:
+                            showEncourageText(getString(R.string.whosYourDaddy));
+                            countTilLSound = 0;
+                            break;
+                    }
                 } else {
                     timesSmashed = 0;
                     wrongImageSmashed(userImageView);
@@ -242,6 +285,68 @@ public class FriendSmashGameView extends BaseActivity {
         gameFrameView.bringChildToFront(userImageView);
     }
 
+    private void showEncourageText(String textToShow) {
+        encourageText.setText(textToShow);
+        encourageText.setVisibility(View.VISIBLE);
+
+        AnimatedColorSpan span = new AnimatedColorSpan(this);
+
+        final SpannableString spannableString = new SpannableString(textToShow);
+        String substring = textToShow.toLowerCase();
+        int start = textToShow.toLowerCase().indexOf(substring);
+        int end = start + substring.length();
+        spannableString.setSpan(span, start, end, 0);
+
+        final ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(
+                span, ANIMATED_COLOR_SPAN_FLOAT_PROPERTY, 0, 100);
+        objectAnimator.setEvaluator(new FloatEvaluator());
+        objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                encourageText.setText(spannableString);
+            }
+        });
+        objectAnimator.setInterpolator(new LinearInterpolator());
+        objectAnimator.setDuration(DateUtils.MINUTE_IN_MILLIS * 3);
+        objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
+
+        ValueAnimator scaleAnimationX = ObjectAnimator.ofFloat(encourageText, "scaleX", 5f);
+        ValueAnimator scaleAnimationY = ObjectAnimator.ofFloat(encourageText, "scaleY", 5f);
+        scaleAnimationX.setDuration(1500);
+        scaleAnimationY.setDuration(1500);
+        scaleAnimationX.setInterpolator(new LinearInterpolator());
+        scaleAnimationY.setInterpolator(new LinearInterpolator());
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(scaleAnimationX, scaleAnimationY);
+        animatorSet.start();
+        objectAnimator.start();
+        animatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                encourageText.setVisibility(View.GONE);
+                encourageText.clearAnimation();
+                objectAnimator.removeAllListeners();
+                objectAnimator.cancel();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+    }
+
     private void hideAllUserImageViewsExcept(UserImageView userImageView) {
         Iterator<UserImageView> userImageViewsIterator = userImageViews.iterator();
         while (userImageViewsIterator.hasNext()) {
@@ -251,4 +356,17 @@ public class FriendSmashGameView extends BaseActivity {
             }
         }
     }
+
+    private static final Property<AnimatedColorSpan, Float> ANIMATED_COLOR_SPAN_FLOAT_PROPERTY
+            = new Property<AnimatedColorSpan, Float>(Float.class, "ANIMATED_COLOR_SPAN_FLOAT_PROPERTY") {
+        @Override
+        public void set(AnimatedColorSpan span, Float value) {
+            span.setTranslateXPercentage(value);
+        }
+
+        @Override
+        public Float get(AnimatedColorSpan span) {
+            return span.getTranslateXPercentage();
+        }
+    };
 }
