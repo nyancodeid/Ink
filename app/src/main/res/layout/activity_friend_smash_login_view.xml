@@ -49,6 +49,7 @@
             android:focusable="true"
             android:fontFamily="@string/appFont"
             android:foreground="?attr/selectableItemBackground">
+
             <ImageView
                 android:id="@+id/googlePlusIcon"
                 android:layout_width="wrap_content"
@@ -56,6 +57,7 @@
                 android:src="@drawable/google_plus_sign_icon" />
 
             <TextView
+                android:id="@+id/googleAccountGameText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"

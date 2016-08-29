@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -28,25 +29,35 @@ import butterknife.OnClick;
 import ink.activities.BaseActivity;
 import ink.callbacks.GeneralCallback;
 import ink.utils.Constants;
+import ink.utils.DimDialog;
+import ink.utils.SharedHelper;
 import ink.utils.SocialSignIn;
 
 public class FriendSmashLoginView extends BaseActivity {
 
     @Bind(R.id.singInWithGoogle)
     RelativeLayout singInWithGoogle;
+    @Bind(R.id.googleAccountGameText)
+    TextView googleAccountGameText;
     private GoogleApiClient mGoogleApiClient;
     private static final int GOOGLE_ERROR_RESOLUTION_RESULT = 25552;
+    private SharedHelper sharedHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_smash_login_view);
         ButterKnife.bind(this);
+        sharedHelper = new SharedHelper(this);
+        if (sharedHelper.isLoggedIntoGame()) {
+            googleAccountGameText.setText(getString(R.string.continueWithGoogle));
+        }
     }
 
 
     @OnClick(R.id.singInWithGoogle)
     public void singInWithGoogle() {
+        DimDialog.showDimDialog(this, getString(R.string.fetchingFriends));
         mGoogleApiClient = SocialSignIn.get().getGooglePlusCircles(FriendSmashLoginView.this, GOOGLE_ERROR_RESOLUTION_RESULT, new GeneralCallback<JSONArray>() {
             @Override
             public void onSuccess(JSONArray jsonArray) {
@@ -70,6 +81,9 @@ public class FriendSmashLoginView extends BaseActivity {
         FriendSmashHelper.get().setFriends(friendsArray);
         Intent intent = new Intent(getApplicationContext(), FriendSmashHomeView.class);
         startActivity(intent);
+        if (DimDialog.isDialogAlive()) {
+            DimDialog.hideDialog();
+        }
         finish();
     }
 
