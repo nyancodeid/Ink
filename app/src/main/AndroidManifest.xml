@@ -15,7 +15,6 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-
     <permission
         android:name="com.ink.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -60,13 +59,11 @@
         <activity
             android:name="ink.activities.HomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-
             android:label="@string/feedText"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="ink.activities.OpponentProfile"
             android:configChanges="keyboardHidden|orientation|screenSize"
-
             android:theme="@style/AppTheme" />
         <activity
             android:name="ink.activities.Chat"
@@ -83,15 +80,15 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="ink.service.LocationRequestSessionDestroyer"></service>
+        <service android:name="ink.service.LocationRequestSessionDestroyer" />
         <service android:name="ink.service.BackgroundTaskService" />
         <service android:name="ink.service.RemoveChatRouletteService" />
         <service android:name="ink.service.SendTokenService" />
         <service android:name="ink.service.SendReplyService" />
-        <service android:name="ink.service.SendMessageService"></service>
+        <service android:name="ink.service.SendMessageService" />
 
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
-        <receiver android:name="ink.broadcast.DismissBroadcast"></receiver>
+        <receiver android:name="ink.broadcast.DismissBroadcast" />
 
         <activity
             android:name="ink.activities.ReplyView"
@@ -102,18 +99,15 @@
         <activity
             android:name="ink.activities.MyProfile"
             android:configChanges="keyboardHidden|orientation|screenSize"
-
             android:theme="@style/AppTheme.Profile" />
         <activity android:name="ink.activities.Messages" />
         <activity
             android:name="ink.activities.MakePost"
             android:configChanges="keyboardHidden|orientation|screenSize"
-
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="ink.activities.MapsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
@@ -121,7 +115,6 @@
         <activity
             android:name="ink.activities.SplashScreen"
             android:configChanges="keyboardHidden|orientation|screenSize"
-
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -131,7 +124,6 @@
         </activity>
         <activity
             android:name="com.vk.sdk.VKServiceActivity"
-
             android:label="ServiceActivity"
             android:theme="@style/VK.Transparent" />
         <activity
@@ -143,17 +135,14 @@
         <activity
             android:name="ink.activities.ChatRoulette"
             android:configChanges="keyboardHidden|orientation|screenSize"
-
             android:screenOrientation="portrait" />
         <activity
             android:name="ink.activities.SingleGroupView"
             android:configChanges="keyboardHidden|orientation|screenSize"
-
             android:theme="@style/AppTheme.Profile" />
         <activity
             android:name="ink.activities.CreateGroupPost"
             android:configChanges="keyboardHidden|orientation|screenSize"
-
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
 
@@ -167,12 +156,10 @@
         <activity
             android:name="ink.activities.WaitRoom"
             android:configChanges="keyboardHidden|orientation|screenSize"
-
             android:screenOrientation="portrait" />
         <activity android:name="ink.activities.Shop" />
         <activity
             android:name="ink.activities.BuyCoins"
-
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
         <activity
@@ -190,16 +177,16 @@
         <activity
             android:name="ink.friendsmash.HomeActivity"
             android:label="@string/title_activity_home"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="ink.friendsmash.GameActivity"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_home"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="ink.friendsmash.ScoreboardActivity"
             android:label="@string/title_activity_home"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -217,6 +204,7 @@
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider1713388275578207"
             android:exported="true" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="80f8d0846bb012e567f21fdf7ebbc38efe19d99e" />
@@ -227,6 +215,18 @@
             android:label="@string/title_activity_fullscreen"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name="ink.friendsmash.FriendSmashLoginView"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ink.friendsmash.FriendSmashHomeView"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ink.friendsmash.FriendSmashGameView"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

@@ -43,6 +43,7 @@ import java.text.ParseException;
 import fab.FloatingActionButton;
 import ink.fragments.Feed;
 import ink.fragments.MyFriends;
+import ink.friendsmash.FriendSmashLoginView;
 import ink.interfaces.AccountDeleteListener;
 import ink.models.CoinsResponse;
 import ink.service.BackgroundTaskService;
@@ -260,6 +261,8 @@ public class HomeActivity extends BaseActivity
                     if (coinsResponse.success) {
                         User.get().setCoins(coinsResponse.coins);
                         coinsText.setText(getString(R.string.coinsText, coinsResponse.coins));
+                        User.get().setCoinsLoaded(true);
+                        User.get().setCoins(coinsResponse.coins);
                     } else {
                         getCoins();
                     }
@@ -384,7 +387,7 @@ public class HomeActivity extends BaseActivity
 
             case R.id.friendSmashGame:
                 shouldOpenActivity = true;
-                setLastClassToOpen(ink.friendsmash.HomeActivity.class);
+                setLastClassToOpen(FriendSmashLoginView.class);
                 break;
             case R.id.sendFeedback:
                 shouldOpenActivity = true;

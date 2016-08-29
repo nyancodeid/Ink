@@ -1,22 +1,4 @@
-/**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
- * <p/>
- * You are hereby granted a non-exclusive, worldwide, royalty-free license to use,
- * copy, modify, and distribute this software in source code or binary form for use
- * in connection with the web services and APIs provided by Facebook.
- * <p/>
- * As with any software that integrates with the Facebook platform, your use of
- * this software is subject to the Facebook Developer Principles and Policies
- * [http://developers.facebook.com/policy/]. This copyright notice shall be
- * included in all copies or substantial portions of the software.
- * <p/>
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+
 
 package ink.friendsmash;
 
@@ -32,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -61,7 +44,7 @@ import java.util.Random;
 public class GameFragment extends Fragment {
 
 
-    private static final int CELEB_FREQUENCY = 5;
+    private static final int IMAGE_FREQUENCY = 5;
     private static final int COIN_FREQUENCY = 8;
 
     private static final String TAG = GameFragment.class.getSimpleName();
@@ -105,7 +88,8 @@ public class GameFragment extends Fragment {
     private int bombsUsed = 0;
     private int coinsCollected = 0;
 
-    private ArrayList<UserImageView> userImageViews = new ArrayList<UserImageView>();
+    private ArrayList<UserImageView> userImageViews = new ArrayList<>();
+    private Context mContext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -268,7 +252,6 @@ public class GameFragment extends Fragment {
             String requestID = null;
             String userID = null;
             int numBombsRemaining = 0;
-            userID = FriendSmashHelper.get().getFriend(friendToSmashIndex).optString("id");
             if (bundle != null) {
                 requestID = bundle.getString("request_id");
                 userID = bundle.getString("user_id");
@@ -279,7 +262,7 @@ public class GameFragment extends Fragment {
 
             if (requestID != null && friendToSmashIDProvided == null) {
                 progressContainer.setVisibility(View.VISIBLE);
-                fireFirstImageWithRequestID(requestID);
+
             } else if (userID != null && friendToSmashIDProvided == null) {
                 progressContainer.setVisibility(View.VISIBLE);
                 fireFirstImageWithUserID(userID);
@@ -297,9 +280,6 @@ public class GameFragment extends Fragment {
         }
     }
 
-    private void fireFirstImageWithRequestID(String requestID) {
-
-    }
 
     private void fireFirstImageWithUserID(String userID) {
         friendToSmashIDProvided = userID;
@@ -307,12 +287,14 @@ public class GameFragment extends Fragment {
 
 
     private void spawnImage(final boolean extraImage) {
+        friendToSmashIndex = getRandomFriendIndex();
+        Log.d("fasfsafasfas", "spawnImage: " + "spawing image");
         Random randomGenerator = new Random(System.currentTimeMillis());
 
         boolean shouldSmash = true;
         boolean isCoin = false;
         if (firstImageFired) {
-            if (randomGenerator.nextInt(CELEB_FREQUENCY) == 0 && firstImageFired) {
+            if (randomGenerator.nextInt(IMAGE_FREQUENCY) == 0 && firstImageFired) {
                 shouldSmash = false;
             } else if (randomGenerator.nextInt(COIN_FREQUENCY) == 0 && firstImageFired) {
                 isCoin = true;
@@ -322,7 +304,7 @@ public class GameFragment extends Fragment {
             firstImageFired = true;
         }
 
-        final UserImageView userImageView = (new UserImageView(getActivity(), shouldSmash, isCoin));
+        final UserImageView userImageView = (new UserImageView(mContext, shouldSmash, isCoin));
         userImageView.setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -355,7 +337,7 @@ public class GameFragment extends Fragment {
                         setFriendImageAndFire(userImageView, friendToSmashBitmap, extraImage);
                     } else {
                         progressContainer.setVisibility(View.VISIBLE);
-
+                        Log.d("fasfsafasfas", "spawnImage: " + "getting friend with value index of" + friendToSmashIndex);
                         final String friendToSmashID = friendToSmashIDProvided != null ? friendToSmashIDProvided :
                                 FriendSmashHelper.get().getFriend(friendToSmashIndex).optString("id");
 
@@ -365,6 +347,12 @@ public class GameFragment extends Fragment {
                 }
             }
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     private void wrongImageSmashed(final UserImageView userImageView) {

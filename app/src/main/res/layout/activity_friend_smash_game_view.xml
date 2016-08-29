@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/gameFrameView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ink.friendsmash.FriendSmashGameView">
+
+    <TextView
+        android:id="@+id/smashPlayerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="16dp"
+        android:fontFamily="@string/appFont"
+        android:text="@string/smash_player_text" />
+
+    <TextView
+        android:id="@+id/scoreText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="16dp"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/smashPlayerText"
+        android:fontFamily="@string/appFont"
+        android:gravity="right"
+        android:text="@string/score_text" />
+</RelativeLayout>

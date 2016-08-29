@@ -203,7 +203,7 @@ public class HomeFragment extends Fragment {
         });
 
 
-        playButton = (RelativeLayout) v.findViewById(R.id.playButton);
+        playButton = (RelativeLayout) v.findViewById(R.id.playButtonWrapper);
         playButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

@@ -109,6 +109,7 @@ public class SocialSignIn {
                                         }
                                     }
                                     if (resultCallbacks != null) {
+                                        loadPeopleResult.getPersonBuffer().release();
                                         resultCallbacks.onSuccess(friendsArray);
                                     }
                                 } else {
@@ -120,6 +121,7 @@ public class SocialSignIn {
                                                 }
                                             }).show();
                                     if (resultCallbacks != null) {
+                                        loadPeopleResult.getPersonBuffer().release();
                                         resultCallbacks.onFailure(null);
                                     }
                                 }

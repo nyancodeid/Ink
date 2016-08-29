@@ -193,10 +193,6 @@ public class HomeActivity extends FragmentActivity {
 
     }
 
-    private void saveUserToParse() {
-        loadInventoryFragment();
-    }
-
     private void loadInventoryFragment() {
         ((HomeFragment) fragments[HOME]).loadInventory();
     }
@@ -238,11 +234,13 @@ public class HomeActivity extends FragmentActivity {
                             eachFriendObject.put("image", imageUrl);
                             friendsArray.put(eachFriendObject);
                             loginUser(friendsArray);
+                            loadPeopleResult.getPersonBuffer().release();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 } else {
+                    loadPeopleResult.getPersonBuffer().release();
                     Snackbar.make(singInWithGoogle, getString(R.string.noGoogleFriend), Snackbar.LENGTH_INDEFINITE).
                             setAction("OK", new View.OnClickListener() {
                                 @Override

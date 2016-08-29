@@ -10,6 +10,7 @@ public class User {
     private String facebookUserId;
     private String userName;
     private String userId;
+    private boolean isCoinsLoaded;
 
     public int getCoins() {
         return coins;
@@ -34,6 +35,14 @@ public class User {
 
     public String getFacebookUserId() {
         return facebookUserId;
+    }
+
+    public boolean isCoinsLoaded() {
+        return isCoinsLoaded;
+    }
+
+    public void setCoinsLoaded(boolean coinsLoaded) {
+        isCoinsLoaded = coinsLoaded;
     }
 
     public void setFacebookUserId(String facebookUserId) {
