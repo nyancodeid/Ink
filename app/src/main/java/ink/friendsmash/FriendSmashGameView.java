@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,8 +29,9 @@ import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import ink.activities.BaseActivity;
 
-public class FriendSmashGameView extends AppCompatActivity {
+public class FriendSmashGameView extends BaseActivity {
 
     @Bind(R.id.smashPlayerText)
     TextView smashPlayerText;
@@ -222,6 +222,13 @@ public class FriendSmashGameView extends AppCompatActivity {
             public void onAnimationEnd(Animator animation) {
                 userImageView.stopRotationAnimation();
                 // TODO: 8/29/2016 set lives to 0
+                if (userImageViews.contains(userImageView)) {
+                    userImageViews.remove(userImageView);
+                }
+                userImageView.setVisibility(View.GONE);
+                // TODO: 8/29/2016 show lose view
+
+
             }
 
             @Override

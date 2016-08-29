@@ -15,6 +15,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.activities.BaseActivity;
+import ink.activities.BuyCoins;
 import ink.models.CoinsResponse;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
@@ -68,6 +69,7 @@ public class FriendSmashHomeView extends BaseActivity {
         }
 
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -89,6 +91,16 @@ public class FriendSmashHomeView extends BaseActivity {
 
     }
 
+    @OnClick(R.id.coinsWrapper)
+    public void setCoinsView() {
+        Intent intent = new Intent(getApplicationContext(), BuyCoins.class);
+        startActivityForResult(intent, Constants.BUY_COINS_REQUEST_CODE);
+    }
+
+    @OnClick(R.id.bombsWrapper)
+    public void setBombView() {
+
+    }
 
     private void getCoins() {
         final Call<ResponseBody> coinsCall = Retrofit.getInstance().getInkService().getCoins(sharedHelper.getUserId());
@@ -126,5 +138,17 @@ public class FriendSmashHomeView extends BaseActivity {
                 getCoins();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case Constants.BUY_COINS_REQUEST_CODE:
+                if (data != null) {
+                    boolean coinsBought = data.getExtras().getBoolean(Constants.COINS_BOUGHT_KEY);
+                }
+                break;
+        }
     }
 }

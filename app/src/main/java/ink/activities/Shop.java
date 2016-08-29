@@ -17,6 +17,7 @@ import java.util.List;
 
 import ink.fragments.Packs;
 import ink.fragments.Trade;
+import ink.utils.Constants;
 import ink.utils.User;
 
 public class Shop extends BaseActivity {
@@ -83,7 +84,7 @@ public class Shop extends BaseActivity {
         } else if (item.getItemId() == R.id.myCoinsMenu) {
 
         } else if (item.getItemId() == R.id.buyCoinsMenu) {
-            startActivity(new Intent(getApplicationContext(), BuyCoins.class));
+            startActivityForResult(new Intent(getApplicationContext(), BuyCoins.class), Constants.BUY_COINS_REQUEST_CODE);
         } else {
             finish();
         }
@@ -100,5 +101,16 @@ public class Shop extends BaseActivity {
             }
         }
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case Constants.BUY_COINS_REQUEST_CODE:
+                boolean coinsBought = data.getExtras().getBoolean(Constants.COINS_BOUGHT_KEY);
+
+                break;
+        }
     }
 }

@@ -84,6 +84,7 @@ public class FriendSmashLoginView extends BaseActivity {
         if (DimDialog.isDialogAlive()) {
             DimDialog.hideDialog();
         }
+        sharedHelper.putLoggedIntoGame(true);
         finish();
     }
 

@@ -125,5 +125,7 @@ public class Constants {
     public static final String LOCATION_REQUEST_TYPE_DECLINE = "declineRequest";
     public static final String LOCATION_REQUEST_TYPE_DELETE = "delete";
     public static final String DELETE_MESSAGE_REQUESTED = "deleteSingleMessageRequested";
+    public static final int BUY_COINS_REQUEST_CODE = 196;
+    public static final String COINS_BOUGHT_KEY = "coings_bought";
 }
 

@@ -54,35 +54,53 @@
                         android:orientation="horizontal"
                         android:paddingTop="4dip">
 
-                        <ImageView
-                            android:id="@+id/coinImage"
+                        <RelativeLayout
+                            android:id="@+id/coinsWrapper"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
-                            android:src="@drawable/small_coins_icon" />
+                            android:padding="2dp">
 
-                        <TextView
-                            android:id="@+id/numCoins"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:fontFamily="@string/appFont"
-                            android:text="@string/loadingText" />
+                            <ImageView
+                                android:id="@+id/coinImage"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:src="@drawable/small_coins_icon" />
 
-                        <ImageView
-                            android:id="@+id/bombButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:padding="5dp"
-                            android:src="@drawable/small_bomnb_vector" />
+                            <TextView
+                                android:id="@+id/numCoins"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_toRightOf="@+id/coinImage"
+                                android:fontFamily="@string/appFont"
+                                android:text="@string/loadingText" />
+                        </RelativeLayout>
 
-                        <TextView
-                            android:id="@+id/numBombs"
+                        <RelativeLayout
+                            android:id="@+id/bombsWrapper"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:text="@string/loadingText" />
+                            android:layout_marginLeft="5dp"
+                            android:padding="2dp">
+
+                            <ImageView
+                                android:id="@+id/bombButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:padding="5dp"
+                                android:src="@drawable/small_bomnb_vector" />
+
+                            <TextView
+                                android:id="@+id/numBombs"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:layout_toRightOf="@+id/bombButton"
+                                android:text="@string/loadingText" />
+                        </RelativeLayout>
+
 
                     </LinearLayout>
 
