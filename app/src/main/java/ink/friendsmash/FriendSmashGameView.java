@@ -125,7 +125,6 @@ public class FriendSmashGameView extends BaseActivity {
                     userImageViews.remove(view);
                     timesSmashed++;
                     scoreText.setText(getString(R.string.score_text, timesSmashed));
-                    handler.post(fireImagesRunnable);
                 } else {
                     timesSmashed = 0;
                     wrongImageSmashed(userImageView);
