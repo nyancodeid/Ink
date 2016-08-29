@@ -342,6 +342,7 @@
     <string name="or">OR</string>
     <string name="chooseAnotherOption">Choose another options</string>
     <string name="signInWithGoogle">Sign in with google account</string>
+    <string name="continueWithGoogle">Continue  with google account</string>
     <string name="chooseYourOption">Choose sign in option</string>
     <string name="logging">Logging...</string>
     <string name="loggingPleasWait">Logging you in,please wait...</string>
@@ -384,7 +385,7 @@
     <string name="userExist">User Exist</string>
     <string name="userExistMessage">User already exist with same login,please choose different login</string>
     <string name="edit">Edit</string>
-    <string name="welcome_message">Welcome to Friend Smash!\nLogin to your facebook account and start fighting your friends!</string>
+    <string name="welcome_message">Welcome to Friend Smash!\nLogin to your account and start fighting your friends!</string>
     <string name="you_scored_message"></string>
     <string name="delete">Delete</string>
     <string name="game_over">Awww unlucky...Game is over</string>
@@ -512,4 +513,11 @@
     <string name="start_fight">Start Fight</string>
     <string name="leaderboard_text">Leaderboard</string>
     <string name="challenge_friend">Challenge Friend</string>
+    <string name="error_retriving_circles">Error while retriving friend list.Please contact support</string>
+    <string name="noGoogleFriend">You don\\\'t have any google plus friend,thus you can play offline without friend images</string>
+    <string name="welcome_to_game">Welcome back %1$s</string>
+    <string name="smash_player_text">Smash %1$s Player! </string>
+    <string name="score_text">Score:%1$d</string>
+    <string name="fetchingFriends">Fetching friends...</string>
+
 </resources>

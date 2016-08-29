@@ -1,17 +1,17 @@
 package ink.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.gson.Gson;
 import com.ink.R;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import ink.models.CoinsModel;
 import ink.models.CoinsPackResponse;
+import ink.utils.Constants;
 import ink.utils.Retrofit;
-import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,13 +19,12 @@ import retrofit2.Response;
 
 public class BuyCoins extends BaseActivity {
 
-    private SharedHelper sharedHelper;
+    private boolean isCoinsBought;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy_coins);
-        sharedHelper = new SharedHelper(this);
         getCoinsPack();
     }
 
@@ -64,5 +63,13 @@ public class BuyCoins extends BaseActivity {
                 getCoinsPack();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra(Constants.COINS_BOUGHT_KEY, isCoinsBought);
+        setResult(Constants.BUY_COINS_REQUEST_CODE, intent);
+        finish();
     }
 }

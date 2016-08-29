@@ -37,4 +37,8 @@ public class DimDialog {
             dialog = null;
         }
     }
+
+    public static boolean isDialogAlive() {
+        return dialog != null && dialog.isShowing();
+    }
 }

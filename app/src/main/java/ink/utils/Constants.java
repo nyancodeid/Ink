@@ -118,11 +118,14 @@ public class Constants {
     public static final String NO_IMAGE_NAME = "no_image.png";
     public static final String NO_IMAGE_URL = MAIN_URL + USER_IMAGES_FOLDER + NO_IMAGE_NAME;
     public static final String ANDROID_DRAWABLE_DIR = ANDROID_RESOURCE_DIR + "com.ink" + "/drawable/";
+    public static final String FUNNY_USER_IMAGE = "funny_image.jpg";
     public static final String CHECK_IS_FRIEND_URL = "CheckIsFriend.php";
     public static final String LOCATION_REQUEST_TYPE_INSERT = "insertRequest";
     public static final String LOCATION_REQUEST_TYPE_ACCEPT = "acceptRequest";
     public static final String LOCATION_REQUEST_TYPE_DECLINE = "declineRequest";
     public static final String LOCATION_REQUEST_TYPE_DELETE = "delete";
     public static final String DELETE_MESSAGE_REQUESTED = "deleteSingleMessageRequested";
+    public static final int BUY_COINS_REQUEST_CODE = 196;
+    public static final String COINS_BOUGHT_KEY = "coings_bought";
 }
 

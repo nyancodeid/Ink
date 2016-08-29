@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Process;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -20,7 +19,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,10 +27,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.plus.People;
-import com.google.android.gms.plus.Plus;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.ink.R;
@@ -49,6 +43,7 @@ import java.text.ParseException;
 import fab.FloatingActionButton;
 import ink.fragments.Feed;
 import ink.fragments.MyFriends;
+import ink.friendsmash.FriendSmashLoginView;
 import ink.interfaces.AccountDeleteListener;
 import ink.models.CoinsResponse;
 import ink.service.BackgroundTaskService;
@@ -63,7 +58,6 @@ import ink.utils.PingHelper;
 import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
-import ink.utils.SocialSignIn;
 import ink.utils.User;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -98,7 +92,6 @@ public class HomeActivity extends BaseActivity
     private FloatingActionButton searchFriend;
     private ProgressDialog progressDialog;
     private Menu menuItem;
-    private GoogleApiClient googleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,17 +115,8 @@ public class HomeActivity extends BaseActivity
         if (!PingHelper.get().isPinging()) {
             PingHelper.get().startPinging(mSharedHelper.getUserId());
         }
-
-//        Plus.PeopleApi.loadVisible(googleApiClient, "me").setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
-//            @Override
-//            public void onResult(@NonNull People.LoadPeopleResult loadPeopleResult) {
-//                Log.d("Fsafsafsafsafas", "onResult: ");
-//            }
-//        });
-//
-
-        googleApiClient = SocialSignIn.get().buildGoogleApiClient(this);
-
+        User.get().setUserName(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
+        User.get().setUserId(mSharedHelper.getUserId());
         mFab = (FloatingActionMenu) findViewById(R.id.fab);
         mMessages = (FloatingActionButton) findViewById(R.id.messages);
         mMakePost = (FloatingActionButton) findViewById(R.id.makePost);
@@ -277,6 +261,8 @@ public class HomeActivity extends BaseActivity
                     if (coinsResponse.success) {
                         User.get().setCoins(coinsResponse.coins);
                         coinsText.setText(getString(R.string.coinsText, coinsResponse.coins));
+                        User.get().setCoinsLoaded(true);
+                        User.get().setCoins(coinsResponse.coins);
                     } else {
                         getCoins();
                     }
@@ -401,7 +387,7 @@ public class HomeActivity extends BaseActivity
 
             case R.id.friendSmashGame:
                 shouldOpenActivity = true;
-                setLastClassToOpen(ink.friendsmash.HomeActivity.class);
+                setLastClassToOpen(FriendSmashLoginView.class);
                 break;
             case R.id.sendFeedback:
                 shouldOpenActivity = true;
@@ -620,15 +606,5 @@ public class HomeActivity extends BaseActivity
     public void onAccountDeleted() {
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Plus.PeopleApi.loadVisible(googleApiClient, "me").setResultCallback(new ResultCallback<People.LoadPeopleResult>() {
-            @Override
-            public void onResult(@NonNull People.LoadPeopleResult loadPeopleResult) {
-                Log.d("Fsafsafsafsafas", "onResult: " + loadPeopleResult.getNextPageToken());
-            }
-        });
-//
-    }
+
 }
