@@ -1,15 +1,15 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
- * <p>
+ * <p/>
  * You are hereby granted a non-exclusive, worldwide, royalty-free license to use,
  * copy, modify, and distribute this software in source code or binary form for use
  * in connection with the web services and APIs provided by Facebook.
- * <p>
+ * <p/>
  * As with any software that integrates with the Facebook platform, your use of
  * this software is subject to the Facebook Developer Principles and Policies
  * [http://developers.facebook.com/policy/]. This copyright notice shall be
  * included in all copies or substantial portions of the software.
- * <p>
+ * <p/>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -48,6 +48,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import ink.callbacks.GeneralCallback;
+import ink.utils.Constants;
 import ink.utils.SharedHelper;
 import ink.utils.SocialSignIn;
 
@@ -85,7 +86,7 @@ public class HomeActivity extends FragmentActivity {
                 mGoogleApiClient = SocialSignIn.get().buildGoogleApiClient(HomeActivity.this, GOOGLE_ERROR_RESOLUTION_RESULT, new GeneralCallback<JSONArray>() {
                     @Override
                     public void onSuccess(JSONArray jsonArray) {
-                        fetchUserInformationAndLogin();
+                        loginUser(jsonArray);
                     }
 
                     @Override
@@ -100,7 +101,6 @@ public class HomeActivity extends FragmentActivity {
             transaction.hide(fragments[i]);
         }
         transaction.commit();
-        fetchUserInformationAndLogin();
     }
 
     @Override
@@ -187,7 +187,9 @@ public class HomeActivity extends FragmentActivity {
     }
 
 
-    private void fetchUserInformationAndLogin() {
+    private void loginUser(JSONArray friendsArray) {
+        FriendSmashHelper.get().setFriends(friendsArray);
+        showFragment(HOME);
 
     }
 
@@ -220,14 +222,22 @@ public class HomeActivity extends FragmentActivity {
             public void onSuccess(@NonNull People.LoadPeopleResult loadPeopleResult) {
                 int personCount = loadPeopleResult.getPersonBuffer().getCount();
                 if (personCount != 0) {
-                    JSONArray jsonArray = new JSONArray();
-                    JSONObject jsonObject = new JSONObject();
+                    JSONArray friendsArray = new JSONArray();
                     for (int i = 0; i < personCount; i++) {
                         Person eachPerson = loadPeopleResult.getPersonBuffer().get(i);
                         try {
-                            jsonObject.put("first_name", eachPerson.getDisplayName());
-                            jsonArray.put(eachPerson.getImage().getUrl().replaceAll("\\?sz=50", ""));
-                            jsonArray.put(jsonObject);
+                            JSONObject eachFriendObject = new JSONObject();
+                            eachFriendObject.put("name", eachPerson.getDisplayName());
+                            eachFriendObject.put("id", eachPerson.getId());
+                            String imageUrl;
+                            if (eachPerson.hasUrl()) {
+                                imageUrl = eachPerson.getImage().getUrl().replaceAll("\\?sz=50", "");
+                            } else {
+                                imageUrl = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + Constants.FUNNY_USER_IMAGE;
+                            }
+                            eachFriendObject.put("image", imageUrl);
+                            friendsArray.put(eachFriendObject);
+                            loginUser(friendsArray);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

@@ -115,6 +115,7 @@ public class HomeActivity extends BaseActivity
             PingHelper.get().startPinging(mSharedHelper.getUserId());
         }
         User.get().setUserName(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
+        User.get().setUserId(mSharedHelper.getUserId());
         mFab = (FloatingActionMenu) findViewById(R.id.fab);
         mMessages = (FloatingActionButton) findViewById(R.id.messages);
         mMakePost = (FloatingActionButton) findViewById(R.id.makePost);

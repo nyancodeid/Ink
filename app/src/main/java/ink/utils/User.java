@@ -4,11 +4,12 @@ package ink.utils;
  * Created by USER on 2016-07-20.
  */
 public class User {
-    public static User user = new User();
+    private static User user = new User();
     private int coins;
     private int bombCount;
     private String facebookUserId;
     private String userName;
+    private String userId;
 
     public int getCoins() {
         return coins;
@@ -45,5 +46,13 @@ public class User {
 
     public String getUserName() {
         return userName;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

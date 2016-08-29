@@ -109,7 +109,6 @@ public class SocialSignIn {
                                         }
                                     }
                                     if (resultCallbacks != null) {
-                                        Log.d("fasfsafsafasfsa", "onSuccess: " + friendsArray);
                                         resultCallbacks.onSuccess(friendsArray);
                                     }
                                 } else {

@@ -1,15 +1,15 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
- * <p>
+ * <p/>
  * You are hereby granted a non-exclusive, worldwide, royalty-free license to use,
  * copy, modify, and distribute this software in source code or binary form for use
  * in connection with the web services and APIs provided by Facebook.
- * <p>
+ * <p/>
  * As with any software that integrates with the Facebook platform, your use of
  * this software is subject to the Facebook Developer Principles and Policies
  * [http://developers.facebook.com/policy/]. This copyright notice shall be
  * included in all copies or substantial portions of the software.
- * <p>
+ * <p/>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -45,15 +45,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.FacebookRequestError;
-import com.facebook.GraphResponse;
 import com.ink.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -97,7 +93,6 @@ public class GameFragment extends Fragment {
     private boolean firstImageFired = false;
 
     private int friendToSmashIndex = -1;
-    private int celebToSmashIndex = -1;
     private boolean isSocialMode = true;
 
     private String friendToSmashIDProvided = null;
@@ -121,7 +116,7 @@ public class GameFragment extends Fragment {
         uiHandler = new Handler();
 
         // Make sure there are non-zero friends.
-        JSONArray friends =  FriendSmashHelper.get().getFriends();
+        JSONArray friends = FriendSmashHelper.get().getFriends();
         if (friends != null && friends.length() > 0) {
             isSocialMode = true;
             friendToSmashIndex = getRandomFriendIndex();
@@ -188,8 +183,8 @@ public class GameFragment extends Fragment {
     private void setSmashPlayerNameTextView() {
         if (isSocialMode) {
             if (friendToSmashFirstName == null) {
-                JSONObject friend =  FriendSmashHelper.get().getFriend(friendToSmashIndex);
-                friendToSmashFirstName = friend.optString("first_name");
+                JSONObject friend = FriendSmashHelper.get().getFriend(friendToSmashIndex);
+                friendToSmashFirstName = friend.optString("name");
             }
             smashPlayerNameTextView.setText("Smash " + friendToSmashFirstName + " !");
         }
@@ -197,7 +192,7 @@ public class GameFragment extends Fragment {
 
     private int getRandomFriendIndex() {
         Random randomGenerator = new Random(System.currentTimeMillis());
-        int friendIndex = randomGenerator.nextInt( FriendSmashHelper.get().getFriends().length());
+        int friendIndex = randomGenerator.nextInt(FriendSmashHelper.get().getFriends().length());
         return friendIndex;
     }
 
@@ -273,11 +268,12 @@ public class GameFragment extends Fragment {
             String requestID = null;
             String userID = null;
             int numBombsRemaining = 0;
+            userID = FriendSmashHelper.get().getFriend(friendToSmashIndex).optString("id");
             if (bundle != null) {
                 requestID = bundle.getString("request_id");
                 userID = bundle.getString("user_id");
-                numBombsRemaining = bundle.getInt("num_bombs") <=  FriendSmashHelper.get().NUM_BOMBS_ALLOWED_IN_GAME ?
-                        bundle.getInt("num_bombs") :  FriendSmashHelper.get().NUM_BOMBS_ALLOWED_IN_GAME;
+                numBombsRemaining = bundle.getInt("num_bombs") <= FriendSmashHelper.get().NUM_BOMBS_ALLOWED_IN_GAME ?
+                        bundle.getInt("num_bombs") : FriendSmashHelper.get().NUM_BOMBS_ALLOWED_IN_GAME;
                 setBombsRemaining(numBombsRemaining);
             }
 
@@ -309,16 +305,6 @@ public class GameFragment extends Fragment {
         friendToSmashIDProvided = userID;
     }
 
-    private void setFriendToSmashFromGraphAPIResponse(GraphResponse response) {
-        if (response != null) {
-            friendToSmashFirstName = response.getJSONObject().optString("first_name");
-        }
-        if (friendToSmashFirstName != null) {
-            progressContainer.setVisibility(View.INVISIBLE);
-            setSmashPlayerNameTextView();
-            spawnImage(false);
-        }
-    }
 
     private void spawnImage(final boolean extraImage) {
         Random randomGenerator = new Random(System.currentTimeMillis());
@@ -373,7 +359,8 @@ public class GameFragment extends Fragment {
                         final String friendToSmashID = friendToSmashIDProvided != null ? friendToSmashIDProvided :
                                 FriendSmashHelper.get().getFriend(friendToSmashIndex).optString("id");
 
-                        fetchFriendBitmapAndFireImages(userImageView, friendToSmashID, extraImage);
+                        fetchFriendBitmapAndFireImages(userImageView, friendToSmashID, extraImage,
+                                FriendSmashHelper.get().getFriend(friendToSmashIndex).optString("image"));
                     }
                 }
             }
@@ -408,33 +395,18 @@ public class GameFragment extends Fragment {
         getGameFrame().bringChildToFront(userImageView);
     }
 
-    private void fetchFriendBitmapAndFireImages(final UserImageView userImageView, final String friendToSmashID, final boolean extraImage) {
+    private void fetchFriendBitmapAndFireImages(final UserImageView userImageView,
+                                                final String friendToSmashID,
+                                                final boolean extraImage,
+                                                final String imageURLString) {
         AsyncTask.execute(new Runnable() {
             public void run() {
-                URL bitmapURL;
                 try {
-                    bitmapURL = new URL("http://graph.facebook.com/" + friendToSmashID +
-                            "/picture?redirect=false&width=" + iconWidth + "&height=" + iconWidth);
-                    InputStream bitmapURLInputStream = bitmapURL.openConnection().getInputStream();
-                    BufferedReader r = new BufferedReader(new InputStreamReader(bitmapURLInputStream));
-                    StringBuilder bitmapURLString = new StringBuilder();
-                    String line;
-                    while ((line = r.readLine()) != null) {
-                        bitmapURLString.append(line);
-                    }
-                    try {
-
-                        JSONObject obj = new JSONObject(bitmapURLString.toString());
-                        JSONObject jsonObject = obj.getJSONObject("data");
-                        String imageURLString = jsonObject.getString("url");
-                        URL imageURL = new URL(imageURLString);
-                        friendToSmashBitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
-                    } catch (Exception e) {
-                        closeAndShowError(getResources().getString(R.string.error_fetching_friend_bitmap));
-                    }
+                    URL imageURL = new URL(imageURLString);
+                    friendToSmashBitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
                 } catch (Exception e) {
+                    closeAndShowError(getResources().getString(R.string.error_fetching_friend_bitmap));
                 }
-
                 uiHandler.post(new Runnable() {
                     @Override
                     public void run() {
