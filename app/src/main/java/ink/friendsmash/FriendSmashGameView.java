@@ -116,6 +116,13 @@ public class FriendSmashGameView extends BaseActivity {
         setUpImages();
     }
 
+    @Override
+    protected void onDestroy() {
+        fireImagesRunnable = null;
+        handler = null;
+        super.onDestroy();
+    }
+
     private void setUpImages() {
         System.gc();
         int friendIndex = friendIndexRandom.nextInt(friends.length());

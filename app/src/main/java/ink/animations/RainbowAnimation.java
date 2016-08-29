@@ -23,6 +23,7 @@ public class RainbowAnimation {
     private TextView textViewToAttach;
     private String textToShow;
     private boolean stopCalled;
+    private SpannableString spannableString;
 
     public void startRainbowAnimation(Context context,
                                       String textToShow,
@@ -33,6 +34,7 @@ public class RainbowAnimation {
 
         AnimatedColorSpan span = new AnimatedColorSpan(context);
         final SpannableString spannableString = new SpannableString(textToShow);
+        this.spannableString = spannableString;
         String substring = textToShow.toLowerCase();
         int start = textToShow.toLowerCase().indexOf(substring);
         int end = start + substring.length();
@@ -41,15 +43,7 @@ public class RainbowAnimation {
         objectAnimator = ObjectAnimator.ofFloat(
                 span, ANIMATED_COLOR_SPAN_FLOAT_PROPERTY, 0, 100);
         objectAnimator.setEvaluator(new FloatEvaluator());
-        objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                Log.d("Fasfasfasfasfas", "onAnimationUpdate: ");
-                if (!stopCalled) {
-                    textViewToAttach.setText(spannableString);
-                }
-            }
-        });
+        objectAnimator.addUpdateListener(updateListener);
         objectAnimator.setInterpolator(new LinearInterpolator());
         objectAnimator.setDuration(DURATION);
         objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
@@ -76,11 +70,34 @@ public class RainbowAnimation {
     public void stopRainbowAnimation() {
         stopCalled = true;
         if (objectAnimator != null) {
+            objectAnimator.removeUpdateListener(updateListener);
             objectAnimator.cancel();
             objectAnimator.removeAllListeners();
             objectAnimator.removeAllUpdateListeners();
             textViewToAttach.setText(textToShow);
-            objectAnimator = null;
         }
+        System.gc();
     }
+
+
+    private ValueAnimator.AnimatorUpdateListener updateListener = new ValueAnimator.AnimatorUpdateListener() {
+        @Override
+        public void onAnimationUpdate(ValueAnimator valueAnimator) {
+            System.gc();
+            Log.d("Fafasfasfas", "onAnimationUpdate: outsie");
+            if (!stopCalled) {
+                Log.d("Fafasfasfas", "onAnimationUpdate: inside true");
+                textViewToAttach.setText(spannableString);
+            } else {
+                stopCalled = true;
+                if (objectAnimator != null) {
+                    objectAnimator.setDuration(10);
+                    objectAnimator.setRepeatCount(0);
+                    objectAnimator.removeUpdateListener(this);
+                    objectAnimator = null;
+                    updateListener = null;
+                }
+            }
+        }
+    };
 }

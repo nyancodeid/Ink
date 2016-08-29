@@ -57,7 +57,7 @@ public class FriendSmashHomeView extends BaseActivity {
                         .intoImageView(userImage);
             }
         } else {
-            Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + Constants.NO_IMAGE_NAME).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(userImage);
+            Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(userImage);
         }
         welcomeTextView.setText(getString(R.string.welcome_to_game, sharedHelper.getFirstName()));
         if (User.get().isCoinsLoaded()) {
