@@ -119,16 +119,15 @@ public class FriendSmashGameView extends AppCompatActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (finalShouldSmash) {
+                    view.setVisibility(View.GONE);
+                    userImageViews.remove(view);
                     timesSmashed++;
                     scoreText.setText(getString(R.string.score_text, timesSmashed));
                 } else {
                     timesSmashed = 0;
-                    wrongImageSmashed((UserImageView) view);
+                    wrongImageSmashed(userImageView);
                 }
 
-                view.setVisibility(View.GONE);
-
-                userImageViews.remove(view);
                 return false;
             }
         });
