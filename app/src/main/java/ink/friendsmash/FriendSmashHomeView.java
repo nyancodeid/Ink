@@ -2,6 +2,7 @@ package ink.friendsmash;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -66,6 +67,11 @@ public class FriendSmashHomeView extends BaseActivity {
             coinsView.setText(getString(R.string.loadingText));
         }
 
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     @OnClick(R.id.playButtonWrapper)

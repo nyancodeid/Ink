@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -46,22 +47,23 @@ public class FriendSmashLoginView extends BaseActivity {
 
     @OnClick(R.id.singInWithGoogle)
     public void singInWithGoogle() {
-        singInWithGoogle.setOnClickListener(new View.OnClickListener() {
+        mGoogleApiClient = SocialSignIn.get().buildGoogleApiClient(FriendSmashLoginView.this, GOOGLE_ERROR_RESOLUTION_RESULT, new GeneralCallback<JSONArray>() {
             @Override
-            public void onClick(View view) {
-                mGoogleApiClient = SocialSignIn.get().buildGoogleApiClient(FriendSmashLoginView.this, GOOGLE_ERROR_RESOLUTION_RESULT, new GeneralCallback<JSONArray>() {
-                    @Override
-                    public void onSuccess(JSONArray jsonArray) {
-                        loginUser(jsonArray);
-                    }
+            public void onSuccess(JSONArray jsonArray) {
+                loginUser(jsonArray);
+            }
 
-                    @Override
-                    public void onFailure(JSONArray jsonArray) {
+            @Override
+            public void onFailure(JSONArray jsonArray) {
 
-                    }
-                });
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     private void loginUser(JSONArray friendsArray) {
