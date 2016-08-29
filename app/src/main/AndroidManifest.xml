@@ -68,7 +68,7 @@
         <activity
             android:name="ink.activities.Chat"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/ChatTheme" />
 
         <service android:name="ink.service.NotificationService">
             <intent-filter>
@@ -128,9 +128,6 @@
             android:theme="@style/VK.Transparent" />
         <activity
             android:name="ink.activities.Groups"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity
-            android:name="ink.activities.Settings"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name="ink.activities.ChatRoulette"
@@ -216,7 +213,10 @@
             android:name="ink.friendsmash.FriendSmashGameView"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="ink.activities.Settings"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>

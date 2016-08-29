@@ -526,5 +526,5 @@
     <string name="showAsRainbow">Show message as rainbow</string>
     <string name="upadtingView">Updating your message view,please wait...</string>
     <string name="removeRainbowEffect">Remove rainbow effect</string>
-
+    <string name="title_activity_settings">Settings</string>
 </resources>

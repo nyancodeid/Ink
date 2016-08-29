@@ -1109,14 +1109,13 @@ public class FloatingActionMenu extends ViewGroup {
                     mFabTranslationYAnimator = ViewUtils.createAnimator();
                     mFabTranslationYAnimator.setInterpolator(
                             android.support.design.widget.AnimationUtils.FAST_OUT_SLOW_IN_INTERPOLATOR);
-                    mFabTranslationYAnimator.setUpdateListener(
-                            new ValueAnimatorCompat.AnimatorUpdateListener() {
-                                @Override
-                                public void onAnimationUpdate(ValueAnimatorCompat animator) {
-                                    ViewCompat.setTranslationY(fab,
-                                            animator.getAnimatedFloatValue());
-                                }
-                            });
+                    mFabTranslationYAnimator.addUpdateListener(new ValueAnimatorCompat.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimatorCompat animator) {
+                            ViewCompat.setTranslationY(fab,
+                                    animator.getAnimatedFloatValue());
+                        }
+                    });
                 }
                 mFabTranslationYAnimator.setFloatValues(currentTransY, targetTransY);
                 mFabTranslationYAnimator.start();
