@@ -69,6 +69,12 @@
             android:name="ink.activities.Chat"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/ChatTheme" />
+        <activity
+            android:name="ink.activities.CustomizeLook"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
 
         <service android:name="ink.service.NotificationService">
             <intent-filter>

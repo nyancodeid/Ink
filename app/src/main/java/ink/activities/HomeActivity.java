@@ -381,6 +381,10 @@ public class HomeActivity extends BaseActivity
                 setLastClassToOpen(Settings.class);
                 break;
 
+            case R.id.customizeApp:
+                shouldOpenActivity = true;
+                setLastClassToOpen(CustomizeLook.class);
+                break;
             case R.id.nav_share:
                 shouldOpenActivity = false;
                 break;

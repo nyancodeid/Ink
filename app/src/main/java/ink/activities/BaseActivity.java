@@ -2,6 +2,7 @@ package ink.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import ink.interfaces.AccountDeleteListener;
 import ink.utils.SharedHelper;
@@ -13,11 +14,15 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private AccountDeleteListener accountDeleteListener;
     private SharedHelper sharedHelper;
+    private View decorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedHelper = new SharedHelper(this);
+        decorView = getWindow().getDecorView();
+
+
     }
 
 

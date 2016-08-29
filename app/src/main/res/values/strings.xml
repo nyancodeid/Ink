@@ -527,4 +527,17 @@
     <string name="upadtingView">Updating your message view,please wait...</string>
     <string name="removeRainbowEffect">Remove rainbow effect</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="hereYouWillSeeActionBar">Here you will see statsu bar color result</string>
+    <string name="pickStatusBarColor">Pick status bar color</string>
+    <string name="pickMenuButtonColor">Pick menu button color</string>
+    <string name="pickNotificationIconColor">Pick notification icon color</string>
+    <string name="pickShopIconColor">Pick shop icon color</string>
+    <string name="pickLeftDrawerColor">Pick left sliding panel header color</string>
+    <string name="pickPostBackgroundColor">Pick \'Feed\' background color</string>
+    <string name="pickFriendsBackgroundColor">Pick \'Friends\' background color</string>
+    <string name="pickMessagesBackgroundColor">Pick \'Messages\' background color</string>
+    <string name="pickChatBackgroundColor">Pick chat background color</string>
+    <string name="pickRequestBackgroundColor">Pick \'My requests\' background color</string>
+    <string name="customizeText">Customize the application under your taste!No limits,full freedom!</string>
+    <string name="customizeAppText">Customize Application</string>
 </resources>

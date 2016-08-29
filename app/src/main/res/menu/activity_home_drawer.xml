@@ -42,6 +42,10 @@
                     android:icon="@drawable/ic_menu_manage"
                     android:title="@string/settingsString" />
                 <item
+                    android:id="@+id/customizeApp"
+                    android:icon="@drawable/customize_icon"
+                    android:title="@string/customizeAppText" />
+                <item
                     android:id="@+id/logout"
                     android:icon="@drawable/ic_exit_to_app_black_24dp"
                     android:title="@string/logoutString" />
