@@ -27,6 +27,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
@@ -35,8 +36,8 @@ import android.widget.ImageView;
 import java.util.Random;
 
 /**
- *  ImageViews of the users that the playing user has to smash.  These can contain images of one
- *  of the user's friends (in the social version only) or images of celebrities
+ * ImageViews of the users that the playing user has to smash.  These can contain images of one
+ * of the user's friends (in the social version only) or images of celebrities
  */
 public class UserImageView extends ImageView {
 
@@ -48,6 +49,7 @@ public class UserImageView extends ImageView {
     private AnimatorSet upMovementAnimatorSet;
     private AnimatorSet downMovementAnimatorSet;
     private ValueAnimator rotationAnimation;
+    private ObjectAnimator alphaAnimation;
 
     public UserImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -55,12 +57,17 @@ public class UserImageView extends ImageView {
 
     public UserImageView(Context context, boolean shouldSmash, boolean isCoin) {
         super(context);
-
         setShouldSmash(shouldSmash);
         setIsCoin(isCoin);
 
         upMovementAnimatorSet = new AnimatorSet();
         downMovementAnimatorSet = new AnimatorSet();
+
+        alphaAnimation = ObjectAnimator.ofFloat(this, View.ALPHA, 0, 1);
+        alphaAnimation.setRepeatMode(ObjectAnimator.REVERSE);
+        alphaAnimation.setRepeatCount(ObjectAnimator.INFINITE);
+        alphaAnimation.setDuration(200);
+
     }
 
     void stopMovementAnimations() {
@@ -112,6 +119,7 @@ public class UserImageView extends ImageView {
         int topY = randomGenerator.nextInt(topYLowerExtreme - topYUpperExtreme) + topYUpperExtreme;
 
         int rotationTime = randomGenerator.nextInt(2500) + 500;
+
 
         if (randomGenerator.nextInt(2) == 0) {
             upAnimationX = ObjectAnimator.ofFloat(this, "x", leftX, centerX);
@@ -170,6 +178,10 @@ public class UserImageView extends ImageView {
 
         upMovementAnimatorSet.start();
         rotationAnimation.start();
+        if (shouldSmash) {
+            alphaAnimation.start();
+        }
+
     }
 
     public boolean shouldSmash() {
@@ -211,5 +223,4 @@ public class UserImageView extends ImageView {
     public void setWrongImageSmashed(boolean wrongImageSmashed) {
         this.wrongImageSmashed = wrongImageSmashed;
     }
-
 }

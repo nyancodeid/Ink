@@ -93,6 +93,7 @@ public class FriendSmashGameView extends AppCompatActivity {
     }
 
     private void setUpImages() {
+        System.gc();
         int friendIndex = friendIndexRandom.nextInt(friends.length());
         JSONObject friendObject = FriendSmashHelper.get().getFriend(friendIndex);
 
