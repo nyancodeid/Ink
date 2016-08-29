@@ -21,7 +21,7 @@
     </style>
 
 
-    <style name="ChatTheme">
+    <style name="ChatTheme" parent="AppTheme.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
