@@ -46,6 +46,7 @@
                         android:id="@+id/welcomeTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@string/appFont"
                         android:text="@string/welcome_message" />
 
                     <LinearLayout
@@ -74,7 +75,8 @@
                                 android:layout_marginTop="5dp"
                                 android:layout_toRightOf="@+id/coinImage"
                                 android:fontFamily="@string/appFont"
-                                android:text="@string/loadingText" />
+                                android:text="@string/loadingText"
+                                android:textStyle="bold" />
                         </RelativeLayout>
 
                         <RelativeLayout
@@ -98,7 +100,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:layout_toRightOf="@+id/bombButton"
-                                android:text="@string/loadingText" />
+                                android:text="@string/loadingText"
+                                android:textStyle="bold" />
                         </RelativeLayout>
 
 
@@ -167,7 +170,8 @@
                         android:id="@+id/scoresButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/playButtonWrapper"
+                        android:layout_below="@+id/playButtonDivider"
+                        android:layout_marginTop="5dp"
                         android:background="?attr/selectableItemBackground"
                         android:clickable="true"
                         android:focusable="true"
@@ -210,7 +214,8 @@
                         android:id="@+id/challengeButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/scoresButton"
+                        android:layout_below="@+id/scoresDivider"
+                        android:layout_marginTop="5dp"
                         android:background="?attr/selectableItemBackground"
                         android:clickable="true"
                         android:focusable="true"
