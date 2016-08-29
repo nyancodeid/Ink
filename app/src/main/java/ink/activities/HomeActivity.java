@@ -130,6 +130,7 @@ public class HomeActivity extends BaseActivity
 //            }
 //        });
 //
+
         googleApiClient = SocialSignIn.get().buildGoogleApiClient(this);
 
         mFab = (FloatingActionMenu) findViewById(R.id.fab);
