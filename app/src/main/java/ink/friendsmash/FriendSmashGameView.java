@@ -1,6 +1,9 @@
 package ink.friendsmash;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,11 +14,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.SpannableString;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,7 +36,6 @@ import java.util.Random;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import ink.activities.BaseActivity;
-import ink.animations.AnimatedColorSpan;
 import ink.animations.RainbowAnimation;
 
 public class FriendSmashGameView extends BaseActivity {
@@ -64,8 +66,11 @@ public class FriendSmashGameView extends BaseActivity {
     private int timesSmashed = 0;
     private Random frequencyRandom;
     private Random friendIndexRandom;
-    private MediaPlayer soundPlayer;
+    private MediaPlayer boomShakaLakapLayer;
+    private MediaPlayer impressivePlayer;
+    private MediaPlayer fatalityPlayer;
     private int countTilLSound = 0;
+    private boolean stopCalled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +81,9 @@ public class FriendSmashGameView extends BaseActivity {
         encourageText.setTypeface(tf, Typeface.BOLD);
 
         friends = FriendSmashHelper.get().getFriends();
-        soundPlayer = MediaPlayer.create(this, R.raw.hit_sound);
+        boomShakaLakapLayer = MediaPlayer.create(this, R.raw.boom_shakka_lakka);
+        impressivePlayer = MediaPlayer.create(this, R.raw.impressive);
+        fatalityPlayer = MediaPlayer.create(this, R.raw.fatality);
         Random random = new Random();
         userImageViews = new ArrayList<>();
         int randomFriendId = random.nextInt(friends.length());
@@ -100,7 +107,9 @@ public class FriendSmashGameView extends BaseActivity {
         fireImagesRunnable = new Runnable() {
             @Override
             public void run() {
-                setUpImages();
+                if (!stopCalled) {
+                    setUpImages();
+                }
             }
         };
         scoreText.setText(getString(R.string.score_text, 0));
@@ -136,6 +145,7 @@ public class FriendSmashGameView extends BaseActivity {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (finalShouldSmash) {
+                    stopCalled = false;
                     view.setVisibility(View.GONE);
                     userImageViews.remove(view);
                     timesSmashed++;
@@ -147,15 +157,17 @@ public class FriendSmashGameView extends BaseActivity {
                             break;
                         case 10:
                             showEncourageText(getString(R.string.impressive));
+                            if (impressivePlayer.isPlaying()) {
+                                impressivePlayer.stop();
+                            }
+                            impressivePlayer.start();
                             break;
                         case 15:
                             showEncourageText(getString(R.string.boomShakkaLakkaText));
-                            if (soundPlayer.isPlaying()) {
-                                soundPlayer.stop();
-                                soundPlayer.start();
-                            } else {
-                                soundPlayer.start();
+                            if (boomShakaLakapLayer.isPlaying()) {
+                                boomShakaLakapLayer.stop();
                             }
+                            boomShakaLakapLayer.start();
                             break;
                         case 25:
                             showEncourageText(getString(R.string.whosYourDaddy));
@@ -248,6 +260,7 @@ public class FriendSmashGameView extends BaseActivity {
         handler.removeCallbacks(fireImagesRunnable);
         userImageView.setWrongImageSmashed(true);
         userImageView.stopMovementAnimations();
+        stopCalled = true;
         hideAllUserImageViewsExcept(userImageView);
 
         userImageView.scaleUp(new Animator.AnimatorListener() {
@@ -283,15 +296,23 @@ public class FriendSmashGameView extends BaseActivity {
         encourageText.setText(textToShow);
         encourageText.setVisibility(View.VISIBLE);
 
-        AnimatedColorSpan span = new AnimatedColorSpan(this);
 
-        final SpannableString spannableString = new SpannableString(textToShow);
-        String substring = textToShow.toLowerCase();
-        int start = textToShow.toLowerCase().indexOf(substring);
-        int end = start + substring.length();
-        spannableString.setSpan(span, start, end, 0);
+        ValueAnimator scaleAnimationX = ObjectAnimator.ofFloat(encourageText, "scaleX", 2f);
+        ValueAnimator scaleAnimationY = ObjectAnimator.ofFloat(encourageText, "scaleY", 2f);
+        scaleAnimationX.setDuration(2000);
+        scaleAnimationY.setDuration(2000);
+//        scaleAnimationX.setRepeatCount(1);
+//        scaleAnimationY.setRepeatCount(1);
+//        scaleAnimationY.setRepeatMode(ValueAnimator.RESTART);
+//        scaleAnimationX.setRepeatMode(ValueAnimator.RESTART);
+        scaleAnimationX.setInterpolator(new LinearInterpolator());
+        scaleAnimationY.setInterpolator(new LinearInterpolator());
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(scaleAnimationX, scaleAnimationY);
 
-        RainbowAnimation.startRainbowAnimation(this, textToShow, encourageText, new Animator.AnimatorListener() {
+        RainbowAnimation.get().startRainbowAnimation(this, textToShow, encourageText);
+
+        animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -299,8 +320,20 @@ public class FriendSmashGameView extends BaseActivity {
 
             @Override
             public void onAnimationEnd(Animator animator) {
+                RainbowAnimation.get().stopRainbowAnimation();
                 encourageText.setVisibility(View.GONE);
                 encourageText.clearAnimation();
+
+                ValueAnimator scaleAnimationX = ObjectAnimator.ofFloat(encourageText, "scaleX", 1f);
+                ValueAnimator scaleAnimationY = ObjectAnimator.ofFloat(encourageText, "scaleY", 1f);
+                scaleAnimationX.setInterpolator(new LinearInterpolator());
+                scaleAnimationY.setInterpolator(new LinearInterpolator());
+                AnimatorSet animatorSet = new AnimatorSet();
+                animatorSet.playTogether(scaleAnimationX, scaleAnimationY);
+                scaleAnimationX.setDuration(100);
+                scaleAnimationY.setDuration(100);
+                animatorSet.start();
+
             }
 
             @Override
@@ -312,7 +345,10 @@ public class FriendSmashGameView extends BaseActivity {
             public void onAnimationRepeat(Animator animator) {
 
             }
-        }, 1500);
+        });
+        animatorSet.start();
+
+
     }
 
     private void hideAllUserImageViewsExcept(UserImageView userImageView) {

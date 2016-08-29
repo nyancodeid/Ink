@@ -72,6 +72,7 @@ import ink.models.MessageModel;
 import ink.models.UserStatus;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
+import ink.utils.DimDialog;
 import ink.utils.ErrorCause;
 import ink.utils.FileUtils;
 import ink.utils.Keyboard;
@@ -151,6 +152,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     private boolean isFriend;
     private ProgressDialog progressDialog;
     private boolean scrolledToBottom;
+    private Menu chatMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -482,6 +484,13 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.chat_menu, menu);
+        chatMenuItem = menu;
+        if (mSharedHelper.isRainbowMessageActivated()) {
+            menu.getItem(0).setTitle(getString(R.string.removeRainbowEffect));
+        } else {
+            menu.getItem(0).setTitle(getString(R.string.showAsRainbow));
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -841,8 +850,34 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        finish();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            case R.id.showMessageAsRainbow:
+                if (item.getTitle().equals(getString(R.string.showAsRainbow))) {
+                    updateToRainbow();
+                } else if (item.getTitle().equals(getString(R.string.removeRainbowEffect))) {
+                    removeRainbow();
+                }
+                break;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void removeRainbow() {
+        mChatAdapter.setShowAsRainbow(false);
+        mChatAdapter.notifyDataSetChanged();
+        chatMenuItem.getItem(0).setTitle(getString(R.string.showAsRainbow));
+    }
+
+    private void updateToRainbow() {
+        mChatAdapter.setShowAsRainbow(true);
+        mChatAdapter.notifyDataSetChanged();
+        if (DimDialog.isDialogAlive()) {
+            DimDialog.hideDialog();
+        }
+        chatMenuItem.getItem(0).setTitle(getString(R.string.removeRainbowEffect));
     }
 
 

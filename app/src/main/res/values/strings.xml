@@ -523,5 +523,8 @@
     <string name="impressive">IMPRESSIVE!</string>
     <string name="weGood">WE GOOD...WE GOOD</string>
     <string name="whosYourDaddy">WHO IS YOUR DADDY????</string>
+    <string name="showAsRainbow">Show message as rainbow</string>
+    <string name="upadtingView">Updating your message view,please wait...</string>
+    <string name="removeRainbowEffect">Remove rainbow effect</string>
 
 </resources>

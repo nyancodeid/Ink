@@ -57,6 +57,14 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public boolean isRainbowMessageActivated() {
+        return mSharedPreferences.getBoolean("isRainbowModeActivated", false);
+    }
+
+    public void putRainbowMessageActivated(boolean value){
+        mEditor.putBoolean("isRainbowModeActivated",value);
+        mEditor.commit();
+    }
     public void putUserId(String userId) {
         mEditor.putString("user_id", userId);
         mEditor.commit();

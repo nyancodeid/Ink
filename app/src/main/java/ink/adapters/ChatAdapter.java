@@ -17,6 +17,7 @@ import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
+import ink.animations.RainbowAnimation;
 import ink.models.ChatModel;
 import ink.utils.Constants;
 import ink.utils.Dp;
@@ -31,11 +32,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     private static final int MY_MESSAGE = 1;
     private static final int OPPONENT_MESSAGE = 2;
     private static final String LOADED = "LOADED";
+    private static final int ANIMATED = 1;
     private List<ChatModel> chatModelList;
     private Context mContext;
     private String mCurrentUserId;
     private int percentage;
     private boolean updating = false;
+    private boolean showAsRainbow;
+    private SharedHelper sharedHelper;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView message;
@@ -60,6 +64,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         mContext = context;
         mCurrentUserId = new SharedHelper(mContext).getUserId();
         this.chatModelList = chatModels;
+        sharedHelper = new SharedHelper(context);
+        showAsRainbow = sharedHelper.isRainbowMessageActivated();
     }
 
     @Override
@@ -88,7 +94,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         String messageBody = chatModel.getMessage().replaceAll("userid=" + chatModel.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "").replaceAll("userid=" + chatModel.getOpponentId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "");
         holder.message.setText(messageBody);
-
+        if (showAsRainbow) {
+            if (holder.message.getTag() == null) {
+                RainbowAnimation.get().startRainbowAnimation(mContext, messageBody, holder.message);
+                holder.message.setTag(ANIMATED);
+            }
+        } else {
+            RainbowAnimation.get().stopRainbowAnimation();
+            holder.message.setTag(null);
+        }
 
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.chatViewBubble.getLayoutParams();
         LinearLayout.LayoutParams deliveryStatusParams = (LinearLayout.LayoutParams) holder.deliveryStatus.getLayoutParams();
@@ -200,4 +214,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         updating = false;
     }
 
+    public boolean isShowAsRainbow() {
+        return sharedHelper.isRainbowMessageActivated();
+    }
+
+    public void setShowAsRainbow(boolean showAsRainbow) {
+        this.showAsRainbow = showAsRainbow;
+        sharedHelper.putRainbowMessageActivated(showAsRainbow);
+    }
 }
