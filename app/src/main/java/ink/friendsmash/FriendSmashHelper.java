@@ -23,6 +23,8 @@ public class FriendSmashHelper {
     private String lastFriendSmashedID = null;
     private String lastFriendSmashedName = null;
 
+    private boolean isOfflinePlay;
+
     public JSONArray getFriends() {
         return friends;
     }
@@ -76,6 +78,13 @@ public class FriendSmashHelper {
         return friend;
     }
 
+    public boolean isOfflinePlay() {
+        return isOfflinePlay;
+    }
+
+    public void setOfflinePlay(boolean offlinePlay) {
+        isOfflinePlay = offlinePlay;
+    }
 
     public void setFriends(JSONArray friends) {
         this.friends = friends;

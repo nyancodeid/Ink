@@ -50,14 +50,11 @@ public class SocialSignIn {
     private static final SocialSignIn socialSignIn = new SocialSignIn();
 
     public void googleSignIn(Activity context, int requestCode) {
-        // Configure sign-in to request the user's ID, email address, and basic profile. ID and
-// basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestProfile()
                 .build();
 
-// Build a GoogleApiClient with access to SocialSignIn.API and the options above.
         mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
@@ -68,7 +65,7 @@ public class SocialSignIn {
 
     }
 
-    public synchronized GoogleApiClient buildGoogleApiClient(final Activity activity, final int requestCode,
+    public synchronized GoogleApiClient getGooglePlusCircles(final Activity activity, final int requestCode,
                                                              @Nullable final GeneralCallback<JSONArray> resultCallbacks) {
 
         GoogleSignInOptions gGoogleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

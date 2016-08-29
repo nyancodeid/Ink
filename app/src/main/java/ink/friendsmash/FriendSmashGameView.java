@@ -48,11 +48,13 @@ public class FriendSmashGameView extends AppCompatActivity {
     private int iconWidth;
     private int screenWidth;
     private int screenHeight;
-    public static final int IMAGES_MAX_FREQUENCY = 5;
+    public static final int IMAGES_MAX_FREQUENCY = 8;
     private long fireImagesSpeedTime = 1000;
     private int firedImagesCount = 0;
     private int desiredCurrentFrequency = 0;
     private int timesSmashed = 0;
+    private Random frequencyRandom;
+    private Random friendIndexRandom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,9 @@ public class FriendSmashGameView extends AppCompatActivity {
         iconWidth = getResources().getDimensionPixelSize(R.dimen.icon_width);
         WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
+        frequencyRandom = new Random();
 
+        friendIndexRandom = new Random();
         Point size = new Point();
         display.getSize(size);
         screenWidth = size.x;
@@ -89,10 +93,7 @@ public class FriendSmashGameView extends AppCompatActivity {
     }
 
     private void setUpImages() {
-        Random frequencyRandom = new Random();
-
-        Random random = new Random();
-        int friendIndex = random.nextInt(friends.length());
+        int friendIndex = friendIndexRandom.nextInt(friends.length());
         JSONObject friendObject = FriendSmashHelper.get().getFriend(friendIndex);
 
 
@@ -206,6 +207,7 @@ public class FriendSmashGameView extends AppCompatActivity {
     }
 
     private void wrongImageSmashed(final UserImageView userImageView) {
+        handler.removeCallbacks(fireImagesRunnable);
         userImageView.setWrongImageSmashed(true);
         userImageView.stopMovementAnimations();
         hideAllUserImageViewsExcept(userImageView);
@@ -233,7 +235,6 @@ public class FriendSmashGameView extends AppCompatActivity {
     }
 
     private void hideAllUserImageViewsExcept(UserImageView userImageView) {
-        handler.removeCallbacks(fireImagesRunnable);
         Iterator<UserImageView> userImageViewsIterator = userImageViews.iterator();
         while (userImageViewsIterator.hasNext()) {
             UserImageView currentUserImageView = userImageViewsIterator.next();

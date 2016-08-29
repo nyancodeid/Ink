@@ -47,7 +47,7 @@ public class FriendSmashLoginView extends BaseActivity {
 
     @OnClick(R.id.singInWithGoogle)
     public void singInWithGoogle() {
-        mGoogleApiClient = SocialSignIn.get().buildGoogleApiClient(FriendSmashLoginView.this, GOOGLE_ERROR_RESOLUTION_RESULT, new GeneralCallback<JSONArray>() {
+        mGoogleApiClient = SocialSignIn.get().getGooglePlusCircles(FriendSmashLoginView.this, GOOGLE_ERROR_RESOLUTION_RESULT, new GeneralCallback<JSONArray>() {
             @Override
             public void onSuccess(JSONArray jsonArray) {
                 loginUser(jsonArray);
