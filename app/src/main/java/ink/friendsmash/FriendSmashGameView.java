@@ -1,10 +1,6 @@
 package ink.friendsmash;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.FloatEvaluator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,13 +12,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.SpannableString;
-import android.text.format.DateUtils;
-import android.util.Property;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,6 +34,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import ink.activities.BaseActivity;
 import ink.animations.AnimatedColorSpan;
+import ink.animations.RainbowAnimation;
 
 public class FriendSmashGameView extends BaseActivity {
 
@@ -297,31 +291,7 @@ public class FriendSmashGameView extends BaseActivity {
         int end = start + substring.length();
         spannableString.setSpan(span, start, end, 0);
 
-        final ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(
-                span, ANIMATED_COLOR_SPAN_FLOAT_PROPERTY, 0, 100);
-        objectAnimator.setEvaluator(new FloatEvaluator());
-        objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                encourageText.setText(spannableString);
-            }
-        });
-        objectAnimator.setInterpolator(new LinearInterpolator());
-        objectAnimator.setDuration(DateUtils.MINUTE_IN_MILLIS * 3);
-        objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
-
-        ValueAnimator scaleAnimationX = ObjectAnimator.ofFloat(encourageText, "scaleX", 5f);
-        ValueAnimator scaleAnimationY = ObjectAnimator.ofFloat(encourageText, "scaleY", 5f);
-        scaleAnimationX.setDuration(1500);
-        scaleAnimationY.setDuration(1500);
-        scaleAnimationX.setInterpolator(new LinearInterpolator());
-        scaleAnimationY.setInterpolator(new LinearInterpolator());
-
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.playTogether(scaleAnimationX, scaleAnimationY);
-        animatorSet.start();
-        objectAnimator.start();
-        animatorSet.addListener(new Animator.AnimatorListener() {
+        RainbowAnimation.startRainbowAnimation(this, textToShow, encourageText, new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
@@ -331,8 +301,6 @@ public class FriendSmashGameView extends BaseActivity {
             public void onAnimationEnd(Animator animator) {
                 encourageText.setVisibility(View.GONE);
                 encourageText.clearAnimation();
-                objectAnimator.removeAllListeners();
-                objectAnimator.cancel();
             }
 
             @Override
@@ -344,7 +312,7 @@ public class FriendSmashGameView extends BaseActivity {
             public void onAnimationRepeat(Animator animator) {
 
             }
-        });
+        }, 1500);
     }
 
     private void hideAllUserImageViewsExcept(UserImageView userImageView) {
@@ -356,17 +324,4 @@ public class FriendSmashGameView extends BaseActivity {
             }
         }
     }
-
-    private static final Property<AnimatedColorSpan, Float> ANIMATED_COLOR_SPAN_FLOAT_PROPERTY
-            = new Property<AnimatedColorSpan, Float>(Float.class, "ANIMATED_COLOR_SPAN_FLOAT_PROPERTY") {
-        @Override
-        public void set(AnimatedColorSpan span, Float value) {
-            span.setTranslateXPercentage(value);
-        }
-
-        @Override
-        public Float get(AnimatedColorSpan span) {
-            return span.getTranslateXPercentage();
-        }
-    };
 }

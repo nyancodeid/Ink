@@ -68,9 +68,9 @@
                         android:id="@+id/statusColor"
                         android:layout_width="5dp"
                         android:layout_height="5dp"
-                        android:layout_alignTop="@+id/opponentStatus"
-                        android:layout_alignStart="@+id/chatTitle"
                         android:layout_alignLeft="@+id/chatTitle"
+                        android:layout_alignStart="@+id/chatTitle"
+                        android:layout_alignTop="@+id/opponentStatus"
                         android:layout_marginTop="7dp"
                         android:layout_toRightOf="@+id/opponentImage"
                         android:background="@drawable/circle_green"
@@ -106,13 +106,13 @@
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:layout_marginBottom="30dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/noMessageIcon"
@@ -125,6 +125,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/noMessageIcon"
+                    android:layout_marginTop="26dp"
                     android:text="@string/noMessageText" />
             </RelativeLayout>
         </android.support.v4.widget.NestedScrollView>
