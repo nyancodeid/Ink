@@ -20,47 +20,28 @@
 
 package ink.friendsmash;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookRequestError;
-import com.facebook.GraphResponse;
-import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
 import com.ink.R;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import ink.StartupApplication;
-import ink.friendsmash.integration.FacebookLogin;
-import ink.friendsmash.integration.FacebookLoginPermission;
-import ink.friendsmash.integration.GameRequest;
-import ink.friendsmash.integration.GraphAPICall;
-import ink.friendsmash.integration.GraphAPICallback;
-import ink.friendsmash.integration.Sharing;
-import ink.utils.User;
 
 /**
  * Fragment to be shown once the user is logged in on the social version of the game or
@@ -72,7 +53,6 @@ public class HomeFragment extends Fragment {
         void afterFriendsLoaded();
     }
 
-    private StartupApplication application;
 
     private RelativeLayout mainButtonsContainer;
     private RelativeLayout challengeContainer;
@@ -110,7 +90,6 @@ public class HomeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        application = (StartupApplication) getActivity().getApplication();
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(GAME_OVER_MESSAGE_KEY))
@@ -233,8 +212,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        LoginButton logoutButton = (LoginButton) v.findViewById(R.id.loginButton);
-        logoutButton.setFragment(this);
 
         gameOverContainer = (LinearLayout) v.findViewById(R.id.gameOverContainer);
         youSmashedUserImage = (ProfilePictureView) v.findViewById(R.id.youSmashedUserImage);
@@ -257,17 +234,17 @@ public class HomeFragment extends Fragment {
     }
 
     public void personalizeHomeFragment() {
-        if (application.getCurrentFBUser() != null) {
-            userImage.setProfileId(application.getCurrentFBUser().optString("id"));
-            userImage.setCropped(true);
-            welcomeTextView.setText("Welcome, " + application.getCurrentFBUser().optString("first_name"));
-        }
+//        if (application.getCurrentFBUser() != null) {
+//            userImage.setProfileId(application.getCurrentFBUser().optString("id"));
+//            userImage.setCropped(true);
+//            welcomeTextView.setText("Welcome, " + User.get().getUserName());
+//        }
+        // TODO: 8/29/2016  set app accordings
     }
 
     public void loadInventory() {
-        StartupApplication app = (StartupApplication) getActivity().getApplication();
-        numBombs.setText(String.valueOf(app.getBombs()));
-        numCoins.setText(String.valueOf(app.getCoins()));
+        numBombs.setText(String.valueOf(FriendSmashHelper.get().getBombs()));
+        numCoins.setText(String.valueOf(FriendSmashHelper.get().getCoins()));
     }
 
     @Override
@@ -295,7 +272,7 @@ public class HomeFragment extends Fragment {
                     gameLaunchedFromDeepLinking = true;
                     startActivityForResult(i, 0);
 
-                    GameRequest.deleteRequest(graphRequestIDForSendingUser + "_" + application.getCurrentFBUser().optString("id"));
+                    // TODO: 8/29/2016 delete game reqest
                 } else if (feedPostIDForSendingUser != null) {
                     // Deep linked through a feed post, so start the game smashing the user specified by the id attached to the
                     // challenge_brag parameter
@@ -324,26 +301,27 @@ public class HomeFragment extends Fragment {
     }
 
     private void askForFriendsForPlay() {
-        if (application.hasDeniedFriendPermission()) {
-            startGame();
-        } else {
-            new AlertDialog.Builder(getActivity())
-                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            requestFriendsPermission(FRIENDS_PLAY_PERMISSION_REQUEST_CODE);
-                        }
-                    })
-                    .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            application.setHasDeniedFriendPermission(true);
-                            startGame();
-                        }
-                    })
-                    .setTitle(R.string.with_friends_dialog_title)
-                    .setMessage(R.string.with_friends_dialog_message)
-                    .show();
-        }
+//        if (application.hasDeniedFriendPermission()) {
+//            startGame();
+//        } else {
+//            new AlertDialog.Builder(getActivity())
+//                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int id) {
+//                            requestFriendsPermission(FRIENDS_PLAY_PERMISSION_REQUEST_CODE);
+//                        }
+//                    })
+//                    .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int id) {
+//                            application.setHasDeniedFriendPermission(true);
+//                            startGame();
+//                        }
+//                    })
+//                    .setTitle(R.string.with_friends_dialog_title)
+//                    .setMessage(R.string.with_friends_dialog_message)
+//                    .show();
+//        }
+        // TODO: 8/29/2016 ask for freinds play
     }
 
     private void askForFriendsForLeaderboard() {
@@ -351,7 +329,7 @@ public class HomeFragment extends Fragment {
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        requestFriendsPermission(FRIENDS_LEADERBOARD_PERMISSION_REQUEST_CODE);
+
                     }
                 })
                 .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -369,7 +347,7 @@ public class HomeFragment extends Fragment {
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        requestPublishPermissions();
+
                     }
                 })
                 .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -383,11 +361,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void onPlayButtonTouched() {
-        if (FacebookLogin.isPermissionGranted(FacebookLoginPermission.USER_FRIENDS)) {
-            startGame();
-        } else {
-            askForFriendsForPlay();
-        }
+        startGame();
+//        askForFriendsForPlay();
     }
 
     private void onChallengeButtonTouched() {
@@ -395,35 +370,35 @@ public class HomeFragment extends Fragment {
     }
 
     private void sendInvite() {
-        getHomeActivity().getGameRequest().showDialogForInvites(
-                getString(R.string.game_request_dialog_title), getString(R.string.invite_dialog_message));
+//        getHomeActivity().getGameRequest().showDialogForInvites(
+//                getString(R.string.game_request_dialog_title), getString(R.string.invite_dialog_message));
+        // TODO: 8/29/2016  send invitation
     }
 
     private void sendDirectedRequest(List<String> recipients) {
-        getHomeActivity().getGameRequest().showDialogForDirectedRequests(
-                getString(R.string.game_request_dialog_title),
-                getString(R.string.request_dialog_message, application.getTopScore()),
-                recipients);
+//        getHomeActivity().getGameRequest().showDialogForDirectedRequests(
+//                getString(R.string.game_request_dialog_title),
+//                getString(R.string.request_dialog_message, application.getTopScore()),
+//                recipients);
+        // TODO: 8/29/2016 send direct request
     }
 
     private void sendDirectedChallenge(List<String> recipient) {
-        getHomeActivity().getGameRequest().showDialogForDirectedRequests(
-                getString(R.string.game_request_dialog_title),
-                getString(R.string.challenge_dialog_message, application.getScore()),
-                recipient);
+//        getHomeActivity().getGameRequest().showDialogForDirectedRequests(
+//                getString(R.string.game_request_dialog_title),
+//                getString(R.string.challenge_dialog_message, application.getScore()),
+//                recipient);
+        // TODO: 8/29/2016  send direct challenge requerst
     }
 
     private void onScoresButtonTouched() {
-        if (FacebookLogin.isPermissionGranted(FacebookLoginPermission.USER_FRIENDS)) {
-            Intent i = new Intent(getActivity(), ScoreboardActivity.class);
-            startActivityForResult(i, 0);
-        } else {
-            askForFriendsForLeaderboard();
-        }
+        Intent i = new Intent(getActivity(), ScoreboardActivity.class);
+        startActivityForResult(i, 0);
+//        askForFriendsForLeaderboard();
     }
 
     private void onGameOverChallengeButtonTouched() {
-        sendDirectedChallenge(Arrays.asList(application.getLastFriendSmashedID()));
+        sendDirectedChallenge(Arrays.asList(FriendSmashHelper.get().getLastFriendSmashedID()));
     }
 
     private void onGameOverBragButtonTouched() {
@@ -431,12 +406,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void onGameOverCloseButtonTouched() {
-        if (FacebookLogin.isPermissionGranted(FacebookLoginPermission.PUBLISH_ACTIONS)) {
-            Sharing.publishScore(application.getScore(), application.getTopScore());
-            hideGameOverContainer();
-        } else {
-            askForPublishActionsForScores();
-        }
+//        if (FacebookLogin.isPermissionGranted(FacebookLoginPermission.PUBLISH_ACTIONS)) {
+//            Sharing.publishScore(application.getScore(), application.getTopScore());
+//            hideGameOverContainer();
+//        } else {
+//            askForPublishActionsForScores();
+//        }
+        // TODO: 8/29/2016  do sharing
     }
 
     private void showGameOverContainer() {
@@ -450,134 +426,55 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadFriendsForRequests() {
-        JSONArray friends = application.getFriends();
-
-        List<JSONObject> listOfFriends = new ArrayList<JSONObject>();
-        // arbitrarily truncating the list of friends at 8 to simplify this a bit.
-        for (int i = 0; i < friends.length() && i < 8; i++) {
-            listOfFriends.add(friends.optJSONObject(i));
-        }
-
-        final RequestUserArrayAdapter adapter = new RequestUserArrayAdapter(
-                getActivity(), listOfFriends);
-        requestsGridView.setAdapter(adapter);
-
-        requestsGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, final View view,
-                                    int position, long id) {
-                JSONObject clickedUser = application.getFriends().optJSONObject(position);
-                String uid = clickedUser.optString("id");
-                // items act as toggles.
-                if (idsToRequest.contains(uid)) {
-                    idsToRequest.remove(uid);
-                } else {
-                    idsToRequest.add(uid);
-                }
-            }
-
-        });
+//        JSONArray friends = FriendSmashHelper.get().getFriends();
+//
+//        List<JSONObject> listOfFriends = new ArrayList<JSONObject>();
+//        // arbitrarily truncating the list of friends at 8 to simplify this a bit.
+//        for (int i = 0; i < friends.length() && i < 8; i++) {
+//            listOfFriends.add(friends.optJSONObject(i));
+//        }
+//
+//        final RequestUserArrayAdapter adapter = new RequestUserArrayAdapter(
+//                getActivity(), listOfFriends);
+//        requestsGridView.setAdapter(adapter);
+//
+//        requestsGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, final View view,
+//                                    int position, long id) {
+//                JSONObject clickedUser = application.getFriends().optJSONObject(position);
+//                String uid = clickedUser.optString("id");
+//                // items act as toggles.
+//                if (idsToRequest.contains(uid)) {
+//                    idsToRequest.remove(uid);
+//                } else {
+//                    idsToRequest.add(uid);
+//                }
+//            }
+//
+//        });
+        //// TODO: 8/29/2016 request game
     }
 
-    private void loadFriendsFromFacebook(final FriendsLoadedCallback callback) {
-        GraphAPICall friendsRequest = GraphAPICall.callMeFriends("name,first_name", User.get().getFacebookUserId(), new GraphAPICallback() {
-            @Override
-            public void handleResponse(GraphResponse response) {
-                application.setFriends(GraphAPICall.getDataFromResponse(response));
-                callback.afterFriendsLoaded();
-            }
-
-            @Override
-            public void handleError(FacebookRequestError error) {
-                Log.e(StartupApplication.TAG, error.toString());
-                getHomeActivity().showError(error.toString());
-            }
-        });
-        friendsRequest.executeAsync();
+    private void loadFriendsFromFacebook() {
+        //// TODO: 8/29/2016 load friends
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        CallbackManager manager = getHomeActivity().getFacebookLogin().getCallbackManager();
-        manager.onActivityResult(requestCode, resultCode, data);
-        switch (resultCode) {
-            case Activity.RESULT_OK:
-                if (data != null) {
-                    Bundle bundle = data.getExtras();
-                    application.setScore(bundle.getInt("score"));
-                    int coinsCollected = (bundle.getInt("coins_collected"));
-                    application.setCoinsCollected(coinsCollected);
-                    if (coinsCollected > 0) {
-                        application.setCoins(application.getCoins() + coinsCollected);
-                    }
-                    int bombsUsed = (bundle.getInt("bombs_used"));
-                    if (bombsUsed > 0) {
-                        application.setBombs(application.getBombs() - bombsUsed);
-                    }
-
-                    application.saveInventory();
-                    loadInventory();
-
-                    completeGameOver();
-
-                    (getHomeActivity()).getEventsLogger().logGamePlayedEvent(application.getScore());
-                }
-                break;
-            case Activity.RESULT_FIRST_USER:
-                if (data != null) {
-                    startGame(data.getStringExtra("user_id"));
-                }
-                break;
-            case Activity.RESULT_CANCELED:
-                if (data != null) {
-                    Bundle bundle = data.getExtras();
-                    String error = bundle.getString("error");
-                    if (error != null) {
-                        getHomeActivity().showError(error);
-                    }
-                }
-        }
-    }
 
     public void onUserFriendsGranted() {
-        if (latestPermissionRequestCode == FRIENDS_PLAY_PERMISSION_REQUEST_CODE) {
-            latestPermissionRequestCode = 0;
-            if (FacebookLogin.isPermissionGranted(FacebookLoginPermission.USER_FRIENDS)) {
-                loadFriendsFromFacebook(new FriendsLoadedCallback() {
-                    @Override
-                    public void afterFriendsLoaded() {
-                        startGame();
-                    }
-                });
-            } else {
-                application.setHasDeniedFriendPermission(true);
-                startGame();
-            }
-        } else if (latestPermissionRequestCode == FRIENDS_LEADERBOARD_PERMISSION_REQUEST_CODE) {
-            latestPermissionRequestCode = 0;
-            if (FacebookLogin.isPermissionGranted(FacebookLoginPermission.USER_FRIENDS)) {
-                loadFriendsFromFacebook(new FriendsLoadedCallback() {
-                    @Override
-                    public void afterFriendsLoaded() {
-                        Intent i = new Intent(getActivity(), ScoreboardActivity.class);
-                        startActivityForResult(i, 0);
-                    }
-                });
-            }
-        }
+
     }
 
     public void onPublishActionsGranted() {
-        Sharing.publishScore(application.getScore(), application.getTopScore());
+        // TODO: 8/29/2016  publish score
         hideGameOverContainer();
     }
 
     private void startGame() {
         Intent i = new Intent(getActivity(), GameActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putInt("num_bombs", ((StartupApplication) getActivity().getApplication()).getBombs());
+        bundle.putInt("num_bombs", FriendSmashHelper.get().getBombs());
         i.putExtras(bundle);
         startActivityForResult(i, 0);
     }
@@ -586,28 +483,26 @@ public class HomeFragment extends Fragment {
         Intent i = new Intent(getActivity(), GameActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("user_id", userId);
-        bundle.putInt("num_bombs", ((StartupApplication) getActivity().getApplication()).getBombs());
+        bundle.putInt("num_bombs", FriendSmashHelper.get().getBombs());
         i.putExtras(bundle);
         startActivityForResult(i, 0);
     }
 
     private void completeGameOver() {
-        // Set the scoreboardEntriesList to null so that the scoreboard is refreshed
-        application.setScoreboardEntriesList(null);
 
-        if (application.getLastFriendSmashedID() != null) {
-            youSmashedUserImage.setProfileId(application.getLastFriendSmashedID());
+        if (FriendSmashHelper.get().getLastFriendSmashedID() != null) {
+            youSmashedUserImage.setProfileId(FriendSmashHelper.get().getLastFriendSmashedID());
             youSmashedUserImage.setCropped(true);
             youSmashedUserImage.setVisibility(View.VISIBLE);
         } else {
             youSmashedUserImage.setVisibility(View.INVISIBLE);
         }
 
-        if (application.getScore() >= 0) {
-            scoredTextView.setText("You smashed " + application.getLastFriendSmashedName() +
-                    " " + application.getScore() + (application.getScore() == 1 ? " time!" : " times!") +
-                    "\n" + "Collected " + application.getCoinsCollected() +
-                    (application.getCoinsCollected() == 1 ? " coin!" : " coins!"));
+        if (FriendSmashHelper.get().getScore() >= 0) {
+            scoredTextView.setText("You smashed " + FriendSmashHelper.get().getLastFriendSmashedName() +
+                    " " + FriendSmashHelper.get().getScore() + (FriendSmashHelper.get().getScore() == 1 ? " time!" : " times!") +
+                    "\n" + "Collected " + FriendSmashHelper.get().getCoinsCollected() +
+                    (FriendSmashHelper.get().getCoinsCollected() == 1 ? " coin!" : " coins!"));
         } else {
             scoredTextView.setText(getResources().getString(R.string.no_score));
         }
@@ -616,47 +511,39 @@ public class HomeFragment extends Fragment {
     }
 
     private void sendChallenge() {
-        getHomeActivity().getGameRequest().showDialogForRequests(
-                getString(R.string.game_request_dialog_title),
-                getString(R.string.request_dialog_message, application.getTopScore())
-        );
+//        getHomeActivity().getGameRequest().showDialogForRequests(
+//                getString(R.string.game_request_dialog_title),
+//                getString(R.string.request_dialog_message, application.getTopScore())
+//        );
+        // TODO: 8/29/2016  send challenge
     }
 
     private void sendCustomChallenge() {
-        if (FacebookLogin.isPermissionGranted(FacebookLoginPermission.USER_FRIENDS)) {
-            loadFriendsForRequests();
-            mainButtonsContainer.setVisibility(View.INVISIBLE);
-            challengeContainer.setVisibility(View.VISIBLE);
-        } else {
-            sendChallenge();
-        }
+//        if (FacebookLogin.isPermissionGranted(FacebookLoginPermission.USER_FRIENDS)) {
+//            loadFriendsForRequests();
+//            mainButtonsContainer.setVisibility(View.INVISIBLE);
+//            challengeContainer.setVisibility(View.VISIBLE);
+//        } else {
+//            sendChallenge();
+//        }
+        // TODO: 8/29/2016 send custom challenge
     }
 
     private void sendBrag() {
-        JSONObject currentFBUser = application.getCurrentFBUser();
-        // This first parameter is used for deep linking so that anyone who clicks the link
-        // will start smashing this user who sent the post
-        String link = "https://apps.facebook.com/friendsmashsample/?challenge_brag=";
-        if (currentFBUser != null) {
-            link += currentFBUser.optString("id");
-        }
-
-        String name = getString(R.string.brag_share_name);
-        String description = getString(R.string.brag_share_description, application.getScore());
-        String picture = getString(R.string.brag_share_picture);
-
-        Sharing.shareViaDialog(getActivity(), name, description, picture, link);
-    }
-
-    private void requestPublishPermissions() {
-        Log.d(StartupApplication.TAG, "Requesting publish permissions.");
-
-    }
-
-    private void requestFriendsPermission(int requestCode) {
-        Log.d(StartupApplication.TAG, "Requesting friends permissions.");
-        latestPermissionRequestCode = requestCode;
-        getHomeActivity().getFacebookLogin().requestPermission(FacebookLoginPermission.USER_FRIENDS);
+//        JSONObject currentFBUser = application.getCurrentFBUser();
+//        // This first parameter is used for deep linking so that anyone who clicks the link
+//        // will start smashing this user who sent the post
+//        String link = "https://apps.facebook.com/friendsmashsample/?challenge_brag=";
+//        if (currentFBUser != null) {
+//            link += currentFBUser.optString("id");
+//        }
+//
+//        String name = getString(R.string.brag_share_name);
+//        String description = getString(R.string.brag_share_description, application.getScore());
+//        String picture = getString(R.string.brag_share_picture);
+//
+//        Sharing.shareViaDialog(getActivity(), name, description, picture, link);
+        // TODO: 8/29/2016 send brag
     }
 
     private HomeActivity getHomeActivity() {

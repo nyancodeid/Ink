@@ -7,7 +7,9 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -27,7 +29,10 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.People;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+import com.ink.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -63,7 +68,9 @@ public class SocialSignIn {
 
     }
 
-    public synchronized GoogleApiClient buildGoogleApiClient(final Activity activity) {
+    public synchronized GoogleApiClient buildGoogleApiClient(final Activity activity, final int requestCode,
+                                                             @Nullable final GeneralCallback<JSONArray> resultCallbacks) {
+
         GoogleSignInOptions gGoogleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(new Scope(Scopes.PROFILE))
                 .requestScopes(new Scope(Scopes.PLUS_LOGIN))
@@ -76,25 +83,65 @@ public class SocialSignIn {
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
                     public void onConnected(@Nullable Bundle bundle) {
-                        Plus.PeopleApi.loadVisible(mGoogleApiClient, "me").setResultCallback(new ResultCallbacks<People.LoadPeopleResult>() {
+                        Plus.PeopleApi.loadVisible(mGoogleApiClient, null
+                        ).setResultCallback(new ResultCallbacks<People.LoadPeopleResult>() {
                             @Override
                             public void onSuccess(@NonNull People.LoadPeopleResult loadPeopleResult) {
-                                Toast.makeText(activity, "", Toast.LENGTH_SHORT).show();
-                                Person person = loadPeopleResult.getPersonBuffer().get(0);
-                                Log.d("fasfafasfsafasfas", "onSuccess: " + person);
+                                int personCount = loadPeopleResult.getPersonBuffer().getCount();
+                                if (personCount != 0) {
+                                    JSONArray friendsArray = new JSONArray();
+                                    for (int i = 0; i < personCount; i++) {
+                                        Person eachPerson = loadPeopleResult.getPersonBuffer().get(i);
+                                        try {
+                                            JSONObject eachFriendObject = new JSONObject();
+                                            eachFriendObject.put("name", eachPerson.getDisplayName());
+                                            eachFriendObject.put("id", eachPerson.getId());
+                                            String imageUrl;
+                                            if (eachPerson.hasUrl()) {
+                                                imageUrl = eachPerson.getImage().getUrl().replaceAll("\\?sz=50", "");
+                                            } else {
+                                                imageUrl = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + Constants.FUNNY_USER_IMAGE;
+                                            }
+                                            eachFriendObject.put("image", imageUrl);
+                                            friendsArray.put(eachFriendObject);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    if (resultCallbacks != null) {
+                                        Log.d("fasfsafsafasfsa", "onSuccess: " + friendsArray);
+                                        resultCallbacks.onSuccess(friendsArray);
+                                    }
+                                } else {
+                                    Snackbar.make(activity.getWindow().getDecorView(), activity.getString(R.string.noGoogleFriend), Snackbar.LENGTH_INDEFINITE).
+                                            setAction("OK", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+
+                                                }
+                                            }).show();
+                                    if (resultCallbacks != null) {
+                                        resultCallbacks.onFailure(null);
+                                    }
+                                }
+
                             }
 
                             @Override
                             public void onFailure(@NonNull Status status) {
                                 if (status.hasResolution()) {
                                     try {
-                                        // !!!
-                                        status.startResolutionForResult(activity, 100);
+                                        status.startResolutionForResult(activity, requestCode);
                                     } catch (IntentSender.SendIntentException e) {
                                         mGoogleApiClient.connect();
                                     }
+                                } else {
+                                    if (resultCallbacks != null) {
+                                        resultCallbacks.onFailure(null);
+                                    }
+                                    Toast.makeText(activity, activity.getString(R.string.error_retriving_circles), Toast.LENGTH_SHORT).show();
                                 }
-                                Log.d("fasfafasfsafasfas", "onFailure: " + status);
+
                             }
 
                         });

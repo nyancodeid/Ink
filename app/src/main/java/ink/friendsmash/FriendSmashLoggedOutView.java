@@ -18,35 +18,49 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package ink.friendsmash.integration;
+package ink.friendsmash;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 
-import com.facebook.appevents.AppEventsLogger;
+import com.ink.R;
 
 /**
- * Class responsible for logging AppEvents in Friend Smash!
+ *  Fragment to be displayed if the user is logged out of Facebook
  */
-public class FriendSmashEventsLogger {
-    private AppEventsLogger logger;
+public class FriendSmashLoggedOutView extends Fragment {
 
-    /**
-     * Context is needed to create an instance of AppEventsLogger.
-     * See https://developers.facebook.com/docs/reference/android/current/class/AppEventsLogger/
-     */
-    public FriendSmashEventsLogger(Context context) {
-        logger = AppEventsLogger.newLogger(context);
-    }
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		
+		super.onCreate(savedInstanceState);
+		setRetainInstance(true);
 
-    /**
-     * Logs a custom App Event when player has completed the game with given score.
-     * To understand how to best use App Events see
-     * https://developers.facebook.com/docs/app-events/best-practices
-     */
-    public void logGamePlayedEvent(int score) {
-        Bundle params = new Bundle();
-        params.putInt(FriendSmashCustomAppEvent.EVENT_PARAM_SCORE, score);
-        logger.logEvent(FriendSmashCustomAppEvent.EVENT_NAME_GAME_PLAYED, params);
-    }
+		getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+	}
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup parent,
+							 Bundle savedInstanceState) {
+
+		View v = inflater.inflate(R.layout.fragment_home_fb_logged_out, parent, false);
+
+
+		return v;
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	private HomeActivity getHomeActivity() {
+		return (HomeActivity)getActivity();
+	}
 }

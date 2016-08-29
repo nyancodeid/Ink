@@ -21,38 +21,35 @@
 package ink.friendsmash;
 
 import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.FacebookRequestError;
-import com.facebook.GraphRequestBatch;
-import com.facebook.GraphResponse;
-import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallbacks;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.plus.People;
+import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 import com.ink.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import ink.StartupApplication;
-import ink.friendsmash.integration.FacebookLogin;
-import ink.friendsmash.integration.FacebookLoginPermission;
-import ink.friendsmash.integration.FriendSmashEventsLogger;
-import ink.friendsmash.integration.GameRequest;
-import ink.friendsmash.integration.GraphAPICall;
-import ink.friendsmash.integration.GraphAPICallback;
-import ink.utils.User;
+import ink.callbacks.GeneralCallback;
+import ink.utils.SharedHelper;
+import ink.utils.SocialSignIn;
 
 /**
  * Entry point for the app that represents the home screen with the Play button etc. and
@@ -64,141 +61,102 @@ public class HomeActivity extends FragmentActivity {
     private static final int HOME = 1;
     private static final int FRAGMENT_COUNT = HOME + 1;
     private Fragment[] fragments = new Fragment[FRAGMENT_COUNT];
+    private static final int GOOGLE_ERROR_RESOLUTION_RESULT = 25552;
 
-    private FriendSmashEventsLogger eventsLogger;
-    private GraphAPICall myFriendsCall;
+    private GoogleApiClient mGoogleApiClient;
 
-    public FriendSmashEventsLogger getEventsLogger() {
-        return eventsLogger;
-    }
+    private RelativeLayout singInWithGoogle;
+    private SharedHelper sharedHelper;
 
-    private FacebookLogin facebookLogin;
-
-    public FacebookLogin getFacebookLogin() {
-        return facebookLogin;
-    }
-
-    private GameRequest gameRequest;
-
-    public GameRequest getGameRequest() {
-        return gameRequest;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        facebookLogin = new FacebookLogin(this);
-        facebookLogin.init();
-        eventsLogger = new FriendSmashEventsLogger(getApplicationContext());
-        gameRequest = new GameRequest(this);
 
         setContentView(R.layout.home);
-
+        sharedHelper = new SharedHelper(this);
         FragmentManager fm = getSupportFragmentManager();
         fragments[FB_LOGGED_OUT_HOME] = fm.findFragmentById(R.id.fbLoggedOutHomeFragment);
         fragments[HOME] = fm.findFragmentById(R.id.homeFragment);
+        singInWithGoogle = (RelativeLayout) fragments[FB_LOGGED_OUT_HOME].getView().findViewById(R.id.singInWithGoogle);
+        singInWithGoogle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mGoogleApiClient = SocialSignIn.get().buildGoogleApiClient(HomeActivity.this, GOOGLE_ERROR_RESOLUTION_RESULT, new GeneralCallback<JSONArray>() {
+                    @Override
+                    public void onSuccess(JSONArray jsonArray) {
+                        fetchUserInformationAndLogin();
+                    }
 
+                    @Override
+                    public void onFailure(JSONArray jsonArray) {
+
+                    }
+                });
+            }
+        });
         FragmentTransaction transaction = fm.beginTransaction();
         for (int i = 0; i < fragments.length; i++) {
             transaction.hide(fragments[i]);
         }
         transaction.commit();
-
-        if (savedInstanceState != null) {
-            StartupApplication app = (StartupApplication) getApplication();
-            boolean loggedInState = savedInstanceState.getBoolean(StartupApplication.LOGGED_IN_KEY, false);
-            app.setLoggedIn(loggedInState);
-
-            if (app.isLoggedIn() && (app.getFriends() == null || app.getCurrentFBUser() == null)) {
-                try {
-                    String currentFBUserJSONString = savedInstanceState.getString(StartupApplication.CURRENT_FB_USER_KEY);
-                    if (currentFBUserJSONString != null) {
-                        JSONObject currentFBUser = new JSONObject(currentFBUserJSONString);
-                        app.setCurrentFBUser(currentFBUser);
-                    }
-
-                    // friends
-                    ArrayList<String> friendsJSONStringArrayList = savedInstanceState.getStringArrayList(StartupApplication.FRIENDS_KEY);
-                    if (friendsJSONStringArrayList != null) {
-                        JSONArray friends = new JSONArray();
-                        Iterator<String> friendsJSONStringArrayListIterator = friendsJSONStringArrayList.iterator();
-                        while (friendsJSONStringArrayListIterator.hasNext()) {
-                            friends.put(new JSONObject(friendsJSONStringArrayListIterator.next()));
-                        }
-                        app.setFriends(friends);
-                    }
-                } catch (JSONException e) {
-                    Log.e(StartupApplication.TAG, e.toString());
-                }
-            }
-        } else if (FacebookLogin.isAccessTokenValid()) {
-            fetchUserInformationAndLogin();
-        }
+        fetchUserInformationAndLogin();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        facebookLogin.getCallbackManager().onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case GOOGLE_ERROR_RESOLUTION_RESULT:
+                handleGoogleCircleResult();
+                break;
+        }
     }
 
     protected void onResumeFragments() {
-        StartupApplication application = (StartupApplication) getApplication();
-        if (FacebookLogin.isAccessTokenValid() && application.getCurrentFBUser() != null) {
+        if (sharedHelper.isLoggedIntoGame()) {
             showFragment(HOME);
         } else {
             showFragment(FB_LOGGED_OUT_HOME);
         }
+
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        AppEventsLogger.activateApp(this);
-        facebookLogin.activate();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        AppEventsLogger.deactivateApp(this);
-        facebookLogin.deactivate();
+
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        StartupApplication app = (StartupApplication) getApplication();
-
-        outState.putBoolean(StartupApplication.LOGGED_IN_KEY, app.isLoggedIn());
-
-        if (((StartupApplication) getApplication()).getCurrentFBUser() != null) {
-            outState.putString(StartupApplication.CURRENT_FB_USER_KEY, app.getCurrentFBUser().toString());
-        }
-
-        if (((StartupApplication) getApplication()).getFriends() != null) {
-            outState.putStringArrayList(StartupApplication.FRIENDS_KEY, app.getFriendsAsArrayListOfStrings());
-        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        facebookLogin.deactivate();
     }
 
     public void buyBombs() {
-        StartupApplication app = (StartupApplication) getApplication();
-        if (app.getCoins() < StartupApplication.NUM_COINS_PER_BOMB) {
+
+        if (FriendSmashHelper.get().getCoins() < (FriendSmashHelper.get().NUM_COINS_PER_BOMB)) {
             Toast.makeText(this, "Not enough coins.", Toast.LENGTH_LONG).show();
             return;
         }
 
-        app.setBombs(app.getBombs() + 1);
-        app.setCoins(app.getCoins() - StartupApplication.NUM_COINS_PER_BOMB);
-
-        app.saveInventory();
+        // TODO: 8/29/2016 set up bomb logic and save it to inventory
+//        app.setBombs(app.getBombs() + 1);
+//        app.setCoins(app.getCoins() - StartupApplication.NUM_COINS_PER_BOMB);
+//
+//        app.saveInventory();
 
         loadInventoryFragment();
     }
@@ -219,100 +177,18 @@ public class HomeActivity extends FragmentActivity {
                 if (fragments[FB_LOGGED_OUT_HOME] != null) {
                     // TODO: 8/26/2016  hide progress
                 }
-                ((StartupApplication) getApplication()).setLoggedIn(false);
+                // TODO: 8/29/2016  set user logged out
+
                 break;
             case HOME:
-                ((StartupApplication) getApplication()).setLoggedIn(true);
+                // TODO: 8/29/2016 set user logged in
                 break;
         }
     }
 
-    public void onLoginStateChanged(AccessToken oldToken, AccessToken currentToken) {
-        boolean isLoggedIn = ((StartupApplication) getApplication()).isLoggedIn();
-        if (FacebookLogin.isAccessTokenValid() && !isLoggedIn && fragments[HOME] != null) {
-            fetchUserInformationAndLogin();
-        } else if (!FacebookLogin.isAccessTokenValid() && isLoggedIn && fragments[FB_LOGGED_OUT_HOME] != null) {
-            logout();
-            showFragment(FB_LOGGED_OUT_HOME);
-        } else if (FacebookLogin.testTokenHasPermission(currentToken, FacebookLoginPermission.USER_FRIENDS) &&
-                !FacebookLogin.testTokenHasPermission(oldToken, FacebookLoginPermission.USER_FRIENDS)) {
-            ((HomeFragment) fragments[HOME]).onUserFriendsGranted();
-        } else if (FacebookLogin.testTokenHasPermission(currentToken, FacebookLoginPermission.PUBLISH_ACTIONS) &&
-                !FacebookLogin.testTokenHasPermission(oldToken, FacebookLoginPermission.PUBLISH_ACTIONS)) {
-            ((HomeFragment) fragments[HOME]).onPublishActionsGranted();
-        }
-    }
 
     private void fetchUserInformationAndLogin() {
-        if (FacebookLogin.isAccessTokenValid()) {
-            if (fragments[FB_LOGGED_OUT_HOME] != null) {
-                // TODO: 8/26/2016  hide progress
 
-            }
-
-            GraphAPICall meCall = GraphAPICall.callMe("first_name", new GraphAPICallback() {
-                @Override
-                public void handleResponse(GraphResponse response) {
-                    JSONObject user = response.getJSONObject();
-                    ((StartupApplication) getApplication()).setCurrentFBUser(user);
-                    String userId = user.optString("id");
-                    User.get().setFacebookUserId(userId);
-                    myFriendsCall = GraphAPICall.callMeFriends("name,first_name", userId, new GraphAPICallback() {
-                        @Override
-                        public void handleResponse(GraphResponse response) {
-                            Log.d("fsafsafsafsafa", "handleResponse: " + response.getRawResponse());
-                            JSONArray friendsData = GraphAPICall.getDataFromResponse(response);
-                            ((StartupApplication) getApplication()).setFriends(friendsData);
-                        }
-
-                        @Override
-                        public void handleError(FacebookRequestError error) {
-                            showError(error.toString());
-                        }
-                    });
-
-                    //saveUserToParse();
-                    // it causes strange behaviour with AccessTokenTracker
-                }
-
-                @Override
-                public void handleError(FacebookRequestError error) {
-                    showError(error.toString());
-                }
-            });
-
-            GraphAPICall meScoresCall = GraphAPICall.callMeScores(new GraphAPICallback() {
-                @Override
-                public void handleResponse(GraphResponse response) {
-                    JSONObject data = GraphAPICall.getDataFromResponse(response).optJSONObject(0);
-                    if (data != null) {
-                        int score = data.optInt("score");
-                        ((StartupApplication) getApplication()).setTopScore(score);
-                    }
-                }
-
-                @Override
-                public void handleError(FacebookRequestError error) {
-                    showError(error.toString());
-                }
-            });
-
-            // Create a RequestBatch and add a callback once the batch of requests completes
-            GraphRequestBatch requestBatch = GraphAPICall.createRequestBatch(myFriendsCall, meCall, meScoresCall);
-
-            requestBatch.addCallback(new GraphRequestBatch.Callback() {
-                @Override
-                public void onBatchCompleted(GraphRequestBatch batch) {
-                    if (((StartupApplication) getApplication()).getCurrentFBUser() != null) {
-                        loadPersonalizedFragment();
-                    } else {
-                        showError(getString(R.string.error_fetching_profile));
-                    }
-                }
-            });
-
-            requestBatch.executeAsync();
-        }
     }
 
     private void saveUserToParse() {
@@ -335,4 +211,53 @@ public class HomeActivity extends FragmentActivity {
     private void logout() {
         LoginManager.getInstance().logOut();
     }
+
+
+    private void handleGoogleCircleResult() {
+        Plus.PeopleApi.loadVisible(mGoogleApiClient, null
+        ).setResultCallback(new ResultCallbacks<People.LoadPeopleResult>() {
+            @Override
+            public void onSuccess(@NonNull People.LoadPeopleResult loadPeopleResult) {
+                int personCount = loadPeopleResult.getPersonBuffer().getCount();
+                if (personCount != 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    JSONObject jsonObject = new JSONObject();
+                    for (int i = 0; i < personCount; i++) {
+                        Person eachPerson = loadPeopleResult.getPersonBuffer().get(i);
+                        try {
+                            jsonObject.put("first_name", eachPerson.getDisplayName());
+                            jsonArray.put(eachPerson.getImage().getUrl().replaceAll("\\?sz=50", ""));
+                            jsonArray.put(jsonObject);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    Snackbar.make(singInWithGoogle, getString(R.string.noGoogleFriend), Snackbar.LENGTH_INDEFINITE).
+                            setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            }).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Status status) {
+                if (status.hasResolution()) {
+                    try {
+                        status.startResolutionForResult(HomeActivity.this, GOOGLE_ERROR_RESOLUTION_RESULT);
+                    } catch (IntentSender.SendIntentException e) {
+                        mGoogleApiClient.connect();
+                    }
+                }
+                Toast.makeText(HomeActivity.this, getString(R.string.error_retriving_circles), Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
+    }
+
 }

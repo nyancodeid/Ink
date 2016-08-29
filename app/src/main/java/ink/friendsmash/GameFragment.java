@@ -32,7 +32,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -59,11 +58,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
-
-import ink.StartupApplication;
-import ink.friendsmash.integration.GameRequest;
-import ink.friendsmash.integration.GraphAPICall;
-import ink.friendsmash.integration.GraphAPICallback;
 
 /**
  * Fragment shown once a user starts playing a game
@@ -112,7 +106,7 @@ public class GameFragment extends Fragment {
 
     private int score = 0;
     private int lives = 3;
-    private int bombsRemaining = StartupApplication.NUM_BOMBS_ALLOWED_IN_GAME;
+    private int bombsRemaining = FriendSmashHelper.get().NUM_BOMBS_ALLOWED_IN_GAME;
     private int bombsUsed = 0;
     private int coinsCollected = 0;
 
@@ -127,7 +121,7 @@ public class GameFragment extends Fragment {
         uiHandler = new Handler();
 
         // Make sure there are non-zero friends.
-        JSONArray friends = ((StartupApplication) getActivity().getApplication()).getFriends();
+        JSONArray friends =  FriendSmashHelper.get().getFriends();
         if (friends != null && friends.length() > 0) {
             isSocialMode = true;
             friendToSmashIndex = getRandomFriendIndex();
@@ -136,7 +130,6 @@ public class GameFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        ((StartupApplication) getActivity().getApplication()).loadInventory();
         View v = inflater.inflate(R.layout.fragment_game, parent, false);
 
         gameFrame = (FrameLayout) v.findViewById(R.id.gameFrame);
@@ -195,7 +188,7 @@ public class GameFragment extends Fragment {
     private void setSmashPlayerNameTextView() {
         if (isSocialMode) {
             if (friendToSmashFirstName == null) {
-                JSONObject friend = ((StartupApplication) getActivity().getApplication()).getFriend(friendToSmashIndex);
+                JSONObject friend =  FriendSmashHelper.get().getFriend(friendToSmashIndex);
                 friendToSmashFirstName = friend.optString("first_name");
             }
             smashPlayerNameTextView.setText("Smash " + friendToSmashFirstName + " !");
@@ -204,7 +197,7 @@ public class GameFragment extends Fragment {
 
     private int getRandomFriendIndex() {
         Random randomGenerator = new Random(System.currentTimeMillis());
-        int friendIndex = randomGenerator.nextInt(((StartupApplication) getActivity().getApplication()).getFriends().length());
+        int friendIndex = randomGenerator.nextInt( FriendSmashHelper.get().getFriends().length());
         return friendIndex;
     }
 
@@ -283,8 +276,8 @@ public class GameFragment extends Fragment {
             if (bundle != null) {
                 requestID = bundle.getString("request_id");
                 userID = bundle.getString("user_id");
-                numBombsRemaining = bundle.getInt("num_bombs") <= StartupApplication.NUM_BOMBS_ALLOWED_IN_GAME ?
-                        bundle.getInt("num_bombs") : StartupApplication.NUM_BOMBS_ALLOWED_IN_GAME;
+                numBombsRemaining = bundle.getInt("num_bombs") <=  FriendSmashHelper.get().NUM_BOMBS_ALLOWED_IN_GAME ?
+                        bundle.getInt("num_bombs") :  FriendSmashHelper.get().NUM_BOMBS_ALLOWED_IN_GAME;
                 setBombsRemaining(numBombsRemaining);
             }
 
@@ -309,36 +302,11 @@ public class GameFragment extends Fragment {
     }
 
     private void fireFirstImageWithRequestID(String requestID) {
-        GameRequest.getUserDataFromRequest(requestID, new GraphAPICallback() {
-            @Override
-            public void handleResponse(GraphResponse response) {
-                friendToSmashIDProvided = response.getJSONObject().optString("id");
-                setFriendToSmashFromGraphAPIResponse(response);
-            }
 
-            @Override
-            public void handleError(FacebookRequestError error) {
-                Log.e(StartupApplication.TAG, error.toString());
-                closeAndHandleError(error);
-            }
-        });
     }
 
     private void fireFirstImageWithUserID(String userID) {
         friendToSmashIDProvided = userID;
-        GraphAPICall userCall = GraphAPICall.callUser(friendToSmashIDProvided, "first_name", new GraphAPICallback() {
-            @Override
-            public void handleResponse(GraphResponse response) {
-                setFriendToSmashFromGraphAPIResponse(response);
-            }
-
-            @Override
-            public void handleError(FacebookRequestError error) {
-                Log.e(StartupApplication.TAG, error.toString());
-                closeAndHandleError(error);
-            }
-        });
-        userCall.executeAsync();
     }
 
     private void setFriendToSmashFromGraphAPIResponse(GraphResponse response) {
@@ -403,7 +371,7 @@ public class GameFragment extends Fragment {
                         progressContainer.setVisibility(View.VISIBLE);
 
                         final String friendToSmashID = friendToSmashIDProvided != null ? friendToSmashIDProvided :
-                                ((StartupApplication) getActivity().getApplication()).getFriend(friendToSmashIndex).optString("id");
+                                FriendSmashHelper.get().getFriend(friendToSmashIndex).optString("id");
 
                         fetchFriendBitmapAndFireImages(userImageView, friendToSmashID, extraImage);
                     }
@@ -462,11 +430,9 @@ public class GameFragment extends Fragment {
                         URL imageURL = new URL(imageURLString);
                         friendToSmashBitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
                     } catch (Exception e) {
-                        Log.e(StartupApplication.TAG, e.toString());
                         closeAndShowError(getResources().getString(R.string.error_fetching_friend_bitmap));
                     }
                 } catch (Exception e) {
-                    Log.e(StartupApplication.TAG, e.toString());
                 }
 
                 uiHandler.post(new Runnable() {
@@ -478,8 +444,8 @@ public class GameFragment extends Fragment {
                             setFriendImageAndFire(userImageView, friendToSmashBitmap, extraImage);
 
                             // Also set the lastFriendSmashedID and lastFriendSmashedName in the application
-                            ((StartupApplication) getActivity().getApplication()).setLastFriendSmashedID(friendToSmashID);
-                            ((StartupApplication) getActivity().getApplication()).setLastFriendSmashedName(friendToSmashFirstName);
+                            FriendSmashHelper.get().setLastFriendSmashedID(friendToSmashID);
+                            FriendSmashHelper.get().setLastFriendSmashedName(friendToSmashFirstName);
                         } else {
                             closeAndShowError(getResources().getString(R.string.error_fetching_friend_bitmap));
                         }

@@ -304,4 +304,12 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public void putLoggedIntoGame(boolean value) {
+        mEditor.putBoolean("isLoggedIntoGame", value);
+        mEditor.commit();
+    }
+
+    public boolean isLoggedIntoGame() {
+        return mSharedPreferences.getBoolean("isLoggedIntoGame", false);
+    }
 }

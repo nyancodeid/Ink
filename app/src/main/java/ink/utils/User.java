@@ -8,6 +8,7 @@ public class User {
     private int coins;
     private int bombCount;
     private String facebookUserId;
+    private String userName;
 
     public int getCoins() {
         return coins;
@@ -20,6 +21,10 @@ public class User {
 
     public int getBombCount() {
         return bombCount;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public void setBombCount(int bombCount) {
@@ -36,5 +41,9 @@ public class User {
 
     public void setCoins(int coins) {
         this.coins = coins;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 }
