@@ -293,7 +293,7 @@ public class CustomizeLook extends AppCompatActivity {
             @Override
             public void onSuccess(String s) {
                 ownBubbleColorPicked = true;
-                Drawable tintDrawable = ink.utils.ColorUtils.tintDrawable(getApplicationContext(), R.drawable.outgoing_message_bg, Color.parseColor("s"));
+                Drawable tintDrawable = ink.utils.ColorUtils.tintDrawable(getApplicationContext(), R.drawable.outgoing_message_bg, Color.parseColor(s));
                 ownBubbleIcon.setImageResource(0);
                 ownBubbleIcon.setBackground(tintDrawable);
             }

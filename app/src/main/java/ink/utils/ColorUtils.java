@@ -18,4 +18,9 @@ public class ColorUtils {
         }
         return wrappedDrawable;
     }
+
+    public static String getSimpleHexColor(int color) {
+        String hexWithoutAlpha = Integer.toHexString(color).toUpperCase().substring(2);
+        return hexWithoutAlpha;
+    }
 }
