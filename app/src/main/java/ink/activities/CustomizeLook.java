@@ -1,6 +1,7 @@
 package ink.activities;
 
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -292,6 +293,9 @@ public class CustomizeLook extends AppCompatActivity {
             @Override
             public void onSuccess(String s) {
                 ownBubbleColorPicked = true;
+                Drawable tintDrawable = ink.utils.ColorUtils.tintDrawable(getApplicationContext(), R.drawable.outgoing_message_bg, Color.parseColor("s"));
+                ownBubbleIcon.setImageResource(0);
+                ownBubbleIcon.setBackground(tintDrawable);
             }
 
             @Override
