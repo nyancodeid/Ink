@@ -479,5 +479,89 @@
             android:layout_height="1dp"
             android:layout_marginTop="5dp"
             android:background="#b3b3b3"></View>
+
+
+        <LinearLayout
+            android:id="@+id/opponentBubbleWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/opponentBubbleIcon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/incoming_message_bg" />
+
+            <TextView
+                android:id="@+id/opponentBubbleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/opponentBubbleText"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:id="@+id/opponentBubbleCleaner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:src="@drawable/close_vector"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="#b3b3b3"></View>
+
+
+        <LinearLayout
+            android:id="@+id/ownBubbleWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/ownBubbleIcon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/outgoing_message_bg" />
+
+            <TextView
+                android:id="@+id/ownBubbleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/ownBubbleText"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:id="@+id/ownBubbleCleaner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:src="@drawable/close_vector"
+                android:visibility="gone" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

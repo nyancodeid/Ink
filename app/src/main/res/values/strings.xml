@@ -546,4 +546,6 @@
     <string name="newFriendsFullText">Find new friends to chat with.</string>
     <string name="customizeAppTitle">Customize the application</string>
     <string name="customizeAppFullText">Customize the look of the app and stand out!</string>
+    <string name="opponentBubbleText">Pick opponent chat bubble color</string>
+    <string name="ownBubbleText">Pick own bubble color</string>
 </resources>

@@ -7,8 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,11 +80,11 @@ public class FriendSmashLoginView extends BaseActivity {
     private void loginUser(JSONArray friendsArray) {
         FriendSmashHelper.get().setFriends(friendsArray);
         Intent intent = new Intent(getApplicationContext(), FriendSmashHomeView.class);
-        startActivity(intent);
         if (DimDialog.isDialogAlive()) {
             DimDialog.hideDialog();
         }
         sharedHelper.putLoggedIntoGame(true);
+        startActivity(intent);
         finish();
     }
 
