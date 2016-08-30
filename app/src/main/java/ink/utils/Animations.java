@@ -3,6 +3,9 @@ package ink.utils;
 import android.animation.Animator;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 
 import ink.interfaces.AnimationListener;
 
@@ -73,5 +76,55 @@ public class Animations {
                 }
             });
         }
+    }
+
+
+    public static void expand(final View viewToExpand) {
+        viewToExpand.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        final int targetHeight = viewToExpand.getMeasuredHeight();
+
+        viewToExpand.getLayoutParams().height = 1;
+        viewToExpand.setVisibility(View.VISIBLE);
+        Animation animation = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                viewToExpand.getLayoutParams().height = interpolatedTime == 1
+                        ? ViewGroup.LayoutParams.WRAP_CONTENT
+                        : (int) (targetHeight * interpolatedTime);
+                viewToExpand.requestLayout();
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        animation.setDuration(200);
+        viewToExpand.startAnimation(animation);
+    }
+
+    public static void collapse(final View viewToCollapse) {
+        final int initialHeight = viewToCollapse.getMeasuredHeight();
+
+        Animation animation = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if (interpolatedTime == 1) {
+                    viewToCollapse.setVisibility(View.GONE);
+                } else {
+                    viewToCollapse.getLayoutParams().height = initialHeight - (int) (initialHeight * interpolatedTime);
+                    viewToCollapse.requestLayout();
+                }
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        animation.setDuration(200);
+        viewToCollapse.startAnimation(animation);
     }
 }
