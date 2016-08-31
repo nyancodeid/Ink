@@ -45,7 +45,7 @@
                 android:fontFamily="@string/appFont"
                 android:text="@string/customizeText"
                 android:textColor="#ffffff"
-                android:textStyle="bold" />
+                android:textStyle="bold|italic" />
 
             <LinearLayout
                 android:id="@+id/statusBarColorPicker"
