@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import com.ink.R;
 
@@ -40,11 +39,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         ButterKnife.bind(this);
-        if (toolbar == null) {
-            Log.d("Fasfasfasfsafas", "setContentView: " + "null");
-        } else {
-            Log.d("Fasfasfasfsafas", "setContentView: " + "not null");
-        }
+//        if (toolbar == null) {
+//            Log.d("Fasfasfasfsafas", "setContentView: " + "null");
+//        } else {
+//            Log.d("Fasfasfasfsafas", "setContentView: " + "not null");
+//        }
     }
 
     protected void setOnAccountDeleteListener(AccountDeleteListener accountDeleteListener) {

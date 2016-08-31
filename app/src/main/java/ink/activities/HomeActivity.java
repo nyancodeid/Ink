@@ -542,7 +542,6 @@ public class HomeActivity extends BaseActivity
         }
     }
 
-
     public FloatingActionButton getSearchFriend() {
         return searchFriend;
     }
@@ -569,7 +568,6 @@ public class HomeActivity extends BaseActivity
         }
         super.onDestroy();
     }
-
 
     private void getMyRequests() {
         Call<ResponseBody> myRequestsCall = Retrofit.getInstance().getInkService().getMyRequests(mSharedHelper.getUserId());
