@@ -61,10 +61,11 @@ public class SharedHelper {
         return mSharedPreferences.getBoolean("isRainbowModeActivated", false);
     }
 
-    public void putRainbowMessageActivated(boolean value){
-        mEditor.putBoolean("isRainbowModeActivated",value);
+    public void putRainbowMessageActivated(boolean value) {
+        mEditor.putBoolean("isRainbowModeActivated", value);
         mEditor.commit();
     }
+
     public void putUserId(String userId) {
         mEditor.putString("user_id", userId);
         mEditor.commit();
@@ -316,6 +317,179 @@ public class SharedHelper {
         mEditor.putBoolean("isLoggedIntoGame", value);
         mEditor.commit();
     }
+
+    public String getOwnBubbleColor() {
+        return mSharedPreferences.getString("ownBubbleColor", null);
+    }
+
+    public String getOpponentBubbleColor() {
+        return mSharedPreferences.getString("opponentBubbleColor", null);
+    }
+
+    public String getStatusBarColor() {
+        return mSharedPreferences.getString("statusBarColor", null);
+    }
+
+    public String getMenuButtonColor() {
+        return mSharedPreferences.getString("menuButtonColor", null);
+    }
+
+    public String getNotificationIconColor() {
+        return mSharedPreferences.getString("notificationIconColor", null);
+    }
+
+    public String getShopIconColor() {
+        return mSharedPreferences.getString("shopIconColor", null);
+    }
+
+    public String getLeftSlidingPanelHeaderColor() {
+        return mSharedPreferences.getString("leftSlidingPanelHeaderColor", null);
+    }
+
+    public String getFeedColor() {
+        return mSharedPreferences.getString("feedColor", null);
+    }
+
+    public String getFriendsColor() {
+        return mSharedPreferences.getString("friendsColor", null);
+    }
+
+    public String getMessagesColor() {
+        return mSharedPreferences.getString("messagesColor", null);
+    }
+
+    public String getChatColor() {
+        return mSharedPreferences.getString("chatColor", null);
+    }
+
+    public String getMyRequestColor() {
+        return mSharedPreferences.getString("myRequestColor", null);
+    }
+
+    public void putOpponentBubbleColor(String value) {
+        if (value == null) {
+            mEditor.remove("opponentBubbleColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("opponentBubbleColor", value);
+            mEditor.commit();
+        }
+
+    }
+
+    public void putOwnBubbleColor(String value) {
+        if (value == null) {
+            mEditor.remove("ownBubbleColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("ownBubbleColor", value);
+            mEditor.commit();
+        }
+    }
+
+    public void putStatusBarColor(String value) {
+        if (value == null) {
+            mEditor.remove("statusBarColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("statusBarColor", value);
+            mEditor.commit();
+        }
+    }
+
+    public void putMenuButtonColor(String value) {
+        if (value == null) {
+            mEditor.remove("menuButtonColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("menuButtonColor", value);
+            mEditor.commit();
+        }
+    }
+
+
+    public void putNotificationIconColor(String value) {
+        if (value == null) {
+            mEditor.remove("notificationIconColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("notificationIconColor", value);
+            mEditor.commit();
+        }
+    }
+
+
+    public void putShopIconColor(String value) {
+        if (value == null) {
+            mEditor.remove("shopIconColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("shopIconColor", value);
+            mEditor.commit();
+        }
+    }
+
+    public void putLeftSlidingPanelColor(String value) {
+        if (value == null) {
+            mEditor.remove("leftSlidingPanelHeaderColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("leftSlidingPanelHeaderColor", value);
+            mEditor.commit();
+        }
+    }
+
+    public void putFeedColor(String value) {
+        if (value == null) {
+            mEditor.remove("feedColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("feedColor", value);
+            mEditor.commit();
+        }
+    }
+
+    public void putFriendsColor(String value) {
+        if (value == null) {
+            mEditor.remove("friendsColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("friendsColor", value);
+            mEditor.commit();
+        }
+    }
+
+    public void putMessagesColor(String value) {
+        if (value == null) {
+            mEditor.remove("messagesColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("messagesColor", value);
+            mEditor.commit();
+        }
+    }
+
+    public void putChatColor(String value) {
+        if (value == null) {
+            mEditor.remove("chatColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("chatColor", value);
+            mEditor.commit();
+        }
+    }
+
+
+    public void putMyRequestColor(String value) {
+        if (value == null) {
+            mEditor.remove("myRequestColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("myRequestColor", value);
+            mEditor.commit();
+        }
+    }
+
 
     public boolean isLoggedIntoGame() {
         return mSharedPreferences.getBoolean("isLoggedIntoGame", false);

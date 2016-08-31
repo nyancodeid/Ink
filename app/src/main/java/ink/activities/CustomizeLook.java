@@ -1,13 +1,14 @@
 package ink.activities;
 
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +18,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.callbacks.GeneralCallback;
+import ink.utils.SharedHelper;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 /**
@@ -62,6 +64,49 @@ public class CustomizeLook extends AppCompatActivity {
     @Bind(R.id.ownBubbleIcon)
     ImageView ownBubbleIcon;
 
+    @Bind(R.id.notificationIcon)
+    ImageView notificationIcon;
+
+    @Bind(R.id.shopIcon)
+    ImageView shopIcon;
+
+    @Bind(R.id.ownBubbleCleaner)
+    ImageView ownBubbleCleaner;
+
+    @Bind(R.id.opponentBubbleCleaner)
+    ImageView opponentBubbleCleaner;
+
+    @Bind(R.id.statusBarCleaner)
+    ImageView statusBarCleaner;
+
+    //to find
+
+    @Bind(R.id.fabButtonCleaner)
+    ImageView fabButtonCleaner;
+
+    @Bind(R.id.notificationCleaner)
+    ImageView notificationCleaner;
+
+    @Bind(R.id.shopCleaner)
+    ImageView shopCleaner;
+
+    @Bind(R.id.leftPanelCleaner)
+    ImageView leftPanelCleaner;
+
+    @Bind(R.id.feedCleaner)
+    ImageView feedCleaner;
+
+    @Bind(R.id.friendsCleaner)
+    ImageView friendsCleaner;
+
+    @Bind(R.id.messagesCleaner)
+    ImageView messagesCleaner;
+
+    @Bind(R.id.chatCleaner)
+    ImageView chatCleaner;
+
+    @Bind(R.id.requestCleaner)
+    ImageView requestCleaner;
 
     private boolean statusBarColorPicked;
     private boolean fabMenuButtonColorPicked;
@@ -76,6 +121,20 @@ public class CustomizeLook extends AppCompatActivity {
     private boolean opponentBubbleColorPicked;
     private boolean ownBubbleColorPicked;
 
+    private SharedHelper sharedHelper;
+    private String oldStatusBarColor;
+    private String oldMenuButtonColor;
+    private String oldNotificationIconColor;
+    private String oldShopIconColo;
+    private String oldLeftSlidingPanelHeaderColor;
+    private String oldFeedColor;
+    private String oldFriendsColor;
+    private String oldMessagesColor;
+    private String oldChatColor;
+    private String oldMyRequestColor;
+    private String oldOwnBubbleColor;
+    private String oldOpponentBubbleColor;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,6 +146,28 @@ public class CustomizeLook extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getString(R.string.hereYouWillSeeActionBar));
+        }
+        oldOwnBubbleColor = sharedHelper.getOwnBubbleColor();
+        oldOpponentBubbleColor = sharedHelper.getOpponentBubbleColor();
+        oldStatusBarColor = sharedHelper.getStatusBarColor();
+        oldMenuButtonColor = sharedHelper.getMenuButtonColor();
+        oldNotificationIconColor = sharedHelper.getNotificationIconColor();
+        oldShopIconColo = sharedHelper.getShopIconColor();
+        oldLeftSlidingPanelHeaderColor = sharedHelper.getLeftSlidingPanelHeaderColor();
+        oldFeedColor = sharedHelper.getFeedColor();
+        oldFriendsColor = sharedHelper.getFriendsColor();
+        oldMessagesColor = sharedHelper.getMessagesColor();
+        oldChatColor = sharedHelper.getChatColor();
+        oldMyRequestColor = sharedHelper.getMyRequestColor();
+
+
+        sharedHelper = new SharedHelper(this);
+        if (sharedHelper.getOwnBubbleColor() != null) {
+            ownBubbleIcon.setColorFilter(Color.parseColor(sharedHelper.getOwnBubbleColor()), PorterDuff.Mode.SRC_ATOP);
+        }
+        if (sharedHelper.getOpponentBubbleColor() != null) {
+            opponentBubbleIcon.setColorFilter(Color.parseColor(sharedHelper.getOpponentBubbleColor()), PorterDuff.Mode.SRC_ATOP);
         }
     }
 
@@ -100,14 +181,13 @@ public class CustomizeLook extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     private void showColorPicker(final GeneralCallback<String> generalCallback) {
         AmbilWarnaDialog dialog = new AmbilWarnaDialog(this, Color.parseColor("#3F51B5"), new AmbilWarnaDialog.OnAmbilWarnaListener() {
             @Override
             public void onOk(AmbilWarnaDialog dialog, int color) {
                 // color is the color selected by the user.
                 String hexWithoutAlpha = Integer.toHexString(color).toUpperCase().substring(2);
-                generalCallback.onSuccess(hexWithoutAlpha);
+                generalCallback.onSuccess("#" + hexWithoutAlpha);
             }
 
             @Override
@@ -277,6 +357,11 @@ public class CustomizeLook extends AppCompatActivity {
             @Override
             public void onSuccess(String s) {
                 opponentBubbleColorPicked = true;
+                opponentBubbleColorPicked = true;
+                opponentBubbleIcon.setColorFilter(Color.parseColor(s), PorterDuff.Mode.SRC_ATOP);
+                opponentBubbleCleaner.setVisibility(View.VISIBLE);
+                sharedHelper.putOpponentBubbleColor(s);
+
             }
 
             @Override
@@ -293,9 +378,9 @@ public class CustomizeLook extends AppCompatActivity {
             @Override
             public void onSuccess(String s) {
                 ownBubbleColorPicked = true;
-                Drawable tintDrawable = ink.utils.ColorUtils.tintDrawable(getApplicationContext(), R.drawable.outgoing_message_bg, Color.parseColor(s));
-                ownBubbleIcon.setImageResource(0);
-                ownBubbleIcon.setBackground(tintDrawable);
+                ownBubbleIcon.setColorFilter(Color.parseColor(s), PorterDuff.Mode.SRC_ATOP);
+                ownBubbleCleaner.setVisibility(View.VISIBLE);
+                sharedHelper.putOwnBubbleColor(s);
             }
 
             @Override
@@ -316,13 +401,29 @@ public class CustomizeLook extends AppCompatActivity {
 
     }
 
+    @OnClick(R.id.ownBubbleCleaner)
+    public void ownBubbleCleaner() {
+        ownBubbleColorPicked = false;
+        ownBubbleCleaner.setVisibility(View.GONE);
+        ownBubbleIcon.setColorFilter(null);
+        sharedHelper.putOwnBubbleColor(oldOwnBubbleColor);
+    }
+
+    @OnClick(R.id.opponentBubbleCleaner)
+    public void opponentBubbleCleaner() {
+        opponentBubbleColorPicked = false;
+        opponentBubbleCleaner.setVisibility(View.GONE);
+        opponentBubbleIcon.setColorFilter(null);
+        sharedHelper.putOpponentBubbleColor(oldOpponentBubbleColor);
+    }
+
     @OnClick(R.id.notificationCleaner)
     public void notificationCleaner() {
 
     }
 
-    @OnClick(R.id.shopClener)
-    public void shopClener() {
+    @OnClick(R.id.shopCleaner)
+    public void shopCleaner() {
 
     }
 
@@ -354,5 +455,10 @@ public class CustomizeLook extends AppCompatActivity {
     @OnClick(R.id.requestCleaner)
     public void requestCleaner() {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

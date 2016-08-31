@@ -1,6 +1,8 @@
 package ink.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -33,6 +35,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     private static final int OPPONENT_MESSAGE = 2;
     private static final String LOADED = "LOADED";
     private static final int ANIMATED = 1;
+    private static final int COLOR_APPLIED = 1;
     private List<ChatModel> chatModelList;
     private Context mContext;
     private String mCurrentUserId;
@@ -120,6 +123,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             holder.imageView.setLayoutParams(gifChatViewLayoutParams);
 
             holder.chatViewBubble.setBackground(ContextCompat.getDrawable(mContext, R.drawable.outgoing_message_bg));
+
+            if (holder.chatViewBubble.getTag() == null) {
+                if (sharedHelper.getOwnBubbleColor() != null) {
+                    holder.chatViewBubble.getBackground().setColorFilter(Color.parseColor(sharedHelper.getOwnBubbleColor()), PorterDuff.Mode.SRC_ATOP);
+                    holder.chatViewBubble.setTag(COLOR_APPLIED);
+                }
+            }
             if (chatModel.getDeliveryStatus().equals(Constants.STATUS_DELIVERED)) {
                 if (position >= chatModelList.size() - 1) {
                     holder.deliveryStatus.setVisibility(View.VISIBLE);
@@ -138,6 +148,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             }
         } else {
             holder.chatViewBubble.setBackground(ContextCompat.getDrawable(mContext, R.drawable.incoming_message_bg));
+
+            if (holder.chatViewBubble.getTag() == null) {
+                if (sharedHelper.getOpponentBubbleColor() != null) {
+                    holder.chatViewBubble.getBackground().setColorFilter(Color.parseColor(sharedHelper.getOpponentBubbleColor()), PorterDuff.Mode.SRC_ATOP);
+                    holder.chatViewBubble.setTag(COLOR_APPLIED);
+                }
+            }
             layoutParams.gravity = Gravity.LEFT;
             gifChatViewLayoutParams.gravity = Gravity.LEFT;
 

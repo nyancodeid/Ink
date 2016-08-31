@@ -527,7 +527,7 @@
     <string name="upadtingView">Updating your message view,please wait...</string>
     <string name="removeRainbowEffect">Remove rainbow effect</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="hereYouWillSeeActionBar">Here you will see statsu bar color result</string>
+    <string name="hereYouWillSeeActionBar">Status Bar</string>
     <string name="pickStatusBarColor">Pick status bar color</string>
     <string name="pickMenuButtonColor">Pick menu button color</string>
     <string name="pickNotificationIconColor">Pick notification icon color</string>

@@ -34,7 +34,7 @@ public class ColorUtils {
             public void onOk(AmbilWarnaDialog dialog, int color) {
                 // color is the color selected by the user.
                 String hexWithoutAlpha = Integer.toHexString(color).toUpperCase().substring(2);
-                generalCallback.onSuccess(hexWithoutAlpha);
+                generalCallback.onSuccess("#" + hexWithoutAlpha);
             }
 
             @Override
