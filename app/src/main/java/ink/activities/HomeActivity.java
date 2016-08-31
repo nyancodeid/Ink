@@ -732,8 +732,12 @@ public class HomeActivity extends BaseActivity
         mFab.setMenuButtonColorPressed(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         menuItem.getItem(0).getIcon().setColorFilter(null);
         menuItem.getItem(1).getIcon().setColorFilter(null);
-        if (mSharedHelper.getActionBarColor() != null) {
-            mToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        mToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        panelHeader.setBackground(ContextCompat.getDrawable(this, R.drawable.side_nav_bar));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         }
     }
 }
