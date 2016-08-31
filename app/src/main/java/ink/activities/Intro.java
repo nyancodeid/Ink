@@ -30,9 +30,9 @@ public class Intro extends AppIntro2 {
             startActivity(mLoginIntent);
             finish();
         } else {
-            addSlide(AppIntroFragment.newInstance("Make random chat", "Meet new peaople with random chat.", R.drawable.random_chat_image, ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
-            addSlide(AppIntroFragment.newInstance("Make new friends", "Find new friends to chat with.", R.drawable.find_new_friends, ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
-            addSlide(AppIntroFragment.newInstance("Where is your friend?", "Find out where are your friends when you chat with them.", R.drawable.where_is_friend, ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
+            addSlide(AppIntroFragment.newInstance(getString(R.string.randomChatTitle), getString(R.string.randomChatFullText), R.drawable.random_chat_image, ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
+            addSlide(AppIntroFragment.newInstance(getString(R.string.newFriendsTitle), getString(R.string.newFriendsFullText), R.drawable.find_new_friends, ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
+            addSlide(AppIntroFragment.newInstance(getString(R.string.customizeAppTitle), getString(R.string.customizeAppFullText), R.drawable.redesign_icon, ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
         }
 
     }

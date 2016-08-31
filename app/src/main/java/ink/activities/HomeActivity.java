@@ -67,8 +67,8 @@ import retrofit2.Response;
 public class HomeActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AccountDeleteListener {
 
-    private static final long PING_TIME = 50000;
     private static final String TAG = HomeActivity.class.getSimpleName();
+
     private FloatingActionMenu mFab;
     private ImageView mProfileImage;
     private TextView coinsText;
@@ -92,6 +92,8 @@ public class HomeActivity extends BaseActivity
     private FloatingActionButton searchFriend;
     private ProgressDialog progressDialog;
     private Menu menuItem;
+    private boolean activityForResult;
+    private int lastRequestCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +151,13 @@ public class HomeActivity extends BaseActivity
             public void onDrawerClosed(View view) {
                 if (shouldOpenActivity) {
                     shouldOpenActivity = false;
-                    startActivity(new Intent(getApplicationContext(), getLastKnownClass()));
+                    if (activityForResult) {
+                        activityForResult = false;
+                        startActivityForResult(new Intent(getApplicationContext(), getLastKnownClass()), lastRequestCode);
+                    } else {
+                        startActivity(new Intent(getApplicationContext(), getLastKnownClass()));
+                    }
+
                 }
                 super.onDrawerClosed(view);
             }
@@ -330,7 +338,7 @@ public class HomeActivity extends BaseActivity
         switch (id) {
             case R.id.profile:
                 shouldOpenActivity = true;
-                setLastClassToOpen(MyProfile.class);
+                setLastClassToOpen(MyProfile.class, false);
                 break;
 
             case R.id.feeds:
@@ -344,16 +352,16 @@ public class HomeActivity extends BaseActivity
 
             case R.id.messages:
                 shouldOpenActivity = true;
-                setLastClassToOpen(Messages.class);
+                setLastClassToOpen(Messages.class, false);
                 break;
 
             case R.id.groups:
-                setLastClassToOpen(Groups.class);
+                setLastClassToOpen(Groups.class, false);
                 shouldOpenActivity = true;
                 break;
 
             case R.id.chatRoulette:
-                setLastClassToOpen(ChatRoulette.class);
+                setLastClassToOpen(ChatRoulette.class, false);
                 shouldOpenActivity = true;
                 break;
 
@@ -368,22 +376,23 @@ public class HomeActivity extends BaseActivity
 
             case R.id.music:
                 shouldOpenActivity = true;
-                setLastClassToOpen(Music.class);
+                setLastClassToOpen(Music.class, false);
                 break;
 
             case R.id.imageEdit:
                 shouldOpenActivity = true;
-                setLastClassToOpen(ImageEditor.class);
+                setLastClassToOpen(ImageEditor.class, false);
                 break;
 
             case R.id.settings:
                 shouldOpenActivity = true;
-                setLastClassToOpen(Settings.class);
+                setLastClassToOpen(Settings.class, false);
                 break;
 
             case R.id.customizeApp:
                 shouldOpenActivity = true;
-                setLastClassToOpen(CustomizeLook.class);
+                lastRequestCode = Constants.REQUEST_CUSTOMIZE_MADE;
+                setLastClassToOpen(CustomizeLook.class, true);
                 break;
             case R.id.nav_share:
                 shouldOpenActivity = false;
@@ -391,16 +400,16 @@ public class HomeActivity extends BaseActivity
 
             case R.id.friendSmashGame:
                 shouldOpenActivity = true;
-                setLastClassToOpen(FriendSmashLoginView.class);
+                setLastClassToOpen(FriendSmashLoginView.class, false);
                 break;
             case R.id.sendFeedback:
                 shouldOpenActivity = true;
-                setLastClassToOpen(SendFeedback.class);
+                setLastClassToOpen(SendFeedback.class, false);
                 break;
 
             case R.id.contactSupport:
                 shouldOpenActivity = true;
-                setLastClassToOpen(ContactSupport.class);
+                setLastClassToOpen(ContactSupport.class, false);
                 break;
 
             case R.id.logout:
@@ -457,7 +466,7 @@ public class HomeActivity extends BaseActivity
                 break;
             case R.id.profileImage:
                 shouldOpenActivity = true;
-                setLastClassToOpen(MyProfile.class);
+                setLastClassToOpen(MyProfile.class, false);
                 mDrawer.closeDrawer(Gravity.LEFT);
                 break;
         }
@@ -533,13 +542,13 @@ public class HomeActivity extends BaseActivity
         }
     }
 
-
     public FloatingActionButton getSearchFriend() {
         return searchFriend;
     }
 
-    private void setLastClassToOpen(Class<?> classToOpen) {
+    private void setLastClassToOpen(Class<?> classToOpen, boolean activityForResult) {
         mLastClassToOpen = classToOpen;
+        this.activityForResult = activityForResult;
     }
 
     private void setShouldOpenActivity(boolean shouldOpenActivity) {
@@ -559,7 +568,6 @@ public class HomeActivity extends BaseActivity
         }
         super.onDestroy();
     }
-
 
     private void getMyRequests() {
         Call<ResponseBody> myRequestsCall = Retrofit.getInstance().getInkService().getMyRequests(mSharedHelper.getUserId());
@@ -610,5 +618,13 @@ public class HomeActivity extends BaseActivity
     public void onAccountDeleted() {
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case Constants.REQUEST_CUSTOMIZE_MADE:
+                boolean anythingChanged = data.getExtras().getBoolean("anythingChanged");
+                break;
+        }
+    }
 }

@@ -496,7 +496,7 @@
     <string name="updatingMessages">Updating</string>
     <string name="updatingYourMessages">Updating your messages,please wait...</string>
     <string name="messagesUpdated">Messages was updated</string>
-    <string name="deleteMessageWarning">If you delete the message,ti will be also removed from opponent side without any recovery options,delete the message?</string>
+    <string name="deleteMessageWarning">If you delete the message,it will be also removed from opponent side without any recovery options,delete the message?</string>
     <string name="messagedeleteError">Could not delete message,please try again</string>
     <string name="deletingMessage">Deleting message,please wait...</string>
     <string name="sendSticker">Send Sticker</string>
@@ -527,7 +527,7 @@
     <string name="upadtingView">Updating your message view,please wait...</string>
     <string name="removeRainbowEffect">Remove rainbow effect</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="hereYouWillSeeActionBar">Here you will see statsu bar color result</string>
+    <string name="hereYouWillSeeActionBar">Status Bar</string>
     <string name="pickStatusBarColor">Pick status bar color</string>
     <string name="pickMenuButtonColor">Pick menu button color</string>
     <string name="pickNotificationIconColor">Pick notification icon color</string>
@@ -540,4 +540,14 @@
     <string name="pickRequestBackgroundColor">Pick \'My requests\' background color</string>
     <string name="customizeText">Customize the application under your taste!No limits,full freedom!</string>
     <string name="customizeAppText">Customize Application</string>
+    <string name="randomChatTitle">Make random chat</string>
+    <string name="randomChatFullText">Meet new people with random chat.</string>
+    <string name="newFriendsTitle">Make new friends</string>
+    <string name="newFriendsFullText">Find new friends to chat with.</string>
+    <string name="customizeAppTitle">Customize the application</string>
+    <string name="customizeAppFullText">Customize the look of the app and stand out!</string>
+    <string name="opponentBubbleText">Pick opponent chat bubble color</string>
+    <string name="ownBubbleText">Pick own bubble color</string>
+    <string name="colorSet">Color has been set</string>
+    <string name="colorRemoved">Color has been removed</string>
 </resources>
