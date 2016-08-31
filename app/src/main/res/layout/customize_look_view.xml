@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical">
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/customizeAppBar"
@@ -19,8 +18,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             android:fitsSystemWindows="true"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
-        </android.support.v7.widget.Toolbar>
+            app:popupTheme="@style/AppTheme.PopupOverlay"></android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -28,6 +26,7 @@
         xmlns:fab="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         android:background="@drawable/logged_in_background"
         android:fillViewport="true">
 
@@ -63,11 +62,11 @@
                 <TextView
                     android:id="@+id/statusBarColorPickerText"
                     android:layout_width="wrap_content"
-                    android:textColor="#6b0000"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:fontFamily="@string/appFont"
                     android:text="@string/pickStatusBarColor"
+                    android:textColor="#6b0000"
                     android:textSize="20sp" />
 
                 <ImageView
@@ -85,7 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:background="#b3b3b3"></View>
+                android:background="#ffffff"></View>
 
             <LinearLayout
                 android:id="@+id/fabMenuButtonColorPicker"
@@ -109,8 +108,8 @@
                     android:layout_marginRight="8dp"
                     android:src="@drawable/fab_add"
                     app:layout_behavior="ink.utils.ScrollAwareFABBehavior"
-                    fab:menu_colorNormal="@color/colorPrimary"
-                    fab:menu_colorPressed="@color/colorPrimaryDark"
+                    app:menu_colorNormal="@color/colorPrimary"
+                    app:menu_colorPressed="@color/colorPrimaryDark"
                     fab:menu_colorRipple="#cccccc">
 
                     <fab.FloatingActionButton
@@ -118,8 +117,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_create_white_24dp"
-                        fab:fab_colorNormal="#444f65"
-                        fab:fab_colorPressed="#636e85"
+                        app:fab_colorNormal="#444f65"
+                        app:fab_colorPressed="#636e85"
                         fab:fab_size="mini" />
                 </android.support.design.widget.FloatingActionMenu>
 
@@ -130,8 +129,8 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:fontFamily="@string/appFont"
-                    android:textColor="#6b0000"
                     android:text="@string/pickMenuButtonColor"
+                    android:textColor="#6b0000"
                     android:textSize="20sp" />
 
                 <ImageView
@@ -148,7 +147,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:background="#b3b3b3"></View>
+                android:background="#ffffff"></View>
 
 
             <LinearLayout
@@ -173,10 +172,10 @@
                     android:id="@+id/pickNotificationIconColorText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#6b0000"
                     android:layout_marginLeft="16dp"
                     android:fontFamily="@string/appFont"
                     android:text="@string/pickNotificationIconColor"
+                    android:textColor="#6b0000"
                     android:textSize="20sp" />
 
                 <ImageView
@@ -194,7 +193,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:background="#b3b3b3"></View>
+                android:background="#ffffff"></View>
 
 
             <LinearLayout
@@ -240,7 +239,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:background="#b3b3b3"></View>
+                android:background="#ffffff"></View>
 
 
             <LinearLayout
@@ -279,11 +278,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:background="#b3b3b3"></View>
+                android:background="#ffffff"></View>
 
 
             <LinearLayout
-                android:id="@+id/postBackgroundColor"
+                android:id="@+id/feedBackgroundColor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -318,7 +317,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:background="#b3b3b3"></View>
+                android:background="#ffffff"></View>
 
 
             <LinearLayout
@@ -358,7 +357,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:background="#b3b3b3"></View>
+                android:background="#ffffff"></View>
 
 
             <LinearLayout
@@ -397,7 +396,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:background="#b3b3b3"></View>
+                android:background="#ffffff"></View>
 
 
             <LinearLayout
@@ -436,7 +435,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:background="#b3b3b3"></View>
+                android:background="#ffffff"></View>
 
 
             <LinearLayout
@@ -475,7 +474,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:background="#b3b3b3"></View>
+                android:background="#ffffff"></View>
 
 
             <LinearLayout
@@ -520,7 +519,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
-                android:background="#b3b3b3"></View>
+                android:background="#ffffff"></View>
 
 
             <LinearLayout
@@ -562,4 +561,4 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

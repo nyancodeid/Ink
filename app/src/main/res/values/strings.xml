@@ -548,4 +548,6 @@
     <string name="customizeAppFullText">Customize the look of the app and stand out!</string>
     <string name="opponentBubbleText">Pick opponent chat bubble color</string>
     <string name="ownBubbleText">Pick own bubble color</string>
+    <string name="colorSet">Color has been set</string>
+    <string name="colorRemoved">Color has been removed</string>
 </resources>

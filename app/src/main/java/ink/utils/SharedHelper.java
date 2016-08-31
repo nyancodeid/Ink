@@ -490,6 +490,22 @@ public class SharedHelper {
         }
     }
 
+    public void resetCustomization() {
+        mEditor.remove("opponentBubbleColor");
+        mEditor.remove("ownBubbleColor");
+        mEditor.remove("statusBarColor");
+        mEditor.remove("menuButtonColor");
+        mEditor.remove("notificationIconColor");
+        mEditor.remove("shopIconColor");
+        mEditor.remove("leftSlidingPanelHeaderColor");
+        mEditor.remove("feedColor");
+        mEditor.remove("friendsColor");
+        mEditor.remove("messagesColor");
+        mEditor.remove("chatColor");
+        mEditor.remove("myRequestColor");
+        mEditor.commit();
+
+    }
 
     public boolean isLoggedIntoGame() {
         return mSharedPreferences.getBoolean("isLoggedIntoGame", false);

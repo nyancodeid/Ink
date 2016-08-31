@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -30,6 +32,8 @@ public class CustomizeLook extends AppCompatActivity {
     @Bind(R.id.customizeToolbar)
     Toolbar customizeToolbar;
 
+    @Bind(R.id.customizeFabMenu)
+    android.support.design.widget.FloatingActionMenu customizeFabMenu;
 
     @Bind(R.id.customizeFabMenuText)
     TextView customizeFabMenuText;
@@ -125,7 +129,7 @@ public class CustomizeLook extends AppCompatActivity {
     private String oldStatusBarColor;
     private String oldMenuButtonColor;
     private String oldNotificationIconColor;
-    private String oldShopIconColo;
+    private String oldShopIconColor;
     private String oldLeftSlidingPanelHeaderColor;
     private String oldFeedColor;
     private String oldFriendsColor;
@@ -141,6 +145,7 @@ public class CustomizeLook extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.customize_look_view);
         ButterKnife.bind(this);
+        sharedHelper = new SharedHelper(this);
         customizeToolbar = (Toolbar) findViewById(R.id.customizeToolbar);
         setSupportActionBar(customizeToolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -153,7 +158,7 @@ public class CustomizeLook extends AppCompatActivity {
         oldStatusBarColor = sharedHelper.getStatusBarColor();
         oldMenuButtonColor = sharedHelper.getMenuButtonColor();
         oldNotificationIconColor = sharedHelper.getNotificationIconColor();
-        oldShopIconColo = sharedHelper.getShopIconColor();
+        oldShopIconColor = sharedHelper.getShopIconColor();
         oldLeftSlidingPanelHeaderColor = sharedHelper.getLeftSlidingPanelHeaderColor();
         oldFeedColor = sharedHelper.getFeedColor();
         oldFriendsColor = sharedHelper.getFriendsColor();
@@ -162,7 +167,6 @@ public class CustomizeLook extends AppCompatActivity {
         oldMyRequestColor = sharedHelper.getMyRequestColor();
 
 
-        sharedHelper = new SharedHelper(this);
         if (sharedHelper.getOwnBubbleColor() != null) {
             ownBubbleIcon.setColorFilter(Color.parseColor(sharedHelper.getOwnBubbleColor()), PorterDuff.Mode.SRC_ATOP);
         }
@@ -205,6 +209,9 @@ public class CustomizeLook extends AppCompatActivity {
             @Override
             public void onSuccess(String s) {
                 statusBarColorPicked = true;
+                customizeToolbar.setBackgroundColor(Color.parseColor(s));
+                statusBarCleaner.setVisibility(View.VISIBLE);
+                sharedHelper.putStatusBarColor(s);
             }
 
             @Override
@@ -221,6 +228,9 @@ public class CustomizeLook extends AppCompatActivity {
             @Override
             public void onSuccess(String s) {
                 fabMenuButtonColorPicked = true;
+                customizeFabMenu.setMenuButtonColorNormal(Color.parseColor(s));
+                sharedHelper.putMenuButtonColor(s);
+                fabButtonCleaner.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -235,6 +245,9 @@ public class CustomizeLook extends AppCompatActivity {
         showColorPicker(new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
+                notificationIcon.setColorFilter(Color.parseColor(s), PorterDuff.Mode.SRC_ATOP);
+                notificationCleaner.setVisibility(View.VISIBLE);
+                sharedHelper.putNotificationIconColor(s);
                 pickNotificationIconColorPicked = true;
             }
 
@@ -250,6 +263,9 @@ public class CustomizeLook extends AppCompatActivity {
         showColorPicker(new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
+                shopCleaner.setVisibility(View.VISIBLE);
+                shopIcon.setColorFilter(Color.parseColor(s), PorterDuff.Mode.SRC_ATOP);
+                sharedHelper.putShopIconColor(s);
                 pickShopIconColorPicked = true;
             }
 
@@ -265,6 +281,9 @@ public class CustomizeLook extends AppCompatActivity {
         showColorPicker(new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
+                leftPanelCleaner.setVisibility(View.VISIBLE);
+                sharedHelper.putLeftSlidingPanelColor(s);
+                Snackbar.make(friendsCleaner, getString(R.string.colorSet), Snackbar.LENGTH_SHORT).show();
                 pickLeftDrawerColorPicked = true;
             }
 
@@ -275,11 +294,14 @@ public class CustomizeLook extends AppCompatActivity {
         });
     }
 
-    @OnClick(R.id.postBackgroundColor)
-    public void postBackgroundColor() {
+    @OnClick(R.id.feedBackgroundColor)
+    public void feedBackgroundColor() {
         showColorPicker(new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
+                feedCleaner.setVisibility(View.VISIBLE);
+                Snackbar.make(feedCleaner, getString(R.string.colorSet), Snackbar.LENGTH_SHORT).show();
+                sharedHelper.putFeedColor(s);
                 postBackgroundColorPicked = true;
             }
 
@@ -296,6 +318,9 @@ public class CustomizeLook extends AppCompatActivity {
             @Override
             public void onSuccess(String s) {
                 friendsBackgroundColorPicked = true;
+                friendsCleaner.setVisibility(View.VISIBLE);
+                Snackbar.make(friendsCleaner, getString(R.string.colorSet), Snackbar.LENGTH_SHORT).show();
+                sharedHelper.putFriendsColor(s);
             }
 
             @Override
@@ -310,6 +335,9 @@ public class CustomizeLook extends AppCompatActivity {
         showColorPicker(new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
+                messagesCleaner.setVisibility(View.VISIBLE);
+                Snackbar.make(messagesCleaner, getString(R.string.colorSet), Snackbar.LENGTH_SHORT).show();
+                sharedHelper.putMessagesColor(s);
                 messagesBackgroundColorPicked = true;
             }
 
@@ -325,6 +353,9 @@ public class CustomizeLook extends AppCompatActivity {
         showColorPicker(new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
+                chatCleaner.setVisibility(View.VISIBLE);
+                Snackbar.make(chatCleaner, getString(R.string.colorSet), Snackbar.LENGTH_SHORT).show();
+                sharedHelper.putChatColor(s);
                 chatBackgroundColorPicked = true;
             }
 
@@ -340,6 +371,9 @@ public class CustomizeLook extends AppCompatActivity {
         showColorPicker(new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
+                requestCleaner.setVisibility(View.VISIBLE);
+                Snackbar.make(requestCleaner, getString(R.string.colorSet), Snackbar.LENGTH_SHORT).show();
+                sharedHelper.putMyRequestColor(s);
                 requestBackgroundColorPicked = true;
             }
 
@@ -394,11 +428,24 @@ public class CustomizeLook extends AppCompatActivity {
     @OnClick(R.id.statusBarCleaner)
     public void statusBarColorPicked() {
         statusBarColorPicked = false;
+        statusBarCleaner.setVisibility(View.GONE);
+        sharedHelper.putStatusBarColor(oldStatusBarColor);
+        if (oldStatusBarColor != null) {
+            customizeToolbar.setBackgroundColor(Color.parseColor(oldStatusBarColor));
+        } else {
+            customizeToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        }
     }
 
     @OnClick(R.id.fabButtonCleaner)
     public void fabButtonCleaner() {
-
+        fabButtonCleaner.setVisibility(View.GONE);
+        sharedHelper.putMenuButtonColor(oldMenuButtonColor);
+        if (oldMenuButtonColor != null) {
+            customizeFabMenu.setMenuButtonColorNormal(Color.parseColor(oldMenuButtonColor));
+        } else {
+            customizeFabMenu.setMenuButtonColorNormal(ContextCompat.getColor(this, R.color.colorPrimary));
+        }
     }
 
     @OnClick(R.id.ownBubbleCleaner)
@@ -419,42 +466,58 @@ public class CustomizeLook extends AppCompatActivity {
 
     @OnClick(R.id.notificationCleaner)
     public void notificationCleaner() {
-
+        notificationCleaner.setVisibility(View.GONE);
+        notificationIcon.setColorFilter(null);
+        sharedHelper.putNotificationIconColor(oldNotificationIconColor);
     }
 
     @OnClick(R.id.shopCleaner)
     public void shopCleaner() {
-
+        shopCleaner.setVisibility(View.GONE);
+        shopIcon.setColorFilter(null);
+        sharedHelper.putShopIconColor(oldShopIconColor);
     }
 
     @OnClick(R.id.leftPanelCleaner)
     public void leftPanelCleaner() {
-
+        leftPanelCleaner.setVisibility(View.GONE);
+        sharedHelper.putLeftSlidingPanelColor(oldLeftSlidingPanelHeaderColor);
+        Snackbar.make(leftPanelCleaner, getString(R.string.colorRemoved), Snackbar.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.feedCleaner)
     public void feedCleaner() {
-
+        feedCleaner.setVisibility(View.GONE);
+        Snackbar.make(feedCleaner, getString(R.string.colorRemoved), Snackbar.LENGTH_SHORT).show();
+        sharedHelper.putFeedColor(oldFeedColor);
     }
 
     @OnClick(R.id.friendsCleaner)
     public void friendsCleaner() {
-
+        friendsCleaner.setVisibility(View.GONE);
+        Snackbar.make(friendsCleaner, getString(R.string.colorRemoved), Snackbar.LENGTH_SHORT).show();
+        sharedHelper.putFriendsColor(oldFriendsColor);
     }
 
     @OnClick(R.id.messagesCleaner)
     public void messagesCleaner() {
-
+        messagesCleaner.setVisibility(View.GONE);
+        Snackbar.make(messagesCleaner, getString(R.string.colorRemoved), Snackbar.LENGTH_SHORT).show();
+        sharedHelper.putMessagesColor(oldMessagesColor);
     }
 
     @OnClick(R.id.chatCleaner)
     public void chatCleaner() {
-
+        chatCleaner.setVisibility(View.GONE);
+        Snackbar.make(chatCleaner, getString(R.string.colorRemoved), Snackbar.LENGTH_SHORT).show();
+        sharedHelper.putChatColor(oldChatColor);
     }
 
     @OnClick(R.id.requestCleaner)
     public void requestCleaner() {
-
+        requestCleaner.setVisibility(View.GONE);
+        Snackbar.make(requestCleaner, getString(R.string.colorRemoved), Snackbar.LENGTH_SHORT).show();
+        sharedHelper.putMyRequestColor(oldMyRequestColor);
     }
 
     @Override
