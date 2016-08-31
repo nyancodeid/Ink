@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -48,6 +49,7 @@ import ink.activities.HomeActivity;
 import ink.activities.OpponentProfile;
 import ink.adapters.FriendsAdapter;
 import ink.animations.CircularPathAnimation;
+import ink.interfaces.ColorChangeListener;
 import ink.interfaces.RecyclerItemClickListener;
 import ink.models.FriendsModel;
 import ink.models.UserSearchResponse;
@@ -66,7 +68,8 @@ import retrofit2.Response;
 /**
  * Created by USER on 2016-06-21.
  */
-public class MyFriends extends Fragment implements View.OnClickListener, RecyclerItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class MyFriends extends Fragment implements View.OnClickListener, RecyclerItemClickListener,
+        SwipeRefreshLayout.OnRefreshListener, ColorChangeListener {
     private SharedHelper mSharedHelper;
     private List<FriendsModel> mFriendsModelArrayList = new ArrayList<>();
     private RecyclerView mRecyclerView;
@@ -85,6 +88,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     private SwipeRefreshLayout friendsSwipe;
     private CircularPathAnimation circularPathAnimation;
     private RelativeLayout searchWrapper;
+    private RelativeLayout friendsRootLayout;
     private ImageView searchFriendIcon;
     private TextView searchText;
     private BroadcastReceiver updateReceiver;
@@ -118,6 +122,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         mFriendsAdapter = new FriendsAdapter(mFriendsModelArrayList, getActivity());
 
         searchWrapper = (RelativeLayout) view.findViewById(R.id.searchWrapper);
+        friendsRootLayout = (RelativeLayout) view.findViewById(R.id.friendsRootLayout);
 
         circularPathAnimation = new CircularPathAnimation(searchWrapper, 30);
         circularPathAnimation.setRepeatCount(Animation.INFINITE);
@@ -140,6 +145,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         mFriendsAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mFriendsAdapter);
 
+        ((HomeActivity) getActivity()).setOnColorChangeListener(this);
 
         updateReceiver = new BroadcastReceiver() {
             @Override
@@ -163,6 +169,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
                 }
             }
         });
+        checkColor();
         personSearchField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -596,5 +603,27 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     @Override
     public void onRefresh() {
         getFriends();
+    }
+
+    @Override
+    public void onColorChanged() {
+        if (mSharedHelper != null) {
+            if (mSharedHelper.getFriendsColor() != null) {
+                friendsRootLayout.setBackgroundColor(Color.parseColor(mSharedHelper.getFriendsColor()));
+            }
+        }
+    }
+
+    @Override
+    public void onColorReset() {
+        friendsRootLayout.setBackgroundColor(0);
+    }
+
+    private void checkColor() {
+        if (mSharedHelper != null) {
+            if (mSharedHelper.getFriendsColor() != null) {
+                friendsRootLayout.setBackgroundColor(Color.parseColor(mSharedHelper.getFriendsColor()));
+            }
+        }
     }
 }

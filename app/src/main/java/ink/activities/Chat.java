@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -123,6 +126,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     ImageView locationSessionIcon;
     @Bind(R.id.attachmentIcon)
     ImageView attachmentIcon;
+    @Bind(R.id.messageFiledDivider)
+    View messageFiledDivider;
 
     private String mOpponentId;
     String mCurrentUserId;
@@ -153,19 +158,24 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     private ProgressDialog progressDialog;
     private boolean scrolledToBottom;
     private Menu chatMenuItem;
+    private Toolbar chatToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chat_vector_background));
+        mSharedHelper = new SharedHelper(this);
+        if (mSharedHelper.getChatColor() != null) {
+            getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor(mSharedHelper.getChatColor())));
+        } else {
+            getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chat_vector_background));
+        }
         setContentView(R.layout.activity_chat);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarChat);
-        setSupportActionBar(toolbar);
+        chatToolbar = (Toolbar) findViewById(R.id.toolbarChat);
+        setSupportActionBar(chatToolbar);
 
         fadeAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_scale);
 
         ButterKnife.bind(this);
-        mSharedHelper = new SharedHelper(this);
         gson = new Gson();
         gifModelList = new ArrayList<>();
         gifAdapter = new GifAdapter(gifModelList, this);
@@ -226,6 +236,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
 
 
         scheduleTask();
+        checkForActionBar();
         mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, mRecyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -328,7 +339,19 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
 
         mSendChatMessage.setEnabled(false);
         mWriteEditText.addTextChangedListener(chatTextWatcher);
+        if (mSharedHelper.getChatFieldTextColor() != null) {
+            mWriteEditText.setHintTextColor(Color.parseColor(mSharedHelper.getChatFieldTextColor()));
+            mWriteEditText.setTextColor(Color.parseColor(mSharedHelper.getChatFieldTextColor()));
+            messageFiledDivider.setBackgroundColor(Color.parseColor(mSharedHelper.getChatFieldTextColor()));
+            attachmentIcon.setColorFilter(Color.parseColor(mSharedHelper.getChatFieldTextColor()), PorterDuff.Mode.SRC_ATOP);
+        }
 
+    }
+
+    private void checkForActionBar() {
+        if (mSharedHelper.getActionBarColor() != null) {
+            chatToolbar.setBackgroundColor(Color.parseColor(mSharedHelper.getActionBarColor()));
+        }
     }
 
     private void scheduleTask() {

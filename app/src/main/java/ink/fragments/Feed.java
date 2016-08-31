@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -39,6 +40,7 @@ import ink.activities.HomeActivity;
 import ink.activities.MakePost;
 import ink.activities.OpponentProfile;
 import ink.adapters.FeedAdapter;
+import ink.interfaces.ColorChangeListener;
 import ink.interfaces.FeedItemClick;
 import ink.interfaces.ItemClickListener;
 import ink.models.FeedModel;
@@ -55,7 +57,8 @@ import retrofit2.Response;
 /**
  * Created by USER on 2016-06-21.
  */
-public class Feed extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener, FeedItemClick {
+public class Feed extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener,
+        FeedItemClick, ColorChangeListener {
     private static final String TAG = Feed.class.getSimpleName();
     private List<FeedModel> mFeedModelArrayList = new ArrayList<>();
     private RecyclerView mRecyclerView;
@@ -68,6 +71,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private int mOffset = 0;
     private HomeActivity parentActivity;
     private RelativeLayout newFeedsLayout;
+    private RelativeLayout feedRootLayout;
 
     public static Feed newInstance() {
         Feed feed = new Feed();
@@ -90,6 +94,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         newFeedsLayout = (RelativeLayout) view.findViewById(R.id.newFeedsLayout);
         feedRefresh = (SwipeRefreshLayout) view.findViewById(R.id.feedRefresh);
+        feedRootLayout = (RelativeLayout) view.findViewById(R.id.feedRootLayout);
         feedRefresh.setColorSchemeColors(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.colorPrimary));
         noPostsWrapper = (RelativeLayout) view.findViewById(R.id.noPostsWrapper);
         deleteDialog = new ProgressDialog(getActivity());
@@ -113,17 +118,15 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 int lastItem = layoutManager.findLastCompletelyVisibleItemPosition();
                 newFeedsLayout.setVisibility(View.GONE);
-//                if (lastItem == mAdapter.getItemCount() - 1) {
-//                    parentActivity.getToolbar().setTitle(getString(R.string.loadingFeeds));
-//                    getFeeds(mOffset, 10, false, true, true);
-//                }
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
         System.gc();
+        ((HomeActivity) getActivity()).setOnColorChangeListener(this);
         if (mOffset == 0) {
             mOffset = 10;
         }
+        checkColor();
         getFeeds(0, mOffset, true, false, false);
     }
 
@@ -527,5 +530,27 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             mOffset = 10;
         }
         getFeeds(0, mOffset, true, false, false);
+    }
+
+    @Override
+    public void onColorChanged() {
+        if (mSharedHelper != null) {
+            if (mSharedHelper.getFeedColor() != null) {
+                feedRootLayout.setBackgroundColor(Color.parseColor(mSharedHelper.getFeedColor()));
+            }
+        }
+    }
+
+    @Override
+    public void onColorReset() {
+        feedRootLayout.setBackgroundColor(0);
+    }
+
+    private void checkColor() {
+        if (mSharedHelper != null) {
+            if (mSharedHelper.getFeedColor() != null) {
+                feedRootLayout.setBackgroundColor(Color.parseColor(mSharedHelper.getFeedColor()));
+            }
+        }
     }
 }

@@ -66,6 +66,7 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+
     public void putUserId(String userId) {
         mEditor.putString("user_id", userId);
         mEditor.commit();
@@ -326,8 +327,8 @@ public class SharedHelper {
         return mSharedPreferences.getString("opponentBubbleColor", null);
     }
 
-    public String getStatusBarColor() {
-        return mSharedPreferences.getString("statusBarColor", null);
+    public String getActionBarColor() {
+        return mSharedPreferences.getString("actionBarColor", null);
     }
 
     public String getMenuButtonColor() {
@@ -348,6 +349,30 @@ public class SharedHelper {
 
     public String getFeedColor() {
         return mSharedPreferences.getString("feedColor", null);
+    }
+
+    public String getSendButtonColor() {
+        return mSharedPreferences.getString("sendButtonColor", null);
+    }
+
+    public String getStatusBarColor() {
+        return mSharedPreferences.getString("statusBarColor", null);
+    }
+
+    public String getHamburgerColor() {
+        return mSharedPreferences.getString("hamburgerColor", null);
+    }
+
+    public String getChatFieldTextColor() {
+        return mSharedPreferences.getString("chatFieldTextColor", null);
+    }
+
+    public String getOpponentTextColor() {
+        return mSharedPreferences.getString("opponentTextColor", null);
+    }
+
+    public String getOwnTextColor() {
+        return mSharedPreferences.getString("ownTextColor", null);
     }
 
     public String getFriendsColor() {
@@ -387,12 +412,12 @@ public class SharedHelper {
         }
     }
 
-    public void putStatusBarColor(String value) {
+    public void putActionBarColor(String value) {
         if (value == null) {
-            mEditor.remove("statusBarColor");
+            mEditor.remove("actionBarColor");
             mEditor.commit();
         } else {
-            mEditor.putString("statusBarColor", value);
+            mEditor.putString("actionBarColor", value);
             mEditor.commit();
         }
     }
@@ -449,6 +474,16 @@ public class SharedHelper {
         }
     }
 
+    public void putHamburgerColor(String value) {
+        if (value == null) {
+            mEditor.remove("hamburgerColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("hamburgerColor", value);
+            mEditor.commit();
+        }
+    }
+
     public void putFriendsColor(String value) {
         if (value == null) {
             mEditor.remove("friendsColor");
@@ -469,6 +504,16 @@ public class SharedHelper {
         }
     }
 
+    public void putSendButtonColor(String value) {
+        if (value == null) {
+            mEditor.remove("sendButtonColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("sendButtonColor", value);
+            mEditor.commit();
+        }
+    }
+
     public void putChatColor(String value) {
         if (value == null) {
             mEditor.remove("chatColor");
@@ -479,13 +524,56 @@ public class SharedHelper {
         }
     }
 
-
     public void putMyRequestColor(String value) {
         if (value == null) {
             mEditor.remove("myRequestColor");
             mEditor.commit();
         } else {
             mEditor.putString("myRequestColor", value);
+            mEditor.commit();
+        }
+    }
+
+
+    public void putStatusBarColor(String value) {
+        if (value == null) {
+            mEditor.remove("statusBarColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("statusBarColor", value);
+            mEditor.commit();
+        }
+    }
+
+
+    public void putOwnTextColor(String value) {
+        if (value == null) {
+            mEditor.remove("ownTextColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("ownTextColor", value);
+            mEditor.commit();
+        }
+    }
+
+
+    public void putOpponentTextColor(String value) {
+        if (value == null) {
+            mEditor.remove("opponentTextColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("opponentTextColor", value);
+            mEditor.commit();
+        }
+    }
+
+
+    public void putChatFieldTextColor(String value) {
+        if (value == null) {
+            mEditor.remove("chatFieldTextColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("chatFieldTextColor", value);
             mEditor.commit();
         }
     }
@@ -503,6 +591,12 @@ public class SharedHelper {
         mEditor.remove("messagesColor");
         mEditor.remove("chatColor");
         mEditor.remove("myRequestColor");
+        mEditor.remove("hamburgerColor");
+        mEditor.remove("actionBarColor");
+        mEditor.remove("sendButtonColor");
+        mEditor.remove("chatFieldTextColor");
+        mEditor.remove("opponentTextColor");
+        mEditor.remove("ownTextColor");
         mEditor.commit();
 
     }

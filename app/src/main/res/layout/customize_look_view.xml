@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
@@ -21,9 +22,7 @@
             app:popupTheme="@style/AppTheme.PopupOverlay"></android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:fab="http://schemas.android.com/tools"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
@@ -71,6 +70,46 @@
 
                 <ImageView
                     android:id="@+id/statusBarCleaner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:src="@drawable/close_vector"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="#ffffff"></View>
+
+
+            <LinearLayout
+                android:id="@+id/actionBarColorPicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/actionBarColorPickerText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:fontFamily="@string/appFont"
+                    android:text="@string/pickActionBarColor"
+                    android:textColor="#6b0000"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/actionBarCleaner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
@@ -142,6 +181,51 @@
                     android:src="@drawable/close_vector"
                     android:visibility="gone" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/sendButtonPickerWrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:padding="6dp">
+
+                <fab.FloatingActionButton
+                    android:id="@+id/sendButtonIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/messageFiledDivider"
+                    android:src="@drawable/ic_send_white_24dp"
+                    fab:fab_colorNormal="@color/colorPrimary"
+                    fab:fab_colorPressed="#cccccc"
+                    fab:fab_size="mini" />
+
+                <TextView
+                    android:id="@+id/sendButtonPickerText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:fontFamily="@string/appFont"
+                    android:text="@string/pickSendButtonColor"
+                    android:textColor="#6b0000"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/sendButtonCleaner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|center"
+                    android:layout_weight="1"
+                    android:src="@drawable/close_vector"
+                    android:visibility="gone" />
+            </LinearLayout>
+
 
             <View
                 android:layout_width="match_parent"
@@ -241,6 +325,51 @@
                 android:layout_marginTop="5dp"
                 android:background="#ffffff"></View>
 
+
+            <LinearLayout
+                android:id="@+id/pickHamburgerIconWrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/pickHamburgerIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/hamburger_icon" />
+
+                <TextView
+                    android:id="@+id/pickHamburgerIconText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:fontFamily="@string/appFont"
+                    android:text="@string/pickHamburgerIcon"
+                    android:textColor="#6b0000"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/hamburgerCleaner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:src="@drawable/close_vector"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="#ffffff"></View>
 
             <LinearLayout
                 android:id="@+id/pickLeftDrawerColor"
@@ -559,6 +688,123 @@
                     android:src="@drawable/close_vector"
                     android:visibility="gone" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="#ffffff"></View>
+
+            <LinearLayout
+                android:id="@+id/ownChatTextColorWrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/ownChatTextColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:fontFamily="@string/appFont"
+                    android:text="@string/pickOwnChatTextColor"
+                    android:textColor="#6b0000"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/ownTextCleaner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:src="@drawable/close_vector"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="#ffffff"></View>
+
+            <LinearLayout
+                android:id="@+id/opponentChatTextColorWrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/opponentChatTextColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:fontFamily="@string/appFont"
+                    android:text="@string/pickOpponentChatTextColor"
+                    android:textColor="#6b0000"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/opponentTextCleaner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:src="@drawable/close_vector"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="#ffffff"></View>
+
+
+            <LinearLayout
+                android:id="@+id/chatFieldWrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/chatFieldText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:fontFamily="@string/appFont"
+                    android:text="@string/pickChatFieldTextColor"
+                    android:textColor="#6b0000"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/chatFieldCleaner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:src="@drawable/close_vector"
+                    android:visibility="gone" />
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 </android.support.design.widget.CoordinatorLayout>

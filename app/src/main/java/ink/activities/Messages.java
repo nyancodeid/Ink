@@ -2,6 +2,7 @@ package ink.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -14,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.ink.R;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -58,17 +60,21 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
     SwipeRefreshLayout mMessagesSwipe;
     @Bind(R.id.noMessageLayout)
     NestedScrollView mNoMessageLayout;
+    @Bind(R.id.messagesRootLayout)
+    RelativeLayout messagesRootLayout;
     private List<UserMessagesModel> userMessagesModels;
     private UserMessagesModel userMessagesModel;
     private MessagesAdapter messagesAdapter;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
     private String finalOpponentId;
     private Snackbar deleteRequestSnack;
+    private SharedHelper sharedHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
+        sharedHelper = new SharedHelper(this);
         ButterKnife.bind(this);
         mMessagesSwipe.setColorSchemeColors(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
         userMessagesModels = new ArrayList<>();
@@ -79,7 +85,9 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(getString(R.string.myMessages));
         }
-
+        if (sharedHelper.getMessagesColor() != null) {
+            messagesRootLayout.setBackgroundColor(Color.parseColor(sharedHelper.getMessagesColor()));
+        }
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);
         itemAnimator.setRemoveDuration(500);
@@ -321,7 +329,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                     mMessagesLoadingProgress.setVisibility(View.GONE);
                     if (userMessagesModels.size() <= 0) {
                         mNoMessageLayout.setVisibility(View.VISIBLE);
-                    }else{
+                    } else {
                         mNoMessageLayout.setVisibility(View.GONE);
                     }
                     hideSnack(true);

@@ -3,22 +3,26 @@ package ink.activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ink.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import fab.FloatingActionButton;
 import ink.callbacks.GeneralCallback;
 import ink.utils.Constants;
 import ink.utils.SharedHelper;
@@ -75,16 +79,32 @@ public class CustomizeLook extends BaseActivity {
     @Bind(R.id.shopIcon)
     ImageView shopIcon;
 
+    @Bind(R.id.pickHamburgerIcon)
+    ImageView hamburgerIcon;
+
     @Bind(R.id.ownBubbleCleaner)
     ImageView ownBubbleCleaner;
 
     @Bind(R.id.opponentBubbleCleaner)
     ImageView opponentBubbleCleaner;
 
+    @Bind(R.id.actionBarCleaner)
+    ImageView actionBarCleaner;
+
+    @Bind(R.id.chatFieldCleaner)
+    ImageView chatFieldCleaner;
+
+    @Bind(R.id.ownTextCleaner)
+    ImageView ownTextCleaner;
+
+    @Bind(R.id.opponentTextCleaner)
+    ImageView opponentTextCleaner;
+
+    @Bind(R.id.hamburgerCleaner)
+    ImageView hamburgerCleaner;
+
     @Bind(R.id.statusBarCleaner)
     ImageView statusBarCleaner;
-
-    //to find
 
     @Bind(R.id.fabButtonCleaner)
     ImageView fabButtonCleaner;
@@ -101,6 +121,12 @@ public class CustomizeLook extends BaseActivity {
     @Bind(R.id.feedCleaner)
     ImageView feedCleaner;
 
+    @Bind(R.id.sendButtonIcon)
+    FloatingActionButton sendButtonIcon;
+
+    @Bind(R.id.sendButtonCleaner)
+    ImageView sendButtonCleaner;
+
     @Bind(R.id.friendsCleaner)
     ImageView friendsCleaner;
 
@@ -113,7 +139,7 @@ public class CustomizeLook extends BaseActivity {
     @Bind(R.id.requestCleaner)
     ImageView requestCleaner;
 
-    private boolean statusBarColorPicked;
+    private boolean actionBarColorPicked;
     private boolean fabMenuButtonColorPicked;
     private boolean pickNotificationIconColorPicked;
     private boolean pickShopIconColorPicked;
@@ -125,9 +151,15 @@ public class CustomizeLook extends BaseActivity {
     private boolean requestBackgroundColorPicked;
     private boolean opponentBubbleColorPicked;
     private boolean ownBubbleColorPicked;
+    private boolean hamburgerColorPicked;
+    private boolean statusBarColorPicked;
+    private boolean sendButtonColorPicked;
+    private boolean opponentTextColorPicked;
+    private boolean chatFieldColorPicked;
+    private boolean ownTextColorPicked;
 
     private SharedHelper sharedHelper;
-    private String oldStatusBarColor;
+    private String oldActionBarColor;
     private String oldMenuButtonColor;
     private String oldNotificationIconColor;
     private String oldShopIconColor;
@@ -139,7 +171,12 @@ public class CustomizeLook extends BaseActivity {
     private String oldMyRequestColor;
     private String oldOwnBubbleColor;
     private String oldOpponentBubbleColor;
-
+    private String oldHamburgerColor;
+    private String oldStatusBarColor;
+    private String oldSendButtonColor;
+    private String oldChatFieldColor;
+    private String oldOwnTextColor;
+    private String oldOpponentTextColor;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -152,11 +189,11 @@ public class CustomizeLook extends BaseActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(getString(R.string.hereYouWillSeeActionBar));
+            actionBar.setTitle(getString(R.string.actionBar));
         }
         oldOwnBubbleColor = sharedHelper.getOwnBubbleColor();
         oldOpponentBubbleColor = sharedHelper.getOpponentBubbleColor();
-        oldStatusBarColor = sharedHelper.getStatusBarColor();
+        oldActionBarColor = sharedHelper.getActionBarColor();
         oldMenuButtonColor = sharedHelper.getMenuButtonColor();
         oldNotificationIconColor = sharedHelper.getNotificationIconColor();
         oldShopIconColor = sharedHelper.getShopIconColor();
@@ -166,6 +203,12 @@ public class CustomizeLook extends BaseActivity {
         oldMessagesColor = sharedHelper.getMessagesColor();
         oldChatColor = sharedHelper.getChatColor();
         oldMyRequestColor = sharedHelper.getMyRequestColor();
+        oldHamburgerColor = sharedHelper.getHamburgerColor();
+        oldStatusBarColor = sharedHelper.getStatusBarColor();
+        oldSendButtonColor = sharedHelper.getSendButtonColor();
+        oldChatFieldColor = sharedHelper.getChatFieldTextColor();
+        oldOwnTextColor = sharedHelper.getOwnTextColor();
+        oldOpponentTextColor = sharedHelper.getOpponentTextColor();
 
 
         if (sharedHelper.getOwnBubbleColor() != null) {
@@ -180,23 +223,30 @@ public class CustomizeLook extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (!statusBarColorPicked && !fabMenuButtonColorPicked && !pickNotificationIconColorPicked && !pickShopIconColorPicked &&
-                        !pickLeftDrawerColorPicked && !feedColorPicked && !messagesBackgroundColorPicked && !friendsBackgroundColorPicked &&
-                        !chatBackgroundColorPicked && !requestBackgroundColorPicked && !opponentBubbleColorPicked && !ownBubbleColorPicked) {
-                    Intent intent = new Intent();
-                    intent.putExtra("anythingChanged", false);
-                    setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
-                    finish();
-                } else {
-                    Intent intent = new Intent();
-                    intent.putExtra("anythingChanged", true);
-                    setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
-                    finish();
-                }
+                checkAndSendResult();
+                break;
+            case R.id.saveToCloud:
+                break;
+            case R.id.restoreFromCloud:
+                break;
+            case R.id.resetToDefault:
+                sharedHelper.resetCustomization();
+                Intent intent = new Intent();
+                Toast.makeText(CustomizeLook.this, getString(R.string.reseted), Toast.LENGTH_SHORT).show();
+                intent.putExtra("reset", true);
+                setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
+                finish();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.customization_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
 
     private void showColorPicker(final GeneralCallback<String> generalCallback) {
         AmbilWarnaDialog dialog = new AmbilWarnaDialog(this, Color.parseColor("#3F51B5"), new AmbilWarnaDialog.OnAmbilWarnaListener() {
@@ -216,15 +266,15 @@ public class CustomizeLook extends BaseActivity {
 
     }
 
-    @OnClick(R.id.statusBarColorPicker)
-    public void statusBarColorPicker() {
+    @OnClick(R.id.pickHamburgerIconWrapper)
+    public void pickHamburgerIconWrapper() {
         showColorPicker(new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
-                statusBarColorPicked = true;
-                customizeToolbar.setBackgroundColor(Color.parseColor(s));
-                statusBarCleaner.setVisibility(View.VISIBLE);
-                sharedHelper.putStatusBarColor(s);
+                hamburgerColorPicked = true;
+                hamburgerIcon.setColorFilter(Color.parseColor(s), PorterDuff.Mode.SRC_ATOP);
+                hamburgerCleaner.setVisibility(View.VISIBLE);
+                sharedHelper.putHamburgerColor(s);
             }
 
             @Override
@@ -234,6 +284,119 @@ public class CustomizeLook extends BaseActivity {
         });
     }
 
+    @OnClick(R.id.statusBarColorPicker)
+    public void statusBarColorPicker() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            Snackbar.make(actionBarCleaner, getString(R.string.optionNotAvailable), Snackbar.LENGTH_LONG).show();
+            return;
+        }
+        showColorPicker(new GeneralCallback<String>() {
+            @Override
+            public void onSuccess(String s) {
+                statusBarCleaner.setVisibility(View.VISIBLE);
+                sharedHelper.putStatusBarColor(s);
+                Snackbar.make(friendsCleaner, getString(R.string.colorSet), Snackbar.LENGTH_SHORT).show();
+                statusBarColorPicked = true;
+            }
+
+            @Override
+            public void onFailure(String s) {
+
+            }
+        });
+    }
+
+    @OnClick(R.id.chatFieldWrapper)
+    public void chatFieldWrapper() {
+        showColorPicker(new GeneralCallback<String>() {
+            @Override
+            public void onSuccess(String s) {
+                chatFieldColorPicked = true;
+                Snackbar.make(actionBarCleaner, getString(R.string.colorSet), Snackbar.LENGTH_LONG).show();
+                sharedHelper.putChatFieldTextColor(s);
+                chatFieldCleaner.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onFailure(String s) {
+
+            }
+        });
+    }
+
+
+    @OnClick(R.id.ownChatTextColorWrapper)
+    public void ownTextColorWrapper() {
+        showColorPicker(new GeneralCallback<String>() {
+            @Override
+            public void onSuccess(String s) {
+                ownTextColorPicked = true;
+                Snackbar.make(actionBarCleaner, getString(R.string.colorSet), Snackbar.LENGTH_LONG).show();
+                sharedHelper.putOwnTextColor(s);
+                ownTextCleaner.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onFailure(String s) {
+
+            }
+        });
+    }
+
+    @OnClick(R.id.opponentChatTextColorWrapper)
+    public void opponentTextColorWrapper() {
+        showColorPicker(new GeneralCallback<String>() {
+            @Override
+            public void onSuccess(String s) {
+                opponentTextColorPicked = true;
+                Snackbar.make(actionBarCleaner, getString(R.string.colorSet), Snackbar.LENGTH_LONG).show();
+                sharedHelper.putOpponentTextColor(s);
+                opponentTextCleaner.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onFailure(String s) {
+
+            }
+        });
+    }
+
+    @OnClick(R.id.actionBarColorPicker)
+    public void actionBarColorPicker() {
+        showColorPicker(new GeneralCallback<String>() {
+            @Override
+            public void onSuccess(String s) {
+                actionBarColorPicked = true;
+                customizeToolbar.setBackgroundColor(Color.parseColor(s));
+                actionBarCleaner.setVisibility(View.VISIBLE);
+                sharedHelper.putActionBarColor(s);
+            }
+
+            @Override
+            public void onFailure(String s) {
+
+            }
+        });
+    }
+
+
+    @OnClick(R.id.sendButtonPickerWrapper)
+    public void sendButtonPickerWrapper() {
+        showColorPicker(new GeneralCallback<String>() {
+            @Override
+            public void onSuccess(String s) {
+                sendButtonColorPicked = true;
+                sendButtonIcon.setColorNormal(Color.parseColor(s));
+                sharedHelper.putSendButtonColor(s);
+                sendButtonCleaner.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onFailure(String s) {
+
+            }
+        });
+    }
 
     @OnClick(R.id.fabMenuButtonColorPicker)
     public void fabMenuButtonColorPicker() {
@@ -436,14 +599,29 @@ public class CustomizeLook extends BaseActivity {
         });
     }
 
-
     @OnClick(R.id.statusBarCleaner)
-    public void statusBarColorPicked() {
-        statusBarColorPicked = false;
+    public void statusBarCleaner() {
         statusBarCleaner.setVisibility(View.GONE);
+        statusBarColorPicked = false;
         sharedHelper.putStatusBarColor(oldStatusBarColor);
-        if (oldStatusBarColor != null) {
-            customizeToolbar.setBackgroundColor(Color.parseColor(oldStatusBarColor));
+        Snackbar.make(statusBarCleaner, getString(R.string.colorRemoved), Snackbar.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.hamburgerCleaner)
+    public void hamburgerCleaner() {
+        hamburgerColorPicked = false;
+        hamburgerCleaner.setVisibility(View.GONE);
+        sharedHelper.putHamburgerColor(oldHamburgerColor);
+        hamburgerIcon.setColorFilter(null);
+    }
+
+    @OnClick(R.id.actionBarCleaner)
+    public void actionBarCleaner() {
+        actionBarColorPicked = false;
+        actionBarCleaner.setVisibility(View.GONE);
+        sharedHelper.putActionBarColor(oldActionBarColor);
+        if (oldActionBarColor != null) {
+            customizeToolbar.setBackgroundColor(Color.parseColor(oldActionBarColor));
         } else {
             customizeToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
         }
@@ -467,6 +645,14 @@ public class CustomizeLook extends BaseActivity {
         ownBubbleCleaner.setVisibility(View.GONE);
         ownBubbleIcon.setColorFilter(null);
         sharedHelper.putOwnBubbleColor(oldOwnBubbleColor);
+    }
+
+    @OnClick(R.id.sendButtonCleaner)
+    public void sendButtonCleaner() {
+        sendButtonColorPicked = false;
+        sendButtonCleaner.setVisibility(View.GONE);
+        sendButtonIcon.setColorNormal(ContextCompat.getColor(this, R.color.colorPrimary));
+        sharedHelper.putSendButtonColor(oldSendButtonColor);
     }
 
     @OnClick(R.id.opponentBubbleCleaner)
@@ -525,6 +711,30 @@ public class CustomizeLook extends BaseActivity {
         sharedHelper.putMessagesColor(oldMessagesColor);
     }
 
+    @OnClick(R.id.chatFieldCleaner)
+    public void chatFieldCleaner() {
+        chatFieldColorPicked = false;
+        Snackbar.make(actionBarCleaner, getString(R.string.colorRemoved), Snackbar.LENGTH_SHORT).show();
+        sharedHelper.putChatFieldTextColor(oldChatFieldColor);
+        chatFieldCleaner.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.ownTextCleaner)
+    public void ownTextCleaner() {
+        ownTextColorPicked = false;
+        Snackbar.make(actionBarCleaner, getString(R.string.colorRemoved), Snackbar.LENGTH_SHORT).show();
+        sharedHelper.putOwnTextColor(oldOwnTextColor);
+        ownTextCleaner.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.opponentTextCleaner)
+    public void opponentTextCleaner() {
+        opponentTextColorPicked = false;
+        Snackbar.make(actionBarCleaner, getString(R.string.colorRemoved), Snackbar.LENGTH_SHORT).show();
+        sharedHelper.putOpponentTextColor(oldOpponentTextColor);
+        opponentBubbleCleaner.setVisibility(View.GONE);
+    }
+
     @OnClick(R.id.chatCleaner)
     public void chatCleaner() {
         chatBackgroundColorPicked = false;
@@ -543,19 +753,25 @@ public class CustomizeLook extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (!statusBarColorPicked && !fabMenuButtonColorPicked && !pickNotificationIconColorPicked && !pickShopIconColorPicked &&
+        checkAndSendResult();
+
+    }
+
+    private void checkAndSendResult() {
+        if (!actionBarColorPicked && !fabMenuButtonColorPicked && !pickNotificationIconColorPicked && !pickShopIconColorPicked &&
                 !pickLeftDrawerColorPicked && !feedColorPicked && !messagesBackgroundColorPicked && !friendsBackgroundColorPicked &&
-                !chatBackgroundColorPicked && !requestBackgroundColorPicked && !opponentBubbleColorPicked && !ownBubbleColorPicked) {
+                !chatBackgroundColorPicked && !requestBackgroundColorPicked && !opponentBubbleColorPicked &&
+                !ownBubbleColorPicked && !sendButtonColorPicked && !statusBarColorPicked && !hamburgerColorPicked
+                && !opponentTextColorPicked && !chatFieldColorPicked && !ownTextColorPicked) {
             Intent intent = new Intent();
             intent.putExtra("anythingChanged", false);
             setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
-            super.onBackPressed();
+            finish();
         } else {
             Intent intent = new Intent();
             intent.putExtra("anythingChanged", true);
             setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
-            super.onBackPressed();
+            finish();
         }
-
     }
 }

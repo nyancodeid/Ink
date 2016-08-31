@@ -116,7 +116,7 @@ public class WaitRoom extends BaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(getString(R.string.waitRoom));
         }
-        chatRouletteSendMessage.setEnabled(false);
+        chatRouletteMessageBody.setEnabled(false);
         chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
 
         if (sharedHelper.shouldShowShowCase()) {
@@ -385,7 +385,7 @@ public class WaitRoom extends BaseActivity {
                     actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.darkGreen));
                     actualStatus.setText(getString(R.string.opponentFound));
                     progressBar.setVisibility(View.GONE);
-                    chatRouletteMessageBody.setEnabled(true);
+                    chatRouletteMessageBody.setEnabled(false);
                     shouldWaitForWaiters = false;
 
                     String currentUserId = extras.getString("currentUserId");
@@ -563,7 +563,7 @@ public class WaitRoom extends BaseActivity {
                 actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.darkGreen));
                 actualStatus.setText(getString(R.string.opponentFound));
                 progressBar.setVisibility(View.GONE);
-                chatRouletteMessageBody.setEnabled(true);
+                chatRouletteMessageBody.setEnabled(false);
                 chatRouletteMessageBody.setHint(getString(R.string.writeMessageHint));
                 shouldWaitForWaiters = false;
             }

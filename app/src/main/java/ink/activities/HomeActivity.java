@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.design.widget.FloatingActionMenu;
@@ -23,7 +26,10 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
@@ -45,6 +51,7 @@ import ink.fragments.Feed;
 import ink.fragments.MyFriends;
 import ink.friendsmash.FriendSmashLoginView;
 import ink.interfaces.AccountDeleteListener;
+import ink.interfaces.ColorChangeListener;
 import ink.models.CoinsResponse;
 import ink.service.BackgroundTaskService;
 import ink.service.LocationRequestSessionDestroyer;
@@ -71,6 +78,7 @@ public class HomeActivity extends BaseActivity
 
     private FloatingActionMenu mFab;
     private ImageView mProfileImage;
+    private ActionBarDrawerToggle toggle;
     private TextView coinsText;
     private SharedHelper mSharedHelper;
     private FloatingActionButton mMessages;
@@ -94,6 +102,8 @@ public class HomeActivity extends BaseActivity
     private Menu menuItem;
     private boolean activityForResult;
     private int lastRequestCode;
+    private ColorChangeListener colorChangeListener;
+    private RelativeLayout panelHeader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,8 +156,7 @@ public class HomeActivity extends BaseActivity
         checkIsWarned();
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+        toggle = new ActionBarDrawerToggle(this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             public void onDrawerClosed(View view) {
                 if (shouldOpenActivity) {
                     shouldOpenActivity = false;
@@ -171,7 +180,6 @@ public class HomeActivity extends BaseActivity
             mDrawer.addDrawerListener(toggle);
         }
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -183,6 +191,7 @@ public class HomeActivity extends BaseActivity
         getCoins();
         mProfileImage.setOnClickListener(this);
         mUserNameTV = (TextView) headerView.findViewById(R.id.userNameTextView);
+        panelHeader = (RelativeLayout) headerView.findViewById(R.id.panelHeader);
         navigationView.setNavigationItemSelectedListener(this);
         LocalBroadcastManager.getInstance(this).registerReceiver(feedUpdateReceiver, new IntentFilter(getPackageName() + "HomeActivity"));
     }
@@ -311,6 +320,7 @@ public class HomeActivity extends BaseActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
         menuItem = menu;
+        setHomeActivityColors();
         return true;
     }
 
@@ -413,43 +423,63 @@ public class HomeActivity extends BaseActivity
                 break;
 
             case R.id.logout:
-                progressDialog.show();
-                shouldOpenActivity = false;
-                FileUtils.clearApplicationData(getApplicationContext());
-                boolean editorHintValue = mSharedHelper.isEditorHintShown();
-                mSharedHelper.clean();
-                mSharedHelper.putShouldShowIntro(false);
-                if (editorHintValue) {
-                    mSharedHelper.putEditorHintShow(true);
-                }
-                mSharedHelper.putWarned(true);
-                LoginManager.getInstance().logOut();
-                RealmHelper.getInstance().clearDatabase(getApplicationContext());
-                IonCache.clearIonCache(getApplicationContext());
-                Thread thread = new Thread(new Runnable() {
+                System.gc();
+                AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                builder.setTitle(getString(R.string.warning));
+                builder.setMessage(getString(R.string.logoutWaring));
+                builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
-                    public void run() {
-                        Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-                        try {
-                            FirebaseInstanceId.getInstance().deleteInstanceId();
-                            progressDialog.dismiss();
-                            startActivity(new Intent(getApplicationContext(), Login.class));
-                            finish();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            progressDialog.dismiss();
-                            startActivity(new Intent(getApplicationContext(), Login.class));
-                            finish();
-                        }
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        logoutUser();
                     }
                 });
-                thread.start();
+                builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.show();
                 break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void logoutUser() {
+        progressDialog.show();
+        shouldOpenActivity = false;
+        FileUtils.clearApplicationData(getApplicationContext());
+        boolean editorHintValue = mSharedHelper.isEditorHintShown();
+        mSharedHelper.clean();
+        mSharedHelper.putShouldShowIntro(false);
+        if (editorHintValue) {
+            mSharedHelper.putEditorHintShow(true);
+        }
+        mSharedHelper.putWarned(true);
+        LoginManager.getInstance().logOut();
+        RealmHelper.getInstance().clearDatabase(getApplicationContext());
+        IonCache.clearIonCache(getApplicationContext());
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                try {
+                    FirebaseInstanceId.getInstance().deleteInstanceId();
+                    progressDialog.dismiss();
+                    startActivity(new Intent(getApplicationContext(), Login.class));
+                    finish();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    progressDialog.dismiss();
+                    startActivity(new Intent(getApplicationContext(), Login.class));
+                    finish();
+                }
+            }
+        });
+        thread.start();
     }
 
     @Override
@@ -590,7 +620,13 @@ public class HomeActivity extends BaseActivity
                         JSONArray jsonArray = jsonObject.optJSONArray("requests");
                         if (jsonArray.length() <= 0) {
                             if (menuItem != null) {
-                                menuItem.getItem(0).setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.notification_icon));
+                                if (mSharedHelper.getNotificationIconColor() == null) {
+                                    menuItem.getItem(0).setIcon(ContextCompat.getDrawable(getApplicationContext(),
+                                            R.drawable.notification_icon));
+                                } else {
+                                    menuItem.getItem(0).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getNotificationIconColor()),
+                                            PorterDuff.Mode.SRC_ATOP);
+                                }
                             }
                         } else {
                             if (menuItem != null) {
@@ -624,7 +660,80 @@ public class HomeActivity extends BaseActivity
         switch (requestCode) {
             case Constants.REQUEST_CUSTOMIZE_MADE:
                 boolean anythingChanged = data.getExtras().getBoolean("anythingChanged");
+                if (anythingChanged) {
+                    triggerColorChangeListener();
+                    setHomeActivityColors();
+                } else if (data.getExtras().containsKey("reset")) {
+                    boolean reset = data.getExtras().getBoolean("reset");
+                    if (reset) {
+                        triggerReset();
+                        resetColors();
+                    }
+                }
                 break;
+        }
+    }
+
+
+    private void triggerReset() {
+        if (colorChangeListener != null) {
+            colorChangeListener.onColorReset();
+        }
+    }
+
+    public void setOnColorChangeListener(ColorChangeListener colorChangeListener) {
+        this.colorChangeListener = colorChangeListener;
+    }
+
+    private void triggerColorChangeListener() {
+        if (colorChangeListener != null) {
+            colorChangeListener.onColorChanged();
+        }
+    }
+
+    private void setHomeActivityColors() {
+        if (mSharedHelper.getHamburgerColor() != null) {
+            toggle.getDrawerArrowDrawable().setColor(Color.parseColor(mSharedHelper.getHamburgerColor()));
+            toggle.syncState();
+        }
+        if (mSharedHelper.getMenuButtonColor() != null) {
+            mFab.setMenuButtonColorNormal(Color.parseColor(mSharedHelper.getMenuButtonColor()));
+            mFab.setMenuButtonColorPressed(Color.parseColor("#cccccc"));
+        }
+        if (mSharedHelper.getNotificationIconColor() != null) {
+            menuItem.getItem(0).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getNotificationIconColor()),
+                    PorterDuff.Mode.SRC_ATOP);
+        }
+
+        if (mSharedHelper.getShopIconColor() != null) {
+            menuItem.getItem(1).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getShopIconColor()),
+                    PorterDuff.Mode.SRC_ATOP);
+        }
+        if (mSharedHelper.getActionBarColor() != null) {
+            mToolbar.setBackgroundColor(Color.parseColor(mSharedHelper.getActionBarColor()));
+        }
+
+        if (mSharedHelper.getStatusBarColor() != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(Color.parseColor(mSharedHelper.getStatusBarColor()));
+            }
+        }
+        if (mSharedHelper.getLeftSlidingPanelHeaderColor() != null) {
+            panelHeader.setBackgroundColor(Color.parseColor(mSharedHelper.getLeftSlidingPanelHeaderColor()));
+        }
+    }
+
+
+    private void resetColors() {
+        toggle.getDrawerArrowDrawable().setColor(Color.WHITE);
+        mFab.setMenuButtonColorNormal(ContextCompat.getColor(this, R.color.colorPrimary));
+        mFab.setMenuButtonColorPressed(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        menuItem.getItem(0).getIcon().setColorFilter(null);
+        menuItem.getItem(1).getIcon().setColorFilter(null);
+        if (mSharedHelper.getActionBarColor() != null) {
+            mToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
         }
     }
 }

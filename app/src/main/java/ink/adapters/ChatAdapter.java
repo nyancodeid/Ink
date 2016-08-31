@@ -114,6 +114,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         checkForGif(chatModel, holder);
 
         if (mCurrentUserId.equals(chatModel.getUserId())) {
+            if (sharedHelper.getOwnTextColor() != null) {
+                holder.message.setTextColor(Color.parseColor(sharedHelper.getOwnTextColor()));
+            }
             layoutParams.gravity = Gravity.RIGHT;
             layoutParams.rightMargin = Dp.toDps(mContext, 16);
             deliveryStatusParams.gravity = Gravity.RIGHT;
@@ -124,11 +127,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
             holder.chatViewBubble.setBackground(ContextCompat.getDrawable(mContext, R.drawable.outgoing_message_bg));
 
-            if (holder.chatViewBubble.getTag() == null) {
-                if (sharedHelper.getOwnBubbleColor() != null) {
-                    holder.chatViewBubble.getBackground().setColorFilter(Color.parseColor(sharedHelper.getOwnBubbleColor()), PorterDuff.Mode.SRC_ATOP);
-                    holder.chatViewBubble.setTag(COLOR_APPLIED);
-                }
+            if (sharedHelper.getOwnBubbleColor() != null) {
+                holder.chatViewBubble.getBackground().setColorFilter(Color.parseColor(sharedHelper.getOwnBubbleColor()), PorterDuff.Mode.SRC_ATOP);
             }
             if (chatModel.getDeliveryStatus().equals(Constants.STATUS_DELIVERED)) {
                 if (position >= chatModelList.size() - 1) {
@@ -148,12 +148,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             }
         } else {
             holder.chatViewBubble.setBackground(ContextCompat.getDrawable(mContext, R.drawable.incoming_message_bg));
-
-            if (holder.chatViewBubble.getTag() == null) {
-                if (sharedHelper.getOpponentBubbleColor() != null) {
-                    holder.chatViewBubble.getBackground().setColorFilter(Color.parseColor(sharedHelper.getOpponentBubbleColor()), PorterDuff.Mode.SRC_ATOP);
-                    holder.chatViewBubble.setTag(COLOR_APPLIED);
-                }
+            if (sharedHelper.getOpponentTextColor() != null) {
+                holder.message.setTextColor(Color.parseColor(sharedHelper.getOpponentTextColor()));
+            }
+            if (sharedHelper.getOpponentBubbleColor() != null) {
+                holder.chatViewBubble.getBackground().setColorFilter(Color.parseColor(sharedHelper.getOpponentBubbleColor()), PorterDuff.Mode.SRC_ATOP);
             }
             layoutParams.gravity = Gravity.LEFT;
             gifChatViewLayoutParams.gravity = Gravity.LEFT;

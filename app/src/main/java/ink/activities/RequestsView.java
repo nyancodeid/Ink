@@ -1,11 +1,11 @@
 package ink.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,7 +37,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RequestsView extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, RequestListener {
+public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, RequestListener {
 
     private SharedHelper sharedHelper;
     @Bind(R.id.requestsRecycler)
@@ -46,6 +46,8 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
     SwipeRefreshLayout requestSwipe;
     @Bind(R.id.noRequestsLayout)
     RelativeLayout noRequestsLayout;
+    @Bind(R.id.requestsRootLayout)
+    RelativeLayout requestsRootLayout;
     private RequestsAdapter requestsAdapter;
     private RequestsModel requestsModel;
     private List<RequestsModel> requestsModels;
@@ -55,11 +57,14 @@ public class RequestsView extends AppCompatActivity implements SwipeRefreshLayou
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_requests_view);
         ButterKnife.bind(this);
+        sharedHelper = new SharedHelper(this);
+        if (sharedHelper.getMyRequestColor() != null) {
+            requestsRootLayout.setBackgroundColor(Color.parseColor(sharedHelper.getMyRequestColor()));
+        }
         requestSwipe.setOnRefreshListener(this);
         requestsModels = new ArrayList<>();
         requestsAdapter = new RequestsAdapter(requestsModels, this);
         requestsAdapter.setRequestListener(this);
-        sharedHelper = new SharedHelper(this);
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);
         itemAnimator.setRemoveDuration(500);
