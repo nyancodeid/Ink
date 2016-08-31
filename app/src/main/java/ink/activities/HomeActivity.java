@@ -68,7 +68,7 @@ public class HomeActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AccountDeleteListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
-    private static final int REQUEST_CUSTOMIZE_MADE = 8;
+
     private FloatingActionMenu mFab;
     private ImageView mProfileImage;
     private TextView coinsText;
@@ -391,7 +391,7 @@ public class HomeActivity extends BaseActivity
 
             case R.id.customizeApp:
                 shouldOpenActivity = true;
-                lastRequestCode = REQUEST_CUSTOMIZE_MADE;
+                lastRequestCode = Constants.REQUEST_CUSTOMIZE_MADE;
                 setLastClassToOpen(CustomizeLook.class, true);
                 break;
             case R.id.nav_share:
@@ -624,7 +624,8 @@ public class HomeActivity extends BaseActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case REQUEST_CUSTOMIZE_MADE:
+            case Constants.REQUEST_CUSTOMIZE_MADE:
+                boolean anythingChanged = data.getExtras().getBoolean("anythingChanged");
                 break;
         }
     }

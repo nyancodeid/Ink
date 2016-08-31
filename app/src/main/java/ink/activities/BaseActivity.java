@@ -1,7 +1,9 @@
 package ink.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import ink.interfaces.AccountDeleteListener;
@@ -43,5 +45,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected boolean isSocialAccount() {
         return sharedHelper.isSocialAccount();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("fasfasffsafasfas", "onActivityResult: "+"on activity called in base");
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
