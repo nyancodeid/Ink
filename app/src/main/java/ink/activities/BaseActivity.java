@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -34,12 +33,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     FloatingActionButton sendChatMessage;
 
     @Nullable
-    @Bind(R.id.toolbar)
-    Toolbar mToolbar;
+    @Bind(R.id.makePostToolbar)
+    Toolbar makePostToolbar;
 
-    @Nullable
-    @Bind(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbarLayout;
 
     @Nullable
     @Bind(R.id.chatRouletteSendMessage)
@@ -99,12 +95,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             if (actionBar != null) {
                 actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(sharedHelper.getActionBarColor())));
             }
-            if (mToolbar != null) {
-                mToolbar.setBackgroundColor(Color.parseColor(sharedHelper.getActionBarColor()));
-            }
-            if (collapsingToolbarLayout != null) {
-                collapsingToolbarLayout.setBackgroundColor(Color.parseColor(sharedHelper.getActionBarColor()));
-            }
         }
 
         if (sharedHelper.getStatusBarColor() != null) {
@@ -120,6 +110,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         ButterKnife.bind(this);
+        if (sharedHelper.getActionBarColor() != null) {
+            if (makePostToolbar != null) {
+                makePostToolbar.setBackgroundColor(Color.parseColor(sharedHelper.getActionBarColor()));
+            }
+        }
         if (sharedHelper.getSendButtonColor() != null) {
             if (sendChatMessage != null) {
                 sendChatMessage.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));

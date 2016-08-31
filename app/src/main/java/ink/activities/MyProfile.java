@@ -112,12 +112,12 @@ public class MyProfile extends BaseActivity {
 
     @Bind(R.id.collapsing_toolbar)
     CollapsingToolbarLayout mCollapsingToolbar;
-    @Bind(R.id.toolbar)
+    @Bind(R.id.myProfileToolbar)
     Toolbar mToolbar;
     @Bind(R.id.deleteAccont)
-    Button deleteAccont;
+    Button deleteAccount;
 
-    private Snackbar updateSnackbar;
+    private Snackbar updateSnackBar;
     private String mFirstNameToSend;
     private String mLastNameToSend;
     private String mGenderToSend;
@@ -702,7 +702,7 @@ public class MyProfile extends BaseActivity {
         mGender.setClickable(true);
         mSkype.setFocusable(true);
         mSkype.setFocusableInTouchMode(true);
-        deleteAccont.setVisibility(View.VISIBLE);
+        deleteAccount.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.deleteAccont)
@@ -822,7 +822,7 @@ public class MyProfile extends BaseActivity {
         mFacebook.setFocusableInTouchMode(false);
         mSkype.setFocusable(false);
         mSkype.setFocusableInTouchMode(false);
-        deleteAccont.setVisibility(View.GONE);
+        deleteAccount.setVisibility(View.GONE);
 
     }
 
@@ -1072,21 +1072,19 @@ public class MyProfile extends BaseActivity {
     }
 
 
-
-
     private void showSnack(View view) {
-        updateSnackbar = Snackbar.make(view, getString(R.string.updating), Snackbar.LENGTH_INDEFINITE);
-        updateSnackbar.show();
+        updateSnackBar = Snackbar.make(view, getString(R.string.updating), Snackbar.LENGTH_INDEFINITE);
+        updateSnackBar.show();
     }
 
     private void hideSnack() {
-        if (updateSnackbar != null) {
-            if (updateSnackbar.isShown()) {
-                updateSnackbar.setText(getString(R.string.saved));
-                updateSnackbar.setAction("OK", new View.OnClickListener() {
+        if (updateSnackBar != null) {
+            if (updateSnackBar.isShown()) {
+                updateSnackBar.setText(getString(R.string.saved));
+                updateSnackBar.setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        updateSnackbar.dismiss();
+                        updateSnackBar.dismiss();
                     }
                 });
             }

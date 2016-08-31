@@ -723,6 +723,7 @@ public class HomeActivity extends BaseActivity
         if (mSharedHelper.getLeftSlidingPanelHeaderColor() != null) {
             panelHeader.setBackgroundColor(Color.parseColor(mSharedHelper.getLeftSlidingPanelHeaderColor()));
         }
+        System.gc();
     }
 
 
@@ -739,5 +740,6 @@ public class HomeActivity extends BaseActivity
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         }
+        System.gc();
     }
 }
