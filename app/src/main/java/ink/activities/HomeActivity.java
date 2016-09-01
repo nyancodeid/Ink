@@ -32,14 +32,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.facebook.login.LoginManager;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.ink.R;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -463,7 +461,7 @@ public class HomeActivity extends BaseActivity
         mSharedHelper.putWarned(true);
         LoginManager.getInstance().logOut();
         RealmHelper.getInstance().clearDatabase(getApplicationContext());
-        IonCache.clearGlideCache(getApplicationContext());
+        IonCache.clearIonCache(getApplicationContext());
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -546,47 +544,31 @@ public class HomeActivity extends BaseActivity
 
             if (!mSharedHelper.getImageLink().isEmpty()) {
                 if (isSocialAccount()) {
-                    Glide.with(getApplicationContext()).load(mSharedHelper.getImageLink()).placeholder(R.drawable.no_background_image).transform(new CircleTransform(this)).listener(new RequestListener<String, GlideDrawable>() {
+                    Ion.with(getApplicationContext()).load(mSharedHelper.getImageLink()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(mProfileImage).setCallback(new FutureCallback<ImageView>() {
                         @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        public void onCompleted(Exception e, ImageView result) {
                             mSharedHelper.putShouldLoadImage(false);
-                            return false;
                         }
-                    }).into(mProfileImage);
+                    });
                 } else {
-                    Glide.with(getApplicationContext()).load(Constants.MAIN_URL +
-                            Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink()).placeholder(R.drawable.no_background_image).listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            mSharedHelper.putShouldLoadImage(false);
-                            return false;
-                        }
-                    }).transform(new CircleTransform(this)).into(mProfileImage);
+                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL +
+                            Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(mProfileImage)
+                            .setCallback(new FutureCallback<ImageView>() {
+                                @Override
+                                public void onCompleted(Exception e, ImageView result) {
+                                    mSharedHelper.putShouldLoadImage(false);
+                                }
+                            });
                 }
             }
         } else {
-            Glide.with(getApplicationContext()).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").listener(new RequestListener<String, GlideDrawable>() {
-                @Override
-                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                    return false;
-                }
-
-                @Override
-                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                    mSharedHelper.putShouldLoadImage(false);
-                    return false;
-                }
-            }).transform(new CircleTransform(this)).into(mProfileImage);
+            Ion.with(getApplicationContext()).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(mProfileImage)
+                    .setCallback(new FutureCallback<ImageView>() {
+                        @Override
+                        public void onCompleted(Exception e, ImageView result) {
+                            mSharedHelper.putShouldLoadImage(false);
+                        }
+                    });
         }
     }
 

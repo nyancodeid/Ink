@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.ink.R;
+import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
@@ -70,12 +70,11 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
             } else {
                 url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + friendsModel.getImageLink();
             }
-            Glide.with(mContext).load(url)
-                    .placeholder(R.drawable.no_background_image).
-                    transform(new CircleTransform(mContext)).into(holder.friendImage);
+            Ion.with(mContext).load(url)
+                    .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.friendImage);
         } else {
-            Glide.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
-                    .transform(new CircleTransform(mContext)).into(holder.friendImage);
+            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
+                    .withBitmap().transform(new CircleTransform()).intoImageView(holder.friendImage);
         }
 
         if (friendsModel.isFriend()) {

@@ -93,7 +93,6 @@ public class FriendSmashLoginView extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case GOOGLE_ERROR_RESOLUTION_RESULT:
-                Toast.makeText(FriendSmashLoginView.this, "result called", Toast.LENGTH_SHORT).show();
                 handleGoogleCircleResult();
                 break;
         }

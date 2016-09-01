@@ -19,8 +19,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.ink.R;
+import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
@@ -357,10 +357,10 @@ public class OpponentProfile extends BaseActivity {
                             isSocialAccount = jsonObject.optBoolean("isSocialAccount");
                             if (mOpponentImage != null && !mOpponentImage.isEmpty()) {
                                 if (isSocialAccount) {
-                                    Glide.with(getApplicationContext()).load(mOpponentImage).into(mProfileImage);
+                                    Ion.with(getApplicationContext()).load(mOpponentImage).intoImageView(mProfileImage);
                                 } else {
-                                    Glide.with(getApplicationContext()).load(Constants.MAIN_URL +
-                                            Constants.USER_IMAGES_FOLDER + mOpponentImage).into(mProfileImage);
+                                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL +
+                                            Constants.USER_IMAGES_FOLDER + mOpponentImage).intoImageView(mProfileImage);
                                 }
                             } else {
                                 mProfileImage.setBackgroundResource(R.drawable.no_image);

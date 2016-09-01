@@ -36,8 +36,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.ink.R;
+import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
@@ -654,7 +654,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                 if (selectedImagePath != null) {
                     mImageLinkToSend = selectedImagePath;
                     isImageChosen = true;
-                    Glide.with(getApplicationContext()).load(new File(selectedImagePath)).transform(new CircleTransform(getApplicationContext())).into(groupImage);
+                    Ion.with(getApplicationContext()).load(new File(selectedImagePath)).withBitmap().transform(new CircleTransform()).intoImageView(groupImage);
                 } else {
                     isImageChosen = false;
                 }

@@ -7,11 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.ink.R;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.List;
@@ -48,18 +46,12 @@ public class GifAdapter extends RecyclerView.Adapter<GifAdapter.ViewHolder> {
             if (gifModel.hasSound()) {
 
             }
-            Glide.with(context).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + gifModel.getGifName()).asGif().listener(new RequestListener<String, GifDrawable>() {
+            Ion.with(context).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + gifModel.getGifName()).intoImageView(holder.gifSingleView).setCallback(new FutureCallback<ImageView>() {
                 @Override
-                public boolean onException(Exception e, String model, Target<GifDrawable> target, boolean isFirstResource) {
-                    return false;
-                }
-
-                @Override
-                public boolean onResourceReady(GifDrawable resource, String model, Target<GifDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                public void onCompleted(Exception e, ImageView result) {
                     holder.gifLoadingSingleItem.setVisibility(View.GONE);
-                    return false;
                 }
-            }).into(holder.gifSingleView);
+            });
 
             holder.gifSingleView.setOnClickListener(new View.OnClickListener() {
                 @Override

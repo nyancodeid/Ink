@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.ink.R;
+import com.koushikdutta.ion.Ion;
 import com.mikhaellopez.hfrecyclerview.HFRecyclerView;
 
 import java.util.List;
@@ -114,13 +114,13 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             }
             if (commentModel.getCommenterImage() != null && !commentModel.getCommenterImage().isEmpty()) {
                 if (commentModel.isSocialAccount()) {
-                    Glide.with(context).load(commentModel.getCommenterImage()).placeholder(R.drawable.no_background_image).transform(new CircleTransform(context)).into(itemViewHolder.commenterImage);
+                    Ion.with(context).load(commentModel.getCommenterImage()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
                 } else {
-                    Glide.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                            commentModel.getCommenterImage()).placeholder(R.drawable.no_background_image).transform(new CircleTransform(context)).into(itemViewHolder.commenterImage);
+                    Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                            commentModel.getCommenterImage()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
                 }
             } else {
-                Glide.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").placeholder(R.drawable.no_background_image).transform(new CircleTransform(context)).into(itemViewHolder.commenterImage);
+                Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
             }
             itemViewHolder.commentMoreIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -145,13 +145,13 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             });
             if (ownerImage != null && !ownerImage.isEmpty()) {
                 if (isOwnerSocialAccount) {
-                    Glide.with(context).load(ownerImage).placeholder(R.drawable.no_background_image).transform(new CircleTransform(context)).into(headerViewHolder.postOwnerImage);
+                    Ion.with(context).load(ownerImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
                 } else {
-                    Glide.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                            ownerImage).placeholder(R.drawable.no_background_image).transform(new CircleTransform(context)).into(headerViewHolder.postOwnerImage);
+                    Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                            ownerImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
                 }
             } else {
-                Glide.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").transform(new CircleTransform(context)).into(headerViewHolder.postOwnerImage);
+                Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
             }
             headerViewHolder.postBody.setMovementMethod(LinkMovementMethod.getInstance());
             headerViewHolder.postBody.setText(ownerPostBody);
@@ -169,8 +169,8 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
 
                 if (FileUtils.isImageType(attachment)) {
                     headerViewHolder.imageHolder.setVisibility(View.VISIBLE);
-                    Glide.with(context).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + attachment).placeholder(R.drawable.big_image_place_holder)
-                            .into(headerViewHolder.imageHolder);
+                    Ion.with(context).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + attachment).withBitmap().placeholder(R.drawable.big_image_place_holder)
+                            .intoImageView(headerViewHolder.imageHolder);
                 } else {
                     headerViewHolder.imageHolder.setVisibility(View.GONE);
                 }

@@ -9,8 +9,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.ink.R;
+import com.koushikdutta.ion.Ion;
+
 import java.util.List;
 
 import ink.interfaces.MusicClickListener;
@@ -72,7 +73,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
 
         if (track.mArtworkURL != null && !track.equals("null")) {
             holder.musicImage.setBackground(null);
-            Glide.with(mContext).load(track.mArtworkURL).transform(new CircleTransform(mContext)).into(holder.musicImage);
+            Ion.with(mContext).load(track.mArtworkURL).withBitmap().transform(new CircleTransform()).intoImageView(holder.musicImage);
         } else {
             holder.musicImage.setBackground(null);
             holder.musicImage.setBackgroundResource(R.drawable.gradient_no_image);

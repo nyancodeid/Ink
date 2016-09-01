@@ -32,11 +32,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.ink.R;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
@@ -231,18 +229,12 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
 
         if (mGroupImage != null && !mGroupImage.isEmpty()) {
             mGroupImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            Glide.with(this).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + mGroupImage).fitCenter().centerCrop().listener(new RequestListener<String, GlideDrawable>() {
+            Ion.with(this).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + mGroupImage).withBitmap().fitXY().centerCrop().intoImageView(mGroupImageView).setCallback(new FutureCallback<ImageView>() {
                 @Override
-                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                    return false;
-                }
-
-                @Override
-                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                public void onCompleted(Exception e, ImageView result) {
                     hideGroupImageLoading();
-                    return false;
                 }
-            }).into(mGroupImageView);
+            });
         } else {
             mGroupImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             mGroupImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.no_group_image));
@@ -250,15 +242,13 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         }
         if (mOwnerImage != null && !mOwnerImage.isEmpty()) {
             if (isSocialAccount) {
-                Glide.with(this).load(mOwnerImage).transform(new CircleTransform(this))
-                        .into(mOwnerImageView);
+                Ion.with(this).load(mOwnerImage).withBitmap().transform(new CircleTransform()).intoImageView(mOwnerImageView);
             } else {
-                Glide.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        mOwnerImage).transform(new CircleTransform(this)).into(mOwnerImageView);
+                Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                        mOwnerImage).withBitmap().transform(new CircleTransform()).intoImageView(mOwnerImageView);
             }
         } else {
-            Glide.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
-                    .transform(new CircleTransform(this)).into(mOwnerImageView);
+            Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(mOwnerImageView);
         }
 
         if (mGroupColor != null && !mGroupColor.isEmpty()) {

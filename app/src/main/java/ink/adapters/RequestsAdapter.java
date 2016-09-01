@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.ink.R;
+import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
@@ -64,13 +64,13 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
 
         if (!requestsModel.getRequesterImage().isEmpty()) {
             if (requestsModel.isSocialAccount()) {
-                Glide.with(mContext).load(requestsModel.getRequesterImage()).placeholder(R.drawable.no_background_image).transform(new CircleTransform(mContext)).into(holder.requesterImage);
+                Ion.with(mContext).load(requestsModel.getRequesterImage()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.requesterImage);
             } else {
-                Glide.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        requestsModel.getRequesterImage()).placeholder(R.drawable.no_background_image).transform(new CircleTransform(mContext)).into(holder.requesterImage);
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                        requestsModel.getRequesterImage()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.requesterImage);
             }
         } else {
-            Glide.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").placeholder(R.drawable.no_background_image).transform(new CircleTransform(mContext)).into(holder.requesterImage);
+            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.requesterImage);
         }
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
