@@ -1,5 +1,6 @@
 package ink.activities;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -191,6 +193,7 @@ public class CustomizeLook extends BaseActivity {
     private String oldOpponentTextColor;
 
     private Gson gson;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -401,7 +404,9 @@ public class CustomizeLook extends BaseActivity {
                     String responseBody = response.body().string();
                     ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
                     if (colorModel.success) {
-                        saveDataLocally(colorModel);
+                        Log.d("Fasfsafasfas", "onResponse: " + colorModel.statusBar);
+                        Log.d("Fasfsafasfas", "onResponse: " + responseBody);
+//                        saveDataLocally(colorModel);
                     } else {
                         if (colorModel.cause != null) {
                             if (colorModel.cause.equals(ErrorCause.NO_CUSTOMIZATION)) {
