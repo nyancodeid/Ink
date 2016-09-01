@@ -193,6 +193,7 @@ public class CustomizeLook extends BaseActivity {
 
     private Gson gson;
     private ProgressDialog progressDialog;
+    private boolean anythingChanged;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -337,6 +338,7 @@ public class CustomizeLook extends BaseActivity {
 
                             }
                         }).show();
+                        anythingChanged = false;
                     } else {
                         if (colorModel.cause != null) {
                             if (colorModel.cause.equals(ErrorCause.NO_CUSTOMIZATION)) {
@@ -473,11 +475,7 @@ public class CustomizeLook extends BaseActivity {
         sharedHelper.putOwnTextColor(colorModel.ownText);
         sharedHelper.putChatFieldTextColor(colorModel.chatField);
 
-        Intent intent = new Intent();
-        intent.putExtra("anythingChanged", true);
-        setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
-        Toast.makeText(CustomizeLook.this, getString(R.string.dataRestored), Toast.LENGTH_SHORT).show();
-        finish();
+        anythingChanged = true;
     }
 
     private void saveToCloud() {
@@ -1085,7 +1083,12 @@ public class CustomizeLook extends BaseActivity {
     }
 
     private void checkAndSendResult() {
-        if (!actionBarColorPicked && !fabMenuButtonColorPicked && !pickNotificationIconColorPicked && !pickShopIconColorPicked &&
+        if (anythingChanged) {
+            Intent intent = new Intent();
+            intent.putExtra("anythingChanged", true);
+            setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
+            finish();
+        } else if (!actionBarColorPicked && !fabMenuButtonColorPicked && !pickNotificationIconColorPicked && !pickShopIconColorPicked &&
                 !pickLeftDrawerColorPicked && !feedColorPicked && !messagesBackgroundColorPicked && !friendsBackgroundColorPicked &&
                 !chatBackgroundColorPicked && !requestBackgroundColorPicked && !opponentBubbleColorPicked &&
                 !ownBubbleColorPicked && !sendButtonColorPicked && !statusBarColorPicked && !hamburgerColorPicked
@@ -1100,6 +1103,7 @@ public class CustomizeLook extends BaseActivity {
             setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
             finish();
         }
+
     }
 
     private boolean hasAnythingChanged() {

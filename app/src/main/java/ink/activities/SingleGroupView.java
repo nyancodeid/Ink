@@ -475,15 +475,20 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
 
     @OnClick(R.id.ownerImageView)
     public void ownerImageView() {
-        Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
-        String parts[] = mGroupOwnerName.split("\\s");
-        String firstName = parts[0];
-        String lastName = parts[1];
-        intent.putExtra("id", mGroupOwnerId);
-        intent.putExtra("firstName", firstName);
-        intent.putExtra("lastName", lastName);
-        intent.putExtra("isFriend", isFriendWithOwner);
-        startActivity(intent);
+        if (mGroupOwnerId.equals(mSharedHelper.getUserId())) {
+            Intent intent = new Intent(getApplicationContext(), MyProfile.class);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
+            String parts[] = mGroupOwnerName.split("\\s");
+            String firstName = parts[0];
+            String lastName = parts[1];
+            intent.putExtra("id", mGroupOwnerId);
+            intent.putExtra("firstName", firstName);
+            intent.putExtra("lastName", lastName);
+            intent.putExtra("isFriend", isFriendWithOwner);
+            startActivity(intent);
+        }
     }
 
     @OnClick(R.id.addMessageToGroup)
