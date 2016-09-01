@@ -315,8 +315,7 @@ public class CustomizeLook extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
-                        // TODO: 2016-09-01 show reset progress
-                        resetCustomizations(resetView);
+                        resetCustomizations();
                     }
                 });
                 builder.show();
@@ -374,6 +373,7 @@ public class CustomizeLook extends BaseActivity {
                     statusBarCheckBox.setChecked(true);
                 } else {
                     statusBarCheckBox.setChecked(false);
+                    allResetCalled = false;
                 }
             }
         });
@@ -395,6 +395,7 @@ public class CustomizeLook extends BaseActivity {
                 if (!actionBarCheckBox.isChecked()) {
                     actionBarCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     actionBarCheckBox.setChecked(false);
                 }
             }
@@ -406,6 +407,7 @@ public class CustomizeLook extends BaseActivity {
                 if (!menuButtonCheckBox.isChecked()) {
                     menuButtonCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     menuButtonCheckBox.setChecked(false);
                 }
             }
@@ -417,6 +419,7 @@ public class CustomizeLook extends BaseActivity {
                 if (!sendButtonCheckBox.isChecked()) {
                     sendButtonCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     sendButtonCheckBox.setChecked(false);
                 }
             }
@@ -428,6 +431,7 @@ public class CustomizeLook extends BaseActivity {
                 if (!notificationCheckBox.isChecked()) {
                     notificationCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     notificationCheckBox.setChecked(false);
                 }
             }
@@ -439,6 +443,7 @@ public class CustomizeLook extends BaseActivity {
                 if (!shopCheckBox.isChecked()) {
                     shopCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     shopCheckBox.setChecked(false);
                 }
             }
@@ -450,6 +455,7 @@ public class CustomizeLook extends BaseActivity {
                 if (!hamburgerCheckBox.isChecked()) {
                     hamburgerCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     hamburgerCheckBox.setChecked(false);
                 }
             }
@@ -461,6 +467,7 @@ public class CustomizeLook extends BaseActivity {
                 if (!leftPanelCheckBox.isChecked()) {
                     leftPanelCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     leftPanelCheckBox.setChecked(false);
                 }
             }
@@ -472,6 +479,7 @@ public class CustomizeLook extends BaseActivity {
                 if (!feedCheckBox.isChecked()) {
                     feedCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     feedCheckBox.setChecked(false);
                 }
             }
@@ -483,6 +491,7 @@ public class CustomizeLook extends BaseActivity {
                 if (!friendsCheckBox.isChecked()) {
                     friendsCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     friendsCheckBox.setChecked(false);
                 }
             }
@@ -494,6 +503,7 @@ public class CustomizeLook extends BaseActivity {
                 if (!messagesCheckBox.isChecked()) {
                     messagesCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     messagesCheckBox.setChecked(false);
                 }
             }
@@ -505,6 +515,7 @@ public class CustomizeLook extends BaseActivity {
                 if (!chatCheckBox.isChecked()) {
                     chatCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     chatCheckBox.setChecked(false);
                 }
             }
@@ -516,6 +527,7 @@ public class CustomizeLook extends BaseActivity {
                 if (!requestCheckBox.isChecked()) {
                     requestCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     requestCheckBox.setChecked(false);
                 }
             }
@@ -527,6 +539,7 @@ public class CustomizeLook extends BaseActivity {
                 if (!opponentBubbleCheckBox.isChecked()) {
                     opponentBubbleCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     opponentBubbleCheckBox.setChecked(false);
                 }
             }
@@ -538,6 +551,7 @@ public class CustomizeLook extends BaseActivity {
                 if (!ownBubbleCheckBox.isChecked()) {
                     ownBubbleCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     ownBubbleCheckBox.setChecked(false);
                 }
             }
@@ -549,6 +563,7 @@ public class CustomizeLook extends BaseActivity {
                 if (!opponentTextCheckBox.isChecked()) {
                     opponentTextCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     opponentTextCheckBox.setChecked(false);
                 }
             }
@@ -560,6 +575,7 @@ public class CustomizeLook extends BaseActivity {
                 if (!ownTextCheckBox.isChecked()) {
                     ownTextCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     ownTextCheckBox.setChecked(false);
                 }
             }
@@ -571,13 +587,14 @@ public class CustomizeLook extends BaseActivity {
                 if (!chatFieldCheckBox.isChecked()) {
                     chatFieldCheckBox.setChecked(true);
                 } else {
+                    allResetCalled = false;
                     chatFieldCheckBox.setChecked(false);
                 }
             }
         });
     }
 
-    private void resetCustomizations(View inflatedView) {
+    private void resetCustomizations() {
         if (!statusBarCheckBox.isChecked() && !selectAllCheckBox.isChecked() && !actionBarCheckBox.isChecked()
                 && !menuButtonCheckBox.isChecked() && !sendButtonCheckBox.isChecked()
                 && !notificationCheckBox.isChecked() && !shopCheckBox.isChecked()
@@ -587,7 +604,7 @@ public class CustomizeLook extends BaseActivity {
                 && !requestCheckBox.isChecked() && !opponentBubbleCheckBox.isChecked()
                 && !ownBubbleCheckBox.isChecked() && !opponentTextCheckBox.isChecked()
                 && !ownTextCheckBox.isChecked() && !chatFieldCheckBox.isChecked()) {
-            Snackbar.make(inflatedView, getString(R.string.nothingToReset), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(actionBarCleaner, getString(R.string.nothingToReset), Snackbar.LENGTH_LONG).show();
         } else {
             if (allResetCalled) {
                 sharedHelper.resetCustomization();
