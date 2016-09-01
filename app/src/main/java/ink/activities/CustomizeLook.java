@@ -12,12 +12,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -171,6 +172,28 @@ public class CustomizeLook extends BaseActivity {
     private boolean opponentTextColorPicked;
     private boolean chatFieldColorPicked;
     private boolean ownTextColorPicked;
+    private boolean allResetCalled;
+
+
+    private AppCompatCheckBox statusBarCheckBox;
+    private AppCompatCheckBox selectAllCheckBox;
+    private AppCompatCheckBox actionBarCheckBox;
+    private AppCompatCheckBox menuButtonCheckBox;
+    private AppCompatCheckBox sendButtonCheckBox;
+    private AppCompatCheckBox notificationCheckBox;
+    private AppCompatCheckBox shopCheckBox;
+    private AppCompatCheckBox hamburgerCheckBox;
+    private AppCompatCheckBox leftPanelCheckBox;
+    private AppCompatCheckBox feedCheckBox;
+    private AppCompatCheckBox friendsCheckBox;
+    private AppCompatCheckBox messagesCheckBox;
+    private AppCompatCheckBox chatCheckBox;
+    private AppCompatCheckBox requestCheckBox;
+    private AppCompatCheckBox opponentBubbleCheckBox;
+    private AppCompatCheckBox ownBubbleCheckBox;
+    private AppCompatCheckBox opponentTextCheckBox;
+    private AppCompatCheckBox ownTextCheckBox;
+    private AppCompatCheckBox chatFieldCheckBox;
 
     private SharedHelper sharedHelper;
     private String oldActionBarColor;
@@ -195,6 +218,7 @@ public class CustomizeLook extends BaseActivity {
     private Gson gson;
     private ProgressDialog progressDialog;
     private boolean anythingChanged;
+    private boolean isSavedToCloud;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -246,22 +270,9 @@ public class CustomizeLook extends BaseActivity {
                 break;
             case R.id.saveToCloud:
                 if (hasAnythingChanged()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeLook.this);
-                    builder.setTitle(getString(R.string.warning));
-                    builder.setMessage(getString(R.string.overwriteWarning));
-                    builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            saveToCloud();
-                        }
-                    });
-                    builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    builder.show();
+                    showSaveWarning();
+                } else if (sharedHelper.hasPendingCustomizationsToSave()) {
+                    showSaveWarning();
                 } else {
                     Snackbar.make(friendsCleaner, getString(R.string.nothingWasChanged), Snackbar.LENGTH_LONG).show();
                 }
@@ -286,12 +297,29 @@ public class CustomizeLook extends BaseActivity {
                 builder.show();
                 break;
             case R.id.resetToDefault:
-                sharedHelper.resetCustomization();
-                Intent intent = new Intent();
-                Toast.makeText(CustomizeLook.this, getString(R.string.reseted), Toast.LENGTH_SHORT).show();
-                intent.putExtra("reset", true);
-                setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
-                finish();
+                System.gc();
+                builder = new AlertDialog.Builder(CustomizeLook.this);
+                builder.setTitle(getString(R.string.chooseWhichReset));
+                final View resetView = getLayoutInflater().inflate(R.layout.reset_view, null);
+                setUpViewsAndListeners(resetView);
+                selectAll(true);
+                allResetCalled = true;
+                builder.setView(resetView);
+                builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        // TODO: 2016-09-01 show reset progress
+                        resetCustomizations(resetView);
+                    }
+                });
+                builder.setPositiveButton(getString(R.string.reset), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.show();
                 break;
             case R.id.removeFromCloud:
                 System.gc();
@@ -316,6 +344,310 @@ public class CustomizeLook extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    private void setUpViewsAndListeners(View view) {
+        statusBarCheckBox = (AppCompatCheckBox) view.findViewById(R.id.statusBarCheckBox);
+        selectAllCheckBox = (AppCompatCheckBox) view.findViewById(R.id.selectAllCheckBox);
+        actionBarCheckBox = (AppCompatCheckBox) view.findViewById(R.id.actionBarCheckBox);
+        menuButtonCheckBox = (AppCompatCheckBox) view.findViewById(R.id.menuButtonCheckBox);
+        sendButtonCheckBox = (AppCompatCheckBox) view.findViewById(R.id.sendButtonCheckBox);
+        notificationCheckBox = (AppCompatCheckBox) view.findViewById(R.id.notificationCheckBox);
+        shopCheckBox = (AppCompatCheckBox) view.findViewById(R.id.shopCheckBox);
+        hamburgerCheckBox = (AppCompatCheckBox) view.findViewById(R.id.hamburgerCheckBox);
+        leftPanelCheckBox = (AppCompatCheckBox) view.findViewById(R.id.leftPanelCheckBox);
+        feedCheckBox = (AppCompatCheckBox) view.findViewById(R.id.feedCheckBox);
+        friendsCheckBox = (AppCompatCheckBox) view.findViewById(R.id.friendsCheckBox);
+        messagesCheckBox = (AppCompatCheckBox) view.findViewById(R.id.messagesCheckBox);
+        chatCheckBox = (AppCompatCheckBox) view.findViewById(R.id.chatCheckBox);
+        requestCheckBox = (AppCompatCheckBox) view.findViewById(R.id.requestCheckBox);
+        opponentBubbleCheckBox = (AppCompatCheckBox) view.findViewById(R.id.opponentBubbleCheckBox);
+        ownBubbleCheckBox = (AppCompatCheckBox) view.findViewById(R.id.ownBubbleCheckBox);
+        opponentTextCheckBox = (AppCompatCheckBox) view.findViewById(R.id.opponentTextCheckBox);
+        ownTextCheckBox = (AppCompatCheckBox) view.findViewById(R.id.ownTextCheckBox);
+        chatFieldCheckBox = (AppCompatCheckBox) view.findViewById(R.id.chatFieldCheckBox);
+
+        LinearLayout statusBarWrapper = (LinearLayout) view.findViewById(R.id.statusBarWrapper);
+        statusBarWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (statusBarCheckBox.isChecked()) {
+                    statusBarCheckBox.setChecked(true);
+                } else {
+                    statusBarCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout selectAllWrapper = (LinearLayout) view.findViewById(R.id.selectAllWrapper);
+        selectAllWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectAllCheckBox.isChecked()) {
+                    selectAll(false);
+                } else {
+                    selectAll(true);
+                }
+            }
+        });
+        LinearLayout actionBarWrapper = (LinearLayout) view.findViewById(R.id.actionBarWrapper);
+        actionBarWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!actionBarCheckBox.isChecked()) {
+                    actionBarCheckBox.setChecked(true);
+                } else {
+                    actionBarCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout menuButtonWrapper = (LinearLayout) view.findViewById(R.id.menuButtonWrapper);
+        menuButtonWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!menuButtonCheckBox.isChecked()) {
+                    menuButtonCheckBox.setChecked(true);
+                } else {
+                    menuButtonCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout sendButtonWrapper = (LinearLayout) view.findViewById(R.id.sendButtonWrapper);
+        sendButtonWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!sendButtonCheckBox.isChecked()) {
+                    sendButtonCheckBox.setChecked(true);
+                } else {
+                    sendButtonCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout notificationWrapper = (LinearLayout) view.findViewById(R.id.notificationWrapper);
+        notificationWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!notificationCheckBox.isChecked()) {
+                    notificationCheckBox.setChecked(true);
+                } else {
+                    notificationCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout shopWrapper = (LinearLayout) view.findViewById(R.id.shopWrapper);
+        shopWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!shopCheckBox.isChecked()) {
+                    shopCheckBox.setChecked(true);
+                } else {
+                    shopCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout hamburgerWrapper = (LinearLayout) view.findViewById(R.id.hamburgerWrapper);
+        hamburgerWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!hamburgerCheckBox.isChecked()) {
+                    hamburgerCheckBox.setChecked(true);
+                } else {
+                    hamburgerCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout leftPanelWrapper = (LinearLayout) view.findViewById(R.id.leftPanelWrapper);
+        leftPanelWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!leftPanelCheckBox.isChecked()) {
+                    leftPanelCheckBox.setChecked(true);
+                } else {
+                    leftPanelCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout feedWrapper = (LinearLayout) view.findViewById(R.id.feedWrapper);
+        feedWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!feedCheckBox.isChecked()) {
+                    feedCheckBox.setChecked(true);
+                } else {
+                    feedCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout friendsWrapper = (LinearLayout) view.findViewById(R.id.friendsWrapper);
+        friendsWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!friendsCheckBox.isChecked()) {
+                    friendsCheckBox.setChecked(true);
+                } else {
+                    friendsCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout messagesWrapper = (LinearLayout) view.findViewById(R.id.messagesWrapper);
+        messagesWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!messagesCheckBox.isChecked()) {
+                    messagesCheckBox.setChecked(true);
+                } else {
+                    messagesCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout chatWrapper = (LinearLayout) view.findViewById(R.id.chatWrapper);
+        chatWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!chatCheckBox.isChecked()) {
+                    chatCheckBox.setChecked(true);
+                } else {
+                    chatCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout requestWrapper = (LinearLayout) view.findViewById(R.id.requestWrapper);
+        requestWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!requestCheckBox.isChecked()) {
+                    requestCheckBox.setChecked(true);
+                } else {
+                    requestCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout opponentBubbleWrapper = (LinearLayout) view.findViewById(R.id.opponentBubbleWrapper);
+        opponentBubbleWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!opponentBubbleCheckBox.isChecked()) {
+                    opponentBubbleCheckBox.setChecked(true);
+                } else {
+                    opponentBubbleCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout ownBubbleWrapper = (LinearLayout) view.findViewById(R.id.ownBubbleWrapper);
+        ownBubbleWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!ownBubbleCheckBox.isChecked()) {
+                    ownBubbleCheckBox.setChecked(true);
+                } else {
+                    ownBubbleCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout opponentTextWrapper = (LinearLayout) view.findViewById(R.id.opponentTextWrapper);
+        opponentTextWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!opponentTextCheckBox.isChecked()) {
+                    opponentTextCheckBox.setChecked(true);
+                } else {
+                    opponentTextCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout ownTextWrapper = (LinearLayout) view.findViewById(R.id.ownTextWrapper);
+        ownTextWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!ownTextCheckBox.isChecked()) {
+                    ownTextCheckBox.setChecked(true);
+                } else {
+                    ownTextCheckBox.setChecked(false);
+                }
+            }
+        });
+        LinearLayout chatFieldWrapper = (LinearLayout) view.findViewById(R.id.chatFieldWrapper);
+        chatFieldWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!chatFieldCheckBox.isChecked()) {
+                    chatFieldCheckBox.setChecked(true);
+                } else {
+                    chatFieldCheckBox.setChecked(false);
+                }
+            }
+        });
+    }
+
+    private void resetCustomizations(View inflatedView) {
+        if (!statusBarCheckBox.isChecked() && !selectAllCheckBox.isChecked() && !actionBarCheckBox.isChecked()
+                && !menuButtonCheckBox.isChecked() && !sendButtonCheckBox.isChecked()
+                && !notificationCheckBox.isChecked() && !shopCheckBox.isChecked()
+                && !hamburgerCheckBox.isChecked() && !leftPanelCheckBox.isChecked()
+                && !feedCheckBox.isChecked() && !friendsCheckBox.isChecked()
+                && !messagesCheckBox.isChecked() && !chatCheckBox.isChecked()
+                && !requestCheckBox.isChecked() && !opponentBubbleCheckBox.isChecked()
+                && !ownBubbleCheckBox.isChecked() && !opponentTextCheckBox.isChecked()
+                && !ownTextCheckBox.isChecked() && !chatFieldCheckBox.isChecked()) {
+            Snackbar.make(inflatedView, getString(R.string.nothingToReset), Snackbar.LENGTH_LONG).show();
+        } else {
+            if (allResetCalled) {
+                sharedHelper.resetCustomization();
+                Intent intent = new Intent();
+                Toast.makeText(CustomizeLook.this, getString(R.string.reseted), Toast.LENGTH_SHORT).show();
+                intent.putExtra("reset", true);
+                setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
+                finish();
+            } else {
+                resetAccordingly();
+            }
+        }
+    }
+
+    private void resetAccordingly() {
+        sharedHelper.putStatusBarColor(statusBarCheckBox.isChecked() ? null : sharedHelper.getStatusBarColor());
+        sharedHelper.putActionBarColor(selectAllCheckBox.isChecked() ? null : sharedHelper.getActionBarColor());
+        sharedHelper.putMenuButtonColor(actionBarCheckBox.isChecked() ? null : sharedHelper.getMenuButtonColor());
+        sharedHelper.putSendButtonColor(menuButtonCheckBox.isChecked() ? null : sharedHelper.getSendButtonColor());
+        sharedHelper.putNotificationIconColor(sendButtonCheckBox.isChecked() ? null : sharedHelper.getNotificationIconColor());
+        sharedHelper.putShopIconColor(notificationCheckBox.isChecked() ? null : sharedHelper.getShopIconColor());
+        sharedHelper.putHamburgerColor(shopCheckBox.isChecked() ? null : sharedHelper.getHamburgerColor());
+        sharedHelper.putLeftSlidingPanelColor(hamburgerCheckBox.isChecked() ? null : sharedHelper.getLeftSlidingPanelHeaderColor());
+        sharedHelper.putFeedColor(leftPanelCheckBox.isChecked() ? null : sharedHelper.getFeedColor());
+        sharedHelper.putFriendsColor(feedCheckBox.isChecked() ? null : sharedHelper.getFriendsColor());
+        sharedHelper.putMessagesColor(friendsCheckBox.isChecked() ? null : sharedHelper.getMessagesColor());
+        sharedHelper.putChatColor(messagesCheckBox.isChecked() ? null : sharedHelper.getChatColor());
+        sharedHelper.putMyRequestColor(chatCheckBox.isChecked() ? null : sharedHelper.getMyRequestColor());
+        sharedHelper.putOpponentBubbleColor(requestCheckBox.isChecked() ? null : sharedHelper.getOpponentBubbleColor());
+        sharedHelper.putOwnBubbleColor(opponentBubbleCheckBox.isChecked() ? null : sharedHelper.getOwnBubbleColor());
+        sharedHelper.putOpponentTextColor(ownBubbleCheckBox.isChecked() ? null : sharedHelper.getOpponentTextColor());
+        sharedHelper.putOwnTextColor(opponentTextCheckBox.isChecked() ? null : sharedHelper.getOwnTextColor());
+        sharedHelper.putChatFieldTextColor(ownTextCheckBox.isChecked() ? null : sharedHelper.getChatFieldTextColor());
+
+        Intent intent = new Intent();
+        Toast.makeText(CustomizeLook.this, getString(R.string.reseted), Toast.LENGTH_SHORT).show();
+        intent.putExtra("reset", true);
+        setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
+        finish();
+    }
+
+    private void showSaveWarning() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeLook.this);
+        builder.setTitle(getString(R.string.warning));
+        builder.setMessage(getString(R.string.overwriteWarning));
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                saveToCloud();
+            }
+        });
+        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.show();
+    }
+
     private void removeFromCloud() {
         Call<ResponseBody> removeFromCloudCall = Retrofit.getInstance().getInkService().removeFromCloud(sharedHelper.getUserId(), Constants.CUSTOMIZATION_TYPE_REMOVE);
         removeFromCloudCall.enqueue(new Callback<ResponseBody>() {
@@ -333,6 +665,7 @@ public class CustomizeLook extends BaseActivity {
                     String responseBody = response.body().string();
                     ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
                     if (colorModel.success) {
+                        isSavedToCloud = false;
                         Snackbar.make(friendsCleaner, getString(R.string.dataRemoved), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -406,8 +739,7 @@ public class CustomizeLook extends BaseActivity {
                     String responseBody = response.body().string();
                     ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
                     if (colorModel.success) {
-                        Log.d("fasFafasfasfas", "onResponse: "+colorModel.menuButton);
-                        Log.d("fasFafasfasfas", "onResponse: "+responseBody);
+                        isSavedToCloud = false;
                         saveDataLocally(colorModel);
                         Snackbar.make(actionBarCleaner, getString(R.string.dataRestored), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                             @Override
@@ -465,7 +797,6 @@ public class CustomizeLook extends BaseActivity {
     }
 
     private void saveDataLocally(ColorModel colorModel) {
-        Log.d("Fasfasfasfsafas", "saveDataLocally: " + colorModel.menuButton);
         sharedHelper.putStatusBarColor(colorModel.statusBar);
         sharedHelper.putActionBarColor(colorModel.actionBar);
         sharedHelper.putMenuButtonColor(colorModel.menuButton);
@@ -523,6 +854,8 @@ public class CustomizeLook extends BaseActivity {
                     String responseBody = response.body().string();
                     ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
                     if (colorModel.success) {
+                        isSavedToCloud = true;
+                        sharedHelper.putHasPendingCustomizationsToSave(false);
                         Snackbar.make(friendsCleaner, getString(R.string.customizationSaved), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -607,6 +940,7 @@ public class CustomizeLook extends BaseActivity {
             @Override
             public void onSuccess(String s) {
                 hamburgerColorPicked = true;
+                isSavedToCloud = false;
                 hamburgerIcon.setColorFilter(Color.parseColor(s), PorterDuff.Mode.SRC_ATOP);
                 hamburgerCleaner.setVisibility(View.VISIBLE);
                 sharedHelper.putHamburgerColor(s);
@@ -628,6 +962,7 @@ public class CustomizeLook extends BaseActivity {
         showColorPicker(new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
+                isSavedToCloud = false;
                 statusBarCleaner.setVisibility(View.VISIBLE);
                 sharedHelper.putStatusBarColor(s);
                 Snackbar.make(friendsCleaner, getString(R.string.colorSet), Snackbar.LENGTH_SHORT).show();
@@ -646,6 +981,7 @@ public class CustomizeLook extends BaseActivity {
         showColorPicker(new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
+                isSavedToCloud = false;
                 chatFieldColorPicked = true;
                 Snackbar.make(actionBarCleaner, getString(R.string.colorSet), Snackbar.LENGTH_LONG).show();
                 sharedHelper.putChatFieldTextColor(s);
@@ -666,6 +1002,7 @@ public class CustomizeLook extends BaseActivity {
             @Override
             public void onSuccess(String s) {
                 ownTextColorPicked = true;
+                isSavedToCloud = false;
                 Snackbar.make(actionBarCleaner, getString(R.string.colorSet), Snackbar.LENGTH_LONG).show();
                 sharedHelper.putOwnTextColor(s);
                 ownTextCleaner.setVisibility(View.VISIBLE);
@@ -683,6 +1020,7 @@ public class CustomizeLook extends BaseActivity {
         showColorPicker(new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
+                isSavedToCloud = false;
                 opponentTextColorPicked = true;
                 Snackbar.make(actionBarCleaner, getString(R.string.colorSet), Snackbar.LENGTH_LONG).show();
                 sharedHelper.putOpponentTextColor(s);
@@ -701,6 +1039,7 @@ public class CustomizeLook extends BaseActivity {
         showColorPicker(new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
+                isSavedToCloud = false;
                 actionBarColorPicked = true;
                 customizeToolbar.setBackgroundColor(Color.parseColor(s));
                 actionBarCleaner.setVisibility(View.VISIBLE);
@@ -721,6 +1060,7 @@ public class CustomizeLook extends BaseActivity {
             @Override
             public void onSuccess(String s) {
                 sendButtonColorPicked = true;
+                isSavedToCloud = false;
                 sendButtonIcon.setColorNormal(Color.parseColor(s));
                 sharedHelper.putSendButtonColor(s);
                 sendButtonCleaner.setVisibility(View.VISIBLE);
@@ -738,6 +1078,7 @@ public class CustomizeLook extends BaseActivity {
         showColorPicker(new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
+                isSavedToCloud = false;
                 fabMenuButtonColorPicked = true;
                 customizeFabMenu.setMenuButtonColorNormal(Color.parseColor(s));
                 sharedHelper.putMenuButtonColor(s);
@@ -756,6 +1097,7 @@ public class CustomizeLook extends BaseActivity {
         showColorPicker(new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
+                isSavedToCloud = false;
                 pickNotificationIconColorPicked = true;
                 notificationIcon.setColorFilter(Color.parseColor(s), PorterDuff.Mode.SRC_ATOP);
                 notificationCleaner.setVisibility(View.VISIBLE);
@@ -774,6 +1116,7 @@ public class CustomizeLook extends BaseActivity {
         showColorPicker(new GeneralCallback<String>() {
             @Override
             public void onSuccess(String s) {
+                isSavedToCloud = false;
                 shopCleaner.setVisibility(View.VISIBLE);
                 shopIcon.setColorFilter(Color.parseColor(s), PorterDuff.Mode.SRC_ATOP);
                 sharedHelper.putShopIconColor(s);
@@ -796,6 +1139,7 @@ public class CustomizeLook extends BaseActivity {
                 sharedHelper.putLeftSlidingPanelColor(s);
                 Snackbar.make(friendsCleaner, getString(R.string.colorSet), Snackbar.LENGTH_SHORT).show();
                 pickLeftDrawerColorPicked = true;
+                isSavedToCloud = false;
             }
 
             @Override
@@ -814,6 +1158,7 @@ public class CustomizeLook extends BaseActivity {
                 Snackbar.make(feedCleaner, getString(R.string.colorSet), Snackbar.LENGTH_SHORT).show();
                 sharedHelper.putFeedColor(s);
                 feedColorPicked = true;
+                isSavedToCloud = false;
             }
 
             @Override
@@ -829,6 +1174,7 @@ public class CustomizeLook extends BaseActivity {
             @Override
             public void onSuccess(String s) {
                 friendsBackgroundColorPicked = true;
+                isSavedToCloud = false;
                 friendsCleaner.setVisibility(View.VISIBLE);
                 Snackbar.make(friendsCleaner, getString(R.string.colorSet), Snackbar.LENGTH_SHORT).show();
                 sharedHelper.putFriendsColor(s);
@@ -849,6 +1195,7 @@ public class CustomizeLook extends BaseActivity {
                 messagesCleaner.setVisibility(View.VISIBLE);
                 Snackbar.make(messagesCleaner, getString(R.string.colorSet), Snackbar.LENGTH_SHORT).show();
                 sharedHelper.putMessagesColor(s);
+                isSavedToCloud = false;
                 messagesBackgroundColorPicked = true;
             }
 
@@ -868,6 +1215,7 @@ public class CustomizeLook extends BaseActivity {
                 Snackbar.make(chatCleaner, getString(R.string.colorSet), Snackbar.LENGTH_SHORT).show();
                 sharedHelper.putChatColor(s);
                 chatBackgroundColorPicked = true;
+                isSavedToCloud = false;
             }
 
             @Override
@@ -886,6 +1234,7 @@ public class CustomizeLook extends BaseActivity {
                 Snackbar.make(requestCleaner, getString(R.string.colorSet), Snackbar.LENGTH_SHORT).show();
                 sharedHelper.putMyRequestColor(s);
                 requestBackgroundColorPicked = true;
+                isSavedToCloud = false;
             }
 
             @Override
@@ -902,6 +1251,7 @@ public class CustomizeLook extends BaseActivity {
             @Override
             public void onSuccess(String s) {
                 opponentBubbleColorPicked = true;
+                isSavedToCloud = false;
                 opponentBubbleIcon.setColorFilter(Color.parseColor(s), PorterDuff.Mode.SRC_ATOP);
                 opponentBubbleCleaner.setVisibility(View.VISIBLE);
                 sharedHelper.putOpponentBubbleColor(s);
@@ -925,6 +1275,7 @@ public class CustomizeLook extends BaseActivity {
                 ownBubbleIcon.setColorFilter(Color.parseColor(s), PorterDuff.Mode.SRC_ATOP);
                 ownBubbleCleaner.setVisibility(View.VISIBLE);
                 sharedHelper.putOwnBubbleColor(s);
+                isSavedToCloud = false;
             }
 
             @Override
@@ -1094,6 +1445,7 @@ public class CustomizeLook extends BaseActivity {
 
     private void checkAndSendResult() {
         if (anythingChanged) {
+            checkForPendingCustomization();
             Intent intent = new Intent();
             intent.putExtra("anythingChanged", true);
             setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
@@ -1103,17 +1455,27 @@ public class CustomizeLook extends BaseActivity {
                 !chatBackgroundColorPicked && !requestBackgroundColorPicked && !opponentBubbleColorPicked &&
                 !ownBubbleColorPicked && !sendButtonColorPicked && !statusBarColorPicked && !hamburgerColorPicked
                 && !opponentTextColorPicked && !chatFieldColorPicked && !ownTextColorPicked) {
+            checkForPendingCustomization();
             Intent intent = new Intent();
             intent.putExtra("anythingChanged", false);
             setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
             finish();
         } else {
+            checkForPendingCustomization();
             Intent intent = new Intent();
             intent.putExtra("anythingChanged", true);
             setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
             finish();
         }
 
+    }
+
+    private void checkForPendingCustomization() {
+        if (isSavedToCloud) {
+            sharedHelper.putHasPendingCustomizationsToSave(false);
+        } else {
+            sharedHelper.putHasPendingCustomizationsToSave(true);
+        }
     }
 
     private boolean hasAnythingChanged() {
@@ -1126,5 +1488,28 @@ public class CustomizeLook extends BaseActivity {
         } else {
             return true;
         }
+    }
+
+    private void selectAll(boolean checked) {
+        allResetCalled = checked;
+        statusBarCheckBox.setChecked(checked);
+        selectAllCheckBox.setChecked(checked);
+        actionBarCheckBox.setChecked(checked);
+        menuButtonCheckBox.setChecked(checked);
+        sendButtonCheckBox.setChecked(checked);
+        notificationCheckBox.setChecked(checked);
+        shopCheckBox.setChecked(checked);
+        hamburgerCheckBox.setChecked(checked);
+        leftPanelCheckBox.setChecked(checked);
+        feedCheckBox.setChecked(checked);
+        friendsCheckBox.setChecked(checked);
+        messagesCheckBox.setChecked(checked);
+        chatCheckBox.setChecked(checked);
+        requestCheckBox.setChecked(checked);
+        opponentBubbleCheckBox.setChecked(checked);
+        ownBubbleCheckBox.setChecked(checked);
+        opponentTextCheckBox.setChecked(checked);
+        ownTextCheckBox.setChecked(checked);
+        chatFieldCheckBox.setChecked(checked);
     }
 }

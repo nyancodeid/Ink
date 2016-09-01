@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/selectAllWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/selectAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="@string/appFont"
+                android:foreground="?attr/selectableItemBackground"
+                android:text="@string/selectAll"
+                android:textColor="#404040"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/selectAllCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/statusBarWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/statusBar"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/statusBarCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/actionBarWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/actionBar"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/actionBarCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/menuButtonWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/menuButton"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/menuButtonCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/sendButtonWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/sendButton"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/sendButtonCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/notificationWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/notification"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/notificationCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/shopWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/shop"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/shopCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/hamburgerWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/hamburger"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/hamburgerCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/leftPanelWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/leftPanel"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/leftPanelCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/feedWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/feed"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/feedCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/friendsWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/friends"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/friendsCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/messagesWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/messages"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/messagesCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/chatWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/chat"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/chatCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/requestWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/request"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/requestCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/opponentBubbleWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/opponentBubble"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/opponentBubbleCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ownBubbleWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/ownBubble"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/ownBubbleCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/opponentTextWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/opponentText"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/opponentTextCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ownTextWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/ownText"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/ownTextCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/chatFieldWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/chatField"
+                android:textColor="#404040" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/chatFieldCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

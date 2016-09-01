@@ -359,6 +359,10 @@ public class SharedHelper {
         return mSharedPreferences.getString("statusBarColor", null);
     }
 
+    public boolean hasPendingCustomizationsToSave() {
+        return mSharedPreferences.getBoolean("hasCustomizationsToSave", false);
+    }
+
     public String getHamburgerColor() {
         return mSharedPreferences.getString("hamburgerColor", null);
     }
@@ -392,7 +396,7 @@ public class SharedHelper {
     }
 
     public void putOpponentBubbleColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("opponentBubbleColor");
             mEditor.commit();
         } else {
@@ -403,7 +407,7 @@ public class SharedHelper {
     }
 
     public void putOwnBubbleColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("ownBubbleColor");
             mEditor.commit();
         } else {
@@ -413,7 +417,7 @@ public class SharedHelper {
     }
 
     public void putActionBarColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("actionBarColor");
             mEditor.commit();
         } else {
@@ -423,7 +427,7 @@ public class SharedHelper {
     }
 
     public void putMenuButtonColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("menuButtonColor");
             mEditor.commit();
         } else {
@@ -434,7 +438,7 @@ public class SharedHelper {
 
 
     public void putNotificationIconColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("notificationIconColor");
             mEditor.commit();
         } else {
@@ -445,7 +449,7 @@ public class SharedHelper {
 
 
     public void putShopIconColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("shopIconColor");
             mEditor.commit();
         } else {
@@ -455,7 +459,7 @@ public class SharedHelper {
     }
 
     public void putLeftSlidingPanelColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("leftSlidingPanelHeaderColor");
             mEditor.commit();
         } else {
@@ -465,7 +469,7 @@ public class SharedHelper {
     }
 
     public void putFeedColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("feedColor");
             mEditor.commit();
         } else {
@@ -475,7 +479,7 @@ public class SharedHelper {
     }
 
     public void putHamburgerColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("hamburgerColor");
             mEditor.commit();
         } else {
@@ -485,7 +489,7 @@ public class SharedHelper {
     }
 
     public void putFriendsColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("friendsColor");
             mEditor.commit();
         } else {
@@ -495,7 +499,7 @@ public class SharedHelper {
     }
 
     public void putMessagesColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("messagesColor");
             mEditor.commit();
         } else {
@@ -505,7 +509,7 @@ public class SharedHelper {
     }
 
     public void putSendButtonColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("sendButtonColor");
             mEditor.commit();
         } else {
@@ -514,8 +518,13 @@ public class SharedHelper {
         }
     }
 
+    public void putHasPendingCustomizationsToSave(boolean value) {
+        mEditor.putBoolean("hasCustomizationsToSave", value);
+        mEditor.commit();
+    }
+
     public void putChatColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("chatColor");
             mEditor.commit();
         } else {
@@ -525,7 +534,7 @@ public class SharedHelper {
     }
 
     public void putMyRequestColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("myRequestColor");
             mEditor.commit();
         } else {
@@ -536,7 +545,7 @@ public class SharedHelper {
 
 
     public void putStatusBarColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("statusBarColor");
             mEditor.commit();
         } else {
@@ -547,7 +556,7 @@ public class SharedHelper {
 
 
     public void putOwnTextColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("ownTextColor");
             mEditor.commit();
         } else {
@@ -558,7 +567,7 @@ public class SharedHelper {
 
 
     public void putOpponentTextColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("opponentTextColor");
             mEditor.commit();
         } else {
@@ -569,7 +578,7 @@ public class SharedHelper {
 
 
     public void putChatFieldTextColor(String value) {
-        if (value == null||value.isEmpty()) {
+        if (value == null || value.isEmpty()) {
             mEditor.remove("chatFieldTextColor");
             mEditor.commit();
         } else {

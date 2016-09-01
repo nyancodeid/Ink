@@ -527,7 +527,7 @@
     <string name="upadtingView">Updating your message view,please wait...</string>
     <string name="removeRainbowEffect">Remove rainbow effect</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="actionBar">Action Bar</string>
+    <string name="actionBar">Action Bar Color</string>
     <string name="pickStatusBarColor">Pick status bar color (Only for Lollipop and above)</string>
     <string name="pickMenuButtonColor">Pick menu button color</string>
     <string name="pickNotificationIconColor">Pick notification icon color</string>
@@ -578,4 +578,25 @@
     <string name="noCustomizationData">You don\'t have any customizations saved on the Cloud</string>
     <string name="dataRestored">Data was restored</string>
     <string name="dataRemoved">Your data was removed from Cloud</string>
+    <string name="chooseWhichReset">Choose Reset Options</string>
+    <string name="reset">Reset</string>
+    <string name="selectAll">Select All</string>
+    <string name="statusBar">Status Bar Color</string>
+    <string name="menuButton">Menu Button Color</string>
+    <string name="sendButton">Send Button Color</string>
+    <string name="notification">Notification Icon Color</string>
+    <string name="shop">Shop Icon Color</string>
+    <string name="hamburger">Hamburger Icon Color</string>
+    <string name="leftPanel">Left Sliding Panel Header Background</string>
+    <string name="feed">Feed Background</string>
+    <string name="friends">Friends Background</string>
+    <string name="messages">Messages Background</string>
+    <string name="chat">Chat Background</string>
+    <string name="request">My Requests Background</string>
+    <string name="opponentBubble">Opponent Chat Bubble Color</string>
+    <string name="ownBubble">Own Chat Bubble Color</string>
+    <string name="opponentText">Opponent Chat Text Color</string>
+    <string name="ownText">Own Chat Text Color</string>
+    <string name="chatField">Chat Field Colors</string>
+    <string name="nothingToReset">Nothing was chosen to reset...</string>
 </resources>
