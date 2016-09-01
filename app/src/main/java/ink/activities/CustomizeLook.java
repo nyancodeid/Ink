@@ -309,14 +309,14 @@ public class CustomizeLook extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
-                        // TODO: 2016-09-01 show reset progress
-                        resetCustomizations(resetView);
                     }
                 });
                 builder.setPositiveButton(getString(R.string.reset), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
+                        // TODO: 2016-09-01 show reset progress
+                        resetCustomizations(resetView);
                     }
                 });
                 builder.show();
@@ -370,7 +370,7 @@ public class CustomizeLook extends BaseActivity {
         statusBarWrapper.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (statusBarCheckBox.isChecked()) {
+                if (!statusBarCheckBox.isChecked()) {
                     statusBarCheckBox.setChecked(true);
                 } else {
                     statusBarCheckBox.setChecked(false);
