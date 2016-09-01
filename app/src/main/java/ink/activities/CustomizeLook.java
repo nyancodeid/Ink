@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -456,6 +457,7 @@ public class CustomizeLook extends BaseActivity {
     }
 
     private void saveDataLocally(ColorModel colorModel) {
+        Log.d("Fasfasfasfsafas", "saveDataLocally: "+colorModel.menuButton);
         sharedHelper.putStatusBarColor(colorModel.statusBar);
         sharedHelper.putActionBarColor(colorModel.actionBar);
         sharedHelper.putMenuButtonColor(colorModel.menuButton);
@@ -516,7 +518,7 @@ public class CustomizeLook extends BaseActivity {
                         Snackbar.make(friendsCleaner, getString(R.string.customizationSaved), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                finish();
+
                             }
                         }).show();
                     } else {
