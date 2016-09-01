@@ -728,17 +728,31 @@ public class HomeActivity extends BaseActivity
 
 
     private void resetColors() {
-        toggle.getDrawerArrowDrawable().setColor(Color.WHITE);
-        mFab.setMenuButtonColorNormal(ContextCompat.getColor(this, R.color.colorPrimary));
-        mFab.setMenuButtonColorPressed(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        menuItem.getItem(0).getIcon().setColorFilter(null);
-        menuItem.getItem(1).getIcon().setColorFilter(null);
-        mToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        panelHeader.setBackground(ContextCompat.getDrawable(this, R.drawable.side_nav_bar));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        if (mSharedHelper.getHamburgerColor() == null) {
+            toggle.getDrawerArrowDrawable().setColor(Color.WHITE);
+        }
+        if (mSharedHelper.getMenuButtonColor() == null) {
+            mFab.setMenuButtonColorNormal(ContextCompat.getColor(this, R.color.colorPrimary));
+            mFab.setMenuButtonColorPressed(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        }
+        if (mSharedHelper.getNotificationIconColor() == null) {
+            menuItem.getItem(0).getIcon().setColorFilter(null);
+        }
+        if (mSharedHelper.getShopIconColor() == null) {
+            menuItem.getItem(1).getIcon().setColorFilter(null);
+        }
+        if (mSharedHelper.getActionBarColor() == null) {
+            mToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        }
+        if (mSharedHelper.getLeftSlidingPanelHeaderColor() == null) {
+            panelHeader.setBackground(ContextCompat.getDrawable(this, R.drawable.side_nav_bar));
+        }
+        if (mSharedHelper.getStatusBarColor() == null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+            }
         }
         System.gc();
     }
