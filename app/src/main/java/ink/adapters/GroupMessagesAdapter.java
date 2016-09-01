@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ink.R;
-import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
@@ -65,10 +65,11 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
         GroupMessagesModel groupMessagesModel = groupMessagesModels.get(position);
 
         if (!groupMessagesModel.getSenderImage().isEmpty()) {
-            Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                    groupMessagesModel.getSenderImage()).withBitmap().transform(new CircleTransform()).intoImageView(holder.messageSenderImage);
+            Glide.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                    groupMessagesModel.getSenderImage()).transform(new CircleTransform(mContext)).into(holder.messageSenderImage);
         } else {
-            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(holder.messageSenderImage);
+            Glide.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
+                    .transform(new CircleTransform(mContext)).into(holder.messageSenderImage);
         }
         holder.groupMessageBody.setText(groupMessagesModel.getGroupMessage());
         holder.messageSenderName.setText(groupMessagesModel.getSenderName());

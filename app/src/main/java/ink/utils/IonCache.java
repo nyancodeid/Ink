@@ -1,16 +1,22 @@
 package ink.utils;
 
 import android.content.Context;
+import android.os.Process;
 
-import com.koushikdutta.ion.Ion;
+import com.bumptech.glide.Glide;
 
 /**
  * Created by PC-Comp on 8/11/2016.
  */
 public class IonCache {
-    public static void clearIonCache(Context context) {
-        Ion.getDefault(context).getCache().clear();
-        Ion.getDefault(context).getBitmapCache().clear();
-        Ion.getDefault(context).configure().getResponseCache().clear();
+    public static void clearGlideCache(final Context context) {
+        System.gc();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                Glide.get(context).clearDiskCache();
+            }
+        }).start();
     }
 }

@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ink.R;
-import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
@@ -66,11 +66,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             if (userMessagesModel.isSocialAccount()) {
                 url = userMessagesModel.getImageLink();
             }
-            Ion.with(mContext).load(url)
-                    .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.messagesImage);
+            Glide.with(mContext).load(url)
+                    .placeholder(R.drawable.no_background_image)
+                    .transform(new CircleTransform(mContext)).into(holder.messagesImage);
         } else {
-            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap()
-                    .transform(new CircleTransform()).intoImageView(holder.messagesImage);
+            Glide.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
+                    .transform(new CircleTransform(mContext)).into(holder.messagesImage);
         }
     }
 

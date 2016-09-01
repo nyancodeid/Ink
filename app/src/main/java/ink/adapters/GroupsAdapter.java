@@ -12,9 +12,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.ink.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
@@ -79,13 +81,19 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
         }
         if (!groupsModel.getGroupImage().isEmpty()) {
             holder.groupImage.setScaleType(ImageView.ScaleType.FIT_XY);
-            Ion.with(mContext).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER +
-                    groupsModel.getGroupImage()).withBitmap().fitXY().centerCrop().intoImageView(holder.groupImage).setCallback(new FutureCallback<ImageView>() {
+            Glide.with(mContext).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER +
+                    groupsModel.getGroupImage()).fitCenter().centerCrop().listener(new RequestListener<String, GlideDrawable>() {
                 @Override
-                public void onCompleted(Exception e, ImageView result) {
-                    holder.singleItemLoading.setVisibility(View.GONE);
+                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    return false;
                 }
-            });
+
+                @Override
+                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    holder.singleItemLoading.setVisibility(View.GONE);
+                    return false;
+                }
+            }).into(holder.groupImage);
         } else {
             holder.groupImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
             holder.groupImage.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.no_group_image));
@@ -93,13 +101,13 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
         }
         if (groupsModel.getOwnerImage() != null && !groupsModel.getOwnerImage().isEmpty()) {
             if (groupsModel.isSocialAccount()) {
-                Ion.with(mContext).load(groupsModel.getOwnerImage()).withBitmap().transform(new CircleTransform()).intoImageView(holder.ownerImage);
+                Glide.with(mContext).load(groupsModel.getOwnerImage()).transform(new CircleTransform(mContext)).into(holder.ownerImage);
             } else {
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        groupsModel.getOwnerImage()).withBitmap().transform(new CircleTransform()).intoImageView(holder.ownerImage);
+                Glide.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                        groupsModel.getOwnerImage()).transform(new CircleTransform(mContext)).into(holder.ownerImage);
             }
         } else {
-            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(holder.ownerImage);
+            Glide.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").transform(new CircleTransform(mContext)).into(holder.ownerImage);
         }
         holder.groupBackground.setCardBackgroundColor(Color.parseColor(hexColor));
         holder.groupName.setText(groupsModel.getGroupName());

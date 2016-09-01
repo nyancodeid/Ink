@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -43,8 +44,6 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.ink.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -282,7 +281,8 @@ public class MyProfile extends BaseActivity {
                     mImageLinkToSend = selectedImagePath;
                     mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
                     isImageChosen = true;
-                    Ion.with(getApplicationContext()).load(new File(selectedImagePath)).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(profileImage);
+                    Glide.with(getApplicationContext()).load(new File(selectedImagePath))
+                            .placeholder(R.drawable.big_image_place_holder).into(profileImage);
                 } else {
                     isImageChosen = false;
                 }
@@ -445,19 +445,9 @@ public class MyProfile extends BaseActivity {
             mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
             if (shouldLoadImage) {
                 if (isSocialAccount()) {
-                    Ion.with(getApplicationContext()).load(mImageLinkToSend).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(profileImage).setCallback(new FutureCallback<ImageView>() {
-                        @Override
-                        public void onCompleted(Exception e, ImageView result) {
-
-                        }
-                    });
+                    Glide.with(getApplicationContext()).load(mImageLinkToSend).placeholder(R.drawable.big_image_place_holder).into(profileImage);
                 } else {
-                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(profileImage)
-                            .setCallback(new FutureCallback<ImageView>() {
-                                @Override
-                                public void onCompleted(Exception e, ImageView result) {
-                                }
-                            });
+                    Glide.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).placeholder(R.drawable.big_image_place_holder).into(profileImage);
                 }
 
             } else {
@@ -972,7 +962,7 @@ public class MyProfile extends BaseActivity {
                                 String imageLink = mSharedHelper.getUserId() + ".png";
                                 Picasso.with(getApplicationContext()).invalidate(mSharedHelper.getImageLink());
                                 mSharedHelper.putImageLink(imageLink);
-                                IonCache.clearIonCache(getApplicationContext());
+                                IonCache.clearGlideCache(getApplicationContext());
                                 FileUtils.deleteDirectoryTree(getApplicationContext().getCacheDir());
                                 mSharedHelper.putIsSocialAccount(false);
                                 if (isSocialAccount()) {

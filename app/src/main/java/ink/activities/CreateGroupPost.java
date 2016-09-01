@@ -11,9 +11,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.ink.R;
-import com.koushikdutta.ion.Ion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,14 +63,14 @@ public class CreateGroupPost extends BaseActivity {
         sharedHelper = new SharedHelper(this);
         if (!sharedHelper.getImageLink().isEmpty()) {
             if (isSocialAccount()) {
-                Ion.with(this).load(sharedHelper.getImageLink()).withBitmap().transform(new CircleTransform()).intoImageView(currentUserImage);
+                Glide.with(this).load(sharedHelper.getImageLink()).transform(new CircleTransform(this)).into(currentUserImage);
             } else {
-                Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + sharedHelper.getImageLink()).withBitmap().
-                        transform(new CircleTransform()).intoImageView(currentUserImage);
+                Glide.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + sharedHelper.getImageLink()).
+                        transform(new CircleTransform(this)).into(currentUserImage);
             }
         } else {
-            Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").
-                    withBitmap().transform(new CircleTransform()).intoImageView(currentUserImage);
+            Glide.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").
+                    transform(new CircleTransform(this)).into(currentUserImage);
         }
         currentUserName.setText(sharedHelper.getFirstName() + " " + sharedHelper.getLastName());
         sendGroupMessageIcon.setShowAnimation(AnimationUtils.loadAnimation(this, R.anim.fab_scale_up));

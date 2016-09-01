@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.ink.R;
-import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
@@ -89,19 +89,16 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
         if (feedModel.getUserImage() != null && !feedModel.getUserImage().isEmpty()) {
             if (feedModel.isSocialAccount()) {
-                Ion.with(mContext).load(feedModel.getUserImage())
-                        .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
-                        .intoImageView(holder.feedUserImage);
+                Glide.with(mContext).load(feedModel.getUserImage()).placeholder(R.drawable.no_background_image).transform(new CircleTransform(mContext))
+                        .into(holder.feedUserImage);
             } else {
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + feedModel.getUserImage())
-                        .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
-                        .intoImageView(holder.feedUserImage);
+                Glide.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + feedModel.getUserImage()).placeholder(R.drawable.no_background_image).transform(new CircleTransform(mContext))
+                        .into(holder.feedUserImage);
             }
 
         } else {
-            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
-                    .withBitmap().transform(new CircleTransform())
-                    .intoImageView(holder.feedUserImage);
+            Glide.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").transform(new CircleTransform(mContext))
+                    .into(holder.feedUserImage);
         }
         if (feedModel.getPosterId().equals(sharedHelper.getUserId())) {
             feedModel.setPostOwner(true);
@@ -135,8 +132,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
             if (FileUtils.isImageType(feedModel.getFileName())) {
                 holder.imageHolder.setVisibility(View.VISIBLE);
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + feedModel.getFileName()).withBitmap().placeholder(R.drawable.big_image_place_holder)
-                        .intoImageView(holder.imageHolder);
+                Glide.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + feedModel.getFileName()).placeholder(R.drawable.big_image_place_holder)
+                        .into(holder.imageHolder);
             } else {
                 holder.imageHolder.setVisibility(View.GONE);
             }

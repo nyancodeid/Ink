@@ -20,7 +20,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
@@ -30,8 +29,6 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.ink.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -42,7 +39,6 @@ import ink.activities.HomeActivity;
 import ink.activities.ReplyView;
 import ink.activities.RequestsView;
 import ink.broadcast.DismissBroadcast;
-import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.Notification;
 import ink.utils.RealmHelper;
@@ -314,26 +310,26 @@ public class NotificationService extends FirebaseMessagingService {
                 final android.app.Notification notification = builder.build();
 
 
-                if (opponentImage != null && !opponentImage.isEmpty()) {
-                    if (isSocialAccount) {
-                        Ion.with(getApplicationContext()).load(opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                            @Override
-                            public void onCompleted(Exception e, Bitmap result) {
-                                builder.setLargeIcon(result);
-                                notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
-                            }
-                        });
-                    } else {
-                        Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                            @Override
-                            public void onCompleted(Exception e, Bitmap result) {
-                                builder.setLargeIcon(result);
-                                notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
-                            }
-                        });
-                    }
+//                if (opponentImage != null && !opponentImage.isEmpty()) {
+//                    if (isSocialAccount) {
+//                        Glide.with(getApplicationContext()).load(opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+//                            @Override
+//                            public void onCompleted(Exception e, Bitmap result) {
+//                                builder.setLargeIcon(result);
+//                                notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+//                            }
+//                        });
+//                    } else {
+//                        Glide.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+//                            @Override
+//                            public void onCompleted(Exception e, Bitmap result) {
+//                                builder.setLargeIcon(result);
+//                                notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+//                            }
+//                        });
+//                    }
 
-                }
+//                }
                 notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
             } else {
                 Log.d(TAG, "sendNotification: " + "notification id not equals to each other" + mSharedHelper.getLastNotificationId(opponentId) + " opponent id is" + opponentId);
@@ -400,26 +396,26 @@ public class NotificationService extends FirebaseMessagingService {
                 final android.app.Notification notification = builder.build();
 
 
-                if (opponentImage != null && !opponentImage.isEmpty()) {
-                    if (isSocialAccount) {
-                        Ion.with(getApplicationContext()).load(opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                            @Override
-                            public void onCompleted(Exception e, Bitmap result) {
-                                builder.setLargeIcon(result);
-                                notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
-                            }
-                        });
-                    } else {
-                        Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                            @Override
-                            public void onCompleted(Exception e, Bitmap result) {
-                                builder.setLargeIcon(result);
-                                notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
-                            }
-                        });
-                    }
-
-                }
+//                if (opponentImage != null && !opponentImage.isEmpty()) {
+//                    if (isSocialAccount) {
+//                        Glide.with(getApplicationContext()).load(opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+//                            @Override
+//                            public void onCompleted(Exception e, Bitmap result) {
+//                                builder.setLargeIcon(result);
+//                                notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+//                            }
+//                        });
+//                    } else {
+//                        Glide.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+//                            @Override
+//                            public void onCompleted(Exception e, Bitmap result) {
+//                                builder.setLargeIcon(result);
+//                                notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+//                            }
+//                        });
+//                    }
+//
+//                }
 
                 notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
             }
@@ -489,26 +485,26 @@ public class NotificationService extends FirebaseMessagingService {
             final android.app.Notification notification = builder.build();
 
 
-            if (opponentImage != null && !opponentImage.isEmpty()) {
-                if (isSocialAccount) {
-                    Ion.with(getApplicationContext()).load(opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                        @Override
-                        public void onCompleted(Exception e, Bitmap result) {
-                            builder.setLargeIcon(result);
-                            notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
-                        }
-                    });
-                } else {
-                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                        @Override
-                        public void onCompleted(Exception e, Bitmap result) {
-                            builder.setLargeIcon(result);
-                            notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
-                        }
-                    });
-                }
-
-            }
+//            if (opponentImage != null && !opponentImage.isEmpty()) {
+//                if (isSocialAccount) {
+//                    Glide.with(getApplicationContext()).load(opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+//                        @Override
+//                        public void onCompleted(Exception e, Bitmap result) {
+//                            builder.setLargeIcon(result);
+//                            notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+//                        }
+//                    });
+//                } else {
+//                    Glide.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + opponentImage).withBitmap().transform(new CircleTransform()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+//                        @Override
+//                        public void onCompleted(Exception e, Bitmap result) {
+//                            builder.setLargeIcon(result);
+//                            notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+//                        }
+//                    });
+//                }
+//
+//            }
 
             notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
         }

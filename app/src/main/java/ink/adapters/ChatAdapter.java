@@ -204,6 +204,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 holder.chatViewBubble.setVisibility(View.VISIBLE);
             }
         } else if (Regex.isAttachment(chatModel.getMessage())) {
+            // TODO: 2016-09-01 check if we can load image
 //            if (FileUtils.isImageType(chatModel.getMessage())) {
 //                holder.imageView.setImageResource(0);
 //                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + chatModel.getMessage()).withBitmap().placeholder(R.drawable.no_background_image).

@@ -19,9 +19,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.ink.R;
-import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import java.io.IOException;
@@ -172,7 +172,7 @@ public class Music extends BaseActivity implements MusicClickListener {
 
 
         if (image != null && !image.equals("null")) {
-            Ion.with(getApplicationContext()).load(image).withBitmap().placeholder(R.drawable.time_loading_vector).transform(new CircleTransform()).intoImageView(currentlyPlayingImage);
+            Glide.with(getApplicationContext()).load(image).placeholder(R.drawable.time_loading_vector).transform(new CircleTransform(this)).into(currentlyPlayingImage);
         } else {
             currentlyPlayingImage.setBackground(null);
             currentlyPlayingImage.setImageResource(R.drawable.gradient_no_image);

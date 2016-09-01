@@ -47,6 +47,6 @@ public class CircleTransform extends BitmapTransformation {
 
     @Override
     public String getId() {
-        return null;
+        return getClass().getName();
     }
 }

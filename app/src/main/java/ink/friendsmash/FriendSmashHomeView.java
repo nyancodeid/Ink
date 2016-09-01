@@ -7,9 +7,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.ink.R;
-import com.koushikdutta.ion.Ion;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -50,14 +50,16 @@ public class FriendSmashHomeView extends BaseActivity {
         sharedHelper = new SharedHelper(this);
         if (sharedHelper.getImageLink() != null && !sharedHelper.getImageLink().isEmpty()) {
             if (isSocialAccount()) {
-                Ion.with(this).load(sharedHelper.getImageLink()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(userImage);
+                Glide.with(this).load(sharedHelper.getImageLink())
+                        .placeholder(R.drawable.no_background_image).transform(new CircleTransform(this)).into(userImage);
             } else {
-                Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + sharedHelper.getImageLink())
-                        .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
-                        .intoImageView(userImage);
+                Glide.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + sharedHelper.getImageLink())
+                        .placeholder(R.drawable.no_background_image).transform(new CircleTransform(this))
+                        .into(userImage);
             }
         } else {
-            Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(userImage);
+            Glide.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").
+                    placeholder(R.drawable.no_background_image).transform(new CircleTransform(this)).into(userImage);
         }
         welcomeTextView.setText(getString(R.string.welcome_to_game, sharedHelper.getFirstName()));
         if (User.get().isCoinsLoaded()) {

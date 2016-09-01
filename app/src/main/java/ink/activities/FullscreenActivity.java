@@ -9,11 +9,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.ink.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
-import com.koushikdutta.ion.ProgressCallback;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -54,32 +55,32 @@ public class FullscreenActivity extends BaseActivity {
                 gifHolder.setVisibility(View.VISIBLE);
                 mImageView.setVisibility(View.GONE);
 
-                Ion.with(this).load(fullUrlToLoad).progressHandler(new ProgressCallback() {
+                Glide.with(this).load(fullUrlToLoad).asGif().listener(new RequestListener<String, GifDrawable>() {
                     @Override
-                    public void onProgress(long downloaded, long total) {
-                        loadingProgressBar.setMax((int) total);
-                        loadingProgressBar.setProgress((int) downloaded);
+                    public boolean onException(Exception e, String model, Target<GifDrawable> target, boolean isFirstResource) {
+                        return false;
                     }
-                }).intoImageView(gifHolder).setCallback(new FutureCallback<ImageView>() {
+
                     @Override
-                    public void onCompleted(Exception e, ImageView result) {
+                    public boolean onResourceReady(GifDrawable resource, String model, Target<GifDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                         imageLoadingProgress.setVisibility(View.GONE);
+                        return false;
                     }
-                });
+                }).into(gifHolder);
             } else {
                 gifHolder.setVisibility(View.GONE);
                 mImageView.setVisibility(View.VISIBLE);
-                Ion.with(this).load(fullUrlToLoad).progressHandler(new ProgressCallback() {
+                Glide.with(this).load(fullUrlToLoad).asBitmap().listener(new RequestListener<String, Bitmap>() {
                     @Override
-                    public void onProgress(long downloaded, long total) {
-                        loadingProgressBar.setMax((int) total);
-                        loadingProgressBar.setProgress((int) downloaded);
+                    public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                        return false;
                     }
-                }).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
+
                     @Override
-                    public void onCompleted(Exception e, Bitmap result) {
-                        mImageView.setImage(ImageSource.bitmap(result));
+                    public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        mImageView.setImage(ImageSource.bitmap(resource));
                         imageLoadingProgress.setVisibility(View.GONE);
+                        return false;
                     }
                 });
             }
