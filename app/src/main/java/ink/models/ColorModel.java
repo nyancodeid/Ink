@@ -9,13 +9,13 @@ public class ColorModel {
     @SerializedName("user_id")
     public String userId;
 
-    @SerializedName("status_bar'")
+    @SerializedName("status_bar")
     public String statusBar;
 
     @SerializedName("action_bar")
     public String actionBar;
 
-    @SerializedName("menu_button'")
+    @SerializedName("menu_button")
     public String menuButton;
 
     @SerializedName("send_button")

@@ -406,7 +406,15 @@ public class CustomizeLook extends BaseActivity {
                     String responseBody = response.body().string();
                     ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
                     if (colorModel.success) {
+                        Log.d("fasFafasfasfas", "onResponse: "+colorModel.menuButton);
+                        Log.d("fasFafasfasfas", "onResponse: "+responseBody);
                         saveDataLocally(colorModel);
+                        Snackbar.make(actionBarCleaner, getString(R.string.dataRestored), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                            }
+                        }).show();
                     } else {
                         if (colorModel.cause != null) {
                             if (colorModel.cause.equals(ErrorCause.NO_CUSTOMIZATION)) {
@@ -457,7 +465,7 @@ public class CustomizeLook extends BaseActivity {
     }
 
     private void saveDataLocally(ColorModel colorModel) {
-        Log.d("Fasfasfasfsafas", "saveDataLocally: "+colorModel.menuButton);
+        Log.d("Fasfasfasfsafas", "saveDataLocally: " + colorModel.menuButton);
         sharedHelper.putStatusBarColor(colorModel.statusBar);
         sharedHelper.putActionBarColor(colorModel.actionBar);
         sharedHelper.putMenuButtonColor(colorModel.menuButton);
