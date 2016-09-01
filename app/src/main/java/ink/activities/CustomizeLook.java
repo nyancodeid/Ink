@@ -604,23 +604,23 @@ public class CustomizeLook extends BaseActivity {
 
     private void resetAccordingly() {
         sharedHelper.putStatusBarColor(statusBarCheckBox.isChecked() ? null : sharedHelper.getStatusBarColor());
-        sharedHelper.putActionBarColor(selectAllCheckBox.isChecked() ? null : sharedHelper.getActionBarColor());
-        sharedHelper.putMenuButtonColor(actionBarCheckBox.isChecked() ? null : sharedHelper.getMenuButtonColor());
-        sharedHelper.putSendButtonColor(menuButtonCheckBox.isChecked() ? null : sharedHelper.getSendButtonColor());
-        sharedHelper.putNotificationIconColor(sendButtonCheckBox.isChecked() ? null : sharedHelper.getNotificationIconColor());
-        sharedHelper.putShopIconColor(notificationCheckBox.isChecked() ? null : sharedHelper.getShopIconColor());
-        sharedHelper.putHamburgerColor(shopCheckBox.isChecked() ? null : sharedHelper.getHamburgerColor());
-        sharedHelper.putLeftSlidingPanelColor(hamburgerCheckBox.isChecked() ? null : sharedHelper.getLeftSlidingPanelHeaderColor());
-        sharedHelper.putFeedColor(leftPanelCheckBox.isChecked() ? null : sharedHelper.getFeedColor());
-        sharedHelper.putFriendsColor(feedCheckBox.isChecked() ? null : sharedHelper.getFriendsColor());
-        sharedHelper.putMessagesColor(friendsCheckBox.isChecked() ? null : sharedHelper.getMessagesColor());
-        sharedHelper.putChatColor(messagesCheckBox.isChecked() ? null : sharedHelper.getChatColor());
-        sharedHelper.putMyRequestColor(chatCheckBox.isChecked() ? null : sharedHelper.getMyRequestColor());
-        sharedHelper.putOpponentBubbleColor(requestCheckBox.isChecked() ? null : sharedHelper.getOpponentBubbleColor());
-        sharedHelper.putOwnBubbleColor(opponentBubbleCheckBox.isChecked() ? null : sharedHelper.getOwnBubbleColor());
-        sharedHelper.putOpponentTextColor(ownBubbleCheckBox.isChecked() ? null : sharedHelper.getOpponentTextColor());
-        sharedHelper.putOwnTextColor(opponentTextCheckBox.isChecked() ? null : sharedHelper.getOwnTextColor());
-        sharedHelper.putChatFieldTextColor(ownTextCheckBox.isChecked() ? null : sharedHelper.getChatFieldTextColor());
+        sharedHelper.putActionBarColor(actionBarCheckBox.isChecked() ? null : sharedHelper.getActionBarColor());
+        sharedHelper.putMenuButtonColor(menuButtonCheckBox.isChecked() ? null : sharedHelper.getMenuButtonColor());
+        sharedHelper.putSendButtonColor(sendButtonCheckBox.isChecked() ? null : sharedHelper.getSendButtonColor());
+        sharedHelper.putNotificationIconColor(notificationCheckBox.isChecked() ? null : sharedHelper.getNotificationIconColor());
+        sharedHelper.putShopIconColor(shopCheckBox.isChecked() ? null : sharedHelper.getShopIconColor());
+        sharedHelper.putHamburgerColor(hamburgerCheckBox.isChecked() ? null : sharedHelper.getHamburgerColor());
+        sharedHelper.putLeftSlidingPanelColor(leftPanelCheckBox.isChecked() ? null : sharedHelper.getLeftSlidingPanelHeaderColor());
+        sharedHelper.putFeedColor(feedCheckBox.isChecked() ? null : sharedHelper.getFeedColor());
+        sharedHelper.putFriendsColor(friendsCheckBox.isChecked() ? null : sharedHelper.getFriendsColor());
+        sharedHelper.putMessagesColor(messagesCheckBox.isChecked() ? null : sharedHelper.getMessagesColor());
+        sharedHelper.putChatColor(chatCheckBox.isChecked() ? null : sharedHelper.getChatColor());
+        sharedHelper.putMyRequestColor(requestCheckBox.isChecked() ? null : sharedHelper.getMyRequestColor());
+        sharedHelper.putOpponentBubbleColor(opponentBubbleCheckBox.isChecked() ? null : sharedHelper.getOpponentBubbleColor());
+        sharedHelper.putOwnBubbleColor(ownBubbleCheckBox.isChecked() ? null : sharedHelper.getOwnBubbleColor());
+        sharedHelper.putOpponentTextColor(opponentTextCheckBox.isChecked() ? null : sharedHelper.getOpponentTextColor());
+        sharedHelper.putOwnTextColor(ownTextCheckBox.isChecked() ? null : sharedHelper.getOwnTextColor());
+        sharedHelper.putChatFieldTextColor(chatFieldCheckBox.isChecked() ? null : sharedHelper.getChatFieldTextColor());
 
         Intent intent = new Intent();
         Toast.makeText(CustomizeLook.this, getString(R.string.reseted), Toast.LENGTH_SHORT).show();

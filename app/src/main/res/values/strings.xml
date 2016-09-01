@@ -578,7 +578,7 @@
     <string name="noCustomizationData">You don\'t have any customizations saved on the Cloud</string>
     <string name="dataRestored">Data was restored</string>
     <string name="dataRemoved">Your data was removed from Cloud</string>
-    <string name="chooseWhichReset">Choose Reset Options</string>
+    <string name="chooseWhichReset">Choose Which To Reset</string>
     <string name="reset">Reset</string>
     <string name="selectAll">Select All</string>
     <string name="statusBar">Status Bar Color</string>
