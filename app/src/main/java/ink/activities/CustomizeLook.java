@@ -13,7 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -404,9 +403,7 @@ public class CustomizeLook extends BaseActivity {
                     String responseBody = response.body().string();
                     ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
                     if (colorModel.success) {
-                        Log.d("Fasfsafasfas", "onResponse: " + colorModel.statusBar);
-                        Log.d("Fasfsafasfas", "onResponse: " + responseBody);
-//                        saveDataLocally(colorModel);
+                        saveDataLocally(colorModel);
                     } else {
                         if (colorModel.cause != null) {
                             if (colorModel.cause.equals(ErrorCause.NO_CUSTOMIZATION)) {
@@ -457,24 +454,24 @@ public class CustomizeLook extends BaseActivity {
     }
 
     private void saveDataLocally(ColorModel colorModel) {
-        sharedHelper.putStatusBarColor(colorModel.statusBar.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putActionBarColor(colorModel.actionBar.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putMenuButtonColor(colorModel.menuButton.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putSendButtonColor(colorModel.sendButton.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putNotificationIconColor(colorModel.notificationIcon.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putShopIconColor(colorModel.shopIcon.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putHamburgerColor(colorModel.hamburgerIcon.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putLeftSlidingPanelColor(colorModel.leftHeader.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putFeedColor(colorModel.feedBackground.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putFriendsColor(colorModel.friendsBackground.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putMessagesColor(colorModel.messagesBackground.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putChatColor(colorModel.chatBackground.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putMyRequestColor(colorModel.requestBackground.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putOpponentBubbleColor(colorModel.opponentBubble.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putOwnBubbleColor(colorModel.ownBubble.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putOpponentTextColor(colorModel.opponentText.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putOwnTextColor(colorModel.ownText.isEmpty() ? null : colorModel.statusBar);
-        sharedHelper.putChatFieldTextColor(colorModel.chatField.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putStatusBarColor(colorModel.statusBar);
+        sharedHelper.putActionBarColor(colorModel.actionBar);
+        sharedHelper.putMenuButtonColor(colorModel.menuButton);
+        sharedHelper.putSendButtonColor(colorModel.sendButton);
+        sharedHelper.putNotificationIconColor(colorModel.notificationIcon);
+        sharedHelper.putShopIconColor(colorModel.shopIcon);
+        sharedHelper.putHamburgerColor(colorModel.hamburgerIcon);
+        sharedHelper.putLeftSlidingPanelColor(colorModel.leftHeader);
+        sharedHelper.putFeedColor(colorModel.feedBackground);
+        sharedHelper.putFriendsColor(colorModel.friendsBackground);
+        sharedHelper.putMessagesColor(colorModel.messagesBackground);
+        sharedHelper.putChatColor(colorModel.chatBackground);
+        sharedHelper.putMyRequestColor(colorModel.requestBackground);
+        sharedHelper.putOpponentBubbleColor(colorModel.opponentBubble);
+        sharedHelper.putOwnBubbleColor(colorModel.ownBubble);
+        sharedHelper.putOpponentTextColor(colorModel.opponentText);
+        sharedHelper.putOwnTextColor(colorModel.ownText);
+        sharedHelper.putChatFieldTextColor(colorModel.chatField);
 
         Intent intent = new Intent();
         intent.putExtra("anythingChanged", true);
