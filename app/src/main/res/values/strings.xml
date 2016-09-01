@@ -563,4 +563,10 @@
     <string name="pickOwnChatTextColor">Pick own chat text color</string>
     <string name="pickOpponentChatTextColor">Pick opponent chat text color</string>
     <string name="pickChatFieldTextColor">Pick chat field writing text color (This will affect chat field bottom icons as well)</string>
+    <string name="nothingWasChanged">You haven\'t change anything to save</string>
+    <string name="failedToSaveCloud">Failed to save data to cloud.Please contact support</string>
+    <string name="failedToRestore">Failed to restore you data from Cloud.Please contact support</string>
+    <string name="removeFromCloud">Remove from Cloud</string>
+    <string name="removeFromCloudWarning">This will remove your cloud customization data without any recovery option,do you want to proceed?</string>
+    <string name="couldNotRemove">Could not remove from cloud.Please contact support</string>
 </resources>

@@ -182,6 +182,38 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getWaiters(@Field("user_id") String userId);
 
+
+        @POST(Constants.CUSTOMIZATION_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> saveCustomization(@Field("type") String type,
+                                             @Field("userId") String userId,
+                                             @Field("statusBar") String statusBar,
+                                             @Field("actionBar") String actionBar,
+                                             @Field("menuButton") String menuButton,
+                                             @Field("sendButton") String sendButton,
+                                             @Field("notificationIcon") String notificationIcon,
+                                             @Field("shopIcon") String shopIcon,
+                                             @Field("hamburgerIcon") String hamburgerIcon,
+                                             @Field("leftHeader") String leftHeader,
+                                             @Field("feedBackground") String feedBackground,
+                                             @Field("friendsBackground") String friendsBackground,
+                                             @Field("messagesBackground") String messagesBackground,
+                                             @Field("chatBackground") String chatBackground,
+                                             @Field("requestBackground") String requestBackground,
+                                             @Field("opponentBubble") String opponentBubble,
+                                             @Field("ownBubble") String ownBubble,
+                                             @Field("opponentText") String opponentText,
+                                             @Field("ownText") String ownText,
+                                             @Field("chatField") String chatField);
+
+        @POST(Constants.CUSTOMIZATION_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> restoreCustomization(@Field("userId") String userId, @Field("type") String type);
+
+        @POST(Constants.CUSTOMIZATION_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> removeFromCloud(@Field("userId") String userId, @Field("type") String type);
+
         @POST(Constants.SINGLE_USER_MESSAGES)
         @FormUrlEncoded
         Call<ResponseBody> getMyMessages(@Field("user_id") String userId);
