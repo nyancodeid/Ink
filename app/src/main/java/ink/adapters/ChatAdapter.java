@@ -13,11 +13,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.ink.R;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
@@ -172,31 +170,21 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             holder.imageView.setImageResource(0);
             holder.imageViewWrapper.setVisibility(View.VISIBLE);
             if (holder.imageView.getTag() == null) {
-                Glide.with(mContext).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl()).asGif().listener(new RequestListener<String, GifDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GifDrawable> target, boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GifDrawable resource, String model, Target<GifDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        holder.imageView.setTag(LOADED);
-                        return false;
-                    }
-                }).placeholder(R.drawable.time_loading_vector).into(holder.imageView);
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.imageView)
+                        .setCallback(new FutureCallback<ImageView>() {
+                            @Override
+                            public void onCompleted(Exception e, ImageView result) {
+                                holder.imageView.setTag(LOADED);
+                            }
+                        });
             } else if (!holder.imageView.getTag().equals(LOADED)) {
-                Glide.with(mContext).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl()).asGif().listener(new RequestListener<String, GifDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GifDrawable> target, boolean isFirstResource) {
-                        holder.imageView.setTag(LOADED);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GifDrawable resource, String model, Target<GifDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        return false;
-                    }
-                }).placeholder(R.drawable.time_loading_vector).into(holder.imageView);
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.imageView)
+                        .setCallback(new FutureCallback<ImageView>() {
+                            @Override
+                            public void onCompleted(Exception e, ImageView result) {
+                                holder.imageView.setTag(LOADED);
+                            }
+                        });
             }
             if (chatModel.getMessage().trim().isEmpty()) {
                 holder.chatViewBubble.setVisibility(View.GONE);

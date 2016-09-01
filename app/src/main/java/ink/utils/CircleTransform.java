@@ -1,24 +1,18 @@
 package ink.utils;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.koushikdutta.ion.bitmap.Transform;
 
 /**
  * Created by USER on 2016-06-21.
  */
-public class CircleTransform extends BitmapTransformation {
-    public CircleTransform(Context context) {
-        super(context);
-    }
-
+public class CircleTransform implements Transform {
     @Override
-    protected Bitmap transform(BitmapPool pool, Bitmap source, int outWidth, int outHeight) {
+    public Bitmap transform(Bitmap source) {
         int size = Math.min(source.getWidth(), source.getHeight());
 
         int x = (source.getWidth() - size) / 2;
@@ -46,7 +40,7 @@ public class CircleTransform extends BitmapTransformation {
     }
 
     @Override
-    public String getId() {
-        return null;
+    public String key() {
+        return "circle";
     }
 }
