@@ -12,7 +12,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.ink.R;
 
 import java.io.IOException;
@@ -29,7 +29,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.callbacks.GeneralCallback;
+import ink.models.ColorModel;
 import ink.utils.Constants;
+import ink.utils.ErrorCause;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -188,11 +190,14 @@ public class CustomizeLook extends BaseActivity {
     private String oldOwnTextColor;
     private String oldOpponentTextColor;
 
+    private Gson gson;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.customize_look_view);
         ButterKnife.bind(this);
+        gson = new Gson();
         sharedHelper = new SharedHelper(this);
         customizeToolbar = (Toolbar) findViewById(R.id.customizeToolbar);
         setSupportActionBar(customizeToolbar);
@@ -237,13 +242,44 @@ public class CustomizeLook extends BaseActivity {
                 break;
             case R.id.saveToCloud:
                 if (hasAnythingChanged()) {
-                    saveToCloud();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeLook.this);
+                    builder.setTitle(getString(R.string.warning));
+                    builder.setMessage(getString(R.string.overwriteWarning));
+                    builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            saveToCloud();
+                        }
+                    });
+                    builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.show();
                 } else {
                     Snackbar.make(friendsCleaner, getString(R.string.nothingWasChanged), Snackbar.LENGTH_LONG).show();
                 }
                 break;
             case R.id.restoreFromCloud:
-                restoreFromCloud();
+                System.gc();
+                AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeLook.this);
+                builder.setTitle(getString(R.string.warning));
+                builder.setMessage(getString(R.string.localOverwritingWarning));
+                builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        restoreFromCloud();
+                    }
+                });
+                builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.show();
                 break;
             case R.id.resetToDefault:
                 sharedHelper.resetCustomization();
@@ -254,7 +290,8 @@ public class CustomizeLook extends BaseActivity {
                 finish();
                 break;
             case R.id.removeFromCloud:
-                AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeLook.this);
+                System.gc();
+                builder = new AlertDialog.Builder(CustomizeLook.this);
                 builder.setTitle(getString(R.string.warning));
                 builder.setMessage(getString(R.string.removeFromCloudWarning));
                 builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
@@ -290,9 +327,48 @@ public class CustomizeLook extends BaseActivity {
                 }
                 try {
                     String responseBody = response.body().string();
-                    Log.d("fasfasfasfa", "onResponse:from remove " + responseBody);
+                    ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
+                    if (colorModel.success) {
+                        Snackbar.make(friendsCleaner, getString(R.string.dataRemoved), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                            }
+                        }).show();
+                    } else {
+                        if (colorModel.cause != null) {
+                            if (colorModel.cause.equals(ErrorCause.NO_CUSTOMIZATION)) {
+                                Snackbar.make(friendsCleaner, getString(R.string.noCustomizationData), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
+                            } else {
+                                Snackbar.make(friendsCleaner, getString(R.string.couldNotRemove), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
+                            }
+                        } else {
+                            Snackbar.make(friendsCleaner, getString(R.string.couldNotRemove), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            }).show();
+                        }
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Snackbar.make(friendsCleaner, getString(R.string.couldNotRemove), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    }).show();
                 }
             }
 
@@ -323,9 +399,43 @@ public class CustomizeLook extends BaseActivity {
                 }
                 try {
                     String responseBody = response.body().string();
-                    Log.d("fasfasfasfa", "onResponse:of restore " + responseBody);
+                    ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
+                    if (colorModel.success) {
+                        saveDataLocally(colorModel);
+                    } else {
+                        if (colorModel.cause != null) {
+                            if (colorModel.cause.equals(ErrorCause.NO_CUSTOMIZATION)) {
+                                Snackbar.make(friendsCleaner, getString(R.string.noCustomizationData), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
+                            } else if (colorModel.cause.equals(ErrorCause.SERVER_ERROR)) {
+                                Snackbar.make(friendsCleaner, getString(R.string.errorFetchingData), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
+                            }
+                        } else {
+                            Snackbar.make(friendsCleaner, getString(R.string.errorFetchingData), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            }).show();
+                        }
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Snackbar.make(friendsCleaner, getString(R.string.errorFetchingData), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    }).show();
                 }
             }
 
@@ -339,6 +449,33 @@ public class CustomizeLook extends BaseActivity {
                 }).show();
             }
         });
+    }
+
+    private void saveDataLocally(ColorModel colorModel) {
+        sharedHelper.putStatusBarColor(colorModel.statusBar.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putActionBarColor(colorModel.actionBar.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putMenuButtonColor(colorModel.menuButton.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putSendButtonColor(colorModel.sendButton.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putNotificationIconColor(colorModel.notificationIcon.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putShopIconColor(colorModel.shopIcon.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putHamburgerColor(colorModel.hamburgerIcon.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putLeftSlidingPanelColor(colorModel.leftHeader.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putFeedColor(colorModel.feedBackground.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putFriendsColor(colorModel.friendsBackground.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putMessagesColor(colorModel.messagesBackground.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putChatColor(colorModel.chatBackground.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putMyRequestColor(colorModel.requestBackground.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putOpponentBubbleColor(colorModel.opponentBubble.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putOwnBubbleColor(colorModel.ownBubble.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putOpponentTextColor(colorModel.opponentText.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putOwnTextColor(colorModel.ownText.isEmpty() ? null : colorModel.statusBar);
+        sharedHelper.putChatFieldTextColor(colorModel.chatField.isEmpty() ? null : colorModel.statusBar);
+
+        Intent intent = new Intent();
+        intent.putExtra("anythingChanged", true);
+        setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
+        Toast.makeText(CustomizeLook.this, getString(R.string.dataRestored), Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     private void saveToCloud() {
@@ -374,9 +511,46 @@ public class CustomizeLook extends BaseActivity {
                 }
                 try {
                     String responseBody = response.body().string();
-                    Log.d("fasfasfasfa", "onResponse: of save " + responseBody);
+                    ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
+                    if (colorModel.success) {
+                        Snackbar.make(friendsCleaner, getString(R.string.customizationSaved), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                finish();
+                            }
+                        }).show();
+                    } else {
+                        if (colorModel.cause != null) {
+                            if (colorModel.cause.equals(ErrorCause.SERVER_ERROR)) {
+                                Snackbar.make(friendsCleaner, getString(R.string.errorSaviingCustomaziation), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
+                            }
+                        } else {
+                            Snackbar.make(friendsCleaner, getString(R.string.customizationSaved), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Snackbar.make(friendsCleaner, getString(R.string.errorSaviingCustomaziation), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+
+                                        }
+                                    }).show();
+                                }
+                            }).show();
+                        }
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Snackbar.make(friendsCleaner, getString(R.string.errorSaviingCustomaziation), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    }).show();
                 }
             }
 

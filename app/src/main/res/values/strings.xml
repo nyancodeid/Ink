@@ -567,6 +567,15 @@
     <string name="failedToSaveCloud">Failed to save data to cloud.Please contact support</string>
     <string name="failedToRestore">Failed to restore you data from Cloud.Please contact support</string>
     <string name="removeFromCloud">Remove from Cloud</string>
-    <string name="removeFromCloudWarning">This will remove your cloud customization data without any recovery option,do you want to proceed?</string>
-    <string name="couldNotRemove">Could not remove from cloud.Please contact support</string>
+    <string name="removeFromCloudWarning">This will remove your cloud customization data without any recovery option,though,if you have any local customizations,they will not be removed.
+        \ndo you want to proceed?</string>
+    <string name="couldNotRemove">Could not remove from Cloud.Please contact support</string>
+    <string name="overwriteWarning">This will overwrite your server data.Proceed?</string>
+    <string name="localOverwritingWarning">This will overwrite your local data.Proceed?</string>
+    <string name="customizationSaved">Your customizations were saved on the Cloud</string>
+    <string name="errorSaviingCustomaziation">Error while saving customizations.Please contact support</string>
+    <string name="errorFetchingData">Error fetching data from Cloud.Please contact support</string>
+    <string name="noCustomizationData">You don\'t have any customizations saved on the Cloud</string>
+    <string name="dataRestored">Data was restored</string>
+    <string name="dataRemoved">Your data was removed from Cloud</string>
 </resources>
