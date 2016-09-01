@@ -1,5 +1,7 @@
 package ink.activities;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -9,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,15 +20,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.ink.R;
+
+import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.callbacks.GeneralCallback;
+import ink.models.ColorModel;
 import ink.utils.Constants;
+import ink.utils.ErrorCause;
+import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 /**
@@ -178,11 +191,15 @@ public class CustomizeLook extends BaseActivity {
     private String oldOwnTextColor;
     private String oldOpponentTextColor;
 
+    private Gson gson;
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.customize_look_view);
         ButterKnife.bind(this);
+        gson = new Gson();
         sharedHelper = new SharedHelper(this);
         customizeToolbar = (Toolbar) findViewById(R.id.customizeToolbar);
         setSupportActionBar(customizeToolbar);
@@ -226,8 +243,45 @@ public class CustomizeLook extends BaseActivity {
                 checkAndSendResult();
                 break;
             case R.id.saveToCloud:
+                if (hasAnythingChanged()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeLook.this);
+                    builder.setTitle(getString(R.string.warning));
+                    builder.setMessage(getString(R.string.overwriteWarning));
+                    builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            saveToCloud();
+                        }
+                    });
+                    builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.show();
+                } else {
+                    Snackbar.make(friendsCleaner, getString(R.string.nothingWasChanged), Snackbar.LENGTH_LONG).show();
+                }
                 break;
             case R.id.restoreFromCloud:
+                System.gc();
+                AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeLook.this);
+                builder.setTitle(getString(R.string.warning));
+                builder.setMessage(getString(R.string.localOverwritingWarning));
+                builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        restoreFromCloud();
+                    }
+                });
+                builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.show();
                 break;
             case R.id.resetToDefault:
                 sharedHelper.resetCustomization();
@@ -237,8 +291,281 @@ public class CustomizeLook extends BaseActivity {
                 setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
                 finish();
                 break;
+            case R.id.removeFromCloud:
+                System.gc();
+                builder = new AlertDialog.Builder(CustomizeLook.this);
+                builder.setTitle(getString(R.string.warning));
+                builder.setMessage(getString(R.string.removeFromCloudWarning));
+                builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        removeFromCloud();
+                    }
+                });
+                builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.show();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void removeFromCloud() {
+        Call<ResponseBody> removeFromCloudCall = Retrofit.getInstance().getInkService().removeFromCloud(sharedHelper.getUserId(), Constants.CUSTOMIZATION_TYPE_REMOVE);
+        removeFromCloudCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    removeFromCloud();
+                    return;
+                }
+                if (response.body() == null) {
+                    removeFromCloud();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
+                    if (colorModel.success) {
+                        Snackbar.make(friendsCleaner, getString(R.string.dataRemoved), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                            }
+                        }).show();
+                    } else {
+                        if (colorModel.cause != null) {
+                            if (colorModel.cause.equals(ErrorCause.NO_CUSTOMIZATION)) {
+                                Snackbar.make(friendsCleaner, getString(R.string.noCustomizationData), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
+                            } else {
+                                Snackbar.make(friendsCleaner, getString(R.string.couldNotRemove), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
+                            }
+                        } else {
+                            Snackbar.make(friendsCleaner, getString(R.string.couldNotRemove), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            }).show();
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Snackbar.make(friendsCleaner, getString(R.string.couldNotRemove), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    }).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Snackbar.make(friendsCleaner, getString(R.string.couldNotRemove), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                }).show();
+            }
+        });
+    }
+
+    private void restoreFromCloud() {
+        Call<ResponseBody> restoreCall = Retrofit.getInstance().getInkService().restoreCustomization(sharedHelper.getUserId(), Constants.CUSTOMIZATION_TYPE_RESTORE);
+        restoreCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    restoreFromCloud();
+                    return;
+                }
+                if (response.body() == null) {
+                    restoreFromCloud();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
+                    if (colorModel.success) {
+                        saveDataLocally(colorModel);
+                    } else {
+                        if (colorModel.cause != null) {
+                            if (colorModel.cause.equals(ErrorCause.NO_CUSTOMIZATION)) {
+                                Snackbar.make(friendsCleaner, getString(R.string.noCustomizationData), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
+                            } else if (colorModel.cause.equals(ErrorCause.SERVER_ERROR)) {
+                                Snackbar.make(friendsCleaner, getString(R.string.errorFetchingData), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
+                            }
+                        } else {
+                            Snackbar.make(friendsCleaner, getString(R.string.errorFetchingData), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            }).show();
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Snackbar.make(friendsCleaner, getString(R.string.errorFetchingData), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    }).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Snackbar.make(friendsCleaner, getString(R.string.failedToRestore), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                }).show();
+            }
+        });
+    }
+
+    private void saveDataLocally(ColorModel colorModel) {
+        sharedHelper.putStatusBarColor(colorModel.statusBar);
+        sharedHelper.putActionBarColor(colorModel.actionBar);
+        sharedHelper.putMenuButtonColor(colorModel.menuButton);
+        sharedHelper.putSendButtonColor(colorModel.sendButton);
+        sharedHelper.putNotificationIconColor(colorModel.notificationIcon);
+        sharedHelper.putShopIconColor(colorModel.shopIcon);
+        sharedHelper.putHamburgerColor(colorModel.hamburgerIcon);
+        sharedHelper.putLeftSlidingPanelColor(colorModel.leftHeader);
+        sharedHelper.putFeedColor(colorModel.feedBackground);
+        sharedHelper.putFriendsColor(colorModel.friendsBackground);
+        sharedHelper.putMessagesColor(colorModel.messagesBackground);
+        sharedHelper.putChatColor(colorModel.chatBackground);
+        sharedHelper.putMyRequestColor(colorModel.requestBackground);
+        sharedHelper.putOpponentBubbleColor(colorModel.opponentBubble);
+        sharedHelper.putOwnBubbleColor(colorModel.ownBubble);
+        sharedHelper.putOpponentTextColor(colorModel.opponentText);
+        sharedHelper.putOwnTextColor(colorModel.ownText);
+        sharedHelper.putChatFieldTextColor(colorModel.chatField);
+
+        Intent intent = new Intent();
+        intent.putExtra("anythingChanged", true);
+        setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
+        Toast.makeText(CustomizeLook.this, getString(R.string.dataRestored), Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    private void saveToCloud() {
+        Call<ResponseBody> saveCustomizationCall = Retrofit.getInstance().getInkService().saveCustomization(Constants.CUSTOMIZATION_TYPE_SAVE,
+                sharedHelper.getUserId(), sharedHelper.getStatusBarColor() != null ? sharedHelper.getStatusBarColor() : "",
+                sharedHelper.getActionBarColor() != null ? sharedHelper.getActionBarColor() : "",
+                sharedHelper.getMenuButtonColor() != null ? sharedHelper.getMenuButtonColor() : "",
+                sharedHelper.getSendButtonColor() != null ? sharedHelper.getSendButtonColor() : "",
+                sharedHelper.getNotificationIconColor() != null ? sharedHelper.getNotificationIconColor() : "",
+                sharedHelper.getShopIconColor() != null ? sharedHelper.getShopIconColor() : "",
+                sharedHelper.getHamburgerColor() != null ? sharedHelper.getHamburgerColor() : "",
+                sharedHelper.getLeftSlidingPanelHeaderColor() != null ? sharedHelper.getLeftSlidingPanelHeaderColor() : "",
+                sharedHelper.getFeedColor() != null ? sharedHelper.getFeedColor() : "",
+                sharedHelper.getFriendsColor() != null ? sharedHelper.getFriendsColor() : "",
+                sharedHelper.getMessagesColor() != null ? sharedHelper.getMessagesColor() : "",
+                sharedHelper.getChatColor() != null ? sharedHelper.getChatColor() : "",
+                sharedHelper.getMyRequestColor() != null ? sharedHelper.getMyRequestColor() : "",
+                sharedHelper.getOpponentBubbleColor() != null ? sharedHelper.getOpponentBubbleColor() : "",
+                sharedHelper.getOwnBubbleColor() != null ? sharedHelper.getOwnBubbleColor() : "",
+                sharedHelper.getOpponentTextColor() != null ? sharedHelper.getOpponentTextColor() : "",
+                sharedHelper.getOwnTextColor() != null ? sharedHelper.getOwnTextColor() : "",
+                sharedHelper.getChatFieldTextColor() != null ? sharedHelper.getChatFieldTextColor() : "");
+        saveCustomizationCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    saveToCloud();
+                    return;
+                }
+                if (response.body() == null) {
+                    saveToCloud();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
+                    if (colorModel.success) {
+                        Snackbar.make(friendsCleaner, getString(R.string.customizationSaved), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                finish();
+                            }
+                        }).show();
+                    } else {
+                        if (colorModel.cause != null) {
+                            if (colorModel.cause.equals(ErrorCause.SERVER_ERROR)) {
+                                Snackbar.make(friendsCleaner, getString(R.string.errorSaviingCustomaziation), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
+                            }
+                        } else {
+                            Snackbar.make(friendsCleaner, getString(R.string.customizationSaved), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Snackbar.make(friendsCleaner, getString(R.string.errorSaviingCustomaziation), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+
+                                        }
+                                    }).show();
+                                }
+                            }).show();
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Snackbar.make(friendsCleaner, getString(R.string.errorSaviingCustomaziation), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    }).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Snackbar.make(friendsCleaner, getString(R.string.failedToSaveCloud), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                }).show();
+            }
+        });
     }
 
     @Override
@@ -772,6 +1099,18 @@ public class CustomizeLook extends BaseActivity {
             intent.putExtra("anythingChanged", true);
             setResult(Constants.REQUEST_CUSTOMIZE_MADE, intent);
             finish();
+        }
+    }
+
+    private boolean hasAnythingChanged() {
+        if (!actionBarColorPicked && !fabMenuButtonColorPicked && !pickNotificationIconColorPicked && !pickShopIconColorPicked &&
+                !pickLeftDrawerColorPicked && !feedColorPicked && !messagesBackgroundColorPicked && !friendsBackgroundColorPicked &&
+                !chatBackgroundColorPicked && !requestBackgroundColorPicked && !opponentBubbleColorPicked &&
+                !ownBubbleColorPicked && !sendButtonColorPicked && !statusBarColorPicked && !hamburgerColorPicked
+                && !opponentTextColorPicked && !chatFieldColorPicked && !ownTextColorPicked) {
+            return false;
+        } else {
+            return true;
         }
     }
 }

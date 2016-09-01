@@ -183,6 +183,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         gifGson = new Gson();
 
         progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressDrawable(ContextCompat.getDrawable(this, R.drawable.progress_dialog_circle));
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setIndeterminateDrawable(ContextCompat.getDrawable(this, R.drawable.progress_dialog_circle));
         progressDialog.setTitle(getString(R.string.updatingMessages));
         progressDialog.setMessage(getString(R.string.updatingYourMessages));
         progressDialog.setCanceledOnTouchOutside(false);

@@ -19,6 +19,7 @@ public class Constants {
     public static final String USER_COINS_URL = "GetUserCoins.php";
     public static final String SHOP_COINS_URL = "GetCoinsShop.php";
     public static final String PING_TIME_URL = "PingTime.php";
+    public static final String CUSTOMIZATION_URL = "Customization.php";
     public static final String SHOP_PACKS_URL = "GetPacks.php";
     public static final String JOIN_GROUP_URL = "JoinGroup.php";
     public static final String ADD_GROUP_MESSAGE_URL = "AddGroupMessage.php";
@@ -81,6 +82,9 @@ public class Constants {
     public static final String NOTIFICATION_TYPE_LOCATION_REQUEST_ACCEPTED = "requestLocationAccepted";
     public static final String NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED = "friendRequestAccepted";
     public static final String NOTIFICATION_TYPE_LOCATION_UPDATES = "locationUpdate";
+    public static final String CUSTOMIZATION_TYPE_RESTORE = "restore";
+    public static final String CUSTOMIZATION_TYPE_SAVE = "save";
+    public static final String CUSTOMIZATION_TYPE_REMOVE = "remove";
     public static final String WAITERS_QUE = "WaitRoomQue.php";
     public static final String GET_WAITERS = "GetWaitersQue.php";
     public static final String TYPE_ACCEPT_REQUEST = "acceptGroupRequest";
