@@ -60,7 +60,8 @@
                 android:id="@+id/statusBarCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp" />
+                android:layout_marginLeft="16dp"
+                android:clickable="false" />
         </LinearLayout>
 
 
@@ -88,7 +89,8 @@
                 android:id="@+id/actionBarCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp" />
+                android:layout_marginLeft="16dp"
+                android:clickable="false" />
         </LinearLayout>
 
 
@@ -116,7 +118,8 @@
                 android:id="@+id/menuButtonCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp" />
+                android:layout_marginLeft="16dp"
+                android:clickable="false" />
         </LinearLayout>
 
 
@@ -144,7 +147,8 @@
                 android:id="@+id/sendButtonCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp" />
+                android:layout_marginLeft="16dp"
+                android:clickable="false" />
         </LinearLayout>
 
 
@@ -172,7 +176,8 @@
                 android:id="@+id/notificationCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp" />
+                android:layout_marginLeft="16dp"
+                android:clickable="false" />
         </LinearLayout>
 
 
@@ -200,7 +205,8 @@
                 android:id="@+id/shopCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp" />
+                android:layout_marginLeft="16dp"
+                android:clickable="false" />
         </LinearLayout>
 
 
@@ -227,6 +233,7 @@
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/hamburgerCheckBox"
                 android:layout_width="wrap_content"
+                android:clickable="false"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp" />
         </LinearLayout>
@@ -254,6 +261,7 @@
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/leftPanelCheckBox"
                 android:layout_width="wrap_content"
+                android:clickable="false"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp" />
         </LinearLayout>
@@ -283,6 +291,7 @@
                 android:id="@+id/feedCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:clickable="false"
                 android:layout_marginLeft="16dp" />
         </LinearLayout>
 
@@ -310,6 +319,7 @@
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/friendsCheckBox"
                 android:layout_width="wrap_content"
+                android:clickable="false"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp" />
         </LinearLayout>
@@ -339,6 +349,7 @@
                 android:id="@+id/messagesCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:clickable="false"
                 android:layout_marginLeft="16dp" />
         </LinearLayout>
 
@@ -366,6 +377,7 @@
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/chatCheckBox"
                 android:layout_width="wrap_content"
+                android:clickable="false"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp" />
         </LinearLayout>
@@ -394,6 +406,7 @@
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/requestCheckBox"
                 android:layout_width="wrap_content"
+                android:clickable="false"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp" />
         </LinearLayout>
@@ -422,6 +435,7 @@
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/opponentBubbleCheckBox"
                 android:layout_width="wrap_content"
+                android:clickable="false"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp" />
         </LinearLayout>
@@ -450,6 +464,7 @@
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/ownBubbleCheckBox"
                 android:layout_width="wrap_content"
+                android:clickable="false"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp" />
         </LinearLayout>
@@ -477,6 +492,7 @@
 
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/opponentTextCheckBox"
+                android:clickable="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp" />
@@ -505,6 +521,7 @@
 
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/ownTextCheckBox"
+                android:clickable="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp" />
@@ -533,6 +550,7 @@
 
             <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/chatFieldCheckBox"
+                android:clickable="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp" />
