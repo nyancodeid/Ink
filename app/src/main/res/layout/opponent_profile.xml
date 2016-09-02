@@ -153,6 +153,9 @@
                         android:layout_alignParentRight="true"
                         android:layout_below="@+id/firstDivider"
                         android:layout_marginTop="5dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
                         android:padding="10dp"
                         android:src="@drawable/audi_call_icon"
                         android:visibility="gone" />
