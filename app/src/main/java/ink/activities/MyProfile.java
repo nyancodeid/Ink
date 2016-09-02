@@ -479,6 +479,7 @@ public class MyProfile extends BaseActivity {
                 mCollapsingToolbar.setTitle(mFirstNameToSend + " " + mLastNameToSend);
             }
         } else {
+            imageLoadingProgress.setVisibility(View.GONE);
             profileImage.setBackgroundResource(R.drawable.no_image);
         }
         mPhone.setText(mPhoneNumberToSend);
