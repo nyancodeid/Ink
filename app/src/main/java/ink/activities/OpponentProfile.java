@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ink.R;
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -51,7 +52,6 @@ public class OpponentProfile extends BaseActivity {
     private String mFirstName;
     private String mLastName;
     private ImageView mProfileImage;
-    private CardView imageCard;
     private String mFacebookLink;
     private boolean isSocialAccount;
     private boolean hasFriendRequested;
@@ -110,7 +110,6 @@ public class OpponentProfile extends BaseActivity {
         Bundle extras = getIntent().getExtras();
         mProfileImage = (ImageView) findViewById(R.id.profileImage);
         sharedHelper = new SharedHelper(this);
-        imageCard = (CardView) findViewById(R.id.imageCard);
 
         ActionBar actionBar = getSupportActionBar();
         if (extras != null) {
@@ -357,10 +356,20 @@ public class OpponentProfile extends BaseActivity {
                             isSocialAccount = jsonObject.optBoolean("isSocialAccount");
                             if (mOpponentImage != null && !mOpponentImage.isEmpty()) {
                                 if (isSocialAccount) {
-                                    Ion.with(getApplicationContext()).load(mOpponentImage).intoImageView(mProfileImage);
+                                    Ion.with(getApplicationContext()).load(mOpponentImage).withBitmap().intoImageView(mProfileImage).setCallback(new FutureCallback<ImageView>() {
+                                        @Override
+                                        public void onCompleted(Exception e, ImageView result) {
+                                            mOpponentImageLoading.setVisibility(View.GONE);
+                                        }
+                                    });
                                 } else {
                                     Ion.with(getApplicationContext()).load(Constants.MAIN_URL +
-                                            Constants.USER_IMAGES_FOLDER + mOpponentImage).intoImageView(mProfileImage);
+                                            Constants.USER_IMAGES_FOLDER + mOpponentImage).withBitmap().intoImageView(mProfileImage).setCallback(new FutureCallback<ImageView>() {
+                                        @Override
+                                        public void onCompleted(Exception e, ImageView result) {
+                                            mOpponentImageLoading.setVisibility(View.GONE);
+                                        }
+                                    });
                                 }
                             } else {
                                 mProfileImage.setBackgroundResource(R.drawable.no_image);
