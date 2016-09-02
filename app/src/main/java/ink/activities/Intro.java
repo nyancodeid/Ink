@@ -4,12 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 
 import com.github.paolorotolo.appintro.AppIntro2;
-import com.github.paolorotolo.appintro.AppIntroFragment;
-import com.ink.R;
 
+import ink.fragments.FirstIntroFragment;
+import ink.fragments.SecondIntroFragment;
+import ink.fragments.ThirdIntroFragment;
 import ink.utils.SharedHelper;
 
 /**
@@ -30,9 +30,9 @@ public class Intro extends AppIntro2 {
             startActivity(mLoginIntent);
             finish();
         } else {
-            addSlide(AppIntroFragment.newInstance(getString(R.string.randomChatTitle), getString(R.string.randomChatFullText), R.drawable.random_chat_image, ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
-            addSlide(AppIntroFragment.newInstance(getString(R.string.newFriendsTitle), getString(R.string.newFriendsFullText), R.drawable.find_new_friends, ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
-            addSlide(AppIntroFragment.newInstance(getString(R.string.customizeAppTitle), getString(R.string.customizeAppFullText), R.drawable.redesign_icon, ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
+            addSlide(FirstIntroFragment.create());
+            addSlide(SecondIntroFragment.create());
+            addSlide(ThirdIntroFragment.create());
         }
 
     }

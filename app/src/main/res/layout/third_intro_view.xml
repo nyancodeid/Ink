@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
+
+    <TextView
+        android:id="@+id/firstIntroHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@string/appFont"
+        android:padding="6dp"
+        android:text="@string/customizeAppFullText"
+        android:textColor="#ffffff"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/girlVector"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/firstIntroHeader"
+        android:src="@drawable/second_girl_vector" />
+
+    <ImageView
+        android:id="@+id/newFriendsBubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/girlVector"
+        android:layout_toLeftOf="@+id/girlVector"
+        android:src="@drawable/customize_applicaton_bubble_vector" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/girlVector"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/redesign_icon" />
+</RelativeLayout>
