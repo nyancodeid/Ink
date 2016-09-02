@@ -209,7 +209,6 @@ public class Login extends BaseActivity implements View.OnClickListener {
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                mProgressView.setVisibility(View.GONE);
                 enableButtons();
                 if (response == null) {
                     proceedLogin();
@@ -226,6 +225,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                         boolean success = jsonObject.optBoolean("success");
                         AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
                         if (!success) {
+                            mProgressView.setVisibility(View.GONE);
                             builder.setTitle(getString(R.string.errorLogin));
                             builder.setMessage(getString(R.string.errorLoginMessage));
                             builder.setCancelable(false);
@@ -237,6 +237,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                             });
                             builder.show();
                         } else {
+                            mProgressView.setVisibility(View.GONE);
                             String userId = jsonObject.optString("user_id");
                             mSharedHelper.putFirstName(jsonObject.optString("first_name"));
                             mSharedHelper.putLastName(jsonObject.optString("last_name"));
@@ -251,9 +252,11 @@ public class Login extends BaseActivity implements View.OnClickListener {
                             finish();
                         }
                     } catch (JSONException e) {
+                        attemptLogin();
                         e.printStackTrace();
                     }
                 } catch (IOException e) {
+                    attemptLogin();
                     e.printStackTrace();
                 }
             }
