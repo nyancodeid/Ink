@@ -32,7 +32,9 @@ public class ProgressDialog {
     }
 
     public void show() {
-        progressDialogBuilder.show();
+        if (progressDialogBuilder != null) {
+            progressDialogBuilder.show();
+        }
     }
 
     public static ProgressDialog get() {
@@ -40,9 +42,20 @@ public class ProgressDialog {
     }
 
     public void hide() {
-        if (progressDialog != null) {
+        if (progressDialogBuilder != null) {
             progressDialogBuilder.dismiss();
-            progressDialogBuilder = null;
+        }
+    }
+
+    public void setTitle(String title) {
+        if (progressDialogBuilder != null) {
+            progressDialogBuilder.setTitle(title);
+        }
+    }
+
+    public void setMessage(String message) {
+        if (progressDialogBuilder != null) {
+            progressDialogBuilder.setMessage(message);
         }
     }
 }

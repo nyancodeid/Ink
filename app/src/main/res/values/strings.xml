@@ -599,4 +599,8 @@
     <string name="ownText">Own Chat Text Color</string>
     <string name="chatField">Chat Field Colors</string>
     <string name="nothingToReset">Nothing was chosen to reset...</string>
+    <string name="savingToServer">Saving to Cloud...</string>
+    <string name="pleaseWait">Please wait</string>
+    <string name="restoringFromCloud">Restoring from Cloud</string>
+    <string name="removingFromCloud">Removing from Cloud</string>
 </resources>
