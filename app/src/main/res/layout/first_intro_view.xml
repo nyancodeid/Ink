@@ -30,5 +30,5 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/girlVector"
         android:layout_toRightOf="@+id/girlVector"
-        android:src="@drawable/random_chat_bubble_vector" />
+        android:src="@drawable/chat_with_friends_bubble_vector" />
 </RelativeLayout>

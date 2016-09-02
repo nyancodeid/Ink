@@ -30,16 +30,8 @@
         android:id="@+id/newFriendsBubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/redesignIcon"
         android:layout_alignTop="@+id/girlVector"
         android:layout_toLeftOf="@+id/girlVector"
-        android:src="@drawable/customize_application_bubble_vector" />
+        android:src="@drawable/intro_bubble_vector" />
 
-    <ImageView
-        android:id="@+id/redesignIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/girlVector"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/redesign_icon" />
 </RelativeLayout>
