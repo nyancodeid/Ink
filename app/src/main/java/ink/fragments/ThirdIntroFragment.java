@@ -14,9 +14,9 @@ import com.ink.R;
  */
 public class ThirdIntroFragment extends Fragment {
 
-    public static FirstIntroFragment create() {
-        FirstIntroFragment firstIntroFragment = new FirstIntroFragment();
-        return firstIntroFragment;
+    public static ThirdIntroFragment create() {
+        ThirdIntroFragment thirdIntroFragment = new ThirdIntroFragment();
+        return thirdIntroFragment;
     }
 
 
