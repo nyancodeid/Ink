@@ -31,6 +31,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -116,6 +117,9 @@ public class MyProfile extends BaseActivity {
     Toolbar mToolbar;
     @Bind(R.id.deleteAccont)
     Button deleteAccount;
+
+    @Bind(R.id.imageLoadingProgress)
+    ProgressBar imageLoadingProgress;
 
     private Snackbar updateSnackBar;
     private String mFirstNameToSend;
@@ -282,7 +286,13 @@ public class MyProfile extends BaseActivity {
                     mImageLinkToSend = selectedImagePath;
                     mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
                     isImageChosen = true;
-                    Ion.with(getApplicationContext()).load(new File(selectedImagePath)).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(profileImage);
+                    imageLoadingProgress.setVisibility(View.VISIBLE);
+                    Ion.with(getApplicationContext()).load(new File(selectedImagePath)).withBitmap().intoImageView(profileImage).setCallback(new FutureCallback<ImageView>() {
+                        @Override
+                        public void onCompleted(Exception e, ImageView result) {
+                            imageLoadingProgress.setVisibility(View.GONE);
+                        }
+                    });
                 } else {
                     isImageChosen = false;
                 }
@@ -445,17 +455,20 @@ public class MyProfile extends BaseActivity {
             mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
             if (shouldLoadImage) {
                 if (isSocialAccount()) {
-                    Ion.with(getApplicationContext()).load(mImageLinkToSend).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(profileImage).setCallback(new FutureCallback<ImageView>() {
+                    imageLoadingProgress.setVisibility(View.VISIBLE);
+                    Ion.with(getApplicationContext()).load(mImageLinkToSend).withBitmap().intoImageView(profileImage).setCallback(new FutureCallback<ImageView>() {
                         @Override
                         public void onCompleted(Exception e, ImageView result) {
-
+                            imageLoadingProgress.setVisibility(View.GONE);
                         }
                     });
                 } else {
-                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(profileImage)
+                    imageLoadingProgress.setVisibility(View.VISIBLE);
+                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).withBitmap().intoImageView(profileImage)
                             .setCallback(new FutureCallback<ImageView>() {
                                 @Override
                                 public void onCompleted(Exception e, ImageView result) {
+                                    imageLoadingProgress.setVisibility(View.GONE);
                                 }
                             });
                 }
