@@ -18,8 +18,11 @@
             <ImageView
                 android:id="@+id/profileImage"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:adjustViewBounds="true"
+                android:minHeight="170dp"
+                android:scaleType="fitXY" />
 
             <com.wang.avi.AVLoadingIndicatorView
                 android:id="@+id/opponentImageLoading"
@@ -35,7 +38,7 @@
                 android:id="@+id/userName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/triangleView"
+                android:layout_alignBottom="@+id/profileImage"
                 android:layout_alignEnd="@+id/profileImage"
                 android:layout_alignRight="@+id/profileImage"
                 android:layout_margin="16dp"
@@ -50,7 +53,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/triangleView"
-                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
