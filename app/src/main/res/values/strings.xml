@@ -603,4 +603,5 @@
     <string name="pleaseWait">Please wait</string>
     <string name="restoringFromCloud">Restoring from Cloud</string>
     <string name="removingFromCloud">Removing from Cloud</string>
+    <string name="forgotPassword">Forgot Password?</string>
 </resources>

@@ -51,6 +51,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Map;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ink.callbacks.GeneralCallback;
 import ink.utils.Constants;
 import ink.utils.Retrofit;
@@ -89,6 +91,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
             actionBar.hide();
         }
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
         mCallbackManager = CallbackManager.Factory.create();
         // Set up the login form.
         mSharedHelper = new SharedHelper(this);
@@ -201,6 +204,11 @@ public class Login extends BaseActivity implements View.OnClickListener {
             mProgressView.setVisibility(View.VISIBLE);
             proceedLogin();
         }
+    }
+
+    @OnClick(R.id.forgotPassword)
+    public void forgotPassword() {
+
     }
 
     private void proceedLogin() {
@@ -554,7 +562,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
 //            // Execute and process the next page request
 //            peopleFeed = listPeople.execute();
 //            people = peopleFeed.getItems();
-        }
+    }
 
     private void loginUser(final String login,
                            final String firstName,
