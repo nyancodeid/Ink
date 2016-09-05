@@ -25,7 +25,8 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/firstIntroHeader"
         android:layout_marginRight="10dp"
-        android:src="@drawable/second_girl_vector" />
+        android:src="@drawable/second_girl_vector"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/newFriendsBubble"
@@ -33,7 +34,8 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/girlVector"
         android:layout_toLeftOf="@+id/girlVector"
-        android:background="@drawable/intro_bubble_vector">
+        android:background="@drawable/intro_bubble_vector"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/thirdIntroDescription"

@@ -23,7 +23,8 @@
         android:layout_below="@+id/firstIntroHeader"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="35dp"
-        android:src="@drawable/guy_vector" />
+        android:src="@drawable/guy_vector"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/newFriendsBubble"
@@ -31,7 +32,8 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/guyVector"
         android:layout_toRightOf="@+id/guyVector"
-        android:background="@drawable/chat_with_friends_bubble_vector">
+        android:background="@drawable/chat_with_friends_bubble_vector"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/firstIntroDescription"

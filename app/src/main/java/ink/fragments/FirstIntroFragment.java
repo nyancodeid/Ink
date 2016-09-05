@@ -54,6 +54,8 @@ public class FirstIntroFragment extends Fragment {
 
     public void startAnimation() {
         if (newFriendsBubble != null) {
+            newFriendsBubble.setVisibility(View.VISIBLE);
+            guyVector.setVisibility(View.VISIBLE);
             newFriendsBubble.startAnimation(slideInLeft);
             guyVector.startAnimation(slideInRight);
             slideInRight.setAnimationListener(new Animation.AnimationListener() {
@@ -76,4 +78,11 @@ public class FirstIntroFragment extends Fragment {
         }
     }
 
+    public void hideItems() {
+        if (newFriendsBubble != null) {
+            newFriendsBubble.setVisibility(View.GONE);
+            guyVector.setVisibility(View.GONE);
+            firstIntroDescription.setVisibility(View.GONE);
+        }
+    }
 }

@@ -8,6 +8,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import com.ink.R;
 
@@ -30,6 +33,10 @@ public class Intro extends AppCompatActivity {
     private FirstIntroFragment firstIntroFragment;
     private SecondIntroFragment secondIntroFragment;
     private ThirdIntroFragment thirdIntroFragment;
+    private ImageView centerCircle;
+    private ImageView leftCircle;
+    private ImageView rightCircle;
+    private Button skipIntroButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,18 @@ public class Intro extends AppCompatActivity {
         firstIntroFragment = FirstIntroFragment.create();
         secondIntroFragment = SecondIntroFragment.create();
         thirdIntroFragment = ThirdIntroFragment.create();
+        centerCircle = (ImageView) findViewById(R.id.centerCircle);
+        leftCircle = (ImageView) findViewById(R.id.leftCircle);
+        rightCircle = (ImageView) findViewById(R.id.rightCircle);
+        skipIntroButton = (Button) findViewById(R.id.skipIntroButton);
+        skipIntroButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(mLoginIntent);
+                mSharedHelper.putShouldShowIntro(true);
+                finish();
+            }
+        });
 
         if (mSharedHelper.shouldShowIntro()) {
             startActivity(mLoginIntent);
@@ -59,13 +78,39 @@ public class Intro extends AppCompatActivity {
                 public void onPageSelected(int position) {
                     switch (position) {
                         case 0:
+                            secondIntroFragment.hideItems();
+                            thirdIntroFragment.hideItems();
                             firstIntroFragment.startAnimation();
+                            leftCircle.setImageResource(R.drawable.circle_active);
+                            leftCircle.setAlpha(1f);
+                            centerCircle.setImageResource(R.drawable.circle_inactive);
+                            centerCircle.setAlpha(0.7f);
+                            rightCircle.setImageResource(R.drawable.circle_inactive);
+                            rightCircle.setAlpha(0.7f);
                             break;
                         case 1:
+                            firstIntroFragment.hideItems();
+                            thirdIntroFragment.hideItems();
                             secondIntroFragment.startAnimation();
+
+                            leftCircle.setAlpha(0.7f);
+                            leftCircle.setImageResource(R.drawable.circle_inactive);
+                            centerCircle.setAlpha(1f);
+                            centerCircle.setImageResource(R.drawable.circle_active);
+                            rightCircle.setImageResource(R.drawable.circle_inactive);
+                            rightCircle.setAlpha(0.7f);
                             break;
                         case 2:
+                            firstIntroFragment.hideItems();
+                            secondIntroFragment.hideItems();
                             thirdIntroFragment.startAnimation();
+
+                            leftCircle.setAlpha(0.7f);
+                            leftCircle.setImageResource(R.drawable.circle_inactive);
+                            centerCircle.setImageResource(R.drawable.circle_active);
+                            centerCircle.setAlpha(0.7f);
+                            rightCircle.setImageResource(R.drawable.circle_active);
+                            rightCircle.setAlpha(1f);
                             break;
                     }
                 }
@@ -76,9 +121,6 @@ public class Intro extends AppCompatActivity {
                 }
             });
         }
-//        startActivity(mLoginIntent);
-//        mSharedHelper.putShouldShowIntro(true);
-//        finish();
     }
 
     @Override

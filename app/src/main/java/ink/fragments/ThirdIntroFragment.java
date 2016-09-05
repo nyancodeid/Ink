@@ -51,7 +51,9 @@ public class ThirdIntroFragment extends Fragment {
     }
 
     public void startAnimation() {
-        if(newFriendsBubble!=null){
+        if (newFriendsBubble != null) {
+            newFriendsBubble.setVisibility(View.VISIBLE);
+            girlVector.setVisibility(View.VISIBLE);
             newFriendsBubble.startAnimation(slideInRight);
             girlVector.startAnimation(slideInLeft);
             slideInRight.setAnimationListener(new Animation.AnimationListener() {
@@ -71,6 +73,14 @@ public class ThirdIntroFragment extends Fragment {
 
                 }
             });
+        }
+    }
+
+    public void hideItems() {
+        if(newFriendsBubble!=null){
+            newFriendsBubble.setVisibility(View.GONE);
+            girlVector.setVisibility(View.GONE);
+            thirdIntroDescription.setVisibility(View.GONE);
         }
     }
 }
