@@ -84,31 +84,27 @@ public class Intro extends AppCompatActivity {
                             leftCircle.setImageResource(R.drawable.circle_active);
                             leftCircle.setAlpha(1f);
                             centerCircle.setImageResource(R.drawable.circle_inactive);
-                            centerCircle.setAlpha(0.7f);
                             rightCircle.setImageResource(R.drawable.circle_inactive);
-                            rightCircle.setAlpha(0.7f);
                             break;
                         case 1:
                             firstIntroFragment.hideItems();
                             thirdIntroFragment.hideItems();
                             secondIntroFragment.startAnimation();
 
-                            leftCircle.setAlpha(0.7f);
                             leftCircle.setImageResource(R.drawable.circle_inactive);
                             centerCircle.setAlpha(1f);
                             centerCircle.setImageResource(R.drawable.circle_active);
                             rightCircle.setImageResource(R.drawable.circle_inactive);
-                            rightCircle.setAlpha(0.7f);
+
                             break;
                         case 2:
                             firstIntroFragment.hideItems();
                             secondIntroFragment.hideItems();
                             thirdIntroFragment.startAnimation();
 
-                            leftCircle.setAlpha(0.7f);
+
                             leftCircle.setImageResource(R.drawable.circle_inactive);
                             centerCircle.setImageResource(R.drawable.circle_active);
-                            centerCircle.setAlpha(0.7f);
                             rightCircle.setImageResource(R.drawable.circle_active);
                             rightCircle.setAlpha(1f);
                             break;

@@ -9,13 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <ImageView
-        android:id="@+id/centerCircle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/skipIntroButton"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/circle_inactive" />
 
     <ImageView
         android:id="@+id/rightCircle"
@@ -35,6 +28,14 @@
         android:layout_marginRight="15dp"
         android:layout_toLeftOf="@+id/centerCircle"
         android:src="@drawable/circle_active" />
+
+    <ImageView
+        android:id="@+id/centerCircle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/skipIntroButton"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/circle_inactive" />
 
     <Button
         android:id="@+id/skipIntroButton"
