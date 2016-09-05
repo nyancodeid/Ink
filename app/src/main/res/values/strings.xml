@@ -607,4 +607,11 @@
     <string name="forgotPassword">Forgot Password?</string>
     <string name="done_button">Done</string>
     <string name="skip">Skip</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="loginHint">Input your login</string>
+    <string name="proceed">Proceed</string>
+    <string name="submit">Submit</string>
+    <string name="enterAnswer">Enter answer</string>
+    <string name="answerQuestion">Answer Question</string>
+    <string name="result_hint">This is your temporary password.Copy it and use this to login and change your password to your desired.</string>
 </resources>
