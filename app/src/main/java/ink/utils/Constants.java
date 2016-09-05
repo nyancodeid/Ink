@@ -43,6 +43,7 @@ public class Constants {
     public static final String SEND_FRIEND_REQUEST_URL = "SendFriendRequest.php";
     public static final String DELETE_MESSAGE_URL = "DeleteMessage.php";
     public static final String SEND_LOCATION_UPDATE_URL = "SendLocationUpdate.php";
+    public static final String GET_USER_PASSWORD = "GetPassword.php";
     public static final String REQUEST_LOCATION_URL = "RequestLocation.php";
     public static final String MESSAGES_URL = "Messages.php";
     public static final String UPLOADED_FILES_DIR = "UserUploads/";
@@ -55,6 +56,7 @@ public class Constants {
     public static final String CHAT_MESSAGES = "ChatMessages.php";
     public static final String GROUP_OPTIONS_URL = "GroupOptions.php";
     public static final String GROUP_OPTIONS_LEAVE = "leaveGroup";
+    public static final String CHANGE_PASSWORD = "ChangePassword.php";
     public static final String REGISTER_TOKEN = "RegisterToken.php";
     public static final String REQUEST_DELETE_URL = "RequestDeleteMessage.php";
     public static final String GET_POSTS_URL = "GetPosts.php";
@@ -132,5 +134,6 @@ public class Constants {
     public static final int BUY_COINS_REQUEST_CODE = 196;
     public static final int REQUEST_CUSTOMIZE_MADE = 8;
     public static final String COINS_BOUGHT_KEY = "coins_bought";
+    public static final String PASSWORD_REQUEST_TOKEN = "fasjflkgkaga7g8asggf-a0gf98asu-gangas-g389t-nke_wrlPg_h34890udglka";
 }
 

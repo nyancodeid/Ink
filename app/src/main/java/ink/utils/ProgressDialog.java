@@ -10,7 +10,7 @@ import com.ink.R;
  */
 public class ProgressDialog {
 
-    public static ProgressDialog progressDialog = new ProgressDialog();
+    private static ProgressDialog progressDialog = new ProgressDialog();
     private android.app.ProgressDialog progressDialogBuilder;
 
     public ProgressDialog buildProgressDialog(Context context, String title,

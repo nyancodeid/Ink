@@ -503,6 +503,15 @@ public class MyProfile extends BaseActivity {
         }
     }
 
+    @OnClick(R.id.setSecurityQuestion)
+    public void setSecurityQuestion() {
+
+    }
+
+    @OnClick(R.id.changePassword)
+    public void changePassword() {
+        startActivity(new Intent(getApplicationContext(), ChangePassword.class));
+    }
 
     @OnClick(R.id.relationshipTV)
     public void relationship() {

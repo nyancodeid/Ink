@@ -72,7 +72,7 @@
         <activity
             android:name="ink.activities.CustomizeLook"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name="ink.service.NotificationService">
             <intent-filter>
@@ -223,6 +223,10 @@
             android:label="@string/title_activity_settings" />
         <activity
             android:name="ink.activities.ForgotPassword"
+            android:theme="@style/LoginTheme"
+            android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
+        <activity
+            android:name="ink.activities.ChangePassword"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden"></activity>
     </application>

@@ -614,4 +614,19 @@
     <string name="enterAnswer">Enter answer</string>
     <string name="answerQuestion">Answer Question</string>
     <string name="result_hint">This is your temporary password.Copy it and use this to login and change your password to your desired.</string>
+    <string name="changePassword">Change Password</string>
+    <string name="setSecurityQuestion">Set Security Question</string>
+    <string name="change">Change</string>
+    <string name="currentPassword">Current password</string>
+    <string name="newPassword">New password</string>
+    <string name="repeatPassword">Repeat new password</string>
+    <string name="emptyField">Filed can not be empty</string>
+    <string name="doesnotMatch">Password does not match</string>
+    <string name="connecting">Connecting...</string>
+    <string name="connectingToServer">Connecting to server.Please wait...</string>
+    <string name="couldNotConnectToServer">Could not connect to server.Contact support</string>
+    <string name="noUserFound">User not found.Is login correct?</string>
+    <string name="changingPassword">Changing Password</string>
+    <string name="passwordBeingChanged">Your password being changed.Please wait...</string>
+    <string name="passwordWrong">Password is wrong for this login,check correctness</string>
 </resources>

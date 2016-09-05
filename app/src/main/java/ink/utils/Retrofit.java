@@ -94,6 +94,18 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getMessages(@Field("user_id") String userId, @Field("opponent_id") String opponentId);
 
+
+        @POST(Constants.GET_USER_PASSWORD)
+        @FormUrlEncoded
+        Call<ResponseBody> getUserPassword(@Field("userId") String userId,
+                                           @Field("token") String token);
+
+        @POST(Constants.CHANGE_PASSWORD)
+        @FormUrlEncoded
+        Call<ResponseBody> changePassword(@Field("userId") String userId,
+                                          @Field("token") String token,
+                                          @Field("password") String newPassword);
+
         @POST(Constants.SEND_LOCATION_UPDATE_URL)
         @FormUrlEncoded
         Call<ResponseBody> sendLocationUpdate(@Field("opponent_id") String opponentId,

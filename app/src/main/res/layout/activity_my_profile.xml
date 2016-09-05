@@ -356,6 +356,24 @@
             fab:fab_colorPressed="#636e85"
             fab:fab_label="@string/editProfile"
             fab:fab_size="mini" />
+        <fab.FloatingActionButton
+            android:id="@+id/changePassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/password_icon"
+            fab:fab_colorNormal="#444f65"
+            fab:fab_colorPressed="#636e85"
+            fab:fab_label="@string/changePassword"
+            fab:fab_size="mini" />
+        <fab.FloatingActionButton
+            android:id="@+id/setSecurityQuestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/security_question_icon"
+            fab:fab_colorNormal="#444f65"
+            fab:fab_colorPressed="#636e85"
+            fab:fab_label="@string/setSecurityQuestion"
+            fab:fab_size="mini" />
     </android.support.design.widget.FloatingActionMenu>
 
 
