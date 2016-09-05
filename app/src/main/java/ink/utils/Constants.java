@@ -57,6 +57,7 @@ public class Constants {
     public static final String GROUP_OPTIONS_URL = "GroupOptions.php";
     public static final String GROUP_OPTIONS_LEAVE = "leaveGroup";
     public static final String CHANGE_PASSWORD = "ChangePassword.php";
+    public static final String SECURITY_QUESTION = "SecurityQuestion.php";
     public static final String REGISTER_TOKEN = "RegisterToken.php";
     public static final String REQUEST_DELETE_URL = "RequestDeleteMessage.php";
     public static final String GET_POSTS_URL = "GetPosts.php";

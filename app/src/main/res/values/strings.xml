@@ -629,4 +629,11 @@
     <string name="changingPassword">Changing Password</string>
     <string name="passwordBeingChanged">Your password being changed.Please wait...</string>
     <string name="passwordWrong">Password is wrong for this login,check correctness</string>
+    <string name="ownSecurityQuestion">Set own security question</string>
+    <string name="ownAnswer">Set own answer</string>
+    <string name="ownSecurityQuestionShort">Security Question too short</string>
+    <string name="ownSecurityAnswerShort">Security Answer is too short</string>
+    <string name="passwordChanged">Password was changed successfully</string>
+    <string name="securityQuestionSet">Security Question was set</string>
+    <string name="securityQuestionNotSet">Security Question was not set.something went wrong</string>
 </resources>

@@ -152,6 +152,12 @@ public class ChangePassword extends AppCompatActivity {
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
                         progressDialog.hide();
+                        Snackbar.make(repeatPassword, getString(R.string.passwordChanged), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                            }
+                        });
                     } else {
                         Snackbar.make(repeatPassword, getString(R.string.couldNotConnectToServer), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                             @Override
