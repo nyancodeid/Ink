@@ -67,7 +67,6 @@ import ink.utils.PermissionsChecker;
 import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
-import it.sephiroth.android.library.picasso.Picasso;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -984,18 +983,10 @@ public class MyProfile extends BaseActivity {
                             String imageId = jsonObject.optString("image_id");
                             if (imageId != null && !imageId.isEmpty()) {
                                 String imageLink = mSharedHelper.getUserId() + ".png";
-                                Picasso.with(getApplicationContext()).invalidate(mSharedHelper.getImageLink());
                                 mSharedHelper.putImageLink(imageLink);
                                 IonCache.clearIonCache(getApplicationContext());
                                 FileUtils.deleteDirectoryTree(getApplicationContext().getCacheDir());
                                 mSharedHelper.putIsSocialAccount(false);
-                                if (isSocialAccount()) {
-                                    Picasso.with(getApplicationContext()).invalidate(mSharedHelper.getImageLink());
-                                } else {
-                                    Picasso.with(getApplicationContext()).invalidate(Constants.MAIN_URL +
-                                            Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink());
-                                }
-
                             }
                             cacheUserData();
                         } else {

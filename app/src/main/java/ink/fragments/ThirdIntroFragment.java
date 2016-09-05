@@ -20,7 +20,7 @@ import com.ink.R;
 public class ThirdIntroFragment extends Fragment {
     private Animation slideInRight;
     private Animation slideInLeft;
-    private Animation faeIn;
+    private Animation fadeIn;
     private RelativeLayout newFriendsBubble;
     private ImageView girlVector;
     private TextView thirdIntroDescription;
@@ -45,27 +45,32 @@ public class ThirdIntroFragment extends Fragment {
         girlVector = (ImageView) view.findViewById(R.id.girlVector);
         slideInLeft = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_left);
         slideInRight = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_right);
-        faeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
-        faeIn.setDuration(600);
+        fadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
+        fadeIn.setDuration(600);
 
-        newFriendsBubble.startAnimation(slideInLeft);
-        girlVector.startAnimation(slideInRight);
-        slideInRight.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+    }
 
-            }
+    public void startAnimation() {
+        if(newFriendsBubble!=null){
+            newFriendsBubble.startAnimation(slideInRight);
+            girlVector.startAnimation(slideInLeft);
+            slideInRight.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                thirdIntroDescription.setVisibility(View.VISIBLE);
-                thirdIntroDescription.startAnimation(faeIn);
-            }
+                }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    thirdIntroDescription.setVisibility(View.VISIBLE);
+                    thirdIntroDescription.startAnimation(fadeIn);
+                }
 
-            }
-        });
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+        }
     }
 }

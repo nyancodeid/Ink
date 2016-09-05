@@ -20,10 +20,11 @@ import com.ink.R;
 public class SecondIntroFragment extends Fragment {
     private Animation slideInRight;
     private Animation slideInLeft;
-    private Animation faeIn;
+    private Animation fadeIn;
     private RelativeLayout newFriendsBubble;
     private ImageView girlVector;
     private TextView secondIntroDescription;
+
     public static SecondIntroFragment create() {
         SecondIntroFragment secondIntroFragment = new SecondIntroFragment();
         return secondIntroFragment;
@@ -45,27 +46,32 @@ public class SecondIntroFragment extends Fragment {
         girlVector = (ImageView) view.findViewById(R.id.girlVector);
         slideInLeft = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_left);
         slideInRight = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_right);
-        faeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
-        faeIn.setDuration(600);
+        fadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
+        fadeIn.setDuration(600);
 
-        newFriendsBubble.startAnimation(slideInLeft);
-        girlVector.startAnimation(slideInRight);
-        slideInRight.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+    }
 
-            }
+    public void startAnimation() {
+        if (newFriendsBubble != null) {
+            newFriendsBubble.startAnimation(slideInLeft);
+            girlVector.startAnimation(slideInRight);
+            slideInRight.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                secondIntroDescription.setVisibility(View.VISIBLE);
-                secondIntroDescription.startAnimation(faeIn);
-            }
+                }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    secondIntroDescription.setVisibility(View.VISIBLE);
+                    secondIntroDescription.startAnimation(fadeIn);
+                }
 
-            }
-        });
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+        }
     }
 }

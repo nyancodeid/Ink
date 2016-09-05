@@ -56,7 +56,6 @@ dependencies {
         transitive = true;
     }
 
-    compile 'com.github.paolorotolo:appintro:4.0.0'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.wang.avi:library:1.0.5'
     compile 'com.google.android.gms:play-services-auth:9.0.2'
@@ -76,7 +75,6 @@ dependencies {
     compile 'com.github.amlcurran.showcaseview:library:5.4.3'
     compile 'commons-validator:commons-validator:1.4.0'
     compile 'com.mikhaellopez:hfrecyclerview:1.0.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.davemorrissey.labs:subsampling-scale-image-view:3.5.0'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.github.ybq:Android-SpinKit:1.0.4'
