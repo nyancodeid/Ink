@@ -505,11 +505,13 @@ public class MyProfile extends BaseActivity {
 
     @OnClick(R.id.setSecurityQuestion)
     public void setSecurityQuestion() {
+        mProfileFab.close(true);
         startActivity(new Intent(getApplicationContext(), SecurityQuestion.class));
     }
 
     @OnClick(R.id.changePassword)
     public void changePassword() {
+        mProfileFab.close(true);
         startActivity(new Intent(getApplicationContext(), ChangePassword.class));
     }
 
