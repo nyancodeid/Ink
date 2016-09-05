@@ -24,14 +24,26 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/firstIntroHeader"
+        android:layout_marginRight="10dp"
         android:src="@drawable/second_girl_vector" />
 
-    <ImageView
+    <RelativeLayout
         android:id="@+id/newFriendsBubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/girlVector"
         android:layout_toLeftOf="@+id/girlVector"
-        android:src="@drawable/intro_bubble_vector" />
+        android:background="@drawable/intro_bubble_vector">
 
+        <TextView
+            android:id="@+id/thirdIntroDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:text="@string/customizeAppDescription"
+            android:textColor="#4169e1"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </RelativeLayout>
 </RelativeLayout>

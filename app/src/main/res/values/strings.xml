@@ -541,11 +541,12 @@
     <string name="customizeText">Customize the application under your taste!No limits,full freedom!</string>
     <string name="customizeAppText">Customize Application</string>
     <string name="randomChatTitle">Make random chat</string>
-    <string name="randomChatFullText">Meet new people with random chat.</string>
+    <string name="randomChatFullText">Meet new people\nHave Random chat\nMake new friends!</string>
     <string name="newFriendsTitle">Make new friends</string>
-    <string name="newFriendsFullText">Find new friends to chat with.</string>
+    <string name="newFriendsFullText">Find new friends\nMeet cool persons\nEnjoy converstaion!</string>
     <string name="customizeAppTitle">Customize the application</string>
-    <string name="customizeAppFullText">Customize the look of the app and stand out!</string>
+    <string name="customizeAppFullText">Customize the look of the app\n</string>
+    <string name="customizeAppDescription">Customize your app.\nChange colors\nChange backgrounds\nChange styles\nChange everything!\nThere are no limits!</string>
     <string name="opponentBubbleText">Pick opponent chat bubble color</string>
     <string name="ownBubbleText">Pick own bubble color</string>
     <string name="colorSet">Color has been set</string>

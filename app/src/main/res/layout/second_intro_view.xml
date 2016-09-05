@@ -21,14 +21,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/firstIntroHeader"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="30dp"
         android:src="@drawable/girl_vector" />
 
-    <ImageView
+    <RelativeLayout
         android:id="@+id/newFriendsBubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/girlVector"
         android:layout_toRightOf="@+id/girlVector"
-        android:src="@drawable/chat_with_friends_bubble_vector" />
+        android:background="@drawable/chat_with_friends_bubble_vector">
+
+        <TextView
+            android:id="@+id/secondIntroDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"
+            android:fontFamily="@string/appFont"
+            android:text="@string/newFriendsFullText"
+            android:textColor="#4169e1"
+            android:textStyle="bold" />
+    </RelativeLayout>
 </RelativeLayout>

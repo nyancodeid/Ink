@@ -17,18 +17,32 @@
         android:textStyle="bold" />
 
     <ImageView
-        android:id="@+id/girlVector"
+        android:id="@+id/guyVector"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/firstIntroHeader"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="35dp"
         android:src="@drawable/guy_vector" />
 
-    <ImageView
+    <RelativeLayout
         android:id="@+id/newFriendsBubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/girlVector"
-        android:layout_toRightOf="@+id/girlVector"
-        android:src="@drawable/chat_with_friends_bubble_vector" />
+        android:layout_alignTop="@+id/guyVector"
+        android:layout_toRightOf="@+id/guyVector"
+        android:background="@drawable/chat_with_friends_bubble_vector">
+
+        <TextView
+            android:id="@+id/firstIntroDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@string/appFont"
+            android:text="@string/randomChatFullText"
+            android:textColor="#4169e1"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </RelativeLayout>
 </RelativeLayout>
