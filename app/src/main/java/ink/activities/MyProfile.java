@@ -505,7 +505,7 @@ public class MyProfile extends BaseActivity {
 
     @OnClick(R.id.setSecurityQuestion)
     public void setSecurityQuestion() {
-
+        startActivity(new Intent(getApplicationContext(), SecurityQuestion.class));
     }
 
     @OnClick(R.id.changePassword)
