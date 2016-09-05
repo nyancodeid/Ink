@@ -229,7 +229,10 @@
             android:name="ink.activities.ChangePassword"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
-        <activity android:name="ink.activities.SecurityQuestion"></activity>
+        <activity
+            android:name="ink.activities.SecurityQuestion"
+            android:theme="@style/LoginTheme"
+            android:windowSoftInputMode="stateAlwaysHidden|stateHidden"></activity>
     </application>
 
 </manifest>
