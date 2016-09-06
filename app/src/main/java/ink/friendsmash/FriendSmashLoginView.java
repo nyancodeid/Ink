@@ -128,9 +128,7 @@ public class FriendSmashLoginView extends BaseActivity {
                     }
                 } else {
                     loadPeopleResult.getPersonBuffer().release();
-                    if (DimDialog.isDialogAlive()) {
-                        DimDialog.hideDialog();
-                    }
+                    DimDialog.hideDialog();
                     Snackbar.make(singInWithGoogle, getString(R.string.noGoogleFriend), Snackbar.LENGTH_INDEFINITE).
                             setAction(getString(R.string.letsPlay), new View.OnClickListener() {
                                 @Override

@@ -22,6 +22,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ink.R;
 
@@ -236,7 +237,15 @@ public class FriendSmashGameView extends BaseActivity {
                 if (!imageView.isWrongImageSmashed()) {
                     if (imageView.getVisibility() == View.VISIBLE && imageView.shouldSmash() && !imageView.isVoid() && !imageView.isCoin()) {
                         // Image is still visible, so user didn't smash it and they should have done (and it isn't void), so decrement the lives by one
-                        // TODO: 8/29/2016 reduce live by 1
+                        if (liveHolder.getChildCount() != 0) {
+                            liveHolder.removeViewAt(liveHolder.getChildCount() - 1);
+                        } else {
+                            handler.removeCallbacks(fireImagesRunnable);
+                            imageView.stopMovementAnimations();
+                            stopCalled = true;
+                            hideAllUserImageViewsExcept(null, true);
+                            Toast.makeText(FriendSmashGameView.this, "game Over", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     hideAndRemove(imageView, friendBitmap);
@@ -271,7 +280,7 @@ public class FriendSmashGameView extends BaseActivity {
         userImageView.setWrongImageSmashed(true);
         userImageView.stopMovementAnimations();
         stopCalled = true;
-        hideAllUserImageViewsExcept(userImageView);
+        hideAllUserImageViewsExcept(userImageView, false);
 
         userImageView.scaleUp(new Animator.AnimatorListener() {
             @Override
@@ -361,13 +370,21 @@ public class FriendSmashGameView extends BaseActivity {
 
     }
 
-    private void hideAllUserImageViewsExcept(UserImageView userImageView) {
+    private void hideAllUserImageViewsExcept(UserImageView userImageView, boolean hideAll) {
         Iterator<UserImageView> userImageViewsIterator = userImageViews.iterator();
         while (userImageViewsIterator.hasNext()) {
             UserImageView currentUserImageView = userImageViewsIterator.next();
-            if (!currentUserImageView.equals(userImageView)) {
+            if (!hideAll) {
+                if (userImageView != null) {
+                    if (!currentUserImageView.equals(userImageView)) {
+                        currentUserImageView.setVisibility(View.GONE);
+                    }
+                }
+
+            } else {
                 currentUserImageView.setVisibility(View.GONE);
             }
+
         }
     }
 }
