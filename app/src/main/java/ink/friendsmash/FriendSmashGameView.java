@@ -22,7 +22,6 @@ import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ink.R;
 
@@ -121,6 +120,7 @@ public class FriendSmashGameView extends BaseActivity {
 
     @Override
     protected void onDestroy() {
+        handler.removeCallbacks(fireImagesRunnable);
         fireImagesRunnable = null;
         handler = null;
         super.onDestroy();
@@ -240,11 +240,11 @@ public class FriendSmashGameView extends BaseActivity {
                         if (liveHolder.getChildCount() != 0) {
                             liveHolder.removeViewAt(liveHolder.getChildCount() - 1);
                         } else {
-                            handler.removeCallbacks(fireImagesRunnable);
                             imageView.stopMovementAnimations();
+                            handler.removeCallbacks(fireImagesRunnable);
                             stopCalled = true;
                             hideAllUserImageViewsExcept(null, true);
-                            Toast.makeText(FriendSmashGameView.this, "game Over", Toast.LENGTH_SHORT).show();
+                            // TODO: 9/6/2016 show game over fragment
                         }
                     }
 
@@ -261,7 +261,10 @@ public class FriendSmashGameView extends BaseActivity {
                 firedImagesCount++;
             }
         });
-        handler.postDelayed(fireImagesRunnable, fireImagesSpeedTime);
+        if (handler != null) {
+            handler.postDelayed(fireImagesRunnable, fireImagesSpeedTime);
+        }
+
     }
 
     private void hideAndRemove(UserImageView userImageView, Bitmap friendBitmap) {
