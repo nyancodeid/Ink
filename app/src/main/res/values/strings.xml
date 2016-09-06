@@ -554,8 +554,7 @@
     <string name="pickHamburgerIcon">Pick hamburger icon color</string>
     <string name="pickActionBarColor">Pick action bar color</string>
     <string name="pickSendButtonColor">Pick send button color</string>
-    <string name="logoutWaring">Caution!If you log out,your customization data will be deleted.\nIf you have saved the data to the cloud,then you can recover them any time.
-    \nYou can do that by going to \'Customize Application\' and choose appropriate setting from top right options.</string>
+    <string name="logoutWaring">Caution!If you log out,your customization data will be deleted.\nIf you have saved the data to the cloud,then you can recover them any time.</string>
     <string name="optionNotAvailable">This option is not available for your Android OS (minimum Lollipop needed)</string>
     <string name="saveToCloud">Save to Cloud</string>
     <string name="restoreFromCloud">Restore from Cloud</string>
