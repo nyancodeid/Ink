@@ -124,12 +124,12 @@ public class HomeActivity extends BaseActivity
         if (!mSharedHelper.isMessagesDownloaded()) {
             startMessageDownloadService();
         }
-        if (!mSharedHelper.isSecurityWarningShown()) {
+        if (!mSharedHelper.isSecurityQuestionSet()) {
             View warningView = getLayoutInflater().inflate(R.layout.app_warning_view, null);
             final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
             bottomSheetDialog.setContentView(warningView);
             Button warningButton = (Button) warningView.findViewById(R.id.warningButton);
-            ImageView closeWarning = (ImageView) warningButton.findViewById(R.id.closeWarning);
+            ImageView closeWarning = (ImageView) warningView.findViewById(R.id.closeWarning);
             warningButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -475,12 +475,14 @@ public class HomeActivity extends BaseActivity
         shouldOpenActivity = false;
         FileUtils.clearApplicationData(getApplicationContext());
         boolean editorHintValue = mSharedHelper.isEditorHintShown();
+        boolean securityQuestionSet = mSharedHelper.isSecurityQuestionSet();
         mSharedHelper.clean();
         mSharedHelper.putShouldShowIntro(false);
         if (editorHintValue) {
             mSharedHelper.putEditorHintShow(true);
         }
         mSharedHelper.putWarned(true);
+        mSharedHelper.putSecurityQuestionSet(securityQuestionSet);
         LoginManager.getInstance().logOut();
         RealmHelper.getInstance().clearDatabase(getApplicationContext());
         IonCache.clearIonCache(getApplicationContext());

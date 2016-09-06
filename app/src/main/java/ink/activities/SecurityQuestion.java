@@ -88,6 +88,7 @@ public class SecurityQuestion extends BaseActivity {
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
                         progressDialog.hide();
+                        sharedHelper.putSecurityQuestionSet(true);
                         Snackbar.make(ownAnswer, getString(R.string.securityQuestionSet), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {

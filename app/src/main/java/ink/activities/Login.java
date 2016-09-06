@@ -247,6 +247,8 @@ public class Login extends BaseActivity implements View.OnClickListener {
                         } else {
                             mProgressView.setVisibility(View.GONE);
                             String userId = jsonObject.optString("user_id");
+                            String securityQuestion = jsonObject.optString("securityQuestion");
+                            mSharedHelper.putSecurityQuestionSet(securityQuestion != null && !securityQuestion.isEmpty());
                             mSharedHelper.putFirstName(jsonObject.optString("first_name"));
                             mSharedHelper.putLastName(jsonObject.optString("last_name"));
                             mSharedHelper.putUserId(userId);
