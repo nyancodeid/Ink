@@ -12,6 +12,7 @@ import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -28,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,7 +49,6 @@ import java.io.IOException;
 import java.text.ParseException;
 
 import fab.FloatingActionButton;
-import ink.callbacks.GeneralCallback;
 import ink.fragments.Feed;
 import ink.fragments.MyFriends;
 import ink.friendsmash.FriendSmashLoginView;
@@ -57,7 +58,6 @@ import ink.models.CoinsResponse;
 import ink.service.BackgroundTaskService;
 import ink.service.LocationRequestSessionDestroyer;
 import ink.service.SendTokenService;
-import ink.utils.AppWarning;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.DeviceChecker;
@@ -121,23 +121,30 @@ public class HomeActivity extends BaseActivity
         SETTINGS = getString(R.string.settingsString);
         mToolbar.setTitle(FEED);
         mSharedHelper = new SharedHelper(this);
-        if (!mSharedHelper.isSecurityWarningShown()) {
-            AppWarning.get().showWarning(this, getString(R.string.securityQuestionNotSetWarning), getString(R.string.setSecurityQuestion), new GeneralCallback() {
-                @Override
-                public void onSuccess(Object o) {
-                    startActivity(new Intent(getApplicationContext(), MyProfile.class));
-                }
-
-                @Override
-                public void onFailure(Object o) {
-
-                }
-            });
-        }
         if (!mSharedHelper.isMessagesDownloaded()) {
             startMessageDownloadService();
         }
-
+        if (!mSharedHelper.isSecurityWarningShown()) {
+            View warningView = getLayoutInflater().inflate(R.layout.app_warning_view, null);
+            final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+            bottomSheetDialog.setContentView(warningView);
+            Button warningButton = (Button) warningView.findViewById(R.id.warningButton);
+            ImageView closeWarning = (ImageView) warningButton.findViewById(R.id.closeWarning);
+            warningButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bottomSheetDialog.hide();
+                    startActivity(new Intent(getApplicationContext(), MyProfile.class));
+                }
+            });
+            closeWarning.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bottomSheetDialog.hide();
+                }
+            });
+            bottomSheetDialog.show();
+        }
 
         if (!PingHelper.get().isPinging()) {
             PingHelper.get().startPinging(mSharedHelper.getUserId());

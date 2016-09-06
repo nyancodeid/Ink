@@ -89,7 +89,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         System.gc();
         sharedHelper = new SharedHelper(this);
-
         if (sharedHelper.getActionBarColor() != null) {
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
