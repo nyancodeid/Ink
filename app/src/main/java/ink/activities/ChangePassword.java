@@ -112,7 +112,7 @@ public class ChangePassword extends BaseActivity {
                             changePassword(newPasswordString);
                         } else {
                             progressDialog.hide();
-                            Snackbar.make(repeatPassword, getString(R.string.passwordWrong), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                            Snackbar.make(repeatPassword, getString(R.string.passwordWrongForTisLogin), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
 

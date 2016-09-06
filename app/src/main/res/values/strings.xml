@@ -627,7 +627,7 @@
     <string name="noUserFound">User not found.Is login correct?</string>
     <string name="changingPassword">Changing Password</string>
     <string name="passwordBeingChanged">Your password being changed.Please wait...</string>
-    <string name="passwordWrong">Password is wrong for this login,check correctness</string>
+    <string name="passwordWrongForTisLogin">Password is wrong for this login,check correctness</string>
     <string name="ownSecurityQuestion">Set own security question</string>
     <string name="ownAnswer">Set own answer</string>
     <string name="ownSecurityQuestionShort">Security Question too short</string>
@@ -648,4 +648,5 @@
     <string name="fetchingProfileInfo">Fetching your Profile Information...</string>
     <string name="forgotPasswordSocialHint">*Only for accounts registered with \'INK\'</string>
     <string name="enterPasswordHint">Enter account password</string>
+    <string name="passwordWrong">Password is wrong,check the capitals</string>
 </resources>
