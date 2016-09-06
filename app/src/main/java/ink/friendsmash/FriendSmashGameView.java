@@ -240,11 +240,8 @@ public class FriendSmashGameView extends BaseActivity {
                         if (liveHolder.getChildCount() != 0) {
                             liveHolder.removeViewAt(liveHolder.getChildCount() - 1);
                         } else {
-                            imageView.stopMovementAnimations();
-                            handler.removeCallbacks(fireImagesRunnable);
-                            stopCalled = true;
-                            hideAllUserImageViewsExcept(null, true);
-                            // TODO: 9/6/2016 show game over fragment
+                            setResult(FriendSmashHomeView.GAME_OVER_RESULT);
+                            finish();
                         }
                     }
 

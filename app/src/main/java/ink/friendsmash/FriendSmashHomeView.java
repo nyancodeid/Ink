@@ -29,6 +29,7 @@ import retrofit2.Response;
 
 public class FriendSmashHomeView extends BaseActivity {
 
+    public static final int GAME_OVER_RESULT = 8;
     @Bind(R.id.userImage)
     ImageView userImage;
     @Bind(R.id.welcomeTextView)
@@ -78,7 +79,7 @@ public class FriendSmashHomeView extends BaseActivity {
 
     @OnClick(R.id.playButtonWrapper)
     public void setPlayButtonWrapper() {
-        startActivity(new Intent(getApplicationContext(), FriendSmashGameView.class));
+        startActivityForResult(new Intent(getApplicationContext(), FriendSmashGameView.class),GAME_OVER_RESULT);
     }
 
     @OnClick(R.id.scoresButton)
@@ -148,6 +149,9 @@ public class FriendSmashHomeView extends BaseActivity {
                 if (data != null) {
                     boolean coinsBought = data.getExtras().getBoolean(Constants.COINS_BOUGHT_KEY);
                 }
+                break;
+            case GAME_OVER_RESULT:
+                // TODO: 9/6/2016 show game over view
                 break;
         }
     }
