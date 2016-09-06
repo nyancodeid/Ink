@@ -646,4 +646,5 @@
     <string name="chooseSocialAccount">Choose Social Account</string>
     <string name="orSocial">Or if you signed with social account</string>
     <string name="fetchingProfileInfo">Fetching your Profile Information...</string>
+    <string name="forgotPasswordSocialHint">*Only for accounts registered with \'INK\'</string>
 </resources>
