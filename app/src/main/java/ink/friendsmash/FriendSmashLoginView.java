@@ -32,7 +32,6 @@ import ink.utils.Constants;
 import ink.utils.DimDialog;
 import ink.utils.SharedHelper;
 import ink.utils.SocialSignIn;
-import ink.utils.User;
 
 public class FriendSmashLoginView extends BaseActivity {
 
@@ -84,7 +83,6 @@ public class FriendSmashLoginView extends BaseActivity {
         if (DimDialog.isDialogAlive()) {
             DimDialog.hideDialog();
         }
-        User.get().setHasGameFriends(true);
         sharedHelper.putLoggedIntoGame(true);
         startActivity(intent);
         finish();
@@ -137,11 +135,7 @@ public class FriendSmashLoginView extends BaseActivity {
                             setAction(getString(R.string.letsPlay), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    User.get().setHasGameFriends(false);
-                                    Intent intent = new Intent(getApplicationContext(), FriendSmashHomeView.class);
-                                    sharedHelper.putLoggedIntoGame(true);
-                                    startActivity(intent);
-                                    finish();
+
                                 }
                             }).show();
                 }

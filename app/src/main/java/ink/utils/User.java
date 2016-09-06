@@ -11,7 +11,6 @@ public class User {
     private String userName;
     private String userId;
     private boolean isCoinsLoaded;
-    private boolean hasGameFriends;
 
     public int getCoins() {
         return coins;
@@ -38,13 +37,6 @@ public class User {
         return facebookUserId;
     }
 
-    public boolean hasGameFriends() {
-        return hasGameFriends;
-    }
-
-    public void setHasGameFriends(boolean hasGameFriends) {
-        this.hasGameFriends = hasGameFriends;
-    }
 
     public boolean isCoinsLoaded() {
         return isCoinsLoaded;

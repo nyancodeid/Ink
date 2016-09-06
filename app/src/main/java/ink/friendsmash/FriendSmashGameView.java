@@ -26,7 +26,6 @@ import android.widget.TextView;
 import com.ink.R;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -38,7 +37,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import ink.activities.BaseActivity;
 import ink.animations.RainbowAnimation;
-import ink.utils.User;
 
 public class FriendSmashGameView extends BaseActivity {
 
@@ -89,38 +87,34 @@ public class FriendSmashGameView extends BaseActivity {
         Random random = new Random();
         userImageViews = new ArrayList<>();
 
-        if (User.get().hasGameFriends()) {
-            int randomFriendId = random.nextInt(friends.length());
-            JSONObject friendToSmashObject = FriendSmashHelper.get().getFriend(randomFriendId);
-            friendToSmashId = friendToSmashObject.optString("id");
-            friendToSmashImageUrl = friendToSmashObject.optString("image");
+        int randomFriendId = random.nextInt(friends.length());
+        JSONObject friendToSmashObject = FriendSmashHelper.get().getFriend(randomFriendId);
+        friendToSmashId = friendToSmashObject.optString("id");
+        friendToSmashImageUrl = friendToSmashObject.optString("image");
 
-            String friendToSmashName = friendToSmashObject.optString("name");
-            handler = new Handler(Looper.getMainLooper());
-            smashPlayerText.setText(getString(R.string.smash_player_text, friendToSmashName));
-            iconWidth = getResources().getDimensionPixelSize(R.dimen.icon_width);
-            WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-            Display display = wm.getDefaultDisplay();
-            frequencyRandom = new Random();
+        String friendToSmashName = friendToSmashObject.optString("name");
+        handler = new Handler(Looper.getMainLooper());
+        smashPlayerText.setText(getString(R.string.smash_player_text, friendToSmashName));
+        iconWidth = getResources().getDimensionPixelSize(R.dimen.icon_width);
+        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        frequencyRandom = new Random();
 
-            friendIndexRandom = new Random();
-            Point size = new Point();
-            display.getSize(size);
-            screenWidth = size.x;
-            screenHeight = size.y;
-            fireImagesRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    if (!stopCalled) {
-                        setUpImages();
-                    }
+        friendIndexRandom = new Random();
+        Point size = new Point();
+        display.getSize(size);
+        screenWidth = size.x;
+        screenHeight = size.y;
+        fireImagesRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (!stopCalled) {
+                    setUpImages();
                 }
-            };
-            scoreText.setText(getString(R.string.score_text, 0));
-            setUpImages();
-        }else{
-            buildOfflinePlayers();
-        }
+            }
+        };
+        scoreText.setText(getString(R.string.score_text, 0));
+        setUpImages();
 
     }
 
@@ -131,24 +125,6 @@ public class FriendSmashGameView extends BaseActivity {
         super.onDestroy();
     }
 
-    private void buildOfflinePlayers() {
-        try {
-            JSONArray friendsArray = new JSONArray();
-            for (int i = 0; i < 10; i++) {
-                String playerId = null;
-                String imageUrl = null;
-                String name = null;
-
-                JSONObject eachFriendObject = new JSONObject();
-                eachFriendObject.put("name", name);
-                eachFriendObject.put("id", playerId);
-                eachFriendObject.put("image", imageUrl);
-                friendsArray.put(eachFriendObject);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void setUpImages() {
         System.gc();
