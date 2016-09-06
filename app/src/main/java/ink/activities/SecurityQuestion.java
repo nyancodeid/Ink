@@ -3,7 +3,6 @@ package ink.activities;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -85,7 +84,6 @@ public class SecurityQuestion extends BaseActivity {
                 }
                 try {
                     String responseBody = response.body().string();
-                    Log.d("Fasfsafsafsa", "onResponse: "+responseBody);
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {

@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,8 +58,6 @@ public class ForgotPassword extends AppCompatActivity {
     ProgressBar forgotPasswordProgress;
     @Bind(R.id.proceedLogin)
     Button proceedButton;
-    @Bind(R.id.socialAccountWrapper)
-    RelativeLayout socialAccountWrapper;
     @Bind(R.id.submitSecurityAnswer)
     Button submitSecurityAnswer;
     private Animation scaleOut;
@@ -324,7 +321,6 @@ public class ForgotPassword extends AppCompatActivity {
     private void setSecurityQuestionContainerEnabled(boolean enabled) {
         loginField.setEnabled(enabled);
         proceedButton.setEnabled(enabled);
-        socialAccountWrapper.setEnabled(enabled);
     }
 
     private void setForgotPasswordContainerEnabled(boolean enabled) {
