@@ -603,6 +603,8 @@ public class Login extends BaseActivity implements View.OnClickListener {
                         if (isRegistered) {
                             isSocial = jsonObject.optBoolean("isSocialAccount");
                             saveSocialLoginInfo(jsonObject.optString("firstName"), jsonObject.optString("lastName"), userId, jsonObject.optString("imageUrl"), isRegistered, isSocial);
+                            String securityQuestion = jsonObject.optString("securityQuestion");
+                            mSharedHelper.putSecurityQuestionSet(securityQuestion != null && !securityQuestion.isEmpty());
                         } else {
                             saveSocialLoginInfo(firstName, lastName, userId, imageUrl, isRegistered, isSocial);
                         }

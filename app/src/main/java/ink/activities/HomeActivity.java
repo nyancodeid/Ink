@@ -475,14 +475,12 @@ public class HomeActivity extends BaseActivity
         shouldOpenActivity = false;
         FileUtils.clearApplicationData(getApplicationContext());
         boolean editorHintValue = mSharedHelper.isEditorHintShown();
-        boolean securityQuestionSet = mSharedHelper.isSecurityQuestionSet();
         mSharedHelper.clean();
         mSharedHelper.putShouldShowIntro(false);
         if (editorHintValue) {
             mSharedHelper.putEditorHintShow(true);
         }
         mSharedHelper.putWarned(true);
-        mSharedHelper.putSecurityQuestionSet(securityQuestionSet);
         LoginManager.getInstance().logOut();
         RealmHelper.getInstance().clearDatabase(getApplicationContext());
         IonCache.clearIonCache(getApplicationContext());
