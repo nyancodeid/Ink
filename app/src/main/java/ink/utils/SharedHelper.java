@@ -66,6 +66,14 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public void putSecurityWarning(boolean value) {
+        mEditor.putBoolean("securityWarning", value);
+        mEditor.commit();
+    }
+
+    public boolean isSecurityWarningShown() {
+        return mSharedPreferences.getBoolean("securityWarning", false);
+    }
 
     public void putUserId(String userId) {
         mEditor.putString("user_id", userId);

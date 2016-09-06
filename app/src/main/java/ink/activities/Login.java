@@ -208,7 +208,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
 
     @OnClick(R.id.forgotPassword)
     public void forgotPassword() {
-
+        startActivity(new Intent(getApplicationContext(), ForgotPassword.class));
     }
 
     private void proceedLogin() {

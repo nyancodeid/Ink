@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.text.ParseException;
 
 import fab.FloatingActionButton;
+import ink.callbacks.GeneralCallback;
 import ink.fragments.Feed;
 import ink.fragments.MyFriends;
 import ink.friendsmash.FriendSmashLoginView;
@@ -56,6 +57,7 @@ import ink.models.CoinsResponse;
 import ink.service.BackgroundTaskService;
 import ink.service.LocationRequestSessionDestroyer;
 import ink.service.SendTokenService;
+import ink.utils.AppWarning;
 import ink.utils.CircleTransform;
 import ink.utils.Constants;
 import ink.utils.DeviceChecker;
@@ -119,6 +121,19 @@ public class HomeActivity extends BaseActivity
         SETTINGS = getString(R.string.settingsString);
         mToolbar.setTitle(FEED);
         mSharedHelper = new SharedHelper(this);
+        if (!mSharedHelper.isSecurityWarningShown()) {
+            AppWarning.get().showWarning(this, getString(R.string.securityQuestionNotSetWarning), getString(R.string.setSecurityQuestion), new GeneralCallback() {
+                @Override
+                public void onSuccess(Object o) {
+                    startActivity(new Intent(getApplicationContext(), MyProfile.class));
+                }
+
+                @Override
+                public void onFailure(Object o) {
+
+                }
+            });
+        }
         if (!mSharedHelper.isMessagesDownloaded()) {
             startMessageDownloadService();
         }

@@ -2,7 +2,8 @@ package ink.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -24,7 +25,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SecurityQuestion extends AppCompatActivity {
+public class SecurityQuestion extends BaseActivity {
     @Bind(R.id.ownSecurityQuestion)
     EditText ownSecurityQuestion;
     @Bind(R.id.ownAnswer)
@@ -39,6 +40,10 @@ public class SecurityQuestion extends AppCompatActivity {
         ButterKnife.bind(this);
         sharedHelper = new SharedHelper(this);
         progressDialog = ProgressDialog.get().buildProgressDialog(this, getString(R.string.connecting), getString(R.string.connectingToServer), false);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @OnClick(R.id.submitSecurityQuestion)
@@ -51,6 +56,16 @@ public class SecurityQuestion extends AppCompatActivity {
             progressDialog.show();
             setSecurityQuestion();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setSecurityQuestion() {
@@ -78,7 +93,7 @@ public class SecurityQuestion extends AppCompatActivity {
                             public void onClick(View view) {
 
                             }
-                        });
+                        }).show();
                     } else {
                         progressDialog.hide();
                         Snackbar.make(ownAnswer, getString(R.string.securityQuestionNotSet), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
@@ -86,7 +101,7 @@ public class SecurityQuestion extends AppCompatActivity {
                             public void onClick(View view) {
 
                             }
-                        });
+                        }).show();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -2,7 +2,8 @@ package ink.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -25,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChangePassword extends AppCompatActivity {
+public class ChangePassword extends BaseActivity {
 
     @Bind(R.id.currentPassword)
     EditText currentPassword;
@@ -45,6 +46,10 @@ public class ChangePassword extends AppCompatActivity {
         sharedHelper = new SharedHelper(this);
         progressDialog = ink.utils.ProgressDialog.get().buildProgressDialog(this, getString(R.string.connecting), getString(R.string.connectingToServer), false);
         ButterKnife.bind(this);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @OnClick(R.id.changePasswordButton)
@@ -63,6 +68,16 @@ public class ChangePassword extends AppCompatActivity {
             newPasswordString = newPassword.getText().toString();
             doPasswordCheckRequest(currentPassword.getText().toString());
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void doPasswordCheckRequest(final String userCurrentPassword) {
@@ -95,7 +110,7 @@ public class ChangePassword extends AppCompatActivity {
                                 public void onClick(View view) {
 
                                 }
-                            });
+                            }).show();
                         }
                     } else {
                         String cause = jsonObject.optString("cause");
@@ -106,7 +121,7 @@ public class ChangePassword extends AppCompatActivity {
                                 public void onClick(View view) {
 
                                 }
-                            });
+                            }).show();
                         } else {
                             progressDialog.hide();
                             Snackbar.make(repeatPassword, getString(R.string.couldNotConnectToServer), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
@@ -114,7 +129,7 @@ public class ChangePassword extends AppCompatActivity {
                                 public void onClick(View view) {
 
                                 }
-                            });
+                            }).show();
                         }
 
                     }
@@ -157,14 +172,14 @@ public class ChangePassword extends AppCompatActivity {
                             public void onClick(View view) {
 
                             }
-                        });
+                        }).show();
                     } else {
                         Snackbar.make(repeatPassword, getString(R.string.couldNotConnectToServer), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 
                             }
-                        });
+                        }).show();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
