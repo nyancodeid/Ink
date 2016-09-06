@@ -239,6 +239,15 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public void putIsAccountRecoverable(boolean value) {
+        mEditor.putBoolean("isAccountRecoverable", value);
+        mEditor.commit();
+    }
+
+    public boolean isAccountRecoverable() {
+        return mSharedPreferences.getBoolean("isAccountRecoverable", false);
+    }
+
     public boolean isSocialAccount() {
         return mSharedPreferences.getBoolean("isSocialAccount", false);
     }

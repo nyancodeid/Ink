@@ -177,4 +177,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         return sharedHelper.isSocialAccount();
     }
 
+    protected boolean isAccountRecoverable() {
+        return sharedHelper.isAccountRecoverable();
+    }
 }

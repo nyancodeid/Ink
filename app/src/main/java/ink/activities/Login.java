@@ -254,6 +254,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                             mSharedHelper.putUserId(userId);
                             mSharedHelper.putShouldShowIntro(false);
                             mSharedHelper.putIsSocialAccount(false);
+                            mSharedHelper.putIsAccountRecoverable(true);
                             String imageLink = jsonObject.optString("imageLink");
                             if (imageLink != null && !imageLink.isEmpty()) {
                                 mSharedHelper.putImageLink(imageLink);
@@ -642,6 +643,11 @@ public class Login extends BaseActivity implements View.OnClickListener {
         mSharedHelper.putShouldShowIntro(false);
         mSharedHelper.putIsRegistered(isRegistered);
         mSharedHelper.putIsSocialAccount(isSocial);
+        if (isSocial) {
+            mSharedHelper.putIsAccountRecoverable(false);
+        } else {
+            mSharedHelper.putIsAccountRecoverable(true);
+        }
         mSharedHelper.putImageLink(imageUrl);
         progressDialog.dismiss();
         startActivity(new Intent(getApplicationContext(), HomeActivity.class));

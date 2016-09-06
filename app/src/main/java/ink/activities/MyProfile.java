@@ -166,7 +166,7 @@ public class MyProfile extends BaseActivity {
         progressDialog.setTitle(getString(R.string.deletingAccount));
         progressDialog.setMessage(getString(R.string.yourAccountIsDeleting));
         mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#99000000"));
-        if (isSocialAccount()) {
+        if (!isAccountRecoverable()) {
             changePassword.setVisibility(View.GONE);
             setSecurityQuestion.setVisibility(View.GONE);
         }

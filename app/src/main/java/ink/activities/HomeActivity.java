@@ -121,7 +121,7 @@ public class HomeActivity extends BaseActivity
         SETTINGS = getString(R.string.settingsString);
         mToolbar.setTitle(FEED);
         mSharedHelper = new SharedHelper(this);
-        if (!mSharedHelper.isMessagesDownloaded()) {
+        if (!mSharedHelper.isMessagesDownloaded() && isAccountRecoverable()) {
             startMessageDownloadService();
         }
         if (!mSharedHelper.isSecurityQuestionSet()) {
