@@ -5,7 +5,12 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.ink.R;
 
@@ -17,6 +22,8 @@ import java.io.IOException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.utils.Constants;
+import ink.utils.ErrorCause;
 import ink.utils.ProgressDialog;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
@@ -32,6 +39,18 @@ public class SecurityQuestion extends BaseActivity {
     EditText ownAnswer;
     private SharedHelper sharedHelper;
     private ProgressDialog progressDialog;
+    @Bind(R.id.securityQuestionContainer)
+    LinearLayout securityQuestionContainer;
+    @Bind(R.id.currentPasswordContainer)
+    LinearLayout currentPasswordContainer;
+    @Bind(R.id.proceedPasswordCheck)
+    Button proceedPasswordCheck;
+    @Bind(R.id.currentPasswordField)
+    EditText currentPasswordField;
+    private Animation scaleOut;
+    private Animation scaleIn;
+    @Bind(R.id.securityQuestionProgress)
+    ProgressBar securityQuestionProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +58,8 @@ public class SecurityQuestion extends BaseActivity {
         setContentView(R.layout.activity_security_question);
         ButterKnife.bind(this);
         sharedHelper = new SharedHelper(this);
+        scaleOut = AnimationUtils.loadAnimation(this, R.anim.scale_out);
+        scaleIn = AnimationUtils.loadAnimation(this, R.anim.scale_in);
         progressDialog = ProgressDialog.get().buildProgressDialog(this, getString(R.string.connecting), getString(R.string.connectingToServer), false);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -66,6 +87,15 @@ public class SecurityQuestion extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.proceedPasswordCheck)
+    public void proceedPasswordCheck() {
+        if (currentPasswordField.getText().toString().isEmpty()) {
+            currentPasswordField.setError(getString(R.string.emptyField));
+        } else {
+            doPasswordCheckRequest(currentPasswordField.getText().toString());
+        }
     }
 
     private void setSecurityQuestion() {
@@ -120,4 +150,134 @@ public class SecurityQuestion extends BaseActivity {
             }
         });
     }
+
+    private void startScaleOutAnimation(final View viewToScaleOut, View viewToScaleIn) {
+        if (viewToScaleOut.getVisibility() == View.GONE) {
+            viewToScaleOut.setVisibility(View.VISIBLE);
+        }
+        viewToScaleOut.setClickable(false);
+        viewToScaleOut.setFocusable(false);
+        scaleOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                viewToScaleOut.setVisibility(View.GONE);
+                viewToScaleOut.setClickable(true);
+                viewToScaleOut.setFocusable(true);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        viewToScaleOut.startAnimation(scaleOut);
+        startScaleInAnimation(viewToScaleIn);
+    }
+
+
+    private void startScaleInAnimation(final View viewToScaleIn) {
+        scaleIn.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                if (viewToScaleIn.getVisibility() == View.GONE) {
+                    viewToScaleIn.setVisibility(View.VISIBLE);
+                }
+                viewToScaleIn.setFocusable(false);
+                viewToScaleIn.setClickable(false);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                viewToScaleIn.setFocusable(true);
+                viewToScaleIn.setClickable(true);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        viewToScaleIn.startAnimation(scaleIn);
+    }
+
+    private void doPasswordCheckRequest(final String userCurrentPassword) {
+        securityQuestionProgress.setVisibility(View.VISIBLE);
+        Call<ResponseBody> getPasswordCall = Retrofit.getInstance().getInkService().getUserPassword(sharedHelper.getUserId(), Constants.PASSWORD_REQUEST_TOKEN);
+        getPasswordCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    doPasswordCheckRequest(userCurrentPassword);
+                    return;
+                }
+                if (response.body() == null) {
+                    doPasswordCheckRequest(userCurrentPassword);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    securityQuestionProgress.setVisibility(View.GONE);
+                    if (success) {
+                        String password = jsonObject.optString("password");
+                        if (userCurrentPassword.equals(password)) {
+                            proceedForward();
+                        } else {
+                            progressDialog.hide();
+                            Snackbar.make(ownAnswer, getString(R.string.passwordWrong), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            }).show();
+                        }
+                    } else {
+                        String cause = jsonObject.optString("cause");
+                        if (cause.equals(ErrorCause.NO_USER_FOUND)) {
+                            progressDialog.hide();
+                            Snackbar.make(ownAnswer, getString(R.string.noUserFoundPasswordError), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            }).show();
+                        } else {
+                            progressDialog.hide();
+                            Snackbar.make(ownAnswer, getString(R.string.couldNotConnectToServer), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            }).show();
+                        }
+
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    doPasswordCheckRequest(userCurrentPassword);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    securityQuestionProgress.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                doPasswordCheckRequest(userCurrentPassword);
+            }
+        });
+    }
+
+    private void proceedForward() {
+        currentPasswordField.setEnabled(false);
+        proceedPasswordCheck.setEnabled(false);
+        startScaleOutAnimation(currentPasswordContainer, securityQuestionContainer);
+    }
+
 }
