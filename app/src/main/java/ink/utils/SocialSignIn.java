@@ -113,7 +113,9 @@ public class SocialSignIn {
                                             setAction("OK", new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
-
+                                                    if (DimDialog.isDialogAlive()) {
+                                                        DimDialog.hideDialog();
+                                                    }
                                                 }
                                             }).show();
                                     if (resultCallbacks != null) {
