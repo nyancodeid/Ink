@@ -109,7 +109,10 @@ public class MyProfile extends BaseActivity {
     private Menu mCancelMenuItem;
     @Bind(R.id.editImageNameFab)
     FloatingActionButton mEditImageNameFab;
-
+    @Bind(R.id.changePassword)
+    FloatingActionButton changePassword;
+    @Bind(R.id.setSecurityQuestion)
+    FloatingActionButton setSecurityQuestion;
     @Bind(R.id.collapsing_toolbar)
     CollapsingToolbarLayout mCollapsingToolbar;
     @Bind(R.id.myProfileToolbar)
@@ -163,6 +166,10 @@ public class MyProfile extends BaseActivity {
         progressDialog.setTitle(getString(R.string.deletingAccount));
         progressDialog.setMessage(getString(R.string.yourAccountIsDeleting));
         mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#99000000"));
+        if (isSocialAccount()) {
+            changePassword.setVisibility(View.GONE);
+            setSecurityQuestion.setVisibility(View.GONE);
+        }
 
         mProfileFab.setOnMenuButtonClickListener(new View.OnClickListener() {
             @Override
