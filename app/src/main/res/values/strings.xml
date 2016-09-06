@@ -22,7 +22,7 @@
     <string name="successRegistration">Registration succeeded</string>
     <string name="successRegistrationMessage">Now you can login to you account</string>
     <string name="errorLogin">Error while logging you in</string>
-    <string name="errorLoginMessage">An error occurred while login you to server,please check your credentials</string>
+    <string name="errorLoginMessage">An error occurred while login you to server,please check your credentials.(Password is case-sensitive)</string>
     <string name="emptyPasswordError">Password can not be empty</string>
     <string name="emptyLoginError">Login can not be empty</string>
     <string name="title_activity_home">Feeds</string>
