@@ -643,4 +643,7 @@
     <string name="noSecurityQuestion">No Security Question</string>
     <string name="noSecurityQuestionMessage">Unfortunatally there is no security question set for this account.\nPlease contact support to recover your password</string>
     <string name="passwordDifferentError">New password must be different from previous</string>
+    <string name="chooseSocialAccount">Choose Social Account</string>
+    <string name="orSocial">Or if you signed with social account</string>
+    <string name="fetchingProfileInfo">Fetching your Profile Information...</string>
 </resources>

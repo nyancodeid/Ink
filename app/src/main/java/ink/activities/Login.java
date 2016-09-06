@@ -68,7 +68,7 @@ import retrofit2.Response;
  */
 public class Login extends BaseActivity implements View.OnClickListener {
 
-    private static final int GOOGLE_SIGN_IN_REQUEST_CODE = 1;
+    public static final int GOOGLE_SIGN_IN_REQUEST_CODE = 1;
     // UI references.
     private AutoCompleteTextView mLoginView;
     private EditText mPasswordView;

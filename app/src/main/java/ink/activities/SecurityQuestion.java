@@ -3,6 +3,7 @@ package ink.activities;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.utils.ProgressDialog;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -30,7 +32,7 @@ public class SecurityQuestion extends BaseActivity {
     @Bind(R.id.ownAnswer)
     EditText ownAnswer;
     private SharedHelper sharedHelper;
-    private android.app.ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +40,7 @@ public class SecurityQuestion extends BaseActivity {
         setContentView(R.layout.activity_security_question);
         ButterKnife.bind(this);
         sharedHelper = new SharedHelper(this);
-        progressDialog = new android.app.ProgressDialog(SecurityQuestion.this);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setCancelable(false);
-        progressDialog.setTitle(getString(R.string.connecting));
-        progressDialog.setMessage(getString(R.string.connectingToServer));
+        progressDialog = ProgressDialog.get().buildProgressDialog(this, getString(R.string.connecting), getString(R.string.connectingToServer), false);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -87,6 +85,7 @@ public class SecurityQuestion extends BaseActivity {
                 }
                 try {
                     String responseBody = response.body().string();
+                    Log.d("Fasfsafsafsa", "onResponse: "+responseBody);
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -109,9 +108,11 @@ public class SecurityQuestion extends BaseActivity {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    progressDialog.hide();
                     setSecurityQuestion();
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    progressDialog.hide();
                 }
             }
 

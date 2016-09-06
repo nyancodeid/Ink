@@ -106,7 +106,7 @@ public class Retrofit {
                                           @Field("token") String token,
                                           @Field("password") String newPassword);
 
-        @POST(Constants.CHANGE_PASSWORD)
+        @POST(Constants.SECURITY_QUESTION)
         @FormUrlEncoded
         Call<ResponseBody> setSecurityQuestion(@Field("userId") String userId,
                                                @Field("securityQuestion") String securityQuestion,
