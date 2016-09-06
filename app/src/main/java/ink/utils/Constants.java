@@ -72,7 +72,9 @@ public class Constants {
     public static final String LIKE_URL = "LikePost.php";
     public static final String GET_COMMENTS_URL = "GetComments.php";
     public static final String SOCIAL_LOGIN_URL = "SocialLogin.php";
+    public static final String TEMPORARY_PASSWORD = "TemporaryPassword.php";
     public static final String ADD_COMMENT_URL = "AddComment.php";
+    public static final String GET_USER_LOGIN = "GetUserLogin.php";
     public static final int TEXT_VIEW_DEFAULT_COLOR = android.R.color.tab_indicator_text;
     public static final String NOTIFICATION_TYPE_MESSAGE = "message";
     public static final String NOTIFICATION_TYPE_GROUP_REQUEST = "request";
@@ -136,5 +138,6 @@ public class Constants {
     public static final int REQUEST_CUSTOMIZE_MADE = 8;
     public static final String COINS_BOUGHT_KEY = "coins_bought";
     public static final String PASSWORD_REQUEST_TOKEN = "fasjflkgkaga7g8asggf-a0gf98asu-gangas-g389t-nke_wrlPg_h34890udglka";
+    public static final String USER_LOGIN_TOKEN = "asjflkasf_gasjgkla=-gsangklasjklsag-sagnas3r532r3w52r523q-gsa43-t3t54a-";
 }
 

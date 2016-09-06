@@ -116,7 +116,7 @@ public class ChangePassword extends BaseActivity {
                         String cause = jsonObject.optString("cause");
                         if (cause.equals(ErrorCause.NO_USER_FOUND)) {
                             progressDialog.hide();
-                            Snackbar.make(repeatPassword, getString(R.string.noUserFound), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                            Snackbar.make(repeatPassword, getString(R.string.noUserFoundPasswordError), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
 

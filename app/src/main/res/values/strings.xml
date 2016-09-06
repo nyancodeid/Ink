@@ -613,7 +613,7 @@
     <string name="submit">Submit</string>
     <string name="enterAnswer">Enter answer</string>
     <string name="answerQuestion">Answer Question</string>
-    <string name="result_hint">This is your temporary password.Copy it and use this to login and change your password to your desired.</string>
+    <string name="result_hint">This is your temporary password.Copy it and use this to login and change your password to your desired.(Password is case-sensitive)</string>
     <string name="changePassword">Change Password</string>
     <string name="setSecurityQuestion">Set Security Question</string>
     <string name="change">Change</string>
@@ -637,4 +637,10 @@
     <string name="securityQuestionSet">Security Question was set</string>
     <string name="securityQuestionNotSet">Security Question was not set.something went wrong</string>
     <string name="securityQuestionNotSetWarning">Your account is insecure.Set security question to recover your password and keep account secure</string>
+    <string name="noUserFoundPasswordError">User could not be found.It might be server error</string>
+    <string name="wrongSecurityAnswer">Answer is wrong,please try again...</string>
+    <string name="cantGetTempPassword">Could not generate temporary password.Contact support</string>
+    <string name="copied">Copied to clipboard</string>
+    <string name="noSecurityQuestion">No Security Question</string>
+    <string name="noSecurityQuestionMessage">Unfortunatally there is no security question set for this account.\nPlease contact support to recover your password</string>
 </resources>

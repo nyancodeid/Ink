@@ -436,7 +436,16 @@ public class Retrofit {
                                           @Field("commentId") String commentId,
                                           @Field("newCommentBody") String $newCommentBody);
 
+        @POST(Constants.GET_USER_LOGIN)
+        @FormUrlEncoded
+        Call<ResponseBody> getUserLogin(@Field("login") String login,
+                                        @Field("token") String token);
 
+
+        @POST(Constants.TEMPORARY_PASSWORD)
+        @FormUrlEncoded
+        Call<ResponseBody> getTemporaryPassword(@Field("login") String inputLogin,
+                                                @Field("token") String token);
     }
 
     public interface MusicCloudInterface {
