@@ -121,6 +121,7 @@ public class ForgotPassword extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     forgotPasswordProgress.setVisibility(View.GONE);
+                    setSecurityQuestionContainerEnabled(true);
                     if (success) {
                         if (securityQuestion != null && !securityQuestion.isEmpty()) {
                             inputLogin = login;
@@ -160,8 +161,10 @@ public class ForgotPassword extends AppCompatActivity {
                         }
                     }
                 } catch (IOException e) {
+                    setSecurityQuestionContainerEnabled(true);
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    setSecurityQuestionContainerEnabled(true);
                     e.printStackTrace();
                 }
             }

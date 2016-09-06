@@ -63,7 +63,14 @@ public class ChangePassword extends BaseActivity {
         } else if (!newPassword.getText().toString().equals(repeatPassword.getText().toString())) {
             repeatPassword.setError(getString(R.string.doesnotMatch));
             newPassword.setError(getString(R.string.doesnotMatch));
-        } else {
+        } else if(currentPassword.getText().toString().equals(repeatPassword.getText().toString())) {
+           Snackbar.make(repeatPassword,getString(R.string.passwordDifferentError),Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+               @Override
+               public void onClick(View view) {
+
+               }
+           }).show();
+        }else{
             progressDialog.show();
             newPasswordString = newPassword.getText().toString();
             doPasswordCheckRequest(currentPassword.getText().toString());
