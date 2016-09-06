@@ -121,10 +121,10 @@ public class HomeActivity extends BaseActivity
         SETTINGS = getString(R.string.settingsString);
         mToolbar.setTitle(FEED);
         mSharedHelper = new SharedHelper(this);
-        if (!mSharedHelper.isMessagesDownloaded() && isAccountRecoverable()) {
+        if (!mSharedHelper.isMessagesDownloaded()) {
             startMessageDownloadService();
         }
-        if (!mSharedHelper.isSecurityQuestionSet()) {
+        if (!mSharedHelper.isSecurityQuestionSet()&& isAccountRecoverable()) {
             View warningView = getLayoutInflater().inflate(R.layout.app_warning_view, null);
             final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
             bottomSheetDialog.setContentView(warningView);
