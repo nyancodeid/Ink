@@ -16,10 +16,7 @@ public class ProgressDialog {
     public ProgressDialog buildProgressDialog(Context context, String title,
                                               String message, boolean cancelable) {
         System.gc();
-        if (progressDialogBuilder == null) {
-            progressDialogBuilder = new android.app.ProgressDialog(context);
-        }
-
+        progressDialogBuilder = new android.app.ProgressDialog(context);
         progressDialogBuilder.setTitle(title);
         progressDialogBuilder.setMessage(message);
         progressDialogBuilder.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_dialog_circle));
