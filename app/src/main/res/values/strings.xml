@@ -514,7 +514,7 @@
     <string name="leaderboard_text">Leaderboard</string>
     <string name="challenge_friend">Challenge Friend</string>
     <string name="error_retriving_circles">Error while retriving friend list.Please contact support</string>
-    <string name="noGoogleFriend">You don\\\'t have any google plus friend,thus you can play offline without friend images</string>
+    <string name="noGoogleFriend">You don\'t have any google plus friend,thus you can play offline</string>
     <string name="welcome_to_game">Welcome back %1$s</string>
     <string name="smash_player_text">Smash %1$s Player! </string>
     <string name="score_text">Score:%1$d</string>
@@ -649,4 +649,5 @@
     <string name="forgotPasswordSocialHint">*Only for accounts registered with \'INK\'</string>
     <string name="enterPasswordHint">Enter account password</string>
     <string name="passwordWrong">Password is wrong,check the capitals</string>
+    <string name="letsPlay">Let\'s play!</string>
 </resources>

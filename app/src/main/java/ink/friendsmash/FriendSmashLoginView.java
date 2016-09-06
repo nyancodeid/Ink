@@ -32,6 +32,7 @@ import ink.utils.Constants;
 import ink.utils.DimDialog;
 import ink.utils.SharedHelper;
 import ink.utils.SocialSignIn;
+import ink.utils.User;
 
 public class FriendSmashLoginView extends BaseActivity {
 
@@ -83,6 +84,7 @@ public class FriendSmashLoginView extends BaseActivity {
         if (DimDialog.isDialogAlive()) {
             DimDialog.hideDialog();
         }
+        User.get().setHasGameFriends(true);
         sharedHelper.putLoggedIntoGame(true);
         startActivity(intent);
         finish();
@@ -128,15 +130,21 @@ public class FriendSmashLoginView extends BaseActivity {
                     }
                 } else {
                     loadPeopleResult.getPersonBuffer().release();
+                    if (DimDialog.isDialogAlive()) {
+                        DimDialog.hideDialog();
+                    }
                     Snackbar.make(singInWithGoogle, getString(R.string.noGoogleFriend), Snackbar.LENGTH_INDEFINITE).
-                            setAction("OK", new View.OnClickListener() {
+                            setAction(getString(R.string.letsPlay), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-
+                                    User.get().setHasGameFriends(false);
+                                    Intent intent = new Intent(getApplicationContext(), FriendSmashHomeView.class);
+                                    sharedHelper.putLoggedIntoGame(true);
+                                    startActivity(intent);
+                                    finish();
                                 }
                             }).show();
                 }
-
             }
 
             @Override
