@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -56,6 +57,8 @@ public class ForgotPassword extends AppCompatActivity {
     TextView resultPasswordHolder;
     @Bind(R.id.forgotPasswordProgress)
     ProgressBar forgotPasswordProgress;
+    @Bind(R.id.proceedLogin)
+    Button proceedButton;
     private Animation scaleOut;
     private Animation scaleIn;
     private Animation bounceAnimation;
@@ -85,6 +88,12 @@ public class ForgotPassword extends AppCompatActivity {
         forgotPasswordProgress.setVisibility(View.VISIBLE);
         requestLogin(loginField.getText().toString());
     }
+
+    @OnClick(R.id.backToLoginContainer)
+    public void backToLoginContainer() {
+        startScaleOutAnimation(securityQuestionContainer, loginContainer);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -113,11 +122,11 @@ public class ForgotPassword extends AppCompatActivity {
                     boolean success = jsonObject.optBoolean("success");
                     forgotPasswordProgress.setVisibility(View.GONE);
                     if (success) {
-                        inputLogin = login;
-                        securityQuestion = jsonObject.optString("securityQuestion");
-                        securityAnswer = jsonObject.optString("securityAnswer");
-                        startScaleOutAnimation(loginContainer, securityQuestionContainer);
                         if (securityQuestion != null && !securityQuestion.isEmpty()) {
+                            inputLogin = login;
+                            securityQuestion = jsonObject.optString("securityQuestion");
+                            securityAnswer = jsonObject.optString("securityAnswer");
+                            startScaleOutAnimation(loginContainer, securityQuestionContainer);
                             questionHolder.setText(securityQuestion);
                         } else {
                             System.gc();
@@ -132,7 +141,6 @@ public class ForgotPassword extends AppCompatActivity {
                             });
                             builder.show();
                         }
-
                     } else {
                         String cause = jsonObject.optString("cause");
                         if (cause.equals(ErrorCause.NO_USER_FOUND)) {
@@ -274,10 +282,8 @@ public class ForgotPassword extends AppCompatActivity {
     }
 
     private void setSecurityQuestionContainerEnabled(boolean enabled) {
-        for (int i = 0; i < securityQuestionContainer.getChildCount(); i++) {
-            View child = securityQuestionContainer.getChildAt(i);
-            child.setEnabled(enabled);
-        }
+        loginField.setEnabled(enabled);
+        proceedButton.setEnabled(enabled);
     }
 
     private void setForgotPasswordContainerEnabled(boolean enabled) {
