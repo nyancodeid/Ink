@@ -134,7 +134,7 @@ public class FriendSmashGameView extends BaseActivity {
     private void buildOfflinePlayers() {
         try {
             JSONArray friendsArray = new JSONArray();
-            for (int i = 0; i < personCount; i++) {
+            for (int i = 0; i < 10; i++) {
                 String playerId = null;
                 String imageUrl = null;
                 String name = null;
