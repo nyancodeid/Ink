@@ -250,6 +250,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                             String securityQuestion = jsonObject.optString("securityQuestion");
                             mSharedHelper.putSecurityQuestionSet(securityQuestion != null && !securityQuestion.isEmpty());
                             mSharedHelper.putFirstName(jsonObject.optString("first_name"));
+                            mSharedHelper.putIsAccountRecoverable(true);
                             mSharedHelper.putLastName(jsonObject.optString("last_name"));
                             mSharedHelper.putUserId(userId);
                             mSharedHelper.putShouldShowIntro(false);
@@ -601,6 +602,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                         String userId = jsonObject.optString("userId");
                         boolean isSocial = true;
                         boolean isRegistered = jsonObject.optBoolean("isRegistered");
+                        mSharedHelper.putIsAccountRecoverable(false);
                         if (isRegistered) {
                             isSocial = jsonObject.optBoolean("isSocialAccount");
                             saveSocialLoginInfo(jsonObject.optString("firstName"), jsonObject.optString("lastName"), userId, jsonObject.optString("imageUrl"), isRegistered, isSocial);
@@ -643,11 +645,6 @@ public class Login extends BaseActivity implements View.OnClickListener {
         mSharedHelper.putShouldShowIntro(false);
         mSharedHelper.putIsRegistered(isRegistered);
         mSharedHelper.putIsSocialAccount(isSocial);
-        if (isSocial) {
-            mSharedHelper.putIsAccountRecoverable(false);
-        } else {
-            mSharedHelper.putIsAccountRecoverable(true);
-        }
         mSharedHelper.putImageLink(imageUrl);
         progressDialog.dismiss();
         startActivity(new Intent(getApplicationContext(), HomeActivity.class));
