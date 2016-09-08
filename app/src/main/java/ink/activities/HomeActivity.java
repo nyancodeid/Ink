@@ -51,7 +51,6 @@ import java.text.ParseException;
 import fab.FloatingActionButton;
 import ink.fragments.Feed;
 import ink.fragments.MyFriends;
-import ink.friendsmash.FriendSmashLoginView;
 import ink.interfaces.AccountDeleteListener;
 import ink.interfaces.ColorChangeListener;
 import ink.models.CoinsResponse;
@@ -430,10 +429,6 @@ public class HomeActivity extends BaseActivity
                 shouldOpenActivity = false;
                 break;
 
-            case R.id.friendSmashGame:
-                shouldOpenActivity = true;
-                setLastClassToOpen(FriendSmashLoginView.class, false);
-                break;
             case R.id.sendFeedback:
                 shouldOpenActivity = true;
                 setLastClassToOpen(SendFeedback.class, false);

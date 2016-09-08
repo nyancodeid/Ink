@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -59,7 +60,10 @@ public class Intro extends AppCompatActivity {
                 finish();
             }
         });
-
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar!=null){
+            actionBar.hide();
+        }
         if (mSharedHelper.shouldShowIntro()) {
             startActivity(mLoginIntent);
             finish();
@@ -82,6 +86,7 @@ public class Intro extends AppCompatActivity {
                             thirdIntroFragment.hideItems();
                             firstIntroFragment.startAnimation();
                             leftCircle.setImageResource(R.drawable.circle_active);
+
                             leftCircle.setAlpha(1f);
                             centerCircle.setImageResource(R.drawable.circle_inactive);
                             rightCircle.setImageResource(R.drawable.circle_inactive);
@@ -101,7 +106,6 @@ public class Intro extends AppCompatActivity {
                             firstIntroFragment.hideItems();
                             secondIntroFragment.hideItems();
                             thirdIntroFragment.startAnimation();
-
 
                             leftCircle.setImageResource(R.drawable.circle_inactive);
                             centerCircle.setImageResource(R.drawable.circle_inactive);

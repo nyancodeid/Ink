@@ -650,4 +650,5 @@
     <string name="enterPasswordHint">Enter account password</string>
     <string name="passwordWrong">Password is wrong,check the capitals</string>
     <string name="letsPlay">Let\'s play!</string>
+    <string name="accountPermissionNeededGame">Account permission needed to play game</string>
 </resources>
