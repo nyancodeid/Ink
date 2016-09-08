@@ -1,5 +1,6 @@
 package ink.friendsmash;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -79,7 +80,7 @@ public class FriendSmashHomeView extends BaseActivity {
 
     @OnClick(R.id.playButtonWrapper)
     public void setPlayButtonWrapper() {
-        startActivityForResult(new Intent(getApplicationContext(), FriendSmashGameView.class),GAME_OVER_RESULT);
+        startActivityForResult(new Intent(getApplicationContext(), FriendSmashGameView.class), GAME_OVER_RESULT);
     }
 
     @OnClick(R.id.scoresButton)
@@ -151,7 +152,9 @@ public class FriendSmashHomeView extends BaseActivity {
                 }
                 break;
             case GAME_OVER_RESULT:
-                // TODO: 9/6/2016 show game over view
+                Dialog dialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar);
+                dialog.setContentView(R.layout.intro_view);
+                dialog.show();
                 break;
         }
     }

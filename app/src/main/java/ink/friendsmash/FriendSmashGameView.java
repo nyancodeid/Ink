@@ -162,6 +162,11 @@ public class FriendSmashGameView extends BaseActivity {
                     timesSmashed++;
                     countTilLSound++;
                     scoreText.setText(getString(R.string.score_text, timesSmashed));
+                    switch (timesSmashed){
+                        case 30:
+                            // TODO: 9/8/2016 finish leve
+                            break;
+                    }
                     switch (countTilLSound) {
                         case 2:
                             showEncourageText(getString(R.string.weGood));

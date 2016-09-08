@@ -104,7 +104,7 @@ public class Intro extends AppCompatActivity {
 
 
                             leftCircle.setImageResource(R.drawable.circle_inactive);
-                            centerCircle.setImageResource(R.drawable.circle_active);
+                            centerCircle.setImageResource(R.drawable.circle_inactive);
                             rightCircle.setImageResource(R.drawable.circle_active);
                             rightCircle.setAlpha(1f);
                             break;
