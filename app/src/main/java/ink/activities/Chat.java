@@ -552,17 +552,13 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                         if (userStatus.success) {
                             SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             Date date = sourceFormat.parse(Time.convertToLocalTime(userStatus.lastSeenTime));
-                            Period p = new Period(new DateTime(new Date()), new DateTime(date), PeriodType.dayTime());
-                            int minutes = p.getMinutes();
-                            int hours = p.getHours();
-                            int days = p.getDays();
-                            int month = p.getMonths();
-                            int year = p.getYears();
-                            if (minutes >= 1) {
-                                userStatus.isOnline = false;
-                            } else {
-                                userStatus.isOnline = true;
-                            }
+                            Period period = new Period(new DateTime(new Date()), new DateTime(date), PeriodType.dayTime());
+                            int minutes = period.getMinutes();
+                            int hours = period.getHours();
+                            int days = period.getDays();
+                            int month = period.getMonths();
+                            int year = period.getYears();
+
                             if (userStatus.isOnline) {
                                 statusColor.setVisibility(View.VISIBLE);
                                 statusColor.startAnimation(fadeAnimation);
@@ -589,7 +585,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                                     lastTime = hours;
                                 }
 
-                                opponentStatus.setText(getString(R.string.lastSeen, lastTime + " " + appendableString));
+                                opponentStatus.setText(getString(R.string.lastSeen, Math.abs(lastTime) + " " + appendableString));
                             }
                             scheduleTask();
                         } else {

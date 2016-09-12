@@ -40,9 +40,9 @@ public class Time {
             return "N/A";
         }
 
-        TimeZone tz = TimeZone.getDefault();
+        TimeZone currentTimeZone = TimeZone.getDefault();
         SimpleDateFormat destFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        destFormat.setTimeZone(tz);
+        destFormat.setTimeZone(currentTimeZone);
 
         String result = destFormat.format(parsed);
         return result;
