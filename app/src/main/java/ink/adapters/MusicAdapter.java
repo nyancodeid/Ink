@@ -82,10 +82,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
 
     }
 
-    @Override
-    public void onViewAttachedToWindow(ViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-    }
 
     @Override
     public int getItemCount() {

@@ -45,6 +45,8 @@ public class FullscreenActivity extends BaseActivity {
         actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.hide();
+            mVisible = false;
         }
 
         if (extras != null) {

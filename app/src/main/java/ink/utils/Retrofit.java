@@ -12,21 +12,22 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 /**
  * Created by USER on 2016-06-19.
  */
 public class Retrofit {
-    private static Retrofit ourInstance = new Retrofit();
+    private static Retrofit retrofitInstance = new Retrofit();
 
     public static Retrofit getInstance() {
-        return ourInstance;
+        return retrofitInstance;
     }
 
-    public InkService mInkService;
+    public InkService inkService;
     public MusicCloudInterface musicCloudInterface;
+    private NewsInterface newsInterface;
 
     private Retrofit() {
         retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
@@ -39,9 +40,15 @@ public class Retrofit {
                 .baseUrl(Constants.CLOUD_API_URL)
                 .build();
 
+        retrofit2.Retrofit newsInterfaceRetrofit = new retrofit2.Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(Constants.NEWS_BASE_URL)
+                .build();
 
-        mInkService = retrofit.create(InkService.class);
+
+        inkService = retrofit.create(InkService.class);
         musicCloudInterface = cloudRetrofit.create(MusicCloudInterface.class);
+        newsInterface = newsInterfaceRetrofit.create(NewsInterface.class);
 
     }
 
@@ -49,8 +56,12 @@ public class Retrofit {
         return musicCloudInterface;
     }
 
+    public NewsInterface getNewsInterface() {
+        return newsInterface;
+    }
+
     public InkService getInkService() {
-        return mInkService;
+        return inkService;
     }
 
     public interface InkService {
@@ -64,9 +75,6 @@ public class Retrofit {
         @FormUrlEncoded
         @POST(Constants.LOGIN_URL)
         Call<ResponseBody> login(@Field("login") String login, @Field("password") String password);
-
-        @GET(Constants.NEWS_BASE_URL + "{nextUrl}")
-        Call<ResponseBody> getNews(@Path("nextUrl") String nextUrl);
 
 
         @POST(Constants.FRIENDS_URL)
@@ -459,5 +467,10 @@ public class Retrofit {
         @GET("/tracks?client_id=" + Constants.CLOUD_CLIENT_ID)
         Call<ResponseBody> searchSong(@Query("q") String searchString);
 
+    }
+
+    public interface NewsInterface {
+        @GET()
+        Call<ResponseBody> getNews(@Url() String fullUrl);
     }
 }

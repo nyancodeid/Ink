@@ -652,4 +652,8 @@
     <string name="letsPlay">Let\'s play!</string>
     <string name="accountPermissionNeededGame">Account permission needed to play game</string>
     <string name="newsTitle">News</string>
+    <string name="newsError">Could not fetch news,please contact support</string>
+    <string name="worldwideNewsTitle">Worldwide</string>
+    <string name="whatsTrendingTitle">What\'s Trending</string>
+    <string name="viewMore">View More</string>
 </resources>
