@@ -86,6 +86,7 @@ dependencies {
     compile 'com.adobe.creativesdk:image:4.6.3'
     compile 'com.localytics.android:library:3.8.0'
     compile 'com.android.support:multidex:1.0.0'
+    compile 'joda-time:joda-time:2.9.4'
     compile 'com.koushikdutta.ion:ion:2.+'
     compile 'com.vk:androidsdk:1.6.5'
 }

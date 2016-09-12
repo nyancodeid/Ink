@@ -48,6 +48,36 @@ public class Time {
         return result;
     }
 
+    public static Date convertToLocalDate(String timeToConvert) {
+        SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (Constants.SERVER_TIME_ZONE.equals(TimeZone.getDefault())) {
+            try {
+                return sourceFormat.parse(timeToConvert);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return new Date();
+            }
+        }
+
+        sourceFormat.setTimeZone(TimeZone.getTimeZone(Constants.SERVER_TIME_ZONE));
+        Date parsed = null;
+        try {
+            parsed = sourceFormat.parse(timeToConvert);
+        } catch (ParseException e) {
+            return new Date();
+        }
+
+        TimeZone tz = TimeZone.getDefault();
+        SimpleDateFormat destFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        destFormat.setTimeZone(tz);
+
+        try {
+            return destFormat.parse(timeToConvert);
+        } catch (ParseException e) {
+            return new Date();
+        }
+    }
+
     public static String getTimeZone() {
         return TimeZone.getDefault().getID();
     }

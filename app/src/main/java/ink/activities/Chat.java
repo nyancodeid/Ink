@@ -48,6 +48,9 @@ import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -80,7 +83,6 @@ import ink.utils.Constants;
 import ink.utils.DimDialog;
 import ink.utils.ErrorCause;
 import ink.utils.FileUtils;
-import ink.utils.HumanTime;
 import ink.utils.Keyboard;
 import ink.utils.Notification;
 import ink.utils.PingHelper;
@@ -162,11 +164,13 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     private boolean scrolledToBottom;
     private Menu chatMenuItem;
     private Toolbar chatToolbar;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mSharedHelper = new SharedHelper(this);
+        handler = new Handler();
         if (mSharedHelper.getChatColor() != null) {
             getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor(mSharedHelper.getChatColor())));
         } else {
@@ -362,14 +366,17 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     }
 
     private void scheduleTask() {
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getStatus();
-            }
-        }, 2000);
+        if (handler != null && statusRunnable != null) {
+            handler.postDelayed(statusRunnable, 2000);
+        }
     }
+
+    private Runnable statusRunnable = new Runnable() {
+        @Override
+        public void run() {
+            getStatus();
+        }
+    };
 
     private void queDownload(String fileName, ChatModel chatModel) {
         DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
@@ -543,6 +550,19 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                         String responseBody = response.body().string();
                         final UserStatus userStatus = gifGson.fromJson(responseBody, UserStatus.class);
                         if (userStatus.success) {
+                            SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            Date date = sourceFormat.parse(Time.convertToLocalTime(userStatus.lastSeenTime));
+                            Period p = new Period(new DateTime(new Date()), new DateTime(date), PeriodType.dayTime());
+                            int minutes = p.getMinutes();
+                            int hours = p.getHours();
+                            int days = p.getDays();
+                            int month = p.getMonths();
+                            int year = p.getYears();
+                            if (minutes >= 1) {
+                                userStatus.isOnline = false;
+                            } else {
+                                userStatus.isOnline = true;
+                            }
                             if (userStatus.isOnline) {
                                 statusColor.setVisibility(View.VISIBLE);
                                 statusColor.startAnimation(fadeAnimation);
@@ -551,10 +571,25 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                                 statusColor.setVisibility(View.INVISIBLE);
                                 statusColor.clearAnimation();
 
-                                SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                Date date = sourceFormat.parse(userStatus.lastSeenTime);
-                                Toast.makeText(Chat.this, HumanTime.exactly(date.getTime()), Toast.LENGTH_SHORT).show();
-                                opponentStatus.setText(getString(R.string.lastSeen, Time.convertToLocalTime(userStatus.lastSeenTime)));
+
+                                String appendableString = getString(R.string.minutes);
+                                int lastTime = minutes;
+
+                                if (year != 0) {
+                                    appendableString = getString(R.string.years);
+                                    lastTime = year;
+                                } else if (month != 0) {
+                                    appendableString = getString(R.string.month);
+                                    lastTime = month;
+                                } else if (days != 0) {
+                                    appendableString = getString(R.string.days);
+                                    lastTime = days;
+                                } else if (hours != 0) {
+                                    appendableString = getString(R.string.hours);
+                                    lastTime = hours;
+                                }
+
+                                opponentStatus.setText(getString(R.string.lastSeen, lastTime + " " + appendableString));
                             }
                             scheduleTask();
                         } else {
@@ -943,6 +978,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     @Override
     protected void onDestroy() {
         System.gc();
+        handler.removeCallbacks(statusRunnable);
+        statusRunnable = null;
+        handler = null;
         Notification.get().setSendingRemote(true);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(generalReceiver);
         super.onDestroy();

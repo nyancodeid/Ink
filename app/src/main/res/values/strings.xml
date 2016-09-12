@@ -278,7 +278,7 @@
     <string name="dontShowAgain">Don\'t show this again</string>
     <string name="navigateToSettings">Navigate to settings</string>
     <string name="onlineStatus">Online</string>
-    <string name="lastSeen">Last seen at %1$s</string>
+    <string name="lastSeen">Last seen  %1$s</string>
     <string name="pickup">Pickup</string>
     <string name="hangup">Hangup</string>
     <string name="music">Music</string>
@@ -663,4 +663,9 @@
     <string name="noTrends">No trends for this category</string>
     <string name="premiumText">PREMIUM TREND</string>
     <string name="condensedFont">sans-serif-condensed</string>
+    <string name="hours">hours ago</string>
+    <string name="minutes">minutes ago</string>
+    <string name="years">years ago</string>
+    <string name="month">month ago</string>
+    <string name="days">days ago</string>
 </resources>
