@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.ink.R;
@@ -21,7 +20,6 @@ import ink.adapters.NewsAdapter;
 import ink.interfaces.NewsItemClickListener;
 import ink.models.NewsModel;
 import ink.models.NewsResponse;
-import ink.utils.Animations;
 import ink.utils.Constants;
 import ink.utils.Retrofit;
 import okhttp3.ResponseBody;
@@ -94,13 +92,8 @@ public class GlobalNews extends Fragment implements NewsItemClickListener {
     }
 
     @Override
-    public void onViewMoreClicked(View clickedView) {
-        ((TextView) clickedView).setMaxLines(Integer.MAX_VALUE);
-        Animations.expand(clickedView);
-    }
-
-    @Override
-    public void onGoToBrowserClicked(String linkToOpen) {
+    public void onViewMoreClicked(View clickedView, int position) {
 
     }
+
 }

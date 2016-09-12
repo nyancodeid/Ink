@@ -69,14 +69,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.BaseViewHolder
             @Override
             public void onClick(View view) {
                 if (itemClickListener != null) {
-                    itemClickListener.onViewMoreClicked(holder.newsContent);
+                    itemClickListener.onViewMoreClicked(holder.newsContent, position);
                 }
-            }
-        });
-        holder.goToWeb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
             }
         });
     }
@@ -94,7 +88,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.BaseViewHolder
         private TextView newsTitle;
         private TextView newsContent;
         private ImageView newsImage;
-        private ImageView goToWeb;
         private Button newsViewMore;
 
         public BaseViewHolder(View itemView) {
@@ -102,7 +95,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.BaseViewHolder
             newsTitle = (TextView) itemView.findViewById(R.id.newsTitle);
             newsContent = (TextView) itemView.findViewById(R.id.newsContent);
             newsImage = (ImageView) itemView.findViewById(R.id.newsImage);
-            goToWeb = (ImageView) itemView.findViewById(R.id.goToWeb);
             newsViewMore = (Button) itemView.findViewById(R.id.newsViewMore);
         }
     }

@@ -21,26 +21,13 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="4dp"
-                android:layout_toLeftOf="@+id/goToWeb"
                 android:fontFamily="@string/appFont"
                 android:gravity="center"
-                android:paddingLeft="10dp"
                 android:text="@string/loadingText"
                 android:textColor="@color/defaultGroupColor"
                 android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/goToWeb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
-                android:padding="10dp"
-                android:src="@drawable/go_to_web_vector" />
 
             <ImageView
                 android:id="@+id/newsImage"
