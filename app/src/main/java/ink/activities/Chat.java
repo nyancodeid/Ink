@@ -596,7 +596,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                                 statusColor.startAnimation(fadeAnimation);
                                 opponentStatus.setText(getString(R.string.onlineStatus));
                             } else {
-                                statusColor.setVisibility(View.INVISIBLE);
+                                statusColor.setVisibility(View.GONE);
                                 statusColor.clearAnimation();
 
 
