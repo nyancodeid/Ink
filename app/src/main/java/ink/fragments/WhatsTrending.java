@@ -53,13 +53,13 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
         trendSwipe.setOnRefreshListener(this);
         getCategories();
 
-        List<String> objects = new ArrayList<String>();
-        objects.add("Games");
-        objects.add("Blah");
-        objects.add("Blah");
-        objects.add(getString(R.string.selectCategory));
+        List<String> categoriesList = new ArrayList<String>();
+        categoriesList.add("Games");
+        categoriesList.add("Blah");
+        categoriesList.add("Blah");
+        categoriesList.add(getString(R.string.selectCategory));
 
-        HintAdapter adapter = new HintAdapter(getActivity(), android.R.layout.simple_spinner_item, objects);
+        HintAdapter adapter = new HintAdapter(getActivity(), android.R.layout.simple_spinner_item, categoriesList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         categoriesSpinner = (AppCompatSpinner) view.findViewById(R.id.categoriesSpinner);
