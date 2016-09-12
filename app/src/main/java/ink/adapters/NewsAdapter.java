@@ -57,7 +57,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (unknownHolder instanceof BaseViewHolder) {
             final BaseViewHolder holder = ((BaseViewHolder) unknownHolder);
 
-            NewsModel singleModel = newsModels.get(position);
+            NewsModel singleModel = newsModels.get(position-1);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 holder.newsTitle.setText(Html.fromHtml(singleModel.newsContent, Html.FROM_HTML_MODE_LEGACY));
                 holder.newsContent.setText(Html.fromHtml(singleModel.newsContent, Html.FROM_HTML_MODE_LEGACY));

@@ -103,7 +103,7 @@ public class GlobalNews extends Fragment implements NewsItemClickListener, Swipe
                             newsAdapter.notifyDataSetChanged();
                         }
                         for (int i = 0; i < newsResponse.newsModels.size(); i++) {
-                            newsModels.add(newsResponse.newsModels.get(0));
+                            newsModels.add(newsResponse.newsModels.get(i));
                         }
                         newsAdapter.setNewsModels(newsModels);
                     } else {
