@@ -127,6 +127,7 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
 
                                     }
                                 }).show();
+                                trendSwipe.setRefreshing(false);
                                 return;
                             }
                             for (int i = 0; i < trendsArray.length(); i++) {
@@ -177,6 +178,7 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
 
                                     }
                                 }).show();
+                                trendSwipe.setRefreshing(false);
                                 return;
                             }
                             for (int i = 0; i < trendsArray.length(); i++) {

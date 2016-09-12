@@ -1,10 +1,13 @@
 package ink.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,7 +38,7 @@ public class TrendAdapter extends RecyclerView.Adapter<TrendAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(TrendAdapter.ViewHolder holder, int position) {
-        TrendModel trendModel = trendModelArrayList.get(position);
+        final TrendModel trendModel = trendModelArrayList.get(position);
         if (trendModel.isTop()) {
             holder.premiumBadgeIcon.setVisibility(View.VISIBLE);
             holder.premiumText.setVisibility(View.VISIBLE);
@@ -51,6 +54,16 @@ public class TrendAdapter extends RecyclerView.Adapter<TrendAdapter.ViewHolder> 
         } else {
             holder.trendImage.setVisibility(View.GONE);
         }
+        holder.trendViewMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String urlToOpen = trendModel.getExternalUrl();
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setData(Uri.parse(urlToOpen));
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -64,6 +77,7 @@ public class TrendAdapter extends RecyclerView.Adapter<TrendAdapter.ViewHolder> 
         private TextView premiumText;
         private ImageView trendImage;
         private ImageView premiumBadgeIcon;
+        private Button trendViewMore;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -72,6 +86,7 @@ public class TrendAdapter extends RecyclerView.Adapter<TrendAdapter.ViewHolder> 
             premiumText = (TextView) itemView.findViewById(R.id.premiumText);
             trendImage = (ImageView) itemView.findViewById(R.id.trendImage);
             premiumBadgeIcon = (ImageView) itemView.findViewById(R.id.premiumBadgeIcon);
+            trendViewMore = (Button) itemView.findViewById(R.id.trendViewMore);
         }
     }
 }
