@@ -661,7 +661,7 @@
     <string name="notAuthorized">You are not authorized to use</string>
     <string name="all">All Categories</string>
     <string name="noTrends">No trends for this category</string>
-    <string name="premiumText">PREMIUM TREND</string>
+    <string name="premiumText">PREMIUM</string>
     <string name="condensedFont">sans-serif-condensed</string>
     <string name="hours">hour ago</string>
     <string name="minutes">minute ago</string>
