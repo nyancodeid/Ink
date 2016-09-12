@@ -655,7 +655,8 @@
     <string name="newsError">Could not fetch news,please check your internet</string>
     <string name="worldwideNewsTitle">Worldwide</string>
     <string name="whatsTrendingTitle">What\'s Trending</string>
-    <string name="viewMore">View More</string>
+    <string name="viewDetails">View Details</string>
     <string name="loadMoreNews">Load More News</string>
     <string name="noMoreNews">No more news to load</string>
+    <string name="selectCategory">Select Category</string>
 </resources>

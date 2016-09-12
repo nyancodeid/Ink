@@ -356,6 +356,10 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> requestDelete(@Field("user_id") String userId, @Field("opponent_id") String opponentId);
 
+        @POST(Constants.TREND_CATEGORIES_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getTrendCategories(@Field("token") String token);
+
 
         @POST(Constants.GET_POSTS_URL)
         @FormUrlEncoded

@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/categoriesSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"></android.support.v7.widget.AppCompatSpinner>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/trendSwipe"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/categoriesSpinner">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/trendRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"></android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>
