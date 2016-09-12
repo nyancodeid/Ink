@@ -104,7 +104,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemCount() {
         if (newsModels == null) {
-            return 1;
+            return 0;
         }
         if (newsModels.size() == 0) {
             return 1;

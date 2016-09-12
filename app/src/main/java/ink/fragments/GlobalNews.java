@@ -96,7 +96,7 @@ public class GlobalNews extends Fragment implements NewsItemClickListener, Swipe
                 try {
                     String responseBody = response.body().string();
                     NewsResponse newsResponse = gson.fromJson(responseBody, NewsResponse.class);
-                    if (newsResponse != null && !newsResponse.newsModels.isEmpty()) {
+                    if (newsResponse != null && newsResponse.newsModels != null && !newsResponse.newsModels.isEmpty()) {
                         lastKnownUrl = newsResponse.newsMeta.nextNewsUrl;
                         if (shouldDelete) {
                             newsModels.clear();
