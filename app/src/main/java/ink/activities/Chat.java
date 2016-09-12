@@ -54,7 +54,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +80,7 @@ import ink.utils.Constants;
 import ink.utils.DimDialog;
 import ink.utils.ErrorCause;
 import ink.utils.FileUtils;
+import ink.utils.HumanTime;
 import ink.utils.Keyboard;
 import ink.utils.Notification;
 import ink.utils.PingHelper;
@@ -547,6 +550,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                             } else {
                                 statusColor.setVisibility(View.INVISIBLE);
                                 statusColor.clearAnimation();
+
+                                SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                Date date = sourceFormat.parse(userStatus.lastSeenTime);
+                                Toast.makeText(Chat.this, HumanTime.exactly(date.getTime()), Toast.LENGTH_SHORT).show();
                                 opponentStatus.setText(getString(R.string.lastSeen, Time.convertToLocalTime(userStatus.lastSeenTime)));
                             }
                             scheduleTask();
