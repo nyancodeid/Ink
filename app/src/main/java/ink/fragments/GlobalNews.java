@@ -1,5 +1,7 @@
 package ink.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -35,6 +37,7 @@ public class GlobalNews extends Fragment implements NewsItemClickListener {
     private RecyclerView newsRecycler;
     private Gson gson;
     private NewsAdapter newsAdapter;
+    private ArrayList<NewsModel> newsModels;
 
     public static GlobalNews create() {
         GlobalNews globalNews = new GlobalNews();
@@ -77,7 +80,7 @@ public class GlobalNews extends Fragment implements NewsItemClickListener {
                     String responseBody = response.body().string();
                     NewsResponse newsResponse = gson.fromJson(responseBody, NewsResponse.class);
                     String nextUrl = newsResponse.newsMeta.nextNewsUrl;
-                    ArrayList<NewsModel> newsModels = newsResponse.newsModels;
+                    newsModels = newsResponse.newsModels;
                     newsAdapter.setNewsModels(newsModels);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -93,7 +96,10 @@ public class GlobalNews extends Fragment implements NewsItemClickListener {
 
     @Override
     public void onViewMoreClicked(View clickedView, int position) {
-
+        String urlToOpen = newsModels.get(position).urlExternalLink;
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(urlToOpen));
+        startActivity(i);
     }
 
 }
