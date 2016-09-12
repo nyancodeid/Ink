@@ -61,6 +61,7 @@ public class GlobalNews extends Fragment implements NewsItemClickListener, Swipe
         globalNewsSwipe.setOnRefreshListener(this);
         showRefreshing();
         gson = new Gson();
+        newsModels = new ArrayList<>();
         newsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         newsAdapter = new NewsAdapter(getActivity());
         newsAdapter.setOnItemClickListener(this);
@@ -105,6 +106,13 @@ public class GlobalNews extends Fragment implements NewsItemClickListener, Swipe
                             newsModels.add(newsResponse.newsModels.get(0));
                         }
                         newsAdapter.setNewsModels(newsModels);
+                    } else {
+                        Snackbar.make(newsRecycler, getString(R.string.noMoreNews), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                            }
+                        }).show();
                     }
 
                     globalNewsSwipe.setRefreshing(false);

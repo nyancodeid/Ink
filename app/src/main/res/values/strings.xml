@@ -657,4 +657,5 @@
     <string name="whatsTrendingTitle">What\'s Trending</string>
     <string name="viewMore">View More</string>
     <string name="loadMoreNews">Load More News</string>
+    <string name="noMoreNews">No more news to load</string>
 </resources>

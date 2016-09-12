@@ -111,7 +111,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (newsModels == null) {
             return 0;
         }
-        return newsModels.size();
+        return newsModels.size() + 1;
     }
 
     @Override
