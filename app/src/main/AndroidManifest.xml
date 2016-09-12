@@ -232,7 +232,8 @@
         <activity
             android:name="ink.activities.SecurityQuestion"
             android:theme="@style/LoginTheme"
-            android:windowSoftInputMode="stateAlwaysHidden|stateHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
+        <activity android:name="ink.activities.NewsActivity"></activity>
     </application>
 
 </manifest>
