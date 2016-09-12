@@ -12,6 +12,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -63,6 +64,9 @@ public class Retrofit {
         @FormUrlEncoded
         @POST(Constants.LOGIN_URL)
         Call<ResponseBody> login(@Field("login") String login, @Field("password") String password);
+
+        @GET(Constants.NEWS_BASE_URL + "{nextUrl}")
+        Call<ResponseBody> getNews(@Path("nextUrl") String nextUrl);
 
 
         @POST(Constants.FRIENDS_URL)
