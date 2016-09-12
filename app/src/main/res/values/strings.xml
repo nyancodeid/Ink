@@ -659,4 +659,5 @@
     <string name="loadMoreNews">Load More News</string>
     <string name="noMoreNews">No more news to load</string>
     <string name="selectCategory">Select Category</string>
+    <string name="notAuthorized">You are not authorized to use</string>
 </resources>

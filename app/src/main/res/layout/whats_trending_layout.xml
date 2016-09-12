@@ -3,33 +3,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <View
-        android:id="@+id/topDivider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="5dp"
-        android:background="@color/linesColor"></View>
-
-    <android.support.v7.widget.AppCompatSpinner
-        android:id="@+id/categoriesSpinner"
+    <RelativeLayout
+        android:id="@+id/spinnerWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/topDivider"
-        android:layout_marginLeft="5dp"></android.support.v7.widget.AppCompatSpinner>
+        android:visibility="gone">
 
-    <View
-        android:id="@+id/bottomDivider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/categoriesSpinner"
-        android:background="@color/linesColor"></View>
+        <View
+            android:id="@+id/topDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="5dp"
+            android:background="@color/linesColor"></View>
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/categoriesSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/topDivider"
+            android:layout_marginLeft="5dp"></android.support.v7.widget.AppCompatSpinner>
+
+        <View
+            android:id="@+id/bottomDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/categoriesSpinner"
+            android:background="@color/linesColor"></View>
+    </RelativeLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/trendSwipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/bottomDivider"
+        android:layout_below="@+id/spinnerWrapper"
         android:layout_marginTop="10dp">
 
         <android.support.v7.widget.RecyclerView

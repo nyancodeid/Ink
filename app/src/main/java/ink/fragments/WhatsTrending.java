@@ -2,6 +2,7 @@ package ink.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatSpinner;
@@ -10,8 +11,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.RelativeLayout;
 
 import com.ink.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +40,9 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
     private SwipeRefreshLayout trendSwipe;
     private RecyclerView trendRecycler;
     private AppCompatSpinner categoriesSpinner;
+    private HintAdapter hintAdapter;
+    private List<String> categoriesList;
+    private RelativeLayout spinnerWrapper;
 
     public static WhatsTrending create() {
         WhatsTrending whatsTrending = new WhatsTrending();
@@ -50,21 +60,33 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
         super.onViewCreated(view, savedInstanceState);
         trendSwipe = (SwipeRefreshLayout) view.findViewById(R.id.trendSwipe);
         trendRecycler = (RecyclerView) view.findViewById(R.id.trendRecycler);
+        spinnerWrapper = (RelativeLayout) view.findViewById(R.id.spinnerWrapper);
         trendSwipe.setOnRefreshListener(this);
         getCategories();
 
-        List<String> categoriesList = new ArrayList<String>();
-        categoriesList.add("Games");
-        categoriesList.add("Blah");
-        categoriesList.add("Blah");
-        categoriesList.add(getString(R.string.selectCategory));
-
-        HintAdapter adapter = new HintAdapter(getActivity(), android.R.layout.simple_spinner_item, categoriesList);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categoriesList = new ArrayList<>();
+        hintAdapter = new HintAdapter(getActivity(), android.R.layout.simple_spinner_item, categoriesList);
+        hintAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         categoriesSpinner = (AppCompatSpinner) view.findViewById(R.id.categoriesSpinner);
-        categoriesSpinner.setAdapter(adapter);
-        categoriesSpinner.setSelection(adapter.getCount());
+        categoriesSpinner.setAdapter(hintAdapter);
+        categoriesSpinner.setSelection(hintAdapter.getCount());
+        categoriesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("Fsafasfasfas", "onItemSelected: "+categoriesList.get(i));
+                getTrendByCategory(categoriesList.get(i));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void getTrendByCategory(String category) {
+
     }
 
 
@@ -91,9 +113,24 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
                 }
                 try {
                     String responseBody = response.body().string();
-                    Log.d("Fasfsafsafas", "onResponse: " + responseBody);
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        spinnerWrapper.setVisibility(View.VISIBLE);
+                        JSONArray categories = jsonObject.optJSONArray("categories");
+                        for (int i = 0; i < categories.length(); i++) {
+                            categoriesList.add(categories.optString(i));
+                        }
+                        categoriesList.add(getString(R.string.selectCategory));
+                        hintAdapter.notifyDataSetChanged();
+                    } else {
+                        Snackbar.make(trendRecycler, getString(R.string.notAuthorized), Snackbar.LENGTH_SHORT).show();
+                    }
                     trendSwipe.setRefreshing(false);
                 } catch (IOException e) {
+                    e.printStackTrace();
+                    trendSwipe.setRefreshing(false);
+                } catch (JSONException e) {
                     e.printStackTrace();
                     trendSwipe.setRefreshing(false);
                 }
