@@ -656,4 +656,5 @@
     <string name="worldwideNewsTitle">Worldwide</string>
     <string name="whatsTrendingTitle">What\'s Trending</string>
     <string name="viewMore">View More</string>
+    <string name="loadMoreNews">Load More News</string>
 </resources>

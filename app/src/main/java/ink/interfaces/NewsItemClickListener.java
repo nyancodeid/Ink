@@ -7,4 +7,6 @@ import android.view.View;
  */
 public interface NewsItemClickListener {
     void onViewMoreClicked(View clickedView, int position);
+
+    void onLoadMoreClicked(View clickedView);
 }

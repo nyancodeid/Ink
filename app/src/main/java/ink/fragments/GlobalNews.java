@@ -40,6 +40,7 @@ public class GlobalNews extends Fragment implements NewsItemClickListener, Swipe
     private NewsAdapter newsAdapter;
     private ArrayList<NewsModel> newsModels;
     private SwipeRefreshLayout globalNewsSwipe;
+    private String lastKnownUrl;
 
     public static GlobalNews create() {
         GlobalNews globalNews = new GlobalNews();
@@ -58,49 +59,65 @@ public class GlobalNews extends Fragment implements NewsItemClickListener, Swipe
         newsRecycler = (RecyclerView) view.findViewById(R.id.newsRecycler);
         globalNewsSwipe = (SwipeRefreshLayout) view.findViewById(R.id.globalNewsSwipe);
         globalNewsSwipe.setOnRefreshListener(this);
+        showRefreshing();
+        gson = new Gson();
+        newsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        newsAdapter = new NewsAdapter(getActivity());
+        newsAdapter.setOnItemClickListener(this);
+        newsRecycler.setAdapter(newsAdapter);
+        getNews(Constants.NEWS_PRIMARY_URL, false);
+    }
+
+
+    private void showRefreshing() {
         globalNewsSwipe.post(new Runnable() {
             @Override
             public void run() {
                 globalNewsSwipe.setRefreshing(true);
             }
         });
-        gson = new Gson();
-        newsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        newsAdapter = new NewsAdapter(getActivity());
-        newsAdapter.setOnItemClickListener(this);
-        newsRecycler.setAdapter(newsAdapter);
-        getNews(Constants.NEWS_PRIMARY_URL);
     }
 
-
-    private void getNews(final String nextUrl) {
+    private void getNews(final String nextUrl, final boolean shouldDelete) {
+        showRefreshing();
         final Call<ResponseBody> newsCall = Retrofit.getInstance().getNewsInterface().getNews(Constants.NEWS_BASE_URL + nextUrl);
         newsCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    getNews(nextUrl);
+                    getNews(nextUrl, shouldDelete);
                     return;
                 }
                 if (response.body() == null) {
-                    getNews(nextUrl);
+                    getNews(nextUrl, shouldDelete);
                     return;
                 }
                 try {
                     String responseBody = response.body().string();
                     NewsResponse newsResponse = gson.fromJson(responseBody, NewsResponse.class);
-                    String nextUrl = newsResponse.newsMeta.nextNewsUrl;
-                    newsModels = newsResponse.newsModels;
-                    newsAdapter.setNewsModels(newsModels);
+                    if (newsResponse != null && !newsResponse.newsModels.isEmpty()) {
+                        lastKnownUrl = newsResponse.newsMeta.nextNewsUrl;
+                        if (shouldDelete) {
+                            newsModels.clear();
+                            newsAdapter.notifyDataSetChanged();
+                        }
+                        for (int i = 0; i < newsResponse.newsModels.size(); i++) {
+                            newsModels.add(newsResponse.newsModels.get(0));
+                        }
+                        newsAdapter.setNewsModels(newsModels);
+                    }
+
                     globalNewsSwipe.setRefreshing(false);
                 } catch (IOException e) {
                     e.printStackTrace();
+                    globalNewsSwipe.setRefreshing(false);
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Snackbar.make(newsRecycler, getString(R.string.newsError), Snackbar.LENGTH_LONG).show();
+                globalNewsSwipe.setRefreshing(false);
             }
         });
     }
@@ -114,7 +131,12 @@ public class GlobalNews extends Fragment implements NewsItemClickListener, Swipe
     }
 
     @Override
-    public void onRefresh() {
+    public void onLoadMoreClicked(View clickedView) {
+        getNews(lastKnownUrl, false);
+    }
 
+    @Override
+    public void onRefresh() {
+        getNews(Constants.NEWS_PRIMARY_URL, true);
     }
 }
