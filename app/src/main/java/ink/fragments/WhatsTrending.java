@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,12 +69,14 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
 
         categoriesSpinner = (AppCompatSpinner) view.findViewById(R.id.categoriesSpinner);
         categoriesSpinner.setAdapter(hintAdapter);
-        categoriesSpinner.setSelection(hintAdapter.getCount());
         categoriesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d("Fsafasfasfas", "onItemSelected: "+categoriesList.get(i));
-                getTrendByCategory(categoriesList.get(i));
+                if (!categoriesList.get(i).equals(getString(R.string.selectCategory)) && !categoriesList.get(i).equals(getString(R.string.all))) {
+                    getTrendByCategory(categoriesList.get(i), false);
+                } else if (categoriesList.get(i).equals(getString(R.string.all))) {
+                    getTrendByCategory(null, true);
+                }
             }
 
             @Override
@@ -85,8 +86,12 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
         });
     }
 
-    private void getTrendByCategory(String category) {
+    private void getTrendByCategory(String category, boolean all) {
+        if (all) {
 
+        } else {
+
+        }
     }
 
 
@@ -121,7 +126,9 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
                         for (int i = 0; i < categories.length(); i++) {
                             categoriesList.add(categories.optString(i));
                         }
+                        categoriesList.add(getString(R.string.all));
                         categoriesList.add(getString(R.string.selectCategory));
+                        categoriesSpinner.setSelection(hintAdapter.getCount());
                         hintAdapter.notifyDataSetChanged();
                     } else {
                         Snackbar.make(trendRecycler, getString(R.string.notAuthorized), Snackbar.LENGTH_SHORT).show();
