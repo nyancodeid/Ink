@@ -39,9 +39,10 @@ public class NewsActivity extends BaseActivity {
         }
 
         setupViewPager(viewPager);
-
         tabLayout.setupWithViewPager(viewPager);
 
+        tabLayout.getTabAt(0).setIcon(R.drawable.world_icon);
+        tabLayout.getTabAt(1).setIcon(R.drawable.whats_trending_vector);
     }
 
     @Override
