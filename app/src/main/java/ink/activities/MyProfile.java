@@ -31,6 +31,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -66,7 +67,6 @@ import ink.utils.PermissionsChecker;
 import ink.utils.RealmHelper;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
-import it.sephiroth.android.library.picasso.Picasso;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -109,13 +109,19 @@ public class MyProfile extends BaseActivity {
     private Menu mCancelMenuItem;
     @Bind(R.id.editImageNameFab)
     FloatingActionButton mEditImageNameFab;
-
+    @Bind(R.id.changePassword)
+    FloatingActionButton changePassword;
+    @Bind(R.id.setSecurityQuestion)
+    FloatingActionButton setSecurityQuestion;
     @Bind(R.id.collapsing_toolbar)
     CollapsingToolbarLayout mCollapsingToolbar;
     @Bind(R.id.myProfileToolbar)
     Toolbar mToolbar;
     @Bind(R.id.deleteAccont)
     Button deleteAccount;
+
+    @Bind(R.id.imageLoadingProgress)
+    ProgressBar imageLoadingProgress;
 
     private Snackbar updateSnackBar;
     private String mFirstNameToSend;
@@ -160,6 +166,10 @@ public class MyProfile extends BaseActivity {
         progressDialog.setTitle(getString(R.string.deletingAccount));
         progressDialog.setMessage(getString(R.string.yourAccountIsDeleting));
         mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#99000000"));
+        if (!isAccountRecoverable()) {
+            changePassword.setVisibility(View.GONE);
+            setSecurityQuestion.setVisibility(View.GONE);
+        }
 
         mProfileFab.setOnMenuButtonClickListener(new View.OnClickListener() {
             @Override
@@ -282,7 +292,13 @@ public class MyProfile extends BaseActivity {
                     mImageLinkToSend = selectedImagePath;
                     mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
                     isImageChosen = true;
-                    Ion.with(getApplicationContext()).load(new File(selectedImagePath)).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(profileImage);
+                    imageLoadingProgress.setVisibility(View.VISIBLE);
+                    Ion.with(getApplicationContext()).load(new File(selectedImagePath)).withBitmap().intoImageView(profileImage).setCallback(new FutureCallback<ImageView>() {
+                        @Override
+                        public void onCompleted(Exception e, ImageView result) {
+                            imageLoadingProgress.setVisibility(View.GONE);
+                        }
+                    });
                 } else {
                     isImageChosen = false;
                 }
@@ -445,17 +461,20 @@ public class MyProfile extends BaseActivity {
             mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
             if (shouldLoadImage) {
                 if (isSocialAccount()) {
-                    Ion.with(getApplicationContext()).load(mImageLinkToSend).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(profileImage).setCallback(new FutureCallback<ImageView>() {
+                    imageLoadingProgress.setVisibility(View.VISIBLE);
+                    Ion.with(getApplicationContext()).load(mImageLinkToSend).withBitmap().intoImageView(profileImage).setCallback(new FutureCallback<ImageView>() {
                         @Override
                         public void onCompleted(Exception e, ImageView result) {
-
+                            imageLoadingProgress.setVisibility(View.GONE);
                         }
                     });
                 } else {
-                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(profileImage)
+                    imageLoadingProgress.setVisibility(View.VISIBLE);
+                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).withBitmap().intoImageView(profileImage)
                             .setCallback(new FutureCallback<ImageView>() {
                                 @Override
                                 public void onCompleted(Exception e, ImageView result) {
+                                    imageLoadingProgress.setVisibility(View.GONE);
                                 }
                             });
                 }
@@ -466,6 +485,7 @@ public class MyProfile extends BaseActivity {
                 mCollapsingToolbar.setTitle(mFirstNameToSend + " " + mLastNameToSend);
             }
         } else {
+            imageLoadingProgress.setVisibility(View.GONE);
             profileImage.setBackgroundResource(R.drawable.no_image);
         }
         mPhone.setText(mPhoneNumberToSend);
@@ -490,6 +510,17 @@ public class MyProfile extends BaseActivity {
         }
     }
 
+    @OnClick(R.id.setSecurityQuestion)
+    public void setSecurityQuestion() {
+        mProfileFab.close(true);
+        startActivity(new Intent(getApplicationContext(), SecurityQuestion.class));
+    }
+
+    @OnClick(R.id.changePassword)
+    public void changePassword() {
+        mProfileFab.close(true);
+        startActivity(new Intent(getApplicationContext(), ChangePassword.class));
+    }
 
     @OnClick(R.id.relationshipTV)
     public void relationship() {
@@ -970,18 +1001,10 @@ public class MyProfile extends BaseActivity {
                             String imageId = jsonObject.optString("image_id");
                             if (imageId != null && !imageId.isEmpty()) {
                                 String imageLink = mSharedHelper.getUserId() + ".png";
-                                Picasso.with(getApplicationContext()).invalidate(mSharedHelper.getImageLink());
                                 mSharedHelper.putImageLink(imageLink);
                                 IonCache.clearIonCache(getApplicationContext());
                                 FileUtils.deleteDirectoryTree(getApplicationContext().getCacheDir());
                                 mSharedHelper.putIsSocialAccount(false);
-                                if (isSocialAccount()) {
-                                    Picasso.with(getApplicationContext()).invalidate(mSharedHelper.getImageLink());
-                                } else {
-                                    Picasso.with(getApplicationContext()).invalidate(Constants.MAIN_URL +
-                                            Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink());
-                                }
-
                             }
                             cacheUserData();
                         } else {

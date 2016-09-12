@@ -66,6 +66,14 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public void putSecurityQuestionSet(boolean value) {
+        mEditor.putBoolean("securityWarning", value);
+        mEditor.commit();
+    }
+
+    public boolean isSecurityQuestionSet() {
+        return mSharedPreferences.getBoolean("securityWarning", false);
+    }
 
     public void putUserId(String userId) {
         mEditor.putString("user_id", userId);
@@ -229,6 +237,15 @@ public class SharedHelper {
     public void putIsSocialAccount(boolean value) {
         mEditor.putBoolean("isSocialAccount", value);
         mEditor.commit();
+    }
+
+    public void putIsAccountRecoverable(boolean value) {
+        mEditor.putBoolean("isAccountRecoverable", value);
+        mEditor.commit();
+    }
+
+    public boolean isAccountRecoverable() {
+        return mSharedPreferences.getBoolean("isAccountRecoverable", false);
     }
 
     public boolean isSocialAccount() {

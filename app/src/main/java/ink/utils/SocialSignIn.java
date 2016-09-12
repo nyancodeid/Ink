@@ -113,7 +113,9 @@ public class SocialSignIn {
                                             setAction("OK", new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
-
+                                                    if (DimDialog.isDialogAlive()) {
+                                                        DimDialog.hideDialog();
+                                                    }
                                                 }
                                             }).show();
                                     if (resultCallbacks != null) {
@@ -136,6 +138,7 @@ public class SocialSignIn {
                                     if (resultCallbacks != null) {
                                         resultCallbacks.onFailure(null);
                                     }
+                                    DimDialog.hideDialog();
                                     Toast.makeText(activity, activity.getString(R.string.error_retriving_circles), Toast.LENGTH_SHORT).show();
                                 }
 
@@ -147,7 +150,7 @@ public class SocialSignIn {
 
                     @Override
                     public void onConnectionSuspended(int i) {
-                        Toast.makeText(activity, "fail", Toast.LENGTH_SHORT).show();
+
                     }
                 })
                 .addApi(Plus.API)

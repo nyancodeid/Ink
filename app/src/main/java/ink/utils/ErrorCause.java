@@ -11,4 +11,5 @@ public class ErrorCause {
     public static final String NO_SEARCH_RESULT = "noSearchResult";
     public static final String USER_ALREADY_EXIST = "userAlreadyExist";
     public static final String NO_CUSTOMIZATION = "noCustomization";
+    public static final String NO_USER_FOUND = "noUserFound";
 }

@@ -12,6 +12,7 @@ import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -28,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -49,7 +51,6 @@ import java.text.ParseException;
 import fab.FloatingActionButton;
 import ink.fragments.Feed;
 import ink.fragments.MyFriends;
-import ink.friendsmash.FriendSmashLoginView;
 import ink.interfaces.AccountDeleteListener;
 import ink.interfaces.ColorChangeListener;
 import ink.models.CoinsResponse;
@@ -122,7 +123,27 @@ public class HomeActivity extends BaseActivity
         if (!mSharedHelper.isMessagesDownloaded()) {
             startMessageDownloadService();
         }
-
+        if (!mSharedHelper.isSecurityQuestionSet() && isAccountRecoverable()) {
+            View warningView = getLayoutInflater().inflate(R.layout.app_warning_view, null);
+            final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+            bottomSheetDialog.setContentView(warningView);
+            Button warningButton = (Button) warningView.findViewById(R.id.warningButton);
+            ImageView closeWarning = (ImageView) warningView.findViewById(R.id.closeWarning);
+            warningButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bottomSheetDialog.hide();
+                    startActivity(new Intent(getApplicationContext(), MyProfile.class));
+                }
+            });
+            closeWarning.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    bottomSheetDialog.hide();
+                }
+            });
+            bottomSheetDialog.show();
+        }
 
         if (!PingHelper.get().isPinging()) {
             PingHelper.get().startPinging(mSharedHelper.getUserId());
@@ -331,12 +352,17 @@ public class HomeActivity extends BaseActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
-        if (id == R.id.notifications) {
-            startActivity(new Intent(getApplicationContext(), RequestsView.class));
-        } else if (id == R.id.shop) {
-            startActivity(new Intent(getApplicationContext(), Shop.class));
+        switch (item.getItemId()) {
+            case R.id.notifications:
+                startActivity(new Intent(getApplicationContext(), RequestsView.class));
+                break;
+            case R.id.shop:
+                startActivity(new Intent(getApplicationContext(), Shop.class));
+                break;
+            case R.id.news:
+                startActivity(new Intent(getApplicationContext(), NewsActivity.class));
+                break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -408,10 +434,6 @@ public class HomeActivity extends BaseActivity
                 shouldOpenActivity = false;
                 break;
 
-            case R.id.friendSmashGame:
-                shouldOpenActivity = true;
-                setLastClassToOpen(FriendSmashLoginView.class, false);
-                break;
             case R.id.sendFeedback:
                 shouldOpenActivity = true;
                 setLastClassToOpen(SendFeedback.class, false);
@@ -621,16 +643,16 @@ public class HomeActivity extends BaseActivity
                         if (jsonArray.length() <= 0) {
                             if (menuItem != null) {
                                 if (mSharedHelper.getNotificationIconColor() == null) {
-                                    menuItem.getItem(0).setIcon(ContextCompat.getDrawable(getApplicationContext(),
+                                    menuItem.getItem(1).setIcon(ContextCompat.getDrawable(getApplicationContext(),
                                             R.drawable.notification_icon));
                                 } else {
-                                    menuItem.getItem(0).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getNotificationIconColor()),
+                                    menuItem.getItem(1).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getNotificationIconColor()),
                                             PorterDuff.Mode.SRC_ATOP);
                                 }
                             }
                         } else {
                             if (menuItem != null) {
-                                menuItem.getItem(0).setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_notification_icon));
+                                menuItem.getItem(1).setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_notification_icon));
                             }
                         }
                     } else {
@@ -701,12 +723,12 @@ public class HomeActivity extends BaseActivity
             mFab.setMenuButtonColorPressed(Color.parseColor("#cccccc"));
         }
         if (mSharedHelper.getNotificationIconColor() != null) {
-            menuItem.getItem(0).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getNotificationIconColor()),
+            menuItem.getItem(1).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getNotificationIconColor()),
                     PorterDuff.Mode.SRC_ATOP);
         }
 
         if (mSharedHelper.getShopIconColor() != null) {
-            menuItem.getItem(1).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getShopIconColor()),
+            menuItem.getItem(2).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getShopIconColor()),
                     PorterDuff.Mode.SRC_ATOP);
         }
         if (mSharedHelper.getActionBarColor() != null) {
@@ -736,10 +758,10 @@ public class HomeActivity extends BaseActivity
             mFab.setMenuButtonColorPressed(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         }
         if (mSharedHelper.getNotificationIconColor() == null) {
-            menuItem.getItem(0).getIcon().setColorFilter(null);
+            menuItem.getItem(1).getIcon().setColorFilter(null);
         }
         if (mSharedHelper.getShopIconColor() == null) {
-            menuItem.getItem(1).getIcon().setColorFilter(null);
+            menuItem.getItem(2).getIcon().setColorFilter(null);
         }
         if (mSharedHelper.getActionBarColor() == null) {
             mToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));

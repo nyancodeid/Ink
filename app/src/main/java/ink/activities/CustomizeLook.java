@@ -1,6 +1,5 @@
 package ink.activities;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -216,7 +215,7 @@ public class CustomizeLook extends BaseActivity {
     private String oldOpponentTextColor;
 
     private Gson gson;
-    private ProgressDialog progressDialog;
+    private ink.utils.ProgressDialog progressDialog;
     private boolean anythingChanged;
     private boolean isSavedToCloud;
 
@@ -229,6 +228,8 @@ public class CustomizeLook extends BaseActivity {
         sharedHelper = new SharedHelper(this);
         customizeToolbar = (Toolbar) findViewById(R.id.customizeToolbar);
         setSupportActionBar(customizeToolbar);
+        progressDialog = ink.utils.ProgressDialog.get().buildProgressDialog(this, getString(R.string.pleaseWait),
+                getString(R.string.savingToServer), false);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -653,6 +654,7 @@ public class CustomizeLook extends BaseActivity {
         builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                progressDialog.show();
                 saveToCloud();
             }
         });
@@ -666,6 +668,8 @@ public class CustomizeLook extends BaseActivity {
     }
 
     private void removeFromCloud() {
+        progressDialog.setMessage(getString(R.string.removingFromCloud));
+        progressDialog.show();
         Call<ResponseBody> removeFromCloudCall = Retrofit.getInstance().getInkService().removeFromCloud(sharedHelper.getUserId(), Constants.CUSTOMIZATION_TYPE_REMOVE);
         removeFromCloudCall.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -682,6 +686,7 @@ public class CustomizeLook extends BaseActivity {
                     String responseBody = response.body().string();
                     ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
                     if (colorModel.success) {
+                        progressDialog.hide();
                         isSavedToCloud = false;
                         Snackbar.make(friendsCleaner, getString(R.string.dataRemoved), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                             @Override
@@ -691,6 +696,7 @@ public class CustomizeLook extends BaseActivity {
                         }).show();
                         anythingChanged = false;
                     } else {
+                        progressDialog.hide();
                         if (colorModel.cause != null) {
                             if (colorModel.cause.equals(ErrorCause.NO_CUSTOMIZATION)) {
                                 Snackbar.make(friendsCleaner, getString(R.string.noCustomizationData), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
@@ -700,6 +706,7 @@ public class CustomizeLook extends BaseActivity {
                                     }
                                 }).show();
                             } else {
+                                progressDialog.hide();
                                 Snackbar.make(friendsCleaner, getString(R.string.couldNotRemove), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -718,6 +725,7 @@ public class CustomizeLook extends BaseActivity {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    progressDialog.hide();
                     Snackbar.make(friendsCleaner, getString(R.string.couldNotRemove), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -729,6 +737,7 @@ public class CustomizeLook extends BaseActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressDialog.hide();
                 Snackbar.make(friendsCleaner, getString(R.string.couldNotRemove), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -740,6 +749,8 @@ public class CustomizeLook extends BaseActivity {
     }
 
     private void restoreFromCloud() {
+        progressDialog.setMessage(getString(R.string.restoringFromCloud));
+        progressDialog.show();
         Call<ResponseBody> restoreCall = Retrofit.getInstance().getInkService().restoreCustomization(sharedHelper.getUserId(), Constants.CUSTOMIZATION_TYPE_RESTORE);
         restoreCall.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -756,6 +767,7 @@ public class CustomizeLook extends BaseActivity {
                     String responseBody = response.body().string();
                     ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
                     if (colorModel.success) {
+                        progressDialog.hide();
                         isSavedToCloud = false;
                         saveDataLocally(colorModel);
                         Snackbar.make(actionBarCleaner, getString(R.string.dataRestored), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
@@ -765,6 +777,7 @@ public class CustomizeLook extends BaseActivity {
                             }
                         }).show();
                     } else {
+                        progressDialog.hide();
                         if (colorModel.cause != null) {
                             if (colorModel.cause.equals(ErrorCause.NO_CUSTOMIZATION)) {
                                 Snackbar.make(friendsCleaner, getString(R.string.noCustomizationData), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
@@ -774,6 +787,7 @@ public class CustomizeLook extends BaseActivity {
                                     }
                                 }).show();
                             } else if (colorModel.cause.equals(ErrorCause.SERVER_ERROR)) {
+                                progressDialog.hide();
                                 Snackbar.make(friendsCleaner, getString(R.string.errorFetchingData), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -782,6 +796,7 @@ public class CustomizeLook extends BaseActivity {
                                 }).show();
                             }
                         } else {
+                            progressDialog.hide();
                             Snackbar.make(friendsCleaner, getString(R.string.errorFetchingData), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -791,6 +806,7 @@ public class CustomizeLook extends BaseActivity {
                         }
                     }
                 } catch (IOException e) {
+                    progressDialog.hide();
                     e.printStackTrace();
                     Snackbar.make(friendsCleaner, getString(R.string.errorFetchingData), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                         @Override
@@ -803,6 +819,7 @@ public class CustomizeLook extends BaseActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressDialog.hide();
                 Snackbar.make(friendsCleaner, getString(R.string.failedToRestore), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -871,6 +888,7 @@ public class CustomizeLook extends BaseActivity {
                     String responseBody = response.body().string();
                     ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
                     if (colorModel.success) {
+                        progressDialog.hide();
                         isSavedToCloud = true;
                         sharedHelper.putHasPendingCustomizationsToSave(false);
                         Snackbar.make(friendsCleaner, getString(R.string.customizationSaved), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
@@ -879,7 +897,9 @@ public class CustomizeLook extends BaseActivity {
 
                             }
                         }).show();
+
                     } else {
+                        progressDialog.hide();
                         if (colorModel.cause != null) {
                             if (colorModel.cause.equals(ErrorCause.SERVER_ERROR)) {
                                 Snackbar.make(friendsCleaner, getString(R.string.errorSaviingCustomaziation), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
@@ -890,6 +910,7 @@ public class CustomizeLook extends BaseActivity {
                                 }).show();
                             }
                         } else {
+                            progressDialog.hide();
                             Snackbar.make(friendsCleaner, getString(R.string.customizationSaved), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -904,6 +925,7 @@ public class CustomizeLook extends BaseActivity {
                         }
                     }
                 } catch (IOException e) {
+                    progressDialog.hide();
                     e.printStackTrace();
                     Snackbar.make(friendsCleaner, getString(R.string.errorSaviingCustomaziation), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                         @Override
@@ -916,6 +938,7 @@ public class CustomizeLook extends BaseActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressDialog.hide();
                 Snackbar.make(friendsCleaner, getString(R.string.failedToSaveCloud), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

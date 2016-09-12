@@ -109,7 +109,6 @@ public class Shop extends BaseActivity {
         switch (requestCode) {
             case Constants.BUY_COINS_REQUEST_CODE:
                 boolean coinsBought = data.getExtras().getBoolean(Constants.COINS_BOUGHT_KEY);
-
                 break;
         }
     }

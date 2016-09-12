@@ -15,63 +15,44 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/imageCard"
+            <ImageView
+                android:id="@+id/profileImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:adjustViewBounds="true"
+                android:minHeight="170dp"
+                android:scaleType="fitXY" />
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/opponentImageLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/profileImage"
                 android:layout_centerHorizontal="true"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/no_image"
-                android:minHeight="200dp"
-                android:transitionName="card">
-
-                <com.wang.avi.AVLoadingIndicatorView
-                    android:id="@+id/opponentImageLoading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    app:indicator_color="@color/colorPrimary" />
-
-                <ImageView
-                    android:id="@+id/profileImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:minHeight="200dp" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:alpha="0.5"
-                    android:background="@drawable/profile_layer_gradient"
-                    android:gravity="right"
-                    android:orientation="horizontal">
+                android:layout_marginTop="35dp"
+                app:indicator_color="@color/colorPrimary" />
 
 
-                    <TextView
-                        android:id="@+id/userName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|right"
-                        android:layout_margin="16dp"
-                        android:fontFamily="@string/appFont"
-                        android:text="@string/loadingText"
-                        android:textColor="#000000"
-                        android:textSize="20sp"
-                        android:transitionName="text" />
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/profileImage"
+                android:layout_alignEnd="@+id/profileImage"
+                android:layout_alignRight="@+id/profileImage"
+                android:layout_margin="16dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/loadingText"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:transitionName="text" />
 
-            <!--Triangle part-->
             <android.support.v7.widget.CardView
                 android:id="@+id/statusCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/triangleView"
-                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
@@ -174,6 +155,9 @@
                         android:layout_alignParentRight="true"
                         android:layout_below="@+id/firstDivider"
                         android:layout_marginTop="5dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
                         android:padding="10dp"
                         android:src="@drawable/audi_call_icon"
                         android:visibility="gone" />
@@ -309,7 +293,7 @@
                 android:layout_height="25dp"
                 android:layout_alignLeft="@+id/statusCard"
                 android:layout_alignStart="@+id/statusCard"
-                android:layout_below="@+id/imageCard"
+                android:layout_below="@+id/profileImage"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/status_triangle" />
 

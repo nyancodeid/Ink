@@ -51,6 +51,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Map;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ink.callbacks.GeneralCallback;
 import ink.utils.Constants;
 import ink.utils.Retrofit;
@@ -66,7 +68,7 @@ import retrofit2.Response;
  */
 public class Login extends BaseActivity implements View.OnClickListener {
 
-    private static final int GOOGLE_SIGN_IN_REQUEST_CODE = 1;
+    public static final int GOOGLE_SIGN_IN_REQUEST_CODE = 1;
     // UI references.
     private AutoCompleteTextView mLoginView;
     private EditText mPasswordView;
@@ -89,6 +91,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
             actionBar.hide();
         }
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
         mCallbackManager = CallbackManager.Factory.create();
         // Set up the login form.
         mSharedHelper = new SharedHelper(this);
@@ -203,13 +206,17 @@ public class Login extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    @OnClick(R.id.forgotPassword)
+    public void forgotPassword() {
+        startActivity(new Intent(getApplicationContext(), ForgotPassword.class));
+    }
+
     private void proceedLogin() {
         final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().login(mLoginView.getText().toString().toString(),
                 mPasswordView.getText().toString());
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                mProgressView.setVisibility(View.GONE);
                 enableButtons();
                 if (response == null) {
                     proceedLogin();
@@ -226,6 +233,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                         boolean success = jsonObject.optBoolean("success");
                         AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
                         if (!success) {
+                            mProgressView.setVisibility(View.GONE);
                             builder.setTitle(getString(R.string.errorLogin));
                             builder.setMessage(getString(R.string.errorLoginMessage));
                             builder.setCancelable(false);
@@ -237,12 +245,17 @@ public class Login extends BaseActivity implements View.OnClickListener {
                             });
                             builder.show();
                         } else {
+                            mProgressView.setVisibility(View.GONE);
                             String userId = jsonObject.optString("user_id");
+                            String securityQuestion = jsonObject.optString("securityQuestion");
+                            mSharedHelper.putSecurityQuestionSet(securityQuestion != null && !securityQuestion.isEmpty());
                             mSharedHelper.putFirstName(jsonObject.optString("first_name"));
+                            mSharedHelper.putIsAccountRecoverable(true);
                             mSharedHelper.putLastName(jsonObject.optString("last_name"));
                             mSharedHelper.putUserId(userId);
                             mSharedHelper.putShouldShowIntro(false);
                             mSharedHelper.putIsSocialAccount(false);
+                            mSharedHelper.putIsAccountRecoverable(true);
                             String imageLink = jsonObject.optString("imageLink");
                             if (imageLink != null && !imageLink.isEmpty()) {
                                 mSharedHelper.putImageLink(imageLink);
@@ -251,9 +264,11 @@ public class Login extends BaseActivity implements View.OnClickListener {
                             finish();
                         }
                     } catch (JSONException e) {
+                        attemptLogin();
                         e.printStackTrace();
                     }
                 } catch (IOException e) {
+                    attemptLogin();
                     e.printStackTrace();
                 }
             }
@@ -551,7 +566,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
 //            // Execute and process the next page request
 //            peopleFeed = listPeople.execute();
 //            people = peopleFeed.getItems();
-        }
+    }
 
     private void loginUser(final String login,
                            final String firstName,
@@ -587,9 +602,12 @@ public class Login extends BaseActivity implements View.OnClickListener {
                         String userId = jsonObject.optString("userId");
                         boolean isSocial = true;
                         boolean isRegistered = jsonObject.optBoolean("isRegistered");
+                        mSharedHelper.putIsAccountRecoverable(false);
                         if (isRegistered) {
                             isSocial = jsonObject.optBoolean("isSocialAccount");
                             saveSocialLoginInfo(jsonObject.optString("firstName"), jsonObject.optString("lastName"), userId, jsonObject.optString("imageUrl"), isRegistered, isSocial);
+                            String securityQuestion = jsonObject.optString("securityQuestion");
+                            mSharedHelper.putSecurityQuestionSet(securityQuestion != null && !securityQuestion.isEmpty());
                         } else {
                             saveSocialLoginInfo(firstName, lastName, userId, imageUrl, isRegistered, isSocial);
                         }

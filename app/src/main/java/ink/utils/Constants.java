@@ -41,8 +41,11 @@ public class Constants {
     public static final String FRIENDS_URL = "UserFriends.php";
     public static final String SINGLE_USER_URL = "SingleUser.php";
     public static final String SEND_FRIEND_REQUEST_URL = "SendFriendRequest.php";
+    public static final String NEWS_BASE_URL = "http://api.breakingnews.com";
+    public static final String NEWS_PRIMARY_URL = "/api/v1/item/?format=json";
     public static final String DELETE_MESSAGE_URL = "DeleteMessage.php";
     public static final String SEND_LOCATION_UPDATE_URL = "SendLocationUpdate.php";
+    public static final String GET_USER_PASSWORD = "GetPassword.php";
     public static final String REQUEST_LOCATION_URL = "RequestLocation.php";
     public static final String MESSAGES_URL = "Messages.php";
     public static final String UPLOADED_FILES_DIR = "UserUploads/";
@@ -55,6 +58,8 @@ public class Constants {
     public static final String CHAT_MESSAGES = "ChatMessages.php";
     public static final String GROUP_OPTIONS_URL = "GroupOptions.php";
     public static final String GROUP_OPTIONS_LEAVE = "leaveGroup";
+    public static final String CHANGE_PASSWORD = "ChangePassword.php";
+    public static final String SECURITY_QUESTION = "SecurityQuestion.php";
     public static final String REGISTER_TOKEN = "RegisterToken.php";
     public static final String REQUEST_DELETE_URL = "RequestDeleteMessage.php";
     public static final String GET_POSTS_URL = "GetPosts.php";
@@ -69,7 +74,9 @@ public class Constants {
     public static final String LIKE_URL = "LikePost.php";
     public static final String GET_COMMENTS_URL = "GetComments.php";
     public static final String SOCIAL_LOGIN_URL = "SocialLogin.php";
+    public static final String TEMPORARY_PASSWORD = "TemporaryPassword.php";
     public static final String ADD_COMMENT_URL = "AddComment.php";
+    public static final String GET_USER_LOGIN = "GetUserLogin.php";
     public static final int TEXT_VIEW_DEFAULT_COLOR = android.R.color.tab_indicator_text;
     public static final String NOTIFICATION_TYPE_MESSAGE = "message";
     public static final String NOTIFICATION_TYPE_GROUP_REQUEST = "request";
@@ -123,6 +130,10 @@ public class Constants {
     public static final String NO_IMAGE_URL = MAIN_URL + USER_IMAGES_FOLDER + NO_IMAGE_NAME;
     public static final String ANDROID_DRAWABLE_DIR = ANDROID_RESOURCE_DIR + "com.ink" + "/drawable/";
     public static final String FUNNY_USER_IMAGE = "funny_image.jpg";
+    public static final String TREND_CATEGORIES_URL = "TrendCategories.php";
+    public static final String TREND_URL = "GetTrends.php";
+    public static final String TREND_TYPE_ALL = "getAllTrends";
+    public static final String TREND_CATEGORIES_TOKEN = "Fasfklasgjp_KIkGPKAGKA=ga558787as785as-as6539sa-6gas32-ga6s";
     public static final String CHECK_IS_FRIEND_URL = "CheckIsFriend.php";
     public static final String LOCATION_REQUEST_TYPE_INSERT = "insertRequest";
     public static final String LOCATION_REQUEST_TYPE_ACCEPT = "acceptRequest";
@@ -132,5 +143,7 @@ public class Constants {
     public static final int BUY_COINS_REQUEST_CODE = 196;
     public static final int REQUEST_CUSTOMIZE_MADE = 8;
     public static final String COINS_BOUGHT_KEY = "coins_bought";
+    public static final String PASSWORD_REQUEST_TOKEN = "fasjflkgkaga7g8asggf-a0gf98asu-gangas-g389t-nke_wrlPg_h34890udglka";
+    public static final String USER_LOGIN_TOKEN = "asjflkasf_gasjgkla=-gsangklasjklsag-sagnas3r532r3w52r523q-gsa43-t3t54a-";
 }
 

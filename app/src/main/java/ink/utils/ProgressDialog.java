@@ -10,16 +10,13 @@ import com.ink.R;
  */
 public class ProgressDialog {
 
-    public static ProgressDialog progressDialog = new ProgressDialog();
+    private static ProgressDialog progressDialog = new ProgressDialog();
     private android.app.ProgressDialog progressDialogBuilder;
 
     public ProgressDialog buildProgressDialog(Context context, String title,
                                               String message, boolean cancelable) {
         System.gc();
-        if (progressDialogBuilder == null) {
-            progressDialogBuilder = new android.app.ProgressDialog(context);
-        }
-
+        progressDialogBuilder = new android.app.ProgressDialog(context);
         progressDialogBuilder.setTitle(title);
         progressDialogBuilder.setMessage(message);
         progressDialogBuilder.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_dialog_circle));
@@ -32,7 +29,9 @@ public class ProgressDialog {
     }
 
     public void show() {
-        progressDialogBuilder.show();
+        if (progressDialogBuilder != null) {
+            progressDialogBuilder.show();
+        }
     }
 
     public static ProgressDialog get() {
@@ -40,9 +39,20 @@ public class ProgressDialog {
     }
 
     public void hide() {
-        if (progressDialog != null) {
+        if (progressDialogBuilder != null) {
             progressDialogBuilder.dismiss();
-            progressDialogBuilder = null;
+        }
+    }
+
+    public void setTitle(String title) {
+        if (progressDialogBuilder != null) {
+            progressDialogBuilder.setTitle(title);
+        }
+    }
+
+    public void setMessage(String message) {
+        if (progressDialogBuilder != null) {
+            progressDialogBuilder.setMessage(message);
         }
     }
 }

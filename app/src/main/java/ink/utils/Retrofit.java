@@ -13,19 +13,21 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 /**
  * Created by USER on 2016-06-19.
  */
 public class Retrofit {
-    private static Retrofit ourInstance = new Retrofit();
+    private static Retrofit retrofitInstance = new Retrofit();
 
     public static Retrofit getInstance() {
-        return ourInstance;
+        return retrofitInstance;
     }
 
-    public InkService mInkService;
+    public InkService inkService;
     public MusicCloudInterface musicCloudInterface;
+    private NewsInterface newsInterface;
 
     private Retrofit() {
         retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
@@ -38,9 +40,15 @@ public class Retrofit {
                 .baseUrl(Constants.CLOUD_API_URL)
                 .build();
 
+        retrofit2.Retrofit newsInterfaceRetrofit = new retrofit2.Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(Constants.NEWS_BASE_URL)
+                .build();
 
-        mInkService = retrofit.create(InkService.class);
+
+        inkService = retrofit.create(InkService.class);
         musicCloudInterface = cloudRetrofit.create(MusicCloudInterface.class);
+        newsInterface = newsInterfaceRetrofit.create(NewsInterface.class);
 
     }
 
@@ -48,8 +56,12 @@ public class Retrofit {
         return musicCloudInterface;
     }
 
+    public NewsInterface getNewsInterface() {
+        return newsInterface;
+    }
+
     public InkService getInkService() {
-        return mInkService;
+        return inkService;
     }
 
     public interface InkService {
@@ -93,6 +105,24 @@ public class Retrofit {
         @POST(Constants.MESSAGES_URL)
         @FormUrlEncoded
         Call<ResponseBody> getMessages(@Field("user_id") String userId, @Field("opponent_id") String opponentId);
+
+
+        @POST(Constants.GET_USER_PASSWORD)
+        @FormUrlEncoded
+        Call<ResponseBody> getUserPassword(@Field("userId") String userId,
+                                           @Field("token") String token);
+
+        @POST(Constants.CHANGE_PASSWORD)
+        @FormUrlEncoded
+        Call<ResponseBody> changePassword(@Field("userId") String userId,
+                                          @Field("token") String token,
+                                          @Field("password") String newPassword);
+
+        @POST(Constants.SECURITY_QUESTION)
+        @FormUrlEncoded
+        Call<ResponseBody> setSecurityQuestion(@Field("userId") String userId,
+                                               @Field("securityQuestion") String securityQuestion,
+                                               @Field("securityAnswer") String securityAnswer);
 
         @POST(Constants.SEND_LOCATION_UPDATE_URL)
         @FormUrlEncoded
@@ -326,6 +356,14 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> requestDelete(@Field("user_id") String userId, @Field("opponent_id") String opponentId);
 
+        @POST(Constants.TREND_CATEGORIES_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getTrendCategories(@Field("token") String token);
+
+        @POST(Constants.TREND_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getTrends(@Field("type") String categoryType);
+
 
         @POST(Constants.GET_POSTS_URL)
         @FormUrlEncoded
@@ -418,7 +456,16 @@ public class Retrofit {
                                           @Field("commentId") String commentId,
                                           @Field("newCommentBody") String $newCommentBody);
 
+        @POST(Constants.GET_USER_LOGIN)
+        @FormUrlEncoded
+        Call<ResponseBody> getUserLogin(@Field("login") String login,
+                                        @Field("token") String token);
 
+
+        @POST(Constants.TEMPORARY_PASSWORD)
+        @FormUrlEncoded
+        Call<ResponseBody> getTemporaryPassword(@Field("login") String inputLogin,
+                                                @Field("token") String token);
     }
 
     public interface MusicCloudInterface {
@@ -428,5 +475,10 @@ public class Retrofit {
         @GET("/tracks?client_id=" + Constants.CLOUD_CLIENT_ID)
         Call<ResponseBody> searchSong(@Query("q") String searchString);
 
+    }
+
+    public interface NewsInterface {
+        @GET()
+        Call<ResponseBody> getNews(@Url() String fullUrl);
     }
 }

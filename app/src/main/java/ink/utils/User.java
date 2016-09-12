@@ -37,6 +37,7 @@ public class User {
         return facebookUserId;
     }
 
+
     public boolean isCoinsLoaded() {
         return isCoinsLoaded;
     }
