@@ -18,15 +18,26 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--keepclasseswithmembernames class * {
-    native <methods>;
+#-keepclasseswithmembernames class * {
+#    native <methods>;
+#}
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** w(...);
+    public static *** v(...);
+    public static *** i(...);
+    public static *** e(...);
+    public static *** a(...);
 }
 
--keep class com.sinch.** { *; }
--keep interface com.sinch.** { *; }
--keep class org.webrtc.** { *; }
-
 -keep class com.google.android.gms.**
+# Retain generated class which implement Unbinder.
+#-keep public class * implements butterknife.Unbinder { public <init>(...); }
+
+# Prevent obfuscation of types which use ButterKnife annotations since the simple name
+# is used to reflectively look up the generated ViewBinding.
+#-keep class butterknife.*
+-keep class **$$ViewBinder { *; }
 
 -dontwarn com.google.android.gms.**
 -dontwarn android.media.**

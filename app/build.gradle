@@ -30,6 +30,7 @@ android {
         versionName "1.0"
         manifestPlaceholders = [appPackageName: "${applicationId}"]
         multiDexEnabled true
+        setProperty("archivesBaseName", "Ink")
     }
 
 
