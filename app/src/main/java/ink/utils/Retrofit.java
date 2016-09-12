@@ -360,6 +360,10 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getTrendCategories(@Field("token") String token);
 
+        @POST(Constants.TREND_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getTrends(@Field("type") String categoryType);
+
 
         @POST(Constants.GET_POSTS_URL)
         @FormUrlEncoded

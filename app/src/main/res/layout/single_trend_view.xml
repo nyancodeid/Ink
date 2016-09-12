@@ -14,8 +14,28 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <ImageView
+                android:id="@+id/premiumBadgeIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_margin="5dp"
+                android:src="@drawable/premium_badge" />
+
             <TextView
-                android:id="@+id/newsTitle"
+
+                android:id="@+id/premiumText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/premiumBadgeIcon"
+                android:layout_marginRight="5dp"
+                android:fontFamily="@string/condensedFont"
+                android:text="@string/premiumText"
+                android:textColor="#E3AA24" />
+
+            <TextView
+                android:id="@+id/trendTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -33,13 +53,13 @@
                 android:id="@+id/trendImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/newsTitle"
+                android:layout_below="@+id/premiumText"
                 android:layout_centerHorizontal="true"
                 android:layout_margin="16dp"
                 android:adjustViewBounds="true"
                 android:fitsSystemWindows="true"
                 android:scaleType="fitXY"
-                android:src="@drawable/breaking_news_vector" />
+                android:src="@drawable/whats_trending_vector" />
 
             <TextView
                 android:id="@+id/trendContent"

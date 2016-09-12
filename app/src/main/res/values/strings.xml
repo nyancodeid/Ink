@@ -658,7 +658,9 @@
     <string name="viewDetails">View Details</string>
     <string name="loadMoreNews">Load More News</string>
     <string name="noMoreNews">No more news to load</string>
-    <string name="selectCategory">Select Category</string>
     <string name="notAuthorized">You are not authorized to use</string>
-    <string name="all">All</string>
+    <string name="all">All Categories</string>
+    <string name="noTrends">No trends for this category</string>
+    <string name="premiumText">PREMIUM TREND</string>
+    <string name="condensedFont">sans-serif-condensed</string>
 </resources>

@@ -131,6 +131,8 @@ public class Constants {
     public static final String ANDROID_DRAWABLE_DIR = ANDROID_RESOURCE_DIR + "com.ink" + "/drawable/";
     public static final String FUNNY_USER_IMAGE = "funny_image.jpg";
     public static final String TREND_CATEGORIES_URL = "TrendCategories.php";
+    public static final String TREND_URL = "GetTrends.php";
+    public static final String TREND_TYPE_ALL = "getAllTrends";
     public static final String TREND_CATEGORIES_TOKEN = "Fasfklasgjp_KIkGPKAGKA=ga558787as785as-as6539sa-6gas32-ga6s";
     public static final String CHECK_IS_FRIEND_URL = "CheckIsFriend.php";
     public static final String LOCATION_REQUEST_TYPE_INSERT = "insertRequest";
