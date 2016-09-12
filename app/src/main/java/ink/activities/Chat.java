@@ -57,8 +57,10 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -330,8 +332,24 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                     }
                 });
 
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 if (mCurrentUserId.equals(chatModel.getUserId())) {
-                    builder.setMessage("Date of message : " + date);
+                    try {
+                        calendar.setTime(sourceFormat.parse(date));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    String monthName = new SimpleDateFormat("MMMM").format(calendar.getTime());
+
+                    String weekName = new SimpleDateFormat("EEEE").format(calendar.getTime());
+
+                    builder.setMessage(getString(R.string.dateOfMessage) + calendar.get(Calendar.YEAR) + "," + weekName + "," + monthName
+                            + " " + (calendar.get(Calendar.DAY_OF_MONTH) < 10 ? "0" + calendar.get(Calendar.DAY_OF_MONTH) : calendar.get(Calendar.DAY_OF_MONTH))
+                            + " (" + (calendar.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + calendar.get(Calendar.HOUR_OF_DAY) : calendar.get(Calendar.HOUR_OF_DAY)) + ":"
+                            + (calendar.get(Calendar.MINUTE) < 10 ? "0" + calendar.get(Calendar.MINUTE) : calendar.get(Calendar.MINUTE)) +
+                            ":" + (calendar.get(Calendar.SECOND) < 10 ? "0" + calendar.get(Calendar.SECOND) : calendar.get(Calendar.SECOND)) + ")");
+
                     builder.setNegativeButton(getString(R.string.deleteMessage), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -340,7 +358,21 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                         }
                     });
                 } else {
-                    builder.setMessage("Date of message : " + Time.convertToLocalTime(date));
+
+                    try {
+                        calendar.setTime(sourceFormat.parse(Time.convertToLocalTime(date)));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    String monthName = new SimpleDateFormat("MMMM").format(calendar.getTime());
+
+                    String weekName = new SimpleDateFormat("EEEE").format(calendar.getTime());
+
+                    builder.setMessage(getString(R.string.dateOfMessage) + calendar.get(Calendar.YEAR) + "," + weekName + "," + monthName
+                            + " " + (calendar.get(Calendar.DAY_OF_MONTH) < 10 ? "0" + calendar.get(Calendar.DAY_OF_MONTH) : calendar.get(Calendar.DAY_OF_MONTH))
+                            + " (" + (calendar.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + calendar.get(Calendar.HOUR_OF_DAY) : calendar.get(Calendar.HOUR_OF_DAY)) + ":"
+                            + (calendar.get(Calendar.MINUTE) < 10 ? "0" + calendar.get(Calendar.MINUTE) : calendar.get(Calendar.MINUTE)) +
+                            ":" + (calendar.get(Calendar.SECOND) < 10 ? "0" + calendar.get(Calendar.SECOND) : calendar.get(Calendar.SECOND)) + ")");
                 }
 
 

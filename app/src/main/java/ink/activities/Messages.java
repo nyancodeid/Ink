@@ -26,11 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -42,7 +38,6 @@ import ink.utils.RealmHelper;
 import ink.utils.RecyclerTouchListener;
 import ink.utils.Retrofit;
 import ink.utils.SharedHelper;
-import ink.utils.Time;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -65,7 +60,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
     private List<UserMessagesModel> userMessagesModels;
     private UserMessagesModel userMessagesModel;
     private MessagesAdapter messagesAdapter;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
     private String finalOpponentId;
     private Snackbar deleteRequestSnack;
     private SharedHelper sharedHelper;
@@ -260,51 +254,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                         if (currentUserId.equals(deleteUserId) || currentUserId.equals(deleteOpponentId)) {
                             continue;
                         }
-                        String finalDate;
-                        try {
-                            Date dateObject = dateFormat.parse(date);
-                            Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(dateObject);
-
-                            int monthInt = calendar.get(Calendar.MONTH);
-                            int dayInt = calendar.get(Calendar.DAY_OF_MONTH) + 1;
-                            int hourInt = calendar.get(Calendar.HOUR_OF_DAY);
-                            int minutesInt = calendar.get(Calendar.MINUTE);
-                            int secondsInt = calendar.get(Calendar.SECOND);
-                            String month = String.valueOf(monthInt);
-                            String day = String.valueOf(dayInt);
-                            String hours = String.valueOf(hourInt);
-                            String minutes = String.valueOf(minutesInt);
-                            String seconds = String.valueOf(secondsInt);
-
-                            if (monthInt < 10) {
-                                month = "0" + monthInt;
-                            }
-                            if (dayInt < 10) {
-                                day = "0" + dayInt;
-                            }
-                            if (hourInt < 10) {
-                                hours = "0" + hourInt;
-                            }
-                            if (minutesInt < 10) {
-                                minutes = "0" + minutesInt;
-                            }
-                            if (secondsInt < 10) {
-                                seconds = "0" + secondsInt;
-                            }
-
-
-                            String year = String.valueOf(calendar.get(Calendar.YEAR));
-
-                            finalDate = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
-                        } catch (ParseException e) {
-                            finalDate = date;
-                            e.printStackTrace();
-                        }
-
-                        String[] splittedDates = Time.convertToLocalTime(finalDate).split("\\s");
-                        String splittedDate = splittedDates[0];
-                        String splittedTime = splittedDates[1];
                         if (userId.equals(mSharedHelper.getUserId())) {
                             String messageOld = message;
                             if (messageOld.trim().isEmpty()) {
@@ -318,7 +267,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                             }
                         }
                         userMessagesModel = new UserMessagesModel(isSocialAccount, Boolean.valueOf(isFriend), userId, opponentId, messageId, message,
-                                firstName, lastName, imageName, splittedDate + "\n" + splittedTime, imageName);
+                                firstName, lastName, imageName, imageName);
                         userMessagesModels.add(userMessagesModel);
                         messagesAdapter.notifyDataSetChanged();
                     }

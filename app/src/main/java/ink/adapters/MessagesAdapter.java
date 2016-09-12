@@ -28,13 +28,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     private SharedHelper mSharedHelper;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView messagesUserName, messageBody, messageDate;
+        public TextView messagesUserName, messageBody;
         public ImageView messagesImage;
 
         public ViewHolder(View view) {
             super(view);
             messagesUserName = (TextView) view.findViewById(R.id.messagesUserName);
-            messageDate = (TextView) view.findViewById(R.id.messageDate);
             messageBody = (TextView) view.findViewById(R.id.messageBody);
             messagesImage = (ImageView) view.findViewById(R.id.messagesImage);
         }
@@ -60,7 +59,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         holder.messagesUserName.setText(userMessagesModel.getFirstName() + " " + userMessagesModel.getLastName());
 
         holder.messageBody.setText(userMessagesModel.getMessage().replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
-        holder.messageDate.setText(userMessagesModel.getDate());
         if (!userMessagesModel.getImageName().isEmpty()) {
             String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + userMessagesModel.getImageLink();
             if (userMessagesModel.isSocialAccount()) {

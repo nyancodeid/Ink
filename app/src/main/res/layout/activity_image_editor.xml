@@ -37,7 +37,7 @@
         android:layout_marginRight="8dp"
         android:src="@drawable/open_icon"
         fab:fab_colorNormal="@color/colorPrimary"
-        fab:fab_colorPressed="@color/colorPrimaryDark" />
+        fab:fab_colorPressed="#cccccc" />
 
     <RelativeLayout
         android:id="@+id/editorHintLayout"

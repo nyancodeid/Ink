@@ -11,8 +11,7 @@ public class UserMessagesModel {
     private String firstName;
     private String lastName;
     private String imageName;
-    private String date;
-    private String imageLink;
+        private String imageLink;
     private boolean isSocialAccount;
     private boolean isFriend;
 
@@ -22,7 +21,7 @@ public class UserMessagesModel {
                              String userId, String opponentId,
                              String messageId, String message,
                              String firstName, String lastName,
-                             String imageName, String date,
+                             String imageName,
                              String imageLink) {
         this.userId = userId;
         this.isFriend = isFriend;
@@ -34,7 +33,6 @@ public class UserMessagesModel {
         this.firstName = firstName;
         this.lastName = lastName;
         this.imageName = imageName;
-        this.date = date;
     }
 
 
@@ -108,14 +106,6 @@ public class UserMessagesModel {
 
     public void setImageName(String imageName) {
         this.imageName = imageName;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 
     public String getImageLink() {

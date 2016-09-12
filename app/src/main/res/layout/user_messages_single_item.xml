@@ -46,15 +46,4 @@
         android:fontFamily="@string/appFont"
         android:maxLines="1"
         android:text="@string/loadingText" />
-
-    <TextView
-        android:id="@+id/messageDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerInParent="true"
-        android:layout_marginRight="10dp"
-        android:text="@string/loadingText"
-        android:textSize="12sp"
-        android:textStyle="bold" />
 </android.widget.RelativeLayout>
