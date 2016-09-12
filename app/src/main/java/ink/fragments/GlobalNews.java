@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,12 +33,13 @@ import retrofit2.Response;
 /**
  * Created by PC-Comp on 9/12/2016.
  */
-public class GlobalNews extends Fragment implements NewsItemClickListener {
+public class GlobalNews extends Fragment implements NewsItemClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private RecyclerView newsRecycler;
     private Gson gson;
     private NewsAdapter newsAdapter;
     private ArrayList<NewsModel> newsModels;
+    private SwipeRefreshLayout globalNewsSwipe;
 
     public static GlobalNews create() {
         GlobalNews globalNews = new GlobalNews();
@@ -54,6 +56,14 @@ public class GlobalNews extends Fragment implements NewsItemClickListener {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         newsRecycler = (RecyclerView) view.findViewById(R.id.newsRecycler);
+        globalNewsSwipe = (SwipeRefreshLayout) view.findViewById(R.id.globalNewsSwipe);
+        globalNewsSwipe.setOnRefreshListener(this);
+        globalNewsSwipe.post(new Runnable() {
+            @Override
+            public void run() {
+                globalNewsSwipe.setRefreshing(true);
+            }
+        });
         gson = new Gson();
         newsRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         newsAdapter = new NewsAdapter(getActivity());
@@ -82,6 +92,7 @@ public class GlobalNews extends Fragment implements NewsItemClickListener {
                     String nextUrl = newsResponse.newsMeta.nextNewsUrl;
                     newsModels = newsResponse.newsModels;
                     newsAdapter.setNewsModels(newsModels);
+                    globalNewsSwipe.setRefreshing(false);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -102,4 +113,8 @@ public class GlobalNews extends Fragment implements NewsItemClickListener {
         startActivity(i);
     }
 
+    @Override
+    public void onRefresh() {
+
+    }
 }

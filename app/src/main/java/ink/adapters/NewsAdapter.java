@@ -62,7 +62,10 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.BaseViewHolder
             holder.newsContent.setText(largeDescription);
             NewsTopic newsTopic = newsTopics.get(0);
             if (newsTopic.imageUrl != null && !newsTopic.imageUrl.equals("null") && !newsTopic.imageUrl.isEmpty()) {
+                holder.newsImage.setVisibility(View.VISIBLE);
                 Ion.with(context).load(newsTopic.imageUrl).withBitmap().placeholder(R.drawable.breaking_news_vector).intoImageView(holder.newsImage);
+            } else {
+                holder.newsImage.setVisibility(View.GONE);
             }
         }
         holder.newsViewMore.setOnClickListener(new View.OnClickListener() {
