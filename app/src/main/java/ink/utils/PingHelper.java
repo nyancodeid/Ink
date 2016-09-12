@@ -46,7 +46,7 @@ public class PingHelper {
                     pingTime(userId);
                     isPinging = true;
                 } else {
-                    isPinging = true;
+                    isPinging = false;
                 }
             }
         });
