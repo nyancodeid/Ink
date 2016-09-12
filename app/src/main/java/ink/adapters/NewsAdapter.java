@@ -32,17 +32,14 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case FOOTER_VIEW:
-                View footerView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.news_footer_view, parent, false);
-                return new FooterView(footerView);
-            default:
-                View nesSingleView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.news_single_view, parent, false);
-                return new BaseViewHolder(nesSingleView);
+        if (viewType == FOOTER_VIEW) {
+            View footerView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.news_footer_view, parent, false);
+            return new FooterView(footerView);
         }
-
+        View baseSingleView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.news_single_view, parent, false);
+        return new BaseViewHolder(baseSingleView);
 
     }
 
@@ -53,11 +50,9 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder unknownHolder, final int position) {
-
-        if (unknownHolder instanceof BaseViewHolder) {
+        if (position != newsModels.size()) {
             final BaseViewHolder holder = ((BaseViewHolder) unknownHolder);
-
-            NewsModel singleModel = newsModels.get(position-1);
+            NewsModel singleModel = newsModels.get(position);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 holder.newsTitle.setText(Html.fromHtml(singleModel.newsContent, Html.FROM_HTML_MODE_LEGACY));
                 holder.newsContent.setText(Html.fromHtml(singleModel.newsContent, Html.FROM_HTML_MODE_LEGACY));
@@ -87,11 +82,11 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     if (itemClickListener != null) {
-                        itemClickListener.onViewMoreClicked(holder.newsContent, position - 1);
+                        itemClickListener.onViewMoreClicked(holder.newsContent, position);
                     }
                 }
             });
-        } else if (unknownHolder instanceof FooterView) {
+        } else {
             final FooterView holder = ((FooterView) unknownHolder);
             holder.loadMoreNews.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -111,6 +106,9 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (newsModels == null) {
             return 0;
         }
+        if (newsModels.size() == 0) {
+            return 1;
+        }
         return newsModels.size() + 1;
     }
 
@@ -119,7 +117,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (newsModels == null) {
             return 0;
         }
-        if (position == newsModels.size() - 1) {
+        if (position == newsModels.size()) {
             return FOOTER_VIEW;
         }
         return super.getItemViewType(position);
