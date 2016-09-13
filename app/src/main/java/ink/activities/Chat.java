@@ -1068,6 +1068,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         System.gc();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.cancel(Integer.valueOf(mOpponentId));
+        mSharedHelper.removeLastNotificationId(mOpponentId);
         Notification.get().setSendingRemote(false);
         Notification.get().setActiveOpponentId(mOpponentId);
         getStatus();

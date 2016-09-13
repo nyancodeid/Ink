@@ -389,8 +389,6 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     @Override
     public void onDestroyView() {
         hideSearch();
-        personSearchField.setText("");
-        getFriends();
         super.onDestroyView();
     }
 
@@ -409,6 +407,8 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     }
 
     private void hideSearch() {
+        personSearchField.setText("");
+
         if (parentActivity.getSearchFriend() != null) {
             parentActivity.getSearchFriend().setVisibility(View.GONE);
         }

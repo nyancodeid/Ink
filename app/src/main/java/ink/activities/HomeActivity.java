@@ -404,7 +404,7 @@ public class HomeActivity extends BaseActivity
                 if (!mToolbar.getTitle().equals(FRIENDS)) {
                     mToolbar.setTitle(getString(R.string.friendsText));
                     getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.container, mMyFriends).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, MyFriends.newInstance()).commit();
                 }
                 break;
 

@@ -1,5 +1,6 @@
 package ink.activities;
 
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -328,6 +329,9 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
             if (deleteRequestSnack.isShown()) {
                 if (success) {
                     deleteRequestSnack.setText(getString(R.string.messageDeleted));
+                    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    notificationManager.cancel(Integer.valueOf(finalOpponentId));
+                    mSharedHelper.removeLastNotificationId(finalOpponentId);
                 } else {
                     deleteRequestSnack.setText(getString(R.string.somethingWentWrong));
                 }
