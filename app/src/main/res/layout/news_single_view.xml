@@ -41,13 +41,6 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/breaking_news_vector" />
 
-            <ProgressBar
-                android:id="@+id/imageLoadingProgress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone" />
-
             <TextView
                 android:id="@+id/trendContent"
                 android:layout_width="wrap_content"
