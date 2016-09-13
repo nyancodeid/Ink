@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ink.callbacks.GeneralCallback;
+import ink.models.CountBadgeModel;
 import ink.models.MessageModel;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -66,6 +67,42 @@ public class RealmHelper {
         });
 
         return clearDBSuccess;
+    }
+
+    public void insertMessageCont(final String userId) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                mRealm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        final CountBadgeModel countBadgeModel = realm.createObject(CountBadgeModel.class);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mRealm.executeTransaction(new Realm.Transaction() {
+                                    @Override
+                                    public void execute(Realm realm) {
+                                        CountBadgeModel countBadgeFound = realm.where(CountBadgeModel.class).equalTo("userId", userId).findFirst();
+                                        String count;
+                                        if (countBadgeFound != null && !countBadgeFound.getCount().equals("0")) {
+                                            count = countBadgeFound.getCount();
+                                        } else {
+                                            count = "0";
+                                        }
+                                        int actualCount = Integer.valueOf(count) + 1;
+
+                                        countBadgeModel.setUserId(userId);
+                                        countBadgeModel.setCount(String.valueOf(actualCount));
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
     }
 
     public void insertMessage(final String userId, final String opponentId, final String message,
