@@ -298,7 +298,7 @@
                     android:id="@+id/pickTrendIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/notification_icon" />
+                    android:src="@drawable/whats_trending_white_vector" />
 
                 <TextView
                     android:id="@+id/pickTrendText"
