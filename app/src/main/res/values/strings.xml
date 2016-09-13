@@ -669,4 +669,6 @@
     <string name="month">month ago</string>
     <string name="days">days ago</string>
     <string name="dateOfMessage">Date of message :</string>
+    <string name="pickTrendAndNewsColor">Pick trend and news icon color</string>
+    <string name="trendColor">Trend And News Color</string>
 </resources>

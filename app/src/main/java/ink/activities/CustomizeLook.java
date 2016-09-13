@@ -93,6 +93,9 @@ public class CustomizeLook extends BaseActivity {
     @Bind(R.id.shopIcon)
     ImageView shopIcon;
 
+    @Bind(R.id.pickTrendIcon)
+    ImageView pickTrendIcon;
+
     @Bind(R.id.pickHamburgerIcon)
     ImageView hamburgerIcon;
 
@@ -144,6 +147,9 @@ public class CustomizeLook extends BaseActivity {
     @Bind(R.id.friendsCleaner)
     ImageView friendsCleaner;
 
+    @Bind(R.id.trendCleaner)
+    ImageView trendCleaner;
+
     @Bind(R.id.messagesCleaner)
     ImageView messagesCleaner;
 
@@ -172,6 +178,7 @@ public class CustomizeLook extends BaseActivity {
     private boolean chatFieldColorPicked;
     private boolean ownTextColorPicked;
     private boolean allResetCalled;
+    private boolean trendColorPicked;
 
 
     private AppCompatCheckBox statusBarCheckBox;
@@ -193,6 +200,7 @@ public class CustomizeLook extends BaseActivity {
     private AppCompatCheckBox opponentTextCheckBox;
     private AppCompatCheckBox ownTextCheckBox;
     private AppCompatCheckBox chatFieldCheckBox;
+    private AppCompatCheckBox trendCheckbox;
 
     private SharedHelper sharedHelper;
     private String oldActionBarColor;
@@ -213,6 +221,7 @@ public class CustomizeLook extends BaseActivity {
     private String oldChatFieldColor;
     private String oldOwnTextColor;
     private String oldOpponentTextColor;
+    private String oldTrendColor;
 
     private Gson gson;
     private ink.utils.ProgressDialog progressDialog;
@@ -253,14 +262,9 @@ public class CustomizeLook extends BaseActivity {
         oldChatFieldColor = sharedHelper.getChatFieldTextColor();
         oldOwnTextColor = sharedHelper.getOwnTextColor();
         oldOpponentTextColor = sharedHelper.getOpponentTextColor();
+        oldTrendColor = sharedHelper.getTrendColor();
 
 
-        if (sharedHelper.getOwnBubbleColor() != null) {
-            ownBubbleIcon.setColorFilter(Color.parseColor(sharedHelper.getOwnBubbleColor()), PorterDuff.Mode.SRC_ATOP);
-        }
-        if (sharedHelper.getOpponentBubbleColor() != null) {
-            opponentBubbleIcon.setColorFilter(Color.parseColor(sharedHelper.getOpponentBubbleColor()), PorterDuff.Mode.SRC_ATOP);
-        }
     }
 
     @Override
@@ -365,6 +369,7 @@ public class CustomizeLook extends BaseActivity {
         opponentTextCheckBox = (AppCompatCheckBox) view.findViewById(R.id.opponentTextCheckBox);
         ownTextCheckBox = (AppCompatCheckBox) view.findViewById(R.id.ownTextCheckBox);
         chatFieldCheckBox = (AppCompatCheckBox) view.findViewById(R.id.chatFieldCheckBox);
+        trendCheckbox = (AppCompatCheckBox) view.findViewById(R.id.trendAndNewsCheckbox);
 
         LinearLayout statusBarWrapper = (LinearLayout) view.findViewById(R.id.statusBarWrapper);
         statusBarWrapper.setOnClickListener(new View.OnClickListener() {
@@ -593,6 +598,19 @@ public class CustomizeLook extends BaseActivity {
                 }
             }
         });
+
+        LinearLayout trendWrapper = (LinearLayout) view.findViewById(R.id.tendAndNewsWrapper);
+        trendWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!trendCheckbox.isChecked()) {
+                    trendCheckbox.setChecked(true);
+                } else {
+                    allResetCalled = false;
+                    trendCheckbox.setChecked(false);
+                }
+            }
+        });
     }
 
     private void resetCustomizations() {
@@ -604,7 +622,7 @@ public class CustomizeLook extends BaseActivity {
                 && !messagesCheckBox.isChecked() && !chatCheckBox.isChecked()
                 && !requestCheckBox.isChecked() && !opponentBubbleCheckBox.isChecked()
                 && !ownBubbleCheckBox.isChecked() && !opponentTextCheckBox.isChecked()
-                && !ownTextCheckBox.isChecked() && !chatFieldCheckBox.isChecked()) {
+                && !ownTextCheckBox.isChecked() && !chatFieldCheckBox.isChecked() && !trendCheckbox.isChecked()) {
             Snackbar.make(actionBarCleaner, getString(R.string.nothingToReset), Snackbar.LENGTH_LONG).show();
         } else {
             if (allResetCalled) {
@@ -639,6 +657,7 @@ public class CustomizeLook extends BaseActivity {
         sharedHelper.putOpponentTextColor(opponentTextCheckBox.isChecked() ? null : sharedHelper.getOpponentTextColor());
         sharedHelper.putOwnTextColor(ownTextCheckBox.isChecked() ? null : sharedHelper.getOwnTextColor());
         sharedHelper.putChatFieldTextColor(chatFieldCheckBox.isChecked() ? null : sharedHelper.getChatFieldTextColor());
+        sharedHelper.putTrendColor(trendCheckbox.isChecked() ? null : sharedHelper.getTrendColor());
 
         Intent intent = new Intent();
         Toast.makeText(CustomizeLook.this, getString(R.string.reseted), Toast.LENGTH_SHORT).show();
@@ -849,6 +868,7 @@ public class CustomizeLook extends BaseActivity {
         sharedHelper.putOpponentTextColor(colorModel.opponentText);
         sharedHelper.putOwnTextColor(colorModel.ownText);
         sharedHelper.putChatFieldTextColor(colorModel.chatField);
+        sharedHelper.putTrendColor(colorModel.trendColor);
 
         anythingChanged = true;
     }
@@ -872,7 +892,8 @@ public class CustomizeLook extends BaseActivity {
                 sharedHelper.getOwnBubbleColor() != null ? sharedHelper.getOwnBubbleColor() : "",
                 sharedHelper.getOpponentTextColor() != null ? sharedHelper.getOpponentTextColor() : "",
                 sharedHelper.getOwnTextColor() != null ? sharedHelper.getOwnTextColor() : "",
-                sharedHelper.getChatFieldTextColor() != null ? sharedHelper.getChatFieldTextColor() : "");
+                sharedHelper.getChatFieldTextColor() != null ? sharedHelper.getChatFieldTextColor() : "",
+                sharedHelper.getTrendColor() != null ? sharedHelper.getTrendColor() : "");
         saveCustomizationCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -1123,6 +1144,25 @@ public class CustomizeLook extends BaseActivity {
                 customizeFabMenu.setMenuButtonColorNormal(Color.parseColor(s));
                 sharedHelper.putMenuButtonColor(s);
                 fabButtonCleaner.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onFailure(String s) {
+
+            }
+        });
+    }
+
+    @OnClick(R.id.pickTrendIconWrapper)
+    public void pickTrendIconWrapper() {
+        showColorPicker(new GeneralCallback<String>() {
+            @Override
+            public void onSuccess(String s) {
+                isSavedToCloud = false;
+                trendColorPicked = true;
+                pickTrendIcon.setColorFilter(Color.parseColor(s), PorterDuff.Mode.SRC_ATOP);
+                trendCleaner.setVisibility(View.VISIBLE);
+                sharedHelper.putTrendColor(s);
             }
 
             @Override
@@ -1389,6 +1429,14 @@ public class CustomizeLook extends BaseActivity {
         sharedHelper.putOpponentBubbleColor(oldOpponentBubbleColor);
     }
 
+    @OnClick(R.id.trendCleaner)
+    public void trendCleaner() {
+        trendColorPicked = false;
+        trendCleaner.setVisibility(View.GONE);
+        pickTrendIcon.setColorFilter(null);
+        sharedHelper.putTrendColor(oldTrendColor);
+    }
+
     @OnClick(R.id.notificationCleaner)
     public void notificationCleaner() {
         pickNotificationIconColorPicked = false;
@@ -1494,7 +1542,7 @@ public class CustomizeLook extends BaseActivity {
                 !pickLeftDrawerColorPicked && !feedColorPicked && !messagesBackgroundColorPicked && !friendsBackgroundColorPicked &&
                 !chatBackgroundColorPicked && !requestBackgroundColorPicked && !opponentBubbleColorPicked &&
                 !ownBubbleColorPicked && !sendButtonColorPicked && !statusBarColorPicked && !hamburgerColorPicked
-                && !opponentTextColorPicked && !chatFieldColorPicked && !ownTextColorPicked) {
+                && !opponentTextColorPicked && !chatFieldColorPicked && !ownTextColorPicked && !trendColorPicked) {
             checkForPendingCustomization();
             Intent intent = new Intent();
             intent.putExtra("anythingChanged", false);
@@ -1523,7 +1571,7 @@ public class CustomizeLook extends BaseActivity {
                 !pickLeftDrawerColorPicked && !feedColorPicked && !messagesBackgroundColorPicked && !friendsBackgroundColorPicked &&
                 !chatBackgroundColorPicked && !requestBackgroundColorPicked && !opponentBubbleColorPicked &&
                 !ownBubbleColorPicked && !sendButtonColorPicked && !statusBarColorPicked && !hamburgerColorPicked
-                && !opponentTextColorPicked && !chatFieldColorPicked && !ownTextColorPicked) {
+                && !opponentTextColorPicked && !chatFieldColorPicked && !ownTextColorPicked && !trendColorPicked) {
             return false;
         } else {
             return true;
@@ -1551,5 +1599,6 @@ public class CustomizeLook extends BaseActivity {
         opponentTextCheckBox.setChecked(checked);
         ownTextCheckBox.setChecked(checked);
         chatFieldCheckBox.setChecked(checked);
+        trendCheckbox.setChecked(checked);
     }
 }

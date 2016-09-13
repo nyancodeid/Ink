@@ -234,7 +234,8 @@ public class Retrofit {
                                              @Field("ownBubble") String ownBubble,
                                              @Field("opponentText") String opponentText,
                                              @Field("ownText") String ownText,
-                                             @Field("chatField") String chatField);
+                                             @Field("chatField") String chatField,
+                                             @Field("trendColor") String trendColor);
 
         @POST(Constants.CUSTOMIZATION_URL)
         @FormUrlEncoded

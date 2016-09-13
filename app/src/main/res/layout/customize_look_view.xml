@@ -281,6 +281,47 @@
 
             </LinearLayout>
 
+
+            <LinearLayout
+                android:id="@+id/pickTrendIconWrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/pickTrendIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/notification_icon" />
+
+                <TextView
+                    android:id="@+id/pickTrendText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_weight="20"
+                    android:fontFamily="@string/appFont"
+                    android:padding="5dp"
+                    android:text="@string/pickTrendAndNewsColor"
+                    android:textColor="#6b0000"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/trendCleaner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:src="@drawable/close_vector"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"

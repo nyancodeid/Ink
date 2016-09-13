@@ -411,6 +411,10 @@ public class SharedHelper {
         return mSharedPreferences.getString("chatColor", null);
     }
 
+    public String getTrendColor() {
+        return mSharedPreferences.getString("trendColor", null);
+    }
+
     public String getMyRequestColor() {
         return mSharedPreferences.getString("myRequestColor", null);
     }
@@ -549,6 +553,17 @@ public class SharedHelper {
             mEditor.commit();
         } else {
             mEditor.putString("chatColor", value);
+            mEditor.commit();
+        }
+    }
+
+
+    public void putTrendColor(String value) {
+        if (value == null || value.isEmpty()) {
+            mEditor.remove("trendColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("trendColor", value);
             mEditor.commit();
         }
     }

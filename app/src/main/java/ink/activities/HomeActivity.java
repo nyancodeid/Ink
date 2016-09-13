@@ -715,6 +715,12 @@ public class HomeActivity extends BaseActivity
             mFab.setMenuButtonColorNormal(Color.parseColor(mSharedHelper.getMenuButtonColor()));
             mFab.setMenuButtonColorPressed(Color.parseColor("#cccccc"));
         }
+
+        if (mSharedHelper.getTrendColor() != null) {
+            menuItem.getItem(0).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getTrendColor()),
+                    PorterDuff.Mode.SRC_ATOP);
+        }
+
         if (mSharedHelper.getNotificationIconColor() != null) {
             menuItem.getItem(1).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getNotificationIconColor()),
                     PorterDuff.Mode.SRC_ATOP);
@@ -750,6 +756,10 @@ public class HomeActivity extends BaseActivity
             mFab.setMenuButtonColorNormal(ContextCompat.getColor(this, R.color.colorPrimary));
             mFab.setMenuButtonColorPressed(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         }
+        if (mSharedHelper.getTrendColor() == null) {
+            menuItem.getItem(0).getIcon().setColorFilter(null);
+        }
+
         if (mSharedHelper.getNotificationIconColor() == null) {
             menuItem.getItem(1).getIcon().setColorFilter(null);
         }
