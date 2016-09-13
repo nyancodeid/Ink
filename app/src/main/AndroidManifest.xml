@@ -203,37 +203,30 @@
             android:label="@string/title_activity_fullscreen"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
-        <activity
-            android:name="ink.friendsmash.FriendSmashLoginView"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="ink.friendsmash.FriendSmashHomeView"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="ink.friendsmash.FriendSmashGameView"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name="ink.activities.Settings"
             android:label="@string/title_activity_settings" />
         <activity
             android:name="ink.activities.ForgotPassword"
+            android:screenOrientation="portrait"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity
             android:name="ink.activities.ChangePassword"
+            android:screenOrientation="portrait"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity
             android:name="ink.activities.SecurityQuestion"
+            android:screenOrientation="portrait"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
-        <activity android:name="ink.activities.NewsActivity"></activity>
+        <activity
+            android:name="ink.activities.NewsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize">
+
+        </activity>
     </application>
 
 </manifest>

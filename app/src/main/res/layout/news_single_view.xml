@@ -41,6 +41,13 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/breaking_news_vector" />
 
+            <ProgressBar
+                android:id="@+id/imageLoadingProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
+
             <TextView
                 android:id="@+id/trendContent"
                 android:layout_width="wrap_content"
@@ -53,7 +60,6 @@
                 android:text="@string/loadingText" />
 
             <Button
-                android:fontFamily="@string/appFont"
                 android:id="@+id/trendViewMore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -64,6 +70,7 @@
                 android:background="@drawable/circle_transparent_background"
                 android:clickable="true"
                 android:focusable="true"
+                android:fontFamily="@string/appFont"
                 android:foreground="?attr/selectableItemBackground"
                 android:text="@string/viewDetails"
                 android:textAllCaps="false"
