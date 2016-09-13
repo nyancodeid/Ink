@@ -1,6 +1,7 @@
 package ink.activities;
 
 import android.app.DownloadManager;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -551,17 +552,17 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.chat_menu, menu);
-        chatMenuItem = menu;
-        if (mSharedHelper.isRainbowMessageActivated()) {
-            menu.getItem(0).setTitle(getString(R.string.removeRainbowEffect));
-        } else {
-            menu.getItem(0).setTitle(getString(R.string.showAsRainbow));
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.chat_menu, menu);
+//        chatMenuItem = menu;
+//        if (mSharedHelper.isRainbowMessageActivated()) {
+//            menu.getItem(0).setTitle(getString(R.string.removeRainbowEffect));
+//        } else {
+//            menu.getItem(0).setTitle(getString(R.string.showAsRainbow));
+//        }
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
 
     private void getStatus() {
@@ -1063,13 +1064,14 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     @Override
     protected void onResume() {
         System.gc();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.cancel(Integer.valueOf(mOpponentId));
+        mSharedHelper.removeLastNotificationId(mOpponentId);
         Notification.get().setSendingRemote(false);
         Notification.get().setActiveOpponentId(mOpponentId);
         getStatus();
         getIsFriend();
-        if (!PingHelper.get().isPinging()) {
-            PingHelper.get().startPinging(mSharedHelper.getUserId());
-        }
+        PingHelper.get().startPinging(mSharedHelper.getUserId());
         super.onResume();
     }
 

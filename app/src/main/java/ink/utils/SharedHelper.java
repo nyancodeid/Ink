@@ -12,7 +12,6 @@ public class SharedHelper {
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
     private Context context;
-    private int notificationCount = 0;
 
     public SharedHelper(Context context) {
         mSharedPreferences = context.getSharedPreferences("ink_session", Context.MODE_PRIVATE);
@@ -40,6 +39,17 @@ public class SharedHelper {
 
     public int getLastNotificationCount(String notificationId) {
         return mSharedPreferences.getInt("notificationCount" + notificationId, 1);
+    }
+
+    public void putLastNotificationCount(String id) {
+        mEditor.putInt("notificationCount" + id, getLastNotificationCount(id) + 1);
+        mEditor.commit();
+        putLastNotificationId(id);
+    }
+
+    public void putLastNotificationId(String id) {
+        mEditor.putString(id, id);
+        mEditor.commit();
     }
 
     public void removeLastNotificationId(String notificationId) {
@@ -179,6 +189,7 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+
     public String getUserFacebookLink() {
         return mSharedPreferences.getString("userFacebookLink", context.getString(R.string.noFacebook));
     }
@@ -315,13 +326,6 @@ public class SharedHelper {
     }
 
 
-    public void putLastNotificationId(String id) {
-        notificationCount += 1;
-        mEditor.putString(id, id);
-        mEditor.putInt("notificationCount" + id, notificationCount);
-        mEditor.commit();
-    }
-
     public boolean isEditorHintShown() {
         return mSharedPreferences.getBoolean("editorHint", false);
     }
@@ -406,6 +410,10 @@ public class SharedHelper {
 
     public String getChatColor() {
         return mSharedPreferences.getString("chatColor", null);
+    }
+
+    public String getTrendColor() {
+        return mSharedPreferences.getString("trendColor", null);
     }
 
     public String getMyRequestColor() {
@@ -550,6 +558,17 @@ public class SharedHelper {
         }
     }
 
+
+    public void putTrendColor(String value) {
+        if (value == null || value.isEmpty()) {
+            mEditor.remove("trendColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("trendColor", value);
+            mEditor.commit();
+        }
+    }
+
     public void putMyRequestColor(String value) {
         if (value == null || value.isEmpty()) {
             mEditor.remove("myRequestColor");
@@ -623,6 +642,7 @@ public class SharedHelper {
         mEditor.remove("chatFieldTextColor");
         mEditor.remove("opponentTextColor");
         mEditor.remove("ownTextColor");
+        mEditor.remove("trendColor");
         mEditor.commit();
 
     }

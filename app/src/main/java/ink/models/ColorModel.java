@@ -63,6 +63,9 @@ public class ColorModel {
     @SerializedName("chat_field")
     public String chatField;
 
+    @SerializedName("trend_color")
+    public String trendColor;
+
     @SerializedName("id")
     public String itemId;
 

@@ -651,7 +651,7 @@
     <string name="passwordWrong">Password is wrong,check the capitals</string>
     <string name="letsPlay">Let\'s play!</string>
     <string name="accountPermissionNeededGame">Account permission needed to play game</string>
-    <string name="newsTitle">News</string>
+    <string name="newsTitle">News And Trends</string>
     <string name="newsError">Could not fetch news,please check your internet</string>
     <string name="worldwideNewsTitle">Worldwide</string>
     <string name="whatsTrendingTitle">What\'s Trending</string>
@@ -669,4 +669,6 @@
     <string name="month">month ago</string>
     <string name="days">days ago</string>
     <string name="dateOfMessage">Date of message :</string>
+    <string name="pickTrendAndNewsColor">Pick trend and news icon color</string>
+    <string name="trendColor">Trend And News Color</string>
 </resources>

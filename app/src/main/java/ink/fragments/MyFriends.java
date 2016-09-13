@@ -297,89 +297,93 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     }
 
     private void getFriends() {
-        friendsSwipe.post(new Runnable() {
-            @Override
-            public void run() {
-                friendsSwipe.setRefreshing(true);
-            }
-        });
-        clearAdapter();
-        mFriendsAdapter.notifyDataSetChanged();
-        stopSearchAnimation(false);
-        final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().getFriends(mSharedHelper.getUserId());
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    String responseString = response.body().string();
+        try {
+            friendsSwipe.post(new Runnable() {
+                @Override
+                public void run() {
+                    friendsSwipe.setRefreshing(true);
+                }
+            });
+            clearAdapter();
+            mFriendsAdapter.notifyDataSetChanged();
+            stopSearchAnimation(false);
+            final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().getFriends(mSharedHelper.getUserId());
+            responseBodyCall.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     try {
-                        JSONObject jsonObject = new JSONObject(responseString);
-                        boolean success = jsonObject.optBoolean("success");
-                        if (!success) {
-                            friendsSwipe.setRefreshing(false);
-                            String cause = jsonObject.optString("cause");
-                            String finalErrorMessage;
-                            if (cause.equals(ErrorCause.NO_FRIENDS)) {
-                                mNoFriendsLayout.setVisibility(View.VISIBLE);
+                        String responseString = response.body().string();
+                        try {
+                            JSONObject jsonObject = new JSONObject(responseString);
+                            boolean success = jsonObject.optBoolean("success");
+                            if (!success) {
                                 friendsSwipe.setRefreshing(false);
+                                String cause = jsonObject.optString("cause");
+                                String finalErrorMessage;
+                                if (cause.equals(ErrorCause.NO_FRIENDS)) {
+                                    mNoFriendsLayout.setVisibility(View.VISIBLE);
+                                    friendsSwipe.setRefreshing(false);
+                                } else {
+                                    finalErrorMessage = getString(R.string.serverErrorText);
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                    builder.setMessage(finalErrorMessage);
+                                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    builder.show();
+                                }
                             } else {
-                                finalErrorMessage = getString(R.string.serverErrorText);
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                                builder.setMessage(finalErrorMessage);
-                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
+                                if (mFriendsModelArrayList != null) {
+                                    mFriendsModelArrayList.clear();
+                                }
+                                mNoFriendsLayout.setVisibility(View.GONE);
+                                JSONArray friendsArray = jsonObject.optJSONArray("friends");
+                                for (int i = 0; i < friendsArray.length(); i++) {
+                                    JSONObject eachObject = friendsArray.optJSONObject(i);
+                                    String firstName = eachObject.optString("first_name");
+                                    String lastname = eachObject.optString("last_name");
+                                    String phoneNumber = eachObject.optString("phone_number");
+                                    String imageLink = eachObject.optString("image_link");
+                                    String isSocialAccount = eachObject.optString("isSocialAccount");
+                                    if (firstName.isEmpty()) {
+                                        firstName = getString(R.string.noFirstname);
                                     }
-                                });
-                                builder.show();
-                            }
-                        } else {
-                            if (mFriendsModelArrayList != null) {
-                                mFriendsModelArrayList.clear();
-                            }
-                            mNoFriendsLayout.setVisibility(View.GONE);
-                            JSONArray friendsArray = jsonObject.optJSONArray("friends");
-                            for (int i = 0; i < friendsArray.length(); i++) {
-                                JSONObject eachObject = friendsArray.optJSONObject(i);
-                                String firstName = eachObject.optString("first_name");
-                                String lastname = eachObject.optString("last_name");
-                                String phoneNumber = eachObject.optString("phone_number");
-                                String imageLink = eachObject.optString("image_link");
-                                String isSocialAccount = eachObject.optString("isSocialAccount");
-                                if (firstName.isEmpty()) {
-                                    firstName = getString(R.string.noFirstname);
+                                    if (lastname.isEmpty()) {
+                                        lastname = getString(R.string.noLastname);
+                                    }
+                                    String name = firstName + " " + lastname;
+                                    if (phoneNumber.isEmpty()) {
+                                        phoneNumber = getString(R.string.noPhone);
+                                    }
+                                    String friendId = eachObject.optString("friend_id");
+                                    mFriendsModel = new FriendsModel(true, Boolean.valueOf(isSocialAccount), name, imageLink, phoneNumber, friendId, firstName, lastname);
+                                    mFriendsModelArrayList.add(mFriendsModel);
+                                    mFriendsAdapter.notifyDataSetChanged();
                                 }
-                                if (lastname.isEmpty()) {
-                                    lastname = getString(R.string.noLastname);
-                                }
-                                String name = firstName + " " + lastname;
-                                if (phoneNumber.isEmpty()) {
-                                    phoneNumber = getString(R.string.noPhone);
-                                }
-                                String friendId = eachObject.optString("friend_id");
-                                mFriendsModel = new FriendsModel(true, Boolean.valueOf(isSocialAccount), name, imageLink, phoneNumber, friendId, firstName, lastname);
-                                mFriendsModelArrayList.add(mFriendsModel);
-                                mFriendsAdapter.notifyDataSetChanged();
+                                friendsSwipe.setRefreshing(false);
                             }
+                        } catch (JSONException e) {
                             friendsSwipe.setRefreshing(false);
+                            e.printStackTrace();
                         }
-                    } catch (JSONException e) {
+                    } catch (IOException e) {
                         friendsSwipe.setRefreshing(false);
                         e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    friendsSwipe.setRefreshing(false);
-                    e.printStackTrace();
+
                 }
 
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getFriends();
-            }
-        });
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    getFriends();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -403,9 +407,12 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     }
 
     private void hideSearch() {
+        personSearchField.setText("");
+
         if (parentActivity.getSearchFriend() != null) {
             parentActivity.getSearchFriend().setVisibility(View.GONE);
         }
+
         parentActivity.getHomeFab().setVisibility(View.VISIBLE);
         parentActivity.getHomeFab().showMenu(true);
     }
@@ -424,6 +431,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
                 break;
         }
     }
+
 
     private void showSearchField() {
         getFriends();

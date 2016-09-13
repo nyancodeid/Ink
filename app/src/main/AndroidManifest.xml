@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <permission
         android:name="com.ink.permission.C2D_MESSAGE"
@@ -203,37 +204,30 @@
             android:label="@string/title_activity_fullscreen"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
-        <activity
-            android:name="ink.friendsmash.FriendSmashLoginView"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="ink.friendsmash.FriendSmashHomeView"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name="ink.friendsmash.FriendSmashGameView"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name="ink.activities.Settings"
             android:label="@string/title_activity_settings" />
         <activity
             android:name="ink.activities.ForgotPassword"
+            android:screenOrientation="portrait"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity
             android:name="ink.activities.ChangePassword"
+            android:screenOrientation="portrait"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity
             android:name="ink.activities.SecurityQuestion"
+            android:screenOrientation="portrait"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
-        <activity android:name="ink.activities.NewsActivity"></activity>
+        <activity
+            android:name="ink.activities.NewsAndTrendsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize">
+
+        </activity>
     </application>
 
 </manifest>

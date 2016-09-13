@@ -20,7 +20,6 @@ import retrofit2.Response;
 public class PingHelper {
     private static PingHelper pingHelperInstance = new PingHelper();
 
-    private boolean isPinging;
     private Thread mPingThread;
     private static final long PING_TIME = 50000;
     private Timer timer = new Timer();
@@ -44,17 +43,10 @@ public class PingHelper {
                 Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                 if (mPingThread.getState() != Thread.State.TERMINATED) {
                     pingTime(userId);
-                    isPinging = true;
-                } else {
-                    isPinging = false;
                 }
             }
         });
         mPingThread.start();
-    }
-
-    public boolean isPinging() {
-        return isPinging;
     }
 
 
