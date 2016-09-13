@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 import ink.fragments.GlobalNews;
 import ink.fragments.WhatsTrending;
 
-public class NewsActivity extends BaseActivity {
+public class NewsAndTrendsActivity extends BaseActivity {
 
     @Bind(R.id.newsPager)
     ViewPager viewPager;

@@ -356,7 +356,7 @@ public class HomeActivity extends BaseActivity
                 startActivity(new Intent(getApplicationContext(), Shop.class));
                 break;
             case R.id.news:
-                startActivity(new Intent(getApplicationContext(), NewsActivity.class));
+                startActivity(new Intent(getApplicationContext(), NewsAndTrendsActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);

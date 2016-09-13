@@ -223,7 +223,7 @@
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity
-            android:name="ink.activities.NewsActivity"
+            android:name="ink.activities.NewsAndTrendsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
 
         </activity>
