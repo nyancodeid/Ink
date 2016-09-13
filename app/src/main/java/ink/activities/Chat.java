@@ -1,6 +1,7 @@
 package ink.activities;
 
 import android.app.DownloadManager;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,6 +28,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -580,6 +582,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                     }
                     try {
                         String responseBody = response.body().string();
+                        Log.d("fasfasfsafasfa", "onResponse: "+responseBody);
                         final UserStatus userStatus = gifGson.fromJson(responseBody, UserStatus.class);
                         if (userStatus.success) {
                             SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -1063,13 +1066,13 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     @Override
     protected void onResume() {
         System.gc();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.cancel(Integer.valueOf(mOpponentId));
         Notification.get().setSendingRemote(false);
         Notification.get().setActiveOpponentId(mOpponentId);
         getStatus();
         getIsFriend();
-        if (!PingHelper.get().isPinging()) {
-            PingHelper.get().startPinging(mSharedHelper.getUserId());
-        }
+        PingHelper.get().startPinging(mSharedHelper.getUserId());
         super.onResume();
     }
 

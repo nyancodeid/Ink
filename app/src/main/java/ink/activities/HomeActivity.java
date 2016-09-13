@@ -145,9 +145,7 @@ public class HomeActivity extends BaseActivity
             bottomSheetDialog.show();
         }
 
-        if (!PingHelper.get().isPinging()) {
-            PingHelper.get().startPinging(mSharedHelper.getUserId());
-        }
+        PingHelper.get().startPinging(mSharedHelper.getUserId());
         User.get().setUserName(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
         User.get().setUserId(mSharedHelper.getUserId());
         mFab = (FloatingActionMenu) findViewById(R.id.fab);
@@ -615,9 +613,7 @@ public class HomeActivity extends BaseActivity
 
     @Override
     protected void onDestroy() {
-        if (PingHelper.get().isPinging()) {
-            PingHelper.get().destroyPinging();
-        }
+        PingHelper.get().destroyPinging();
         super.onDestroy();
     }
 

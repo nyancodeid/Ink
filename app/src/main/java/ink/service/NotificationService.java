@@ -247,11 +247,11 @@ public class NotificationService extends FirebaseMessagingService {
                                  String userName, String deleteUserId, String deleteOpponentId,
                                  boolean isSocialAccount, String lastName, boolean hasGif) {
         if (mSharedHelper.getLastNotificationId(opponentId) != null) {
-            Log.d(TAG, "sendNotification: " + "notification id not null" + mSharedHelper.getLastNotificationId(opponentId));
-            if (mSharedHelper.getLastNotificationId(opponentId).equals(opponentId)) {
-                Log.d(TAG, "sendNotification: " + "notification id equals to each other" + mSharedHelper.getLastNotificationId(opponentId));
-                int notificationCount = mSharedHelper.getLastNotificationCount(opponentId);
 
+            if (mSharedHelper.getLastNotificationId(opponentId).equals(opponentId)) {
+
+                int notificationCount = mSharedHelper.getLastNotificationCount(opponentId);
+                mSharedHelper.putLastNotificationCount(opponentId);
                 final NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
                 if (hasGif && !messageBody.trim().isEmpty()) {
@@ -336,8 +336,8 @@ public class NotificationService extends FirebaseMessagingService {
                 }
                 notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
             } else {
-                Log.d(TAG, "sendNotification: " + "notification id not equals to each other" + mSharedHelper.getLastNotificationId(opponentId) + " opponent id is" + opponentId);
-                mSharedHelper.putLastNotificationId(opponentId);
+
+                mSharedHelper.putLastNotificationCount(opponentId);
                 final NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
                 if (hasGif && !messageBody.trim().isEmpty()) {
@@ -424,9 +424,9 @@ public class NotificationService extends FirebaseMessagingService {
                 notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
             }
         } else {
-            Log.d(TAG, "sendNotification: " + "notification id is null" + mSharedHelper.getLastNotificationId(opponentId) + " oppoent id is" + opponentId);
+
             final NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-            mSharedHelper.putLastNotificationId(opponentId);
+            mSharedHelper.putLastNotificationCount(opponentId);
             if (hasGif && !messageBody.trim().isEmpty()) {
                 String oldMesssage = messageBody;
                 messageBody = oldMesssage + "\n\n" + userImage + " " + getString(R.string.haveSentSticker);

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -52,11 +53,15 @@ public class ReplyView extends BaseActivity {
             mDeleteOpponentId = extras.getString("deleteOpponentId");
 
             if (extras.containsKey("notificationId")) {
-                sharedHelper.removeLastNotificationId(extras.getString("notificationId"));
+                Log.d("sfasfasfas", "onCreate: "+"contains");
+                sharedHelper.removeLastNotificationId(mOpponentId);
+            }else{
+                Log.d("sfasfasfas", "onCreate: "+"not contains");
             }
 
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             notificationManager.cancel(Integer.valueOf(mOpponentId));
+            sharedHelper.removeLastNotificationId(mOpponentId);
             mMessageReceived.setText("Reply to" + " " + userName);
             mReplyBody.requestFocus();
             mReplyMessage.setEnabled(false);
