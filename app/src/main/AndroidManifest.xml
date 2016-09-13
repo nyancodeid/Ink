@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ink">
+    package="com.ink.va">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -17,10 +17,10 @@
     <uses-permission android:name="com.android.vending.BILLING" />
 
     <permission
-        android:name="com.ink.permission.C2D_MESSAGE"
+        android:name="com.ink.va.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.ink.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.ink.va.permission.C2D_MESSAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
@@ -46,79 +46,79 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="ink.activities.Login"
+            android:name="ink.va.activities.Login"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity
-            android:name="ink.activities.Intro"
+            android:name="ink.va.activities.Intro"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name="ink.activities.Registration"
+            android:name="ink.va.activities.Registration"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name="ink.activities.HomeActivity"
+            android:name="ink.va.activities.HomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/feedText"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="ink.activities.OpponentProfile"
+            android:name="ink.va.activities.OpponentProfile"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="ink.activities.Chat"
+            android:name="ink.va.activities.Chat"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/ChatTheme" />
         <activity
-            android:name="ink.activities.CustomizeLook"
+            android:name="ink.va.activities.CustomizeLook"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name="ink.service.NotificationService">
+        <service android:name="ink.va.service.NotificationService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="ink.service.FirebaseInstanceService">
+        <service android:name="ink.va.service.FirebaseInstanceService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="ink.service.LocationRequestSessionDestroyer" />
-        <service android:name="ink.service.BackgroundTaskService" />
-        <service android:name="ink.service.RemoveChatRouletteService" />
-        <service android:name="ink.service.SendTokenService" />
-        <service android:name="ink.service.SendReplyService" />
-        <service android:name="ink.service.SendMessageService" />
+        <service android:name="ink.va.service.LocationRequestSessionDestroyer" />
+        <service android:name="ink.va.service.BackgroundTaskService" />
+        <service android:name="ink.va.service.RemoveChatRouletteService" />
+        <service android:name="ink.va.service.SendTokenService" />
+        <service android:name="ink.va.service.SendReplyService" />
+        <service android:name="ink.va.service.SendMessageService" />
 
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
-        <receiver android:name="ink.broadcast.DismissBroadcast" />
+        <receiver android:name="ink.va.broadcast.DismissBroadcast" />
 
         <activity
-            android:name="ink.activities.ReplyView"
+            android:name="ink.va.activities.ReplyView"
             android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent"
             android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
-            android:name="ink.activities.MyProfile"
+            android:name="ink.va.activities.MyProfile"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.Profile" />
-        <activity android:name="ink.activities.Messages" />
+        <activity android:name="ink.va.activities.Messages" />
         <activity
-            android:name="ink.activities.MakePost"
+            android:name="ink.va.activities.MakePost"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="ink.activities.MapsActivity"
+            android:name="ink.va.activities.MapsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
-        <activity android:name="ink.activities.Comments" />
+        <activity android:name="ink.va.activities.Comments" />
         <activity
-            android:name="ink.activities.SplashScreen"
+            android:name="ink.va.activities.SplashScreen"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -132,18 +132,18 @@
             android:label="ServiceActivity"
             android:theme="@style/VK.Transparent" />
         <activity
-            android:name="ink.activities.Groups"
+            android:name="ink.va.activities.Groups"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name="ink.activities.ChatRoulette"
+            android:name="ink.va.activities.ChatRoulette"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ink.activities.SingleGroupView"
+            android:name="ink.va.activities.SingleGroupView"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.Profile" />
         <activity
-            android:name="ink.activities.CreateGroupPost"
+            android:name="ink.va.activities.CreateGroupPost"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
@@ -153,28 +153,28 @@
             android:value="ink.activities.SearchResultsActivity" />
 
         <activity
-            android:name="ink.activities.RequestsView"
+            android:name="ink.va.activities.RequestsView"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name="ink.activities.WaitRoom"
+            android:name="ink.va.activities.WaitRoom"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
-        <activity android:name="ink.activities.Shop" />
+        <activity android:name="ink.va.activities.Shop" />
         <activity
-            android:name="ink.activities.BuyCoins"
+            android:name="ink.va.activities.BuyCoins"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
         <activity
-            android:name="ink.activities.Music"
+            android:name="ink.va.activities.Music"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name="ink.activities.ImageEditor"
+            android:name="ink.va.activities.ImageEditor"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name="ink.activities.SendFeedback"
+            android:name="ink.va.activities.SendFeedback"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name="ink.activities.ContactSupport"
+            android:name="ink.va.activities.ContactSupport"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -199,32 +199,32 @@
             android:value="80f8d0846bb012e567f21fdf7ebbc38efe19d99e" />
 
         <activity
-            android:name="ink.activities.FullscreenActivity"
+            android:name="ink.va.activities.FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_fullscreen"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
 
         <activity
-            android:name="ink.activities.Settings"
+            android:name="ink.va.activities.Settings"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name="ink.activities.ForgotPassword"
+            android:name="ink.va.activities.ForgotPassword"
             android:screenOrientation="portrait"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity
-            android:name="ink.activities.ChangePassword"
+            android:name="ink.va.activities.ChangePassword"
             android:screenOrientation="portrait"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity
-            android:name="ink.activities.SecurityQuestion"
+            android:name="ink.va.activities.SecurityQuestion"
             android:screenOrientation="portrait"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity
-            android:name="ink.activities.NewsAndTrendsActivity"
+            android:name="ink.va.activities.NewsAndTrendsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
 
         </activity>

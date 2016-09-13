@@ -27,7 +27,7 @@ import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 
-import com.ink.R;
+import com.ink.va.R;
 
 import java.util.ArrayList;
 import java.util.List;

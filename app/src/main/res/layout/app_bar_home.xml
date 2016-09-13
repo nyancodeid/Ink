@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="ink.activities.HomeActivity">
+    tools:context="ink.va.activities.HomeActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -33,7 +33,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginRight="8dp"
         android:src="@drawable/fab_add"
-        app:layout_behavior="ink.utils.ScrollAwareFABBehavior"
+        app:layout_behavior="ink.va.utils.ScrollAwareFABBehavior"
         fab:menu_colorNormal="@color/colorPrimary"
         fab:menu_colorPressed="@color/colorPrimaryDark"
         fab:menu_colorRipple="#cccccc">

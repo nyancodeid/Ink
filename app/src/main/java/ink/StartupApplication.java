@@ -13,8 +13,8 @@ import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
 import com.vk.sdk.VKSdk;
 
-import ink.utils.RealmHelper;
-import ink.utils.SharedHelper;
+import ink.va.utils.RealmHelper;
+import ink.va.utils.SharedHelper;
 
 /**
  * Created by USER on 2016-06-26.

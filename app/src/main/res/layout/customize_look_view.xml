@@ -151,7 +151,7 @@
                     android:layout_marginBottom="8dp"
                     android:layout_marginRight="8dp"
                     android:src="@drawable/fab_add"
-                    app:layout_behavior="ink.utils.ScrollAwareFABBehavior"
+                    app:layout_behavior="ink.va.utils.ScrollAwareFABBehavior"
                     app:menu_colorNormal="@color/colorPrimary"
                     app:menu_colorPressed="@color/colorPrimaryDark"
                     fab:menu_colorRipple="#cccccc">

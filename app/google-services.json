@@ -8,36 +8,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:92405051857:android:c7e017f15c73e6b3",
+        "mobilesdk_app_id": "1:92405051857:android:77f064ab4ee66234",
         "android_client_info": {
-          "package_name": "com.ink"
+          "package_name": "com.ink.va"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "92405051857-0uk561bo567ku6i42704amqp552ke0m6.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ink",
-            "certificate_hash": "4B8EB3E47CAF3E3E1FD852FE76798F3D38A61D1F"
-          }
-        },
-        {
-          "client_id": "92405051857-chnk78q2d4jbsnadnmk7qlspmfd1de57.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ink",
-            "certificate_hash": "1BD0FF62C9A8387896C52A617D37BFE3B2630F4B"
-          }
-        },
-        {
-          "client_id": "92405051857-fvns9nsohh9r80ltd7u3jlreusrissbu.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ink",
-            "certificate_hash": "7B79D47093FEE80A9268BFD8FDA1D10AC1A0537F"
-          }
-        },
         {
           "client_id": "92405051857-tulnmt44hhqrpi42ehbh7976701k6bq5.apps.googleusercontent.com",
           "client_type": 3
@@ -45,7 +21,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCIDRtCZeTTqPbTsFHvobHWEAZFLkLdRTY"
+          "current_key": "AIzaSyB8tJRm6s-NjefxktpSuYbNTCBUiW3LY0w"
         }
       ],
       "services": {
