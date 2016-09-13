@@ -28,7 +28,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -553,17 +552,17 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.chat_menu, menu);
-        chatMenuItem = menu;
-        if (mSharedHelper.isRainbowMessageActivated()) {
-            menu.getItem(0).setTitle(getString(R.string.removeRainbowEffect));
-        } else {
-            menu.getItem(0).setTitle(getString(R.string.showAsRainbow));
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.chat_menu, menu);
+//        chatMenuItem = menu;
+//        if (mSharedHelper.isRainbowMessageActivated()) {
+//            menu.getItem(0).setTitle(getString(R.string.removeRainbowEffect));
+//        } else {
+//            menu.getItem(0).setTitle(getString(R.string.showAsRainbow));
+//        }
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
 
     private void getStatus() {
@@ -582,7 +581,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                     }
                     try {
                         String responseBody = response.body().string();
-                        Log.d("fasfasfsafasfa", "onResponse: "+responseBody);
                         final UserStatus userStatus = gifGson.fromJson(responseBody, UserStatus.class);
                         if (userStatus.success) {
                             SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

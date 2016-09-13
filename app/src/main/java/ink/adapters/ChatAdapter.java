@@ -19,7 +19,6 @@ import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
-import ink.animations.RainbowAnimation;
 import ink.models.ChatModel;
 import ink.utils.Constants;
 import ink.utils.Dp;
@@ -90,23 +89,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         ChatModel chatModel = chatModelList.get(position);
 
         System.gc();
 
         String messageBody = chatModel.getMessage().replaceAll("userid=" + chatModel.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "").replaceAll("userid=" + chatModel.getOpponentId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "");
         holder.message.setText(messageBody);
-        if (showAsRainbow) {
-            if (holder.message.getTag() == null) {
-                RainbowAnimation.get().startRainbowAnimation(mContext, messageBody, holder.message);
-                holder.message.setTag(ANIMATED);
-            }
-        } else {
-            RainbowAnimation.get().stopRainbowAnimation();
-            holder.message.setTag(null);
-        }
-
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.chatViewBubble.getLayoutParams();
         LinearLayout.LayoutParams deliveryStatusParams = (LinearLayout.LayoutParams) holder.deliveryStatus.getLayoutParams();
         LinearLayout.LayoutParams gifChatViewLayoutParams = (LinearLayout.LayoutParams) holder.imageViewWrapper.getLayoutParams();
@@ -163,6 +152,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         }
 
     }
+
 
     private void checkForGif(final ChatModel chatModel, final ChatAdapter.ViewHolder holder) {
         System.gc();
