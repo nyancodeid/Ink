@@ -85,7 +85,6 @@ public class HomeActivity extends BaseActivity
     private FloatingActionButton mMessages;
     private FloatingActionButton mNewPost;
     private Feed mFeed;
-    private MyFriends mMyFriends;
     private Toolbar mToolbar;
     private DrawerLayout mDrawer;
     public static String PROFILE;
@@ -154,7 +153,6 @@ public class HomeActivity extends BaseActivity
         searchFriend = (FloatingActionButton) findViewById(R.id.searchPerson);
         mNewPost = (FloatingActionButton) findViewById(R.id.makePost);
         mFeed = Feed.newInstance();
-        mMyFriends = MyFriends.newInstance();
         mMessages.setOnClickListener(this);
         mMakePost.setOnClickListener(this);
         mNewPost.setOnClickListener(this);
@@ -412,7 +410,6 @@ public class HomeActivity extends BaseActivity
                 shouldOpenActivity = true;
                 setLastClassToOpen(Music.class, false);
                 break;
-
             case R.id.imageEdit:
                 shouldOpenActivity = true;
                 setLastClassToOpen(ImageEditor.class, false);
