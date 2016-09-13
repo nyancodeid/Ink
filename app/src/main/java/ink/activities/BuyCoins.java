@@ -1,8 +1,13 @@
 package ink.activities;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 
+import com.android.vending.billing.IInAppBillingService;
 import com.google.gson.Gson;
 import com.ink.R;
 
@@ -20,13 +25,33 @@ import retrofit2.Response;
 public class BuyCoins extends BaseActivity {
 
     private boolean isCoinsBought;
+    private IInAppBillingService mService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy_coins);
         getCoinsPack();
+
+        Intent serviceIntent =
+                new Intent("com.android.vending.billing.InAppBillingService.BIND");
+        serviceIntent.setPackage("com.android.vending");
+        bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
     }
+
+
+    private ServiceConnection mServiceConn = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name,
+                                       IBinder service) {
+            mService = IInAppBillingService.Stub.asInterface(service);
+        }
+    };
 
     private void getCoinsPack() {
         Call<ResponseBody> coinsCall = Retrofit.getInstance().getInkService().getCoins();
