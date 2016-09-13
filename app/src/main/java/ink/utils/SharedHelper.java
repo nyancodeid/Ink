@@ -641,6 +641,7 @@ public class SharedHelper {
         mEditor.remove("chatFieldTextColor");
         mEditor.remove("opponentTextColor");
         mEditor.remove("ownTextColor");
+        mEditor.remove("trendColor");
         mEditor.commit();
 
     }
