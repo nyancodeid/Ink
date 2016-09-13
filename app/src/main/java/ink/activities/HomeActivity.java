@@ -19,6 +19,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -104,6 +105,7 @@ public class HomeActivity extends BaseActivity
     private int lastRequestCode;
     private ColorChangeListener colorChangeListener;
     private RelativeLayout panelHeader;
+    private TextView messagesCountTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +124,7 @@ public class HomeActivity extends BaseActivity
         if (!mSharedHelper.isMessagesDownloaded()) {
             startMessageDownloadService();
         }
+
         if (!mSharedHelper.isSecurityQuestionSet() && isAccountRecoverable()) {
             View warningView = getLayoutInflater().inflate(R.layout.app_warning_view, null);
             final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
@@ -173,6 +176,7 @@ public class HomeActivity extends BaseActivity
         checkIsWarned();
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+
         toggle = new ActionBarDrawerToggle(this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             public void onDrawerClosed(View view) {
                 if (shouldOpenActivity) {
@@ -198,6 +202,9 @@ public class HomeActivity extends BaseActivity
         }
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        messagesCountTV = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.messages));
+
         View headerView = navigationView.getHeaderView(0);
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, mFeed).commit();
@@ -213,6 +220,15 @@ public class HomeActivity extends BaseActivity
         LocalBroadcastManager.getInstance(this).registerReceiver(feedUpdateReceiver, new IntentFilter(getPackageName() + "HomeActivity"));
     }
 
+    private void initializeCountDrawer(TextView messages) {
+        messages.setGravity(Gravity.CENTER_VERTICAL);
+        if (mSharedHelper.getLeftSlidingPanelHeaderColor() != null) {
+            messages.setTextColor(Color.parseColor(mSharedHelper.getLeftSlidingPanelHeaderColor()));
+        } else {
+            messages.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        }
+        messages.setText("99+");
+    }
 
     private void testTimezone() throws ParseException {
 
@@ -534,6 +550,9 @@ public class HomeActivity extends BaseActivity
     @Override
     protected void onResume() {
         getMyRequests();
+        if (messagesCountTV != null) {
+            initializeCountDrawer(messagesCountTV);
+        }
         if (mSharedHelper.isTokenRefreshed()) {
             startTokenService();
         }

@@ -189,6 +189,10 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public void putMessagesCount(String opponentId) {
+
+    }
+
     public String getUserFacebookLink() {
         return mSharedPreferences.getString("userFacebookLink", context.getString(R.string.noFacebook));
     }
