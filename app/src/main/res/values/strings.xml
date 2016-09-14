@@ -671,4 +671,8 @@
     <string name="dateOfMessage">Date of message :</string>
     <string name="pickTrendAndNewsColor">Pick trend and news icon color</string>
     <string name="trendColor">Trend And News Color</string>
+    <string name="thisWontWork">This won\'t work fellas</string>
+    <string name="applicationModified">The application was modified!This will not work as we do not let any outsource and modified apk to be working as they are potentially hacked.
+        \nPlease remove this application and install from original source from google play.
+        \nThe further functions will not work.</string>
 </resources>
