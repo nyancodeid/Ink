@@ -44,11 +44,11 @@ public class BuyCoins extends BaseActivity {
         Intent serviceIntent =
                 new Intent("com.android.vending.billing.InAppBillingService.BIND");
         serviceIntent.setPackage("com.android.vending");
-        bindService(serviceIntent, mServiceConn, Context.BIND_AUTO_CREATE);
+        bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
 
-    private ServiceConnection mServiceConn = new ServiceConnection() {
+    private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceDisconnected(ComponentName name) {
             mService = null;
@@ -128,6 +128,14 @@ public class BuyCoins extends BaseActivity {
                 getCoinsPack();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (serviceConnection != null) {
+            unbindService(serviceConnection);
+        }
+        super.onDestroy();
     }
 
     @Override
