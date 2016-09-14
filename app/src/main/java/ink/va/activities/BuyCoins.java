@@ -58,7 +58,45 @@ public class BuyCoins extends BaseActivity {
         public void onServiceConnected(ComponentName name,
                                        IBinder service) {
             mService = IInAppBillingService.Stub.asInterface(service);
+
             try {
+                Bundle ownedItems = mService.getPurchases(3, getPackageName(), "inapp", null);
+                Log.d("Fasfsafasfasfa", "onServiceConnected: "+ownedItems);
+
+                int response = ownedItems.getInt("RESPONSE_CODE");
+                Log.d("Fasfsafasfasfa", "onServiceConnected: "+response);
+
+                if (response == 0) {
+                    ArrayList<String> ownedSkus =
+                            ownedItems.getStringArrayList("INAPP_PURCHASE_ITEM_LIST");
+                    ArrayList<String> purchaseDataList =
+                            ownedItems.getStringArrayList("INAPP_PURCHASE_DATA_LIST");
+                    ArrayList<String> signatureList =
+                            ownedItems.getStringArrayList("INAPP_DATA_SIGNATURE_LIST");
+                    String continuationToken =
+                            ownedItems.getString("INAPP_CONTINUATION_TOKEN");
+
+
+                    Log.d("Fasfsafasfasfa", "onServiceConnected: "+ownedSkus.size());
+                    Log.d("Fasfsafasfasfa", "onServiceConnected: "+purchaseDataList.size());
+                    Log.d("Fasfsafasfasfa", "onServiceConnected: "+signatureList.size());
+                    Log.d("Fasfsafasfasfa", "onServiceConnected: "+continuationToken);
+
+                    for (int i = 0; i < purchaseDataList.size(); ++i) {
+                        String purchaseData = purchaseDataList.get(i);
+                        String signature = signatureList.get(i);
+                        String sku = ownedSkus.get(i);
+
+                        // do something with this purchase information
+                        // e.g. display the updated list of products owned by user
+                        Log.d("Fasfsafasfasfa", "onServiceConnected: " + "purchased items are" + sku + " " + signature + " " + purchaseData);
+                    }
+
+                    // if continuationToken != null, call getPurchases again
+                    // and pass in the token to retrieve more items
+                }
+
+
                 Bundle buyIntentBundle = mService.getBuyIntent(3, getPackageName(),
                         "small_pack", "inapp", "bGoa+V7g/yqDXvKRqq+JTFn4uQZbPiQJo4pf9RzJ");
                 PendingIntent pendingIntent = buyIntentBundle.getParcelable("BUY_INTENT");

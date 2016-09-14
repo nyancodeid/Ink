@@ -10,17 +10,23 @@ import com.ink.va.R;
 
 public class SplashScreen extends BaseActivity {
     private boolean isAppOriginal;
-    private String firstKeyHash = "GXEMUTFFeZejMCClv1bXr7Zbid8=";
+    private String debugKeyHas = "GXEMUTFFeZejMCClv1bXr7Zbid8=";
+    private String releaseKeyHash = "JeFV2v/aHMVmxkndxmzynZNlMC8=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+
         String currentKeyHash = ink.va.utils.Debug.getKeyHash(this);
 
-        if (currentKeyHash.trim().equals(firstKeyHash.trim())) {
+
+        if (currentKeyHash.trim().equals(debugKeyHas.trim())) {
+            isAppOriginal = true;
+        } else if (currentKeyHash.trim().equals(releaseKeyHash.trim())) {
             isAppOriginal = true;
         }
+
         if (isAppOriginal) {
             Intent intent = new Intent(this, Intro.class);
             startActivity(intent);
