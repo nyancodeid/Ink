@@ -655,7 +655,7 @@
     <string name="newsError">Could not fetch news,please check your internet</string>
     <string name="worldwideNewsTitle">Worldwide</string>
     <string name="whatsTrendingTitle">What\'s Trending</string>
-    <string name="viewDetails">View Details</string>
+    <string name="viewDetails">Details</string>
     <string name="loadMoreNews">Load More News</string>
     <string name="noMoreNews">No more news to load</string>
     <string name="notAuthorized">You are not authorized to use</string>
