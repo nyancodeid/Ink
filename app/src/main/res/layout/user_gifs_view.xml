@@ -56,7 +56,11 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:background="@drawable/circle_transparent_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
         android:text="@string/goToStore"
         android:textAllCaps="false"
+        android:textColor="@color/colorPrimary"
         android:visibility="gone" />
 </RelativeLayout>
