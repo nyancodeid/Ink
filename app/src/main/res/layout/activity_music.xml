@@ -15,9 +15,29 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="10dp"
-        android:layout_toLeftOf="@+id/musicLoading"
+        android:layout_toLeftOf="@+id/thanksToSoundCloudTV"
         android:fontFamily="@string/appFont"
         android:text="@string/recentTracks" />
+
+    <ImageView
+        android:id="@+id/soundCloudIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/sound_cloud_icon" />
+
+    <TextView
+        android:id="@+id/thanksToSoundCloudTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/soundCloudIcon"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@+id/soundCloudIcon"
+        android:text="@string/thanksTo"
+        android:textColor="#000000"
+        android:textStyle="bold" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/musicRecycler"
@@ -32,6 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_below="@+id/soundCloudIcon"
         android:layout_margin="5dp"
         android:visibility="visible"
         app:indicator="BallClipRotateMultiple"
