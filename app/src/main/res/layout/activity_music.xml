@@ -35,9 +35,8 @@
         android:layout_marginRight="3dp"
         android:layout_marginTop="5dp"
         android:layout_toLeftOf="@+id/soundCloudIcon"
-        android:text="@string/thanksTo"
-        android:textColor="#000000"
-        android:textStyle="bold" />
+        android:fontFamily="@string/appFont"
+        android:text="@string/thanksTo" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/musicRecycler"
