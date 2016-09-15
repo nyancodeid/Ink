@@ -64,6 +64,8 @@ public class Music extends BaseActivity implements MusicClickListener {
     ImageView closeMusicSheet;
     @Bind(R.id.currentlyPlayingImage)
     ImageView currentlyPlayingImage;
+    @Bind(R.id.musicGeneralTitle)
+    TextView musicGeneralTitle;
     private boolean isMusicChosen;
     private Animation slideUp;
     private Animation slideDown;
@@ -311,6 +313,7 @@ public class Music extends BaseActivity implements MusicClickListener {
                     Toast.makeText(Music.this, getString(R.string.pleaseInputSearch), Toast.LENGTH_SHORT).show();
                 } else {
                     dialog.dismiss();
+                    musicGeneralTitle.setText(getString(R.string.musicTitleHint));
                     musicLoading.setVisibility(View.VISIBLE);
                     clearTrackArray();
                     Call<ResponseBody> searchCall = Retrofit.getInstance().getMusicCloudInterface().searchSong(searchText);

@@ -7,13 +7,25 @@
     android:layout_height="match_parent"
     tools:context="ink.va.activities.Music">
 
+    <TextView
+        android:id="@+id/musicGeneralTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@+id/musicLoading"
+        android:fontFamily="@string/appFont"
+        android:text="@string/recentTracks" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/musicRecycler"
-        android:layout_above="@+id/musicInfoSheet"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"
+        android:layout_above="@+id/musicInfoSheet"
+        android:layout_below="@+id/musicGeneralTitle"
+        android:layout_marginTop="10dp"></android.support.v7.widget.RecyclerView>
 
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/musicLoading"
