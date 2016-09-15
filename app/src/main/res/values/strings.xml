@@ -678,4 +678,5 @@
     <string name="recentTracks">Recent tracks</string>
     <string name="musicTitleHint">Hint : try searching by full track and artist name altogether for exact result</string>
     <string name="thanksTo">Thanks to</string>
+    <string name="goToStore">Go to store</string>
 </resources>
