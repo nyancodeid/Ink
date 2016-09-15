@@ -2,9 +2,7 @@ package ink.va.activities;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,6 +30,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ink.va.adapters.MusicAdapter;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.decorators.DividerItemDecoration;
@@ -52,21 +53,26 @@ public class Music extends BaseActivity implements MusicClickListener {
     @Bind(R.id.musicInfoSheet)
     View musicInfoSheet;
     @Bind(R.id.openCloseMusicSheet)
-    ImageView openCloseMusicSheet;
+    ImageView openMusicSheet;
     @Bind(R.id.statusText)
     TextView statusText;
     @Bind(R.id.currentlyPlayingName)
     TextView currentlyPlayingName;
     @Bind(R.id.playPauseButton)
     ImageView playPauseButton;
+    @Bind(R.id.closeMusicSheet)
+    ImageView closeMusicSheet;
     @Bind(R.id.currentlyPlayingImage)
     ImageView currentlyPlayingImage;
     private boolean isMusicChosen;
+    private Animation slideUp;
+    private Animation slideDown;
+    private Animation rotate;
+    private boolean shouldRotate;
 
     private List<Track> tracks;
     private MusicAdapter musicAdapter;
     private Gson gson;
-    private BottomSheetBehavior mBottomSheetBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,12 +84,14 @@ public class Music extends BaseActivity implements MusicClickListener {
             actionBar.setTitle(getString(R.string.music));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+        slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+        rotate = AnimationUtils.loadAnimation(this, R.anim.rotate_animation);
+
         gson = new Gson();
         tracks = new ArrayList<>();
         musicAdapter = new MusicAdapter(tracks, this);
-        musicAdapter.setonMusicClickListener(this);
-
-        mBottomSheetBehavior = BottomSheetBehavior.from(musicInfoSheet);
+        musicAdapter.setOnMusicClickListener(this);
 
         checkForMusicPlaying();
 
@@ -96,33 +104,24 @@ public class Music extends BaseActivity implements MusicClickListener {
                 if (MediaPlayerManager.get().isSoundPlaying()) {
                     playPauseButton.setImageResource(R.drawable.play_icon);
                     MediaPlayerManager.get().pauseMusic();
+                    shouldRotate = false;
                 } else {
                     playPauseButton.setImageResource(R.drawable.pause);
                     MediaPlayerManager.get().playMusic(null, null);
+                    shouldRotate = true;
                 }
             }
         });
 
-        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    openCloseMusicSheet.setVisibility(View.VISIBLE);
-                } else {
-                    openCloseMusicSheet.setVisibility(View.GONE);
-                }
-            }
 
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-        openCloseMusicSheet.setOnClickListener(new View.OnClickListener() {
+        openMusicSheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                openCloseMusicSheet.setVisibility(View.GONE);
+
+                musicInfoSheet.setVisibility(View.VISIBLE);
+                musicInfoSheet.startAnimation(slideUp);
+                openMusicSheet.clearAnimation();
+                openMusicSheet.setVisibility(View.GONE);
             }
         });
 
@@ -140,7 +139,9 @@ public class Music extends BaseActivity implements MusicClickListener {
     private void checkForMusicPlaying() {
         if (MediaPlayerManager.get().isSoundPlaying()) {
             isMusicChosen = true;
+            shouldRotate = true;
             initBottomSheet(null);
+            openMusicSheet.startAnimation(rotate);
         }
     }
 
@@ -149,8 +150,17 @@ public class Music extends BaseActivity implements MusicClickListener {
     public void onMusicItemClick(int position) {
         Track track = tracks.get(position);
         initBottomSheet(track);
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        if (musicInfoSheet.getVisibility() == View.GONE) {
+            musicInfoSheet.setVisibility(View.VISIBLE);
+            musicInfoSheet.startAnimation(slideUp);
+        }
+
+        openMusicSheet.clearAnimation();
+        openMusicSheet.setVisibility(View.GONE);
+
         isMusicChosen = true;
+        shouldRotate = true;
     }
 
     private void initBottomSheet(@Nullable Track track) {
@@ -251,6 +261,31 @@ public class Music extends BaseActivity implements MusicClickListener {
             openSearchDialog();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.closeMusicSheet)
+    public void closeMusicSheet() {
+        openMusicSheet.setVisibility(View.VISIBLE);
+        musicInfoSheet.startAnimation(slideDown);
+        slideDown.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                musicInfoSheet.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        if (shouldRotate) {
+            openMusicSheet.startAnimation(rotate);
+        }
     }
 
     private void openSearchDialog() {

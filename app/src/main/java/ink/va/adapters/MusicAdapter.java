@@ -71,7 +71,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
 
         holder.musicName.setText(track.mTitle);
 
-        if (track.mArtworkURL != null && !track.equals("null")) {
+        if (track.mArtworkURL != null && !track.equals("null") && !track.mArtworkURL.equals("null") && !track.mArtworkURL.isEmpty()) {
             holder.musicImage.setBackground(null);
             Ion.with(mContext).load(track.mArtworkURL).withBitmap().transform(new CircleTransform()).intoImageView(holder.musicImage);
         } else {
@@ -88,7 +88,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
         return trackList.size();
     }
 
-    public void setonMusicClickListener(MusicClickListener mOnClickListener) {
+    public void setOnMusicClickListener(MusicClickListener mOnClickListener) {
         this.mOnClickListener = mOnClickListener;
     }
 
