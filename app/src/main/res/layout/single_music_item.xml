@@ -9,18 +9,32 @@
     android:foreground="?attr/selectableItemBackground"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/musicImage"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_margin="10dp"
-        android:src="@drawable/gradient_no_image" />
+    <RelativeLayout
+        android:id="@+id/musicImageWrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+
+        <ImageView
+            android:id="@+id/musicImage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/gradient_no_image" />
+
+        <ProgressBar
+            android:id="@+id/musicSingleImageLoading"
+            style="@style/AdobeImageWidget.ProgressBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
 
     <TextView
-        android:fontFamily="@string/appFont"
         android:id="@+id/musicName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/musicImage"
-        android:layout_toRightOf="@+id/musicImage" />
+        android:layout_alignTop="@+id/musicImageWrapper"
+        android:layout_toRightOf="@+id/musicImageWrapper"
+        android:fontFamily="@string/appFont" />
 </RelativeLayout>

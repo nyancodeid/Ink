@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -34,12 +35,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
         public TextView musicName;
         public ImageView musicImage;
         private RelativeLayout musicRootItem;
+        private ProgressBar musicSingleImageLoading;
 
         public ViewHolder(View view) {
             super(view);
             musicName = (TextView) view.findViewById(R.id.musicName);
             musicImage = (ImageView) view.findViewById(R.id.musicImage);
             musicRootItem = (RelativeLayout) view.findViewById(R.id.musicRootItem);
+            musicSingleImageLoading = (ProgressBar) view.findViewById(R.id.musicSingleImageLoading);
             musicImage.setTag(NOT_LOADED);
         }
     }
@@ -69,7 +72,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                 }
             }
         });
-
+        holder.musicSingleImageLoading.setVisibility(View.VISIBLE);
         holder.musicName.setText(track.mTitle);
 
         if (track.mArtworkURL != null && !track.equals("null") && !track.mArtworkURL.equals("null") && !track.mArtworkURL.isEmpty()) {
@@ -77,13 +80,15 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             Ion.with(mContext).load(track.mArtworkURL).withBitmap().transform(new CircleTransform()).intoImageView(holder.musicImage).setCallback(new FutureCallback<ImageView>() {
                 @Override
                 public void onCompleted(Exception e, ImageView result) {
-                   if(e!=null){
-                       holder.musicImage.setBackground(null);
-                       holder.musicImage.setBackgroundResource(R.drawable.gradient_no_image);
-                   }
+                    holder.musicSingleImageLoading.setVisibility(View.GONE);
+                    if (e != null) {
+                        holder.musicImage.setBackground(null);
+                        holder.musicImage.setBackgroundResource(R.drawable.gradient_no_image);
+                    }
                 }
             });
         } else {
+            holder.musicSingleImageLoading.setVisibility(View.GONE);
             holder.musicImage.setBackground(null);
             holder.musicImage.setBackgroundResource(R.drawable.gradient_no_image);
         }
