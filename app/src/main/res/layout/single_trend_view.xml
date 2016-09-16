@@ -87,7 +87,6 @@
                 android:text="@string/viewDetails"
                 android:textAllCaps="false"
                 android:textColor="@color/colorPrimary" />
-
             <ProgressBar
                 android:id="@+id/imageLoadingProgress"
                 android:layout_width="wrap_content"

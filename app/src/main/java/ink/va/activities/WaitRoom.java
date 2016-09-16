@@ -98,6 +98,7 @@ public class WaitRoom extends BaseActivity {
         chatRouletteRecycler.setLayoutManager(linearLayoutManager);
         chatRouletteRecycler.setItemAnimator(itemAnimator);
         chatRouletteRecycler.setAdapter(chatAdapter);
+        chatRouletteSendMessage.setEnabled(false);
 
         chatRouletteRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -126,7 +127,7 @@ public class WaitRoom extends BaseActivity {
                 @Override
                 public void onSuccess(String s) {
                     isConnectedToWaitRoom = true;
-                    actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.darkGreen));
+                    actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.darkGreen));
                     actualStatus.setText(getString(R.string.connectedToQue));
                 }
 
@@ -202,7 +203,7 @@ public class WaitRoom extends BaseActivity {
                                                     @Override
                                                     public void onSuccess(String s) {
                                                         isConnectedToWaitRoom = true;
-                                                        actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.darkGreen));
+                                                        actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.darkGreen));
                                                         actualStatus.setText(getString(R.string.connectedToQue));
                                                     }
 
@@ -382,7 +383,7 @@ public class WaitRoom extends BaseActivity {
                 String isDisconnected = extras.getString("isDisconnected");
                 if (isDisconnected.equals("1")) {
                     mIsDisconnected = false;
-                    actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.darkGreen));
+                    actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.darkGreen));
                     actualStatus.setText(getString(R.string.opponentFound));
                     progressBar.setVisibility(View.GONE);
                     chatRouletteMessageBody.setEnabled(false);
@@ -560,7 +561,7 @@ public class WaitRoom extends BaseActivity {
 
                     }
                 }).show();
-                actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(),R.color.darkGreen));
+                actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.darkGreen));
                 actualStatus.setText(getString(R.string.opponentFound));
                 progressBar.setVisibility(View.GONE);
                 chatRouletteMessageBody.setEnabled(false);

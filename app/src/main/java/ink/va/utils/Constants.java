@@ -128,7 +128,7 @@ public class Constants {
     public static final String SERVER_AUTH_KEY = "fsahga-s447489asg-gGgashagasgfag-JKGKAJGKAS-gasgasga678sag8as-GASGJASKLG";
     public static final String NO_IMAGE_NAME = "no_image.png";
     public static final String NO_IMAGE_URL = MAIN_URL + USER_IMAGES_FOLDER + NO_IMAGE_NAME;
-    public static final String ANDROID_DRAWABLE_DIR = ANDROID_RESOURCE_DIR + "com.ink" + "/drawable/";
+    public static final String ANDROID_DRAWABLE_DIR = ANDROID_RESOURCE_DIR + "com.ink.va" + "/drawable/";
     public static final String FUNNY_USER_IMAGE = "funny_image.jpg";
     public static final String TREND_CATEGORIES_URL = "TrendCategories.php";
     public static final String TREND_URL = "GetTrends.php";

@@ -63,7 +63,7 @@ public class TrendAdapter extends RecyclerView.Adapter<TrendAdapter.ViewHolder> 
         if (trendModel.getImageUrl() != null && !trendModel.getImageUrl().isEmpty()) {
             holder.imageLoadingProgress.setVisibility(View.VISIBLE);
             holder.trendImage.setVisibility(View.VISIBLE);
-            Ion.with(context).load(trendModel.getImageUrl()).withBitmap().placeholder(R.drawable.whats_trending_vector).intoImageView(holder.trendImage).setCallback(new FutureCallback<ImageView>() {
+            Ion.with(context).load(trendModel.getImageUrl()).withBitmap().intoImageView(holder.trendImage).setCallback(new FutureCallback<ImageView>() {
                 @Override
                 public void onCompleted(Exception e, ImageView result) {
                     holder.imageLoadingProgress.setVisibility(View.GONE);

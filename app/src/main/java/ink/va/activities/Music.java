@@ -2,9 +2,7 @@ package ink.va.activities;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,15 +10,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ink.va.R;
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -30,6 +32,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ink.va.adapters.MusicAdapter;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.decorators.DividerItemDecoration;
@@ -52,21 +55,30 @@ public class Music extends BaseActivity implements MusicClickListener {
     @Bind(R.id.musicInfoSheet)
     View musicInfoSheet;
     @Bind(R.id.openCloseMusicSheet)
-    ImageView openCloseMusicSheet;
+    ImageView openMusicSheet;
     @Bind(R.id.statusText)
     TextView statusText;
     @Bind(R.id.currentlyPlayingName)
     TextView currentlyPlayingName;
     @Bind(R.id.playPauseButton)
     ImageView playPauseButton;
+    @Bind(R.id.closeMusicSheet)
+    ImageView closeMusicSheet;
     @Bind(R.id.currentlyPlayingImage)
     ImageView currentlyPlayingImage;
+    @Bind(R.id.musicGeneralTitle)
+    TextView musicGeneralTitle;
+    @Bind(R.id.bottomSheetImageProgress)
+    ProgressBar bottomSheetImageProgress;
     private boolean isMusicChosen;
+    private Animation slideUp;
+    private Animation slideDown;
+    private Animation rotate;
+    private boolean shouldRotate;
 
     private List<Track> tracks;
     private MusicAdapter musicAdapter;
     private Gson gson;
-    private BottomSheetBehavior mBottomSheetBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,12 +90,14 @@ public class Music extends BaseActivity implements MusicClickListener {
             actionBar.setTitle(getString(R.string.music));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+        slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+        rotate = AnimationUtils.loadAnimation(this, R.anim.rotate_animation);
+
         gson = new Gson();
         tracks = new ArrayList<>();
         musicAdapter = new MusicAdapter(tracks, this);
-        musicAdapter.setonMusicClickListener(this);
-
-        mBottomSheetBehavior = BottomSheetBehavior.from(musicInfoSheet);
+        musicAdapter.setOnMusicClickListener(this);
 
         checkForMusicPlaying();
 
@@ -96,33 +110,24 @@ public class Music extends BaseActivity implements MusicClickListener {
                 if (MediaPlayerManager.get().isSoundPlaying()) {
                     playPauseButton.setImageResource(R.drawable.play_icon);
                     MediaPlayerManager.get().pauseMusic();
+                    shouldRotate = false;
                 } else {
                     playPauseButton.setImageResource(R.drawable.pause);
                     MediaPlayerManager.get().playMusic(null, null);
+                    shouldRotate = true;
                 }
             }
         });
 
-        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    openCloseMusicSheet.setVisibility(View.VISIBLE);
-                } else {
-                    openCloseMusicSheet.setVisibility(View.GONE);
-                }
-            }
 
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-        openCloseMusicSheet.setOnClickListener(new View.OnClickListener() {
+        openMusicSheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                openCloseMusicSheet.setVisibility(View.GONE);
+
+                musicInfoSheet.setVisibility(View.VISIBLE);
+                musicInfoSheet.startAnimation(slideUp);
+                openMusicSheet.clearAnimation();
+                openMusicSheet.setVisibility(View.GONE);
             }
         });
 
@@ -140,7 +145,9 @@ public class Music extends BaseActivity implements MusicClickListener {
     private void checkForMusicPlaying() {
         if (MediaPlayerManager.get().isSoundPlaying()) {
             isMusicChosen = true;
+            shouldRotate = true;
             initBottomSheet(null);
+            openMusicSheet.startAnimation(rotate);
         }
     }
 
@@ -149,11 +156,21 @@ public class Music extends BaseActivity implements MusicClickListener {
     public void onMusicItemClick(int position) {
         Track track = tracks.get(position);
         initBottomSheet(track);
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        if (musicInfoSheet.getVisibility() == View.GONE) {
+            musicInfoSheet.setVisibility(View.VISIBLE);
+            musicInfoSheet.startAnimation(slideUp);
+        }
+
+        openMusicSheet.clearAnimation();
+        openMusicSheet.setVisibility(View.GONE);
+
         isMusicChosen = true;
+        shouldRotate = true;
     }
 
     private void initBottomSheet(@Nullable Track track) {
+        bottomSheetImageProgress.setVisibility(View.VISIBLE);
         statusText.setText(getString(R.string.buffering));
 
         playPauseButton.setImageResource(R.drawable.pause);
@@ -172,8 +189,18 @@ public class Music extends BaseActivity implements MusicClickListener {
 
 
         if (image != null && !image.equals("null")) {
-            Ion.with(getApplicationContext()).load(image).withBitmap().placeholder(R.drawable.time_loading_vector).transform(new CircleTransform()).intoImageView(currentlyPlayingImage);
+            Ion.with(getApplicationContext()).load(image).withBitmap().placeholder(R.drawable.time_loading_vector).transform(new CircleTransform()).intoImageView(currentlyPlayingImage).setCallback(new FutureCallback<ImageView>() {
+                @Override
+                public void onCompleted(Exception e, ImageView result) {
+                    bottomSheetImageProgress.setVisibility(View.GONE);
+                    if (e != null) {
+                        currentlyPlayingImage.setBackground(null);
+                        currentlyPlayingImage.setImageResource(R.drawable.gradient_no_image);
+                    }
+                }
+            });
         } else {
+            bottomSheetImageProgress.setVisibility(View.GONE);
             currentlyPlayingImage.setBackground(null);
             currentlyPlayingImage.setImageResource(R.drawable.gradient_no_image);
         }
@@ -253,6 +280,31 @@ public class Music extends BaseActivity implements MusicClickListener {
         return super.onOptionsItemSelected(item);
     }
 
+    @OnClick(R.id.closeMusicSheet)
+    public void closeMusicSheet() {
+        openMusicSheet.setVisibility(View.VISIBLE);
+        musicInfoSheet.startAnimation(slideDown);
+        slideDown.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                musicInfoSheet.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        if (shouldRotate) {
+            openMusicSheet.startAnimation(rotate);
+        }
+    }
+
     private void openSearchDialog() {
         System.gc();
         final Dialog dialog = new Dialog(Music.this);
@@ -276,6 +328,7 @@ public class Music extends BaseActivity implements MusicClickListener {
                     Toast.makeText(Music.this, getString(R.string.pleaseInputSearch), Toast.LENGTH_SHORT).show();
                 } else {
                     dialog.dismiss();
+                    musicGeneralTitle.setText(getString(R.string.musicTitleHint));
                     musicLoading.setVisibility(View.VISIBLE);
                     clearTrackArray();
                     Call<ResponseBody> searchCall = Retrofit.getInstance().getMusicCloudInterface().searchSong(searchText);

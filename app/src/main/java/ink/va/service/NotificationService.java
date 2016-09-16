@@ -224,7 +224,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(requestId), requestsViewIntent, 0);
         android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
-        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setSmallIcon(R.drawable.location_vector);
         builder.setAutoCancel(true);
 
 
@@ -527,7 +527,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(requestId), requestsViewIntent, 0);
         android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
-        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setSmallIcon(R.drawable.group_request_vector);
         builder.setAutoCancel(true);
 
 
@@ -555,7 +555,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(requestId), requestsViewIntent, 0);
         android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
-        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setSmallIcon(R.drawable.request_friend_icon);
         builder.setAutoCancel(true);
 
 
@@ -583,7 +583,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(uniqueId), requestsViewIntent, 0);
         android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
-        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setSmallIcon(R.drawable.notification_icon);
         builder.setAutoCancel(true);
 
 

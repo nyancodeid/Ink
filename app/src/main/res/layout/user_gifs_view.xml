@@ -47,4 +47,20 @@
         android:text="@string/noGif"
         android:textStyle="bold"
         android:visibility="gone" />
+
+    <Button
+        android:id="@+id/goToStore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/noGifsText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/circle_transparent_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="@string/goToStore"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimary"
+        android:visibility="gone" />
 </RelativeLayout>

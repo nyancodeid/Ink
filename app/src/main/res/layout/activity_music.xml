@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootLayout"
@@ -7,17 +7,51 @@
     android:layout_height="match_parent"
     tools:context="ink.va.activities.Music">
 
+    <TextView
+        android:id="@+id/musicGeneralTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@+id/thanksToSoundCloudTV"
+        android:fontFamily="@string/appFont"
+        android:text="@string/recentTracks" />
+
+    <ImageView
+        android:id="@+id/soundCloudIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/sound_cloud_icon" />
+
+    <TextView
+        android:id="@+id/thanksToSoundCloudTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/soundCloudIcon"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@+id/soundCloudIcon"
+        android:fontFamily="@string/appFont"
+        android:text="@string/thanksTo" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/musicRecycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"
+        android:layout_above="@+id/musicInfoSheet"
+        android:layout_below="@+id/musicGeneralTitle"
+        android:layout_marginTop="10dp"></android.support.v7.widget.RecyclerView>
 
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/musicLoading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|top"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/soundCloudIcon"
         android:layout_margin="5dp"
         android:visibility="visible"
         app:indicator="BallClipRotateMultiple"
@@ -27,26 +61,34 @@
         android:id="@+id/openCloseMusicSheet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="10dp"
-        android:src="@drawable/up_arrow"
-        app:layout_anchor="@+id/musicInfoSheet"
-        app:layout_anchorGravity="top|center" />
+        android:src="@drawable/disc_vector" />
 
     <RelativeLayout
         android:id="@+id/musicInfoSheet"
         android:layout_width="match_parent"
         android:layout_height="150dp"
+        android:layout_alignParentBottom="true"
         android:background="#404040"
         android:elevation="5dp"
-        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/currentlyPlayingImage"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerVertical="true" />
+
+        <ProgressBar
+            android:id="@+id/bottomSheetImageProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp" />
 
         <TextView
             android:id="@+id/statusText"
@@ -75,9 +117,26 @@
             android:id="@+id/playPauseButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:padding="16dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:padding="10dp"
             android:src="@drawable/play_icon" />
+
+        <ImageView
+            android:id="@+id/closeMusicSheet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:padding="10dp"
+            android:src="@drawable/close_vector" />
     </RelativeLayout>
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

@@ -5,9 +5,16 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'realm-android'
 android {
+    signingConfigs {
+        config {
+            keyAlias 'inkAllias'
+            keyPassword '536961'
+            storeFile file('C:/Users/PC-Comp/Downloads/inkKeystore.jks')
+            storePassword '536961'
+        }
+    }
     compileSdkVersion 24
     buildToolsVersion "24.0.0"
-
     dexOptions {
         javaMaxHeapSize "2g"
     }
@@ -21,13 +28,15 @@ android {
         multiDexEnabled true
         setProperty("archivesBaseName", "Ink")
     }
-
-
     buildTypes {
         release {
             minifyEnabled false
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            signingConfig signingConfigs.config
         }
     }
 }
@@ -42,7 +51,6 @@ dependencies {
     compile files('src/main/libs/mail.jar')
     compile files('src/main/libs/additionnal.jar')
     compile files('src/main/libs/activation.jar')
-
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.wang.avi:library:1.0.5'
     compile 'com.google.android.gms:play-services-auth:9.0.2'

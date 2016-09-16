@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -692,6 +693,13 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         ImageView closeGifChoser = (ImageView) view.findViewById(R.id.closeGifChoser);
         ProgressBar gifLoadingProgress = (ProgressBar) view.findViewById(R.id.gifLoadingProgress);
         TextView noGifsText = (TextView) view.findViewById(R.id.noGifsText);
+        Button goToStore = (Button) view.findViewById(R.id.goToStore);
+        goToStore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), Shop.class));
+            }
+        });
         closeGifChoser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -704,7 +712,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         gifsRecycler.setLayoutManager(gridLayoutManager);
 
         gifsRecycler.setAdapter(gifAdapter);
-        getUserGifs(noGifsText, gifLoadingProgress);
+        getUserGifs(noGifsText,goToStore, gifLoadingProgress);
         gifChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
@@ -722,18 +730,18 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         gifChooserDialog.show();
     }
 
-    private void getUserGifs(final TextView noGifsText, final ProgressBar gifLoadingProgress) {
+    private void getUserGifs(final TextView noGifsText, final Button goToStore, final ProgressBar gifLoadingProgress) {
         Call<ResponseBody> gifCall = Retrofit.getInstance().getInkService().getUserGifs(mSharedHelper.getUserId(),
                 Constants.SERVER_AUTH_KEY);
         gifCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    getUserGifs(noGifsText, gifLoadingProgress);
+                    getUserGifs(noGifsText, goToStore, gifLoadingProgress);
                     return;
                 }
                 if (response.body() == null) {
-                    getUserGifs(noGifsText, gifLoadingProgress);
+                    getUserGifs(noGifsText, goToStore, gifLoadingProgress);
                     return;
                 }
                 try {
@@ -751,15 +759,19 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                             }
                             if (gifModelList.size() <= 0) {
                                 noGifsText.setVisibility(View.VISIBLE);
+                                goToStore.setVisibility(View.VISIBLE);
                             } else {
                                 noGifsText.setVisibility(View.GONE);
+                                goToStore.setVisibility(View.GONE);
                             }
 
                         } else {
                             noGifsText.setVisibility(View.VISIBLE);
+                            goToStore.setVisibility(View.VISIBLE);
                         }
                     } else {
                         noGifsText.setVisibility(View.VISIBLE);
+                        goToStore.setVisibility(View.VISIBLE);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -768,7 +780,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getUserGifs(noGifsText, gifLoadingProgress);
+                getUserGifs(noGifsText, goToStore, gifLoadingProgress);
             }
         });
     }
