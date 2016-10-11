@@ -25,7 +25,6 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
     private SharedHelper sharedHelper;
 
 
-
     @Override
     public void onCreate() {
         RealmHelper.getInstance().initRealm(getApplicationContext());

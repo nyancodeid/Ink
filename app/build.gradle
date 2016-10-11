@@ -9,7 +9,7 @@ android {
         config {
             keyAlias 'inkAllias'
             keyPassword '536961'
-            storeFile file('C:/Users/PC-Comp/Downloads/inkKeystore.jks')
+            storeFile file('C:/Users/USER/Downloads/inkKeystore.jks')
             storePassword '536961'
         }
     }

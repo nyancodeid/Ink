@@ -3,6 +3,7 @@ package ink.va.models;
 /**
  * Created by USER on 2016-06-24.
  */
+
 public class ChatModel {
     private String messageId;
     private String userId;
