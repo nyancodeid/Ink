@@ -96,7 +96,7 @@ public class Shop extends BaseActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.shop_menu, menu);
         if (menu != null) {
-            if (User.get().getCoins() != 0) {
+            if (User.get().getCoins() != null) {
                 menu.findItem(R.id.myCoinsMenu).setTitle(getString(R.string.coinsText, User.get().getCoins()));
             }
         }

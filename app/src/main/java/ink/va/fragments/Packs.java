@@ -2,6 +2,7 @@ package ink.va.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,7 @@ import ink.va.adapters.PacksAdapter;
 import ink.va.models.PacksModel;
 import ink.va.models.PacksResponse;
 import ink.va.utils.Retrofit;
+import ink.va.utils.User;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,6 +68,14 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
     }
 
     private void getPacks() {
+        if (!swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    swipeRefreshLayout.setRefreshing(true);
+                }
+            });
+        }
         Call<ResponseBody> packsCall = Retrofit.getInstance().getInkService().getPacks();
         packsCall.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -108,8 +118,13 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
     }
 
     @Override
-    public void onBuyClicked() {
+    public void onBuyClicked(int packPrice) {
+        int userCoins = Integer.valueOf(User.get().getCoins());
+        if (userCoins < packPrice) {
+            Snackbar.make(packsRecycler, getString(R.string.not_enough_coins), Snackbar.LENGTH_SHORT).show();
+        } else {
 
+        }
     }
 
     @Override

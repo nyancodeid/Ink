@@ -5,14 +5,14 @@ package ink.va.utils;
  */
 public class User {
     private static User user = new User();
-    private int coins;
+    private String coins;
     private int bombCount;
     private String facebookUserId;
     private String userName;
     private String userId;
     private boolean isCoinsLoaded;
 
-    public int getCoins() {
+    public String getCoins() {
         return coins;
     }
 
@@ -50,7 +50,7 @@ public class User {
         this.facebookUserId = facebookUserId;
     }
 
-    public void setCoins(int coins) {
+    public void setCoins(String coins) {
         this.coins = coins;
     }
 

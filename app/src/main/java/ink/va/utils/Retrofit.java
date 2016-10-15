@@ -68,8 +68,8 @@ public class Retrofit {
         @FormUrlEncoded
         @POST(Constants.REGISTER_URL)
         Call<ResponseBody> register(@Field("login")
-                                    String login, @Field("password")
-                                    String password, @Field("firstName") String firstName,
+                                            String login, @Field("password")
+                                            String password, @Field("firstName") String firstName,
                                     @Field("lastName") String lastName);
 
         @FormUrlEncoded
@@ -80,6 +80,10 @@ public class Retrofit {
         @POST(Constants.FRIENDS_URL)
         @FormUrlEncoded
         Call<ResponseBody> getFriends(@Field("user_id") String userId);
+
+        @POST(Constants.OPEN_PACK_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> openPack(@Field("userId") String userId, @Field("packId") String packId);
 
         @POST(Constants.SINGLE_USER_URL)
         @FormUrlEncoded

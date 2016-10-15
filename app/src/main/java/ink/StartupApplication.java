@@ -1,6 +1,8 @@
 package ink;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
@@ -23,7 +25,7 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
     private static final String CREATIVE_SDK_CLIENT_ID = "2b5c43dc4f6d4f79a7d353433a972a4b";
     private static final String CREATIVE_SDK_CLIENT_SECRET = "11b233bb-98d2-45d3-8c80-2be66726f10b";
     private SharedHelper sharedHelper;
-
+    private Activity mActivity = null;
 
     @Override
     public void onCreate() {
@@ -40,6 +42,34 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
         };
         vkAccessTokenTracker.startTracking();
         VKSdk.initialize(this);
+
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                mActivity =activity;
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+               mActivity = new Activity();
+            }
+
+            /** Unused implementation **/
+            @Override
+            public void onActivityStarted(Activity activity) {}
+
+            @Override
+            public void onActivityResumed(Activity activity) {}
+            @Override
+            public void onActivityPaused(Activity activity) {}
+
+            @Override
+            public void onActivityStopped(Activity activity) {}
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {}
+        });
+
         super.onCreate();
     }
 
@@ -49,7 +79,9 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
         MultiDex.install(this);
     }
 
-
+    public Activity getCurrentActivity() {
+        return mActivity;
+    }
     @Override
     public String getClientID() {
         return CREATIVE_SDK_CLIENT_ID;

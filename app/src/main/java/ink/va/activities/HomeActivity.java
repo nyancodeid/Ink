@@ -309,10 +309,10 @@ public class HomeActivity extends BaseActivity
                 try {
                     CoinsResponse coinsResponse = gson.fromJson(response.body().string(), CoinsResponse.class);
                     if (coinsResponse.success) {
-                        User.get().setCoins(coinsResponse.coins);
+                        User.get().setCoins(String.valueOf(coinsResponse.coins));
                         coinsText.setText(getString(R.string.coinsText, coinsResponse.coins));
                         User.get().setCoinsLoaded(true);
-                        User.get().setCoins(coinsResponse.coins);
+                        User.get().setCoins(String.valueOf(coinsResponse.coins));
                     } else {
                         getCoins();
                     }
@@ -556,7 +556,7 @@ public class HomeActivity extends BaseActivity
         if (mSharedHelper.isTokenRefreshed()) {
             startTokenService();
         }
-        if (User.get().getCoins() != 0) {
+        if (User.get().getCoins() != null) {
             if (coinsText != null) {
                 coinsText.setText(getString(R.string.coinsText, User.get().getCoins()));
             }

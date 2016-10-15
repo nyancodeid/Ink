@@ -53,6 +53,7 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.StartupApplication;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.utils.Constants;
 import ink.va.utils.Retrofit;
@@ -104,10 +105,11 @@ public class Login extends BaseActivity implements View.OnClickListener {
         progressDialog.setIndeterminateDrawable(ContextCompat.getDrawable(this, R.drawable.progress_dialog_circle));
         progressDialog.setMessage(getString(R.string.loggingPleasWait));
         if (!checkPlayServices()) {
-            return;
+
         }
 
         if (mSharedHelper.isLoggedIn()) {
+            checkBan();
             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
             finish();
         }
@@ -152,6 +154,26 @@ public class Login extends BaseActivity implements View.OnClickListener {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.loading_progress);
+    }
+
+    private void checkBan() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(((StartupApplication) getApplicationContext()).getCurrentActivity());
+                builder.setTitle(getString(R.string.ban_title));
+                builder.setMessage(getString(R.string.ban_message));
+                builder.setCancelable(false);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
+
     }
 
     private void openVkLogin() {
@@ -247,7 +269,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                         } else {
                             mProgressView.setVisibility(View.GONE);
                             boolean banned = jsonObject.optBoolean("banned");
-                            if(!banned){
+                            if (!banned) {
                                 String userId = jsonObject.optString("user_id");
                                 String securityQuestion = jsonObject.optString("securityQuestion");
                                 mSharedHelper.putSecurityQuestionSet(securityQuestion != null && !securityQuestion.isEmpty());
@@ -264,7 +286,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                                 }
                                 startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                                 finish();
-                            }else{
+                            } else {
                                 builder.setTitle(getString(R.string.ban_title));
                                 builder.setMessage(getString(R.string.ban_message));
                                 builder.setCancelable(false);
@@ -274,6 +296,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                                         dialog.dismiss();
                                     }
                                 });
+                                builder.show();
                             }
                         }
                     } catch (JSONException e) {

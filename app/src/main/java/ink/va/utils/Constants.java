@@ -39,6 +39,7 @@ public class Constants {
     public static final String RESPOND_TYPE_DENY_LOCATION_REQUEST = "denyLocationRequest";
     public static final String RESPOND_TYPE_ACCEPT_LOCATION_REQUEST = "acceptLocationRequest";
     public static final String LOGIN_URL = "Login.php";
+    public static final String OPEN_PACK_URL = "OpenPack.php";
     public static final String FRIENDS_URL = "UserFriends.php";
     public static final String SINGLE_USER_URL = "SingleUser.php";
     public static final String SEND_FRIEND_REQUEST_URL = "SendFriendRequest.php";
