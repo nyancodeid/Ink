@@ -3,6 +3,7 @@ package ink.va.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -29,10 +30,13 @@ import retrofit2.Response;
 /**
  * Created by USER on 2016-07-20.
  */
-public class Packs extends Fragment implements PacksAdapter.PackClickListener {
+public class Packs extends Fragment implements PacksAdapter.PackClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     @Bind(R.id.packs_recycler)
     RecyclerView packsRecycler;
+    @Bind(R.id.packsSwipe)
+    SwipeRefreshLayout swipeRefreshLayout;
+
     private PacksAdapter packsAdapter;
 
     public static Packs create() {
@@ -52,6 +56,7 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        swipeRefreshLayout.setOnRefreshListener(this);
         packsAdapter = new PacksAdapter(this, getActivity());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         packsRecycler.setLayoutManager(linearLayoutManager);
@@ -81,6 +86,12 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener {
                         ArrayList<PacksModel> packsModels = packsResponse.packsModels;
                         // TODO: 2016-10-15 set adapter
                         packsAdapter.setData(packsModels);
+                        swipeRefreshLayout.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
                     } else {
                         getPacks();
                     }
@@ -99,5 +110,10 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener {
     @Override
     public void onBuyClicked() {
 
+    }
+
+    @Override
+    public void onRefresh() {
+        getPacks();
     }
 }

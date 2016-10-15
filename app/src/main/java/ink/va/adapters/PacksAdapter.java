@@ -50,7 +50,7 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public void setData(List<PacksModel> packsModels) {
-        packsModels.clear();
+        this.packsModels.clear();
         this.packsModels.addAll(packsModels);
         notifyDataSetChanged();
     }

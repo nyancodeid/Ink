@@ -679,4 +679,6 @@
     <string name="musicTitleHint">Hint : try searching by full track and artist name altogether for exact result</string>
     <string name="thanksTo">Thanks to</string>
     <string name="goToStore">Go to store</string>
+    <string name="ban_title">Account Suspended</string>
+    <string name="ban_message">You account is suspended due to violation of our Terms and Services.Please contact support if you belive you\'r account have been suspended in mistake.</string>
 </resources>

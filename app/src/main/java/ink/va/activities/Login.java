@@ -246,22 +246,35 @@ public class Login extends BaseActivity implements View.OnClickListener {
                             builder.show();
                         } else {
                             mProgressView.setVisibility(View.GONE);
-                            String userId = jsonObject.optString("user_id");
-                            String securityQuestion = jsonObject.optString("securityQuestion");
-                            mSharedHelper.putSecurityQuestionSet(securityQuestion != null && !securityQuestion.isEmpty());
-                            mSharedHelper.putFirstName(jsonObject.optString("first_name"));
-                            mSharedHelper.putIsAccountRecoverable(true);
-                            mSharedHelper.putLastName(jsonObject.optString("last_name"));
-                            mSharedHelper.putUserId(userId);
-                            mSharedHelper.putShouldShowIntro(false);
-                            mSharedHelper.putIsSocialAccount(false);
-                            mSharedHelper.putIsAccountRecoverable(true);
-                            String imageLink = jsonObject.optString("imageLink");
-                            if (imageLink != null && !imageLink.isEmpty()) {
-                                mSharedHelper.putImageLink(imageLink);
+                            boolean banned = jsonObject.optBoolean("banned");
+                            if(!banned){
+                                String userId = jsonObject.optString("user_id");
+                                String securityQuestion = jsonObject.optString("securityQuestion");
+                                mSharedHelper.putSecurityQuestionSet(securityQuestion != null && !securityQuestion.isEmpty());
+                                mSharedHelper.putFirstName(jsonObject.optString("first_name"));
+                                mSharedHelper.putIsAccountRecoverable(true);
+                                mSharedHelper.putLastName(jsonObject.optString("last_name"));
+                                mSharedHelper.putUserId(userId);
+                                mSharedHelper.putShouldShowIntro(false);
+                                mSharedHelper.putIsSocialAccount(false);
+                                mSharedHelper.putIsAccountRecoverable(true);
+                                String imageLink = jsonObject.optString("imageLink");
+                                if (imageLink != null && !imageLink.isEmpty()) {
+                                    mSharedHelper.putImageLink(imageLink);
+                                }
+                                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                                finish();
+                            }else{
+                                builder.setTitle(getString(R.string.ban_title));
+                                builder.setMessage(getString(R.string.ban_message));
+                                builder.setCancelable(false);
+                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
                             }
-                            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-                            finish();
                         }
                     } catch (JSONException e) {
                         attemptLogin();
