@@ -45,7 +45,7 @@ public class Shop extends BaseActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(Packs.create(), getString(R.string.packs_title));
-        adapter.addFragment(Trade.create(), getString(R.string.trade_title));
+//        adapter.addFragment(Trade.create(), getString(R.string.trade_title));
         viewPager.setAdapter(adapter);
     }
 

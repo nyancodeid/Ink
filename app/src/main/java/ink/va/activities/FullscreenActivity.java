@@ -52,7 +52,7 @@ public class FullscreenActivity extends BaseActivity {
         if (extras != null) {
             fullUrlToLoad = extras.getString("link");
 
-            if (FileUtils.isGif(fullUrlToLoad)) {
+            if (FileUtils.isVideo(fullUrlToLoad)) {
                 gifHolder.setVisibility(View.VISIBLE);
                 mImageView.setVisibility(View.GONE);
 

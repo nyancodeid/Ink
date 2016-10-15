@@ -68,10 +68,10 @@ public class FileUtils {
         return success;
     }
 
-    public static boolean isGif(String fileName) {
+    public static boolean isVideo(String fileName) {
         int lastIndex = fileName.lastIndexOf(".");
         String fileExtension = fileName.substring(lastIndex + 1, fileName.length());
-        if (fileExtension.equals("gif")) {
+        if (fileExtension.equals("mp4")) {
             return true;
         } else {
             return false;

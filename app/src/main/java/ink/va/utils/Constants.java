@@ -6,6 +6,7 @@ package ink.va.utils;
 public class Constants {
     public static final String MAIN_URL = "http://104.196.101.147/Ink_Base_project_1992_no_15_dp_deployed_57_olAllolclslf_8954/";
     public static final String USER_IMAGES_FOLDER = "UserImages/";
+    public static final String PACK_BACKGROUNDS_FOLDER = "PackBackgrounds/";
     public static final String GROUP_IMAGES_FOLDER = "GroupImages/";
     public static final String ANIMATED_STICKERS_FOLDER = "AnimatedStickers/";
     public static final String ADD_GROUP_URL = "AddGroup.php";

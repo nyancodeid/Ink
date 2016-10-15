@@ -1,0 +1,60 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/buy_button_wrapper"
+    android:layout_width="wrap_content"
+    android:layout_height="60dp"
+    android:background="@drawable/button_background"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/pack_coin_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:fontFamily="@string/condensedFont"
+        android:text="@string/loadingText"
+        android:textColor="#ffffff"
+        android:textSize="19sp" />
+
+    <ImageView
+        android:id="@+id/pack_coin_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/pack_coin_count"
+        android:src="@drawable/small_coins_icon" />
+
+    <ImageView
+        android:id="@+id/pack_coin_image_second"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/pack_coin_count"
+        android:src="@drawable/small_coins_icon" />
+
+    <ImageView
+        android:id="@+id/pack_coin_image_third"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@+id/pack_coin_count"
+        android:src="@drawable/small_coins_icon" />
+
+    <TextView
+        android:id="@+id/buy_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:fontFamily="@string/condensedFont"
+        android:text="BUY"
+        android:textColor="#ffffff"
+        android:textSize="30sp" />
+</RelativeLayout>

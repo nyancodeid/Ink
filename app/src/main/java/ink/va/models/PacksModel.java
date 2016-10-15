@@ -14,4 +14,10 @@ public class PacksModel {
     public String packNameEn;
     @SerializedName("pack_name_ru")
     public String packNameRu;
+    @SerializedName("pack_background")
+    public String packBackground;
+    @SerializedName("pack_image_background")
+    public String packImageBackground;
+
+
 }

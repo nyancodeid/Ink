@@ -3,6 +3,8 @@ package ink.va.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,9 @@ import com.ink.va.R;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import ink.va.adapters.PacksAdapter;
 import ink.va.models.PacksModel;
 import ink.va.models.PacksResponse;
 import ink.va.utils.Retrofit;
@@ -24,7 +29,11 @@ import retrofit2.Response;
 /**
  * Created by USER on 2016-07-20.
  */
-public class Packs extends Fragment {
+public class Packs extends Fragment implements PacksAdapter.PackClickListener {
+
+    @Bind(R.id.packs_recycler)
+    RecyclerView packsRecycler;
+    private PacksAdapter packsAdapter;
 
     public static Packs create() {
         Packs packs = new Packs();
@@ -34,12 +43,19 @@ public class Packs extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.packs_layout, container, false);
+
+        View view = inflater.inflate(R.layout.packs_layout, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        packsAdapter = new PacksAdapter(this, getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        packsRecycler.setLayoutManager(linearLayoutManager);
+        packsRecycler.setAdapter(packsAdapter);
         getPacks();
 
     }
@@ -63,9 +79,8 @@ public class Packs extends Fragment {
                     PacksResponse packsResponse = gson.fromJson(responseBody, PacksResponse.class);
                     if (packsResponse.success) {
                         ArrayList<PacksModel> packsModels = packsResponse.packsModels;
-                        for (int i = 0; i < packsModels.size(); i++) {
-                            PacksModel eachModel = packsModels.get(i);
-                        }
+                        // TODO: 2016-10-15 set adapter
+                        packsAdapter.setData(packsModels);
                     } else {
                         getPacks();
                     }
@@ -79,5 +94,10 @@ public class Packs extends Fragment {
                 getPacks();
             }
         });
+    }
+
+    @Override
+    public void onBuyClicked() {
+
     }
 }

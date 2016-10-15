@@ -227,7 +227,7 @@ public class HomeActivity extends BaseActivity
         } else {
             messages.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
         }
-        messages.setText("99+");
+        messages.setText("");
     }
 
     private void testTimezone() throws ParseException {
