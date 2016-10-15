@@ -26,6 +26,7 @@ import butterknife.OnClick;
 import ink.va.models.PacksModel;
 import ink.va.utils.Constants;
 
+
 /**
  * Created by USER on 2016-10-15.
  */
@@ -50,7 +51,7 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public void setData(List<PacksModel> packsModels) {
         packsModels.clear();
-        packsModels.addAll(packsModels);
+        this.packsModels.addAll(packsModels);
         notifyDataSetChanged();
     }
 

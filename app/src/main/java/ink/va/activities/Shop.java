@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ink.va.fragments.Packs;
-import ink.va.fragments.Trade;
 import ink.va.utils.Constants;
 import ink.va.utils.User;
+
 
 public class Shop extends BaseActivity {
     private TabLayout tabLayout;
@@ -39,7 +39,7 @@ public class Shop extends BaseActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         tabLayout.getTabAt(0).setIcon(R.drawable.pack_icon);
-        tabLayout.getTabAt(1).setIcon(R.drawable.trade_icon);
+//        tabLayout.getTabAt(1).setIcon(R.drawable.trade_icon);
     }
 
     private void setupViewPager(ViewPager viewPager) {
