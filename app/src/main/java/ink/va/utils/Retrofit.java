@@ -189,6 +189,11 @@ public class Retrofit {
                                        @Field("hasGif") boolean hasGif,
                                        @Field("gifUrl") String gifUrl);
 
+
+        @POST(Constants.CHECK_BAN_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> checkBan(@Field("userId") String userId);
+
         @POST(Constants.WAITERS_QUE)
         @FormUrlEncoded
         Call<ResponseBody> waitersQueAction(@Field("user_id") String userId,

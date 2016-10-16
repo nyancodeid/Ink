@@ -10,6 +10,7 @@ public class Constants {
     public static final String GROUP_IMAGES_FOLDER = "GroupImages/";
     public static final String ANIMATED_STICKERS_FOLDER = "AnimatedStickers/";
     public static final String ADD_GROUP_URL = "AddGroup.php";
+    public static final String CHECK_BAN_URL = "CheckBan.php";
     public static final String GROUP_REQUESTS_URL = "GetUserRequests.php";
     public static final String USER_GIFS_URL = "GetUserGifs.php";
     public static final String DELETE_ACCOUNT_URL = "DeleteAccount.php";
@@ -147,5 +148,6 @@ public class Constants {
     public static final String COINS_BOUGHT_KEY = "coins_bought";
     public static final String PASSWORD_REQUEST_TOKEN = "fasjflkgkaga7g8asggf-a0gf98asu-gangas-g389t-nke_wrlPg_h34890udglka";
     public static final String USER_LOGIN_TOKEN = "asjflkasf_gasjgkla=-gsangklasjklsag-sagnas3r532r3w52r523q-gsa43-t3t54a-";
+
 }
 
