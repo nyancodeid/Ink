@@ -183,7 +183,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean banned = jsonObject.optBoolean("banned");
-                    if(banned){
+                    if (banned) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(((StartupApplication) getApplicationContext()).getCurrentActivity());
                         builder.setTitle(getString(R.string.ban_title));
                         builder.setMessage(getString(R.string.ban_message));
@@ -192,7 +192,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                finishAffinity();
+                                finish();
                                 System.exit(0);
 
                             }
