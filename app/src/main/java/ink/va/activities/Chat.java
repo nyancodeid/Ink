@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,6 +42,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
@@ -77,10 +79,10 @@ import ink.va.callbacks.GeneralCallback;
 import ink.va.interfaces.ItemClickListener;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.ChatModel;
-import ink.va.models.StickerModel;
 import ink.va.models.GifResponse;
 import ink.va.models.GifResponseModel;
 import ink.va.models.MessageModel;
+import ink.va.models.StickerModel;
 import ink.va.models.UserStatus;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
@@ -127,6 +129,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     ImageView sendMessageGifView;
     @Bind(R.id.sendMessageGifViewWrapper)
     RelativeLayout sendMessageGifViewWrapper;
+    @Bind(R.id.single_video_view)
+    VideoView singleVideoView;
     @Bind(R.id.singleGifViewLoading)
     AVLoadingIndicatorView singleGifViewLoading;
     @Bind(R.id.scrollDownChat)
@@ -137,6 +141,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     ImageView attachmentIcon;
     @Bind(R.id.messageFiledDivider)
     View messageFiledDivider;
+    @Bind(R.id.play_single_video)
+    View playButton;
 
     private String mOpponentId;
     String mCurrentUserId;
@@ -170,6 +176,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     private Toolbar chatToolbar;
     private Handler handler;
     private boolean isAnimated;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -259,7 +266,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                 final ChatModel chatModel = mChatModelArrayList.get(position);
                 if (chatModel.isClickable()) {
                     if (chatModel.hasSticker()) {
-                        if(!chatModel.isAnimated()){
+                        if (!chatModel.isAnimated()) {
                             Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
                             intent.putExtra("link", chatModel.getStickerUrl());
                             startActivity(intent);
@@ -691,6 +698,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         System.gc();
         stickerModelList.clear();
         gifChooserDialog = new BottomSheetDialog(this);
+
         View view = getLayoutInflater().inflate(R.layout.user_gifs_view, null);
         gifChooserDialog.setContentView(view);
         final RecyclerView gifsRecycler = (RecyclerView) view.findViewById(R.id.gifsRecycler);
@@ -805,7 +813,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
 
         int itemLocation = mChatModelArrayList.indexOf(tempChat);
 
-        attemptToQue(message.trim(), itemLocation, mDeleteOpponentId, mDeleteUserId, isGifChosen, lasChosenGifName,isAnimated);
+        attemptToQue(message.trim(), itemLocation, mDeleteOpponentId, mDeleteUserId, isGifChosen, lasChosenGifName, isAnimated);
         mChatAdapter.notifyDataSetChanged();
 
 
@@ -827,6 +835,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         sendMessageGifView.setImageResource(0);
         if (sendMessageGifViewWrapper.getVisibility() == View.VISIBLE) {
             sendMessageGifViewWrapper.setVisibility(View.GONE);
+            singleVideoView.setVisibility(View.GONE);
         }
     }
 
@@ -935,7 +944,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                         if (eachModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED) && !Regex.isAttachment(message)) {
                             int itemLocation = mChatModelArrayList.indexOf(mChatModel);
                             attemptToQue(message, itemLocation,
-                                    deleteOpponentId, deleteUserId, isGifChosen, lasChosenGifName,isAnimated);
+                                    deleteOpponentId, deleteUserId, isGifChosen, lasChosenGifName, isAnimated);
                         }
                         mChatAdapter.notifyDataSetChanged();
                     }
@@ -1046,7 +1055,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                         if (mOpponentId.equals(response.get("user_id"))) {
                             mChatModel = new ChatModel(Regex.isAttachment(response.get("message")), Boolean.valueOf(response.get("hasSticker")), response.get("gifUrl"), response.get("message_id"), response.get("user_id"),
                                     response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
-                                    response.get("user_image"), response.get("opponent_image"), response.get("date"),Boolean.valueOf(response.get("isAnimated")));
+                                    response.get("user_image"), response.get("opponent_image"), response.get("date"), Boolean.valueOf(response.get("isAnimated")));
                             mChatModelArrayList.add(mChatModel);
                             mChatAdapter.notifyDataSetChanged();
                             mRecyclerView.post(new Runnable() {
@@ -1192,17 +1201,46 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         singleGifViewLoading.setVisibility(View.VISIBLE);
         mSendChatMessage.setEnabled(true);
         if (singleModel.isAnimated()) {
-            if (singleModel.hasSound()) {
+            singleVideoView.setVisibility(View.VISIBLE);
+            singleGifViewLoading.setVisibility(View.GONE);
+            sendMessageGifView.setVisibility(View.GONE);
+            singleVideoView.setVisibility(View.VISIBLE);
 
-            }
-            Ion.with(getApplicationContext()).load(stickerUrl).intoImageView(sendMessageGifView).setCallback(new FutureCallback<ImageView>() {
+            singleVideoView.setVisibility(View.VISIBLE);
+            playButton.setVisibility(View.VISIBLE);
+            singleVideoView.setZOrderOnTop(true);
+            Uri video = Uri.parse(Constants.MAIN_URL + singleModel.getStickerUrl());
+            singleVideoView.setVideoURI(video);
+            playButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onCompleted(Exception e, ImageView result) {
-                    singleGifViewLoading.setVisibility(View.GONE);
+                public void onClick(View view) {
+                    singleVideoView.setZOrderOnTop(true);
+                    playButton.setVisibility(View.GONE);
+                    singleVideoView.start();
+                }
+            });
+            singleVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
+                    singleVideoView.setZOrderOnTop(false);
+                    Exception exception = new Exception(i + "  " + i1);
+                    exception.printStackTrace();
+                    playButton.setVisibility(View.VISIBLE);
+                    return false;
+                }
+            });
+            singleVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    singleVideoView.setZOrderOnTop(false);
+                    playButton.setVisibility(View.VISIBLE);
                 }
             });
         } else {
-            Ion.with(getApplicationContext()).load(stickerUrl).intoImageView(sendMessageGifView).setCallback(new FutureCallback<ImageView>() {
+            sendMessageGifView.setVisibility(View.VISIBLE);
+            singleVideoView.setVisibility(View.GONE);
+            playButton.setVisibility(View.GONE);
+            Ion.with(getApplicationContext()).load(Constants.MAIN_URL + stickerUrl).intoImageView(sendMessageGifView).setCallback(new FutureCallback<ImageView>() {
                 @Override
                 public void onCompleted(Exception e, ImageView result) {
                     singleGifViewLoading.setVisibility(View.GONE);
@@ -1296,7 +1334,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                         Constants.TYPE_MESSAGE_ATTACHMENT +
                         file.getName(),
                         false, Constants.STATUS_NOT_DELIVERED,
-                        mUserImage, mOpponentImage, "",false);
+                        mUserImage, mOpponentImage, "", false);
                 mChatModelArrayList.add(tempChat);
                 tempChat.setClickable(false);
 
@@ -1308,7 +1346,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                                 file.getName(), "0", "",
                         String.valueOf(itemLocation),
                         Constants.STATUS_NOT_DELIVERED, mUserImage,
-                        mOpponentImage, mDeleteOpponentId, mDeleteUserId, false, "",false);
+                        mOpponentImage, mDeleteOpponentId, mDeleteUserId, false, "", false);
 
                 sendMessageWithAttachment(file, itemLocation);
 

@@ -685,4 +685,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="pack_bought">Gift Bought</string>
     <string name="gift_bought_message">Gift was added to your collection</string>
     <string name="gift_already_bought">Gift has already been bought</string>
+    <string name="choose">Choose</string>
 </resources>

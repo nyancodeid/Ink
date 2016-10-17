@@ -1,12 +1,12 @@
 package ink.va.adapters;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
@@ -49,29 +49,15 @@ public class GifAdapter extends RecyclerView.Adapter<GifAdapter.ViewHolder> {
         if (stickerModel.isAnimated()) {
             holder.stickerWrapper.setVisibility(View.GONE);
             holder.videoWrapper.setVisibility(View.VISIBLE);
-            // TODO: 2016-10-18 load video view
+            holder.videoView.setZOrderOnTop(true);
             Uri video = Uri.parse(Constants.MAIN_URL + stickerModel.getStickerUrl());
             holder.videoView.setVideoURI(video);
-            holder.playButton.setOnClickListener(new View.OnClickListener() {
+            holder.videoWrapper.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    holder.playButton.setVisibility(View.GONE);
-                    holder.videoView.start();
-                }
-            });
-            holder.videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                @Override
-                public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
-                    Exception exception = new Exception(i + "  " + i1);
-                    exception.printStackTrace();
-                    holder.playButton.setVisibility(View.VISIBLE);
-                    return false;
-                }
-            });
-            holder.videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    holder.playButton.setVisibility(View.VISIBLE);
+                    if (!holder.videoView.isPlaying()) {
+                        holder.videoView.start();
+                    }
                 }
             });
         } else {
@@ -86,7 +72,7 @@ public class GifAdapter extends RecyclerView.Adapter<GifAdapter.ViewHolder> {
 
         }
 
-        holder.gifSingleView.setOnClickListener(new View.OnClickListener() {
+        holder.choose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (recyclerItemClickListener != null) {
@@ -103,17 +89,17 @@ public class GifAdapter extends RecyclerView.Adapter<GifAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView gifSingleView;
-        private ImageView playButton;
         private VideoView videoView;
         private AVLoadingIndicatorView gifLoadingSingleItem;
         private RelativeLayout stickerWrapper;
         private RelativeLayout videoWrapper;
+        private Button choose;
 
         public ViewHolder(View itemView) {
             super(itemView);
             gifSingleView = (ImageView) itemView.findViewById(R.id.stickerNotAnimatedView);
-            playButton = (ImageView) itemView.findViewById(R.id.play_button);
             videoView = (VideoView) itemView.findViewById(R.id.video_view_sticker_choser);
+            choose = (Button) itemView.findViewById(R.id.choose);
             stickerWrapper = (RelativeLayout) itemView.findViewById(R.id.sticker_not_animated_parent);
             videoWrapper = (RelativeLayout) itemView.findViewById(R.id.videoWrapper);
 
