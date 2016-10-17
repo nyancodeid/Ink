@@ -47,10 +47,10 @@ public class SendReplyService extends Service {
         RealmHelper.getInstance().insertMessage(mCurrentUserId, mOpponentId,
                 message, "0", "",
                 String.valueOf(finalId), Constants.STATUS_NOT_DELIVERED, userImage, mOpponentImage, deleteOpponentId,
-                deleteUserId, false, "");
+                deleteUserId, false, "", false);
 
         QueHelper queHelper = new QueHelper();
-        queHelper.attachToQue( mOpponentId, message, finalId, false, ""
+        queHelper.attachToQue(mOpponentId, message, finalId, false, ""
                 , getApplicationContext());
     }
 }
