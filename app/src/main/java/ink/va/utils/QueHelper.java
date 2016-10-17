@@ -27,7 +27,7 @@ public class QueHelper {
         Intent intent = new Intent(context, SendMessageService.class);
         intent.putExtra("opponentId", mOpponentId);
         intent.putExtra("message", message);
-        intent.putExtra("hasGif", hasGif);
+        intent.putExtra("hasSticker", hasGif);
         intent.putExtra("gifUrl", gifUrl);
         intent.putExtra("sentItemLocation", sentItemLocation);
         context.startService(intent);

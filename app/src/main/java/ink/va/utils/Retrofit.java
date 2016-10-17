@@ -186,7 +186,7 @@ public class Retrofit {
                                        @Field("opponent_id") String opponentId,
                                        @Field("message") String message,
                                        @Field("timezone") String timezone,
-                                       @Field("hasGif") boolean hasGif,
+                                       @Field("hasSticker") boolean hasGif,
                                        @Field("gifUrl") String gifUrl);
 
 
@@ -442,7 +442,7 @@ public class Retrofit {
                                                      @Part("opponent_id") String opponentId,
                                                      @Part("message") String message,
                                                      @Part("timezone") String timezone,
-                                                     @Part("hasGif") boolean hasGif,
+                                                     @Part("hasSticker") boolean hasGif,
                                                      @Part("gifUrl") String gifUrl);
 
         @POST(Constants.MAKE_POST_URL)

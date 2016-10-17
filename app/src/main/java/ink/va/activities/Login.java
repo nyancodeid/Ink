@@ -53,7 +53,6 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import ink.StartupApplication;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.utils.Constants;
 import ink.va.utils.Retrofit;
@@ -109,7 +108,6 @@ public class Login extends BaseActivity implements View.OnClickListener {
         }
 
         if (mSharedHelper.isLoggedIn()) {
-            checkBan();
             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
             finish();
         }
@@ -156,62 +154,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
         mProgressView = findViewById(R.id.loading_progress);
     }
 
-    private void checkBan() {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                callToBanServer();
-            }
-        });
-        thread.start();
-    }
 
-    private void callToBanServer() {
-        Call<ResponseBody> banCall = Retrofit.getInstance().getInkService().checkBan(mSharedHelper.getUserId());
-        banCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    callToBanServer();
-                    return;
-                }
-                if (response.body() == null) {
-                    callToBanServer();
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean banned = jsonObject.optBoolean("banned");
-                    if (banned) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(((StartupApplication) getApplicationContext()).getCurrentActivity());
-                        builder.setTitle(getString(R.string.ban_title));
-                        builder.setMessage(getString(R.string.ban_message));
-                        builder.setCancelable(false);
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                finish();
-                                System.exit(0);
-
-                            }
-                        });
-                        builder.show();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                callToBanServer();
-            }
-        });
-    }
 
     private void openVkLogin() {
         VKSdk.login(this, vkScopes);

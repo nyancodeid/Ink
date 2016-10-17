@@ -38,6 +38,7 @@
         <ImageView
             android:id="@+id/pack_image"
             android:layout_width="150dp"
+            android:scaleType="fitCenter"
             android:layout_height="150dp"
             android:layout_centerVertical="true" />
 

@@ -18,6 +18,7 @@ public class MessageModel extends RealmObject {
     String deleteUserId;
     String deleteOpponentId;
     boolean hasGif;
+    boolean isAnimated;
     String gifUrl;
 
     public MessageModel() {
@@ -71,6 +72,14 @@ public class MessageModel extends RealmObject {
 
     public void setOpponentId(String opponentId) {
         this.opponentId = opponentId;
+    }
+
+    public boolean isAnimated() {
+        return isAnimated;
+    }
+
+    public void setAnimated(boolean animated) {
+        isAnimated = animated;
     }
 
     public String getMessage() {

@@ -111,7 +111,7 @@ public class RealmHelper {
                               final String userImage,
                               final String opponentImage, final String deleteOpponentId,
                               final String deleteUserId,
-                              final boolean hasGif, final String gifUrl) {
+                              final boolean hasGif, final String gifUrl, final boolean animated) {
 
 
         handler.post(new Runnable() {
@@ -127,6 +127,7 @@ public class RealmHelper {
                         messageModel.setMessage(message);
                         messageModel.setUserId(userId);
                         messageModel.setOpponentId(opponentId);
+                        messageModel.setAnimated(animated);
                         messageModel.setDeliveryStatus(deliveryStatus);
                         messageModel.setUserImage(userImage);
                         messageModel.setOpponentImage(opponentImage);

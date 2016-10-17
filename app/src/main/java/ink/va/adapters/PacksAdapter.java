@@ -3,6 +3,7 @@ package ink.va.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,6 +73,7 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         RelativeLayout buyButtonWrapper;
 
         private Shimmer shimmer;
+        private String packId;
 
 
         public BaseViewHolder(View itemView) {
@@ -86,7 +88,8 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 @Override
                 public void onClick(View view) {
                     if (packClickListener != null) {
-                        packClickListener.onBuyClicked(Integer.valueOf(packCoinCount.getText().toString()));
+                        packClickListener.onBuyClicked(Integer.valueOf(packCoinCount.getText().toString()),
+                                packId);
                     }
                 }
             });
@@ -94,6 +97,7 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         public void init(PacksModel packsModel) {
             packCoinCount.setText(packsModel.packsPrice);
+            packId = String.valueOf(packsModel.packsId);
             Ion.with(context).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packsModel.packBackground).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
                 @Override
                 public void onCompleted(Exception e, Bitmap result) {
@@ -108,7 +112,9 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 public void onCompleted(Exception e, ImageView result) {
                     packLoadingProgress.setVisibility(View.GONE);
                     if (e != null) {
-                        packImage.setBackgroundResource(R.drawable.image_laoding_error);
+                        packImage.setBackground(ContextCompat.getDrawable(context, R.drawable.image_laoding_error));
+                    } else {
+                        packImage.setBackground(null);
                     }
                 }
             });
@@ -121,6 +127,6 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public interface PackClickListener {
-        void onBuyClicked(int packPrice);
+        void onBuyClicked(int packPrice, String packId);
     }
 }

@@ -3,17 +3,17 @@ package ink.va.models;
 /**
  * Created by PC-Comp on 8/9/2016.
  */
-public class GifModel {
+public class StickerModel {
     private String gifId;
     private String ownerId;
-    private String gifName;
+    private String StickerUrl;
     private boolean isAnimated;
     private boolean hasSound;
 
-    public GifModel(String gifId, String ownerId, String gifName, boolean isAnimated, boolean hasSound) {
+    public StickerModel(String gifId, String ownerId, String StickerUrl, boolean isAnimated, boolean hasSound) {
         this.gifId = gifId;
         this.ownerId = ownerId;
-        this.gifName = gifName;
+        this.StickerUrl = StickerUrl;
         this.isAnimated = isAnimated;
         this.hasSound = hasSound;
     }
@@ -50,12 +50,12 @@ public class GifModel {
         this.ownerId = ownerId;
     }
 
-    public String getGifName() {
-        return gifName;
+    public String getStickerUrl() {
+        return StickerUrl;
     }
 
-    public void setGifName(String gifName) {
-        this.gifName = gifName;
+    public void setStickerUrl(String stickerUrl) {
+        this.StickerUrl = stickerUrl;
     }
 
 }

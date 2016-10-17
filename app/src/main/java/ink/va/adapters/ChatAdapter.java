@@ -156,26 +156,34 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     private void checkForGif(final ChatModel chatModel, final ChatAdapter.ViewHolder holder) {
         System.gc();
-        if (chatModel.hasGif()) {
-            holder.imageView.setImageResource(0);
-            holder.imageViewWrapper.setVisibility(View.VISIBLE);
-            if (holder.imageView.getTag() == null) {
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.imageView)
-                        .setCallback(new FutureCallback<ImageView>() {
-                            @Override
-                            public void onCompleted(Exception e, ImageView result) {
-                                holder.imageView.setTag(LOADED);
-                            }
-                        });
-            } else if (!holder.imageView.getTag().equals(LOADED)) {
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.ANIMATED_STICKERS_FOLDER + chatModel.getGifUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.imageView)
-                        .setCallback(new FutureCallback<ImageView>() {
-                            @Override
-                            public void onCompleted(Exception e, ImageView result) {
-                                holder.imageView.setTag(LOADED);
-                            }
-                        });
+        if (chatModel.hasSticker()) {
+            if (chatModel.isAnimated()) {
+                holder.imageView.setImageResource(0);
+                holder.imageViewWrapper.setVisibility(View.GONE);
+                // TODO: 2016-10-18 show video view and load video
+
+            } else {
+                holder.imageView.setImageResource(0);
+                holder.imageViewWrapper.setVisibility(View.VISIBLE);
+                if (holder.imageView.getTag() == null) {
+                    Ion.with(mContext).load(Constants.MAIN_URL + chatModel.getStickerUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.imageView)
+                            .setCallback(new FutureCallback<ImageView>() {
+                                @Override
+                                public void onCompleted(Exception e, ImageView result) {
+                                    holder.imageView.setTag(LOADED);
+                                }
+                            });
+                } else if (!holder.imageView.getTag().equals(LOADED)) {
+                    Ion.with(mContext).load(Constants.MAIN_URL + chatModel.getStickerUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.imageView)
+                            .setCallback(new FutureCallback<ImageView>() {
+                                @Override
+                                public void onCompleted(Exception e, ImageView result) {
+                                    holder.imageView.setTag(LOADED);
+                                }
+                            });
+                }
             }
+
             if (chatModel.getMessage().trim().isEmpty()) {
                 holder.chatViewBubble.setVisibility(View.GONE);
             } else {

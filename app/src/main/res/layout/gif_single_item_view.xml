@@ -7,13 +7,15 @@
 
 
     <RelativeLayout
+        android:id="@+id/sticker_not_animated_parent"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginLeft="5dp"
         android:background="@drawable/circle_transparent_background"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="?attr/selectableItemBackground">
+        android:foreground="?attr/selectableItemBackground"
+        android:visibility="gone">
 
         <com.wang.avi.AVLoadingIndicatorView
             android:id="@+id/gifLoadingSingleItem"
@@ -23,11 +25,45 @@
             app:indicator="BallTrianglePath"
             app:indicator_color="@color/colorPrimary" />
 
+
         <ImageView
-            android:id="@+id/gifSingleView"
+            android:id="@+id/stickerNotAnimatedView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:layout_margin="5dp" />
     </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/videoWrapper"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginLeft="5dp"
+        android:background="@drawable/circle_transparent_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <VideoView
+            android:id="@+id/video_view_sticker_choser"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_margin="5dp" />
+
+        <ImageView
+            android:id="@+id/play_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:padding="10dp"
+            android:src="@drawable/play_video_icon" />
+    </RelativeLayout>
+
+
 </LinearLayout>

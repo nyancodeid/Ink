@@ -738,7 +738,6 @@ public class MyProfile extends BaseActivity {
 
     @OnClick(R.id.deleteAccont)
     public void deleteAccount() {
-        // TODO: 8/17/2016  check why server not deleting accont
         showWarning();
     }
 

@@ -225,7 +225,6 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
                     boolean success = jsonObject.optBoolean("success");
                     DimDialog.hideDialog();
                     if (success) {
-                        // TODO: 8/18/2016 start session chat
                         String fullNameParts[] = requestsModel.getRequesterName().split("\\s");
                         String firstName;
                         String lastName;

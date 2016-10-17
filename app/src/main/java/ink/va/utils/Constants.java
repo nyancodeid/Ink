@@ -8,7 +8,6 @@ public class Constants {
     public static final String USER_IMAGES_FOLDER = "UserImages/";
     public static final String PACK_BACKGROUNDS_FOLDER = "PackBackgrounds/";
     public static final String GROUP_IMAGES_FOLDER = "GroupImages/";
-    public static final String ANIMATED_STICKERS_FOLDER = "AnimatedStickers/";
     public static final String ADD_GROUP_URL = "AddGroup.php";
     public static final String CHECK_BAN_URL = "CheckBan.php";
     public static final String GROUP_REQUESTS_URL = "GetUserRequests.php";

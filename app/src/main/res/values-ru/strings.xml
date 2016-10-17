@@ -124,6 +124,9 @@
     <string name="saved">Обновления сохранены</string>
     <string name="openingFacebook">Открываем facebook...</string>
     <string name="openingGoogle">Открываем google maps...</string>
+    <string name="pack_bought">Подарок Куплен</string>
+    <string name="gift_bought_message">Стикеры были добавлены в коллекцию</string>
+    <string name="gift_already_bought">Подарок уже был куплен</string>
     <string name="myMessages">Сообщения</string>
     <string name="chooseAction">Выберите действие </string>
     <string name="dismiss">Отклонить</string>

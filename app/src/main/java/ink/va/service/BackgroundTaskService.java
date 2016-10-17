@@ -75,9 +75,9 @@ public class BackgroundTaskService extends Service {
                             String deleteUserId = eachObject.optString("delete_user_id");
                             String deleteOpponentId = eachObject.optString("delete_opponent_id");
 
-                            boolean hasGif = eachObject.optBoolean("hasGif");
+                            boolean hasGif = eachObject.optBoolean("hasSticker");
                             String gifUrl = eachObject.optString("gifUrl");
-                            String isAnimated = eachObject.optString("isAnimated");
+                            boolean isAnimated = eachObject.optBoolean("isAnimated");
                             String hasSound = eachObject.optString("hasSound");
 
                             if (mSharedHelper.getUserId().equals(userId)) {
@@ -85,13 +85,13 @@ public class BackgroundTaskService extends Service {
                                 realmHelper.insertMessage(userId,
                                         opponentId, message, messageId, Time.convertToLocalTime(date), messageId,
                                         deliveryStatus,
-                                        userIdImage, opponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl);
+                                        userIdImage, opponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl, isAnimated);
                             } else {
 
                                 realmHelper.insertMessage(userId,
                                         opponentId, message, messageId, date, messageId,
                                         deliveryStatus,
-                                        userIdImage, opponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl);
+                                        userIdImage, opponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl, isAnimated);
                             }
                         }
                     }

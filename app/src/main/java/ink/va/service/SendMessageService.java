@@ -41,7 +41,7 @@ public class SendMessageService extends Service {
         if (extras != null) {
             final String mOpponentId = extras.getString("opponentId");
             final String message = extras.getString("message");
-            final boolean hasGif = extras.getBoolean("hasGif");
+            final boolean hasGif = extras.getBoolean("hasSticker");
             final String gifUrl = extras.getString("gifUrl");
             final int sentItemLocation = extras.getInt("sentItemLocation");
             final String mCurrentUserId = sharedHelper.getUserId();

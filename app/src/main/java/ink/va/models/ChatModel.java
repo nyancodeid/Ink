@@ -14,18 +14,20 @@ public class ChatModel {
     private String userImage;
     private String opponentImage;
     private String date;
-    private boolean hasGif;
+    private boolean hasSticker;
     private String gifUrl;
     private boolean isAttachment;
+    private boolean isAnimated;
 
 
-    public ChatModel(boolean isAttachment, boolean hasGif, String gifUrl, String messageId, String userId,
+    public ChatModel(boolean isAttachment, boolean hasSticker, String gifUrl, String messageId, String userId,
                      String opponentId, String message,
                      boolean isClickable, String deliveryStatus,
-                     String userImage, String opponentImage, String date) {
+                     String userImage, String opponentImage, String date, boolean isAnimated) {
         this.userImage = userImage;
+        this.isAnimated = isAnimated;
         this.date = date;
-        this.hasGif = hasGif;
+        this.hasSticker = hasSticker;
         this.gifUrl = gifUrl;
         this.opponentImage = opponentImage;
         this.isClickable = isClickable;
@@ -78,15 +80,15 @@ public class ChatModel {
         return deliveryStatus;
     }
 
-    public boolean hasGif() {
-        return hasGif;
+    public boolean hasSticker() {
+        return hasSticker;
     }
 
-    public void setHasGif(boolean hasGif) {
-        this.hasGif = hasGif;
+    public void setHasSticker(boolean hasSticker) {
+        this.hasSticker = hasSticker;
     }
 
-    public String getGifUrl() {
+    public String getStickerUrl() {
         return gifUrl;
     }
 
@@ -112,6 +114,14 @@ public class ChatModel {
 
     public String getDate() {
         return date;
+    }
+
+    public boolean isAnimated() {
+        return isAnimated;
+    }
+
+    public void setAnimated(boolean animated) {
+        isAnimated = animated;
     }
 
     public void setDate(String date) {

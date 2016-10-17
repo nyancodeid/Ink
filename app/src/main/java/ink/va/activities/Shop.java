@@ -23,6 +23,7 @@ import ink.va.utils.User;
 public class Shop extends BaseActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,12 +96,23 @@ public class Shop extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.shop_menu, menu);
+        this.menu = menu;
         if (menu != null) {
+            this.menu = menu;
             if (User.get().getCoins() != null) {
                 menu.findItem(R.id.myCoinsMenu).setTitle(getString(R.string.coinsText, User.get().getCoins()));
             }
         }
         return true;
+    }
+
+
+    public void updateCoins() {
+        if (menu != null) {
+            if (User.get().getCoins() != null) {
+                menu.findItem(R.id.myCoinsMenu).setTitle(getString(R.string.coinsText, User.get().getCoins()));
+            }
+        }
     }
 
     @Override

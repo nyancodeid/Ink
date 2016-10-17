@@ -682,4 +682,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
 <string name="ban_title">Account Suspended</string>
 <string name="ban_message">Your account is suspended due to violation of our Terms and Services.Please contact support if you belive you\'r account have been suspended in mistake.</string>
 <string name="not_enough_coins">Not enough coins...</string>
-    </resources>
+    <string name="pack_bought">Gift Bought</string>
+    <string name="gift_bought_message">Gift was added to your collection</string>
+    <string name="gift_already_bought">Gift has already been bought</string>
+</resources>
