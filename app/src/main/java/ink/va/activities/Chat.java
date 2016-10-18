@@ -266,7 +266,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                     if (chatModel.hasSticker()) {
                         if (!chatModel.isAnimated()) {
                             Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
-                            intent.putExtra("link", chatModel.getStickerUrl());
+                            intent.putExtra("link", Constants.MAIN_URL + chatModel.getStickerUrl());
                             startActivity(intent);
                         }
 
