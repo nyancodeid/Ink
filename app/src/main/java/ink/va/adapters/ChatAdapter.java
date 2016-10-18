@@ -1,10 +1,14 @@
 package ink.va.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -181,9 +185,18 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 holder.chatVideoWrapper.setVisibility(View.VISIBLE);
                 Uri video = Uri.parse(Constants.MAIN_URL + chatModel.getStickerUrl());
                 holder.chatVideo.setVideoURI(video);
+
+                Bitmap thumb = ThumbnailUtils.createVideoThumbnail("http://www.joomlaworks.net/images/demos/galleries/abstract/7.jpg",
+                        MediaStore.Images.Thumbnails.MINI_KIND);
+
+                BitmapDrawable thumbAsDrawable = new BitmapDrawable(mContext.getResources(), thumb);
+                holder.chatVideo.setBackground(thumbAsDrawable);
+
                 holder.chatVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override
                     public void onPrepared(MediaPlayer mediaPlayer) {
+                        mediaPlayer.seekTo(1000);
+                        holder.chatVideo.seekTo(1000);
                         holder.videoLoadingProgress.setVisibility(View.GONE);
                     }
                 });
@@ -191,6 +204,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                     @Override
                     public boolean onTouch(View view, MotionEvent motionEvent) {
                         if (!holder.chatVideo.isPlaying()) {
+                            holder.chatVideo.setBackground(null);
                             holder.chatVideo.start();
                         }
                         return false;

@@ -8,12 +8,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -1208,11 +1212,17 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
             singleVideoView.setVisibility(View.VISIBLE);
             Uri video = Uri.parse(Constants.MAIN_URL + singleModel.getStickerUrl());
             singleVideoView.setVideoURI(video);
+            Bitmap thumb = ThumbnailUtils.createVideoThumbnail("http://www.joomlaworks.net/images/demos/galleries/abstract/7.jpg",
+                    MediaStore.Images.Thumbnails.MINI_KIND);
+
+            BitmapDrawable thumbAsDrawable = new BitmapDrawable(getResources(), thumb);
+            singleVideoView.setBackground(thumbAsDrawable);
 
             singleVideoView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     if (!singleVideoView.isPlaying()) {
+                        singleVideoView.setBackground(null);
                         singleVideoView.start();
                     }
                     return false;
