@@ -1,14 +1,342 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/coins_shop_background"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="ink.va.activities.BuyCoins">
+    android:fillViewport="true">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:background="@drawable/coins_shop_background"
+        android:orientation="vertical"
+        tools:context="ink.va.activities.BuyCoins">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/single_card_item_background">
+
+            <Button
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:id="@+id/buy_zero_ninteen"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/buy_coins_button"
+                android:text="0,99$"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/hundred_twnety_coins" />
 
 
-</RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/hundred_twenty_TV"
+                android:layout_alignParentRight="true"
+                android:layout_margin="20dp"
+                android:drawableRight="@drawable/small_coins_icon"
+                android:text="100"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="1dp"
+                android:layout_above="@+id/hundred_twenty_TV"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="32dp"
+                android:background="@color/red"
+                android:text="100"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/hundred_twenty_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/buy_zero_ninteen"
+                android:layout_alignParentRight="true"
+                android:layout_margin="20dp"
+                android:drawableRight="@drawable/small_coins_icon"
+                android:text="120"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/single_card_item_background">
+
+            <Button
+
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:id="@+id/buy_one_ninteen"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/buy_coins_button"
+                android:text="1,99$"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/three_hundred_coins" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/three_hundred_TV"
+                android:layout_alignParentRight="true"
+                android:layout_margin="20dp"
+                android:drawableRight="@drawable/small_coins_icon"
+                android:text="100"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="1dp"
+                android:layout_above="@+id/three_hundred_TV"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="32dp"
+                android:background="@color/red"
+                android:text="200"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/three_hundred_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/buy_one_ninteen"
+                android:layout_alignParentRight="true"
+                android:layout_margin="20dp"
+                android:drawableRight="@drawable/small_coins_icon"
+                android:text="300"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/single_card_item_background">
+
+            <Button
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:id="@+id/buy_two_ninteen"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/buy_coins_button"
+                android:text="2,99$"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/five_hundre_coins" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/five_hundred_TV"
+                android:layout_alignParentRight="true"
+                android:layout_margin="20dp"
+                android:drawableRight="@drawable/small_coins_icon"
+                android:text="100"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="1dp"
+                android:layout_above="@+id/five_hundred_TV"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="32dp"
+                android:background="@color/red"
+                android:text="400"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/five_hundred_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/buy_two_ninteen"
+                android:layout_alignParentRight="true"
+                android:layout_margin="20dp"
+                android:drawableRight="@drawable/small_coins_icon"
+                android:text="500"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/single_card_item_background">
+
+            <Button
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:id="@+id/buy_three_ninteen"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/buy_coins_button"
+                android:text="3,99$"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/hundred_twnety_coins" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/eight_hudred_TV"
+                android:layout_alignParentRight="true"
+                android:layout_margin="20dp"
+                android:drawableRight="@drawable/small_coins_icon"
+                android:text="740"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="1dp"
+                android:layout_above="@+id/eight_hudred_TV"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="32dp"
+                android:background="@color/red"
+                android:text="800"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/eight_hudred_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/buy_three_ninteen"
+                android:layout_alignParentRight="true"
+                android:layout_margin="20dp"
+                android:drawableRight="@drawable/small_coins_icon"
+                android:text="120"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/single_card_item_background">
+
+            <Button
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:id="@+id/buy_four_ninteen"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/buy_coins_button"
+                android:text="0,99$"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/hundred_twnety_coins" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/thousan_two_hundred"
+                android:layout_alignParentRight="true"
+                android:layout_margin="20dp"
+                android:drawableRight="@drawable/small_coins_icon"
+                android:text="1120"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="1dp"
+                android:layout_above="@+id/thousan_two_hundred"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="32dp"
+                android:background="@color/red"
+                android:text="100"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/thousan_two_hundred"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/buy_four_ninteen"
+                android:layout_alignParentRight="true"
+                android:layout_margin="20dp"
+                android:drawableRight="@drawable/small_coins_icon"
+                android:text="1200"
+                android:textColor="#ffffff"
+                android:textSize="24sp" />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+</ScrollView>

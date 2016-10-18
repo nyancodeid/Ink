@@ -12,7 +12,6 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.android.vending.billing.IInAppBillingService;
-import com.google.gson.Gson;
 import com.ink.va.R;
 
 import org.json.JSONException;
@@ -21,14 +20,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
-import ink.va.models.CoinsModel;
-import ink.va.models.CoinsPackResponse;
+import butterknife.OnClick;
 import ink.va.utils.Constants;
-import ink.va.utils.Retrofit;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class BuyCoins extends BaseActivity {
 
@@ -36,12 +29,12 @@ public class BuyCoins extends BaseActivity {
     private IInAppBillingService mService;
     public static final String TEST_PURCHASE_RESPONSE = "android.test.purchased";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy_coins);
         ButterKnife.bind(this);
-        getCoinsPack();
 
         Intent serviceIntent =
                 new Intent("com.android.vending.billing.InAppBillingService.BIND");
@@ -113,6 +106,35 @@ public class BuyCoins extends BaseActivity {
         }
     };
 
+
+    @OnClick(R.id.buy_zero_ninteen)
+    public void zeroClicked() {
+
+    }
+
+    @OnClick(R.id.buy_one_ninteen)
+    public void threeHundredClicked() {
+
+    }
+
+    @OnClick(R.id.buy_two_ninteen)
+    public void twoClicked() {
+
+    }
+
+
+    @OnClick(R.id.buy_three_ninteen)
+    public void threeClicked() {
+
+    }
+
+
+    @OnClick(R.id.buy_four_ninteen)
+    public void fourClicked() {
+
+    }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1001) {
@@ -131,43 +153,6 @@ public class BuyCoins extends BaseActivity {
                 }
             }
         }
-    }
-
-    private void getCoinsPack() {
-        Call<ResponseBody> coinsCall = Retrofit.getInstance().getInkService().getCoins();
-        coinsCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getCoinsPack();
-                    return;
-                }
-                if (response.body() == null) {
-                    getCoinsPack();
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    Gson gson = new Gson();
-                    CoinsPackResponse coinsPackResponse = gson.fromJson(responseBody, CoinsPackResponse.class);
-                    if (coinsPackResponse.success) {
-                        ArrayList<CoinsModel> coinsModels = coinsPackResponse.coinsModels;
-                        for (int i = 0; i < coinsModels.size(); i++) {
-                            CoinsModel eachModel = coinsModels.get(i);
-                        }
-                    } else {
-                        getCoinsPack();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getCoinsPack();
-            }
-        });
     }
 
     @Override
