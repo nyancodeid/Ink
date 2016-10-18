@@ -52,6 +52,7 @@ public class Constants {
     public static final String MESSAGES_URL = "Messages.php";
     public static final String UPLOADED_FILES_DIR = "UserUploads/";
     public static final String SEND_MESSAGE_URL = "SendMessage.php";
+    public static final String SET_USER_COINS_URL = "SetUserCoins.php";
     public static final String GENDER_MALE = "Male";
     public static final String GENDER_FEMALE = "Female";
     public static final String STATUS_DELIVERED = "delivered";

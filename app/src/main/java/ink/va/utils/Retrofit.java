@@ -477,6 +477,11 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getTemporaryPassword(@Field("login") String inputLogin,
                                                 @Field("token") String token);
+
+        @POST(Constants.SET_USER_COINS_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> setCoins(@Field("userId") String userId,
+                                    @Field("coinsCount") String coinstCount);
     }
 
     public interface MusicCloudInterface {
