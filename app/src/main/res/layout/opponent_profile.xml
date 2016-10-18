@@ -323,15 +323,6 @@
             fab:fab_label="@string/removeFromFriends"
             fab:fab_size="mini" />
 
-        <fab.FloatingActionButton
-            android:id="@+id/block"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_block_white_24dp"
-            fab:fab_colorNormal="#444f65"
-            fab:fab_colorPressed="#636e85"
-            fab:fab_label="@string/blockUser"
-            fab:fab_size="mini" />
 
         <fab.FloatingActionButton
             android:id="@+id/sendMessage"

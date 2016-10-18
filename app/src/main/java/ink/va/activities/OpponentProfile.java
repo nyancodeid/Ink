@@ -91,8 +91,6 @@ public class OpponentProfile extends BaseActivity {
     RelativeLayout mAddressWrapper;
     @Bind(R.id.sendMessage)
     FloatingActionButton sendMessage;
-    @Bind(R.id.block)
-    FloatingActionButton block;
     @Bind(R.id.removeFriend)
     FloatingActionButton removeFriend;
     @Bind(R.id.callUserPhone)
@@ -321,10 +319,6 @@ public class OpponentProfile extends BaseActivity {
         });
     }
 
-    @OnClick(R.id.block)
-    public void block() {
-        mProfileFab.close(true);
-    }
 
     private void getSingleUser() {
         Call<ResponseBody> call = ink.va.utils.Retrofit.getInstance().getInkService().getSingleUserDetails(mOpponentId, sharedHelper.getUserId());
