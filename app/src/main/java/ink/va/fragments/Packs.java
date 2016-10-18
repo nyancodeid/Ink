@@ -196,11 +196,11 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
-                    String userCoinsLeft = jsonObject.optString("userCoinsLeft");
-                    User.get().setCoins(userCoinsLeft);
-                    ((Shop) getActivity()).updateCoins();
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     if (success) {
+                        String userCoinsLeft = jsonObject.optString("userCoinsLeft");
+                        User.get().setCoins(userCoinsLeft);
+                        ((Shop) getActivity()).updateCoins();
                         builder.setTitle(getString(R.string.pack_bought));
                         builder.setMessage(getString(R.string.gift_bought_message));
                         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
