@@ -23,12 +23,13 @@ public class QueHelper {
             final String mOpponentId,
             final String message,
             final int sentItemLocation,
-            final boolean hasGif, final String gifUrl, Context context) {
+            final boolean hasGif, final String gifUrl, Context context, boolean isAnimated) {
         Intent intent = new Intent(context, SendMessageService.class);
         intent.putExtra("opponentId", mOpponentId);
         intent.putExtra("message", message);
-        intent.putExtra("hasSticker", hasGif);
+        intent.putExtra("hasGif", hasGif);
         intent.putExtra("gifUrl", gifUrl);
+        intent.putExtra("isAnimated", isAnimated);
         intent.putExtra("sentItemLocation", sentItemLocation);
         context.startService(intent);
     }

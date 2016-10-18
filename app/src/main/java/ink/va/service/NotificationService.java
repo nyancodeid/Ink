@@ -83,7 +83,7 @@ public class NotificationService extends FirebaseMessagingService {
                         RealmHelper.getInstance().insertMessage(response.get("user_id"), response.get("opponent_id"),
                                 response.get("message"), response.get("message_id"), response.get("date"), response.get("message_id"),
                                 Constants.STATUS_DELIVERED, response.get("user_image"), response.get("opponent_image"),
-                                response.get("delete_opponent_id"), response.get("delete_user_id"), Boolean.valueOf(response.get("hasSticker")), response.get("gifUrl"),Boolean.valueOf(response.get("isAnimated")));
+                                response.get("delete_opponent_id"), response.get("delete_user_id"), Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"),Boolean.valueOf(response.get("isAnimated")));
                     }
                 });
 
@@ -98,7 +98,7 @@ public class NotificationService extends FirebaseMessagingService {
                             StringEscapeUtils.unescapeJava(response.get("message")), getApplicationContext(),
                             response.get("message_id"), response.get("opponent_id"),
                             response.get("opponent_image"), response.get("opponent_image").isEmpty() ? "" : response.get("opponent_image"), response.get("name"),
-                            response.get("delete_user_id"), response.get("delete_opponent_id"), Boolean.valueOf(response.get("isSocialAccount")), response.get("lastName"), Boolean.valueOf(response.get("hasSticker")));
+                            response.get("delete_user_id"), response.get("delete_opponent_id"), Boolean.valueOf(response.get("isSocialAccount")), response.get("lastName"), Boolean.valueOf(response.get("hasGif")));
                 } else {
                     String activeOpponentId = Notification.get().getActiveOpponentId();
                     if (activeOpponentId.equals(response.get("opponent_id")) || activeOpponentId.equals(response.get("user_id"))) {
@@ -117,7 +117,7 @@ public class NotificationService extends FirebaseMessagingService {
                                 StringEscapeUtils.unescapeJava(response.get("message")), getApplicationContext(),
                                 response.get("message_id"), response.get("opponent_id"),
                                 response.get("opponent_image"), response.get("opponent_image").isEmpty() ? "" : response.get("opponent_image"), response.get("name"),
-                                response.get("delete_user_id"), response.get("delete_opponent_id"), Boolean.valueOf(response.get("isSocialAccount")), response.get("lastName"), Boolean.valueOf(response.get("hasSticker")));
+                                response.get("delete_user_id"), response.get("delete_opponent_id"), Boolean.valueOf(response.get("isSocialAccount")), response.get("lastName"), Boolean.valueOf(response.get("hasGif")));
                     }
 
                 }

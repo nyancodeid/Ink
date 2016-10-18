@@ -51,6 +51,6 @@ public class SendReplyService extends Service {
 
         QueHelper queHelper = new QueHelper();
         queHelper.attachToQue(mOpponentId, message, finalId, false, ""
-                , getApplicationContext());
+                , getApplicationContext(), false);
     }
 }

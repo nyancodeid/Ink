@@ -12,6 +12,8 @@
         android:id="@+id/chatVideoWrapper"
         android:layout_width="200dp"
         android:layout_height="200dp"
+        android:background="@drawable/grey_transparent_rectangle"
+        android:elevation="20dp"
         android:visibility="visible">
 
 
@@ -46,7 +48,9 @@
         android:layout_marginBottom="2dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+        android:background="@drawable/grey_transparent_rectangle"
         android:layout_marginTop="5dp"
+        android:elevation="4dp"
         android:orientation="vertical"
         android:visibility="visible">
 

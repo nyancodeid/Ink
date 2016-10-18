@@ -360,7 +360,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
 <string name="signInWithFacebook">Sign in with facebook</string>
 <string name="registerInkAccount">Register new account on Ink</string>
 <string name="noGif">You don\'t have any stickers.Go buy some</string>
-<string name="myItems">My items</string>
+<string name="myItems">My items (Touch to play)</string>
 
     <!--DO NOT TRANSLATE THESE ONES-->
 <string name="notVisible">NOT_VISIBLE</string>

@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import butterknife.ButterKnife;
 import ink.va.models.CoinsModel;
 import ink.va.models.CoinsPackResponse;
 import ink.va.utils.Constants;
@@ -39,6 +40,7 @@ public class BuyCoins extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy_coins);
+        ButterKnife.bind(this);
         getCoinsPack();
 
         Intent serviceIntent =
@@ -61,10 +63,10 @@ public class BuyCoins extends BaseActivity {
 
             try {
                 Bundle ownedItems = mService.getPurchases(3, getPackageName(), "inapp", null);
-                Log.d("Fasfsafasfasfa", "onServiceConnected: "+ownedItems);
+                Log.d("Fasfsafasfasfa", "onServiceConnected: " + ownedItems);
 
                 int response = ownedItems.getInt("RESPONSE_CODE");
-                Log.d("Fasfsafasfasfa", "onServiceConnected: "+response);
+                Log.d("Fasfsafasfasfa", "onServiceConnected: " + response);
 
                 if (response == 0) {
                     ArrayList<String> ownedSkus =
@@ -77,10 +79,10 @@ public class BuyCoins extends BaseActivity {
                             ownedItems.getString("INAPP_CONTINUATION_TOKEN");
 
 
-                    Log.d("Fasfsafasfasfa", "onServiceConnected: "+ownedSkus.size());
-                    Log.d("Fasfsafasfasfa", "onServiceConnected: "+purchaseDataList.size());
-                    Log.d("Fasfsafasfasfa", "onServiceConnected: "+signatureList.size());
-                    Log.d("Fasfsafasfasfa", "onServiceConnected: "+continuationToken);
+                    Log.d("Fasfsafasfasfa", "onServiceConnected: " + ownedSkus.size());
+                    Log.d("Fasfsafasfasfa", "onServiceConnected: " + purchaseDataList.size());
+                    Log.d("Fasfsafasfasfa", "onServiceConnected: " + signatureList.size());
+                    Log.d("Fasfsafasfasfa", "onServiceConnected: " + continuationToken);
 
                     for (int i = 0; i < purchaseDataList.size(); ++i) {
                         String purchaseData = purchaseDataList.get(i);

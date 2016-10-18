@@ -1,7 +1,6 @@
 package ink.va.adapters;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -53,18 +52,6 @@ public class GifAdapter extends RecyclerView.Adapter<GifAdapter.ViewHolder> {
             holder.videoView.setZOrderOnTop(true);
             Uri video = Uri.parse(Constants.MAIN_URL + stickerModel.getStickerUrl());
             holder.videoView.setVideoURI(video);
-            holder.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mediaPlayer) {
-                    mediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
-                        @Override
-                        public void onVideoSizeChanged(MediaPlayer mediaPlayer, int i, int i1) {
-                            mediaPlayer.seekTo(1000);
-                        }
-                    });
-                }
-            });
-
             holder.videoWrapper.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -113,7 +113,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         LinearLayout.LayoutParams gifChatViewLayoutParams = (LinearLayout.LayoutParams) holder.imageViewWrapper.getLayoutParams();
         LinearLayout.LayoutParams chatVideoLayoutParams = (LinearLayout.LayoutParams) holder.chatVideoWrapper.getLayoutParams();
 
-        checkForSticker(chatModel, holder);
 
         if (mCurrentUserId.equals(chatModel.getUserId())) {
             if (sharedHelper.getOwnTextColor() != null) {
@@ -167,6 +166,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             holder.chatVideoWrapper.setLayoutParams(chatVideoLayoutParams);
             holder.deliveryStatus.setVisibility(View.INVISIBLE);
         }
+        checkForSticker(chatModel, holder);
 
     }
 
@@ -177,7 +177,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             if (chatModel.isAnimated()) {
                 holder.imageView.setImageResource(0);
                 holder.imageViewWrapper.setVisibility(View.GONE);
-                holder.chatVideo.setZOrderOnTop(true);
                 holder.chatVideo.setVisibility(View.VISIBLE);
                 holder.chatVideoWrapper.setVisibility(View.VISIBLE);
                 Uri video = Uri.parse(Constants.MAIN_URL + chatModel.getStickerUrl());
@@ -185,12 +184,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 holder.chatVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override
                     public void onPrepared(MediaPlayer mediaPlayer) {
-                        mediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
-                            @Override
-                            public void onVideoSizeChanged(MediaPlayer mediaPlayer, int i, int i1) {
-                                mediaPlayer.seekTo(1000);
-                            }
-                        });
                         holder.videoLoadingProgress.setVisibility(View.GONE);
                     }
                 });
@@ -205,7 +198,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 });
 
             } else {
-                holder.chatVideo.setZOrderOnTop(false);
                 holder.chatVideo.setVisibility(View.GONE);
                 holder.chatVideoWrapper.setVisibility(View.GONE);
                 holder.imageView.setImageResource(0);
@@ -243,7 +235,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 //            } else {
 //
 //            }
-            holder.chatVideo.setZOrderOnTop(false);
             holder.chatVideo.setVisibility(View.GONE);
             holder.chatVideoWrapper.setVisibility(View.GONE);
             holder.imageView.setImageResource(0);
@@ -251,7 +242,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             holder.imageViewWrapper.setVisibility(View.VISIBLE);
 
         } else {
-            holder.chatVideo.setZOrderOnTop(false);
             holder.chatVideo.setVisibility(View.GONE);
             holder.chatVideoWrapper.setVisibility(View.GONE);
             holder.imageView.setImageResource(0);

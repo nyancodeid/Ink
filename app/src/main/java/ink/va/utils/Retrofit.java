@@ -187,7 +187,8 @@ public class Retrofit {
                                        @Field("message") String message,
                                        @Field("timezone") String timezone,
                                        @Field("hasGif") boolean hasGif,
-                                       @Field("gifUrl") String gifUrl);
+                                       @Field("gifUrl") String gifUrl,
+                                       @Field("isAnimated") String isAnimated);
 
 
         @POST(Constants.CHECK_BAN_URL)

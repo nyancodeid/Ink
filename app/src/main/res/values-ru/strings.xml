@@ -362,7 +362,7 @@
     <string name="signInWithFacebook">Войти с помощю аккаунта facebook</string>
     <string name="registerInkAccount">Завести новый аккаунт на Инк</string>
     <string name="noGif">У вас нет стикеров.Купите их в магазине</string>
-    <string name="myItems">Мои предметы</string>
+    <string name="myItems">Мои предметы (Нажмите, чтобы воспроизвести)</string>
 
     <!--DO NOT TRANSLATE THESE ONES-->
     <string name="notVisible">NOT_VISIBLE</string>

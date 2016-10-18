@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -870,7 +869,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                 mOpponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl, isAnimated);
 
         QueHelper queHelper = new QueHelper();
-        queHelper.attachToQue(mOpponentId, message, itemLocation, isGifChosen, gifUrl, Chat.this);
+        queHelper.attachToQue(mOpponentId, message, itemLocation, isGifChosen, gifUrl, Chat.this, isAnimated);
 
 
     }
@@ -1052,7 +1051,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                         RemoteMessage remoteMessage = extras.getParcelable("data");
                         Map<String, String> response = remoteMessage.getData();
                         if (mOpponentId.equals(response.get("user_id"))) {
-                            mChatModel = new ChatModel(Regex.isAttachment(response.get("message")), Boolean.valueOf(response.get("hasSticker")), response.get("gifUrl"), response.get("message_id"), response.get("user_id"),
+                            mChatModel = new ChatModel(Regex.isAttachment(response.get("message")), Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"), response.get("message_id"), response.get("user_id"),
                                     response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
                                     response.get("user_image"), response.get("opponent_image"), response.get("date"), Boolean.valueOf(response.get("isAnimated")));
                             mChatModelArrayList.add(mChatModel);
@@ -1201,25 +1200,15 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         mSendChatMessage.setEnabled(true);
         if (singleModel.isAnimated()) {
             singleVideoView.setVisibility(View.VISIBLE);
+            singleVideoView.setZOrderOnTop(true);
             singleGifViewLoading.setVisibility(View.GONE);
             sendMessageGifView.setVisibility(View.GONE);
             singleVideoView.setVisibility(View.VISIBLE);
 
             singleVideoView.setVisibility(View.VISIBLE);
-            singleVideoView.setZOrderOnTop(true);
             Uri video = Uri.parse(Constants.MAIN_URL + singleModel.getStickerUrl());
             singleVideoView.setVideoURI(video);
-            singleVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mediaPlayer) {
-                    mediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
-                        @Override
-                        public void onVideoSizeChanged(MediaPlayer mediaPlayer, int i, int i1) {
-                            mediaPlayer.seekTo(1000);
-                        }
-                    });
-                }
-            });
+
             singleVideoView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -1230,6 +1219,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                 }
             });
         } else {
+            singleVideoView.setZOrderOnTop(false);
             sendMessageGifView.setVisibility(View.VISIBLE);
             singleVideoView.setVisibility(View.GONE);
             Ion.with(getApplicationContext()).load(Constants.MAIN_URL + stickerUrl).intoImageView(sendMessageGifView).setCallback(new FutureCallback<ImageView>() {

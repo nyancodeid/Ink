@@ -41,12 +41,13 @@ public class SendMessageService extends Service {
         if (extras != null) {
             final String mOpponentId = extras.getString("opponentId");
             final String message = extras.getString("message");
-            final boolean hasGif = extras.getBoolean("hasSticker");
+            final boolean hasGif = extras.getBoolean("hasGif");
             final String gifUrl = extras.getString("gifUrl");
             final int sentItemLocation = extras.getInt("sentItemLocation");
+            boolean isAnimated = extras.getBoolean("isAnimated");
             final String mCurrentUserId = sharedHelper.getUserId();
 
-            attachToQue(mOpponentId, message, hasGif, gifUrl, String.valueOf(sentItemLocation), mCurrentUserId);
+            attachToQue(mOpponentId, message, hasGif, gifUrl, String.valueOf(sentItemLocation), mCurrentUserId, isAnimated);
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -57,21 +58,21 @@ public class SendMessageService extends Service {
                              final boolean hasGif, final
                              String gifUrl,
                              final String sentItemLocation,
-                             final String mCurrentUserId) {
+                             final String mCurrentUserId, final boolean isAnimated) {
 
         Call<ResponseBody> sendMessageResponse = Retrofit.getInstance().getInkService().sendMessage(mCurrentUserId,
-                mOpponentId, message, Time.getTimeZone(), hasGif, gifUrl);
+                mOpponentId, message, Time.getTimeZone(), hasGif, gifUrl, String.valueOf(isAnimated));
 
         sendMessageResponse.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     if (response == null) {
-                        attachToQue(mOpponentId, message, hasGif, gifUrl, sentItemLocation, mCurrentUserId);
+                        attachToQue(mOpponentId, message, hasGif, gifUrl, sentItemLocation, mCurrentUserId, isAnimated);
                         return;
                     }
                     if (response.body() == null) {
-                        attachToQue(mOpponentId, message, hasGif, gifUrl, sentItemLocation, mCurrentUserId);
+                        attachToQue(mOpponentId, message, hasGif, gifUrl, sentItemLocation, mCurrentUserId, isAnimated);
                         return;
                     }
 
@@ -92,7 +93,7 @@ public class SendMessageService extends Service {
                     localBroadcastManager.sendBroadcast(intent);
                     stopSelf();
                 } catch (IOException e) {
-                    attachToQue(mOpponentId, message, hasGif, gifUrl, sentItemLocation, mCurrentUserId);
+                    attachToQue(mOpponentId, message, hasGif, gifUrl, sentItemLocation, mCurrentUserId, isAnimated);
                     e.printStackTrace();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -101,7 +102,7 @@ public class SendMessageService extends Service {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                attachToQue(mOpponentId, message, hasGif, gifUrl, sentItemLocation, mCurrentUserId);
+                attachToQue(mOpponentId, message, hasGif, gifUrl, sentItemLocation, mCurrentUserId, isAnimated);
             }
         });
 

@@ -75,7 +75,7 @@ public class BackgroundTaskService extends Service {
                             String deleteUserId = eachObject.optString("delete_user_id");
                             String deleteOpponentId = eachObject.optString("delete_opponent_id");
 
-                            boolean hasGif = eachObject.optBoolean("hasSticker");
+                            boolean hasGif = eachObject.optBoolean("hasGif");
                             String gifUrl = eachObject.optString("gifUrl");
                             boolean isAnimated = eachObject.optBoolean("isAnimated");
                             String hasSound = eachObject.optString("hasSound");
