@@ -170,6 +170,7 @@ public class BuyCoins extends BaseActivity {
                             int currentUserCoins = Integer.valueOf(User.get().getCoins());
                             int finalCoins = currentUserCoins + 120;
                             User.get().setCoins(String.valueOf(finalCoins));
+                            updateCoinsOnServer(String.valueOf(finalCoins));
                             break;
                         case MEDIUM_PACK:
                             showProgress();
@@ -177,6 +178,7 @@ public class BuyCoins extends BaseActivity {
                             currentUserCoins = Integer.valueOf(User.get().getCoins());
                             finalCoins = currentUserCoins + 300;
                             User.get().setCoins(String.valueOf(finalCoins));
+                            updateCoinsOnServer(String.valueOf(finalCoins));
                             break;
                         case BIG_PACK:
                             showProgress();
@@ -184,6 +186,7 @@ public class BuyCoins extends BaseActivity {
                             currentUserCoins = Integer.valueOf(User.get().getCoins());
                             finalCoins = currentUserCoins + 500;
                             User.get().setCoins(String.valueOf(finalCoins));
+                            updateCoinsOnServer(String.valueOf(finalCoins));
                             break;
                         case LARGE_PACK:
                             showProgress();
@@ -191,6 +194,7 @@ public class BuyCoins extends BaseActivity {
                             currentUserCoins = Integer.valueOf(User.get().getCoins());
                             finalCoins = currentUserCoins + 800;
                             User.get().setCoins(String.valueOf(finalCoins));
+                            updateCoinsOnServer(String.valueOf(finalCoins));
                             break;
                         case EXTRA_LARGE_PACK:
                             showProgress();
@@ -198,6 +202,7 @@ public class BuyCoins extends BaseActivity {
                             currentUserCoins = Integer.valueOf(User.get().getCoins());
                             finalCoins = currentUserCoins + 1200;
                             User.get().setCoins(String.valueOf(finalCoins));
+                            updateCoinsOnServer(String.valueOf(finalCoins));
                             break;
                     }
                 } catch (JSONException e) {
@@ -259,6 +264,7 @@ public class BuyCoins extends BaseActivity {
                     String reponseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(reponseBody);
                     boolean success = jsonObject.optBoolean("success");
+                    hideProgress();
                     if (success) {
                         Snackbar.make(rootScroll, getString(R.string.coins_bought), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                             @Override
