@@ -10,8 +10,8 @@
 
     <RelativeLayout
         android:id="@+id/chatVideoWrapper"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
         android:background="@drawable/grey_transparent_rectangle"
         android:elevation="20dp"
         android:visibility="visible">
@@ -43,8 +43,8 @@
 
     <LinearLayout
         android:id="@+id/singleGifViewWrapper"
-        android:layout_width="74dp"
-        android:layout_height="74dp"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
         android:layout_marginBottom="2dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
@@ -57,8 +57,8 @@
             android:id="@+id/gifChatView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxHeight="74dp"
-            android:maxWidth="74dp" />
+            android:maxHeight="200dp"
+            android:maxWidth="200dp" />
 
     </LinearLayout>
 
