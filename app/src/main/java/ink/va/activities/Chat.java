@@ -31,6 +31,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -141,8 +142,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     ImageView attachmentIcon;
     @Bind(R.id.messageFiledDivider)
     View messageFiledDivider;
-    @Bind(R.id.play_single_video)
-    View playButton;
 
     private String mOpponentId;
     String mCurrentUserId;
@@ -1207,39 +1206,32 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
             singleVideoView.setVisibility(View.VISIBLE);
 
             singleVideoView.setVisibility(View.VISIBLE);
-            playButton.setVisibility(View.VISIBLE);
             singleVideoView.setZOrderOnTop(true);
             Uri video = Uri.parse(Constants.MAIN_URL + singleModel.getStickerUrl());
             singleVideoView.setVideoURI(video);
-            playButton.setOnClickListener(new View.OnClickListener() {
+            singleVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
-                public void onClick(View view) {
-                    singleVideoView.setZOrderOnTop(true);
-                    playButton.setVisibility(View.GONE);
-                    singleVideoView.start();
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    mediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+                        @Override
+                        public void onVideoSizeChanged(MediaPlayer mediaPlayer, int i, int i1) {
+                            mediaPlayer.seekTo(1000);
+                        }
+                    });
                 }
             });
-            singleVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            singleVideoView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
-                public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
-                    singleVideoView.setZOrderOnTop(false);
-                    Exception exception = new Exception(i + "  " + i1);
-                    exception.printStackTrace();
-                    playButton.setVisibility(View.VISIBLE);
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if (!singleVideoView.isPlaying()) {
+                        singleVideoView.start();
+                    }
                     return false;
-                }
-            });
-            singleVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    singleVideoView.setZOrderOnTop(false);
-                    playButton.setVisibility(View.VISIBLE);
                 }
             });
         } else {
             sendMessageGifView.setVisibility(View.VISIBLE);
             singleVideoView.setVisibility(View.GONE);
-            playButton.setVisibility(View.GONE);
             Ion.with(getApplicationContext()).load(Constants.MAIN_URL + stickerUrl).intoImageView(sendMessageGifView).setCallback(new FutureCallback<ImageView>() {
                 @Override
                 public void onCompleted(Exception e, ImageView result) {

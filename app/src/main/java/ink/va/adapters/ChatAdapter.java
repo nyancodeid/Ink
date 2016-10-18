@@ -3,15 +3,21 @@ package ink.va.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
@@ -49,12 +55,18 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         private LinearLayout chatViewBubble;
         private ImageView imageView;
         private LinearLayout imageViewWrapper;
+        private RelativeLayout chatVideoWrapper;
+        private VideoView chatVideo;
+        private ProgressBar videoLoadingProgress;
 
         public ViewHolder(View view) {
             super(view);
             message = (TextView) view.findViewById(R.id.messageContainer);
             chatViewBubble = (LinearLayout) view.findViewById(R.id.chatViewBubble);
+            chatVideoWrapper = (RelativeLayout) view.findViewById(R.id.chatVideoWrapper);
+            chatVideo = (VideoView) view.findViewById(R.id.chatVideo);
             imageViewWrapper = (LinearLayout) view.findViewById(R.id.singleGifViewWrapper);
+            videoLoadingProgress = (ProgressBar) view.findViewById(R.id.video_loading_progress);
 
             deliveryStatus = (TextView) view.findViewById(R.id.deliveryStatus);
             imageView = (ImageView) view.findViewById(R.id.gifChatView);
@@ -99,8 +111,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.chatViewBubble.getLayoutParams();
         LinearLayout.LayoutParams deliveryStatusParams = (LinearLayout.LayoutParams) holder.deliveryStatus.getLayoutParams();
         LinearLayout.LayoutParams gifChatViewLayoutParams = (LinearLayout.LayoutParams) holder.imageViewWrapper.getLayoutParams();
+        LinearLayout.LayoutParams chatVideoLayoutParams = (LinearLayout.LayoutParams) holder.chatVideoWrapper.getLayoutParams();
 
-        checkForGif(chatModel, holder);
+        checkForSticker(chatModel, holder);
 
         if (mCurrentUserId.equals(chatModel.getUserId())) {
             if (sharedHelper.getOwnTextColor() != null) {
@@ -110,9 +123,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             layoutParams.rightMargin = Dp.toDps(mContext, 16);
             deliveryStatusParams.gravity = Gravity.RIGHT;
             gifChatViewLayoutParams.gravity = Gravity.RIGHT;
+            chatVideoLayoutParams.gravity = Gravity.RIGHT;
 
             holder.chatViewBubble.setLayoutParams(layoutParams);
             holder.imageView.setLayoutParams(gifChatViewLayoutParams);
+            holder.chatVideoWrapper.setLayoutParams(chatVideoLayoutParams);
 
             holder.chatViewBubble.setBackground(ContextCompat.getDrawable(mContext, R.drawable.outgoing_message_bg));
 
@@ -145,24 +160,54 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             }
             layoutParams.gravity = Gravity.LEFT;
             gifChatViewLayoutParams.gravity = Gravity.LEFT;
+            chatVideoLayoutParams.gravity = Gravity.LEFT;
 
             holder.chatViewBubble.setLayoutParams(layoutParams);
             holder.imageView.setLayoutParams(gifChatViewLayoutParams);
+            holder.chatVideoWrapper.setLayoutParams(chatVideoLayoutParams);
             holder.deliveryStatus.setVisibility(View.INVISIBLE);
         }
 
     }
 
 
-    private void checkForGif(final ChatModel chatModel, final ChatAdapter.ViewHolder holder) {
+    private void checkForSticker(final ChatModel chatModel, final ChatAdapter.ViewHolder holder) {
         System.gc();
         if (chatModel.hasSticker()) {
             if (chatModel.isAnimated()) {
                 holder.imageView.setImageResource(0);
                 holder.imageViewWrapper.setVisibility(View.GONE);
-                // TODO: 2016-10-18 show video view and load video
+                holder.chatVideo.setZOrderOnTop(true);
+                holder.chatVideo.setVisibility(View.VISIBLE);
+                holder.chatVideoWrapper.setVisibility(View.VISIBLE);
+                Uri video = Uri.parse(Constants.MAIN_URL + chatModel.getStickerUrl());
+                holder.chatVideo.setVideoURI(video);
+                holder.chatVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mediaPlayer) {
+                        mediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+                            @Override
+                            public void onVideoSizeChanged(MediaPlayer mediaPlayer, int i, int i1) {
+                                mediaPlayer.seekTo(1000);
+                            }
+                        });
+                        holder.videoLoadingProgress.setVisibility(View.GONE);
+                    }
+                });
+                holder.chatVideo.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        if (!holder.chatVideo.isPlaying()) {
+                            holder.chatVideo.start();
+                        }
+                        return false;
+                    }
+                });
 
             } else {
+                holder.chatVideo.setZOrderOnTop(false);
+                holder.chatVideo.setVisibility(View.GONE);
+                holder.chatVideoWrapper.setVisibility(View.GONE);
                 holder.imageView.setImageResource(0);
                 holder.imageViewWrapper.setVisibility(View.VISIBLE);
                 if (holder.imageView.getTag() == null) {
@@ -198,11 +243,17 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 //            } else {
 //
 //            }
+            holder.chatVideo.setZOrderOnTop(false);
+            holder.chatVideo.setVisibility(View.GONE);
+            holder.chatVideoWrapper.setVisibility(View.GONE);
             holder.imageView.setImageResource(0);
             holder.imageView.setBackgroundResource(R.drawable.chat_attachment_icon);
             holder.imageViewWrapper.setVisibility(View.VISIBLE);
 
         } else {
+            holder.chatVideo.setZOrderOnTop(false);
+            holder.chatVideo.setVisibility(View.GONE);
+            holder.chatVideoWrapper.setVisibility(View.GONE);
             holder.imageView.setImageResource(0);
             if (chatModel.getMessage().trim().isEmpty()) {
                 holder.chatViewBubble.setVisibility(View.GONE);

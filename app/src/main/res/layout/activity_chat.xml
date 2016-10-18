@@ -175,18 +175,6 @@
                 android:layout_below="@+id/trashIcon"
                 android:layout_centerInParent="true" />
 
-            <ImageView
-                android:id="@+id/play_single_video"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
-                android:padding="10dp"
-                android:src="@drawable/play_video_icon" />
-
         </RelativeLayout>
 
         <RelativeLayout
