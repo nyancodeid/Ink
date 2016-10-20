@@ -17,19 +17,18 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context="ink.va.activities.Policy">
 
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </WebView>
+
         <ProgressBar
             android:id="@+id/policyLoading"
             style="@style/AdobeImageWidget.ProgressBar.Large"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true" />
-
-        <TextView
-            android:id="@+id/policyMessage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fontFamily="@string/condensedFont"
-            android:textColor="#000000" />
 
     </RelativeLayout>
 </ScrollView>

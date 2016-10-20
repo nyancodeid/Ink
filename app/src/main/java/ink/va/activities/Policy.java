@@ -1,69 +1,52 @@
 package ink.va.activities;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.ink.va.R;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import ink.va.utils.Retrofit;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class Policy extends AppCompatActivity {
 
     @Bind(R.id.policyLoading)
     ProgressBar policyLoading;
-    @Bind(R.id.policyMessage)
-    TextView policyMessage;
+    @Bind(R.id.webView)
+    WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_policy);
         ButterKnife.bind(this);
-        getPolicy();
-    }
-
-    private void getPolicy() {
-        Call<okhttp3.ResponseBody> policyCall = Retrofit.getInstance().getInkService().getPolicy();
-        policyCall.enqueue(new Callback<ResponseBody>() {
+        webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        webView.setHorizontalScrollBarEnabled(false);
+        webView.setWebViewClient(new WebViewClient() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getPolicy();
-                    return;
-                }
-                if (response.body() == null) {
-                    getPolicy();
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    policyLoading.setVisibility(View.GONE);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                policyLoading.setVisibility(View.VISIBLE);
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onPageFinished(WebView view, String url) {
                 policyLoading.setVisibility(View.GONE);
             }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                view.loadUrl("http://vaenterprises.webatu.com/policy.html");
+                return true;
+            }
         });
+        webView.loadUrl("http://vaenterprises.webatu.com/policy.html");
+
     }
 }
