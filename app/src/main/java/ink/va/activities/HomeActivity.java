@@ -431,10 +431,10 @@ public class HomeActivity extends BaseActivity
                 setLastClassToOpen(ImageEditor.class, false);
                 break;
 
-            case R.id.settings:
-                shouldOpenActivity = true;
-                setLastClassToOpen(Settings.class, false);
-                break;
+//            case R.id.settings:
+//                shouldOpenActivity = true;
+//                setLastClassToOpen(Settings.class, false);
+//                break;
 
             case R.id.customizeApp:
                 shouldOpenActivity = true;
