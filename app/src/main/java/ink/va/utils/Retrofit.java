@@ -472,6 +472,9 @@ public class Retrofit {
         Call<ResponseBody> getUserLogin(@Field("login") String login,
                                         @Field("token") String token);
 
+        @POST(Constants.POLICY_URL)
+        Call<ResponseBody> getPolicy();
+
 
         @POST(Constants.TEMPORARY_PASSWORD)
         @FormUrlEncoded
