@@ -197,6 +197,7 @@
     <string name="participantText">Participant(s)</string>
     <string name="noGroupsYet">No groups yet.Find any and join now!</string>
     <string name="joinGroup">Join Group</string>
+    <string name="joinText">Join Group</string>
     <string name="messagePosted">Message posted</string>
     <string name="noGroupMessages">No group posts</string>
     <string name="search_title">Search</string>

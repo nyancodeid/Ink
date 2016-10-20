@@ -674,6 +674,7 @@
     <string name="pickTrendAndNewsColor">Выберите тренд и цвет иконки новостей</string>
     <string name="trendColor">Тренд и новые цвета</string>
     <string name="thisWontWork">Это не сработает</string>
+    <string name="joinGroup">Вступить в группу</string>
     <string name="applicationModified">Приложение было изменено!Это не сработатает, потому что мы не разрешаем установку нашего приложения от неизвестных источников, по скольку они могут быть взломаны.
         \nПожалуйста удалите это приложение и установите оригинальную версию с google play.
         \nСледующие функции не будут работать.</string>
