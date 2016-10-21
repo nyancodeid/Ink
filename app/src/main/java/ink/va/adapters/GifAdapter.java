@@ -3,6 +3,7 @@ package ink.va.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaPlayer;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
@@ -59,9 +61,18 @@ public class GifAdapter extends RecyclerView.Adapter<GifAdapter.ViewHolder> {
             Bitmap thumb = ThumbnailUtils.createVideoThumbnail("http://www.joomlaworks.net/images/demos/galleries/abstract/7.jpg",
                     MediaStore.Images.Thumbnails.MINI_KIND);
 
+            holder.singleVideoViewLoading.setVisibility(View.VISIBLE);
+
             BitmapDrawable thumbAsDrawable = new BitmapDrawable(context.getResources(), thumb);
             holder.videoView.setBackground(thumbAsDrawable);
-
+            holder.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    mediaPlayer.seekTo(1000);
+                    holder.videoView.seekTo(1000);
+                    holder.singleVideoViewLoading.setVisibility(View.GONE);
+                }
+            });
 
             holder.videoWrapper.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -106,6 +117,7 @@ public class GifAdapter extends RecyclerView.Adapter<GifAdapter.ViewHolder> {
         private RelativeLayout stickerWrapper;
         private RelativeLayout videoWrapper;
         private Button choose;
+        private ProgressBar singleVideoViewLoading;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -113,6 +125,7 @@ public class GifAdapter extends RecyclerView.Adapter<GifAdapter.ViewHolder> {
             videoView = (VideoView) itemView.findViewById(R.id.video_view_sticker_choser);
             choose = (Button) itemView.findViewById(R.id.choose);
             stickerWrapper = (RelativeLayout) itemView.findViewById(R.id.sticker_not_animated_parent);
+            singleVideoViewLoading = (ProgressBar) itemView.findViewById(R.id.singleVideoViewLoading);
             videoWrapper = (RelativeLayout) itemView.findViewById(R.id.videoWrapper);
 
             gifLoadingSingleItem = (AVLoadingIndicatorView) itemView.findViewById(R.id.gifLoadingSingleItem);
