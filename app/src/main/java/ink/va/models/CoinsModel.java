@@ -16,4 +16,10 @@ public class CoinsModel {
     public String coinsNameRu;
     @SerializedName("coins_pack_id")
     public String coinsPackId;
+    @SerializedName("coins_type")
+    public String coinsType;
+    @SerializedName("coins_reduced")
+    public String coinsReduced;
+    @SerializedName("coins_icon")
+    public String coinsIcon;
 }

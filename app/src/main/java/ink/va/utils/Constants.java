@@ -150,5 +150,6 @@ public class Constants {
     public static final String PASSWORD_REQUEST_TOKEN = "fasjflkgkaga7g8asggf-a0gf98asu-gangas-g389t-nke_wrlPg_h34890udglka";
     public static final String USER_LOGIN_TOKEN = "asjflkasf_gasjgkla=-gsangklasjklsag-sagnas3r532r3w52r523q-gsa43-t3t54a-";
 
+    public static final String COIN_ICON_FOLDER = "CoinsIcon/";
 }
 

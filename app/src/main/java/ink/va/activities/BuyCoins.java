@@ -12,11 +12,14 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
-import android.widget.ScrollView;
 
 import com.android.vending.billing.IInAppBillingService;
+import com.google.gson.Gson;
 import com.ink.va.R;
 
 import org.json.JSONException;
@@ -26,7 +29,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
-import butterknife.OnClick;
+import ink.va.adapters.CoinsAdapter;
+import ink.va.models.CoinsModel;
 import ink.va.utils.Constants;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -36,11 +40,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BuyCoins extends BaseActivity {
+public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick {
 
     private boolean isCoinsBought;
     private IInAppBillingService mService;
-    public static final String TEST_PURCHASE_RESPONSE = "android.test.purchased";
     public static final String BIG_PACK = "big_pack";
     public static final String EXTRA_LARGE_PACK = "extra_large_pack";
     public static final String LARGE_PACK = "large_pack";
@@ -49,7 +52,10 @@ public class BuyCoins extends BaseActivity {
     private String chosenItem;
     private Dialog mProgressDialog;
     private SharedHelper sharedHelper;
-    private ScrollView rootScroll;
+    private RecyclerView coinsRecycler;
+    private SwipeRefreshLayout coinsRefresh;
+    private CoinsAdapter coinsAdapter;
+    private Gson gson;
 
 
     @Override
@@ -57,14 +63,56 @@ public class BuyCoins extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy_coins);
         sharedHelper = new SharedHelper(this);
+        gson = new Gson();
+        coinsRecycler = (RecyclerView) findViewById(R.id.coinsRecycler);
+        coinsRefresh = (SwipeRefreshLayout) findViewById(R.id.coinsRefresh);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        coinsRecycler.setLayoutManager(linearLayoutManager);
+        getCoins();
         initializeDialog();
-        rootScroll = (ScrollView) findViewById(R.id.rootScroll);
         ButterKnife.bind(this);
-
+        coinsRefresh.post(new Runnable() {
+            @Override
+            public void run() {
+                coinsRefresh.setRefreshing(true);
+            }
+        });
         Intent serviceIntent =
                 new Intent("com.android.vending.billing.InAppBillingService.BIND");
         serviceIntent.setPackage("com.android.vending");
         bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+
+    }
+
+    private void getCoins() {
+        Call<ResponseBody> coisnCall = Retrofit.getInstance().getInkService().getCoins();
+        coisnCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    return;
+                }
+                if (response.body() == null) {
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    CoinsModel[] coinsModels = gson.fromJson(responseBody, CoinsModel[].class);
+
+                    coinsAdapter = new CoinsAdapter(coinsModels, BuyCoins.this);
+                    coinsAdapter.setOnItemClickListener(BuyCoins.this);
+                    coinsRecycler.setAdapter(coinsAdapter);
+                    coinsAdapter.notifyDataSetChanged();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
     }
 
 
@@ -117,39 +165,6 @@ public class BuyCoins extends BaseActivity {
             }
         }
     };
-
-
-    @OnClick(R.id.buy_zero_ninteen)
-    public void zeroClicked() {
-        makePurchase(SMALL_PACK);
-        chosenItem = SMALL_PACK;
-    }
-
-    @OnClick(R.id.buy_one_ninteen)
-    public void threeHundredClicked() {
-        chosenItem = MEDIUM_PACK;
-        makePurchase(MEDIUM_PACK);
-    }
-
-    @OnClick(R.id.buy_two_ninteen)
-    public void twoClicked() {
-        chosenItem = BIG_PACK;
-        makePurchase(BIG_PACK);
-    }
-
-
-    @OnClick(R.id.buy_three_ninteen)
-    public void threeClicked() {
-        chosenItem = LARGE_PACK;
-        makePurchase(LARGE_PACK);
-    }
-
-
-    @OnClick(R.id.buy_four_ninteen)
-    public void fourClicked() {
-        chosenItem = EXTRA_LARGE_PACK;
-        makePurchase(EXTRA_LARGE_PACK);
-    }
 
 
     @Override
@@ -266,7 +281,7 @@ public class BuyCoins extends BaseActivity {
                     boolean success = jsonObject.optBoolean("success");
                     hideProgress();
                     if (success) {
-                        Snackbar.make(rootScroll, getString(R.string.coins_bought), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                        Snackbar.make(coinsRefresh, getString(R.string.coins_bought), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 
@@ -313,5 +328,11 @@ public class BuyCoins extends BaseActivity {
         mProgressDialog.setContentView(R.layout.dialog_progress);
         mProgressDialog.setCancelable(false);
         mProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+    }
+
+    @Override
+    public void onItemClick(CoinsModel coinsModel) {
+        chosenItem = coinsModel.coinsType;
+        makePurchase(coinsModel.coinsType);
     }
 }
