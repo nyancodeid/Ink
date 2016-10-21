@@ -370,12 +370,14 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
 
     <!--CONTINUE TRANSLATION-->
     <string-array name="issueTypes">
+        <item name="trendRequest">Trend Request</item>
         <item name="generalIssue">General</item>
         <item name="bugIssue">Bug</item>
         <item name="crashIssue">Crash</item>
         <item name="billingIssue">Billing</item>
         <item name="accountIssue">Account</item>
         <item name="applicationIssue">Application</item>
+
     </string-array>
 
     <string name="haveSentSticker">have sent you a sticker</string>

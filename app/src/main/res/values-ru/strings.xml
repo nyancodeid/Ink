@@ -371,6 +371,7 @@
 
     <!--CONTINUE TRANSLATION-->
     <string-array name="issueTypes">
+        <item name="trendRequest">Запрос  рекламы</item>
         <item name="generalIssue">Главное</item>
         <item name="bugIssue">Баг</item>
         <item name="crashIssue">Ошибка</item>
