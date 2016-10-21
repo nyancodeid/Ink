@@ -4,11 +4,6 @@
     android:layout_margin="16dp"
     android:background="@drawable/single_card_item_background">
 
-    <ProgressBar
-        android:id="@+id/coinsLoading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
 
     <Button
         android:id="@+id/coins_dollar_count"

@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ink.va.R;
@@ -34,7 +33,6 @@ public class CoinsAdapter extends RecyclerView.Adapter<CoinsAdapter.ViewHolder> 
         private TextView coinsGivenCount;
         private TextView coinsReducedCoint;
         private ImageView coinsIcon;
-        private ProgressBar coinsLoading;
 
         public ViewHolder(View view) {
             super(view);
@@ -42,7 +40,6 @@ public class CoinsAdapter extends RecyclerView.Adapter<CoinsAdapter.ViewHolder> 
             coinsGivenCount = (TextView) view.findViewById(R.id.coins_given_count);
             coinsReducedCoint = (TextView) view.findViewById(R.id.coins_reduced_count);
             coinsIcon = (ImageView) view.findViewById(R.id.coins_icon);
-            coinsLoading = (ProgressBar) view.findViewById(R.id.coinsLoading);
         }
     }
 
