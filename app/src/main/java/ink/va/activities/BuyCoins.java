@@ -20,13 +20,16 @@ import android.view.Window;
 
 import com.android.vending.billing.IInAppBillingService;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ink.va.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import ink.va.adapters.CoinsAdapter;
@@ -40,7 +43,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick {
+public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, SwipeRefreshLayout.OnRefreshListener {
 
     private boolean isCoinsBought;
     private IInAppBillingService mService;
@@ -97,13 +100,19 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick {
                 }
                 try {
                     String responseBody = response.body().string();
-                    CoinsModel[] coinsModels = gson.fromJson(responseBody, CoinsModel[].class);
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    Type sizesType = new TypeToken<List<CoinsModel>>() {
+                    }.getType();
+                    List<CoinsModel> coinsModels = gson.fromJson(jsonObject.optString("result"), sizesType);
 
                     coinsAdapter = new CoinsAdapter(coinsModels, BuyCoins.this);
                     coinsAdapter.setOnItemClickListener(BuyCoins.this);
                     coinsRecycler.setAdapter(coinsAdapter);
                     coinsAdapter.notifyDataSetChanged();
+                    coinsRefresh.setRefreshing(false);
                 } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
@@ -334,5 +343,16 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick {
     public void onItemClick(CoinsModel coinsModel) {
         chosenItem = coinsModel.coinsType;
         makePurchase(coinsModel.coinsType);
+    }
+
+    @Override
+    public void onRefresh() {
+        coinsRefresh.post(new Runnable() {
+            @Override
+            public void run() {
+                coinsRefresh.setRefreshing(true);
+            }
+        });
+        getCoins();
     }
 }

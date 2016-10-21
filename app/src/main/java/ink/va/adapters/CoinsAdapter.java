@@ -1,7 +1,6 @@
 package ink.va.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +11,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+
+import java.util.List;
 
 import ink.va.models.CoinsModel;
 import ink.va.utils.Constants;
@@ -24,7 +24,7 @@ import ink.va.utils.Constants;
 
 public class CoinsAdapter extends RecyclerView.Adapter<CoinsAdapter.ViewHolder> {
 
-    private CoinsModel[] coinsModels;
+    private List<CoinsModel> coinsModels;
     private Context mContext;
     private ItemClick itemClickListener;
 
@@ -47,7 +47,7 @@ public class CoinsAdapter extends RecyclerView.Adapter<CoinsAdapter.ViewHolder> 
     }
 
 
-    public CoinsAdapter(CoinsModel[] coinsModels, Context context) {
+    public CoinsAdapter(List<CoinsModel> coinsModels, Context context) {
         mContext = context;
         this.coinsModels = coinsModels;
     }
@@ -61,23 +61,16 @@ public class CoinsAdapter extends RecyclerView.Adapter<CoinsAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(final CoinsAdapter.ViewHolder holder, final int position) {
-        CoinsModel coinsModel = coinsModels[position];
+        CoinsModel coinsModel = coinsModels.get(position);
         holder.coisnDollarCoint.setText(coinsModel.coinsPrice);
         holder.coinsGivenCount.setText(coinsModel.coinsCount);
         holder.coinsReducedCoint.setText(coinsModel.coinsReduced);
-        holder.coinsLoading.setVisibility(View.VISIBLE);
-        Ion.with(mContext).load(Constants.MAIN_URL + Constants.COIN_ICON_FOLDER + coinsModel.coinsIcon).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-            @Override
-            public void onCompleted(Exception e, Bitmap result) {
-                holder.coinsIcon.setImageBitmap(result);
-                holder.coinsLoading.setVisibility(View.GONE);
-            }
-        });
+        Ion.with(mContext).load(Constants.MAIN_URL + Constants.COIN_ICON_FOLDER + coinsModel.coinsIcon).intoImageView(holder.coinsIcon);
         holder.coisnDollarCoint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (itemClickListener != null) {
-                    itemClickListener.onItemClick(coinsModels[position]);
+                    itemClickListener.onItemClick(coinsModels.get(position));
                 }
             }
         });
@@ -87,7 +80,7 @@ public class CoinsAdapter extends RecyclerView.Adapter<CoinsAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return coinsModels.length;
+        return coinsModels.size();
     }
 
     public interface ItemClick {
