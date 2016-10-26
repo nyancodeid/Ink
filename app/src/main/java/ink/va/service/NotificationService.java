@@ -42,6 +42,7 @@ import ink.va.activities.Chat;
 import ink.va.activities.HomeActivity;
 import ink.va.activities.ReplyView;
 import ink.va.activities.RequestsView;
+import ink.va.activities.SplashScreen;
 import ink.va.broadcast.DismissBroadcast;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
@@ -169,7 +170,7 @@ public class NotificationService extends FirebaseMessagingService {
                 String commentBody = response.get("commentBody");
 
                 sendGeneralNotification(getApplicationContext(), commentId, firstName + " " + lastName + " " + getString(R.string.commented_post),
-                        commentBody, null);
+                        commentBody, SplashScreen.class);
                 break;
 
 
@@ -177,14 +178,17 @@ public class NotificationService extends FirebaseMessagingService {
                 String name = response.get("name");
                 String id = response.get("id");
                 String groupName = response.get("groupName");
-                sendGeneralNotification(getApplicationContext(), id, getString(R.string.group_post_title) + " " + groupName, name + " " + getString(R.string.posted_text) + " " + groupName, null);
+                sendGeneralNotification(getApplicationContext(), id, getString(R.string.group_post_title) + " " + groupName, name + " " + getString(R.string.posted_text) + " " + groupName,
+                        SplashScreen.class);
                 break;
 
 
             case Constants.NOTIFICATION_TYPE_POST_LIKED:
-                 firstName = response.get("firstName");
-                 lastName = response.get("lastName");
+                firstName = response.get("firstName");
+                lastName = response.get("lastName");
                 String postId = response.get("id");
+                sendGeneralNotification(getApplicationContext(), postId, getString(R.string.commentAdded),
+                        firstName + " " + lastName + getString(R.string.likedPostText), SplashScreen.class);
                 sendLikeNotification(getApplicationContext(), firstName + " " + lastName, postId);
                 break;
 
@@ -634,7 +638,9 @@ public class NotificationService extends FirebaseMessagingService {
         if (resultClass != null) {
             Intent requestsViewIntent = new Intent(context, resultClass);
             requestsViewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            requestsViewIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(uniqueId), requestsViewIntent, 0);
             builder.setContentIntent(requestsViewPending);
         }

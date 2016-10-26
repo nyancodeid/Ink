@@ -95,6 +95,8 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
     private GroupsModel groupsModel;
     private GroupsAdapter groupsAdapter;
     private String lastChosenType = Constants.GROUP_TYPE_ALL;
+    private String lastTextQueried;
+    private BroadcastReceiver broadcastReceiver;
 
 
     @Override
@@ -165,6 +167,15 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
         mRecyclerView.setAdapter(groupsAdapter);
 
 
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (lastTextQueried != null && !lastTextQueried.isEmpty()) {
+                    doSearch(lastTextQueried);
+                }
+            }
+        };
+        registerReceiver(broadcastReceiver, new IntentFilter("com.ink.va.Groups"));
         getGroups(Constants.GROUP_TYPE_ALL);
     }
 
@@ -237,6 +248,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                lastTextQueried = newText;
                 doSearch(newText);
                 return true;
             }

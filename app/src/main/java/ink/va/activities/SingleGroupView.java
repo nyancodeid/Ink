@@ -290,6 +290,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                     if (success) {
                         progressDialog.dismiss();
                         LocalBroadcastManager.getInstance(SingleGroupView.this).sendBroadcast(new Intent(getPackageName() + "Groups"));
+                        sendBroadcast(new Intent("com.ink.va.Groups"));
                         finish();
                     } else {
                         progressDialog.dismiss();
@@ -609,6 +610,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                         if (success) {
                             progressDialog.dismiss();
                             LocalBroadcastManager.getInstance(SingleGroupView.this).sendBroadcast(new Intent(getPackageName() + "Groups"));
+                            sendBroadcast(new Intent("com.ink.va.Groups"));
                             finish();
                         }
                     }
@@ -740,6 +742,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         if (hasAnythingChanged) {
             LocalBroadcastManager.getInstance(this).sendBroadcast(new Intent(getPackageName() + "Groups"));
         }
+        sendBroadcast(new Intent("com.ink.va.Groups"));
         super.onBackPressed();
     }
 
