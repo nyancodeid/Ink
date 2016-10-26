@@ -83,7 +83,7 @@ public class NotificationService extends FirebaseMessagingService {
                         RealmHelper.getInstance().insertMessage(response.get("user_id"), response.get("opponent_id"),
                                 response.get("message"), response.get("message_id"), response.get("date"), response.get("message_id"),
                                 Constants.STATUS_DELIVERED, response.get("user_image"), response.get("opponent_image"),
-                                response.get("delete_opponent_id"), response.get("delete_user_id"), Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"),Boolean.valueOf(response.get("isAnimated")));
+                                response.get("delete_opponent_id"), response.get("delete_user_id"), Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"), Boolean.valueOf(response.get("isAnimated")));
                     }
                 });
 
@@ -160,6 +160,22 @@ public class NotificationService extends FirebaseMessagingService {
                 LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
                 localBroadcastManager.sendBroadcast(intent);
                 break;
+
+            case Constants.NOTIFICAITON_TYPE_COMMENT_ADDED:
+                // TODO: 10/26/2016
+                break;
+
+
+            case Constants.NOTIFICAITON_TYPE_POSTED_IN_GROUP:
+// TODO: 10/26/2016
+                break;
+
+
+            case Constants.NOTIFICAITON_TYPE_POST_LIKED:
+// TODO: 10/26/2016
+                break;
+
+
             case Constants.NOTIFICATION_TYPE_LOCATION_REQUEST_DECLINED:
                 requesterName = response.get("requesterName");
                 intent = new Intent(getPackageName() + ".Chat");

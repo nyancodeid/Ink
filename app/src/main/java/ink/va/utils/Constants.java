@@ -89,6 +89,9 @@ public class Constants {
     public static final String NOTIFICATION_TYPE_CHAT_ROULETTE = "chatRoulette";
     public static final String NOTIFICATION_TYPE_REQUESTING_LOCATION = "requestingLocation";
     public static final String NOTIFICATION_TYPE_LOCATION_SESSION_ENDED = "locationSessionEnded";
+    public static final String NOTIFICAITON_TYPE_COMMENT_ADDED = "comment";
+    public static final String NOTIFICAITON_TYPE_POST_LIKED = "postLiked";
+    public static final String NOTIFICAITON_TYPE_POSTED_IN_GROUP = "postedInGroup";
     public static final String NOTIFICATION_TYPE_LOCATION_REQUEST_DECLINED = "requestLocationDeclined";
     public static final String NOTIFICATION_TYPE_LOCATION_REQUEST_ACCEPTED = "requestLocationAccepted";
     public static final String NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED = "friendRequestAccepted";
@@ -146,6 +149,8 @@ public class Constants {
     public static final String DELETE_MESSAGE_REQUESTED = "deleteSingleMessageRequested";
     public static final int BUY_COINS_REQUEST_CODE = 196;
     public static final int REQUEST_CUSTOMIZE_MADE = 8;
+    public static final String WALL_TYPE_POST = "post";
+    public static final String WALL_TYPE_GROUP_MESSAGE = "groupMessage";
     public static final int REQUEST_CODE_CHOSE_STICKER = 1;
     public static final String COINS_BOUGHT_KEY = "coins_bought";
     public static final String PASSWORD_REQUEST_TOKEN = "fasjflkgkaga7g8asggf-a0gf98asu-gangas-g389t-nke_wrlPg_h34890udglka";
@@ -154,5 +159,6 @@ public class Constants {
     public static final String COIN_ICON_FOLDER = "CoinsIcon/";
     public static final String STICKER_URL_EXTRA_KEY = "stickerUrlExtra";
     public static final String STICKER_IS_ANIMATED_EXTRA_KEY = "stickerIsAnimated";
+
 }
 

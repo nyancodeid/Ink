@@ -13,13 +13,15 @@
         android:layout_gravity="center"
         android:layout_margin="10dp"
         android:clickable="true"
+        android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:cardCornerRadius="8dp"
         app:cardElevation="2dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:clickable="false">
 
             <ImageView
                 android:id="@+id/feedMoreIcon"
@@ -32,7 +34,8 @@
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
                 android:padding="5dp"
-                android:src="@drawable/more_icon" />
+                android:src="@drawable/more_icon"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/feedUserImage"
@@ -59,11 +62,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/userPostedTitle"
+                android:layout_margin="10dp"
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="10dp"
                 android:layout_toRightOf="@+id/feedUserImage"
                 android:autoLink="web"
+                android:clickable="false"
                 android:fontFamily="@string/appFont"
                 android:paddingLeft="10dp"
                 android:textColor="#000000" />
@@ -71,10 +76,10 @@
             <ImageView
                 android:id="@+id/imageHolder"
                 android:layout_width="match_parent"
-                android:minHeight="170dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/feedAttachmentLayout"
                 android:layout_centerHorizontal="true"
+                android:minHeight="170dp"
                 android:visibility="gone" />
 
             <TextView
@@ -87,7 +92,8 @@
                 android:layout_marginTop="5dp"
                 android:fontFamily="@string/appFont"
                 android:text="@string/postedAt"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone" />
 
             <View
                 android:id="@+id/actionDivider"
@@ -97,7 +103,8 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/linesColor">
+                android:background="@color/linesColor"
+                android:visibility="gone">
 
             </View>
 
@@ -113,7 +120,7 @@
                 android:fontFamily="@string/appFont"
                 android:text="@string/likesText"
                 android:textSize="12sp"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
             <RelativeLayout
                 android:id="@+id/likeWrapper"
@@ -127,7 +134,8 @@
                 android:layout_marginTop="5dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground">
+                android:foreground="?android:attr/selectableItemBackground"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/likeIcon"
@@ -143,6 +151,20 @@
             </RelativeLayout>
 
 
+            <TextView
+                android:id="@+id/commentCountTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/likesCountTV"
+                android:layout_below="@+id/actionDivider"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/likeWrapper"
+                android:fontFamily="@string/appFont"
+                android:text="@string/comments_count_text"
+                android:textSize="12sp"
+                android:visibility="invisible" />
+
+
             <RelativeLayout
                 android:id="@+id/commentWrapper"
                 android:layout_width="wrap_content"
@@ -154,7 +176,8 @@
                 android:layout_marginTop="5dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground">
+                android:foreground="?android:attr/selectableItemBackground"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/commentIcon"
@@ -226,9 +249,9 @@
                     android:id="@+id/feedAttachmentName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@+id/downloadIcon"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
+                    android:layout_toLeftOf="@+id/downloadIcon"
                     android:layout_toRightOf="@+id/attachVector"
                     android:fontFamily="@string/appFont"
                     android:gravity="start"

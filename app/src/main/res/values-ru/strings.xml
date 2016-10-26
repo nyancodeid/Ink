@@ -688,4 +688,7 @@
     <string name="not_enough_coins">Недостаточно монет...</string>
     <string name="choose">Выбрать</string>
     <string name="coins_bought">Монеты были добавлены на Ваш аккаунт</string>
+
+    <string name="comments_count_text">Комментариев</string>
+    <string name="comment_count_text">комментарий</string>
 </resources>

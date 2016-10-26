@@ -39,6 +39,7 @@ import ink.va.activities.FullscreenActivity;
 import ink.va.activities.HomeActivity;
 import ink.va.activities.MakePost;
 import ink.va.activities.OpponentProfile;
+import ink.va.activities.SingleGroupView;
 import ink.va.adapters.FeedAdapter;
 import ink.va.interfaces.ColorChangeListener;
 import ink.va.interfaces.FeedItemClick;
@@ -187,10 +188,22 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         String lastName = eachObject.optString("last_name");
                         boolean isLiked = eachObject.optBoolean("is_liked");
                         String likesCount = eachObject.optString("likes_count");
+                        String type = eachObject.optString("type");
+                        String groupName = eachObject.optString("group_name");
                         boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
                         boolean isFriend = eachObject.optBoolean("isFriend");
+                        String groupColor = eachObject.optString("groupColor");
+                        String groupImage = eachObject.optString("groupImage");
+                        String groupDescription = eachObject.optString("groupDescription");
+                        String groupOwnerId = eachObject.optString("groupOwnerId");
+                        String ownerImage = eachObject.optString("ownerImage");
+                        String groupOwnerName = eachObject.optString("groupOwnerName");
+                        String commentsCount = eachObject.optString("commentsCount");
+                        String count = eachObject.optString("count");
+                        boolean isMember = eachObject.optBoolean("isMember");
                         mFeedModel = new FeedModel(isFriend, isSocialAccount, id, imageLink, fileName, postBody,
-                                posterId, address, datePosted, firstName, lastName, isLiked, likesCount);
+                                posterId, address, datePosted, firstName, lastName, isLiked, likesCount, type, groupName, count, ownerImage, groupOwnerId,
+                                groupDescription, groupImage, groupColor,groupOwnerName,commentsCount);
                         mFeedModelArrayList.add(mFeedModel);
                         mAdapter.notifyDataSetChanged();
                     }
@@ -248,8 +261,34 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     }
 
     @Override
-    public void onCardViewClick(int position) {
-        startCommentActivity(position);
+    public void onCardViewClick(int position, String type) {
+        switch (type) {
+            case Constants.WALL_TYPE_GROUP_MESSAGE:
+                startGroupActivity(position);
+                break;
+            case Constants.WALL_TYPE_POST:
+                startCommentActivity(position);
+                break;
+        }
+
+    }
+
+    private void startGroupActivity(int position) {
+
+        Intent intent = new Intent(getActivity(), SingleGroupView.class);
+        intent.putExtra("groupName", mFeedModelArrayList.get(position).getGroupName());
+        intent.putExtra("groupId", mFeedModelArrayList.get(position).getId());
+        intent.putExtra("groupColor", mFeedModelArrayList.get(position).getGroupColor());
+        intent.putExtra("groupImage", mFeedModelArrayList.get(position).getGroupImage());
+        intent.putExtra("groupDescription", mFeedModelArrayList.get(position).getGroupDescription());
+        intent.putExtra("groupOwnerId", mFeedModelArrayList.get(position).getGroupOwnerId());
+        intent.putExtra("groupOwnerName", mFeedModelArrayList.get(position).getGroupOwnerName());
+        intent.putExtra("count", mFeedModelArrayList.get(position).getCount());
+        intent.putExtra("ownerImage", mFeedModelArrayList.get(position).getOwnerImage());
+        intent.putExtra("isSocialAccount", mFeedModelArrayList.get(position).isSocialAccount());
+        intent.putExtra("isMember", true);
+        intent.putExtra("isFriend", mFeedModelArrayList.get(position).isFriend());
+        startActivity(intent);
     }
 
 
@@ -507,7 +546,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                             likeCountTV.setText(likesCount + " " + getString(R.string.singleLikeText));
                         }
                     } else {
-                        likeCountTV.setVisibility(View.GONE);
+                        likeCountTV.setVisibility(View.INVISIBLE);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

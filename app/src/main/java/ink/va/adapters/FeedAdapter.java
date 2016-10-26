@@ -25,6 +25,7 @@ import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
 
 
+
 /**
  * Created by USER on 2016-06-20.
  */
@@ -43,10 +44,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         private RelativeLayout feedAddressLayout, feedAttachmentLayout, likeWrapper, commentWrapper;
         private ImageView feedMoreIcon;
         private ImageView imageHolder;
+        public View actionDivider;
+        private TextView commentCountTV;
 
         public ViewHolder(View view) {
             super(view);
             userPostedTitle = (TextView) view.findViewById(R.id.userPostedTitle);
+            commentCountTV = (TextView) view.findViewById(R.id.commentCountTV);
+            actionDivider = view.findViewById(R.id.actionDivider);
             whenPosted = (TextView) view.findViewById(R.id.whenPosted);
             feedAddress = (TextView) view.findViewById(R.id.feedAddress);
             likesCountTV = (TextView) view.findViewById(R.id.likesCountTV);
@@ -86,6 +91,86 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         FeedModel feedModel = feedList.get(position);
+
+        switch (feedModel.getType()) {
+            case Constants.WALL_TYPE_POST:
+                handlePosts(holder, position, feedModel);
+                break;
+            case Constants.WALL_TYPE_GROUP_MESSAGE:
+                handleGroupMessages(holder, position, feedModel);
+                break;
+
+        }
+
+
+    }
+
+    private void handleGroupMessages(ViewHolder holder, final int position, final FeedModel feedModel) {
+        holder.commentWrapper.setVisibility(View.GONE);
+        holder.likeWrapper.setVisibility(View.GONE);
+        holder.feedMoreIcon.setVisibility(View.GONE);
+        holder.actionDivider.setVisibility(View.GONE);
+        holder.whenPosted.setVisibility(View.GONE);
+        holder.feedAddressLayout.setVisibility(View.GONE);
+        holder.imageHolder.setVisibility(View.GONE);
+        holder.feedAttachmentLayout.setVisibility(View.GONE);
+        holder.commentCountTV.setVisibility(View.INVISIBLE);
+        holder.likesCountTV.setVisibility(View.INVISIBLE);
+
+        holder.userPostedTitle.setText(feedModel.getFirstName() + " " + feedModel.getLastName() + " > " + feedModel.getGroupName());
+
+        holder.feedContent.setMovementMethod(LinkMovementMethod.getInstance());
+        holder.feedContent.setText(feedModel.getContent());
+
+        holder.feedItemCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mOnClickListener != null) {
+                    mOnClickListener.onCardViewClick(position, feedModel.getType());
+                }
+            }
+        });
+        if (feedModel.getUserImage() != null && !feedModel.getUserImage().isEmpty()) {
+            if (feedModel.isSocialAccount()) {
+                Ion.with(mContext).load(feedModel.getUserImage())
+                        .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
+                        .intoImageView(holder.feedUserImage);
+            } else {
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + feedModel.getUserImage())
+                        .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
+                        .intoImageView(holder.feedUserImage);
+            }
+
+        } else {
+            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
+                    .withBitmap().transform(new CircleTransform())
+                    .intoImageView(holder.feedUserImage);
+        }
+
+    }
+
+    private void handlePosts(final ViewHolder holder, final int position, FeedModel feedModel) {
+        holder.commentWrapper.setVisibility(View.VISIBLE);
+        holder.likeWrapper.setVisibility(View.VISIBLE);
+        holder.actionDivider.setVisibility(View.VISIBLE);
+        holder.feedMoreIcon.setVisibility(View.VISIBLE);
+        holder.whenPosted.setVisibility(View.VISIBLE);
+        holder.imageHolder.setVisibility(View.VISIBLE);
+        holder.feedAddressLayout.setVisibility(View.VISIBLE);
+        holder.feedAttachmentLayout.setVisibility(View.VISIBLE);
+        holder.commentCountTV.setVisibility(View.VISIBLE);
+
+        try {
+            if (Integer.valueOf(feedModel.getCommentsCount()) <= 1) {
+
+                holder.commentCountTV.setText(feedModel.getCommentsCount() + " " + mContext.getString(R.string.comment_count_text));
+            } else {
+                holder.commentCountTV.setText(feedModel.getCommentsCount() + " " + mContext.getString(R.string.comment_count_text));
+            }
+        } catch (Exception e) {
+            holder.commentCountTV.setText(feedModel.getCommentsCount() + " " + mContext.getString(R.string.comment_count_text));
+        }
+
 
         if (feedModel.getUserImage() != null && !feedModel.getUserImage().isEmpty()) {
             if (feedModel.isSocialAccount()) {
@@ -162,14 +247,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                 holder.likesCountTV.setText(feedModel.getLikesCount() + " " + mContext.getString(R.string.singleLikeText));
             }
         } else {
-            holder.likesCountTV.setVisibility(View.GONE);
+            holder.likesCountTV.setVisibility(View.INVISIBLE);
         }
         //listeners
         holder.feedItemCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mOnClickListener != null) {
-                    mOnClickListener.onCardViewClick(position);
+                    mOnClickListener.onCardViewClick(position, feedList.get(position).getType());
                 }
             }
         });
@@ -223,6 +308,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             }
         });
     }
+
 
     public void setOnFeedClickListener(FeedItemClick mOnClickListener) {
         this.mOnClickListener = mOnClickListener;

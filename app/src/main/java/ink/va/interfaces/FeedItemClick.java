@@ -8,7 +8,7 @@ import android.widget.TextView;
  * Created by USER on 2016-07-04.
  */
 public interface FeedItemClick {
-    void onCardViewClick(int position);
+    void onCardViewClick(int position, String type);
 
     void onAddressClick(int position);
 

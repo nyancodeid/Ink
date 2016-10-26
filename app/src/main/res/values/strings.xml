@@ -492,7 +492,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="updatedLocation">updated the location</string>
     <string name="sentSticker">Send sticker</string>
     <string name="you">You:</string>
-    <string name="noMessages">You don't have any messages</string>
+    <string name="noMessages">You don\'t have any messages</string>
     <string name="messageMissing">Message missing</string>
     <string name="messageMissingText">One of the messages are missing and was not delivered to you from the server,please update now to get the last messsages</string>
     <string name="updateMessages">Update now</string>
@@ -690,4 +690,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="gift_already_bought">Gift has already been bought</string>
     <string name="choose">Choose</string>
     <string name="coins_bought">Coins were added to account</string>
+    <string name="comments_count_text">comments</string>
+    <string name="comment_count_text">comment</string>
 </resources>
