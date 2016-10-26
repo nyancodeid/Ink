@@ -136,6 +136,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         holder.feedContent.setMovementMethod(LinkMovementMethod.getInstance());
         holder.feedContent.setText(feedModel.getContent());
 
+        holder.feedContent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mOnClickListener != null) {
+                    mOnClickListener.onCardViewClick(position, feedModel.getType());
+                }
+            }
+        });
         holder.feedItemCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -245,6 +253,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             holder.feedAttachmentLayout.setVisibility(View.GONE);
         }
 
+        holder.feedContent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mOnClickListener != null) {
+                    mOnClickListener.onCardViewClick(position, feedList.get(position).getType());
+                }
+            }
+        });
         if (feedModel.getAddress() != null && !feedModel.getAddress().isEmpty()) {
             feedModel.setHasAddress(true);
             holder.feedAddressLayout.setVisibility(View.VISIBLE);

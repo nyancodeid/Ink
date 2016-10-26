@@ -63,13 +63,15 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         FriendsModel friendsModel = friendsModelList.get(position);
         holder.name.setText(friendsModel.getFullName());
+
         if (!friendsModel.getImageLink().isEmpty()) {
-            String url;
+            final String url;
             if (friendsModel.isSocialAccount()) {
                 url = friendsModel.getImageLink();
             } else {
                 url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + friendsModel.getImageLink();
             }
+
             Ion.with(mContext).load(url)
                     .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.friendImage);
         } else {
