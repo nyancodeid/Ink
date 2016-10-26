@@ -164,31 +164,40 @@ public class NotificationService extends FirebaseMessagingService {
                 break;
 
             case Constants.NOTIFICATION_TYPE_COMMENT_ADDED:
-                String firstName = response.get("firstName");
-                String lastName = response.get("lastName");
-                String commentId = response.get("id");
-                String commentBody = response.get("commentBody");
+                if (mSharedHelper.showCommentNotification()) {
+                    String firstName = response.get("firstName");
+                    String lastName = response.get("lastName");
+                    String commentId = response.get("id");
+                    String commentBody = response.get("commentBody");
 
-                sendGeneralNotification(getApplicationContext(), commentId, firstName + " " + lastName + " " + getString(R.string.commented_post),
-                        commentBody, SplashScreen.class);
+                    sendGeneralNotification(getApplicationContext(), commentId, firstName + " " + lastName + " " + getString(R.string.commented_post),
+                            commentBody, SplashScreen.class);
+                }
+
                 break;
 
 
             case Constants.NOTIFICATION_TYPE_POSTED_IN_GROUP:
-                String name = response.get("name");
-                String id = response.get("id");
-                String groupName = response.get("groupName");
-                sendGeneralNotification(getApplicationContext(), id, getString(R.string.group_post_title) + " " + groupName, name + " " + getString(R.string.posted_text) + " " + groupName,
-                        SplashScreen.class);
+                if (mSharedHelper.showGroupNotification()) {
+                    String name = response.get("name");
+                    String id = response.get("id");
+                    String groupName = response.get("groupName");
+                    sendGeneralNotification(getApplicationContext(), id, getString(R.string.group_post_title) + " " + groupName, name + " " + getString(R.string.posted_text) + " " + groupName,
+                            SplashScreen.class);
+                }
+
                 break;
 
             case Constants.NOTIFICATION_TYPE_POST_LIKED:
-                firstName = response.get("firstName");
-                lastName = response.get("lastName");
-                String postId = response.get("id");
-                sendGeneralNotification(getApplicationContext(), postId, getString(R.string.commentAdded),
-                        firstName + " " + lastName + getString(R.string.likedPostText), SplashScreen.class);
-                sendLikeNotification(getApplicationContext(), firstName + " " + lastName, postId);
+                if (mSharedHelper.showLikeNotification()) {
+                    String firstName = response.get("firstName");
+                    String lastName = response.get("lastName");
+                    String postId = response.get("id");
+                    sendGeneralNotification(getApplicationContext(), postId, getString(R.string.commentAdded),
+                            firstName + " " + lastName + getString(R.string.likedPostText), SplashScreen.class);
+                    sendLikeNotification(getApplicationContext(), firstName + " " + lastName, postId);
+                }
+
                 break;
 
 

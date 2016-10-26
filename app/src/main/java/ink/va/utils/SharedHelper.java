@@ -69,30 +69,30 @@ public class SharedHelper {
     }
 
     public void putShowCommentNotification(boolean value) {
-        mEditor.putBoolean("putShowCommentNotification", value);
+        mEditor.putBoolean("commentNotification", value);
         mEditor.commit();
     }
 
     public boolean showCommentNotification() {
-        return mSharedPreferences.getBoolean("putShowCommentNotification", true);
+        return mSharedPreferences.getBoolean("commentNotification", true);
     }
 
     public void putShowGroupNotification(boolean value) {
-        mEditor.putBoolean("putShowGroupNotification", value);
+        mEditor.putBoolean("showGroupNotification", value);
         mEditor.commit();
     }
 
     public boolean showGroupNotification() {
-        return mSharedPreferences.getBoolean("putShowGroupNotification", true);
+        return mSharedPreferences.getBoolean("showGroupNotification", true);
     }
 
     public void putShowLikeNotification(boolean value) {
-        mEditor.putBoolean("putShowLikeNotification", value);
+        mEditor.putBoolean("showLikeNotification", value);
         mEditor.commit();
     }
 
     public boolean showLikeNotification() {
-        return mSharedPreferences.getBoolean("putShowLikeNotification", true);
+        return mSharedPreferences.getBoolean("showLikeNotification", true);
     }
 
     public boolean isRainbowMessageActivated() {

@@ -41,7 +41,6 @@
                     android:title="@string/music" />
                 <item
                     android:id="@+id/settings"
-                    android:visible="false"
                     android:icon="@drawable/ic_menu_manage"
                     android:title="@string/settingsString" />
                 <item

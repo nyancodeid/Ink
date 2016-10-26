@@ -696,4 +696,9 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="posted_text">posted in</string>
     <string name="group_post_title">Group Post</string>
     <string name="commented_post">commented on your post</string>
+    <string name="title_settings">Settings</string>
+    <string name="enableGroupNotificationText">Enable Group Notification</string>
+    <string name="enableLikeNotificationText">Enable Likes Notification</string>
+    <string name="enableCommentNotificationText">Enable Comments Notification</string>
+    <string name="share_ink_with">Share INK with</string>
 </resources>

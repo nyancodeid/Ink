@@ -421,6 +421,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.searchPerson:
+                parentActivity.getHomeFab().close(true);
                 parentActivity.getHomeFab().hideMenu(true);
                 parentActivity.getHomeFab().hideMenuButton(true);
                 parentActivity.getHomeFab().close(true);

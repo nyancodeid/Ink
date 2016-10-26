@@ -1,12 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="ink.va.activities.Settings">
 
-</RelativeLayout>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="ink.va.activities.Settings">
+
+        <RelativeLayout
+            android:id="@+id/groupNotificationSwitchWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:minHeight="50dp">
+
+            <TextView
+                android:id="@+id/enableGroupNotificationTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/groupNotificationSwitch"
+                android:fontFamily="@string/condensedFont"
+                android:text="@string/enableGroupNotificationText" />
+
+            <Switch
+                android:id="@+id/groupNotificationSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:clickable="false"
+                android:focusable="false" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/commentNotificationSwitchWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:minHeight="50dp">
+
+            <TextView
+                android:id="@+id/enableCommentNotificationTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/commentNotificationSwitch"
+                android:fontFamily="@string/condensedFont"
+                android:text="@string/enableCommentNotificationText" />
+
+            <Switch
+                android:id="@+id/commentNotificationSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:clickable="false"
+                android:focusable="false" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/likeNotificationSwitchWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:minHeight="50dp">
+
+            <TextView
+                android:id="@+id/enableLikeNotificationTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/likeNotificationSwitch"
+                android:fontFamily="@string/condensedFont"
+                android:text="@string/enableLikeNotificationText" />
+
+            <Switch
+                android:id="@+id/likeNotificationSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:clickable="false"
+                android:focusable="false" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

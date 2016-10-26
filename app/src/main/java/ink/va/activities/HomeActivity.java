@@ -431,10 +431,10 @@ public class HomeActivity extends BaseActivity
                 setLastClassToOpen(ImageEditor.class, false);
                 break;
 
-//            case R.id.settings:
-//                shouldOpenActivity = true;
-//                setLastClassToOpen(Settings.class, false);
-//                break;
+            case R.id.settings:
+                shouldOpenActivity = true;
+                setLastClassToOpen(Settings.class, false);
+                break;
 
             case R.id.customizeApp:
                 shouldOpenActivity = true;
@@ -443,6 +443,11 @@ public class HomeActivity extends BaseActivity
                 break;
             case R.id.nav_share:
                 shouldOpenActivity = false;
+
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.ink.va");
+                startActivity(Intent.createChooser(shareIntent,getString(R.string.share_ink_with)));
                 break;
 
             case R.id.sendFeedback:
