@@ -182,7 +182,6 @@ public class NotificationService extends FirebaseMessagingService {
                         SplashScreen.class);
                 break;
 
-
             case Constants.NOTIFICATION_TYPE_POST_LIKED:
                 firstName = response.get("firstName");
                 lastName = response.get("lastName");
