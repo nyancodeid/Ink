@@ -13,12 +13,12 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -26,7 +26,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -39,10 +38,8 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,20 +75,14 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.adapters.ChatAdapter;
-import ink.va.adapters.GifAdapter;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.interfaces.ItemClickListener;
-import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.ChatModel;
-import ink.va.models.GifResponse;
-import ink.va.models.GifResponseModel;
 import ink.va.models.MessageModel;
-import ink.va.models.StickerModel;
 import ink.va.models.UserStatus;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.DimDialog;
-import ink.va.utils.ErrorCause;
 import ink.va.utils.FileUtils;
 import ink.va.utils.Keyboard;
 import ink.va.utils.Notification;
@@ -109,7 +100,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Chat extends BaseActivity implements RecyclerItemClickListener, ProgressRequestBody.UploadCallbacks {
+import static ink.va.utils.Constants.REQUEST_CODE_CHOSE_STICKER;
+
+public class Chat extends BaseActivity implements ProgressRequestBody.UploadCallbacks {
 
     private static final int PICK_FILE_REQUEST_CODE = 400;
     @Bind(R.id.sendChatMessage)
@@ -157,14 +150,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
     private String mOpponentImage = "";
     private String mDeleteUserId;
     private String mDeleteOpponentId;
-    private Gson gifGson;
+    private Gson userStatusGson;
     private Animation fadeAnimation;
     private String firstName;
     private String lastName;
-    private GifAdapter gifAdapter;
-    private BottomSheetDialog gifChooserDialog;
-    private List<StickerModel> stickerModelList;
-    private StickerModel stickerModel;
     private boolean isGifChosen = false;
     private String lasChosenGifName;
     private Gson gson;
@@ -197,11 +186,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         fadeAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_scale);
 
         ButterKnife.bind(this);
-        gson = new Gson();
-        stickerModelList = new ArrayList<>();
-        gifAdapter = new GifAdapter(stickerModelList, this);
-        gifAdapter.setOnItemClickListener(this);
-        gifGson = new Gson();
+        userStatusGson = new Gson();
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setProgressDrawable(ContextCompat.getDrawable(this, R.drawable.progress_dialog_circle));
@@ -595,7 +580,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
                     }
                     try {
                         String responseBody = response.body().string();
-                        final UserStatus userStatus = gifGson.fromJson(responseBody, UserStatus.class);
+                        final UserStatus userStatus = userStatusGson.fromJson(responseBody, UserStatus.class);
                         if (userStatus.success) {
                             SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             Date date = sourceFormat.parse(Time.convertToLocalTime(userStatus.lastSeenTime));
@@ -672,7 +657,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
             public void onItemClick(MenuItem clickedItem) {
                 switch (clickedItem.getItemId()) {
                     case 0:
-                        openGifChooser();
+                        openStickerChooser();
                         break;
                     case 1:
                         openIntentPicker();
@@ -696,107 +681,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         }
     }
 
-    private void openGifChooser() {
-        System.gc();
-        stickerModelList.clear();
-        gifChooserDialog = new BottomSheetDialog(this);
-
-        View view = getLayoutInflater().inflate(R.layout.user_gifs_view, null);
-        gifChooserDialog.setContentView(view);
-        final RecyclerView gifsRecycler = (RecyclerView) view.findViewById(R.id.gifsRecycler);
-        ImageView closeGifChoser = (ImageView) view.findViewById(R.id.closeGifChoser);
-        ProgressBar gifLoadingProgress = (ProgressBar) view.findViewById(R.id.gifLoadingProgress);
-        TextView noGifsText = (TextView) view.findViewById(R.id.noGifsText);
-        Button goToStore = (Button) view.findViewById(R.id.goToStore);
-        goToStore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), Shop.class));
-            }
-        });
-        closeGifChoser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                gifChooserDialog.dismiss();
-                gifsRecycler.setAdapter(null);
-            }
-        });
-
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-        gifsRecycler.setLayoutManager(gridLayoutManager);
-
-        gifsRecycler.setAdapter(gifAdapter);
-        getUserGifs(noGifsText, goToStore, gifLoadingProgress);
-        gifChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                System.gc();
-                gifsRecycler.setAdapter(null);
-            }
-        });
-        gifChooserDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialogInterface) {
-                System.gc();
-                gifsRecycler.setAdapter(null);
-            }
-        });
-        gifChooserDialog.show();
-    }
-
-    private void getUserGifs(final TextView noGifsText, final Button goToStore, final ProgressBar gifLoadingProgress) {
-        Call<ResponseBody> gifCall = Retrofit.getInstance().getInkService().getUserGifs(mSharedHelper.getUserId(),
-                Constants.SERVER_AUTH_KEY);
-        gifCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getUserGifs(noGifsText, goToStore, gifLoadingProgress);
-                    return;
-                }
-                if (response.body() == null) {
-                    getUserGifs(noGifsText, goToStore, gifLoadingProgress);
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    GifResponse gifResponse = gson.fromJson(responseBody, GifResponse.class);
-                    gifLoadingProgress.setVisibility(View.INVISIBLE);
-                    if (gifResponse.success) {
-                        if (!gifResponse.cause.equals(ErrorCause.NO_GIFS)) {
-                            ArrayList<GifResponseModel> gifResponseModels = gifResponse.gifResponseModels;
-                            for (int i = 0; i < gifResponseModels.size(); i++) {
-                                GifResponseModel eachModel = gifResponseModels.get(i);
-                                stickerModel = new StickerModel(eachModel.id, eachModel.userId, eachModel.gifName, eachModel.isAnimated, eachModel.hasSound);
-                                stickerModelList.add(stickerModel);
-                                gifAdapter.notifyDataSetChanged();
-                            }
-                            if (stickerModelList.size() <= 0) {
-                                noGifsText.setVisibility(View.VISIBLE);
-                                goToStore.setVisibility(View.VISIBLE);
-                            } else {
-                                noGifsText.setVisibility(View.GONE);
-                                goToStore.setVisibility(View.GONE);
-                            }
-
-                        } else {
-                            noGifsText.setVisibility(View.VISIBLE);
-                            goToStore.setVisibility(View.VISIBLE);
-                        }
-                    } else {
-                        noGifsText.setVisibility(View.VISIBLE);
-                        goToStore.setVisibility(View.VISIBLE);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getUserGifs(noGifsText, goToStore, gifLoadingProgress);
-            }
-        });
+    private void openStickerChooser() {
+        startActivityForResult(new Intent(getApplicationContext(), StickerChooserActivity.class), Constants.REQUEST_CODE_CHOSE_STICKER);
     }
 
 
@@ -1193,16 +1079,33 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         super.onPause();
     }
 
+
+    private void scrollToBottom() {
+        mRecyclerView.smoothScrollToPosition(mChatAdapter.getItemCount());
+    }
+
     @Override
-    public void onItemClicked(int position, View view) {
-        System.gc();
-        StickerModel singleModel = stickerModelList.get(position);
-        String stickerUrl = stickerModelList.get(position).getStickerUrl();
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode) {
+            case REQUEST_CODE_CHOSE_STICKER:
+                if (data != null) {
+                    handleStickerChoose(data.getExtras().getBoolean(Constants.STICKER_IS_ANIMATED_EXTRA_KEY),
+                            data.getExtras().getString(Constants.STICKER_URL_EXTRA_KEY));
+                }
+
+                break;
+            default:
+                handlePickedResult(data);
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void handleStickerChoose(boolean isIntentStickerAnimated, String stickerUrl) {
         sendMessageGifViewWrapper.setVisibility(View.VISIBLE);
-        gifChooserDialog.dismiss();
         singleGifViewLoading.setVisibility(View.VISIBLE);
         mSendChatMessage.setEnabled(true);
-        if (singleModel.isAnimated()) {
+        if (isIntentStickerAnimated) {
             singleVideoView.setVisibility(View.VISIBLE);
             singleVideoView.setZOrderOnTop(true);
             singleGifViewLoading.setVisibility(View.GONE);
@@ -1210,13 +1113,20 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
             singleVideoView.setVisibility(View.VISIBLE);
 
             singleVideoView.setVisibility(View.VISIBLE);
-            Uri video = Uri.parse(Constants.MAIN_URL + singleModel.getStickerUrl());
+            Uri video = Uri.parse(Constants.MAIN_URL + stickerUrl);
             singleVideoView.setVideoURI(video);
             Bitmap thumb = ThumbnailUtils.createVideoThumbnail("http://www.joomlaworks.net/images/demos/galleries/abstract/7.jpg",
                     MediaStore.Images.Thumbnails.MINI_KIND);
 
             BitmapDrawable thumbAsDrawable = new BitmapDrawable(getResources(), thumb);
             singleVideoView.setBackground(thumbAsDrawable);
+            singleVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    mediaPlayer.seekTo(1000);
+                    singleVideoView.seekTo(1000);
+                }
+            });
 
             singleVideoView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -1241,39 +1151,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Pro
         }
         lasChosenGifName = stickerUrl;
         isGifChosen = true;
-        isAnimated = singleModel.isAnimated();
-    }
-
-
-    /**
-     * UNUSABLE
-     *
-     * @param position
-     */
-    @Override
-    public void onItemLongClick(int position) {
-
-    }
-
-    /**
-     * UNUSABLE
-     *
-     * @param position
-     * @param view
-     */
-    @Override
-    public void onAdditionItemClick(int position, View view) {
-
-    }
-
-    private void scrollToBottom() {
-        mRecyclerView.smoothScrollToPosition(mChatAdapter.getItemCount());
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        handlePickedResult(data);
-        super.onActivityResult(requestCode, resultCode, data);
+        isAnimated = isIntentStickerAnimated;
     }
 
 

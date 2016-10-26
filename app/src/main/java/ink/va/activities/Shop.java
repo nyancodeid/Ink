@@ -40,13 +40,11 @@ public class Shop extends BaseActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         tabLayout.getTabAt(0).setIcon(R.drawable.pack_icon);
-//        tabLayout.getTabAt(1).setIcon(R.drawable.trade_icon);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(Packs.create(), getString(R.string.packs_title));
-//        adapter.addFragment(Trade.create(), getString(R.string.trade_title));
         viewPager.setAdapter(adapter);
     }
 
@@ -94,7 +92,6 @@ public class Shop extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.shop_menu, menu);
         this.menu = menu;
         if (menu != null) {

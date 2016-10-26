@@ -223,8 +223,9 @@
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity
             android:name="ink.va.activities.NewsAndTrendsActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"></activity>
-        <activity android:name="ink.va.activities.Policy"></activity>
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity android:name="ink.va.activities.Policy" />
+        <activity android:name="ink.va.activities.StickerChooserActivity"></activity>
     </application>
 
 </manifest>

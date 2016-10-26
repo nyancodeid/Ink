@@ -490,7 +490,7 @@
     <string name="locationSent">Местоположение было отправлено</string>
     <string name="locationSendError">Местоположение не было отправлено,пожалуйста попробуйте снова</string>
     <string name="updatedLocation">обновить местоположение</string>
-    <string name="sentSticker">отправить стикер</string>
+    <string name="sentSticker">Oтправить стикер</string>
     <string name="you">Вы:</string>
     <string name="noMessages">У вас нет сообщений</string>
     <string name="messageMissing">Ищем сообщение</string>
