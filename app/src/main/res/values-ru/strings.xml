@@ -691,4 +691,8 @@
 
     <string name="comments_count_text">Комментариев</string>
     <string name="comment_count_text">комментарий</string>
+    <string name="likedPostText">у понравился ваш пост</string>
+    <string name="posted_text">опубликовал в</string>
+    <string name="group_post_title">Пост в Групе</string>
+    <string name="commented_post">прокоментировал ваш пост</string>
 </resources>

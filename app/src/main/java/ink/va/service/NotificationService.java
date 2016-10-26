@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -161,18 +162,30 @@ public class NotificationService extends FirebaseMessagingService {
                 localBroadcastManager.sendBroadcast(intent);
                 break;
 
-            case Constants.NOTIFICAITON_TYPE_COMMENT_ADDED:
-                // TODO: 10/26/2016
+            case Constants.NOTIFICATION_TYPE_COMMENT_ADDED:
+                String firstName = response.get("firstName");
+                String lastName = response.get("lastName");
+                String commentId = response.get("id");
+                String commentBody = response.get("commentBody");
+
+                sendGeneralNotification(getApplicationContext(), commentId, firstName + " " + lastName + " " + getString(R.string.commented_post),
+                        commentBody, null);
                 break;
 
 
-            case Constants.NOTIFICAITON_TYPE_POSTED_IN_GROUP:
-// TODO: 10/26/2016
+            case Constants.NOTIFICATION_TYPE_POSTED_IN_GROUP:
+                String name = response.get("name");
+                String id = response.get("id");
+                String groupName = response.get("groupName");
+                sendGeneralNotification(getApplicationContext(), id, getString(R.string.group_post_title) + " " + groupName, name + " " + getString(R.string.posted_text) + " " + groupName, null);
                 break;
 
 
-            case Constants.NOTIFICAITON_TYPE_POST_LIKED:
-// TODO: 10/26/2016
+            case Constants.NOTIFICATION_TYPE_POST_LIKED:
+                 firstName = response.get("firstName");
+                 lastName = response.get("lastName");
+                String postId = response.get("id");
+                sendLikeNotification(getApplicationContext(), firstName + " " + lastName, postId);
                 break;
 
 
@@ -226,6 +239,25 @@ public class NotificationService extends FirebaseMessagingService {
                 break;
         }
 
+    }
+
+    private void sendLikeNotification(Context context, String requesterName, String requestId) {
+
+        NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+
+
+        android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
+        builder.setSmallIcon(R.drawable.request_friend_icon);
+        builder.setAutoCancel(true);
+
+
+        builder.setContentTitle(requesterName + getString(R.string.likedPostText));
+        builder.setGroup(GROUP_KEY_MESSAGES);
+        builder.setDefaults(android.app.Notification.DEFAULT_ALL);
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.toViewTheRequest)));
+        builder.setShowWhen(true);
+        android.app.Notification notification = builder.build();
+        notificationManagerCompat.notify(Integer.valueOf(requestId), notification);
     }
 
 
@@ -585,16 +617,10 @@ public class NotificationService extends FirebaseMessagingService {
 
     private void sendGeneralNotification(Context context, String uniqueId,
                                          String title, String contentText,
-                                         Class<?> resultClass) {
+                                         @Nullable Class<?> resultClass) {
 
         NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
-        Intent requestsViewIntent = new Intent(context, resultClass);
-        requestsViewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-
-        PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(uniqueId), requestsViewIntent, 0);
         android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
         builder.setSmallIcon(R.drawable.notification_icon);
         builder.setAutoCancel(true);
@@ -604,7 +630,16 @@ public class NotificationService extends FirebaseMessagingService {
         builder.setContentText(contentText);
         builder.setGroup(GROUP_KEY_MESSAGES);
         builder.setDefaults(android.app.Notification.DEFAULT_ALL);
-        builder.setContentIntent(requestsViewPending);
+
+        if (resultClass != null) {
+            Intent requestsViewIntent = new Intent(context, resultClass);
+            requestsViewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(uniqueId), requestsViewIntent, 0);
+            builder.setContentIntent(requestsViewPending);
+        }
+
+
         builder.setStyle(new NotificationCompat.BigTextStyle().bigText(contentText));
         builder.setShowWhen(true);
         android.app.Notification notification = builder.build();

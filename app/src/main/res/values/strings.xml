@@ -692,4 +692,8 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="coins_bought">Coins were added to account</string>
     <string name="comments_count_text">comments</string>
     <string name="comment_count_text">comment</string>
+    <string name="likedPostText"> liked your post</string>
+    <string name="posted_text">posted in</string>
+    <string name="group_post_title">Group Post</string>
+    <string name="commented_post">commented on your post</string>
 </resources>

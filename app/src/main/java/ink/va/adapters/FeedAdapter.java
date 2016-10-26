@@ -25,7 +25,6 @@ import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
 
 
-
 /**
  * Created by USER on 2016-06-20.
  */
@@ -99,10 +98,25 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             case Constants.WALL_TYPE_GROUP_MESSAGE:
                 handleGroupMessages(holder, position, feedModel);
                 break;
+            default:
+                hideActions(holder);
 
         }
 
 
+    }
+
+    private void hideActions(ViewHolder holder) {
+        holder.commentWrapper.setVisibility(View.GONE);
+        holder.likeWrapper.setVisibility(View.GONE);
+        holder.feedMoreIcon.setVisibility(View.GONE);
+        holder.actionDivider.setVisibility(View.GONE);
+        holder.whenPosted.setVisibility(View.GONE);
+        holder.feedAddressLayout.setVisibility(View.GONE);
+        holder.imageHolder.setVisibility(View.GONE);
+        holder.feedAttachmentLayout.setVisibility(View.GONE);
+        holder.commentCountTV.setVisibility(View.INVISIBLE);
+        holder.likesCountTV.setVisibility(View.INVISIBLE);
     }
 
     private void handleGroupMessages(ViewHolder holder, final int position, final FeedModel feedModel) {

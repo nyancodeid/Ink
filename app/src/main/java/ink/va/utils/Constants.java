@@ -89,9 +89,9 @@ public class Constants {
     public static final String NOTIFICATION_TYPE_CHAT_ROULETTE = "chatRoulette";
     public static final String NOTIFICATION_TYPE_REQUESTING_LOCATION = "requestingLocation";
     public static final String NOTIFICATION_TYPE_LOCATION_SESSION_ENDED = "locationSessionEnded";
-    public static final String NOTIFICAITON_TYPE_COMMENT_ADDED = "comment";
-    public static final String NOTIFICAITON_TYPE_POST_LIKED = "postLiked";
-    public static final String NOTIFICAITON_TYPE_POSTED_IN_GROUP = "postedInGroup";
+    public static final String NOTIFICATION_TYPE_COMMENT_ADDED = "commentAdded";
+    public static final String NOTIFICATION_TYPE_POST_LIKED = "postLiked";
+    public static final String NOTIFICATION_TYPE_POSTED_IN_GROUP = "postedInGroup";
     public static final String NOTIFICATION_TYPE_LOCATION_REQUEST_DECLINED = "requestLocationDeclined";
     public static final String NOTIFICATION_TYPE_LOCATION_REQUEST_ACCEPTED = "requestLocationAccepted";
     public static final String NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED = "friendRequestAccepted";
