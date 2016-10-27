@@ -173,7 +173,7 @@ public class NotificationService extends FirebaseMessagingService {
                     sendGeneralNotification(getApplicationContext(), commentId, firstName + " " + lastName + " " + getString(R.string.commented_post),
                             commentBody, SplashScreen.class);
                 }
-
+                LocalBroadcastManager.getInstance(NotificationService.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
                 break;
 
 
@@ -185,6 +185,7 @@ public class NotificationService extends FirebaseMessagingService {
                     sendGeneralNotification(getApplicationContext(), id, getString(R.string.group_post_title) + " " + groupName, name + " " + getString(R.string.posted_text) + " " + groupName,
                             SplashScreen.class);
                 }
+                LocalBroadcastManager.getInstance(NotificationService.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
 
                 break;
 
@@ -197,7 +198,7 @@ public class NotificationService extends FirebaseMessagingService {
                             firstName + " " + lastName + getString(R.string.likedPostText), SplashScreen.class);
                     sendLikeNotification(getApplicationContext(), firstName + " " + lastName, postId);
                 }
-
+                LocalBroadcastManager.getInstance(NotificationService.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
                 break;
 
 
