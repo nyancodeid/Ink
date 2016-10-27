@@ -30,6 +30,7 @@
                 app:contentScrim="?attr/colorPrimary"
                 app:expandedTitleGravity="center_horizontal"
                 app:expandedTitleMarginEnd="64dp"
+
                 app:expandedTitleMarginStart="48dp"
                 app:expandedTitleTextAppearance="@style/groupTitleStyle"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
@@ -115,7 +116,7 @@
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.widget.NestedScrollView
+        <RelativeLayout
             android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -162,13 +163,12 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/groupMessagesRecycler"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="20dp">
+                    android:layout_height="match_parent">
 
                 </android.support.v7.widget.RecyclerView>
 
             </RelativeLayout>
-        </android.support.v4.widget.NestedScrollView>
+        </RelativeLayout>
 
         <ImageView
             android:id="@+id/ownerImageView"
