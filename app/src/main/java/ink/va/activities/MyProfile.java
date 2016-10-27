@@ -272,6 +272,7 @@ public class MyProfile extends BaseActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == PICK_IMAGE_RESULT_CODE) {
                 Uri selectedImageUri = data.getData();
+
                 String selectedImagePath;
                 try {
                     selectedImagePath = getRealPathFromURI(selectedImageUri);

@@ -12,6 +12,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -187,18 +188,29 @@ public class OpponentProfile extends BaseActivity {
                 }).show();
                 mProfileFab.close(true);
             } else {
-                if (hasFriendRequested) {
-                    Snackbar.make(mTriangleView, getString(R.string.youHaveSentAlreadyRequest), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                if (isDataLoaded) {
+                    if (hasFriendRequested) {
+                        Snackbar.make(mTriangleView, getString(R.string.youHaveSentAlreadyRequest), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                            }
+                        }).show();
+                        mProfileFab.close(true);
+                    } else {
+                        mProfileFab.close(true);
+                        requestFriend();
+                    }
+                } else {
+                    Snackbar.make(mTriangleView, getString(R.string.waitTillLoad), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
 
                         }
                     }).show();
                     mProfileFab.close(true);
-                } else {
-                    mProfileFab.close(true);
-                    requestFriend();
                 }
+
             }
         }
     }
@@ -345,6 +357,12 @@ public class OpponentProfile extends BaseActivity {
                             String status = jsonObject.optString("status");
                             String facebookName = jsonObject.optString("facebook_name");
                             hasFriendRequested = jsonObject.optBoolean("hasFriendRequested");
+
+
+                            Log.d("fafsjklsajfl;af", "onResponse: " + hasFriendRequested);
+                            Log.d("fafsjklsajfl;af", "onResponse: " + mOpponentId);
+                            Log.d("fafsjklsajfl;af", "onResponse: " + sharedHelper.getUserId());
+
                             boolean shouldHighlightFacebook = true;
                             boolean shouldHighlightAddress = true;
                             isSocialAccount = jsonObject.optBoolean("isSocialAccount");

@@ -201,7 +201,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             isMember = extras.getBoolean("isMember");
             isFriendWithOwner = extras.getBoolean("isFriend");
         }
-        mJoinGroupButton.setEnabled(true);
+        mJoinGroupButton.setEnabled(false);
+        mJoinGroupButton.setText(getString(R.string.loadingText));
         if (!isMember) {
             mJoinGroupButton.setVisibility(View.VISIBLE);
             mAddMessageToGroup.setVisibility(View.GONE);
@@ -690,6 +691,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                     if (success) {
                         boolean hasMessages = jsonObject.optBoolean("hasMessages");
                         isRequested = jsonObject.optBoolean("alreadyRequested");
+                        mJoinGroupButton.setEnabled(true);
                         if (isRequested) {
                             mJoinGroupButton.setText(getString(R.string.pending));
                         } else {

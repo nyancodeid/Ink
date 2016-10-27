@@ -3,6 +3,7 @@ package ink.va.models;
 /**
  * Created by USER on 2016-06-22.
  */
+
 public class FriendsModel {
     private String fullName;
     private String imageLink;
@@ -24,6 +25,7 @@ public class FriendsModel {
         this.imageLink = imageLink;
         this.phoneNumber = phoneNumber;
     }
+
 
     public String getFullName() {
         return fullName;
