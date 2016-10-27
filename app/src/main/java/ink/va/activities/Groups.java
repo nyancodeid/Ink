@@ -181,6 +181,17 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
 
 
     @Override
+    protected void onDestroy() {
+        try {
+            unregisterReceiver(broadcastReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        super.onDestroy();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
