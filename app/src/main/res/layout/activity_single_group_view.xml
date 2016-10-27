@@ -30,7 +30,6 @@
                 app:contentScrim="?attr/colorPrimary"
                 app:expandedTitleGravity="center_horizontal"
                 app:expandedTitleMarginEnd="64dp"
-
                 app:expandedTitleMarginStart="48dp"
                 app:expandedTitleTextAppearance="@style/groupTitleStyle"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
