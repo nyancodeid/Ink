@@ -120,7 +120,8 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
 
     private HttpProxyCacheServer newProxy() {
         return new HttpProxyCacheServer.Builder(this)
-                .maxCacheSize(1024 * 1024 * 1024) 
+                .maxCacheSize(1024 * 1024 * 1024)
+                .cacheDirectory(getCacheDir())
                 .build();
     }
 }
