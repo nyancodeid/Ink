@@ -384,6 +384,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                         progressDialog.show();
                         String name = resultMap.get("name");
                         String link = resultMap.get("link");
+                        String email = resultMap.get("email");
                         String id = resultMap.get("id");
                         String imageUrl = resultMap.get("imageUrl");
                         String[] nameParts = name.split("\\s");
