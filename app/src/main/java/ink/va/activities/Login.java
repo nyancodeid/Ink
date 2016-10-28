@@ -390,7 +390,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                         String[] nameParts = name.split("\\s");
                         String firstName = nameParts[0];
                         String lastName = nameParts[1];
-                        loginUser(id, firstName, lastName, imageUrl, link, name, Constants.SOCIAL_TYPE_FACEBOOK);
+                        loginUser(id, firstName, lastName, imageUrl, link, name, Constants.SOCIAL_TYPE_FACEBOOK,email);
                     }
 
                     @Override
@@ -502,7 +502,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                     if (accountImageUri == null) {
                         accountImageUri = Uri.parse(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + "no_image.png");
                     }
-                    loginUser(email, firstName, lastName, accountImageUri.toString(), "", "", Constants.SOCIAL_TYPE_GOOGLE);
+                    loginUser(email, firstName, lastName, accountImageUri.toString(), "", "", Constants.SOCIAL_TYPE_GOOGLE,"");
                 } catch (ArrayIndexOutOfBoundsException e) {
                     e.printStackTrace();
                     Snackbar.make(mRegisterWrapper, getString(R.string.errorGoogleSignIn), Snackbar.LENGTH_INDEFINITE).setAction("OK", new OnClickListener() {
@@ -532,7 +532,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                             String firstName = userJson.optString("first_name");
                             String lastName = userJson.optString("last_name");
                             String userPhoto = userJson.optString("photo_max_orig");
-                            loginUser(userId, firstName, lastName, userPhoto, "", "", Constants.SOCIAL_TYPE_VK);
+                            loginUser(userId, firstName, lastName, userPhoto, "", "", Constants.SOCIAL_TYPE_VK,"");
                         } catch (JSONException e) {
                             progressDialog.dismiss();
                             e.printStackTrace();
@@ -591,7 +591,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                            final String lastName,
                            final String imageUrl,
                            final String userLink,
-                           final String facebookName, final String loginType) {
+                           final String facebookName, final String loginType,String email) {
         Call<ResponseBody> socialLoginCall = Retrofit.getInstance().getInkService().socialLogin(
                 login,
                 firstName,
@@ -599,17 +599,17 @@ public class Login extends BaseActivity implements View.OnClickListener {
                 imageUrl,
                 mSharedHelper.getToken(),
                 loginType,
-                userLink, facebookName);
+                userLink, facebookName,email);
 
         socialLoginCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    loginUser(login, firstName, lastName, imageUrl, userLink, facebookName, loginType);
+                    loginUser(login, firstName, lastName, imageUrl, userLink, facebookName, loginType,"");
                     return;
                 }
                 if (response.body() == null) {
-                    loginUser(login, firstName, lastName, imageUrl, userLink, facebookName, loginType);
+                    loginUser(login, firstName, lastName, imageUrl, userLink, facebookName, loginType,"");
                     return;
                 }
                 try {
