@@ -144,6 +144,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         mJoinGroupButton.setEnabled(false);
+
+
         mJoinGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -166,9 +168,16 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         };
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + "SingleGroupView"));
 
+
         groupMessagesRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) groupMessagesRecycler.getLayoutManager();
+                if (linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                    singleGroupAppBar.setExpanded(true, true);
+                }
+
                 if (!isMember) {
                     return;
                 }
@@ -263,6 +272,11 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+
+    public boolean isRecyclerScrollable(RecyclerView recyclerView) {
+        return recyclerView.computeHorizontalScrollRange() > recyclerView.getWidth() || recyclerView.computeVerticalScrollRange() > recyclerView.getHeight();
     }
 
     private void leaveGroup() {

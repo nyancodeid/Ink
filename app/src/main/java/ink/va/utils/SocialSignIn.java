@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -176,10 +175,9 @@ public class SocialSignIn {
                                     public void onCompleted(
                                             JSONObject object,
                                             GraphResponse response) {
-                                        Log.d("fsafsafsaf", "onCompleted: " + object.toString());
                                         String userLink = object.optString("link");
+                                        String userId = object.optString("id");
                                         String userName = object.optString("name");
-                                        String email = object.optString("email");
                                         JSONObject jsonObject = object.optJSONObject("picture");
                                         JSONObject dataObject = jsonObject.optJSONObject("data");
                                         String imageUrl = dataObject.optString("url");
@@ -187,7 +185,7 @@ public class SocialSignIn {
                                         resultMap.clear();
                                         resultMap.put("link", userLink);
                                         resultMap.put("name", userName);
-                                        resultMap.put("email", email);
+                                        resultMap.put("id", userId);
                                         resultMap.put("imageUrl", imageUrl);
 
                                         if (resultCallback != null) {

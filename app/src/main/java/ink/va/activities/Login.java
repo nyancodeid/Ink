@@ -384,12 +384,12 @@ public class Login extends BaseActivity implements View.OnClickListener {
                         progressDialog.show();
                         String name = resultMap.get("name");
                         String link = resultMap.get("link");
-                        String email = resultMap.get("email");
+                        String id = resultMap.get("id");
                         String imageUrl = resultMap.get("imageUrl");
                         String[] nameParts = name.split("\\s");
                         String firstName = nameParts[0];
                         String lastName = nameParts[1];
-                        loginUser(email, firstName, lastName, imageUrl, link, name, Constants.SOCIAL_TYPE_FACEBOOK);
+                        loginUser(id, firstName, lastName, imageUrl, link, name, Constants.SOCIAL_TYPE_FACEBOOK);
                     }
 
                     @Override
