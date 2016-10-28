@@ -479,6 +479,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         parentActivity.getHomeFab().showMenuButton(true);
 
         parentActivity.getHomeFab().setVisibility(View.VISIBLE);
+
         Keyboard.hideKeyboard(getActivity(), mRecyclerView);
         closeSearch.setEnabled(false);
         slideOut.setAnimationListener(new Animation.AnimationListener() {

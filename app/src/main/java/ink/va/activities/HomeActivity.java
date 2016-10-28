@@ -63,6 +63,7 @@ import ink.va.utils.Constants;
 import ink.va.utils.DeviceChecker;
 import ink.va.utils.FileUtils;
 import ink.va.utils.IonCache;
+import ink.va.utils.Keyboard;
 import ink.va.utils.PingHelper;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
@@ -194,6 +195,7 @@ public class HomeActivity extends BaseActivity
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
+                Keyboard.hideKeyboard(HomeActivity.this, getWindow().getDecorView().getRootView() != null ? getWindow().getDecorView().getRootView() : mDrawer);
                 super.onDrawerOpened(drawerView);
             }
         };
@@ -447,7 +449,7 @@ public class HomeActivity extends BaseActivity
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.ink.va");
-                startActivity(Intent.createChooser(shareIntent,getString(R.string.share_ink_with)));
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_ink_with)));
                 break;
 
             case R.id.sendFeedback:

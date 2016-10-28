@@ -3,7 +3,7 @@ package ink.va.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -65,7 +65,7 @@ public class StickerChooserActivity extends AppCompatActivity implements Recycle
         setContentView(R.layout.activity_sticker_choser);
         ButterKnife.bind(this);
         mSharedHelper = new SharedHelper(this);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        LinearLayoutManager gridLayoutManager = new LinearLayoutManager(this);
         gifsRecycler.setLayoutManager(gridLayoutManager);
         stickerModelList = new ArrayList<>();
         stickerAdapter = new StickerAdapter(stickerModelList, this);
