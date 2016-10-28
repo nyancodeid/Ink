@@ -362,6 +362,11 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             public void onAdditionItemClick(int position, View view) {
 
             }
+
+            @Override
+            public void onItemClicked(Object object) {
+
+            }
         });
 
         builder.setView(memberView);
@@ -811,6 +816,11 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                 }
             }
         }, getString(R.string.editMessage), getString(R.string.deleteMessage));
+    }
+
+    @Override
+    public void onItemClicked(Object object) {
+
     }
 
     private void updateGroupMessage(final String message, final String messageId) {

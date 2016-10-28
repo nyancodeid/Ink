@@ -11,4 +11,5 @@ public interface RecyclerItemClickListener {
     void onItemLongClick(int position);
 
     void onAdditionItemClick(int position, View view);
+    void onItemClicked(Object object);
 }

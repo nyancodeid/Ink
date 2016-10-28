@@ -545,6 +545,11 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         popupMenu.show();
     }
 
+    @Override
+    public void onItemClicked(Object object) {
+
+    }
+
     private void removeFriend(final String friendId) {
 
         System.gc();

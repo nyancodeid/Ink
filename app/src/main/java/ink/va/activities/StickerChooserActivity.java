@@ -20,7 +20,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import ink.va.adapters.GifAdapter;
+import ink.va.adapters.StickerAdapter;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.GifResponse;
 import ink.va.models.GifResponseModel;
@@ -52,7 +52,7 @@ public class StickerChooserActivity extends AppCompatActivity implements Recycle
 
     private StickerModel stickerModel;
 
-    private GifAdapter gifAdapter;
+    private StickerAdapter stickerAdapter;
 
     private List<StickerModel> stickerModelList;
     private SharedHelper mSharedHelper;
@@ -68,10 +68,10 @@ public class StickerChooserActivity extends AppCompatActivity implements Recycle
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         gifsRecycler.setLayoutManager(gridLayoutManager);
         stickerModelList = new ArrayList<>();
-        gifAdapter = new GifAdapter(stickerModelList, this);
+        stickerAdapter = new StickerAdapter(stickerModelList, this);
         gson = new Gson();
-        gifAdapter.setOnItemClickListener(this);
-        gifsRecycler.setAdapter(gifAdapter);
+        stickerAdapter.setOnItemClickListener(this);
+        gifsRecycler.setAdapter(stickerAdapter);
         getUserGifs();
         getSupportActionBar().setTitle(getString(R.string.sentSticker));
     }
@@ -112,7 +112,7 @@ public class StickerChooserActivity extends AppCompatActivity implements Recycle
                                 GifResponseModel eachModel = gifResponseModels.get(i);
                                 stickerModel = new StickerModel(eachModel.id, eachModel.userId, eachModel.gifName, eachModel.isAnimated, eachModel.hasSound);
                                 stickerModelList.add(stickerModel);
-                                gifAdapter.notifyDataSetChanged();
+                                stickerAdapter.notifyDataSetChanged();
                             }
                             if (stickerModelList.size() <= 0) {
                                 noGifsText.setVisibility(View.VISIBLE);
@@ -144,14 +144,7 @@ public class StickerChooserActivity extends AppCompatActivity implements Recycle
 
     @Override
     public void onItemClicked(int position, View view) {
-        System.gc();
-        StickerModel singleModel = stickerModelList.get(position);
-        String stickerUrl = stickerModelList.get(position).getStickerUrl();
-        Intent intent = new Intent();
-        intent.putExtra(Constants.STICKER_URL_EXTRA_KEY, stickerUrl);
-        intent.putExtra(Constants.STICKER_IS_ANIMATED_EXTRA_KEY, singleModel.isAnimated());
-        setResult(REQUEST_CODE_CHOSE_STICKER, intent);
-        finish();
+
     }
 
     @Override
@@ -162,5 +155,18 @@ public class StickerChooserActivity extends AppCompatActivity implements Recycle
     @Override
     public void onAdditionItemClick(int position, View view) {
 
+    }
+
+    @Override
+    public void onItemClicked(Object object) {
+        System.gc();
+        StickerModel singleModel = (StickerModel) object;
+
+        String stickerUrl = singleModel.getStickerUrl();
+        Intent intent = new Intent();
+        intent.putExtra(Constants.STICKER_URL_EXTRA_KEY, stickerUrl);
+        intent.putExtra(Constants.STICKER_IS_ANIMATED_EXTRA_KEY, singleModel.isAnimated());
+        setResult(REQUEST_CODE_CHOSE_STICKER, intent);
+        finish();
     }
 }

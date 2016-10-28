@@ -757,6 +757,11 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     }
 
     @Override
+    public void onItemClicked(Object object) {
+
+    }
+
+    @Override
     public void onBackPressed() {
         if (shouldUpdate) {
             LocalBroadcastManager.getInstance(Comments.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
