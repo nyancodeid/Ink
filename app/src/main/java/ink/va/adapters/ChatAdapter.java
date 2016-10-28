@@ -1,14 +1,9 @@
 package ink.va.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
-import android.media.ThumbnailUtils;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -23,12 +18,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.danikula.videocache.HttpProxyCacheServer;
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
+import ink.StartupApplication;
 import ink.va.models.ChatModel;
 import ink.va.utils.Constants;
 import ink.va.utils.Dp;
@@ -183,14 +180,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 holder.imageViewWrapper.setVisibility(View.GONE);
                 holder.chatVideo.setVisibility(View.VISIBLE);
                 holder.chatVideoWrapper.setVisibility(View.VISIBLE);
-                Uri video = Uri.parse(Constants.MAIN_URL + chatModel.getStickerUrl());
-                holder.chatVideo.setVideoURI(video);
 
-                Bitmap thumb = ThumbnailUtils.createVideoThumbnail("http://www.joomlaworks.net/images/demos/galleries/abstract/7.jpg",
-                        MediaStore.Images.Thumbnails.MINI_KIND);
 
-                BitmapDrawable thumbAsDrawable = new BitmapDrawable(mContext.getResources(), thumb);
-                holder.chatVideo.setBackground(thumbAsDrawable);
+                HttpProxyCacheServer proxy = StartupApplication.getProxy(mContext);
+                String proxyUrl = proxy.getProxyUrl(Constants.MAIN_URL + chatModel.getStickerUrl());
+                holder.chatVideo.setVideoPath(proxyUrl);
+
+
 
                 holder.chatVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override

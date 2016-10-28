@@ -8,17 +8,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -45,6 +41,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.ink.va.R;
@@ -74,6 +71,7 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.StartupApplication;
 import ink.va.adapters.ChatAdapter;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.interfaces.ItemClickListener;
@@ -1107,24 +1105,24 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
         mSendChatMessage.setEnabled(true);
         if (isIntentStickerAnimated) {
             singleVideoView.setVisibility(View.VISIBLE);
-            singleVideoView.setZOrderOnTop(true);
-            singleGifViewLoading.setVisibility(View.GONE);
+
+            singleGifViewLoading.setVisibility(View.VISIBLE);
             sendMessageGifView.setVisibility(View.GONE);
             singleVideoView.setVisibility(View.VISIBLE);
 
             singleVideoView.setVisibility(View.VISIBLE);
-            Uri video = Uri.parse(Constants.MAIN_URL + stickerUrl);
-            singleVideoView.setVideoURI(video);
-            Bitmap thumb = ThumbnailUtils.createVideoThumbnail("http://www.joomlaworks.net/images/demos/galleries/abstract/7.jpg",
-                    MediaStore.Images.Thumbnails.MINI_KIND);
 
-            BitmapDrawable thumbAsDrawable = new BitmapDrawable(getResources(), thumb);
-            singleVideoView.setBackground(thumbAsDrawable);
+            HttpProxyCacheServer proxy = StartupApplication.getProxy(this);
+            String proxyUrl = proxy.getProxyUrl(Constants.MAIN_URL + stickerUrl);
+            singleVideoView.setVideoPath(proxyUrl);
+
+
             singleVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
                     mediaPlayer.seekTo(1000);
                     singleVideoView.seekTo(1000);
+                    singleGifViewLoading.setVisibility(View.GONE);
                 }
             });
 

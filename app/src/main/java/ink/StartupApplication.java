@@ -9,6 +9,7 @@ import android.support.multidex.MultiDexApplication;
 
 import com.adobe.creativesdk.foundation.AdobeCSDKFoundation;
 import com.adobe.creativesdk.foundation.auth.IAdobeAuthClientCredentials;
+import com.danikula.videocache.HttpProxyCacheServer;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.vk.sdk.VKAccessToken;
@@ -28,6 +29,7 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
     private static final String CREATIVE_SDK_CLIENT_SECRET = "11b233bb-98d2-45d3-8c80-2be66726f10b";
     private SharedHelper sharedHelper;
     private Activity mActivity = null;
+    private HttpProxyCacheServer proxy;
 
     @Override
     public void onCreate() {
@@ -109,5 +111,16 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
     @Override
     public void onError(VKError error) {
 
+    }
+
+    public static HttpProxyCacheServer getProxy(Context context) {
+        StartupApplication app = (StartupApplication) context.getApplicationContext();
+        return app.proxy == null ? (app.proxy = app.newProxy()) : app.proxy;
+    }
+
+    private HttpProxyCacheServer newProxy() {
+        return new HttpProxyCacheServer.Builder(this)
+                .maxCacheSize(1024 * 1024 * 1024) 
+                .build();
     }
 }

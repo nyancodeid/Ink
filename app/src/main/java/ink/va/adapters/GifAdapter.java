@@ -1,12 +1,7 @@
 package ink.va.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
-import android.media.ThumbnailUtils;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
+import com.danikula.videocache.HttpProxyCacheServer;
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -24,6 +20,7 @@ import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.List;
 
+import ink.StartupApplication;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.StickerModel;
 import ink.va.utils.Constants;
@@ -55,16 +52,13 @@ public class GifAdapter extends RecyclerView.Adapter<GifAdapter.ViewHolder> {
         if (stickerModel.isAnimated()) {
             holder.stickerWrapper.setVisibility(View.GONE);
             holder.videoWrapper.setVisibility(View.VISIBLE);
-            holder.videoView.setZOrderOnTop(true);
-            Uri video = Uri.parse(Constants.MAIN_URL + stickerModel.getStickerUrl());
-            holder.videoView.setVideoURI(video);
-            Bitmap thumb = ThumbnailUtils.createVideoThumbnail("http://www.joomlaworks.net/images/demos/galleries/abstract/7.jpg",
-                    MediaStore.Images.Thumbnails.MINI_KIND);
+
+            HttpProxyCacheServer proxy = StartupApplication.getProxy(context);
+            String proxyUrl = proxy.getProxyUrl(Constants.MAIN_URL + stickerModel.getStickerUrl());
+            holder.videoView.setVideoPath(proxyUrl);
 
             holder.singleVideoViewLoading.setVisibility(View.VISIBLE);
 
-            BitmapDrawable thumbAsDrawable = new BitmapDrawable(context.getResources(), thumb);
-            holder.videoView.setBackground(thumbAsDrawable);
             holder.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
