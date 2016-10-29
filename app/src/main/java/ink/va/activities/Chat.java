@@ -281,9 +281,19 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                             builder.setNeutralButton(getString(R.string.viewImage), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
-                                    intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + chatModel.getMessage());
-                                    startActivity(intent);
+                                    if (chatModel == null) {
+                                        Snackbar.make(sendMessageGifView, getString(R.string.pleaseWait), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+
+                                            }
+                                        }).show();
+                                    } else {
+                                        Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
+                                        intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + chatModel.getMessage());
+                                        startActivity(intent);
+                                    }
+
                                 }
                             });
                             builder.show();
