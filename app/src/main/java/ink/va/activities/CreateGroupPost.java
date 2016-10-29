@@ -142,6 +142,9 @@ public class CreateGroupPost extends BaseActivity {
         imagePickerIV.setImageBitmap(null);
         imageChosenWrapper.setVisibility(View.GONE);
         isFileChosen = false;
+        if (groupInputField.getText().toString().trim().isEmpty()) {
+            disableButton();
+        }
         try {
             imagePickerIV.setImageResource(0);
         } catch (Exception e) {
