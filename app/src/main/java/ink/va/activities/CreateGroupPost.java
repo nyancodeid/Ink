@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.ybq.android.spinkit.SpinKitView;
@@ -45,6 +46,16 @@ public class CreateGroupPost extends BaseActivity {
     FloatingActionButton sendGroupMessageIcon;
     @Bind(R.id.groupMessageSpin)
     SpinKitView groupMessageSpin;
+
+    @Bind(R.id.imageChooserIV)
+    ImageView imageChooserIV;
+
+    @Bind(R.id.image_picker_view)
+    ImageView imagePickerIV;
+
+    @Bind(R.id.imageChosenWrapper)
+    RelativeLayout imageChosenWrapper;
+
     private String groupId;
 
     private SharedHelper sharedHelper;
@@ -106,6 +117,20 @@ public class CreateGroupPost extends BaseActivity {
     private void enableButtons() {
         sendGroupMessageIcon.showButtonInMenu(true);
         sendGroupMessageIcon.setEnabled(true);
+    }
+
+    @OnClick(R.id.removeGroupImageChosen)
+    public void removeClicked(){
+        removeImage();
+    }
+
+    private void removeImage() {
+
+    }
+
+    @OnClick(R.id.imageChooserIV)
+    public void choseImageClicked(){
+
     }
 
     @Override
