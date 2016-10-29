@@ -12,13 +12,14 @@ public class GroupMessagesModel {
     private String groupMessageId;
     private boolean isRequested;
     private boolean isFriend;
+    private String fileName;
 
-
-    public GroupMessagesModel(boolean isFriend,String groupId, String groupMessage,
+    public GroupMessagesModel(boolean isFriend, String groupId, String groupMessage,
                               String senderId, String senderImage,
                               String senderName, String groupMessageId,
-                              boolean isRequested) {
+                              boolean isRequested, String fileName) {
         this.groupId = groupId;
+        this.fileName = fileName;
         this.isFriend = isFriend;
         this.isRequested = isRequested;
         this.groupMessage = groupMessage;
@@ -26,6 +27,14 @@ public class GroupMessagesModel {
         this.senderImage = senderImage;
         this.senderName = senderName;
         this.groupMessageId = groupMessageId;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public boolean isFriend() {

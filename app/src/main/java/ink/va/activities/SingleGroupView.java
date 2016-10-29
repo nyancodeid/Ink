@@ -728,8 +728,9 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                                 String senderName = eachObject.optString("sender_name");
                                 String groupMessageId = eachObject.optString("group_message_id");
                                 String isFriend = eachObject.optString("isFriend");
+                                String fileName = eachObject.optString("file_name");
                                 groupMessagesModel = new GroupMessagesModel(Boolean.valueOf(isFriend), groupId, groupMessage,
-                                        senderId, senderImage, senderName, groupMessageId, isRequested);
+                                        senderId, senderImage, senderName, groupMessageId, isRequested, fileName);
                                 groupMessagesModels.add(groupMessagesModel);
                                 groupMessagesAdapter.notifyDataSetChanged();
                             }
@@ -825,7 +826,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                         break;
                     case 1:
                         snackbar.setText(getString(R.string.deleting));
-                        deleteComment(groupMessagesModel.getGroupMessageId());
+                        deleteComment(groupMessagesModel.getGroupMessageId(),groupMessagesModel.getFileName());
                         break;
                 }
             }
@@ -838,7 +839,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     }
 
     private void updateGroupMessage(final String message, final String messageId) {
-        Call<ResponseBody> groupOptionsCall = Retrofit.getInstance().getInkService().changeGroupMessages(Constants.GROUP_MESSAGES_TYPE_EDIT,
+        Call<ResponseBody> groupOptionsCall = Retrofit.getInstance().getInkService().changeGroupMessages(
+                "", Constants.GROUP_MESSAGES_TYPE_EDIT,
                 message, messageId);
         groupOptionsCall.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -884,8 +886,9 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         });
     }
 
-    private void deleteComment(final String messageId) {
-        Call<ResponseBody> groupOptionsCall = Retrofit.getInstance().getInkService().changeGroupMessages(Constants.GROUP_MESSAGES_TYPE_DELETE,
+    private void deleteComment(final String messageId,String fileName) {
+        Call<ResponseBody> groupOptionsCall = Retrofit.getInstance().getInkService().changeGroupMessages(
+                fileName , Constants.GROUP_MESSAGES_TYPE_DELETE,
                 "", messageId);
         groupOptionsCall.enqueue(new Callback<ResponseBody>() {
             @Override

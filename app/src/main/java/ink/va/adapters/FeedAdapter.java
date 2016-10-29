@@ -1,6 +1,7 @@
 package ink.va.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
@@ -12,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.util.List;
@@ -119,7 +121,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         holder.likesCountTV.setVisibility(View.INVISIBLE);
     }
 
-    private void handleGroupMessages(ViewHolder holder, final int position, final FeedModel feedModel) {
+    private void handleGroupMessages(final ViewHolder holder, final int position, final FeedModel feedModel) {
         holder.commentWrapper.setVisibility(View.GONE);
         holder.likeWrapper.setVisibility(View.GONE);
         holder.feedMoreIcon.setVisibility(View.GONE);
@@ -135,6 +137,23 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
         holder.feedContent.setMovementMethod(LinkMovementMethod.getInstance());
         holder.feedContent.setText(feedModel.getContent());
+
+        if (feedModel.getGroupMessageFileName().isEmpty()) {
+            holder.imageHolder.setVisibility(View.GONE);
+        } else {
+            holder.imageHolder.setVisibility(View.VISIBLE);
+            Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + feedModel.getGroupMessageFileName()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                @Override
+                public void onCompleted(Exception e, Bitmap result) {
+                    if (e == null) {
+                        holder.imageHolder.setImageBitmap(result);
+                    } else {
+                        holder.imageHolder.setVisibility(View.GONE);
+                    }
+                }
+            });
+        }
+
 
         holder.feedContent.setOnClickListener(new View.OnClickListener() {
             @Override

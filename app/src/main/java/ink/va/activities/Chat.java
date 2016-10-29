@@ -1266,6 +1266,11 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     @Override
     public void onProgressUpdate(int percentage) {
         if (mChatAdapter != null) {
+            if (percentage >= 99) {
+                mChatAdapter.stopUpdate();
+                mChatAdapter.notifyDataSetChanged();
+                scrolledToBottom = false;
+            }
             mChatAdapter.setUpdate(percentage);
             if (!scrolledToBottom) {
                 scrollToBottom();
@@ -1286,10 +1291,5 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
     @Override
     public void onFinish() {
-        if (mChatAdapter != null) {
-            mChatAdapter.stopUpdate();
-            mChatAdapter.notifyDataSetChanged();
-        }
-        scrolledToBottom = false;
     }
 }

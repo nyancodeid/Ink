@@ -1,6 +1,7 @@
 package ink.va.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
@@ -29,6 +30,7 @@ import ink.StartupApplication;
 import ink.va.models.ChatModel;
 import ink.va.utils.Constants;
 import ink.va.utils.Dp;
+import ink.va.utils.FileUtils;
 import ink.va.utils.Regex;
 import ink.va.utils.SharedHelper;
 
@@ -187,7 +189,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 holder.chatVideo.setVideoPath(proxyUrl);
 
 
-
                 holder.chatVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override
                     public void onPrepared(MediaPlayer mediaPlayer) {
@@ -228,19 +229,37 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 holder.chatViewBubble.setVisibility(View.VISIBLE);
             }
         } else if (Regex.isAttachment(chatModel.getMessage())) {
-//            if (FileUtils.isImageType(chatModel.getMessage())) {
-//                holder.imageView.setImageResource(0);
-//                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + chatModel.getMessage()).withBitmap().placeholder(R.drawable.no_background_image).
-//                        intoImageView(holder.imageView);
-//                holder.imageViewWrapper.setVisibility(View.VISIBLE);
-//            } else {
+
+            if (FileUtils.isImageType(chatModel.getMessage())) {
+
+                holder.chatVideo.setVisibility(View.GONE);
+                holder.chatVideoWrapper.setVisibility(View.GONE);
+                holder.imageView.setImageResource(0);
+                holder.imageView.setBackgroundResource(R.drawable.time_loading_vector);
+                holder.imageViewWrapper.setVisibility(View.VISIBLE);
+
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + chatModel.getMessage()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                    @Override
+                    public void onCompleted(Exception e, Bitmap result) {
+                        if (e == null) {
+                            holder.imageView.setImageResource(0);
+                            holder.imageView.setImageBitmap(result);
+                        } else {
+                            holder.imageView.setBackgroundResource(R.drawable.chat_attachment_icon);
+                            holder.imageViewWrapper.setVisibility(View.VISIBLE);
+                        }
+
+                    }
+                });
+                holder.imageViewWrapper.setVisibility(View.VISIBLE);
+            }
 //
-//            }
-            holder.chatVideo.setVisibility(View.GONE);
-            holder.chatVideoWrapper.setVisibility(View.GONE);
-            holder.imageView.setImageResource(0);
-            holder.imageView.setBackgroundResource(R.drawable.chat_attachment_icon);
-            holder.imageViewWrapper.setVisibility(View.VISIBLE);
+//
+//            holder.chatVideo.setVisibility(View.GONE);
+//            holder.chatVideoWrapper.setVisibility(View.GONE);
+//            holder.imageView.setImageResource(0);
+//            holder.imageView.setBackgroundResource(R.drawable.chat_attachment_icon);
+//            holder.imageViewWrapper.setVisibility(View.VISIBLE);
 
         } else {
             holder.chatVideo.setVisibility(View.GONE);

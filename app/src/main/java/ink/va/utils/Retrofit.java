@@ -272,7 +272,8 @@ public class Retrofit {
 
         @POST(Constants.GROUP_MESSAGES_OPTIONS_URL)
         @FormUrlEncoded
-        Call<ResponseBody> changeGroupMessages(@Field("type") String type,
+        Call<ResponseBody> changeGroupMessages(@Field("fileName") String fileName,
+                                               @Field("type") String type,
                                                @Field("message") String message,
                                                @Field("messageId") String messageId);
 
@@ -325,13 +326,14 @@ public class Retrofit {
                                        @Field("ownerName") String ownerName,
                                        @Field("ownerImage") String ownerImage);
 
+        @Multipart
         @POST(Constants.ADD_GROUP_MESSAGE_URL)
-        @FormUrlEncoded
-        Call<ResponseBody> sendGroupMessage(@Field("group_id") String groupId,
-                                            @Field("group_message") String groupMessage,
-                                            @Field("sender_id") String senderId,
-                                            @Field("sender_image") String senderImage,
-                                            @Field("sender_name") String senderName);
+        Call<ResponseBody> sendGroupMessage(@PartMap Map<String, ProgressRequestBody> map,
+                                            @Part("group_id") String groupId,
+                                            @Part("group_message") String groupMessage,
+                                            @Part("sender_id") String senderId,
+                                            @Part("sender_image") String senderImage,
+                                            @Part("sender_name") String senderName);
 
 
         @POST(Constants.ADD_COMMENT_URL)

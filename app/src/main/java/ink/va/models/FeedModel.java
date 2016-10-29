@@ -30,17 +30,19 @@ public class FeedModel {
     private String groupColor;
     private String groupOwnerName;
     private String commentsCount;
+    private String groupMessageFileName;
 
     public FeedModel(boolean isFriend, boolean isSocialAccount, String id, String userImage, String fileName, String content, String posterId,
                      String address,
                      String datePosted, String firstName,
                      String lastName, boolean isLiked, String likesCount, String type, String groupName, String count, String ownerImage, String groupOwnerId, String groupDescription,
-                     String groupImage, String groupColor, String groupOwnerName,String commentsCount) {
+                     String groupImage, String groupColor, String groupOwnerName,String commentsCount,String groupMessageFileName) {
         this.id = id;
         this.groupOwnerName = groupOwnerName;
         this.count = count;
         this.commentsCount = commentsCount;
         this.ownerImage = ownerImage;
+        this.groupMessageFileName = groupMessageFileName;
         this.groupOwnerId = groupOwnerId;
         this.groupDescription = groupDescription;
         this.groupImage = groupImage;
@@ -100,6 +102,14 @@ public class FeedModel {
 
     public void setGroupOwnerId(String groupOwnerId) {
         this.groupOwnerId = groupOwnerId;
+    }
+
+    public String getGroupMessageFileName() {
+        return groupMessageFileName;
+    }
+
+    public void setGroupMessageFileName(String groupMessageFileName) {
+        this.groupMessageFileName = groupMessageFileName;
     }
 
     public String getGroupDescription() {

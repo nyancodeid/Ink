@@ -29,6 +29,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -37,6 +39,7 @@ import fab.FloatingActionButton;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.FileUtils;
+import ink.va.utils.ProgressRequestBody;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -46,7 +49,7 @@ import retrofit2.Response;
 
 import static ink.va.activities.MakePost.MAX_FILE_SIZE;
 
-public class CreateGroupPost extends BaseActivity {
+public class CreateGroupPost extends BaseActivity implements ProgressRequestBody.UploadCallbacks {
 
     private static final int PICK_FILE_REQUEST_CODE = 5;
     @Bind(R.id.currentUserName)
@@ -182,7 +185,14 @@ public class CreateGroupPost extends BaseActivity {
     }
 
     private void sendGroupMessage() {
-        Call<ResponseBody> sendGroupMessageCall = Retrofit.getInstance().getInkService().sendGroupMessage(groupId,
+
+        Map<String, ProgressRequestBody> map = new HashMap<>();
+        ProgressRequestBody requestBody = new ProgressRequestBody(chosenFile, this);
+        if(chosenFile!=null){
+            map.put("file\"; filename=\"" + chosenFile.getName() + "\"", requestBody);
+        }
+
+        Call<ResponseBody> sendGroupMessageCall = Retrofit.getInstance().getInkService().sendGroupMessage(map, groupId,
                 groupInputField.getText().toString().trim(), sharedHelper.getUserId(),
                 sharedHelper.getImageLink(), sharedHelper.getFirstName() + " " + sharedHelper.getLastName());
         groupInputField.setText("");
@@ -302,4 +312,18 @@ public class CreateGroupPost extends BaseActivity {
         }
     }
 
+    @Override
+    public void onProgressUpdate(int percentage) {
+
+    }
+
+    @Override
+    public void onError() {
+
+    }
+
+    @Override
+    public void onFinish() {
+
+    }
 }

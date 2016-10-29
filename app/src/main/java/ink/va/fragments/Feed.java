@@ -200,10 +200,11 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         String groupOwnerName = eachObject.optString("groupOwnerName");
                         String commentsCount = eachObject.optString("commentsCount");
                         String count = eachObject.optString("count");
+                        String groupMessageFileName = eachObject.optString("group_message_file_name");
                         boolean isMember = eachObject.optBoolean("isMember");
                         mFeedModel = new FeedModel(isFriend, isSocialAccount, id, imageLink, fileName, postBody,
                                 posterId, address, datePosted, firstName, lastName, isLiked, likesCount, type, groupName, count, ownerImage, groupOwnerId,
-                                groupDescription, groupImage, groupColor,groupOwnerName,commentsCount);
+                                groupDescription, groupImage, groupColor,groupOwnerName,commentsCount,groupMessageFileName);
                         mFeedModelArrayList.add(mFeedModel);
                         mAdapter.notifyDataSetChanged();
                     }

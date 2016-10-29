@@ -1,6 +1,7 @@
 package ink.va.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.va.R;
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.util.List;
@@ -33,6 +35,7 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView messageSenderName, groupMessageBody;
         public ImageView messageSenderImage;
+        public ImageView groupImageView;
         private ImageView groupMessageMoreIcon;
         private CardView groupMessageCard;
 
@@ -42,6 +45,7 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
             groupMessageBody = (TextView) view.findViewById(R.id.groupMessageBody);
             groupMessageCard = (CardView) view.findViewById(R.id.groupMessageCard);
             messageSenderImage = (ImageView) view.findViewById(R.id.messageSenderImage);
+            groupImageView = (ImageView) view.findViewById(R.id.group_image);
             groupMessageMoreIcon = (ImageView) view.findViewById(R.id.groupMessageMoreIcon);
         }
     }
@@ -64,6 +68,21 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         GroupMessagesModel groupMessagesModel = groupMessagesModels.get(position);
 
+        if (groupMessagesModel.getFileName().isEmpty()) {
+            holder.groupImageView.setVisibility(View.GONE);
+        } else {
+            holder.groupImageView.setVisibility(View.VISIBLE);
+            Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + groupMessagesModel.getFileName()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                @Override
+                public void onCompleted(Exception e, Bitmap result) {
+                    if (e == null) {
+                        holder.groupImageView.setImageBitmap(result);
+                    } else {
+                        holder.groupImageView.setVisibility(View.GONE);
+                    }
+                }
+            });
+        }
         if (!groupMessagesModel.getSenderImage().isEmpty()) {
             Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
                     groupMessagesModel.getSenderImage()).withBitmap().transform(new CircleTransform()).intoImageView(holder.messageSenderImage);
