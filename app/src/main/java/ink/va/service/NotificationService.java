@@ -182,7 +182,9 @@ public class NotificationService extends FirebaseMessagingService {
                     String name = response.get("name");
                     String id = response.get("id");
                     String groupName = response.get("groupName");
-                    sendGeneralNotification(getApplicationContext(), id, getString(R.string.group_post_title) + " " + groupName, name + " " + getString(R.string.posted_text) + " " + groupName,
+                    sendGeneralNotification(getApplicationContext(), id,
+                            getString(R.string.group_post_title) + " " + groupName,
+                            name + " " + getString(R.string.posted_text) + " " + groupName,
                             SplashScreen.class);
                 }
                 LocalBroadcastManager.getInstance(NotificationService.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
@@ -195,7 +197,9 @@ public class NotificationService extends FirebaseMessagingService {
                     String lastName = response.get("lastName");
                     String postId = response.get("id");
                     sendGeneralNotification(getApplicationContext(), postId, getString(R.string.commentAdded),
-                            firstName + " " + lastName + getString(R.string.likedPostText), SplashScreen.class);
+                            firstName + " " + lastName + getString(R.string.likedPostText),
+                            SplashScreen.class);
+
                     sendLikeNotification(getApplicationContext(), firstName + " " + lastName, postId);
                 }
                 LocalBroadcastManager.getInstance(NotificationService.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
@@ -644,15 +648,13 @@ public class NotificationService extends FirebaseMessagingService {
         builder.setGroup(GROUP_KEY_MESSAGES);
         builder.setDefaults(android.app.Notification.DEFAULT_ALL);
 
-        if (resultClass != null) {
-            Intent requestsViewIntent = new Intent(context, resultClass);
-            requestsViewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            requestsViewIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(uniqueId), requestsViewIntent, 0);
-            builder.setContentIntent(requestsViewPending);
-        }
+        Intent requestsViewIntent = new Intent(context, SplashScreen.class);
+        requestsViewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        requestsViewIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(uniqueId), requestsViewIntent, 0);
+        builder.setContentIntent(requestsViewPending);
 
 
         builder.setStyle(new NotificationCompat.BigTextStyle().bigText(contentText));

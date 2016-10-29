@@ -1,8 +1,13 @@
 package ink.va.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -11,15 +16,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.ink.va.R;
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,6 +36,7 @@ import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+import ink.va.utils.FileUtils;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -34,8 +44,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.activities.MakePost.MAX_FILE_SIZE;
+
 public class CreateGroupPost extends BaseActivity {
 
+    private static final int PICK_FILE_REQUEST_CODE = 5;
     @Bind(R.id.currentUserName)
     TextView currentUserName;
     @Bind(R.id.currentUserImage)
@@ -57,7 +70,8 @@ public class CreateGroupPost extends BaseActivity {
     RelativeLayout imageChosenWrapper;
 
     private String groupId;
-
+    private boolean isFileChosen;
+    private File chosenFile;
     private SharedHelper sharedHelper;
 
     @Override
@@ -120,17 +134,37 @@ public class CreateGroupPost extends BaseActivity {
     }
 
     @OnClick(R.id.removeGroupImageChosen)
-    public void removeClicked(){
+    public void removeClicked() {
         removeImage();
     }
 
     private void removeImage() {
-
+        imagePickerIV.setImageBitmap(null);
+        imageChosenWrapper.setVisibility(View.GONE);
+        isFileChosen = false;
+        try {
+            imagePickerIV.setImageResource(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @OnClick(R.id.imageChooserIV)
-    public void choseImageClicked(){
+    public void choseImageClicked() {
+        openImageChoser();
+    }
 
+    private void openImageChoser() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");      //all files
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        try {
+            startActivityForResult(Intent.createChooser(intent, "Select a Image"), PICK_FILE_REQUEST_CODE);
+        } catch (android.content.ActivityNotFoundException ex) {
+            // Potentially direct the user to the Market with a AlertDialogView
+            Toast.makeText(this, "Please install a Gallery application.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -188,4 +222,80 @@ public class CreateGroupPost extends BaseActivity {
         });
 
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data != null) {
+            Uri uri = data.getData();
+            // Get the path
+            String path;
+            AlertDialog.Builder fileErrorDialog = new AlertDialog.Builder(CreateGroupPost.this);
+            fileErrorDialog.setTitle(getString(R.string.fileError));
+            fileErrorDialog.setMessage(getString(R.string.couldNotReadFile));
+            fileErrorDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            try {
+                path = FileUtils.getPath(this, uri);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+                fileErrorDialog.show();
+                isFileChosen = false;
+                return;
+            }
+
+            if (path != null) {
+                File file = new File(path);
+                if (!file.exists()) {
+                    fileErrorDialog.show();
+                    isFileChosen = false;
+                    return;
+                }
+                if (file.length() > MAX_FILE_SIZE) {
+                    isFileChosen = false;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(CreateGroupPost.this);
+                    builder.setTitle(getString(R.string.sizeExceeded)).show();
+                    builder.setMessage(getString(R.string.sizeExceededMessage));
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.show();
+                    return;
+                }
+                chosenFile = file;
+                isFileChosen = true;
+                imageChosenWrapper.setVisibility(View.VISIBLE);
+                Ion.with(this).load(chosenFile).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                    @Override
+                    public void onCompleted(Exception e, Bitmap result) {
+                        if (e == null) {
+                            imagePickerIV.setImageBitmap(result);
+                        } else {
+                            Snackbar.make(imagePickerIV, getString(R.string.com_facebook_image_download_unknown_error), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            }).show();
+                            imageChosenWrapper.setVisibility(View.GONE);
+                        }
+                    }
+                });
+
+            } else {
+                isFileChosen = false;
+                fileErrorDialog.show();
+            }
+        } else {
+            isFileChosen = false;
+        }
+    }
+
 }
