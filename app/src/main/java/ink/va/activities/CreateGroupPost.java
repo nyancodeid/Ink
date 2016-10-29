@@ -109,7 +109,7 @@ public class CreateGroupPost extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.toString().trim().isEmpty()) {
+                if (charSequence.toString().trim().isEmpty() && !isFileChosen) {
                     disableButton();
                 } else {
                     enableButtons();
@@ -151,10 +151,10 @@ public class CreateGroupPost extends BaseActivity {
 
     @OnClick(R.id.imageChooserIV)
     public void choseImageClicked() {
-        openImageChoser();
+        openImageChooser();
     }
 
-    private void openImageChoser() {
+    private void openImageChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");      //all files
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -276,6 +276,7 @@ public class CreateGroupPost extends BaseActivity {
                     @Override
                     public void onCompleted(Exception e, Bitmap result) {
                         if (e == null) {
+                            enableButtons();
                             imagePickerIV.setImageBitmap(result);
                         } else {
                             Snackbar.make(imagePickerIV, getString(R.string.com_facebook_image_download_unknown_error), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
