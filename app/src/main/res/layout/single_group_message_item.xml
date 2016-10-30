@@ -59,7 +59,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/groupMessageBody"
                 android:layout_margin="16dp"
+                android:adjustViewBounds="true"
                 android:minHeight="170dp"
+                android:scaleType="fitXY"
                 android:visibility="gone" />
 
             <TextView

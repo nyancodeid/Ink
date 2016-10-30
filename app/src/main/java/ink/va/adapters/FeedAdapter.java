@@ -27,6 +27,7 @@ import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
 
 
+
 /**
  * Created by USER on 2016-06-20.
  */
@@ -261,6 +262,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
             if (FileUtils.isImageType(feedModel.getFileName())) {
                 holder.imageHolder.setVisibility(View.VISIBLE);
+                holder.feedAttachmentLayout.setVisibility(View.GONE);
                 Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + feedModel.getFileName()).withBitmap().placeholder(R.drawable.big_image_place_holder)
                         .intoImageView(holder.imageHolder);
             } else {

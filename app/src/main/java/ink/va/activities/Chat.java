@@ -838,9 +838,10 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                                 eachModel.getDeliveryStatus(), userImage, opponentImage, date, isAnimated);
                         mChatModelArrayList.add(mChatModel);
                         if (eachModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED) && !Regex.isAttachment(message)) {
-                            int itemLocation = mChatModelArrayList.indexOf(mChatModel);
-                            attemptToQue(message, itemLocation,
-                                    deleteOpponentId, deleteUserId, isGifChosen, lasChosenGifName, isAnimated);
+//                            int itemLocation = mChatModelArrayList.indexOf(mChatModel);
+//                            attemptToQue(message, itemLocation,
+//                                    deleteOpponentId, deleteUserId, isGifChosen, lasChosenGifName, isAnimated);
+                            Snackbar.make(mRecyclerView, getString(R.string.unsent_message) + message, Snackbar.LENGTH_SHORT).show();
                         }
                         mChatAdapter.notifyDataSetChanged();
                     }
@@ -949,17 +950,20 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                         RemoteMessage remoteMessage = extras.getParcelable("data");
                         Map<String, String> response = remoteMessage.getData();
                         if (mOpponentId.equals(response.get("user_id"))) {
-                            mChatModel = new ChatModel(Regex.isAttachment(response.get("message")), Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"), response.get("message_id"), response.get("user_id"),
-                                    response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
-                                    response.get("user_image"), response.get("opponent_image"), response.get("date"), Boolean.valueOf(response.get("isAnimated")));
-                            mChatModelArrayList.add(mChatModel);
-                            mChatAdapter.notifyDataSetChanged();
-                            mRecyclerView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    scrollToBottom();
-                                }
-                            });
+                            if (!response.get("message_id").equals(mChatModel.getMessageId())) {
+                                mChatModel = new ChatModel(Regex.isAttachment(response.get("message")), Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"), response.get("message_id"), response.get("user_id"),
+                                        response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
+                                        response.get("user_image"), response.get("opponent_image"), response.get("date"), Boolean.valueOf(response.get("isAnimated")));
+                                mChatModelArrayList.add(mChatModel);
+                                mChatAdapter.notifyDataSetChanged();
+                                mRecyclerView.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        scrollToBottom();
+                                    }
+                                });
+                            }
+
                         }
                         break;
                     case "finish":

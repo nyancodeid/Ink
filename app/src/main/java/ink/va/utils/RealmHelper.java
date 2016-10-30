@@ -105,6 +105,7 @@ public class RealmHelper {
 
     }
 
+
     public void insertMessage(final String userId, final String opponentId, final String message,
                               final String messageId, final String date,
                               final String id, final String deliveryStatus,

@@ -701,4 +701,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="enableLikeNotificationText">Enable Likes Notification</string>
     <string name="enableCommentNotificationText">Enable Comments Notification</string>
     <string name="share_ink_with">Share INK with</string>
+    <string name="unsent_message">unsent message...</string>
 </resources>
