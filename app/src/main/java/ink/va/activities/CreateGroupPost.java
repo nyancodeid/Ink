@@ -295,6 +295,8 @@ public class CreateGroupPost extends BaseActivity implements ProgressRequestBody
             }
 
 
+
+
             if (path != null) {
                 File file = new File(path);
                 if (!file.exists()) {
