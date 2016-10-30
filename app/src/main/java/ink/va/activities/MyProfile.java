@@ -147,6 +147,7 @@ public class MyProfile extends BaseActivity {
     private boolean isImageChosen;
     private String mFacebookName;
     private ProgressDialog progressDialog;
+    private boolean isEditEnabled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -289,19 +290,22 @@ public class MyProfile extends BaseActivity {
 
                     OutputStream fOut = null;
 
-                    File file = new File(getCacheDir(), "" + selectedImageUri.hashCode());
+                    File outputDir = getCacheDir(); // context being the Activity pointer
 
+//                    File file = new File(getCacheDir(), "" + selectedImageUri.hashCode() + ".jpg");
+                    File file = null;
 
-                    pictureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
                     try {
+                        file = File.createTempFile("google_photos", ".jpg", outputDir);
                         fOut = new FileOutputStream(file);
+                        pictureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
                         fOut.flush();
                         fOut.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
-                    selectedImagePath = getCacheDir() + "" + selectedImageUri.hashCode();
+                    selectedImagePath = file.getAbsolutePath();
                 } else {
                     try {
                         selectedImagePath = getRealPathFromURI(selectedImageUri);
@@ -764,45 +768,48 @@ public class MyProfile extends BaseActivity {
     }
 
     private void enableEdit() {
+        if (!isEditEnabled) {
+            String status = mStatusText.getText().toString();
+            String address = mAddress.getText().toString();
+            String phone = mPhone.getText().toString();
+            String relationship = mRelationship.getText().toString();
+            String gender = mGender.getText().toString();
+            String facebook = mFacebook.getText().toString();
+            String skype = mSkype.getText().toString();
 
-        String status = mStatusText.getText().toString();
-        String address = mAddress.getText().toString();
-        String phone = mPhone.getText().toString();
-        String relationship = mRelationship.getText().toString();
-        String gender = mGender.getText().toString();
-        String facebook = mFacebook.getText().toString();
-        String skype = mSkype.getText().toString();
+            mStatusText.setText("");
+            mStatusText.setHint(status);
+            mAddress.setText("");
+            mAddress.setHint(address);
+            mPhone.setText("");
+            mPhone.setHint(phone);
+            mRelationship.setText("");
+            mRelationship.setHint(relationship);
+            mGender.setText("");
+            mGender.setHint(gender);
+            mFacebook.setText("");
+            mFacebook.setHint(facebook);
+            mSkype.setText("");
+            mSkype.setHint(skype);
 
-        mStatusText.setText("");
-        mStatusText.setHint(status);
-        mAddress.setText("");
-        mAddress.setHint(address);
-        mPhone.setText("");
-        mPhone.setHint(phone);
-        mRelationship.setText("");
-        mRelationship.setHint(relationship);
-        mGender.setText("");
-        mGender.setHint(gender);
-        mFacebook.setText("");
-        mFacebook.setHint(facebook);
-        mSkype.setText("");
-        mSkype.setHint(skype);
+            mEditImageNameFab.show(true);
+            mCancelMenuItem.getItem(0).setVisible(true);
+            mStatusText.setFocusable(true);
+            mStatusText.setFocusableInTouchMode(true);
+            mStatusText.requestFocus();
+            mStatusText.requestFocusFromTouch();
+            mStatusText.setSelection(mStatusText.getText().length());
+            mAddress.setFocusable(true);
+            mAddress.setFocusableInTouchMode(true);
+            mPhone.setFocusable(true);
+            mPhone.setFocusableInTouchMode(true);
+            mGender.setClickable(true);
+            mSkype.setFocusable(true);
+            mSkype.setFocusableInTouchMode(true);
+            deleteAccount.setVisibility(View.VISIBLE);
+            isEditEnabled = true;
+        }
 
-        mEditImageNameFab.show(true);
-        mCancelMenuItem.getItem(0).setVisible(true);
-        mStatusText.setFocusable(true);
-        mStatusText.setFocusableInTouchMode(true);
-        mStatusText.requestFocus();
-        mStatusText.requestFocusFromTouch();
-        mStatusText.setSelection(mStatusText.getText().length());
-        mAddress.setFocusable(true);
-        mAddress.setFocusableInTouchMode(true);
-        mPhone.setFocusable(true);
-        mPhone.setFocusableInTouchMode(true);
-        mGender.setClickable(true);
-        mSkype.setFocusable(true);
-        mSkype.setFocusableInTouchMode(true);
-        deleteAccount.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.deleteAccont)
