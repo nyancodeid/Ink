@@ -58,7 +58,14 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         UserMessagesModel userMessagesModel = userMessagesModels.get(position);
         holder.messagesUserName.setText(userMessagesModel.getFirstName() + " " + userMessagesModel.getLastName());
 
-        holder.messageBody.setText(userMessagesModel.getMessage().replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
+        String message = userMessagesModel.getMessage();
+        if (userMessagesModel.getMessage().contains(":")) {
+            int index = userMessagesModel.getMessage().indexOf(":");
+            message = userMessagesModel.getMessage().substring(index + 1, userMessagesModel.getMessage().length());
+        }
+
+
+        holder.messageBody.setText(message);
         if (!userMessagesModel.getImageName().isEmpty()) {
             String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + userMessagesModel.getImageLink();
             if (userMessagesModel.isSocialAccount()) {

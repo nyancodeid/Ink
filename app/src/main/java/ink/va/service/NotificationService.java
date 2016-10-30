@@ -369,12 +369,24 @@ public class NotificationService extends FirebaseMessagingService {
                 builder.setDeleteIntent(dismissPendingIntent);
 
 
+                String message = messageBody;
+                if (messageBody.contains(":")) {
+                    int index = messageBody.indexOf(":");
+                    message = messageBody.substring(index + 1, messageBody.length());
+                }
+
                 builder.setContentTitle(notificationCount + " " + getString(R.string.newMessagesFrom) + " " + userName);
-                builder.setContentText(getString(R.string.lastMessage) + messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
+                builder.setContentText(getString(R.string.lastMessage) + message);
                 builder.setGroup(GROUP_KEY_MESSAGES);
                 builder.setDefaults(android.app.Notification.DEFAULT_ALL);
-                builder.setContentIntent(chatPending);
-                builder.setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.lastMessage) + messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "")));
+
+                String finalMessage = messageBody;
+                if (finalMessage.contains(":")) {
+                    int index = messageBody.indexOf(":");
+                    finalMessage = messageBody.substring(index + 1, messageBody.length());
+                }
+
+                builder.setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.lastMessage) + finalMessage));
                 builder.setShowWhen(true);
                 final android.app.Notification notification = builder.build();
 
@@ -454,12 +466,21 @@ public class NotificationService extends FirebaseMessagingService {
                 builder.setDeleteIntent(dismissPendingIntent);
 
 
+                String finalMessage = messageBody;
+                if (finalMessage.contains(":")) {
+                    int index = messageBody.indexOf(":");
+                    finalMessage = messageBody.substring(index + 1, messageBody.length());
+                }
+
+
                 builder.setContentTitle(getString(R.string.newMessage) + " " + userName);
-                builder.setContentText(messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
+                builder.setContentText(finalMessage);
                 builder.setGroup(GROUP_KEY_MESSAGES);
                 builder.setDefaults(android.app.Notification.DEFAULT_ALL);
                 builder.setContentIntent(chatPending);
-                builder.setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "")));
+
+
+                builder.setStyle(new NotificationCompat.BigTextStyle().bigText(finalMessage));
                 builder.setShowWhen(true);
                 final android.app.Notification notification = builder.build();
 
@@ -542,11 +563,22 @@ public class NotificationService extends FirebaseMessagingService {
 
 
             builder.setContentTitle(getString(R.string.newMessage) + " " + userName);
-            builder.setContentText(messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
+
+
+            String finalMessage = messageBody;
+            if (finalMessage.contains(":")) {
+                int index = messageBody.indexOf(":");
+                finalMessage = messageBody.substring(index + 1, messageBody.length());
+            }
+
+
+            builder.setContentText(finalMessage);
             builder.setGroup(GROUP_KEY_MESSAGES);
             builder.setDefaults(android.app.Notification.DEFAULT_ALL);
             builder.setContentIntent(chatPending);
-            builder.setStyle(new NotificationCompat.BigTextStyle().bigText(messageBody.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "")));
+
+
+            builder.setStyle(new NotificationCompat.BigTextStyle().bigText(finalMessage));
             builder.setShowWhen(true);
             final android.app.Notification notification = builder.build();
 

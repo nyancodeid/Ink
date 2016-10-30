@@ -17,6 +17,7 @@ import com.koushikdutta.ion.ProgressCallback;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class FullscreenActivity extends BaseActivity {
     private String fullUrlToLoad;
@@ -93,6 +94,11 @@ public class FullscreenActivity extends BaseActivity {
             actionBar.hide();
         }
         mVisible = false;
+    }
+
+    @OnClick(R.id.download_icon)
+    public void downlodClicked() {
+
     }
 
     private void show() {

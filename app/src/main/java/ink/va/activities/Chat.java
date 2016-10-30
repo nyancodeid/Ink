@@ -249,6 +249,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
             @Override
             public void onClick(View view, int position) {
                 final ChatModel chatModel = mChatModelArrayList.get(position);
+
                 if (chatModel.isClickable()) {
                     if (chatModel.hasSticker()) {
                         if (!chatModel.isAnimated()) {
@@ -259,11 +260,19 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
                     } else if (chatModel.isAttachment()) {
                         System.gc();
+                        String finalFileName;
+                        if (chatModel.getMessage().contains(":")) {
+                            int index = chatModel.getMessage().indexOf(":");
+                            finalFileName = chatModel.getMessage().substring(index + 1, chatModel.getMessage().length());
+                        } else {
+                            int index = chatModel.getMessage().indexOf(":");
+                            finalFileName = chatModel.getMessage().substring(index + 1, chatModel.getMessage().length());
+                        }
+
                         if (FileUtils.isImageType(chatModel.getMessage())) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
                             builder.setTitle(getString(R.string.downloadQuestion));
-                            builder.setMessage(getString(R.string.downloadTheFile) + " " + chatModel.getMessage().replaceAll("userid=" + chatModel.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "")
-                                    .replaceAll("userid=" + chatModel.getOpponentId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
+                            builder.setMessage(getString(R.string.downloadTheFile) + " " + finalFileName);
                             builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -299,9 +308,15 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                             builder.show();
                         } else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
+                            if (chatModel.getMessage().contains(":")) {
+                                int index = chatModel.getMessage().indexOf(":");
+                                finalFileName = chatModel.getMessage().substring(index + 1, chatModel.getMessage().length());
+                            } else {
+                                int index = chatModel.getMessage().indexOf(":");
+                                finalFileName = chatModel.getMessage().substring(index + 1, chatModel.getMessage().length());
+                            }
                             builder.setTitle(getString(R.string.downloadQuestion));
-                            builder.setMessage(getString(R.string.downloadTheFile) + " " + chatModel.getMessage().replaceAll("userid=" + chatModel.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "")
-                                    .replaceAll("userid=" + chatModel.getOpponentId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
+                            builder.setMessage(getString(R.string.downloadTheFile) + " " + finalFileName);
                             builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -419,10 +434,20 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     };
 
     private void queDownload(String fileName, ChatModel chatModel) {
+        String finalFileName;
+        if (chatModel.getMessage().contains(":")) {
+            int index = chatModel.getMessage().indexOf(":");
+            finalFileName = chatModel.getMessage().substring(index + 1, chatModel.getMessage().length());
+        } else {
+            int index = chatModel.getMessage().indexOf(":");
+            finalFileName = chatModel.getMessage().substring(index + 1, chatModel.getMessage().length());
+        }
+
+
         DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(
                 Uri.parse(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + fileName));
-        request.setTitle(fileName.replaceAll("userid=" + chatModel.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "").replaceAll("userid=" + chatModel.getOpponentId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
+        request.setTitle(finalFileName);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setVisibleInDownloadsUi(true);
         downloadManager.enqueue(request);

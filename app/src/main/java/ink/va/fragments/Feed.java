@@ -204,7 +204,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         boolean isMember = eachObject.optBoolean("isMember");
                         mFeedModel = new FeedModel(isFriend, isSocialAccount, id, imageLink, fileName, postBody,
                                 posterId, address, datePosted, firstName, lastName, isLiked, likesCount, type, groupName, count, ownerImage, groupOwnerId,
-                                groupDescription, groupImage, groupColor,groupOwnerName,commentsCount,groupMessageFileName);
+                                groupDescription, groupImage, groupColor, groupOwnerName, commentsCount, groupMessageFileName);
                         mFeedModelArrayList.add(mFeedModel);
                         mAdapter.notifyDataSetChanged();
                     }
@@ -331,14 +331,19 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     @Override
     public void onAttachmentClick(int position) {
         String fileName = mFeedModelArrayList.get(position).getFileName();
+        String userId = mFeedModelArrayList.get(position).getPosterId();
         showPromptDialog(fileName);
     }
 
     private void showPromptDialog(final String fileName) {
+
+        int index = fileName.indexOf(":");
+        String finalFileName = fileName.substring(index + 1, fileName.length());
+
         System.gc();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.downloadQuestion));
-        builder.setMessage(getString(R.string.downloadTheFile) + " " + fileName.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
+        builder.setMessage(getString(R.string.downloadTheFile) + " " + finalFileName);
         builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -355,10 +360,12 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     }
 
     private void queDownload(String fileName) {
+        int index = fileName.indexOf(":");
+        String finalFileName = fileName.substring(index + 1, fileName.length());
         DownloadManager downloadManager = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(
                 Uri.parse(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + fileName));
-        request.setTitle(fileName.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
+        request.setTitle(finalFileName);
 
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setVisibleInDownloadsUi(true);

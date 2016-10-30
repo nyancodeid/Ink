@@ -525,9 +525,12 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     private void showPromptDialog(final String fileName) {
         System.gc();
+        int index = fileName.indexOf(":");
+        String finalFileName = fileName.substring(index + 1, fileName.length());
+
         AlertDialog.Builder builder = new AlertDialog.Builder(Comments.this);
         builder.setTitle(getString(R.string.downloadQuestion));
-        builder.setMessage(getString(R.string.downloadTheFile) + " " + fileName.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "") + " ?");
+        builder.setMessage(getString(R.string.downloadTheFile) + " " + fileName);
         builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -545,10 +548,13 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
 
     private void queDownload(String fileName) {
+        int index = fileName.indexOf(":");
+        String finalFileName = fileName.substring(index + 1, fileName.length());
+
         DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(
                 Uri.parse(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + fileName));
-        request.setTitle(fileName.replaceAll("userid=" + mSharedHelper.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, ""));
+        request.setTitle(finalFileName);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setVisibleInDownloadsUi(true);
         downloadManager.enqueue(request);

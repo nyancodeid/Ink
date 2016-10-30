@@ -108,8 +108,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         ChatModel chatModel = chatModelList.get(position);
 
         System.gc();
+        String messageBody = chatModel.getMessage();
+        if (chatModel.getMessage().contains(":")) {
+            int index = chatModel.getMessage().indexOf(":");
+            messageBody = chatModel.getMessage().substring(index + 1, chatModel.getMessage().length());
+        }
 
-        String messageBody = chatModel.getMessage().replaceAll("userid=" + chatModel.getUserId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "").replaceAll("userid=" + chatModel.getOpponentId() + ":" + Constants.TYPE_MESSAGE_ATTACHMENT, "");
+
         holder.message.setText(messageBody);
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.chatViewBubble.getLayoutParams();
         LinearLayout.LayoutParams deliveryStatusParams = (LinearLayout.LayoutParams) holder.deliveryStatus.getLayoutParams();
