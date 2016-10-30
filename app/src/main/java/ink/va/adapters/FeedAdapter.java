@@ -2,6 +2,7 @@ package ink.va.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
@@ -25,7 +26,6 @@ import ink.va.utils.Constants;
 import ink.va.utils.FileUtils;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
-
 
 
 /**
@@ -263,8 +263,16 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             if (FileUtils.isImageType(feedModel.getFileName())) {
                 holder.imageHolder.setVisibility(View.VISIBLE);
                 holder.feedAttachmentLayout.setVisibility(View.GONE);
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + feedModel.getFileName()).withBitmap().placeholder(R.drawable.big_image_place_holder)
-                        .intoImageView(holder.imageHolder);
+
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + Uri.encode(feedModel.getFileName())).withBitmap().placeholder(R.drawable.big_image_place_holder)
+                        .intoImageView(holder.imageHolder).setCallback(new FutureCallback<ImageView>() {
+                    @Override
+                    public void onCompleted(Exception e, ImageView result) {
+                        if (e != null) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             } else {
                 holder.imageHolder.setVisibility(View.GONE);
             }
