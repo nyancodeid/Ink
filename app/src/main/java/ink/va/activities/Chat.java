@@ -993,7 +993,9 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                                         response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
                                         response.get("user_image"), response.get("opponent_image"), response.get("date"), Boolean.valueOf(response.get("isAnimated")));
                                 mChatModelArrayList.add(mChatModel);
-                                mChatAdapter.notifyDataSetChanged();
+
+                                int addedItemIndex = mChatModelArrayList.indexOf(mChatModel);
+                                mChatAdapter.notifyItemInserted(addedItemIndex);
                                 mRecyclerView.post(new Runnable() {
                                     @Override
                                     public void run() {
