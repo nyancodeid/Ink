@@ -1,6 +1,7 @@
 package ink.va.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,8 +67,10 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
             if (requestsModel.isSocialAccount()) {
                 Ion.with(mContext).load(requestsModel.getRequesterImage()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.requesterImage);
             } else {
+                String encodedImage = Uri.encode(requestsModel.getRequesterImage());
+
                 Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        requestsModel.getRequesterImage()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.requesterImage);
+                        encodedImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.requesterImage);
             }
         } else {
             Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.requesterImage);

@@ -465,7 +465,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     public void onImageClicked(int position) {
         FeedModel feedModel = mFeedModelArrayList.get(position);
         Intent intent = new Intent(getActivity(), FullscreenActivity.class);
-        intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + feedModel.getFileName());
+        String encodedFileName = Uri.encode(feedModel.getFileName());
+        intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedFileName);
         startActivity(intent);
     }
 

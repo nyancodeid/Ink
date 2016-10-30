@@ -143,7 +143,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             holder.imageHolder.setVisibility(View.GONE);
         } else {
             holder.imageHolder.setVisibility(View.VISIBLE);
-            Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + feedModel.getGroupMessageFileName()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+            String encodedImage = Uri.encode(feedModel.getGroupMessageFileName());
+            Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedImage).asBitmap().setCallback(new FutureCallback<Bitmap>() {
                 @Override
                 public void onCompleted(Exception e, Bitmap result) {
                     if (e == null) {
@@ -178,7 +179,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                         .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
                         .intoImageView(holder.feedUserImage);
             } else {
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + feedModel.getUserImage())
+                String encodedImage = Uri.encode(feedModel.getUserImage());
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
                         .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
                         .intoImageView(holder.feedUserImage);
             }
@@ -220,7 +222,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                         .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
                         .intoImageView(holder.feedUserImage);
             } else {
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + feedModel.getUserImage())
+                String encodedImage = Uri.encode(feedModel.getUserImage());
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
                         .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
                         .intoImageView(holder.feedUserImage);
             }

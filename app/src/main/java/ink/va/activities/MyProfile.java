@@ -491,8 +491,9 @@ public class MyProfile extends BaseActivity {
                         }
                     });
                 } else {
+                    String encodedImage = Uri.encode(mImageLinkToSend);
                     imageLoadingProgress.setVisibility(View.VISIBLE);
-                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend).withBitmap().intoImageView(profileImage)
+                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage).withBitmap().intoImageView(profileImage)
                             .setCallback(new FutureCallback<ImageView>() {
                                 @Override
                                 public void onCompleted(Exception e, ImageView result) {
@@ -691,7 +692,8 @@ public class MyProfile extends BaseActivity {
                 if (isSocialAccount()) {
                     intent.putExtra("link", mImageLinkToSend);
                 } else {
-                    intent.putExtra("link", Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend);
+                    String encodedFileName = Uri.encode(mImageLinkToSend);
+                    intent.putExtra("link", Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedFileName);
                 }
             } else {
                 intent.putExtra("link", mImageLinkToSend);

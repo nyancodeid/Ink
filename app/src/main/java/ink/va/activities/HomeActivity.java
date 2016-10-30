@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
@@ -594,8 +595,9 @@ public class HomeActivity extends BaseActivity
                         }
                     });
                 } else {
+                    String encodedImage = Uri.encode(mSharedHelper.getImageLink());
                     Ion.with(getApplicationContext()).load(Constants.MAIN_URL +
-                            Constants.USER_IMAGES_FOLDER + mSharedHelper.getImageLink()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(mProfileImage)
+                            Constants.USER_IMAGES_FOLDER + encodedImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(mProfileImage)
                             .setCallback(new FutureCallback<ImageView>() {
                                 @Override
                                 public void onCompleted(Exception e, ImageView result) {

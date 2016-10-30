@@ -1,6 +1,7 @@
 package ink.va.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,11 +66,13 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         holder.name.setText(friendsModel.getFullName());
 
         if (!friendsModel.getImageLink().isEmpty()) {
+
             final String url;
             if (friendsModel.isSocialAccount()) {
                 url = friendsModel.getImageLink();
             } else {
-                url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + friendsModel.getImageLink();
+                String encodedImage = Uri.encode(friendsModel.getImageLink());
+                url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage;
             }
 
             Ion.with(mContext).load(url)

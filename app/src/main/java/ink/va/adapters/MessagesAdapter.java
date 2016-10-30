@@ -1,6 +1,7 @@
 package ink.va.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,7 +68,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
         holder.messageBody.setText(message);
         if (!userMessagesModel.getImageName().isEmpty()) {
-            String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + userMessagesModel.getImageLink();
+            String encodedImage = Uri.encode(userMessagesModel.getImageLink());
+
+            String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage;
             if (userMessagesModel.isSocialAccount()) {
                 url = userMessagesModel.getImageLink();
             }

@@ -98,7 +98,8 @@ public class CreateGroupPost extends BaseActivity implements ProgressRequestBody
             if (isSocialAccount()) {
                 Ion.with(this).load(sharedHelper.getImageLink()).withBitmap().transform(new CircleTransform()).intoImageView(currentUserImage);
             } else {
-                Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + sharedHelper.getImageLink()).withBitmap().
+                String encodedImage = Uri.encode(sharedHelper.getImageLink());
+                Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage).withBitmap().
                         transform(new CircleTransform()).intoImageView(currentUserImage);
             }
         } else {
@@ -293,8 +294,6 @@ public class CreateGroupPost extends BaseActivity implements ProgressRequestBody
                     return;
                 }
             }
-
-
 
 
             if (path != null) {

@@ -2,6 +2,7 @@ package ink.va.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -72,7 +73,8 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
             holder.groupImageView.setVisibility(View.GONE);
         } else {
             holder.groupImageView.setVisibility(View.VISIBLE);
-            Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + groupMessagesModel.getFileName()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+            String encodedImage = Uri.encode(groupMessagesModel.getFileName());
+            Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedImage).asBitmap().setCallback(new FutureCallback<Bitmap>() {
                 @Override
                 public void onCompleted(Exception e, Bitmap result) {
                     if (e == null) {
@@ -84,8 +86,9 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
             });
         }
         if (!groupMessagesModel.getSenderImage().isEmpty()) {
+            String encodedImage = Uri.encode(groupMessagesModel.getSenderImage());
             Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                    groupMessagesModel.getSenderImage()).withBitmap().transform(new CircleTransform()).intoImageView(holder.messageSenderImage);
+                    encodedImage).withBitmap().transform(new CircleTransform()).intoImageView(holder.messageSenderImage);
         } else {
             Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(holder.messageSenderImage);
         }

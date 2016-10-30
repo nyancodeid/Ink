@@ -1,6 +1,7 @@
 package ink.va.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -116,8 +117,10 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
                 if (commentModel.isSocialAccount()) {
                     Ion.with(context).load(commentModel.getCommenterImage()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
                 } else {
+                    String encodedImage = Uri.encode(commentModel.getCommenterImage());
+
                     Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                            commentModel.getCommenterImage()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
+                           encodedImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
                 }
             } else {
                 Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
@@ -147,8 +150,9 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
                 if (isOwnerSocialAccount) {
                     Ion.with(context).load(ownerImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
                 } else {
+                    String encodedImage = Uri.encode(ownerImage);
                     Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                            ownerImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
+                            encodedImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
                 }
             } else {
                 Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
@@ -169,7 +173,8 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
 
                 if (FileUtils.isImageType(attachment)) {
                     headerViewHolder.imageHolder.setVisibility(View.VISIBLE);
-                    Ion.with(context).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + attachment).withBitmap().placeholder(R.drawable.big_image_place_holder)
+                    String encodedImage = Uri.encode(attachment);
+                    Ion.with(context).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedImage).withBitmap().placeholder(R.drawable.big_image_place_holder)
                             .intoImageView(headerViewHolder.imageHolder);
                 } else {
                     headerViewHolder.imageHolder.setVisibility(View.GONE);

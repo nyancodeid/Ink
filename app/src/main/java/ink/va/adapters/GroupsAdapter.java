@@ -2,6 +2,7 @@ package ink.va.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -80,8 +81,9 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
         }
         if (!groupsModel.getGroupImage().isEmpty()) {
             holder.groupImage.setScaleType(ImageView.ScaleType.FIT_XY);
+            String encodedImage = Uri.encode(groupsModel.getGroupImage());
             Ion.with(mContext).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER +
-                    groupsModel.getGroupImage()).withBitmap().fitXY().centerCrop().intoImageView(holder.groupImage).setCallback(new FutureCallback<ImageView>() {
+                   encodedImage).withBitmap().fitXY().centerCrop().intoImageView(holder.groupImage).setCallback(new FutureCallback<ImageView>() {
                 @Override
                 public void onCompleted(Exception e, ImageView result) {
                     holder.singleItemLoading.setVisibility(View.GONE);
@@ -96,8 +98,9 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
             if (groupsModel.isSocialAccount()) {
                 Ion.with(mContext).load(groupsModel.getOwnerImage()).withBitmap().transform(new CircleTransform()).intoImageView(holder.ownerImage);
             } else {
+                String encodedImage = Uri.encode(groupsModel.getOwnerImage());
                 Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        groupsModel.getOwnerImage()).withBitmap().transform(new CircleTransform()).intoImageView(holder.ownerImage);
+                       encodedImage).withBitmap().transform(new CircleTransform()).intoImageView(holder.ownerImage);
             }
         } else {
             Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(holder.ownerImage);

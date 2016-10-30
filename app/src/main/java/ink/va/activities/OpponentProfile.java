@@ -375,8 +375,9 @@ public class OpponentProfile extends BaseActivity {
                                         }
                                     });
                                 } else {
+                                    String encodedImage = Uri.encode(mOpponentImage);
                                     Ion.with(getApplicationContext()).load(Constants.MAIN_URL +
-                                            Constants.USER_IMAGES_FOLDER + mOpponentImage).withBitmap().intoImageView(mProfileImage).setCallback(new FutureCallback<ImageView>() {
+                                            Constants.USER_IMAGES_FOLDER + encodedImage).withBitmap().intoImageView(mProfileImage).setCallback(new FutureCallback<ImageView>() {
                                         @Override
                                         public void onCompleted(Exception e, ImageView result) {
                                             mOpponentImageLoading.setVisibility(View.GONE);
@@ -474,8 +475,9 @@ public class OpponentProfile extends BaseActivity {
             if (isSocialAccount) {
                 intent.putExtra("link", mOpponentImage);
             } else {
+                String encodedFileName = Uri.encode(mOpponentImage);
                 intent.putExtra("link", Constants.MAIN_URL +
-                        Constants.USER_IMAGES_FOLDER + mOpponentImage);
+                        Constants.USER_IMAGES_FOLDER + encodedFileName);
             }
         } else {
             intent.putExtra("link", Constants.NO_IMAGE_URL);

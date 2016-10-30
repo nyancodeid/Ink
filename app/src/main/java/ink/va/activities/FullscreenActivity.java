@@ -60,7 +60,7 @@ public class FullscreenActivity extends BaseActivity {
             gifHolder.setVisibility(View.GONE);
             mImageView.setVisibility(View.VISIBLE);
             isDataLoaded = false;
-            Ion.with(this).load(Uri.encode(fullUrlToLoad)).progressHandler(new ProgressCallback() {
+            Ion.with(this).load(fullUrlToLoad).progressHandler(new ProgressCallback() {
                 @Override
                 public void onProgress(long downloaded, long total) {
                     loadingProgressBar.setMax((int) total);
@@ -69,6 +69,9 @@ public class FullscreenActivity extends BaseActivity {
             }).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
                 @Override
                 public void onCompleted(Exception e, Bitmap result) {
+                    if (e != null) {
+                        e.printStackTrace();
+                    }
                     if (result != null) {
                         mImageView.setImage(ImageSource.bitmap(result));
                         imageLoadingProgress.setVisibility(View.GONE);

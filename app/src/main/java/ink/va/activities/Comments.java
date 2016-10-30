@@ -470,7 +470,8 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     public void onImageClicked(int position) {
 
         Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
-        intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + attachmentName);
+        String encodedFileName = Uri.encode(attachmentName);
+        intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedFileName);
         startActivity(intent);
     }
 

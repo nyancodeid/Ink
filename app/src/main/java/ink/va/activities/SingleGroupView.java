@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -239,7 +240,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
 
         if (mGroupImage != null && !mGroupImage.isEmpty()) {
             mGroupImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            Ion.with(this).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + mGroupImage).withBitmap().fitXY().centerCrop().intoImageView(mGroupImageView).setCallback(new FutureCallback<ImageView>() {
+            String encodedImage = Uri.encode(mGroupImage);
+            Ion.with(this).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + encodedImage).withBitmap().fitXY().centerCrop().intoImageView(mGroupImageView).setCallback(new FutureCallback<ImageView>() {
                 @Override
                 public void onCompleted(Exception e, ImageView result) {
                     hideGroupImageLoading();
@@ -254,8 +256,9 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             if (isSocialAccount) {
                 Ion.with(this).load(mOwnerImage).withBitmap().transform(new CircleTransform()).intoImageView(mOwnerImageView);
             } else {
+                String encodedImage = Uri.encode(mOwnerImage);
                 Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        mOwnerImage).withBitmap().transform(new CircleTransform()).intoImageView(mOwnerImageView);
+                        encodedImage).withBitmap().transform(new CircleTransform()).intoImageView(mOwnerImageView);
             }
         } else {
             Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(mOwnerImageView);
@@ -489,7 +492,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     public void groupImageView() {
         Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
         if (mGroupImage != null && !mGroupImage.isEmpty()) {
-            intent.putExtra("link", Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + mGroupImage);
+            String encodedFileName = Uri.encode(mGroupImage);
+            intent.putExtra("link", Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + encodedFileName);
             startActivity(intent);
         }
     }

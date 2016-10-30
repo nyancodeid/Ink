@@ -299,7 +299,8 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                                         }).show();
                                     } else {
                                         Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
-                                        intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + chatModel.getMessage());
+                                        String encodedFileName = Uri.encode(chatModel.getMessage());
+                                        intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedFileName);
                                         startActivity(intent);
                                     }
 
@@ -1099,8 +1100,9 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                     if (isSocialAccount) {
                         Ion.with(this).load(opponentImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(this.opponentImage);
                     } else {
+                        String encodedImage = Uri.encode(opponentImage);
                         Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                                opponentImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(this.opponentImage);
+                                encodedImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(this.opponentImage);
                     }
                 }
             } else {
