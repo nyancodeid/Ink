@@ -529,6 +529,13 @@ public class Login extends BaseActivity implements View.OnClickListener {
                             JSONArray result = jsonObject.optJSONArray("response");
                             JSONObject userJson = result.optJSONObject(0);
                             String userId = userJson.optString("uid");
+
+                            if(userId!=null&&!userId.isEmpty()){
+
+                            }else{
+                                userId = userJson.optString("id");
+                            }
+
                             String firstName = userJson.optString("first_name");
                             String lastName = userJson.optString("last_name");
                             String userPhoto = userJson.optString("photo_max_orig");
