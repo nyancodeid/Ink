@@ -13,6 +13,7 @@ import ink.va.models.MessageModel;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * Created by USER on 2016-06-26.
@@ -228,7 +229,7 @@ public class RealmHelper {
                     public void execute(Realm realm) {
                         RealmResults<MessageModel> realmResults = realm.where(MessageModel.class).equalTo("opponentId", opponentId).equalTo("userId", userId)
                                 .or().equalTo("opponentId", userId).equalTo("userId", opponentId
-                                ).findAll();
+                                ).findAllSorted("messageId", Sort.ASCENDING);
                         for (MessageModel messageModel : realmResults) {
                             mModelArray.add(messageModel);
                         }

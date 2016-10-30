@@ -176,7 +176,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
 
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) groupMessagesRecycler.getLayoutManager();
                 if (linearLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
-                    singleGroupAppBar.setExpanded(true, true);
+
                 }
 
                 if (!isMember) {
@@ -781,6 +781,17 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     public void onItemClicked(int position, View view) {
 
         GroupMessagesModel singleModel = groupMessagesModels.get(position);
+
+        String encoded = Uri.encode(singleModel.getFileName());
+        String url = Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encoded;
+        Intent intent = new Intent(this, FullscreenActivity.class);
+        intent.putExtra("link", url);
+        startActivity(intent);
+
+
+    }
+
+    private void openProfile(GroupMessagesModel singleModel) {
         if (singleModel.getSenderId().equals(mSharedHelper.getUserId())) {
             Intent intent = new Intent(getApplicationContext(), MyProfile.class);
             startActivity(intent);
@@ -796,7 +807,6 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             intent.putExtra("lastName", lastName);
             startActivity(intent);
         }
-
     }
 
     @Override
@@ -830,7 +840,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                         break;
                     case 1:
                         snackbar.setText(getString(R.string.deleting));
-                        deleteComment(groupMessagesModel.getGroupMessageId(),groupMessagesModel.getFileName());
+                        deleteComment(groupMessagesModel.getGroupMessageId(), groupMessagesModel.getFileName());
                         break;
                 }
             }
@@ -839,7 +849,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
 
     @Override
     public void onItemClicked(Object object) {
-
+        GroupMessagesModel groupMessagesModel = groupMessagesModels.get((int) object);
+        openProfile(groupMessagesModel);
     }
 
     private void updateGroupMessage(final String message, final String messageId) {
@@ -890,9 +901,9 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         });
     }
 
-    private void deleteComment(final String messageId,String fileName) {
+    private void deleteComment(final String messageId, String fileName) {
         Call<ResponseBody> groupOptionsCall = Retrofit.getInstance().getInkService().changeGroupMessages(
-                fileName , Constants.GROUP_MESSAGES_TYPE_DELETE,
+                fileName, Constants.GROUP_MESSAGES_TYPE_DELETE,
                 "", messageId);
         groupOptionsCall.enqueue(new Callback<ResponseBody>() {
             @Override

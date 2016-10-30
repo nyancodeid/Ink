@@ -69,6 +69,14 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         GroupMessagesModel groupMessagesModel = groupMessagesModels.get(position);
 
+        holder.messageSenderImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(onClickListener!=null){
+                    onClickListener.onItemClicked(position);
+                }
+            }
+        });
         if (groupMessagesModel.getFileName().isEmpty()) {
             holder.groupImageView.setVisibility(View.GONE);
         } else {
