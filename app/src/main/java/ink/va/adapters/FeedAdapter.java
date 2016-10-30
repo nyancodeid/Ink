@@ -277,6 +277,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                     }
                 });
             } else {
+                holder.feedAttachmentLayout.setVisibility(View.VISIBLE);
                 holder.imageHolder.setVisibility(View.GONE);
             }
         } else {

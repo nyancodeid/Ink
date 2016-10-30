@@ -120,7 +120,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
                     String encodedImage = Uri.encode(commentModel.getCommenterImage());
 
                     Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                           encodedImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
+                            encodedImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
                 }
             } else {
                 Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
@@ -174,9 +174,11 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
                 if (FileUtils.isImageType(attachment)) {
                     headerViewHolder.imageHolder.setVisibility(View.VISIBLE);
                     String encodedImage = Uri.encode(attachment);
+                    ((HeaderViewHolder) holder).commentAttachmentLayout.setVisibility(View.GONE);
                     Ion.with(context).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedImage).withBitmap().placeholder(R.drawable.big_image_place_holder)
                             .intoImageView(headerViewHolder.imageHolder);
                 } else {
+                    ((HeaderViewHolder) holder).commentAttachmentLayout.setVisibility(View.VISIBLE);
                     headerViewHolder.imageHolder.setVisibility(View.GONE);
                 }
 
