@@ -1,6 +1,9 @@
 package ink.va.activities;
 
+import android.app.DownloadManager;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -101,7 +104,7 @@ public class FullscreenActivity extends BaseActivity {
     }
 
     @OnClick(R.id.download_icon)
-    public void downlodClicked() {
+    public void downloadClicked() {
         if (!isDataLoaded) {
             Snackbar.make(loadingProgressBar, getString(R.string.pleaseWaitDownload), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
                 @Override
@@ -110,8 +113,21 @@ public class FullscreenActivity extends BaseActivity {
                 }
             }).show();
         } else {
-
+            queDownload(fullUrlToLoad);
         }
+    }
+
+
+    private void queDownload(String fullUrlToLoad) {
+        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(
+                Uri.parse(fullUrlToLoad));
+        request.setTitle("file_ink-" + System.currentTimeMillis());
+
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setVisibleInDownloadsUi(true);
+        downloadManager.enqueue(request);
+
     }
 
     private void show() {
