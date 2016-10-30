@@ -3,6 +3,7 @@ package ink.va.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -27,7 +28,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -161,9 +166,8 @@ public class CreateGroupPost extends BaseActivity implements ProgressRequestBody
     }
 
     private void openImageChooser() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");      //all files
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
 
         try {
             startActivityForResult(Intent.createChooser(intent, "Select a Image"), PICK_FILE_REQUEST_CODE);
@@ -188,7 +192,7 @@ public class CreateGroupPost extends BaseActivity implements ProgressRequestBody
 
         Map<String, ProgressRequestBody> map = new HashMap<>();
         ProgressRequestBody requestBody = new ProgressRequestBody(chosenFile, this);
-        if(chosenFile!=null){
+        if (chosenFile != null) {
             map.put("file\"; filename=\"" + chosenFile.getName() + "\"", requestBody);
         }
 
@@ -252,14 +256,44 @@ public class CreateGroupPost extends BaseActivity implements ProgressRequestBody
                     dialogInterface.dismiss();
                 }
             });
-            try {
-                path = FileUtils.getPath(this, uri);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-                fileErrorDialog.show();
-                isFileChosen = false;
-                return;
+
+
+            if (uri.toString().startsWith("content://com.google")) {
+                InputStream is = null;
+                try {
+                    is = getContentResolver().openInputStream(uri);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Bitmap pictureBitmap = BitmapFactory.decodeStream(is);
+
+                OutputStream fOut = null;
+
+                File outputDir = getCacheDir();
+                File file = null;
+
+                try {
+                    file = File.createTempFile("google_photos", ".jpg", outputDir);
+                    fOut = new FileOutputStream(file);
+                    pictureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                    fOut.flush();
+                    fOut.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                path = file.getAbsolutePath();
+            } else {
+                try {
+                    path = FileUtils.getPath(this, uri);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                    fileErrorDialog.show();
+                    isFileChosen = false;
+                    return;
+                }
             }
+
 
             if (path != null) {
                 File file = new File(path);
