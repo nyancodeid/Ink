@@ -12,6 +12,7 @@ import ink.va.models.CountBadgeModel;
 import ink.va.models.MessageModel;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -26,6 +27,7 @@ public class RealmHelper {
     private boolean exists = false;
     private Handler handler;
     private boolean clearDBSuccess;
+    private boolean isMessageExist;
 
     public static RealmHelper getInstance() {
         return ourInstance;
@@ -106,6 +108,29 @@ public class RealmHelper {
 
     }
 
+    public boolean checkIfExists(final String id) {
+        isMessageExist = false;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                mRealm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        RealmQuery<MessageModel> query = realm.where(MessageModel.class)
+                                .equalTo("messageId", id);
+                        if (query.count() == 0) {
+                            isMessageExist = false;
+                        } else {
+                            isMessageExist = true;
+                        }
+                    }
+                });
+            }
+        });
+
+
+        return isMessageExist;
+    }
 
     public void insertMessage(final String userId, final String opponentId, final String message,
                               final String messageId, final String date,
@@ -115,33 +140,36 @@ public class RealmHelper {
                               final String deleteUserId,
                               final boolean hasGif, final String gifUrl, final boolean animated) {
 
+        if (!isMessageExist(messageId)) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mRealm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            MessageModel messageModel = realm.createObject(MessageModel.class);
 
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                mRealm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        MessageModel messageModel = realm.createObject(MessageModel.class);
+                            messageModel.setId(id);
+                            messageModel.setMessageId(messageId);
+                            messageModel.setMessage(message);
+                            messageModel.setUserId(userId);
+                            messageModel.setOpponentId(opponentId);
+                            messageModel.setAnimated(animated);
+                            messageModel.setDeliveryStatus(deliveryStatus);
+                            messageModel.setUserImage(userImage);
+                            messageModel.setOpponentImage(opponentImage);
+                            messageModel.setDate(date);
+                            messageModel.setHasGif(hasGif);
+                            messageModel.setGifUrl(gifUrl);
+                            messageModel.setDeleteUserId(deleteUserId);
+                            messageModel.setDeleteOpponentId(deleteOpponentId);
+                        }
+                    });
+                }
+            });
 
-                        messageModel.setId(id);
-                        messageModel.setMessageId(messageId);
-                        messageModel.setMessage(message);
-                        messageModel.setUserId(userId);
-                        messageModel.setOpponentId(opponentId);
-                        messageModel.setAnimated(animated);
-                        messageModel.setDeliveryStatus(deliveryStatus);
-                        messageModel.setUserImage(userImage);
-                        messageModel.setOpponentImage(opponentImage);
-                        messageModel.setDate(date);
-                        messageModel.setHasGif(hasGif);
-                        messageModel.setGifUrl(gifUrl);
-                        messageModel.setDeleteUserId(deleteUserId);
-                        messageModel.setDeleteOpponentId(deleteOpponentId);
-                    }
-                });
-            }
-        });
+        }
+
 
     }
 

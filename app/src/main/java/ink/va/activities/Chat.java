@@ -787,7 +787,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     private void attemptToQue(String message, int itemLocation, String deleteOpponentId,
                               String deleteUserId, final boolean hasGif, final String gifUrl, boolean isAnimated) {
         RealmHelper.getInstance().insertMessage(mCurrentUserId, mOpponentId,
-                message, "0", "",
+                message, String.valueOf(System.currentTimeMillis()), "",
                 String.valueOf(itemLocation),
                 Constants.STATUS_NOT_DELIVERED, mUserImage,
                 mOpponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl, isAnimated);
@@ -1266,7 +1266,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                 RealmHelper.getInstance().insertMessage(mCurrentUserId, mOpponentId,
                         "userid=" + mSharedHelper.getUserId() + ":" +
                                 Constants.TYPE_MESSAGE_ATTACHMENT +
-                                file.getName(), "0", "",
+                                file.getName(), String.valueOf(System.currentTimeMillis()), "",
                         String.valueOf(itemLocation),
                         Constants.STATUS_NOT_DELIVERED, mUserImage,
                         mOpponentImage, mDeleteOpponentId, mDeleteUserId, false, "", false);
