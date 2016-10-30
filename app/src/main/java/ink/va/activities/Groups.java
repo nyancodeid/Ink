@@ -308,7 +308,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                             for (int i = 0; i < resultsArray.length(); i++) {
                                 JSONObject eachObject = resultsArray.optJSONObject(i);
                                 String groupId = eachObject.optString("group_id");
-                                String groupImage = eachObject.optString("groupImageView");
+                                String groupImage = eachObject.optString("group_image");
                                 String groupName = eachObject.optString("group_name");
                                 String groupOwnerName = eachObject.optString("group_owner_name");
                                 String groupDescription = eachObject.optString("group_description");
@@ -411,7 +411,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject eachObject = jsonArray.optJSONObject(i);
                                 String groupId = eachObject.optString("group_id");
-                                String groupImage = eachObject.optString("groupImageView");
+                                String groupImage = eachObject.optString("group_image");
                                 String groupName = eachObject.optString("group_name");
                                 String groupOwnerName = eachObject.optString("group_owner_name");
                                 String groupDescription = eachObject.optString("group_description");

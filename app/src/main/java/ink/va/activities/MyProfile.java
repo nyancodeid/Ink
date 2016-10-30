@@ -290,9 +290,7 @@ public class MyProfile extends BaseActivity {
 
                     OutputStream fOut = null;
 
-                    File outputDir = getCacheDir(); // context being the Activity pointer
-
-//                    File file = new File(getCacheDir(), "" + selectedImageUri.hashCode() + ".jpg");
+                    File outputDir = getCacheDir();
                     File file = null;
 
                     try {

@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,7 +35,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -336,18 +342,41 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                     dialogInterface.dismiss();
                 }
             });
-            try {
-                path = FileUtils.getPath(this, uri);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-                fileErrorDialog.show();
-                isFileChosen = false;
-                return;
-            }
-            // Get the file instance
-            // File file = new File(path);
-            // Initiate the upload
+            if (uri.toString().startsWith("content://com.google")) {
+                InputStream is = null;
+                try {
+                    is = getContentResolver().openInputStream(uri);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Bitmap pictureBitmap = BitmapFactory.decodeStream(is);
 
+                OutputStream fOut = null;
+
+                File outputDir = getCacheDir();
+                File file = null;
+
+                try {
+                    file = File.createTempFile("google_photos", ".jpg", outputDir);
+                    fOut = new FileOutputStream(file);
+                    pictureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                    fOut.flush();
+                    fOut.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                path = file.getAbsolutePath();
+            } else {
+                try {
+                    path = FileUtils.getPath(this, uri);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                    fileErrorDialog.show();
+                    isFileChosen = false;
+                    return;
+                }
+            }
             if (path != null) {
                 File file = new File(path);
                 if (!file.exists()) {
