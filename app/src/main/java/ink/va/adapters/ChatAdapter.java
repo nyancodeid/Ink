@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -243,7 +244,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 holder.imageView.setBackgroundResource(R.drawable.time_loading_vector);
                 holder.imageViewWrapper.setVisibility(View.VISIBLE);
 
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + chatModel.getMessage()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                String encoded = Uri.encode(chatModel.getMessage());
+                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encoded).asBitmap().setCallback(new FutureCallback<Bitmap>() {
                     @Override
                     public void onCompleted(Exception e, Bitmap result) {
                         if (e == null) {
