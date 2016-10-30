@@ -967,15 +967,27 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
+
             if (extras != null) {
                 String type = extras.getString("type");
+                boolean canProceedToShow = true;
 
                 switch (type) {
                     case "showMessage":
                         RemoteMessage remoteMessage = extras.getParcelable("data");
                         Map<String, String> response = remoteMessage.getData();
                         if (mOpponentId.equals(response.get("user_id"))) {
-                            if (!response.get("message_id").equals(mChatModel.getMessageId())) {
+                            String messageIdToCompare = response.get("message_id");
+
+                            for (ChatModel chatModel : mChatModelArrayList) {
+                                String currentMessageId = chatModel.getMessageId();
+                                if (messageIdToCompare.equals(currentMessageId)) {
+                                    canProceedToShow = false;
+                                    break;
+                                }
+                            }
+
+                            if (canProceedToShow) {
                                 mChatModel = new ChatModel(Regex.isAttachment(response.get("message")), Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"), response.get("message_id"), response.get("user_id"),
                                         response.get("opponent_id"), StringEscapeUtils.unescapeJava(response.get("message")), true, Constants.STATUS_DELIVERED,
                                         response.get("user_image"), response.get("opponent_image"), response.get("date"), Boolean.valueOf(response.get("isAnimated")));

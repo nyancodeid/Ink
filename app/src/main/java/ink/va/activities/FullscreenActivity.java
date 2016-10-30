@@ -2,6 +2,7 @@ package ink.va.activities;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +33,7 @@ public class FullscreenActivity extends BaseActivity {
     ImageView gifHolder;
     private boolean mVisible;
     private ActionBar actionBar;
+    private boolean isDataLoaded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,7 @@ public class FullscreenActivity extends BaseActivity {
 
             gifHolder.setVisibility(View.GONE);
             mImageView.setVisibility(View.VISIBLE);
+            isDataLoaded = false;
             Ion.with(this).load(fullUrlToLoad).progressHandler(new ProgressCallback() {
                 @Override
                 public void onProgress(long downloaded, long total) {
@@ -65,6 +68,7 @@ public class FullscreenActivity extends BaseActivity {
                 public void onCompleted(Exception e, Bitmap result) {
                     mImageView.setImage(ImageSource.bitmap(result));
                     imageLoadingProgress.setVisibility(View.GONE);
+                    isDataLoaded = true;
                 }
             });
 
@@ -98,7 +102,16 @@ public class FullscreenActivity extends BaseActivity {
 
     @OnClick(R.id.download_icon)
     public void downlodClicked() {
+        if (!isDataLoaded) {
+            Snackbar.make(loadingProgressBar, getString(R.string.pleaseWaitDownload), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
+                }
+            }).show();
+        } else {
+
+        }
     }
 
     private void show() {
