@@ -358,21 +358,7 @@ public class MyProfile extends BaseActivity {
 
     @OnClick(R.id.profileImage)
     public void profileImage() {
-        Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
-        if (mImageLinkToSend != null && !mImageLinkToSend.isEmpty()) {
-            if (!isImageChosen) {
-                if (isSocialAccount()) {
-                    intent.putExtra("link", mImageLinkToSend);
-                } else {
-                    intent.putExtra("link", Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend);
-                }
-            } else {
-                intent.putExtra("link", mImageLinkToSend);
-            }
-        } else {
-            intent.putExtra("link", Constants.NO_IMAGE_URL);
-        }
-        startActivity(intent);
+        openChooserPopUp(true);
     }
 
     private void getMyData() {
@@ -639,29 +625,79 @@ public class MyProfile extends BaseActivity {
     @OnClick(R.id.editImageNameFab)
     public void editImageName() {
         System.gc();
-        mEditPopUp = new PopupMenu(MyProfile.this, mEditImageNameFab);
-        mEditPopUp.getMenu().add(0, 0, 0, getString(R.string.changeImage));
-        mEditPopUp.getMenu().add(1, 1, 1, getString(R.string.changeName));
-        mEditPopUp.show();
-        mEditPopUp.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case 0:
-                        if (!PermissionsChecker.isStoragePermissionGranted(getApplicationContext())) {
-                            ActivityCompat.requestPermissions(MyProfile.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-                                    STORAGE_PERMISSION_REQUEST);
-                        } else {
-                            openGallery();
-                        }
-                        break;
-                    case 1:
-                        openNameChanger();
-                        break;
+        openChooserPopUp(false);
+    }
+
+    private void openChooserPopUp(boolean showViewImage) {
+        if (!showViewImage) {
+            mEditPopUp = new PopupMenu(MyProfile.this, mEditImageNameFab);
+            mEditPopUp.getMenu().add(0, 0, 0, getString(R.string.changeImage));
+            mEditPopUp.getMenu().add(1, 1, 1, getString(R.string.changeName));
+            mEditPopUp.show();
+            mEditPopUp.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case 0:
+                            if (!PermissionsChecker.isStoragePermissionGranted(getApplicationContext())) {
+                                ActivityCompat.requestPermissions(MyProfile.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                                        STORAGE_PERMISSION_REQUEST);
+                            } else {
+                                openGallery();
+                            }
+                            break;
+                        case 1:
+                            openNameChanger();
+                            break;
+                    }
+                    return true;
                 }
-                return true;
+            });
+        } else {
+            enableEdit();
+            mEditPopUp = new PopupMenu(MyProfile.this, profileImage);
+            mEditPopUp.getMenu().add(0, 0, 0, getString(R.string.changeImage));
+            mEditPopUp.getMenu().add(1, 1, 1, getString(R.string.view_image));
+            mEditPopUp.show();
+            mEditPopUp.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case 0:
+                            if (!PermissionsChecker.isStoragePermissionGranted(getApplicationContext())) {
+                                ActivityCompat.requestPermissions(MyProfile.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                                        STORAGE_PERMISSION_REQUEST);
+                            } else {
+                                openGallery();
+                            }
+                            break;
+                        case 1:
+                            openImageIntent();
+                            break;
+                    }
+                    return true;
+                }
+            });
+        }
+
+    }
+
+    private void openImageIntent() {
+        Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
+        if (mImageLinkToSend != null && !mImageLinkToSend.isEmpty()) {
+            if (!isImageChosen) {
+                if (isSocialAccount()) {
+                    intent.putExtra("link", mImageLinkToSend);
+                } else {
+                    intent.putExtra("link", Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + mImageLinkToSend);
+                }
+            } else {
+                intent.putExtra("link", mImageLinkToSend);
             }
-        });
+        } else {
+            intent.putExtra("link", Constants.NO_IMAGE_URL);
+        }
+        startActivity(intent);
     }
 
 
