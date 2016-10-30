@@ -72,7 +72,7 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
         holder.messageSenderImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(onClickListener!=null){
+                if (onClickListener != null) {
                     onClickListener.onItemClicked(position);
                 }
             }
@@ -99,6 +99,12 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
                     encodedImage).withBitmap().transform(new CircleTransform()).intoImageView(holder.messageSenderImage);
         } else {
             Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(holder.messageSenderImage);
+        }
+
+        if (groupMessagesModel.getGroupMessage().isEmpty()) {
+            holder.groupMessageBody.setVisibility(View.GONE);
+        } else {
+            holder.groupMessageBody.setVisibility(View.VISIBLE);
         }
         holder.groupMessageBody.setText(groupMessagesModel.getGroupMessage());
         holder.messageSenderName.setText(groupMessagesModel.getSenderName());

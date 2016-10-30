@@ -505,7 +505,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                     if (success) {
                         mChatModelArrayList.remove(positionOfItem);
                         RealmHelper.getInstance().removeMessage(messageId);
-                        mChatAdapter.notifyDataSetChanged();
+                        mChatAdapter.notifyItemRemoved(positionOfItem);
                         progressDialog.dismiss();
                         Snackbar.make(chatTitle, getString(R.string.messageDeleted), Snackbar.LENGTH_SHORT).show();
                     } else {
