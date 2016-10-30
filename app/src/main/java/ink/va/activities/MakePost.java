@@ -198,7 +198,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     @OnClick(R.id.checkWrapper)
     public void checkWrapper() {
         String inputtedText = mPostBody.getText().toString().trim();
-        if (inputtedText.isEmpty() || inputtedText.length() <= 0&&!isFileChosen) {
+        if (inputtedText.isEmpty() && !isFileChosen) {
             mPostBody.setError(getString(R.string.fieldEmptyError));
         } else {
             makePost();

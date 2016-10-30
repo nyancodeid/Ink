@@ -52,7 +52,11 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 
 import butterknife.Bind;
@@ -271,29 +275,58 @@ public class MyProfile extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == PICK_IMAGE_RESULT_CODE) {
-                Uri selectedImageUri = data.getData();
 
+                Uri selectedImageUri = data.getData();
                 String selectedImagePath;
-                try {
-                    selectedImagePath = getRealPathFromURI(selectedImageUri);
-                } catch (Exception e) {
-                    selectedImagePath = null;
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MyProfile.this);
-                    builder.setTitle(getString(R.string.notSupported));
-                    builder.setMessage(getString(R.string.notSupportedText));
-                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    builder.show();
+                if (selectedImageUri.toString().startsWith("content://com.google")) {
+                    InputStream is = null;
+                    try {
+                        is = getContentResolver().openInputStream(selectedImageUri);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    Bitmap pictureBitmap = BitmapFactory.decodeStream(is);
+
+                    OutputStream fOut = null;
+
+                    File file = new File(getCacheDir(), "" + selectedImageUri.hashCode());
+
+
+                    pictureBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                    try {
+                        fOut = new FileOutputStream(file);
+                        fOut.flush();
+                        fOut.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    selectedImagePath = getCacheDir() + "" + selectedImageUri.hashCode();
+                } else {
+                    try {
+                        selectedImagePath = getRealPathFromURI(selectedImageUri);
+                    } catch (Exception e) {
+                        selectedImagePath = null;
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MyProfile.this);
+                        builder.setTitle(getString(R.string.notSupported));
+                        builder.setMessage(getString(R.string.notSupportedText));
+                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        builder.show();
+                    }
                 }
+
+
                 if (selectedImagePath != null) {
                     mImageLinkToSend = selectedImagePath;
                     mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
                     isImageChosen = true;
                     imageLoadingProgress.setVisibility(View.VISIBLE);
+
                     Ion.with(getApplicationContext()).load(new File(selectedImagePath)).withBitmap().intoImageView(profileImage).setCallback(new FutureCallback<ImageView>() {
                         @Override
                         public void onCompleted(Exception e, ImageView result) {
@@ -633,9 +666,8 @@ public class MyProfile extends BaseActivity {
 
 
     private void openGallery() {
-        Intent intent = new Intent();
+        Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent,
                 getString(R.string.selectImage)), PICK_IMAGE_RESULT_CODE);
     }
