@@ -704,4 +704,5 @@
     <string name="unsent_message">неотправленнoе сообщение...</string>
     <string name="view_image">Просмотр изображения</string>
     <string name="pleaseWaitDownload">Дождитесь загрузки изооброжения</string>
+    <string name="post_shared">Пост опубликован</string>
 </resources>
