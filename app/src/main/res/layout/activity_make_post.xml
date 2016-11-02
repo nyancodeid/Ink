@@ -106,7 +106,6 @@
                         android:src="@drawable/file_vector" />
 
                     <TextView
-                        android:textColor="#ffffff"
                         android:id="@+id/attachmentHint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -118,7 +117,8 @@
                         android:ellipsize="end"
                         android:fontFamily="@string/appFont"
                         android:maxLines="1"
-                        android:text="@string/addedAttachment" />
+                        android:text="@string/addedAttachment"
+                        android:textColor="#ffffff" />
 
                     <ImageView
                         android:id="@+id/removeAttachment"
@@ -131,6 +131,14 @@
                         android:foreground="?attr/selectableItemBackground"
                         android:padding="10dp"
                         android:src="@drawable/close_vector_grey" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/removeAttachment"
+                        android:background="@color/linesColor">
+
+                    </View>
                 </RelativeLayout>
 
 
@@ -149,7 +157,6 @@
                         android:src="@drawable/address_vector" />
 
                     <TextView
-                        android:textColor="#ffffff"
                         android:id="@+id/addressHint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -161,7 +168,8 @@
                         android:ellipsize="end"
                         android:fontFamily="@string/appFont"
                         android:maxLines="1"
-                        android:text="@string/addedAddress" />
+                        android:text="@string/addedAddress"
+                        android:textColor="#ffffff" />
 
                     <ImageView
                         android:id="@+id/removeAddress"
@@ -174,6 +182,14 @@
                         android:foreground="?attr/selectableItemBackground"
                         android:padding="10dp"
                         android:src="@drawable/close_vector_grey" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/removeAddress"
+                        android:background="@color/linesColor">
+
+                    </View>
                 </RelativeLayout>
 
             </LinearLayout>
@@ -194,11 +210,21 @@
                 android:textColor="#ffffff"
                 android:textColorHint="#ffffff" />
 
+            <View
+                android:id="@+id/post_body_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/postBody"
+                android:background="@color/linesColor">
+
+            </View>
+
             <LinearLayout
                 android:id="@+id/attachmentContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/postBody"
+                android:layout_below="@+id/post_body_divider"
+                android:layout_marginTop="10dp"
                 android:background="#ffffff"
                 android:orientation="horizontal">
 
