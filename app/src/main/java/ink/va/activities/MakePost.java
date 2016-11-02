@@ -284,6 +284,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     public void closeWrapper() {
         if (!canProceed) {
             finish();
+            overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
         } else {
             showWarning(getString(R.string.discardChanges),
                     getString(R.string.discardChangesQuestion));
@@ -337,7 +338,9 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
         builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+
                 finish();
+                overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
             }
         });
         builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -352,7 +355,9 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     @Override
     public void onBackPressed() {
         if (!canProceed) {
+
             finish();
+            overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
         } else {
             showWarning(getString(R.string.discardChanges),
                     getString(R.string.discardChangesQuestion));
@@ -498,7 +503,9 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                         LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "Comments"));
                         LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
                         Toast.makeText(MakePost.this, getString(R.string.post_shared), Toast.LENGTH_SHORT).show();
+
                         finish();
+                        overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
                     } else {
                         showFailureDialog();
                     }
@@ -544,7 +551,9 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                         LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "Comments"));
                         LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
                         Toast.makeText(MakePost.this, getString(R.string.post_shared), Toast.LENGTH_SHORT).show();
+
                         finish();
+                        overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
                     } else {
                         showFailureDialog();
                     }
@@ -594,19 +603,25 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+
                 finish();
+                overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
             }
         });
         builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
+
                 finish();
+                overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
             }
         });
         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
+
                 finish();
+                overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
             }
         });
         builder.show();
