@@ -1,6 +1,7 @@
 package ink.va.activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -51,7 +52,6 @@ import ink.va.utils.Constants;
 import ink.va.utils.FileUtils;
 import ink.va.utils.PermissionsChecker;
 import ink.va.utils.ProgressRequestBody;
-import ink.va.utils.Regex;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
@@ -144,6 +144,19 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                         mGoogleAddress = addressName;
                     }
                 }
+            } else {
+                // Get intent, action and MIME type
+                Intent intent = getIntent();
+                String action = intent.getAction();
+                String type = intent.getType();
+
+                if (Intent.ACTION_SEND.equals(action) && type != null) {
+                    if ("text/plain".equals(type)) {
+                        handleSendText(intent);
+                    } else if (type.startsWith("image/")) {
+                        handleSendImage(intent);
+                    }
+                }
             }
         }
 
@@ -174,7 +187,6 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                     canProceed = false;
                 } else {
                     canProceed = true;
-                    Log.d("fsafasfasfasfa", "onTextChanged: " + Regex.isLink(charSequence.toString()));
                 }
 
             }
@@ -184,6 +196,26 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                 Linkify.addLinks(editable, Linkify.WEB_URLS);
             }
         });
+    }
+
+    private void handleSendText(Intent intent) {
+        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (sharedText != null) {
+            // Update UI to reflect text being shared
+            Log.d("fasklhfklasflsa", "handleSendText: " + sharedText);
+            mPostBody.setText(sharedText);
+        }
+    }
+
+    private void handleSendImage(Intent intent) {
+        Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        if (imageUri != null) {
+            // Update UI to reflect image being shared
+            Log.d("fasklhfklasflsa", "handleSendImage: " + imageUri);
+            Intent receivedData = new Intent();
+            receivedData.setData(imageUri);
+            onActivityResult(PICK_FILE_REQUEST_CODE, Activity.RESULT_OK, receivedData);
+        }
     }
 
     private boolean isPermissionsGranted() {
@@ -252,6 +284,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     public void closeWrapper() {
         if (!canProceed) {
             finish();
+            overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
         } else {
             showWarning(getString(R.string.discardChanges),
                     getString(R.string.discardChangesQuestion));
@@ -305,7 +338,9 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
         builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+
                 finish();
+                overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
             }
         });
         builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -320,7 +355,9 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     @Override
     public void onBackPressed() {
         if (!canProceed) {
+
             finish();
+            overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
         } else {
             showWarning(getString(R.string.discardChanges),
                     getString(R.string.discardChangesQuestion));
@@ -465,7 +502,10 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                         progressDialog.dismiss();
                         LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "Comments"));
                         LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
+                        Toast.makeText(MakePost.this, getString(R.string.post_shared), Toast.LENGTH_SHORT).show();
+
                         finish();
+                        overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
                     } else {
                         showFailureDialog();
                     }
@@ -510,7 +550,10 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                     if (success) {
                         LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "Comments"));
                         LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
+                        Toast.makeText(MakePost.this, getString(R.string.post_shared), Toast.LENGTH_SHORT).show();
+
                         finish();
+                        overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
                     } else {
                         showFailureDialog();
                     }
@@ -560,19 +603,25 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+
                 finish();
+                overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
             }
         });
         builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
+
                 finish();
+                overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
             }
         });
         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
+
                 finish();
+                overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
             }
         });
         builder.show();

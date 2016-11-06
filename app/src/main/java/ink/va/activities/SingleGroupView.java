@@ -288,7 +288,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
-        Call<ResponseBody> leaveCall = Retrofit.getInstance().getInkService().groupOptions(Constants.GROUP_OPTIONS_LEAVE, mSharedHelper.getUserId(), "", "");
+        Call<ResponseBody> leaveCall = Retrofit.getInstance().getInkService().groupOptions(Constants.GROUP_OPTIONS_LEAVE, mGroupId, mSharedHelper.getUserId(), "");
         leaveCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

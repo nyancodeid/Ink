@@ -534,6 +534,7 @@ public class HomeActivity extends BaseActivity
                 mFab.close(true);
                 System.gc();
                 startActivity(new Intent(getApplicationContext(), MakePost.class));
+                overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
                 break;
             case R.id.profileImage:
                 shouldOpenActivity = true;
