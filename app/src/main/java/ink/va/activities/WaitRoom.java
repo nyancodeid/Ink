@@ -17,7 +17,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,6 +46,7 @@ import ink.va.adapters.ChatAdapter;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.models.ChatModel;
 import ink.va.service.RemoveChatRouletteService;
+import ink.va.service.TaskRemoveService;
 import ink.va.utils.Constants;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -89,6 +89,7 @@ public class WaitRoom extends BaseActivity {
         chatModels = new ArrayList<>();
         chatAdapter = new ChatAdapter(chatModels, this);
 
+        startService(new Intent(this, TaskRemoveService.class));
 
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);
@@ -98,6 +99,7 @@ public class WaitRoom extends BaseActivity {
         chatRouletteRecycler.setLayoutManager(linearLayoutManager);
         chatRouletteRecycler.setItemAnimator(itemAnimator);
         chatRouletteRecycler.setAdapter(chatAdapter);
+        chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
         chatRouletteSendMessage.setEnabled(false);
 
         chatRouletteRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -117,6 +119,7 @@ public class WaitRoom extends BaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(getString(R.string.waitRoom));
         }
+        chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
         chatRouletteMessageBody.setEnabled(false);
         chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
 
@@ -237,7 +240,9 @@ public class WaitRoom extends BaseActivity {
         ChatModel tempChat = new ChatModel(false, false, null, null, sharedHelper.getUserId(), foundOpponentId, message, true, Constants.STATUS_NOT_DELIVERED, null,
                 null, null, false);
         chatModels.add(tempChat);
-        chatAdapter.notifyDataSetChanged();
+
+        int position = chatModels.indexOf(tempChat);
+        chatAdapter.notifyItemInserted(position);
         final int itemLocation = chatModels.indexOf(tempChat);
         chatRouletteMessageBody.setText("");
         scrollToBottom();
@@ -324,6 +329,7 @@ public class WaitRoom extends BaseActivity {
             connectDisconnectButton.setTag(getString(R.string.connect));
             connectDisconnectButton.setImageResource(R.drawable.connect_icon);
             shouldWaitForWaiters = false;
+            chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
             chatRouletteMessageBody.setEnabled(false);
             if (chatModels != null) {
                 chatModels.clear();
@@ -386,7 +392,7 @@ public class WaitRoom extends BaseActivity {
                     actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.darkGreen));
                     actualStatus.setText(getString(R.string.opponentFound));
                     progressBar.setVisibility(View.GONE);
-                    chatRouletteMessageBody.setEnabled(false);
+                    chatRouletteMessageBody.setEnabled(true);
                     shouldWaitForWaiters = false;
 
                     String currentUserId = extras.getString("currentUserId");
@@ -395,7 +401,8 @@ public class WaitRoom extends BaseActivity {
                     chatModel = new ChatModel(false, false, null, null, currentUserId, opponentId, message, true, Constants.STATUS_DELIVERED, null,
                             null, null, false);
                     chatModels.add(chatModel);
-                    chatAdapter.notifyDataSetChanged();
+                    int position = chatModels.indexOf(chatModel);
+                    chatAdapter.notifyItemInserted(position);
                     scrollToBottom();
                 } else {
                     mIsDisconnected = true;
@@ -410,6 +417,7 @@ public class WaitRoom extends BaseActivity {
         shouldWaitForWaiters = false;
         connectDisconnectButton.setTag(getString(R.string.connect));
         connectDisconnectButton.setImageResource(R.drawable.connect_icon);
+        chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
         chatRouletteMessageBody.setEnabled(false);
 
         showBottomSheet();
@@ -490,6 +498,7 @@ public class WaitRoom extends BaseActivity {
 
     private void getWaiters() {
         progressBar.setVisibility(View.VISIBLE);
+        chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
         chatRouletteMessageBody.setEnabled(false);
         Call<ResponseBody> getWaitersCall = Retrofit.getInstance().getInkService().getWaiters(sharedHelper.getUserId());
         if (shouldWaitForWaiters) {
@@ -506,7 +515,6 @@ public class WaitRoom extends BaseActivity {
                     }
                     try {
                         String responseBody = response.body().string();
-                        Log.d("Fsafasfas", "onResponse: " + responseBody);
                         final JSONObject jsonObject = new JSONObject(responseBody);
                         boolean success = jsonObject.optBoolean("success");
                         if (success) {
@@ -564,7 +572,7 @@ public class WaitRoom extends BaseActivity {
                 actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.darkGreen));
                 actualStatus.setText(getString(R.string.opponentFound));
                 progressBar.setVisibility(View.GONE);
-                chatRouletteMessageBody.setEnabled(false);
+                chatRouletteMessageBody.setEnabled(true);
                 chatRouletteMessageBody.setHint(getString(R.string.writeMessageHint));
                 shouldWaitForWaiters = false;
             }

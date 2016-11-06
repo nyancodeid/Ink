@@ -91,6 +91,10 @@
         <service android:name="ink.va.service.SendTokenService" />
         <service android:name="ink.va.service.SendReplyService" />
         <service android:name="ink.va.service.SendMessageService" />
+        <service
+            android:enabled="true"
+            android:name="ink.va.service.TaskRemoveService"
+            android:stopWithTask="false" />
 
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
         <receiver android:name="ink.va.broadcast.DismissBroadcast" />

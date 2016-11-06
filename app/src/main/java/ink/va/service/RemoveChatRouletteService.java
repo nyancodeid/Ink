@@ -45,12 +45,12 @@ public class RemoveChatRouletteService extends Service {
 
 
     private void attemptToQue() {
-        if(opponentId==null){
-            opponentId="0";
+        if (opponentId == null) {
+            opponentId = "0";
         }
         Call<ResponseBody> waitersQueActionCall = Retrofit.getInstance().getInkService().waitersQueAction(sharedHelper.getUserId(),
                 sharedHelper.getFirstName() + " " + sharedHelper.getLastName(), Constants.STATUS_WAITING_NOT_AVAILABLE,
-                Constants.ACTION_DELETE,opponentId);
+                Constants.ACTION_DELETE, opponentId);
         waitersQueActionCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
