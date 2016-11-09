@@ -38,6 +38,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     private FeedItemClick mOnClickListener;
     private SharedHelper sharedHelper;
 
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView feedContent, userPostedTitle,
                 whenPosted, feedAddress, feedAttachmentName, likesCountTV;
@@ -204,6 +205,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         holder.feedAttachmentLayout.setVisibility(View.VISIBLE);
         holder.commentCountTV.setVisibility(View.VISIBLE);
 
+
         try {
             if (Integer.valueOf(feedModel.getCommentsCount()) <= 1) {
 
@@ -281,6 +283,34 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                 holder.imageHolder.setVisibility(View.GONE);
             }
         } else {
+//
+//            URLSpan spans[] = holder.feedContent.getUrls();
+//            if (spans.length > 0) {
+//                holder.imageHolder.setVisibility(View.VISIBLE);
+//                String firstUrl = spans[0].getURL();
+//                FileUtils.getImageFromUrl(firstUrl, new GeneralCallback<String>() {
+//                    @Override
+//                    public void onSuccess(String s) {
+//                        Ion.with(mContext).load(s).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(holder.imageHolder).setCallback(new FutureCallback<ImageView>() {
+//                            @Override
+//                            public void onCompleted(Exception e, ImageView result) {
+//                                if (e != null) {
+//                                    holder.imageHolder.setVisibility(View.GONE);
+//                                } else {
+//                                    holder.imageHolder.setVisibility(View.VISIBLE);
+//                                }
+//                            }
+//                        });
+//                    }
+//
+//                    @Override
+//                    public void onFailure(String s) {
+//                        holder.imageHolder.setVisibility(View.GONE);
+//                    }
+//                });
+//            } else {
+//                holder.imageHolder.setVisibility(View.GONE);
+//            }
             holder.imageHolder.setVisibility(View.GONE);
             feedModel.setHasAttachment(false);
             holder.feedAttachmentLayout.setVisibility(View.GONE);

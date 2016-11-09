@@ -4,8 +4,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.File;
 import java.net.URISyntaxException;
+
+import ink.va.callbacks.GeneralCallback;
 
 /**
  * Created by USER on 2016-07-04.
@@ -13,6 +20,7 @@ import java.net.URISyntaxException;
 public class FileUtils {
 
     public static final String[] IMAGE_TYPES = new String[]{"jpg", "png", "gif", "jpeg"};
+    private static Thread mWorkerThread;
 
     public static String getPath(Context context, Uri uri) throws URISyntaxException {
         if ("content".equalsIgnoreCase(uri.getScheme())) {
@@ -112,4 +120,31 @@ public class FileUtils {
         fileOrDirectory.delete();
     }
 
+    public static void getImageFromUrl(final String url, final GeneralCallback<String> stringGeneralCallback) {
+        if (mWorkerThread != null) {
+            mWorkerThread = null;
+        }
+        mWorkerThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Document document = Jsoup.connect(url).get();
+                    Elements elements = document.select("img[src~=(?i)\\.(jpe?g)]");
+                    Element element = elements.get(0);
+                    String finalUrl = element.attributes().get("src");
+                    if (finalUrl.startsWith("http")) {
+                        stringGeneralCallback.onSuccess(finalUrl);
+                    } else {
+                        stringGeneralCallback.onSuccess(url + finalUrl);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    stringGeneralCallback.onFailure(e.toString());
+                }
+
+
+            }
+        });
+        mWorkerThread.start();
+    }
 }
