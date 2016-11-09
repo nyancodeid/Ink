@@ -67,6 +67,8 @@ public class Omegle implements Runnable {
      */
     public static URL TYPING_URL;
 
+    private String language = "en";
+
     static {
         try {
             OPEN_URL = new URL(BASE_URL + "/start");
@@ -169,8 +171,8 @@ public class Omegle implements Runnable {
         try {
             Map<String, Object> vars = new HashMap<String, Object>();
             vars.put("rcs", "1");
+            vars.put("lang", language);
             vars.put("firstevents", firstEvents ? "1" : "0");
-            vars.put("language", "ru");
 
             if (mode == OmegleMode.SPY) {
                 vars.put("wantsspy", "1");
@@ -242,6 +244,10 @@ public class Omegle implements Runnable {
         synchronized (sessions) {
             sessions.remove(session);
         }
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     /**

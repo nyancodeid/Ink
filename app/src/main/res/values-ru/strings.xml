@@ -714,4 +714,6 @@
     <string name="chooseQuestion">Выберите Ворпос</string>
     <string name="questionToAsk">Напишите Вопрос</string>
     <string name="tooShort">Текст слишком короткий (Минимум 10 символов)</string>
+    <string name="englishRoom">Английская Комната</string>
+    <string name="russianRoom">Русская Комната</string>
 </resources>

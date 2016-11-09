@@ -1,7 +1,6 @@
 package ink.va.activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -43,7 +42,6 @@ import ink.omegle.event.OmegleEventAdaptor;
 import ink.va.adapters.RandomChatAdapter;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.models.RandomChatModel;
-import ink.va.service.TaskRemoveService;
 import ink.va.utils.InputField;
 import ink.va.utils.SharedHelper;
 
@@ -98,7 +96,12 @@ public class WaitRoom extends BaseActivity {
         chatModels = new ArrayList<>();
         chatAdapter = new RandomChatAdapter(chatModels, this);
         omegle = new Omegle();
-        startService(new Intent(this, TaskRemoveService.class));
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            String language = extras.getString("language");
+            omegle.setLanguage(language);
+        }
 
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);

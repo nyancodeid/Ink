@@ -714,4 +714,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="chooseQuestion">Choose Question</string>
     <string name="questionToAsk">Write Question</string>
     <string name="tooShort">Text is too short (Minimum 10 characters)</string>
+    <string name="englishRoom">English Room</string>
+    <string name="russianRoom">Russian Room</string>
 </resources>
