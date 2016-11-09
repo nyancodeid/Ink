@@ -370,6 +370,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
 
     <!--CONTINUE TRANSLATION-->
     <string-array name="issueTypes">
+        <item name="Product Request (Should specify the product id)"></item>
         <item name="trendRequest">Trend Request</item>
         <item name="generalIssue">General</item>
         <item name="bugIssue">Bug</item>
