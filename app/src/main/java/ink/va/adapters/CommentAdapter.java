@@ -89,6 +89,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             final ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             CommentModel commentModel = getItem(position);
             itemViewHolder.commenterBody.setText(commentModel.getCommentBody());
+            itemViewHolder.commenterBody.setMovementMethod(LinkMovementMethod.getInstance());
             itemViewHolder.commenterName.setText(commentModel.getFirstName() + " " + commentModel.getLastName());
             itemViewHolder.commentRootLayout.setOnClickListener(new View.OnClickListener() {
                 @Override

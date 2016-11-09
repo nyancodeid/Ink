@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,6 +102,7 @@ public class GroupMessagesAdapter extends RecyclerView.Adapter<GroupMessagesAdap
             Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(holder.messageSenderImage);
         }
 
+        holder.groupMessageBody.setMovementMethod(LinkMovementMethod.getInstance());
         if (groupMessagesModel.getGroupMessage().isEmpty()) {
             holder.groupMessageBody.setVisibility(View.GONE);
         } else {
