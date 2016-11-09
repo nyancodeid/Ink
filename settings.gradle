@@ -1,1 +1,1 @@
-include ':app', ':omgelelibrary'
+include ':app'

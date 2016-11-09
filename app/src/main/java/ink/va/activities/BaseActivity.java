@@ -88,7 +88,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Nullable
     @Bind(R.id.connectDisconnectButton)
-    FloatingActionButton connectDisconnectButton;
+    Button connectDisconnectButton;
 
     @Nullable
     @Bind(R.id.joinWaitRoom)
@@ -162,7 +162,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 createGroup.setColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
             }
             if (connectDisconnectButton != null) {
-                connectDisconnectButton.setColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
+                connectDisconnectButton.setTextColor(Color.parseColor(sharedHelper.getMenuButtonColor()));
             }
             if (joinWaitRoom != null) {
                 joinWaitRoom.getBackground().setColorFilter(Color.parseColor(sharedHelper.getMenuButtonColor()),

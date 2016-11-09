@@ -6,14 +6,11 @@ import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.widget.Button;
 
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.ink.va.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import ink.va.utils.SharedHelper;
 
 public class ChatRoulette extends BaseActivity {
 
@@ -31,15 +28,6 @@ public class ChatRoulette extends BaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         System.gc();
-        SharedHelper sharedHelper = new SharedHelper(this);
-        if (sharedHelper.shouldShowShowCase()) {
-            new ShowcaseView.Builder(this)
-                    .withMaterialShowcase()
-                    .setTarget(new ViewTarget(joinWaitRoom))
-                    .setContentTitle(getString(R.string.welcomeHintText))
-                    .setContentText(getString(R.string.clickJoinButtonText))
-                    .build();
-        }
     }
 
 

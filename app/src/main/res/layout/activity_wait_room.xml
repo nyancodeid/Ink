@@ -6,22 +6,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/profile_layer_gradient"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ink.va.activities.WaitRoom">
 
-    <fab.FloatingActionButton
+    <Button
         android:id="@+id/connectDisconnectButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_margin="5dp"
+        android:background="@drawable/circle_transparent_background"
         android:src="@drawable/connect_icon"
-        android:tag="@string/connect"
-        fab:fab_colorNormal="@color/colorPrimary"
-        fab:fab_colorPressed="@color/colorPrimaryDark"
-        fab:fab_size="mini" />
+        android:text="@string/connect"
+        android:textColor="@color/colorPrimary" />
 
     <TextView
         android:id="@+id/status"
@@ -48,12 +44,39 @@
         android:text="@string/notConnectedToOpponent"
         android:textColor="@color/red" />
 
+
+    <TextView
+        android:id="@+id/chosenTypeTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/actualStatus"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@+id/connectDisconnectButton"
+        android:fontFamily="@string/appFont"
+        android:gravity="center"
+        android:text="@string/chosenType"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/chosenTypeSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/chosenTypeTitle"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@+id/connectDisconnectButton"
+        android:background="@drawable/circle_transparent_background"
+        android:minHeight="20dp"></android.support.v7.widget.AppCompatSpinner>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chatRouletteRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/chatRouletteCard"
-        android:layout_below="@+id/actualStatus"
+        android:layout_below="@+id/chosenTypeSpinner"
+        android:layout_margin="5dp"
         android:layout_marginTop="10dp">
 
     </android.support.v7.widget.RecyclerView>

@@ -1,59 +1,52 @@
 package ink.va.activities;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.ink.va.R;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
-import ink.va.adapters.ChatAdapter;
-import ink.va.callbacks.GeneralCallback;
-import ink.va.models.ChatModel;
-import ink.va.service.RemoveChatRouletteService;
+import ink.omegle.Omegle;
+import ink.omegle.core.OmegleException;
+import ink.omegle.core.OmegleMode;
+import ink.omegle.core.OmegleSession;
+import ink.omegle.core.OmegleSpyStranger;
+import ink.omegle.event.OmegleEventAdaptor;
+import ink.va.adapters.RandomChatAdapter;
+import ink.va.models.RandomChatModel;
 import ink.va.service.TaskRemoveService;
-import ink.va.utils.Constants;
-import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+
+import static ink.omegle.core.OmegleMode.NORMAL;
+import static ink.omegle.core.OmegleMode.SPY_QUESTION;
+
 
 public class WaitRoom extends BaseActivity {
 
@@ -65,30 +58,42 @@ public class WaitRoom extends BaseActivity {
     @Bind(R.id.chatRouletteSendMessage)
     FloatingActionButton chatRouletteSendMessage;
     @Bind(R.id.connectDisconnectButton)
-    FloatingActionButton connectDisconnectButton;
+    Button connectDisconnectButton;
     @Bind(R.id.actualStatus)
     TextView actualStatus;
     @Bind(R.id.progressBar)
     ProgressBar progressBar;
-    private ShowcaseView.Builder showcaseViewBuilder;
+    @Bind(R.id.chosenTypeSpinner)
+    AppCompatSpinner chosenTypeSpinner;
+
     private SharedHelper sharedHelper;
-    private boolean isConnectedToWaitRoom;
-    private boolean shouldWaitForWaiters;
-    private String foundOpponentId;
-    private ChatAdapter chatAdapter;
-    private ChatModel chatModel;
-    private List<ChatModel> chatModels;
+    private RandomChatAdapter chatAdapter;
+    private RandomChatModel chatModel;
+    private List<RandomChatModel> chatModels;
     private boolean mIsDisconnected = false;
+    private Omegle omegle;
+    private boolean connected;
+    private List<String> types;
+    private String chosenType;
+    private Thread mWorkerThread;
+    private Thread mSendThread;
+    private OmegleSession omegleSession;
+    private Thread mDisconnectThread;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait_room);
         ButterKnife.bind(this);
+
+        getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chat_background_png));
+
+        chosenType = getString(R.string.normalOmegeleType);
         sharedHelper = new SharedHelper(this);
         chatModels = new ArrayList<>();
-        chatAdapter = new ChatAdapter(chatModels, this);
-
+        chatAdapter = new RandomChatAdapter(chatModels, this);
+        omegle = new Omegle();
         startService(new Intent(this, TaskRemoveService.class));
 
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
@@ -102,14 +107,30 @@ public class WaitRoom extends BaseActivity {
         chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
         chatRouletteSendMessage.setEnabled(false);
 
+        types = new ArrayList<>();
+        types.add(getString(R.string.normalOmegeleType));
+        types.add(getString(R.string.spyOmegleMode));
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, types);
+        chosenTypeSpinner.setAdapter(arrayAdapter);
+        chosenTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                chosenType = types.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         chatRouletteRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(chatRouletteRecycler.getWindowToken(), 0);
+                    hideKeyboard();
                 }
             }
         });
@@ -123,24 +144,6 @@ public class WaitRoom extends BaseActivity {
         chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
         chatRouletteMessageBody.setEnabled(false);
         chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
-
-        if (sharedHelper.shouldShowShowCase()) {
-            showTutorial();
-        } else {
-            waitersQueAction(Constants.ACTION_INSERT, Constants.STATUS_WAITING_NOT_AVAILABLE, new GeneralCallback<String>() {
-                @Override
-                public void onSuccess(String s) {
-                    isConnectedToWaitRoom = true;
-                    actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.darkGreen));
-                    actualStatus.setText(getString(R.string.connectedToQue));
-                }
-
-                @Override
-                public void onFailure(String s) {
-
-                }
-            });
-        }
 
 
         chatRouletteMessageBody.addTextChangedListener(new TextWatcher() {
@@ -165,71 +168,277 @@ public class WaitRoom extends BaseActivity {
         });
     }
 
-    private void showTutorial() {
-        showcaseViewBuilder = new ShowcaseView.Builder(this);
-        showcaseViewBuilder.withMaterialShowcase();
-        showcaseViewBuilder.setTarget(new ViewTarget(actualStatus));
-        showcaseViewBuilder.setContentTitle(getString(R.string.statustChanageTitle));
-        showcaseViewBuilder.setContentText(getString(R.string.statusBrief));
-        showcaseViewBuilder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showcaseViewBuilder.setTarget(new ViewTarget(connectDisconnectButton));
-                showcaseViewBuilder.setContentTitle(getString(R.string.connectDisconnectTitle));
-                showcaseViewBuilder.setContentText(getString(R.string.connectDisconnectBrief));
-                showcaseViewBuilder.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showcaseViewBuilder.setTarget(new ViewTarget(chatRouletteMessageBody));
-                        showcaseViewBuilder.setContentTitle(getString(R.string.messageBodyTitle));
-                        showcaseViewBuilder.setContentText(getString(R.string.messageBodyBrief));
-                        showcaseViewBuilder.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                showcaseViewBuilder.setTarget(new ViewTarget(chatRouletteSendMessage));
-                                showcaseViewBuilder.setContentTitle(getString(R.string.sendMessageTitle));
-                                showcaseViewBuilder.setContentText(getString(R.string.sendMessageBrief));
-                                showcaseViewBuilder.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        showcaseViewBuilder.setTarget(new ViewTarget(chatRouletteRecycler));
-                                        showcaseViewBuilder.setContentTitle(getString(R.string.messagesPlaceTitle));
-                                        showcaseViewBuilder.setContentText(getString(R.string.messagesPlaceBrief));
-                                        showcaseViewBuilder.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                showcaseViewBuilder.setTarget(new ViewTarget(chatRouletteRecycler));
-                                                showcaseViewBuilder.setContentTitle(getString(R.string.endingTitle));
-                                                showcaseViewBuilder.setContentText(getString(R.string.endingBrief));
-                                                showcaseViewBuilder.setOnClickListener(null);
-                                                sharedHelper.setShouldShowShowCase(false);
-                                                waitersQueAction(Constants.ACTION_INSERT, Constants.STATUS_WAITING_NOT_AVAILABLE, new GeneralCallback<String>() {
-                                                    @Override
-                                                    public void onSuccess(String s) {
-                                                        isConnectedToWaitRoom = true;
-                                                        actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.darkGreen));
-                                                        actualStatus.setText(getString(R.string.connectedToQue));
-                                                    }
 
-                                                    @Override
-                                                    public void onFailure(String s) {
-
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
+    @OnClick(R.id.connectDisconnectButton)
+    public void connectClicked() {
+        if (connected) {
+            connected = false;
+            mDisconnectThread = null;
+            mDisconnectThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        omegleSession.disconnect();
+                    } catch (OmegleException e) {
+                        e.printStackTrace();
                     }
-                });
-            }
-        });
+                }
+            });
+            mDisconnectThread.start();
 
-        showcaseViewBuilder.build();
+            connectDisconnectButton.setText(getString(R.string.connect));
+        } else {
+            connected = true;
+            connectDisconnectButton.setText(getString(R.string.disconnect));
+            if (chosenType.equals(getString(R.string.normalOmegeleType))) {
+                startOmegle(NORMAL, null);
+            } else {
+                startOmegle(SPY_QUESTION, "WHO DA FUCK ARE YOU?");
+            }
+
+        }
     }
 
+    private void startOmegle(final OmegleMode omegleMode, @Nullable String question) {
+        if (mWorkerThread != null) {
+            mWorkerThread = null;
+        }
+        chatModels.clear();
+        chatAdapter.notifyDataSetChanged();
+        chosenTypeSpinner.setEnabled(false);
+        mWorkerThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                switch (omegleMode) {
+                    case NORMAL:
+                        try {
+                            omegleSession = omegle.openSession(NORMAL, new OmegleEventAdaptor() {
+                                @Override
+                                public void chatWaiting(OmegleSession session) {
+                                    super.chatWaiting(session);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            progressBar.setVisibility(View.VISIBLE);
+                                            actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.colorPrimary));
+                                            actualStatus.setText(getString(R.string.waitingForOpponents));
+                                        }
+                                    });
+
+                                }
+
+                                @Override
+                                public void chatConnected(OmegleSession session) {
+                                    super.chatConnected(session);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            progressBar.setVisibility(View.GONE);
+                                            actualStatus.setText(getString(R.string.connectedToOpponent));
+                                            chatRouletteMessageBody.setHint(getString(R.string.writeMessageHint));
+                                            chatRouletteMessageBody.setEnabled(true);
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void chatMessage(OmegleSession session, final String message) {
+                                    super.chatMessage(session, message);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            scrollToBottom();
+                                            RandomChatModel randomChatModel = new RandomChatModel(message, false);
+                                            chatModels.add(randomChatModel);
+                                            int index = chatModels.indexOf(randomChatModel);
+                                            chatAdapter.notifyItemInserted(index);
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void strangerDisconnected(OmegleSession session) {
+                                    super.strangerDisconnected(session);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            hideKeyboard();
+                                            chosenTypeSpinner.setEnabled(true);
+                                            chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
+                                            chatRouletteMessageBody.setEnabled(false);
+                                            connected = false;
+                                            connectDisconnectButton.setText(getString(R.string.connect));
+                                            actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.red));
+                                            actualStatus.setText(getString(R.string.disconnectedToOpponent));
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void strangerTyping(OmegleSession session) {
+                                    super.strangerTyping(session);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+//                                            actualStatus.setText(getString(R.string.typing));
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void strangerStoppedTyping(OmegleSession session) {
+                                    super.strangerStoppedTyping(session);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            actualStatus.setText(getString(R.string.connectedToOpponent));
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void recaptchaRequired(OmegleSession session, Map<String, Object> variables) {
+                                    super.recaptchaRequired(session, variables);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void recaptchaRejected(OmegleSession session, Map<String, Object> variables) {
+                                    super.recaptchaRejected(session, variables);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void spyMessage(OmegleSession session, OmegleSpyStranger stranger, String message) {
+                                    super.spyMessage(session, stranger, message);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void spyTyping(OmegleSession session, OmegleSpyStranger stranger) {
+                                    super.spyTyping(session, stranger);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void spyStoppedTyping(OmegleSession session, OmegleSpyStranger stranger) {
+                                    super.spyStoppedTyping(session, stranger);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void spyDisconnected(OmegleSession session, OmegleSpyStranger stranger) {
+                                    super.spyDisconnected(session, stranger);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void question(OmegleSession session, String question) {
+                                    super.question(session, question);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void omegleError(OmegleSession session, String string) {
+                                    super.omegleError(session, string);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void messageSent(OmegleSession session, final String string) {
+                                    super.messageSent(session, string);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            scrollToBottom();
+                                            mSendThread = null;
+                                            progressBar.setVisibility(View.GONE);
+                                            chatRouletteMessageBody.setEnabled(true);
+                                            chatRouletteMessageBody.setText("");
+                                            RandomChatModel randomChatModel = new RandomChatModel(string, true);
+                                            chatModels.add(randomChatModel);
+                                            int index = chatModels.indexOf(randomChatModel);
+                                            chatAdapter.notifyItemInserted(index);
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void chatDisconnected(OmegleSession session) {
+                                    super.chatDisconnected(session);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            hideKeyboard();
+                                            chosenTypeSpinner.setEnabled(true);
+                                            chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
+                                            chatRouletteMessageBody.setEnabled(false);
+                                            connected = false;
+                                            connectDisconnectButton.setText(getString(R.string.connect));
+                                            actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.red));
+                                            actualStatus.setText(getString(R.string.disconnectedToOpponent));
+                                        }
+                                    });
+                                }
+                            });
+                        } catch (OmegleException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case SPY_QUESTION:
+                        break;
+                }
+            }
+        });
+        mWorkerThread.start();
+
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(chatRouletteRecycler.getWindowToken(), 0);
+
+    }
 
     @OnClick(R.id.chatRouletteSendMessage)
     public void chatRouletteSendMessage() {
@@ -237,54 +446,23 @@ public class WaitRoom extends BaseActivity {
     }
 
     private void sendMessage() {
-        String message = chatRouletteMessageBody.getText().toString().trim();
-        ChatModel tempChat = new ChatModel(false, false, null, null, sharedHelper.getUserId(), foundOpponentId, message, true, Constants.STATUS_NOT_DELIVERED, null,
-                null, null, false);
-        chatModels.add(tempChat);
-
-        int position = chatModels.indexOf(tempChat);
-        chatAdapter.notifyItemInserted(position);
-        final int itemLocation = chatModels.indexOf(tempChat);
-        chatRouletteMessageBody.setText("");
-        scrollToBottom();
-        Call<ResponseBody> chatRouletteSendMessageCall = Retrofit.getInstance().getInkService().sendChatRouletteMessage(
-                sharedHelper.getUserId(), foundOpponentId, message);
-        chatRouletteSendMessageCall.enqueue(new Callback<ResponseBody>() {
+        chatRouletteMessageBody.setEnabled(false);
+        progressBar.setVisibility(View.VISIBLE);
+        mSendThread = new Thread(new Runnable() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    sendMessage();
-                    return;
-                }
-                if (response.body() == null) {
-                    sendMessage();
-                    return;
-                }
+            public void run() {
                 try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (success) {
-                        chatModels.get(itemLocation).setDeliveryStatus(Constants.STATUS_DELIVERED);
-                        chatAdapter.notifyItemChanged(itemLocation);
-                    } else {
-                        Snackbar.make(connectDisconnectButton, getString(R.string.messageNotSent),
-                                Snackbar.LENGTH_LONG).show();
-                    }
-                    scrollToBottom();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
+                    omegleSession.send(chatRouletteMessageBody.getText().toString());
+                } catch (OmegleException e) {
+
                     e.printStackTrace();
                 }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                sendMessage();
             }
         });
+        mSendThread.start();
+
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -292,263 +470,6 @@ public class WaitRoom extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    @OnClick(R.id.connectDisconnectButton)
-    public void connectDisconnectButton() {
-        if (chatModels != null) {
-            chatModels.clear();
-        }
-        if (!isConnectedToWaitRoom) {
-            if (actualStatus != null) {
-                Snackbar.make(actualStatus, getString(R.string.notConnectedToWaitRoom), Snackbar.LENGTH_LONG).show();
-            }
-
-            return;
-        }
-
-        if (connectDisconnectButton.getTag().equals(getString(R.string.connect))) {
-            connectDisconnectButton.setTag(getString(R.string.disconnect));
-            connectDisconnectButton.setImageResource(R.drawable.disconnect_icon);
-            LocalBroadcastManager.getInstance(this).registerReceiver(messagesReceiver,
-                    new IntentFilter(getPackageName() + "WaitRoom"));
-            shouldWaitForWaiters = true;
-            progressBar.setVisibility(View.VISIBLE);
-            getWaiters();
-            waitersQueAction(Constants.ACTION_UPDATE, Constants.STATUS_AVAILABLE, new GeneralCallback<String>() {
-                @Override
-                public void onSuccess(String s) {
-                    actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.darkGreen));
-                    actualStatus.setText(getString(R.string.waitingForOpponents));
-                }
-
-                @Override
-                public void onFailure(String s) {
-
-                }
-            });
-        } else {
-            connectDisconnectButton.setTag(getString(R.string.connect));
-            connectDisconnectButton.setImageResource(R.drawable.connect_icon);
-            shouldWaitForWaiters = false;
-            chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
-            chatRouletteMessageBody.setEnabled(false);
-            if (chatModels != null) {
-                chatModels.clear();
-                chatAdapter.notifyDataSetChanged();
-                scrollToBottom();
-            }
-
-            progressBar.setVisibility(View.VISIBLE);
-            waitersQueAction(Constants.ACTION_UPDATE, Constants.STATUS_WAITING_NOT_AVAILABLE, new GeneralCallback<String>() {
-                @Override
-                public void onSuccess(String s) {
-                    actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    actualStatus.setText(getString(R.string.notConnectedToOpponent));
-                    progressBar.setVisibility(View.GONE);
-                    if (foundOpponentId != null) {
-                        sendDisconnect(foundOpponentId);
-                        foundOpponentId = null;
-                    }
-                }
-
-                @Override
-                public void onFailure(String s) {
-                }
-            });
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(messagesReceiver);
-        }
-    }
-
-    private void sendDisconnect(final String foundOpponentId) {
-        Call<ResponseBody> disconnectCall = Retrofit.getInstance().getInkService().sendDisconnectNotification(foundOpponentId);
-        disconnectCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    sendDisconnect(foundOpponentId);
-                    return;
-                }
-                if (response.body() == null) {
-                    sendDisconnect(foundOpponentId);
-                    return;
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                sendDisconnect(foundOpponentId);
-            }
-        });
-    }
-
-    private BroadcastReceiver messagesReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle extras = intent.getExtras();
-            if (extras != null) {
-                String isDisconnected = extras.getString("isDisconnected");
-                if (isDisconnected.equals("1")) {
-                    mIsDisconnected = false;
-                    actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.darkGreen));
-                    actualStatus.setText(getString(R.string.opponentFound));
-                    progressBar.setVisibility(View.GONE);
-                    chatRouletteMessageBody.setEnabled(true);
-                    shouldWaitForWaiters = false;
-
-                    String currentUserId = extras.getString("currentUserId");
-                    String opponentId = extras.getString("opponentId");
-                    String message = extras.getString("message");
-                    chatModel = new ChatModel(false, false, null, null, currentUserId, opponentId, message, true, Constants.STATUS_DELIVERED, null,
-                            null, null, false);
-                    chatModels.add(chatModel);
-                    int position = chatModels.indexOf(chatModel);
-                    chatAdapter.notifyItemInserted(position);
-                    scrollToBottom();
-                } else {
-                    mIsDisconnected = true;
-                    disconnectFromOpponent();
-                }
-            }
-        }
-    };
-
-    private void disconnectFromOpponent() {
-        progressBar.setVisibility(View.GONE);
-        shouldWaitForWaiters = false;
-        connectDisconnectButton.setTag(getString(R.string.connect));
-        connectDisconnectButton.setImageResource(R.drawable.connect_icon);
-        chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
-        chatRouletteMessageBody.setEnabled(false);
-
-        showBottomSheet();
-
-        waitersQueAction(Constants.ACTION_UPDATE, Constants.STATUS_WAITING_NOT_AVAILABLE, new GeneralCallback<String>() {
-            @Override
-            public void onSuccess(String s) {
-                shouldWaitForWaiters = false;
-            }
-
-            @Override
-            public void onFailure(String s) {
-            }
-        });
-    }
-
-    private void showBottomSheet() {
-        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(WaitRoom.this);
-        bottomSheetDialog.setTitle(getString(R.string.userDisconnected));
-        LayoutInflater inflater = getLayoutInflater();
-        View bottomSheetView = inflater.inflate(R.layout.disconnect_bottom_view, null);
-        bottomSheetDialog.setContentView(bottomSheetView);
-        Button closeBottomSheet = (Button) bottomSheetView.findViewById(R.id.closeBottomSheet);
-        closeBottomSheet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LocalBroadcastManager.getInstance(WaitRoom.this).unregisterReceiver(messagesReceiver);
-                bottomSheetDialog.dismiss();
-            }
-        });
-        bottomSheetDialog.show();
-        actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-        actualStatus.setText(getString(R.string.notConnectedToOpponent));
-    }
-
-
-    private void waitersQueAction(final String action, final String status, final GeneralCallback<String> callback) {
-        if (foundOpponentId == null) {
-            foundOpponentId = "0";
-        }
-        Call<ResponseBody> waitersQueActionCall = Retrofit.getInstance().getInkService().waitersQueAction(sharedHelper.getUserId(),
-                sharedHelper.getFirstName() + " " + sharedHelper.getLastName(), status, action, foundOpponentId);
-        waitersQueActionCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    waitersQueAction(action, status, callback);
-                    return;
-                }
-                if (response.body() == null) {
-                    waitersQueAction(action, status, callback);
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (success) {
-                        if (callback != null) {
-                            callback.onSuccess("success");
-                        }
-                    } else {
-                        waitersQueAction(action, status, callback);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                waitersQueAction(action, status, callback);
-            }
-        });
-    }
-
-    private void getWaiters() {
-        progressBar.setVisibility(View.VISIBLE);
-        chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
-        chatRouletteMessageBody.setEnabled(false);
-        Call<ResponseBody> getWaitersCall = Retrofit.getInstance().getInkService().getWaiters(sharedHelper.getUserId());
-        if (shouldWaitForWaiters) {
-            getWaitersCall.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if (response == null) {
-                        getWaiters();
-                        return;
-                    }
-                    if (response.body() == null) {
-                        getWaiters();
-                        return;
-                    }
-                    try {
-                        String responseBody = response.body().string();
-                        final JSONObject jsonObject = new JSONObject(responseBody);
-                        boolean success = jsonObject.optBoolean("success");
-                        if (success) {
-                            boolean isMemberAvailable = jsonObject.optBoolean("isMemberAvailable");
-                            if (!isMemberAvailable) {
-                                if (shouldWaitForWaiters) {
-                                    scheduleTask();
-                                } else {
-                                    progressBar.setVisibility(View.GONE);
-                                }
-                            } else {
-                                String opponentId = jsonObject.optString("waiter_id");
-                                handleOpponentFound(opponentId);
-                            }
-                        } else {
-                            getWaiters();
-                        }
-                    } catch (IOException e) {
-                        getWaiters();
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        getWaiters();
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    getWaiters();
-                }
-            });
-        }
-    }
 
     @Override
     protected void onResume() {
@@ -558,42 +479,10 @@ public class WaitRoom extends BaseActivity {
         super.onResume();
     }
 
-    private void handleOpponentFound(final String opponentId) {
-        foundOpponentId = opponentId;
-        waitersQueAction(Constants.ACTION_UPDATE, Constants.STATUS_IN_CHAT, new GeneralCallback<String>() {
-            @Override
-            public void onSuccess(String s) {
-                Snackbar.make(connectDisconnectButton, getString(R.string.opponentFound),
-                        Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+    private void disconnectFromOpponent() {
 
-                    }
-                }).show();
-                actualStatus.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.darkGreen));
-                actualStatus.setText(getString(R.string.opponentFound));
-                progressBar.setVisibility(View.GONE);
-                chatRouletteMessageBody.setEnabled(true);
-                chatRouletteMessageBody.setHint(getString(R.string.writeMessageHint));
-                shouldWaitForWaiters = false;
-            }
-
-            @Override
-            public void onFailure(String s) {
-
-            }
-        });
     }
 
-    private void scheduleTask() {
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getWaiters();
-            }
-        }, 2000);
-    }
 
     private void scrollToBottom() {
         chatRouletteRecycler.post(new Runnable() {
@@ -606,17 +495,4 @@ public class WaitRoom extends BaseActivity {
     }
 
 
-    @Override
-    protected void onDestroy() {
-        Intent intent = new Intent(getApplicationContext(), RemoveChatRouletteService.class);
-        intent.putExtra("opponentId", foundOpponentId);
-        if (foundOpponentId != null) {
-            foundOpponentId = null;
-        }
-        startService(intent);
-        if (messagesReceiver != null) {
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(messagesReceiver);
-        }
-        super.onDestroy();
-    }
 }

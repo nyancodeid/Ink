@@ -177,7 +177,7 @@
     <string name="commentText">Comments</string>
     <string name="selectedBackgroundColor">Picked background color</string>
     <string name="addingComment">Adding comment...</string>
-    <string name="chatRoulette">Chat Roulette</string>
+    <string name="chatRoulette">Random Chat</string>
     <string name="myGroup">My groups</string>
     <string name="addGroupName">Add a group name</string>
     <string name="addGroupHint">E.x Family</string>
@@ -247,7 +247,7 @@ You can do it by clicking on the \'Join wait room \' button which will redirect 
     <string name="endingBrief">Thank you for passing the tutorial.Hope you will enjoy your time and meet a lot of new friends here.Enjoy your day! :)</string>
     <string name="connectedToQue">Connected to waiting room</string>
     <string name="notConnectedToWaitRoom">You are not connected to wait room</string>
-    <string name="waitingForOpponents">Connected : Waiting for opponents</string>
+    <string name="waitingForOpponents"> Waiting for opponents</string>
     <string name="opponentFound">Opponent found!</string>
     <string name="messageNotSent">Could not sent the message,try again...</string>
     <string name="userDisconnected">Opponent disconnected</string>
@@ -706,4 +706,8 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="view_image">View Image</string>
     <string name="pleaseWaitDownload">Pleas wait till image loaded</string>
     <string name="post_shared">Post was shared</string>
+    <string name="chosenType">Chosen Type</string>
+    <string name="normalOmegeleType">Normal</string>
+    <string name="spyOmegleMode">Spye Mode</string>
+    <string name="typing">typing...</string>
 </resources>

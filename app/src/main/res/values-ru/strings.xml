@@ -180,7 +180,7 @@
     <string name="commentText">Комментарии</string>
     <string name="selectedBackgroundColor">Выбранный цвет заднего плана</string>
     <string name="addingComment">Добавление комментария...</string>
-    <string name="chatRoulette">Chat Roulette</string>
+    <string name="chatRoulette">Случайные чат</string>
     <string name="myGroup">Мои группы</string>
     <string name="addGroupName">Добавить название группы</string>
     <string name="addGroupHint">E.x Семья</string>
@@ -249,7 +249,7 @@
     <string name="endingBrief">Спасибо вам за то что вы прошли руководство.Проведите ваше время с наслаждением и найдите новых друзей.Насладитесь вашим днем! :)</string>
     <string name="connectedToQue">Присоединено к комнате ожидания</string>
     <string name="notConnectedToWaitRoom">Вы не присоединены к комнате ожидания</string>
-    <string name="waitingForOpponents">Вы присоединились : Ждем оппонента</string>
+    <string name="waitingForOpponents">Ждем оппонента</string>
     <string name="opponentFound">Оппонент найден!</string>
     <string name="messageNotSent">Не получилось отправить сообщение, попробуйте снова...</string>
     <string name="userDisconnected">Оппонент отключился</string>
@@ -706,4 +706,8 @@
     <string name="view_image">Просмотр изображения</string>
     <string name="pleaseWaitDownload">Дождитесь загрузки изооброжения</string>
     <string name="post_shared">Пост опубликован</string>
+    <string name="chosenType">Вибранный Тип</string>
+    <string name="normalOmegeleType">Нормальный</string>
+    <string name="spyOmegleMode">Шпионский Мод</string>
+    <string name="typing">пишет...</string>
 </resources>
