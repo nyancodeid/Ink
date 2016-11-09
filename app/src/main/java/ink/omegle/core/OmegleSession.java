@@ -22,6 +22,8 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,7 +41,6 @@ import ink.omegle.util.HttpUtil;
  * Represents an active Omegle session.
  *
  * @author Nikki
- *
  */
 public class OmegleSession {
 
@@ -88,10 +89,8 @@ public class OmegleSession {
     /**
      * Constructs a new session
      *
-     * @param omegle
-     *            The parent handler
-     * @param id
-     *            The chat id
+     * @param omegle The parent handler
+     * @param id     The chat id
      */
     public OmegleSession(Omegle omegle, String id) {
         this.omegle = omegle;
@@ -108,13 +107,10 @@ public class OmegleSession {
      * An easy send function, can be used to send nonblocking messages without
      * the callback, same as send(text, null)
      *
-     * @param text
-     *            The text to send
-     * @param blocking
-     *            True for blocking, false for non
-     * @throws OmegleException
-     *             If an error occurred (Only blocking, nonblocking won't report
-     *             anything)
+     * @param text     The text to send
+     * @param blocking True for blocking, false for non
+     * @throws OmegleException If an error occurred (Only blocking, nonblocking won't report
+     *                         anything)
      */
     public void send(String text, boolean blocking) throws OmegleException {
         if (blocking) {
@@ -127,11 +123,9 @@ public class OmegleSession {
     /**
      * Non-blocking send
      *
-     * @param text
-     *            The text to send
-     * @param callback
-     *            The callback to use to inform that the message was sent, or
-     *            null if none.
+     * @param text     The text to send
+     * @param callback The callback to use to inform that the message was sent, or
+     *                 null if none.
      */
     public void send(final String text, final MessageSendCallback callback) {
         eventService.execute(new Runnable() {
@@ -152,10 +146,8 @@ public class OmegleSession {
     /**
      * Blocking send method, it's the backbone of the send functions.
      *
-     * @param text
-     *            The text to send
-     * @throws OmegleException
-     *             If an error occurred while attempting to send
+     * @param text The text to send
+     * @throws OmegleException If an error occurred while attempting to send
      */
     public void send(final String text) throws OmegleException {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -176,9 +168,8 @@ public class OmegleSession {
     /**
      * Set the status to typing.
      *
-     * @throws OmegleException
-     *             If an error occurred while attempting to set the typing
-     *             status
+     * @throws OmegleException If an error occurred while attempting to set the typing
+     *                         status
      */
     public void typing() throws OmegleException {
         try {
@@ -219,10 +210,9 @@ public class OmegleSession {
 
     /**
      * Parses events from a JSON Array
-     * @param events
-     * 			The array containing events
-     * @throws JSONException
-     * 			If an error occurred while reading the JSON values
+     *
+     * @param events The array containing events
+     * @throws JSONException If an error occurred while reading the JSON values
      */
     public void parseEvents(JSONArray events) throws JSONException {
         for (int i = 0; i < events.length(); i++) {
@@ -245,15 +235,16 @@ public class OmegleSession {
      * (Sending chat messages, etc) in events, unless they are performed
      * quickly.
      *
-     * @param event
-     *            The event name
-     * @param obj
-     *            The event data
+     * @param event The event name
+     * @param obj   The event data
      */
     private void fireEvent(OmegleEvent event, Object obj) {
         try {
             //Called for EVERY event.
-            JSONArray arrayObj = obj instanceof JSONArray ? (JSONArray) obj : new JSONArray(new Object[]{obj});
+            Collection<Object> objectCollection = new ArrayList<>();
+            objectCollection.add(new Object[]{obj});
+
+            JSONArray arrayObj = obj instanceof JSONArray ? (JSONArray) obj : new JSONArray(objectCollection);
             for (OmegleEventListener listener : listeners) {
                 listener.eventFired(this, event, arrayObj);
             }
@@ -379,8 +370,7 @@ public class OmegleSession {
     /**
      * Disconnect from the omegle chat
      *
-     * @throws OmegleException
-     *             If an error occurred while disconnecting
+     * @throws OmegleException If an error occurred while disconnecting
      */
     public void disconnect() throws OmegleException {
         try {
@@ -400,8 +390,7 @@ public class OmegleSession {
     /**
      * Add an OmegleEventListener to our list of listeners
      *
-     * @param listener
-     *            The listener to add
+     * @param listener The listener to add
      */
     public void addListener(OmegleEventListener listener) {
         listeners.add(listener);

@@ -81,6 +81,65 @@ public class InputField {
         });
     }
 
+    public static void createInputFieldView(final Context context,
+                                            @Nullable final ClickHandler clickHandler,
+                                            @Nullable String hint, boolean checkLenght, final int minLengh) {
+
+
+        View newCommentView = ((Activity) context).getLayoutInflater().inflate(R.layout.new_comment_body, null);
+        final EditText newCommentBody = (EditText) newCommentView.findViewById(R.id.newCommentBody);
+        newCommentBody.getBackground().mutate().setColorFilter(ContextCompat.getColor(context, R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+        if (hint != null) {
+            newCommentBody.setHint(hint);
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(newCommentView);
+        builder.setCancelable(false);
+        builder.setPositiveButton(context.getString(R.string.saveText), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //just override for dialog not to close automatically
+            }
+        });
+        builder.setNegativeButton(context.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //just override for dialog not to close automatically
+            }
+        });
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String finalBody = newCommentBody.getText().toString().trim();
+                if (finalBody.isEmpty()) {
+                    newCommentBody.setError(context.getString(R.string.fieldEmptyError));
+                } else {
+                    if (finalBody.length() < minLengh) {
+                        newCommentBody.setError(context.getString(R.string.tooShort));
+                    } else {
+                        if (clickHandler != null) {
+                            clickHandler.onPositiveClicked(finalBody, dialog);
+                        }
+                    }
+
+                }
+            }
+        });
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (clickHandler != null) {
+                    clickHandler.onNegativeClicked(null, dialog);
+                }
+            }
+        });
+    }
+
+
     public interface ClickHandler {
         void onPositiveClicked(Object... result);
 

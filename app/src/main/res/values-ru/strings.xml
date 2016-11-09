@@ -713,4 +713,5 @@
     <string name="youWatchingNow">Вы теперь следите за двумя незнакомцами которые обсуждают :</string>
     <string name="chooseQuestion">Выберите Ворпос</string>
     <string name="questionToAsk">Напишите Вопрос</string>
+    <string name="tooShort">Текст слишком короткий (Минимум 10 символов)</string>
 </resources>

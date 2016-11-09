@@ -713,4 +713,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="youWatchingNow">You are now watching two strangers talk about :</string>
     <string name="chooseQuestion">Choose Question</string>
     <string name="questionToAsk">Write Question</string>
+    <string name="tooShort">Text is too short (Minimum 10 characters)</string>
 </resources>

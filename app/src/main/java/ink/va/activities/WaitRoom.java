@@ -41,6 +41,7 @@ import ink.omegle.core.OmegleSession;
 import ink.omegle.core.OmegleSpyStranger;
 import ink.omegle.event.OmegleEventAdaptor;
 import ink.va.adapters.RandomChatAdapter;
+import ink.va.callbacks.GeneralCallback;
 import ink.va.models.RandomChatModel;
 import ink.va.service.TaskRemoveService;
 import ink.va.utils.InputField;
@@ -120,9 +121,6 @@ public class WaitRoom extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 chosenType = types.get(i);
-                if (chosenType.equals(getString(R.string.spyOmegleMode))) {
-                    showQuestionPicker();
-                }
             }
 
             @Override
@@ -174,7 +172,7 @@ public class WaitRoom extends BaseActivity {
         });
     }
 
-    private void showQuestionPicker() {
+    private void showQuestionPicker(final GeneralCallback<String> questionCallback) {
         InputField.createInputFieldView(this, new InputField.ClickHandler() {
             @Override
             public void onPositiveClicked(Object... result) {
@@ -182,6 +180,8 @@ public class WaitRoom extends BaseActivity {
                 AlertDialog dialog = (AlertDialog) result[1];
                 dialog.dismiss();
                 question = writtenMessage;
+                chosenTypeSpinner.setSelection(1);
+                questionCallback.onSuccess(question);
             }
 
             @Override
@@ -189,9 +189,9 @@ public class WaitRoom extends BaseActivity {
                 AlertDialog dialog = (AlertDialog) result[1];
                 dialog.dismiss();
                 chosenTypeSpinner.setSelection(0);
+                questionCallback.onFailure(null);
             }
-        }, getString(R.string.chooseQuestion), getString(R.string.questionToAsk), null);
-        chosenTypeSpinner.setSelection(0);
+        }, getString(R.string.questionToAsk), true, 10);
     }
 
 
@@ -214,12 +214,24 @@ public class WaitRoom extends BaseActivity {
 
             connectDisconnectButton.setText(getString(R.string.connect));
         } else {
-            connected = true;
-            connectDisconnectButton.setText(getString(R.string.disconnect));
             if (chosenType.equals(getString(R.string.normalOmegeleType))) {
+                connected = true;
                 startOmegle(NORMAL, null);
+                connectDisconnectButton.setText(getString(R.string.disconnect));
             } else {
-                startOmegle(SPY_QUESTION, question);
+                showQuestionPicker(new GeneralCallback<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        connected = true;
+                        startOmegle(SPY_QUESTION, s);
+                        connectDisconnectButton.setText(getString(R.string.disconnect));
+                    }
+
+                    @Override
+                    public void onFailure(String s) {
+
+                    }
+                });
             }
 
         }
@@ -229,6 +241,7 @@ public class WaitRoom extends BaseActivity {
         if (mWorkerThread != null) {
             mWorkerThread = null;
         }
+
         chatModels.clear();
         chatAdapter.notifyDataSetChanged();
         chosenTypeSpinner.setEnabled(false);

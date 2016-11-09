@@ -35,13 +35,6 @@ import ink.omegle.core.OmegleSession;
 import ink.omegle.event.OmegleEventListener;
 import ink.omegle.util.HttpUtil;
 
-
-/**
- * The main API class
- *
- * @author Nikki
- *
- */
 public class Omegle implements Runnable {
 
     /**
