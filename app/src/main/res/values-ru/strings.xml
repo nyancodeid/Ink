@@ -710,4 +710,7 @@
     <string name="normalOmegeleType">Нормальный</string>
     <string name="spyOmegleMode">Шпионский Мод</string>
     <string name="typing">пишет...</string>
+    <string name="youWatchingNow">Вы теперь следите за двумя незнакомцами которые обсуждают :</string>
+    <string name="chooseQuestion">Выберите Ворпос</string>
+    <string name="questionToAsk">Напишите Вопрос</string>
 </resources>

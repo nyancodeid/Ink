@@ -710,4 +710,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="normalOmegeleType">Normal</string>
     <string name="spyOmegleMode">Spye Mode</string>
     <string name="typing">typing...</string>
+    <string name="youWatchingNow">You are now watching two strangers talk about :</string>
+    <string name="chooseQuestion">Choose Question</string>
+    <string name="questionToAsk">Write Question</string>
 </resources>

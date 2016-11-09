@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,6 +43,7 @@ import ink.omegle.event.OmegleEventAdaptor;
 import ink.va.adapters.RandomChatAdapter;
 import ink.va.models.RandomChatModel;
 import ink.va.service.TaskRemoveService;
+import ink.va.utils.InputField;
 import ink.va.utils.SharedHelper;
 
 import static ink.omegle.core.OmegleMode.NORMAL;
@@ -79,15 +81,16 @@ public class WaitRoom extends BaseActivity {
     private Thread mSendThread;
     private OmegleSession omegleSession;
     private Thread mDisconnectThread;
+    private String question;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chat_background_png));
         setContentView(R.layout.activity_wait_room);
         ButterKnife.bind(this);
 
-        getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chat_background_png));
 
         chosenType = getString(R.string.normalOmegeleType);
         sharedHelper = new SharedHelper(this);
@@ -117,6 +120,9 @@ public class WaitRoom extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 chosenType = types.get(i);
+                if (chosenType.equals(getString(R.string.spyOmegleMode))) {
+                    showQuestionPicker();
+                }
             }
 
             @Override
@@ -168,6 +174,26 @@ public class WaitRoom extends BaseActivity {
         });
     }
 
+    private void showQuestionPicker() {
+        InputField.createInputFieldView(this, new InputField.ClickHandler() {
+            @Override
+            public void onPositiveClicked(Object... result) {
+                String writtenMessage = (String) result[0];
+                AlertDialog dialog = (AlertDialog) result[1];
+                dialog.dismiss();
+                question = writtenMessage;
+            }
+
+            @Override
+            public void onNegativeClicked(Object... result) {
+                AlertDialog dialog = (AlertDialog) result[1];
+                dialog.dismiss();
+                chosenTypeSpinner.setSelection(0);
+            }
+        }, getString(R.string.chooseQuestion), getString(R.string.questionToAsk), null);
+        chosenTypeSpinner.setSelection(0);
+    }
+
 
     @OnClick(R.id.connectDisconnectButton)
     public void connectClicked() {
@@ -193,13 +219,13 @@ public class WaitRoom extends BaseActivity {
             if (chosenType.equals(getString(R.string.normalOmegeleType))) {
                 startOmegle(NORMAL, null);
             } else {
-                startOmegle(SPY_QUESTION, "WHO DA FUCK ARE YOU?");
+                startOmegle(SPY_QUESTION, question);
             }
 
         }
     }
 
-    private void startOmegle(final OmegleMode omegleMode, @Nullable String question) {
+    private void startOmegle(final OmegleMode omegleMode, @Nullable final String question) {
         if (mWorkerThread != null) {
             mWorkerThread = null;
         }
@@ -379,7 +405,19 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    hideKeyboard();
+                                                    chosenTypeSpinner.setEnabled(true);
+                                                    chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
+                                                    chatRouletteMessageBody.setEnabled(false);
+                                                    connected = false;
+                                                    connectDisconnectButton.setText(getString(R.string.connect));
+                                                    actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.red));
+                                                    actualStatus.setText(getString(R.string.disconnectedToOpponent));
+                                                }
+                                            });
                                         }
                                     });
                                 }
@@ -426,6 +464,99 @@ public class WaitRoom extends BaseActivity {
                         }
                         break;
                     case SPY_QUESTION:
+                        try {
+                            omegleSession = omegle.openSession(OmegleMode.SPY_QUESTION, question, new OmegleEventAdaptor() {
+                                @Override
+                                public void chatWaiting(OmegleSession session) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            progressBar.setVisibility(View.VISIBLE);
+                                            actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.colorPrimary));
+                                            actualStatus.setText(getString(R.string.waitingForOpponents));
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void chatConnected(OmegleSession session) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            progressBar.setVisibility(View.GONE);
+                                            actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.colorPrimary));
+                                            actualStatus.setText(getString(R.string.youWatchingNow) + " " + question);
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void spyMessage(OmegleSession session, final OmegleSpyStranger stranger, final String message) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            switch (stranger) {
+                                                case Stranger_1:
+                                                    chatModel = new RandomChatModel(message, true);
+                                                    chatModels.add(chatModel);
+                                                    int index = chatModels.indexOf(chatModel);
+                                                    chatAdapter.notifyItemInserted(index);
+                                                    break;
+                                                case Stranger_2:
+                                                    chatModel = new RandomChatModel(message, false);
+                                                    chatModels.add(chatModel);
+                                                    index = chatModels.indexOf(chatModel);
+                                                    chatAdapter.notifyItemInserted(index);
+                                                    break;
+                                            }
+                                        }
+                                    });
+
+                                }
+
+                                @Override
+                                public void spyDisconnected(OmegleSession session, OmegleSpyStranger stranger) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            hideKeyboard();
+                                            chosenTypeSpinner.setEnabled(true);
+                                            chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
+                                            chatRouletteMessageBody.setEnabled(false);
+                                            connected = false;
+                                            connectDisconnectButton.setText(getString(R.string.connect));
+                                            actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.red));
+                                            actualStatus.setText(getString(R.string.disconnectedToOpponent));
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void question(OmegleSession session, String question) {
+
+                                }
+
+                                @Override
+                                public void omegleError(OmegleSession session, String string) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            hideKeyboard();
+                                            chosenTypeSpinner.setEnabled(true);
+                                            chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
+                                            chatRouletteMessageBody.setEnabled(false);
+                                            connected = false;
+                                            connectDisconnectButton.setText(getString(R.string.connect));
+                                            actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.red));
+                                            actualStatus.setText(getString(R.string.disconnectedToOpponent));
+                                        }
+                                    });
+
+                                }
+                            });
+                        } catch (OmegleException e) {
+                            e.printStackTrace();
+                        }
                         break;
                 }
             }
