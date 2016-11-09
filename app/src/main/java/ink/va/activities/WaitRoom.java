@@ -528,6 +528,24 @@ public class WaitRoom extends BaseActivity {
                                 }
 
                                 @Override
+                                public void chatDisconnected(OmegleSession session) {
+                                    super.chatDisconnected(session);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            hideKeyboard();
+                                            chosenTypeSpinner.setEnabled(true);
+                                            chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
+                                            chatRouletteMessageBody.setEnabled(false);
+                                            connected = false;
+                                            connectDisconnectButton.setText(getString(R.string.connect));
+                                            actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.red));
+                                            actualStatus.setText(getString(R.string.disconnectedToOpponent));
+                                        }
+                                    });
+                                }
+
+                                @Override
                                 public void spyDisconnected(OmegleSession session, OmegleSpyStranger stranger) {
                                     runOnUiThread(new Runnable() {
                                         @Override

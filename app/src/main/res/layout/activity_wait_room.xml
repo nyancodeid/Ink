@@ -61,7 +61,7 @@
     <android.support.v7.widget.AppCompatSpinner
         android:id="@+id/chosenTypeSpinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_below="@+id/chosenTypeTitle"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="10dp"
@@ -69,12 +69,20 @@
         android:background="@drawable/circle_transparent_background"
         android:minHeight="20dp"></android.support.v7.widget.AppCompatSpinner>
 
+    <View
+        android:id="@+id/randomDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/chosenTypeSpinner"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary"></View>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chatRouletteRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/chatRouletteCard"
-        android:layout_below="@+id/chosenTypeSpinner"
+        android:layout_below="@+id/randomDivider"
         android:layout_margin="5dp"
         android:layout_marginTop="10dp">
 

@@ -133,9 +133,8 @@ public class Omegle implements Runnable {
      * Opens a new omegle session. Note: This CONNECTS THE SESSION!
      *
      * @return The newly created session
-     * @throws OmegleException
-     *             If an error occurred while attempting to open, always due to
-     *             an IOException
+     * @throws OmegleException If an error occurred while attempting to open, always due to
+     *                         an IOException
      */
     public OmegleSession openSession() throws OmegleException {
         return openSession(OmegleMode.NORMAL);
@@ -144,13 +143,11 @@ public class Omegle implements Runnable {
     /**
      * Opens a new omegle session. Note: This CONNECTS THE SESSION!
      *
-     * @param objs
-     *            Parameters are checked, so you may pass event listeners
-     *            through here.
+     * @param objs Parameters are checked, so you may pass event listeners
+     *             through here.
      * @return The newly created session
-     * @throws OmegleException
-     *             If an error occurred while attempting to open, always due to
-     *             an IOException
+     * @throws OmegleException If an error occurred while attempting to open, always due to
+     *                         an IOException
      */
     public OmegleSession openSession(Object... objs) throws OmegleException {
         return openSession(OmegleMode.NORMAL, objs);
@@ -159,17 +156,13 @@ public class Omegle implements Runnable {
     /**
      * Opens a new omegle session. Note: This CONNECTS THE SESSION!
      *
-     * @param mode
-     *            The omegle chat mode
-     * @param objs
-     *            The objects. If mode = SPY_QUESTION, param 1 should be the
-     *            question. Parameters are checked, so you may pass event
-     *            listeners through here.
-     *
+     * @param mode The omegle chat mode
+     * @param objs The objects. If mode = SPY_QUESTION, param 1 should be the
+     *             question. Parameters are checked, so you may pass event
+     *             listeners through here.
      * @return The newly created session
-     * @throws OmegleException
-     *             If an error occurred while attempting to open, always due to
-     *             an IOException
+     * @throws OmegleException If an error occurred while attempting to open, always due to
+     *                         an IOException
      */
     public OmegleSession openSession(OmegleMode mode, Object... objs)
             throws OmegleException {
@@ -177,6 +170,7 @@ public class Omegle implements Runnable {
             Map<String, Object> vars = new HashMap<String, Object>();
             vars.put("rcs", "1");
             vars.put("firstevents", firstEvents ? "1" : "0");
+            vars.put("language", "ru");
 
             if (mode == OmegleMode.SPY) {
                 vars.put("wantsspy", "1");
@@ -231,8 +225,7 @@ public class Omegle implements Runnable {
      * Adds a session to the system, can be used to listen in on sessions open
      * in browsers, however the browsers won't get the messages this picks up.
      *
-     * @param session
-     *            The session.
+     * @param session The session.
      */
     public void addSession(OmegleSession session) {
         synchronized (sessions) {
@@ -243,8 +236,7 @@ public class Omegle implements Runnable {
     /**
      * Remove a session from the list
      *
-     * @param session
-     *            The session to remove
+     * @param session The session to remove
      */
     public void removeSession(OmegleSession session) {
         synchronized (sessions) {
@@ -255,8 +247,7 @@ public class Omegle implements Runnable {
     /**
      * Set the first event flag
      *
-     * @param firstEvents
-     *            Whether to parse events from the first connect response
+     * @param firstEvents Whether to parse events from the first connect response
      */
     public void setFirstEvents(boolean firstEvents) {
         this.firstEvents = firstEvents;
@@ -265,9 +256,8 @@ public class Omegle implements Runnable {
     /**
      * Set the event parse delay
      *
-     * @param eventParseDelay
-     *            The delay between parsing events, this will be called even if
-     *            previous events have not finished parsing!
+     * @param eventParseDelay The delay between parsing events, this will be called even if
+     *                        previous events have not finished parsing!
      */
     public void setEventParseDelay(long eventParseDelay) {
         this.eventParseDelay = eventParseDelay;

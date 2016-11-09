@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -83,14 +84,16 @@ public class InputField {
 
     public static void createInputFieldView(final Context context,
                                             @Nullable final ClickHandler clickHandler,
-                                            @Nullable String hint, boolean checkLenght, final int minLengh) {
+                                            @Nullable String hint, final boolean checkLenght, final int minLengh) {
 
 
         View newCommentView = ((Activity) context).getLayoutInflater().inflate(R.layout.new_comment_body, null);
         final EditText newCommentBody = (EditText) newCommentView.findViewById(R.id.newCommentBody);
+        final TextInputLayout inputFiledLayout = (TextInputLayout) newCommentView.findViewById(R.id.inputFiledLayout);
         newCommentBody.getBackground().mutate().setColorFilter(ContextCompat.getColor(context, R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
         if (hint != null) {
             newCommentBody.setHint(hint);
+            inputFiledLayout.setHint(hint);
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(newCommentView);
@@ -118,13 +121,20 @@ public class InputField {
                 if (finalBody.isEmpty()) {
                     newCommentBody.setError(context.getString(R.string.fieldEmptyError));
                 } else {
-                    if (finalBody.length() < minLengh) {
-                        newCommentBody.setError(context.getString(R.string.tooShort));
+                    if (checkLenght) {
+                        if (finalBody.length() < minLengh) {
+                            newCommentBody.setError(context.getString(R.string.tooShort));
+                        } else {
+                            if (clickHandler != null) {
+                                clickHandler.onPositiveClicked(finalBody, dialog);
+                            }
+                        }
                     } else {
                         if (clickHandler != null) {
                             clickHandler.onPositiveClicked(finalBody, dialog);
                         }
                     }
+
 
                 }
             }
