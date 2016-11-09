@@ -102,6 +102,7 @@ public class WaitRoom extends BaseActivity {
         chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
         chatRouletteSendMessage.setEnabled(false);
 
+
         chatRouletteRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
