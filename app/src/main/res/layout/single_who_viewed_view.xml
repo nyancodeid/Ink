@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/friendsRootView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/whoViewedCardView"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:layout_margin="10dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:elevation="8dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="8dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/whoViewedTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_margin="10dp"
+                android:ellipsize="end"
+                android:fontFamily="@string/thinFont"
+                android:maxLines="1"
+                android:text="@string/loadingText"
+                android:textColor="#000000"
+                android:transitionName="text" />
+
+            <ImageView
+                android:id="@+id/whoViewedMoreIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:padding="5dp"
+                android:src="@drawable/more_icon" />
+
+            <ImageView
+                android:id="@+id/whoViewedImage"
+                android:layout_width="76dp"
+                android:layout_height="76dp"
+                android:layout_margin="16dp"
+                android:transitionName="card" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/whoViewedImage"
+                android:layout_toRightOf="@+id/whoViewedImage"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/whoViewedName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:ellipsize="end"
+                    android:fontFamily="@string/appFont"
+                    android:maxLines="1"
+                    android:text="Aharon Ramsey"
+                    android:textColor="#000000"
+                    android:transitionName="text" />
+
+            </LinearLayout>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

@@ -90,6 +90,10 @@ public class Retrofit {
         Call<ResponseBody> getSingleUserDetails(@Field("user_id") String userId,
                                                 @Field("currentUserId") String currentUserId);
 
+        @POST(Constants.WHO_VIEWED_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getWhoViewed(@Field("currentUserId") String userId);
+
         @POST(Constants.SEND_FRIEND_REQUEST_URL)
         @FormUrlEncoded
         Call<ResponseBody> requestFriend(@Field("requesterId") String requesterId,

@@ -391,7 +391,10 @@ public class HomeActivity extends BaseActivity
                 shouldOpenActivity = true;
                 setLastClassToOpen(MyProfile.class, false);
                 break;
-
+            case R.id.whoViewed:
+                shouldOpenActivity = true;
+                setLastClassToOpen(WhoViewedActivity.class, false);
+                break;
             case R.id.feeds:
                 shouldOpenActivity = false;
                 if (!mToolbar.getTitle().equals(FEED)) {

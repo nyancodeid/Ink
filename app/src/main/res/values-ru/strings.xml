@@ -721,4 +721,7 @@
         \nhttps://play.google.com/store/apps/details?id=com.ink.va</string>
     <string name="locatedAt">Находится в : </string>
     <string name="signInWithLinkedIn">Войти с помощю аккаунта google LinkedIn</string>
+
+    <string name="whoViewedText">Кто просмотрел мой профиль</string>
+    <string name="noProfileViewText">Никто не просматривал ваш профиль пока.</string>
 </resources>

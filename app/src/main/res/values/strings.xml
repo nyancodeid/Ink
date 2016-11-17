@@ -721,4 +721,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="locatedAt">Located At : </string>
     <string name="signInWithLinkedIn">Sing in with LinkedIn</string>
     <string name="whoViewedText">Who\'s viewed my profile</string>
+    <string name="noProfileViewText">No one has viewed you\'r profile yet</string>
 </resources>
