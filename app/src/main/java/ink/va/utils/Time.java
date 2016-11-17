@@ -43,9 +43,11 @@ public class Time {
         int days;
         int month;
         int year;
+        int seconds;
         try {
             date = dateFormatToParse.parse(Time.convertToLocalTime(time));
             Period period = new Period(new DateTime(new Date()), new DateTime(date), PeriodType.dayTime());
+            seconds = period.getSeconds();
             minutes = period.getMinutes();
             hours = period.getHours();
             days = period.getDays();
@@ -55,8 +57,12 @@ public class Time {
             e.printStackTrace();
             return "N/A";
         }
-        String appendableString = context.getString(R.string.minutes);
-        int lastTime = minutes;
+        String appendableString = context.getString(R.string.seconds);
+        int lastTime = seconds;
+        if (minutes != 0) {
+            lastTime = minutes;
+            appendableString = context.getString(R.string.minutes);
+        }
         if (year != 0) {
             appendableString = context.getString(R.string.years);
             lastTime = year;

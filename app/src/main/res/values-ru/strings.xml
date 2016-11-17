@@ -673,6 +673,7 @@
     <string name="years">лет назад</string>
     <string name="month">месяц(ев)</string>
     <string name="days">дней назад</string>
+    <string name="seconds">секунду(секунд) назад</string>
     <string name="dateOfMessage">Дата сообщения :</string>
     <string name="pickTrendAndNewsColor">Выберите тренд и цвет иконки новостей</string>
     <string name="trendColor">Тренд и новые цвета</string>

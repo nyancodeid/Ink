@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ink.va.R;
@@ -50,6 +51,8 @@ public class WhoViewedActivity extends AppCompatActivity implements
     SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.noProfileViewWrapper)
     RelativeLayout noProfileViewWrapper;
+    @Bind(R.id.totalAccountViews)
+    TextView totalAccountViews;
 
     private SharedHelper sharedHelper;
 
@@ -123,8 +126,11 @@ public class WhoViewedActivity extends AppCompatActivity implements
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
+                    int totalViews = jsonObject.optInt("totalViews");
+                    totalAccountViews.setText(getString(R.string.totalAccountViews, totalViews));
                     if (success) {
                         whoViewedModels.clear();
+                        whoViewedAdapter.notifyDataSetChanged();
                         JSONArray result = jsonObject.optJSONArray("result");
                         if (result.length() <= 0) {
                             noProfileViewWrapper.setVisibility(View.VISIBLE);
@@ -132,12 +138,12 @@ public class WhoViewedActivity extends AppCompatActivity implements
                             noProfileViewWrapper.setVisibility(View.GONE);
                             for (int i = 0; i < result.length(); i++) {
                                 JSONObject eachObject = result.optJSONObject(i);
-                                String firstName = eachObject.optString("firstNam");
-                                String lastName = eachObject.optString("lastNam");
-                                String imageLink = eachObject.optString("imageLin");
+                                String firstName = eachObject.optString("firstName");
+                                String lastName = eachObject.optString("lastName");
+                                String imageLink = eachObject.optString("imageLink");
                                 boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
                                 boolean isFriend = eachObject.optBoolean("isFriend");
-                                String userId = eachObject.optString("userI");
+                                String userId = eachObject.optString("userId");
                                 String timeViewed = eachObject.optString("timeViewed");
                                 whoViewedModel = new WhoViewedModel(firstName,
                                         lastName, imageLink, isSocialAccount, isFriend, userId, timeViewed);
