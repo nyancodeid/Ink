@@ -720,4 +720,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
         \nhttps://play.google.com/store/apps/details?id=com.ink.va</string>
     <string name="locatedAt">Located At : </string>
     <string name="signInWithLinkedIn">Sing in with LinkedIn</string>
+    <string name="whoViewedText">Who\'s viewed my profile</string>
 </resources>
