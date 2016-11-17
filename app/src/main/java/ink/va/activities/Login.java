@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -81,7 +82,9 @@ public class Login extends BaseActivity implements View.OnClickListener {
     public static final int GOOGLE_SIGN_IN_REQUEST_CODE = 1;
     // UI references.
     private AutoCompleteTextView mLoginView;
+    private TextInputLayout loginInput;
     private EditText mPasswordView;
+    private TextInputLayout passwordInput;
     private View mProgressView;
     private View mLoginFormView;
     private RelativeLayout mRegisterWrapper;
@@ -123,7 +126,34 @@ public class Login extends BaseActivity implements View.OnClickListener {
             finish();
         }
         mLoginView = (AutoCompleteTextView) findViewById(R.id.email);
+        loginInput = (TextInputLayout) findViewById(R.id.loginInput);
+
         mPasswordView = (EditText) findViewById(R.id.password);
+        passwordInput = (TextInputLayout) findViewById(R.id.passwordInput);
+
+
+        loginInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (!mLoginView.getText().toString().trim().isEmpty()) {
+                    loginInput.setError(null);
+                } else {
+                    loginInput.setError(getString(R.string.emptyLoginError));
+                }
+            }
+        });
+
+        passwordInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (!mPasswordView.getText().toString().trim().isEmpty()) {
+                    passwordInput.setError(null);
+                } else {
+                    passwordInput.setError(getString(R.string.emptyPasswordError));
+                }
+            }
+        });
+
         mRegisterWrapper = (RelativeLayout) findViewById(R.id.anotherOption);
         mRegisterWrapper.setOnClickListener(this);
         mBroadcastReceiver = new BroadcastReceiver() {
@@ -152,10 +182,10 @@ public class Login extends BaseActivity implements View.OnClickListener {
                     attemptLogin();
                 } else {
                     if (mPasswordView.getText().toString().isEmpty()) {
-                        mPasswordView.setError(getString(R.string.emptyPasswordError));
+                        passwordInput.setError(getString(R.string.emptyPasswordError));
                     }
                     if (mLoginView.getText().toString().isEmpty()) {
-                        mLoginView.setError(getString(R.string.emptyLoginError));
+                        loginInput.setError(getString(R.string.emptyLoginError));
                     }
                 }
             }
@@ -181,8 +211,8 @@ public class Login extends BaseActivity implements View.OnClickListener {
     private void attemptLogin() {
         disableButtons();
         // Reset errors.
-        mLoginView.setError(null);
-        mPasswordView.setError(null);
+        passwordInput.setError(null);
+        loginInput.setError(null);
 
         // Store values at the time of the login attempt.
         String email = mLoginView.getText().toString();
@@ -193,14 +223,14 @@ public class Login extends BaseActivity implements View.OnClickListener {
 
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
+            passwordInput.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
-            mLoginView.setError(getString(R.string.error_field_required));
+            loginInput.setError(getString(R.string.error_field_required));
             focusView = mLoginView;
             cancel = true;
         }
