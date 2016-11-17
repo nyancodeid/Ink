@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,6 +35,14 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.ink.va.R;
+import com.linkedin.platform.APIHelper;
+import com.linkedin.platform.LISessionManager;
+import com.linkedin.platform.errors.LIApiError;
+import com.linkedin.platform.errors.LIAuthError;
+import com.linkedin.platform.listeners.ApiListener;
+import com.linkedin.platform.listeners.ApiResponse;
+import com.linkedin.platform.listeners.AuthListener;
+import com.linkedin.platform.utils.Scope;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
@@ -63,6 +72,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.utils.Constants.PEOPLE_LINKEDIN_URL;
+
 /**
  * A login screen that offers login via email/password.
  */
@@ -80,6 +91,8 @@ public class Login extends BaseActivity implements View.OnClickListener {
     private Button mLoginButton;
     private ProgressDialog progressDialog;
     private CallbackManager mCallbackManager;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -460,9 +473,34 @@ public class Login extends BaseActivity implements View.OnClickListener {
         });
     }
 
-    private void openLinkedInLogin() {
+    private Scope buildScope() {
+        return Scope.build(Scope.R_BASICPROFILE, Scope.W_SHARE);
+    }
 
-//        LISessionManager.init(this, Scope scope, AuthListener callback, boolean showGoToAppStoreDialog)
+    private void openLinkedInLogin() {
+        LISessionManager.getInstance(getApplicationContext()).init(this, buildScope(), new AuthListener() {
+            @Override
+            public void onAuthSuccess() {
+                progressDialog.show();
+                APIHelper apiHelper = APIHelper.getInstance(getApplicationContext());
+                apiHelper.getRequest(Login.this, PEOPLE_LINKEDIN_URL, new ApiListener() {
+                    @Override
+                    public void onApiSuccess(ApiResponse s) {
+                        Log.d("fsakljfasfasf", "onApiSuccess: "+s);
+                    }
+
+                    @Override
+                    public void onApiError(LIApiError error) {
+                        Toast.makeText(getApplicationContext(), getString(R.string.errorLogin) + error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onAuthError(LIAuthError error) {
+                Toast.makeText(getApplicationContext(), getString(R.string.errorLogin) + error.toString(), Toast.LENGTH_LONG).show();
+            }
+        }, true);
     }
 
     @Override
