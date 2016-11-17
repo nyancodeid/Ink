@@ -12,10 +12,13 @@ import android.widget.TextView;
 import com.ink.va.R;
 import com.koushikdutta.ion.Ion;
 
+import java.text.SimpleDateFormat;
+
 import ink.va.adapters.WhoViewedAdapter;
 import ink.va.models.WhoViewedModel;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+import ink.va.utils.Time;
 
 /**
  * Created by USER on 2016-11-18.
@@ -40,6 +43,8 @@ public class WhoViewedViewHolder extends RecyclerView.ViewHolder {
     public void init(Context context, final WhoViewedModel whoViewedModel, @Nullable final WhoViewedAdapter.OnItemClickListener onItemClickListener) {
 
         whoViewedName.setText(whoViewedModel.getFullName());
+        whoViewedTime.setText(Time.getTimeInHumanFormat(context, whoViewedModel.getTimeViewed(),
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")));
 
         if (!whoViewedModel.getImageLink().isEmpty()) {
 
