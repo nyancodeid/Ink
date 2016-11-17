@@ -720,4 +720,5 @@
      <string name="ink_share_text">Получить приложение
         \nhttps://play.google.com/store/apps/details?id=com.ink.va</string>
     <string name="locatedAt">Находится в : </string>
+    <string name="signInWithLinkedIn">Войти с помощю аккаунта google LinkedIn</string>
 </resources>

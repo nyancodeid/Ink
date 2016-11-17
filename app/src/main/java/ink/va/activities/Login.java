@@ -331,6 +331,8 @@ public class Login extends BaseActivity implements View.OnClickListener {
         RelativeLayout googleSignInWrapper = (RelativeLayout) optionsView.findViewById(R.id.googleSignInWrapper);
         RelativeLayout facebookSignInWrapper = (RelativeLayout) optionsView.findViewById(R.id.facebookSignInWrapper);
         RelativeLayout vkSignInWrapper = (RelativeLayout) optionsView.findViewById(R.id.vkSignInWrapper);
+        RelativeLayout linkedInWrapper = (RelativeLayout) optionsView.findViewById(R.id.linkedInSingInWrapper);
+
         final AppCompatCheckBox appCompatCheckBox = (AppCompatCheckBox) optionsView.findViewById(R.id.privacyCheckBox);
         TextView acceptPrivacyText = (TextView) optionsView.findViewById(R.id.acceptPrivacyText);
 
@@ -400,6 +402,25 @@ public class Login extends BaseActivity implements View.OnClickListener {
                 });
             }
         });
+        linkedInWrapper.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!appCompatCheckBox.isChecked()) {
+                    Snackbar.make(appCompatCheckBox, getString(R.string.youMustAccept), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    }).show();
+                    return;
+                }
+
+                if (finalAlertDialog != null) {
+                    finalAlertDialog.dismiss();
+                }
+                openLinkedInLogin();
+            }
+        });
         vkSignInWrapper.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -437,6 +458,11 @@ public class Login extends BaseActivity implements View.OnClickListener {
                 startActivity(new Intent(getApplicationContext(), Registration.class));
             }
         });
+    }
+
+    private void openLinkedInLogin() {
+
+//        LISessionManager.init(this, Scope scope, AuthListener callback, boolean showGoToAppStoreDialog)
     }
 
     @Override
