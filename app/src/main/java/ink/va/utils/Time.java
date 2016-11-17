@@ -1,5 +1,13 @@
 package ink.va.utils;
 
+import android.content.Context;
+
+import com.ink.va.R;
+
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -25,6 +33,45 @@ public class Time {
         }
 
         return finalFormat;
+    }
+
+    public static String getTimeInHumanFormat(Context context, String time, SimpleDateFormat dateFormatToParse) {
+
+        Date date;
+        int minutes;
+        int hours;
+        int days;
+        int month;
+        int year;
+        try {
+            date = dateFormatToParse.parse(Time.convertToLocalTime(time));
+            Period period = new Period(new DateTime(new Date()), new DateTime(date), PeriodType.dayTime());
+            minutes = period.getMinutes();
+            hours = period.getHours();
+            days = period.getDays();
+            month = period.getMonths();
+            year = period.getYears();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "N/A";
+        }
+        String appendableString = context.getString(R.string.minutes);
+        int lastTime = minutes;
+        if (year != 0) {
+            appendableString = context.getString(R.string.years);
+            lastTime = year;
+        } else if (month != 0) {
+            appendableString = context.getString(month);
+            lastTime = month;
+        } else if (days != 0) {
+            appendableString = context.getString(days);
+            lastTime = days;
+        } else if (hours != 0) {
+            appendableString = context.getString(hours);
+            lastTime = hours;
+        }
+
+        return Math.abs(lastTime) + " " + appendableString;
     }
 
     public static String convertToLocalTime(String timeToConvert) {
