@@ -14,7 +14,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -91,7 +90,6 @@ public class Login extends BaseActivity implements View.OnClickListener {
     private Button mLoginButton;
     private ProgressDialog progressDialog;
     private CallbackManager mCallbackManager;
-
 
 
     @Override
@@ -486,7 +484,23 @@ public class Login extends BaseActivity implements View.OnClickListener {
                 apiHelper.getRequest(Login.this, PEOPLE_LINKEDIN_URL, new ApiListener() {
                     @Override
                     public void onApiSuccess(ApiResponse s) {
-                        Log.d("fsakljfasfasf", "onApiSuccess: " + s.getResponseDataAsJson());
+                        try {
+                            JSONObject jsonObject = new JSONObject(s.getResponseDataAsString());
+                            String firstName = jsonObject.optString("firstName");
+                            String lastName = jsonObject.optString("lastName");
+                            String login = jsonObject.optString("id");
+                            JSONObject pictureUrls = jsonObject.optJSONObject("pictureUrls");
+                            int total = pictureUrls.optInt("_total");
+                            String pictureUrl = Constants.NO_IMAGE_URL;
+                            if (total > 0) {
+                                JSONArray values = pictureUrls.optJSONArray("values");
+                                pictureUrl = values.optString(0);
+                            }
+                            loginUser(login, firstName, lastName, pictureUrl, "", "", Constants.SOCIAL_TYPE_LINKEDIN, "");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(Login.this, getString(R.string.errorLogin), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override

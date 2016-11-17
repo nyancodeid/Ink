@@ -5,7 +5,7 @@ package ink.va.utils;
  */
 public class Constants {
     public static final String LINKEDIN_HOST = "api.linkedin.com";
-    public static final String PEOPLE_LINKEDIN_URL = "https://" + LINKEDIN_HOST + "/v1/people/~:(id,first-name,last-name,public-profile-url,picture-url::(original))";
+    public static final String PEOPLE_LINKEDIN_URL = "https://" + LINKEDIN_HOST + "/v1/people/~:(id,first-name,last-name,public-profile-url,picture-urls::(original))";
     public static final String LINKEDIN_SHARE_URL = "https://" + LINKEDIN_HOST + "/v1/people/~/shares";
     public static final String MAIN_URL = "http://104.196.118.124/Ink_Base_project_1992_no_15_dp_deployed_57_olAllolclslf_8954/";
     public static final String USER_IMAGES_FOLDER = "UserImages/";
