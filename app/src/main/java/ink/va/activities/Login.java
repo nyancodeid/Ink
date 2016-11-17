@@ -486,7 +486,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                 apiHelper.getRequest(Login.this, PEOPLE_LINKEDIN_URL, new ApiListener() {
                     @Override
                     public void onApiSuccess(ApiResponse s) {
-                        Log.d("fsakljfasfasf", "onApiSuccess: "+s);
+                        Log.d("fsakljfasfasf", "onApiSuccess: " + s.getResponseDataAsJson());
                     }
 
                     @Override
@@ -546,9 +546,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from
-        //   GoogleSignInApi.getSignInIntent(...);
+        LISessionManager.getInstance(getApplicationContext()).onActivityResult(this, requestCode, resultCode, data);
         if (requestCode == GOOGLE_SIGN_IN_REQUEST_CODE) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
