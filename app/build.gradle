@@ -87,5 +87,6 @@ dependencies {
     compile 'joda-time:joda-time:2.9.4'
     compile 'com.koushikdutta.ion:ion:2.+'
     compile 'com.vk:androidsdk:1.6.5'
+    compile project(':linkedin-sdk')
 }
 apply plugin: 'com.google.gms.google-services'
