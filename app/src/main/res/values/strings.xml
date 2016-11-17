@@ -667,7 +667,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="noTrends">No trends for this category</string>
     <string name="premiumText">PREMIUM</string>
     <string name="condensedFont">sans-serif-condensed</string>
-    <string name="hours">hour ago</string>
+    <string name="hours">hour(s) ago</string>
     <string name="minutes">minute(s) ago</string>
     <string name="years">year(s) ago</string>
     <string name="month">month(s) ago</string>
