@@ -716,4 +716,9 @@
     <string name="tooShort">Текст слишком короткий (Минимум 10 символов)</string>
     <string name="englishRoom">Английская Комната</string>
     <string name="russianRoom">Русская Комната</string>
+
+     <string name="ink_share_text">Получить приложение
+        \nhttps://play.google.com/store/apps/details?id=com.ink.va</string>
+    <string name="locatedAt">Находится в : </string>
+    <string name="signInWithLinkedIn">Войти с помощю аккаунта google LinkedIn</string>
 </resources>

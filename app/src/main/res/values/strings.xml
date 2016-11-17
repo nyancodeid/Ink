@@ -716,4 +716,8 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="tooShort">Text is too short (Minimum 10 characters)</string>
     <string name="englishRoom">English Room</string>
     <string name="russianRoom">Russian Room</string>
+    <string name="ink_share_text">Get INK
+        \nhttps://play.google.com/store/apps/details?id=com.ink.va</string>
+    <string name="locatedAt">Located At : </string>
+    <string name="signInWithLinkedIn">Sing in with LinkedIn</string>
 </resources>

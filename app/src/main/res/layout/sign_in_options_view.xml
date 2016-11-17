@@ -157,10 +157,51 @@
             android:layout_below="@+id/vkSignInWrapper"
             android:background="#b3b3b3"></View>
 
+
+
         <RelativeLayout
+            android:id="@+id/linkedInSingInWrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/vkDivider"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:id="@+id/linkedInSingInIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:src="@drawable/linked_in_sign_in_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/linkedInSingInIcon"
+                android:fontFamily="@string/appFont"
+                android:text="@string/signInWithLinkedIn"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+
+        <View
+            android:id="@+id/linkedInDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/linkedInSingInWrapper"
+            android:background="#b3b3b3"></View>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linkedInDivider"
             android:layout_marginTop="20dp"
             android:orientation="horizontal">
 

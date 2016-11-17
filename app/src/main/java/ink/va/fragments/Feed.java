@@ -5,9 +5,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -25,11 +27,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,12 +62,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.ink.va.R.string.share;
+
 /**
  * Created by USER on 2016-06-21.
  */
 public class Feed extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener,
         FeedItemClick, ColorChangeListener {
     private static final String TAG = Feed.class.getSimpleName();
+    private static final int SHARE_INTENT_RESULT = 5;
     private List<FeedModel> mFeedModelArrayList = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private FeedAdapter mAdapter;
@@ -73,6 +83,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private HomeActivity parentActivity;
     private RelativeLayout newFeedsLayout;
     private RelativeLayout feedRootLayout;
+    private Bitmap intentBitmap;
+    private File outputFile;
 
     public static Feed newInstance() {
         Feed feed = new Feed();
@@ -443,23 +455,98 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                             });
                             builder.show();
                             break;
+                        case 2:
+                            openShareView(singleModel);
+                            break;
                     }
                 }
-            }, getString(R.string.edit), getString(R.string.delete));
+            }, getString(R.string.edit), getString(R.string.delete), getString(share));
         } else {
             PopupMenu.showPopUp(getActivity(), view, new ItemClickListener<MenuItem>() {
                 @Override
                 public void onItemClick(MenuItem clickedItem) {
-                    Intent intent = new Intent(getActivity(), OpponentProfile.class);
-                    intent.putExtra("id", singleModel.getPosterId());
-                    intent.putExtra("firstName", singleModel.getFirstName());
-                    intent.putExtra("lastName", singleModel.getLastName());
-                    intent.putExtra("isFriend", singleModel.isFriend());
-                    startActivity(intent);
+                    switch (clickedItem.getItemId()) {
+                        case 0:
+                            Intent intent = new Intent(getActivity(), OpponentProfile.class);
+                            intent.putExtra("id", singleModel.getPosterId());
+                            intent.putExtra("firstName", singleModel.getFirstName());
+                            intent.putExtra("lastName", singleModel.getLastName());
+                            intent.putExtra("isFriend", singleModel.isFriend());
+                            startActivity(intent);
+                            break;
+                        case 1:
+                            openShareView(singleModel);
+                            break;
+                    }
+
                 }
-            }, getString(R.string.viewProfile));
+            }, getString(R.string.viewProfile), getString(share));
         }
     }
+
+    private void openShareView(final FeedModel singleModel) {
+
+        final StringBuilder content = new StringBuilder();
+        content.append(singleModel.getContent());
+
+        if (singleModel.hasAttachment()) {
+            Ion.with(getActivity()).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + Uri.encode(singleModel.getFileName())).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                @Override
+                public void onCompleted(Exception e, Bitmap result) {
+                    if (e != null) {
+                        if (singleModel.hasAddress()) {
+                            content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
+                        }
+                        openShareIntent(intentBitmap, content.toString(), singleModel);
+                    } else {
+                        intentBitmap = result;
+                        if (singleModel.hasAddress()) {
+                            content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
+                        }
+                        openShareIntent(intentBitmap, content.toString(), singleModel);
+                    }
+                }
+            });
+        } else {
+            intentBitmap = null;
+            if (singleModel.hasAddress()) {
+                content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
+            }
+            openShareIntent(intentBitmap, content.toString(), singleModel);
+        }
+
+    }
+
+
+    private void openShareIntent(@Nullable Bitmap result, String text, FeedModel singleModel) {
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("*/*");
+
+        if (result != null) {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            result.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+
+            File outputDir = new File(Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg");
+            try {
+                outputDir.createNewFile();
+                FileOutputStream fo = new FileOutputStream(outputDir);
+                fo.write(bytes.toByteArray());
+            } catch (IOException e) {
+                e.printStackTrace();
+                Snackbar.make(mRecyclerView, getString(R.string.error), Snackbar.LENGTH_SHORT).show();
+            }
+            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///sdcard/temporary_file.jpg"));
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(text);
+        stringBuilder.append("\n\n" + getString(R.string.ink_share_text));
+
+        intent.putExtra(Intent.EXTRA_TEXT, stringBuilder.toString());
+        this.startActivityForResult(Intent.createChooser(intent, getString(R.string.share_ink_with)), SHARE_INTENT_RESULT);
+    }
+
 
     @Override
     public void onImageClicked(int position) {
@@ -586,6 +673,17 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             if (mSharedHelper.getFeedColor() != null) {
                 feedRootLayout.setBackgroundColor(Color.parseColor(mSharedHelper.getFeedColor()));
             }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case SHARE_INTENT_RESULT:
+                if (outputFile != null) {
+                    outputFile.delete();
+                }
+                break;
         }
     }
 
