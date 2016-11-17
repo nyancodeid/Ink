@@ -81,6 +81,7 @@ public class WhoViewedActivity extends AppCompatActivity implements
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         getSupportActionBar().setTitle(getString(R.string.whoViewedText));
+        getWhoViewedList();
     }
 
 

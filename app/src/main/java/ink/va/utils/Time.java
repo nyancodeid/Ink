@@ -61,13 +61,13 @@ public class Time {
             appendableString = context.getString(R.string.years);
             lastTime = year;
         } else if (month != 0) {
-            appendableString = context.getString(month);
+            appendableString = context.getString(R.string.month);
             lastTime = month;
         } else if (days != 0) {
-            appendableString = context.getString(days);
+            appendableString = context.getString(R.string.days);
             lastTime = days;
         } else if (hours != 0) {
-            appendableString = context.getString(hours);
+            appendableString = context.getString(R.string.hours);
             lastTime = hours;
         }
 
