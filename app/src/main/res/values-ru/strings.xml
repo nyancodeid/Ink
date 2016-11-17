@@ -725,4 +725,5 @@
 
     <string name="whoViewedText">Кто просмотрел мой профиль</string>
     <string name="noProfileViewText">Никто не просматривал ваш профиль пока.</string>
+    <string name="totalAccountViews">Всего просмотров аккаунта (%1d)</string>
 </resources>
