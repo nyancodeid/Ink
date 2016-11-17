@@ -14,7 +14,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatCheckBox;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -132,27 +134,44 @@ public class Login extends BaseActivity implements View.OnClickListener {
         passwordInput = (TextInputLayout) findViewById(R.id.passwordInput);
 
 
-        loginInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mLoginView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                if (!mLoginView.getText().toString().trim().isEmpty()) {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!charSequence.toString().trim().isEmpty()) {
                     loginInput.setError(null);
-                } else {
-                    loginInput.setError(getString(R.string.emptyLoginError));
                 }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
 
-        passwordInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        mPasswordView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                if (!mPasswordView.getText().toString().trim().isEmpty()) {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!charSequence.toString().trim().isEmpty()) {
                     passwordInput.setError(null);
-                } else {
-                    passwordInput.setError(getString(R.string.emptyPasswordError));
                 }
             }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
         });
+
 
         mRegisterWrapper = (RelativeLayout) findViewById(R.id.anotherOption);
         mRegisterWrapper.setOnClickListener(this);
