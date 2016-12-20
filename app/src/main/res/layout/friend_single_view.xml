@@ -1,65 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
     android:id="@+id/friendsRootView"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/friendsCardView"
-        android:layout_width="match_parent"
-        android:layout_height="110dp"
-        android:layout_margin="10dp"
-        android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:elevation="8dp"
-        android:foreground="?android:attr/selectableItemBackground"
-        app:cardCornerRadius="8dp">
 
-        <RelativeLayout
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/friendsCardView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="130dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="60dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:elevation="8dp"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardCornerRadius="8dp">
 
-            <ImageView
-                android:id="@+id/friendMoreIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
-                android:padding="5dp"
-                android:src="@drawable/more_icon" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/friendImage"
-                android:layout_width="76dp"
-                android:layout_height="76dp"
-                android:layout_margin="16dp"
-                android:transitionName="card" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/friendImage"
-                android:layout_toRightOf="@+id/friendImage"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/friendName"
+                <ImageView
+                    android:id="@+id/friendMoreIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:ellipsize="end"
-                    android:fontFamily="@string/appFont"
-                    android:maxLines="1"
-                    android:text="Aharon Ramsey"
-                    android:textColor="#000000"
-                    android:transitionName="text" />
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:padding="5dp"
+                    android:src="@drawable/more_icon" />
 
-            </LinearLayout>
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="60dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/friendName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:ellipsize="end"
+                        android:fontFamily="@string/appFont"
+                        android:maxLines="1"
+                        android:text="Aharon Ramsey"
+                        android:textColor="@color/defaultGroupColor"
+                        android:textSize="24sp"
+                        android:transitionName="text" />
+
+                </LinearLayout>
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/friendImage"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        android:transitionName="card" />
 </RelativeLayout>

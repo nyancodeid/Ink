@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -16,7 +15,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -510,18 +508,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         intent.putExtra("phoneNumber", mFriendsModelArrayList.get(position).getPhoneNumber());
         intent.putExtra("isFriend", mFriendsModelArrayList.get(position).isFriend());
         intent.putExtra("id", opponentId);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            RelativeLayout relativeLayout = (RelativeLayout) view;
-            CardView cardView = (CardView) relativeLayout.getChildAt(0);
-            RelativeLayout innerLayout = (RelativeLayout) cardView.getChildAt(0);
-            ImageView profileImage = (ImageView) innerLayout.findViewById(R.id.friendImage);
-            TextView username = (TextView) innerLayout.findViewById(R.id.friendName);
-            Pair<View, String> pair1 = Pair.create((View) profileImage, profileImage.getTransitionName());
-            Pair<View, String> pair2 = Pair.create((View) username, username.getTransitionName());
-            handleAnimation(intent, pair1, pair2);
-        } else {
-            startActivity(intent);
-        }
+        startActivity(intent);
     }
 
     @Override
