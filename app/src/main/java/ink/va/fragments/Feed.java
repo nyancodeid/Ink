@@ -84,7 +84,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private RelativeLayout newFeedsLayout;
     private RelativeLayout feedRootLayout;
     private Bitmap intentBitmap;
-    private File outputFile;
+    private String shareFileName;
+    private File shareOutPutDir;
 
     public static Feed newInstance() {
         Feed feed = new Feed();
@@ -519,24 +520,28 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
 
     private void openShareIntent(@Nullable Bitmap result, String text, FeedModel singleModel) {
+        if (shareOutPutDir != null && shareOutPutDir.exists()) {
+            shareOutPutDir.delete();
+        }
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("*/*");
+        shareFileName = "Ink_File" + System.currentTimeMillis() + ".jpg";
 
         if (result != null) {
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             result.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 
-            File outputDir = new File(Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg");
+            shareOutPutDir = new File(Environment.getExternalStorageDirectory() + File.separator + shareFileName);
             try {
-                outputDir.createNewFile();
-                FileOutputStream fo = new FileOutputStream(outputDir);
+                shareOutPutDir.createNewFile();
+                FileOutputStream fo = new FileOutputStream(shareOutPutDir);
                 fo.write(bytes.toByteArray());
             } catch (IOException e) {
                 e.printStackTrace();
                 Snackbar.make(mRecyclerView, getString(R.string.error), Snackbar.LENGTH_SHORT).show();
             }
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///sdcard/temporary_file.jpg"));
+            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///sdcard/" + shareFileName));
         }
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -544,7 +549,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         stringBuilder.append("\n\n" + getString(R.string.ink_share_text));
 
         intent.putExtra(Intent.EXTRA_TEXT, stringBuilder.toString());
-        this.startActivityForResult(Intent.createChooser(intent, getString(R.string.share_ink_with)), SHARE_INTENT_RESULT);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.share_ink_with)), SHARE_INTENT_RESULT);
     }
 
 
@@ -680,8 +685,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case SHARE_INTENT_RESULT:
-                if (outputFile != null) {
-                    outputFile.delete();
+                if (shareOutPutDir != null) {
+                    shareOutPutDir.delete();
                 }
                 break;
         }
