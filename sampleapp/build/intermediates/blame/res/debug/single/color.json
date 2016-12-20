@@ -1,5 +1,9 @@
 [
     {
+        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\color\\abc_search_url_text_holo.xml",
+        "source": "D:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\color\\abc_search_url_text_holo.xml"
+    },
+    {
         "merged": "E:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\color\\abc_search_url_text_holo.xml",
         "source": "E:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\color\\abc_search_url_text_holo.xml"
     }

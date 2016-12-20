@@ -1,5 +1,9 @@
 [
     {
+        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\layout-v14\\abc_activity_chooser_view.xml",
+        "source": "D:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\layout-v14\\abc_activity_chooser_view.xml"
+    },
+    {
         "merged": "E:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\layout-v14\\abc_activity_chooser_view.xml",
         "source": "E:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\layout-v14\\abc_activity_chooser_view.xml"
     }

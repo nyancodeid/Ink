@@ -1,8 +1,11 @@
 package fab;
 
+import android.content.Context;
+import android.support.annotation.AnimRes;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -42,6 +45,18 @@ class AnimationUtils {
         @Override
         public void onAnimationRepeat(Animation animation) {
         }
+    }
+
+    public static int startRecyclerItemAnimation(Context context,
+                                                 View viewToAnimate,
+                                                 int position, int lastPosition,
+                                                 @AnimRes int animationResource) {
+        if (position > lastPosition) {
+            Animation animation = android.view.animation.AnimationUtils.loadAnimation(context, animationResource);
+            viewToAnimate.startAnimation(animation);
+            lastPosition = position;
+        }
+        return lastPosition;
     }
 
 }
