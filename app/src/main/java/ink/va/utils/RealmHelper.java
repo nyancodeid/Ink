@@ -3,6 +3,7 @@ package ink.va.utils;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.models.CountBadgeModel;
 import ink.va.models.MessageModel;
+import ink.va.models.NotificationModel;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
@@ -247,6 +249,54 @@ public class RealmHelper {
         return exists;
     }
 
+    public void getMessagesCount(@Nullable final QueryReadyListener queryReadyListener) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                mRealm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+
+                        RealmResults<NotificationModel> resultQuery = realm.where(NotificationModel.class).findAll();
+                        if (queryReadyListener != null) {
+                            queryReadyListener.onQueryReady(resultQuery.size());
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    public void removeMessageCount(final int opponentId) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                mRealm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        boolean deleteAllFromRealm = realm.where(NotificationModel.class).equalTo("opponentId", opponentId)
+                                .findAll().deleteAllFromRealm();
+                    }
+                });
+            }
+        });
+    }
+
+    public void putNotificationCount(final int opponentId) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                mRealm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        NotificationModel notificationModel = realm.createObject(NotificationModel.class);
+                        notificationModel.setOpponentId(opponentId);
+                    }
+                });
+            }
+        });
+    }
+
     public void getMessages(final String opponentId, final String userId, final GeneralCallback<List<MessageModel>> listGeneralCallback) {
         mModelArray.clear();
         handler.post(new Runnable() {
@@ -267,6 +317,10 @@ public class RealmHelper {
             }
         });
 
+    }
+
+    public interface QueryReadyListener<T> {
+        void onQueryReady(T result);
     }
 
 }

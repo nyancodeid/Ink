@@ -82,12 +82,19 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name="ink.va.service.NotificationService">
+        <service
+            android:name="ink.va.service.NotificationService"
+            android:enabled="true"
+            android:exported="true">
+
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="ink.va.service.FirebaseInstanceService">
+        <service
+            android:name="ink.va.service.FirebaseInstanceService"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>

@@ -1,7 +1,6 @@
 package ink.va.activities;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -115,8 +114,6 @@ public class Registration extends BaseActivity implements View.OnClickListener {
                                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        sendBroadcast(new Intent("com.ink.Login"));
-                                        startActivity(new Intent(getApplication(), Login.class));
                                         dialog.dismiss();
                                         finish();
                                     }

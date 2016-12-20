@@ -1090,6 +1090,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
             firstName = bundle.getString("firstName");
             lastName = bundle.getString("lastName");
             mOpponentId = bundle.getString("opponentId");
+            RealmHelper.getInstance().removeMessageCount(Integer.valueOf(mOpponentId));
             String opponentImage = bundle.getString("opponentImage");
             boolean isSocialAccount = bundle.getBoolean("isSocialAccount");
             if (bundle.containsKey("notificationId")) {

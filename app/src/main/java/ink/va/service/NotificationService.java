@@ -64,10 +64,10 @@ public class NotificationService extends FirebaseMessagingService {
     // [START receive_message]
     @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {
-
-        // Build the notification and add the actio
-//
+        // Build the notification and add the action
         mSharedHelper = new SharedHelper(this);
+
+
         final Map<String, String> response = remoteMessage.getData();
         if (response.get("type") == null) {
             return;
@@ -81,6 +81,7 @@ public class NotificationService extends FirebaseMessagingService {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        RealmHelper.getInstance().putNotificationCount(Integer.valueOf(response.get("user_id")));
 
                         RealmHelper.getInstance().insertMessage(response.get("user_id"), response.get("opponent_id"),
                                 response.get("message"), response.get("message_id"), response.get("date"), response.get("message_id"),
@@ -278,7 +279,6 @@ public class NotificationService extends FirebaseMessagingService {
     }
 
 
-
     private void sendLocationRequestNotification(Context context, String requestId, String requesterName) {
 
         NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
@@ -312,6 +312,8 @@ public class NotificationService extends FirebaseMessagingService {
                                  String userImage, final String opponentImage,
                                  String userName, String deleteUserId, String deleteOpponentId,
                                  boolean isSocialAccount, String lastName, boolean hasGif) {
+
+
         if (mSharedHelper.getLastNotificationId(opponentId) != null) {
 
             if (mSharedHelper.getLastNotificationId(opponentId).equals(opponentId)) {

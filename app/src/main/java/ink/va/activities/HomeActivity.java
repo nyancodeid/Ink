@@ -223,14 +223,24 @@ public class HomeActivity extends BaseActivity
         LocalBroadcastManager.getInstance(this).registerReceiver(feedUpdateReceiver, new IntentFilter(getPackageName() + "HomeActivity"));
     }
 
-    private void initializeCountDrawer(TextView messages) {
+    private void initializeCountDrawer(final TextView messages) {
         messages.setGravity(Gravity.CENTER_VERTICAL);
         if (mSharedHelper.getLeftSlidingPanelHeaderColor() != null) {
             messages.setTextColor(Color.parseColor(mSharedHelper.getLeftSlidingPanelHeaderColor()));
         } else {
             messages.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
         }
-        messages.setText("");
+
+        RealmHelper.getInstance().getMessagesCount(new RealmHelper.QueryReadyListener() {
+            @Override
+            public void onQueryReady(Object result) {
+                int notificationCount = (int) result;
+                messages.setText(
+                        String.valueOf(notificationCount != 0 ?
+                                notificationCount : "")
+                );
+            }
+        });
     }
 
     private void testTimezone() throws ParseException {

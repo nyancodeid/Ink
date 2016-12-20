@@ -678,4 +678,13 @@ public class SharedHelper {
     public boolean isLoggedIntoGame() {
         return mSharedPreferences.getBoolean("isLoggedIntoGame", false);
     }
+
+    public void putMessagesCount(int value) {
+        mEditor.putInt("messagesCount", value);
+        mEditor.commit();
+    }
+
+    public int getMessagesCount() {
+        return mSharedPreferences.getInt("messagesCount", 0);
+    }
 }

@@ -324,7 +324,9 @@ public class Login extends BaseActivity implements View.OnClickListener {
                                 if (imageLink != null && !imageLink.isEmpty()) {
                                     mSharedHelper.putImageLink(imageLink);
                                 }
-                                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                startActivity(intent);
                                 finish();
                             } else {
                                 builder.setTitle(getString(R.string.ban_title));

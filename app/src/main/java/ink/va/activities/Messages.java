@@ -102,6 +102,8 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                     finalId = userMessagesModels.get(position).getUserId();
                 }
 
+                RealmHelper.getInstance().removeMessageCount(Integer.valueOf(finalId));
+
                 Intent intent = new Intent(getApplicationContext(), Chat.class);
                 intent.putExtra("firstName", userMessagesModels.get(position).getFirstName());
                 intent.putExtra("lastName", userMessagesModels.get(position).getLastName());
