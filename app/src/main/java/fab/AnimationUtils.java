@@ -47,16 +47,5 @@ class AnimationUtils {
         }
     }
 
-    public static int startRecyclerItemAnimation(Context context,
-                                                 View viewToAnimate,
-                                                 int position, int lastPosition,
-                                                 @AnimRes int animationResource) {
-        if (position > lastPosition) {
-            Animation animation = android.view.animation.AnimationUtils.loadAnimation(context, animationResource);
-            viewToAnimate.startAnimation(animation);
-            lastPosition = position;
-        }
-        return lastPosition;
-    }
 
 }

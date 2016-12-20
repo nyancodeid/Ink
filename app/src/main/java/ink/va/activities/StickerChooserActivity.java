@@ -81,10 +81,6 @@ public class StickerChooserActivity extends AppCompatActivity implements Recycle
         startActivity(new Intent(getApplicationContext(), Shop.class));
     }
 
-    @OnClick(R.id.closeGifChoser)
-    public void setCloseGifChoser() {
-        finish();
-    }
 
 
     private void getUserGifs() {

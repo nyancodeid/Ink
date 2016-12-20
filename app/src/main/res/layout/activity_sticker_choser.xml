@@ -13,13 +13,6 @@
         android:fontFamily="@string/appFont"
         android:text="@string/myItems" />
 
-    <ImageView
-        android:id="@+id/closeGifChoser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:padding="10dp"
-        android:src="@drawable/close_vector_grey" />
 
     <ProgressBar
         android:id="@+id/gifLoadingProgress"

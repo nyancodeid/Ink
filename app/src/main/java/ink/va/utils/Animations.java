@@ -1,6 +1,8 @@
 package ink.va.utils;
 
 import android.animation.Animator;
+import android.content.Context;
+import android.support.annotation.AnimRes;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
@@ -77,5 +79,18 @@ public class Animations {
 
         animation.setDuration(200);
         viewToCollapse.startAnimation(animation);
+    }
+
+
+    public static int startRecyclerItemAnimation(Context context,
+                                                 View viewToAnimate,
+                                                 int position, int lastPosition,
+                                                 @AnimRes int animationResource) {
+        if (position > lastPosition) {
+            Animation animation = android.view.animation.AnimationUtils.loadAnimation(context, animationResource);
+            viewToAnimate.startAnimation(animation);
+            lastPosition = position;
+        }
+        return lastPosition;
     }
 }
