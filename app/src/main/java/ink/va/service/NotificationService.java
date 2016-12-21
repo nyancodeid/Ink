@@ -49,6 +49,7 @@ import ink.va.utils.Constants;
 import ink.va.utils.Notification;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class NotificationService extends FirebaseMessagingService {
 
@@ -84,6 +85,13 @@ public class NotificationService extends FirebaseMessagingService {
                     @Override
                     public void run() {
                         RealmHelper.getInstance().putNotificationCount(Integer.valueOf(response.get("user_id")));
+                        RealmHelper.getInstance().getMessagesCount(new RealmHelper.QueryReadyListener() {
+                            @Override
+                            public void onQueryReady(Object result) {
+                                ShortcutBadger.applyCount(getApplicationContext(), (Integer) result);
+                            }
+                        });
+
 
                         RealmHelper.getInstance().insertMessage(response.get("user_id"), response.get("opponent_id"),
                                 response.get("message"), response.get("message_id"), response.get("date"), response.get("message_id"),
@@ -368,6 +376,8 @@ public class NotificationService extends FirebaseMessagingService {
 
                 builder.addAction(new NotificationCompat.Action(R.drawable.ic_send_black_24dp, context.getString(R.string.reply),
                         pendingIntent));
+
+                builder.setContentIntent(chatPending);
 
                 Intent dismissIntent = new Intent(this, DismissBroadcast.class);
                 PendingIntent dismissPendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 0, dismissIntent, 0);

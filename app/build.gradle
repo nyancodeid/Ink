@@ -85,6 +85,7 @@ dependencies {
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.romainpiel.shimmer:library:1.4.0@aar'
     compile 'joda-time:joda-time:2.9.4'
+    compile "me.leolin:ShortcutBadger:1.1.10@aar"
     compile 'com.koushikdutta.ion:ion:2.+'
     compile 'com.vk:androidsdk:1.6.5'
     compile project(':linkedin-sdk')

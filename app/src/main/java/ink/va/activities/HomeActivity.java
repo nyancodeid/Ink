@@ -72,6 +72,7 @@ import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.User;
+import me.leolin.shortcutbadger.ShortcutBadger;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -256,7 +257,11 @@ public class HomeActivity extends BaseActivity
                 messages.setText(
                         String.valueOf(notificationCount != 0 ?
                                 notificationCount : "")
+
                 );
+                if (notificationCount == 0) {
+                    ShortcutBadger.removeCount(getApplicationContext());
+                }
             }
         });
     }

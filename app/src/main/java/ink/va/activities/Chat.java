@@ -93,6 +93,7 @@ import ink.va.utils.Regex;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
+import me.leolin.shortcutbadger.ShortcutBadger;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -172,6 +173,8 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
         super.onCreate(savedInstanceState);
         mSharedHelper = new SharedHelper(this);
         handler = new Handler();
+
+
         if (mSharedHelper.getChatColor() != null) {
             getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor(mSharedHelper.getChatColor())));
         } else {
@@ -864,9 +867,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                                 eachModel.getDeliveryStatus(), userImage, opponentImage, date, isAnimated);
                         mChatModelArrayList.add(mChatModel);
                         if (eachModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED) && !Regex.isAttachment(message)) {
-//                            int itemLocation = mChatModelArrayList.indexOf(mChatModel);
-//                            attemptToQue(message, itemLocation,
-//                                    deleteOpponentId, deleteUserId, isGifChosen, lasChosenGifName, isAnimated);
                             Snackbar.make(mRecyclerView, getString(R.string.unsent_message) + message, Snackbar.LENGTH_SHORT).show();
                         }
                         mChatAdapter.notifyDataSetChanged();
@@ -1091,6 +1091,8 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
             lastName = bundle.getString("lastName");
             mOpponentId = bundle.getString("opponentId");
             RealmHelper.getInstance().removeMessageCount(Integer.valueOf(mOpponentId));
+
+
             String opponentImage = bundle.getString("opponentImage");
             boolean isSocialAccount = bundle.getBoolean("isSocialAccount");
             if (bundle.containsKey("notificationId")) {
@@ -1124,6 +1126,16 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        RealmHelper.getInstance().getMessagesCount(new RealmHelper.QueryReadyListener() {
+            @Override
+            public void onQueryReady(Object result) {
+                int notificationCount = (int) result;
+                if (notificationCount == 0) {
+                    ShortcutBadger.removeCount(getApplicationContext());
+                }
+            }
+        });
     }
 
     @Override
