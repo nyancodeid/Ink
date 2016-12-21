@@ -121,8 +121,6 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         deleteDialog.setMessage(getString(R.string.deletingPost));
         deleteDialog.setCancelable(false);
 
-        configureSearchField();
-
         feedRefresh.setOnRefreshListener(this);
         mAdapter = new FeedAdapter(mFeedModelArrayList, getActivity());
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
@@ -151,11 +149,6 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         getFeeds(0, mOffset, true, false, false);
     }
 
-    private void configureSearchField() {
-        parentActivity.getHomeFab().close(true);
-        parentActivity.getSearchFriend().setVisibility(View.GONE);
-        parentActivity.getPersonSearchWrapper().setVisibility(View.GONE);
-    }
 
     @Override
     public void onRefresh() {

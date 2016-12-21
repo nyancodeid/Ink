@@ -1,13 +1,11 @@
 package ink.va.fragments;
 
-import android.animation.Animator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -54,7 +52,6 @@ import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.FriendsModel;
 import ink.va.models.UserSearchResponse;
 import ink.va.models.UserSearchResult;
-import ink.va.utils.Animations;
 import ink.va.utils.DimDialog;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.Keyboard;
@@ -65,6 +62,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+
 
 /**
  * Created by USER on 2016-06-21.
@@ -92,6 +91,9 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
     private ImageView searchFriendIcon;
     private TextView searchText;
     private BroadcastReceiver updateReceiver;
+    private boolean isSearchActive;
+    private ImageView searchIcon;
+    private boolean hasContentChanged;
 
 
     public static MyFriends newInstance() {
@@ -112,25 +114,28 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
         parentActivity = ((HomeActivity) getActivity());
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.friendsRecyclerView);
-        parentActivity.getClosePersonSearch().setOnClickListener(new View.OnClickListener() {
+        searchIcon = (ImageView) view.findViewById(R.id.searchIcon);
+        searchIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                hideSearchField(true);
-            }
-        });
-        parentActivity.getSearchFriend().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showSearchField();
-            }
-        });
+                if (isSearchActive) {
+                    isSearchActive = false;
+                    searchIcon.setImageResource(R.drawable.search_icon_blue);
+                    deactivateSearch();
 
+                } else {
+                    searchIcon.setImageResource(R.drawable.close_vector_blue);
+                    isSearchActive = true;
+                    activateSearch();
+                }
+            }
+        });
         mNoFriendsLayout = (RelativeLayout) view.findViewById(R.id.noFriendsLayout);
         friendsSwipe = (SwipeRefreshLayout) view.findViewById(R.id.friendsSwipe);
         searchFriendIcon = (ImageView) view.findViewById(R.id.searchFriendIcon);
         searchText = (TextView) view.findViewById(R.id.searchText);
-        personSearchWrapper = parentActivity.getPersonSearchWrapper();
-        personSearchField = parentActivity.getPersonSearchField();
+        personSearchWrapper = (RelativeLayout) view.findViewById(R.id.personSearchWrapper);
+        personSearchField = (EditText) view.findViewById(R.id.personSearchField);
         slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in);
         slideOut = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out);
         mFriendsAdapter = new FriendsAdapter(mFriendsModelArrayList, getActivity());
@@ -145,7 +150,6 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
 
         userSearchGSON = new Gson();
 
-        showSearch();
         friendsSwipe.setOnRefreshListener(this);
         mFriendsModelArrayList.clear();
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
@@ -178,15 +182,14 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                hasContentChanged = true;
                 if (!charSequence.toString().trim().isEmpty() && charSequence.length() > 0) {
                     doSearch(charSequence.toString());
                 } else {
-                    if (isAdded()) {
-                        stopSearchAnimation(false);
-                        if (mFriendsModelArrayList != null) {
-                            mFriendsModelArrayList.clear();
-                            mFriendsAdapter.notifyDataSetChanged();
-                        }
+                    stopSearchAnimation(false);
+                    if (mFriendsModelArrayList != null) {
+                        mFriendsModelArrayList.clear();
+                        mFriendsAdapter.notifyDataSetChanged();
                     }
 
                 }
@@ -198,6 +201,14 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
             }
         });
         getFriends();
+    }
+
+    private void activateSearch() {
+        showSearchField();
+    }
+
+    private void deactivateSearch() {
+        hideSearchField();
     }
 
 
@@ -399,52 +410,11 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
         super.onDestroy();
     }
 
-    private void showSearch() {
-        parentActivity.getHomeFab().close(true);
-        parentActivity.getSearchFriend().setVisibility(View.VISIBLE);
-
-    }
-
-    private void hideSearch() {
-        parentActivity.getHomeFab().close(true);
-        personSearchField.setText("");
-        parentActivity.getSearchFriend().setVisibility(View.GONE);
-
-    }
-
 
     private void showSearchField() {
         isClosed = false;
         parentActivity.getHomeFab().close(true);
         personSearchWrapper.setVisibility(View.VISIBLE);
-        hideSearch();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            personSearchWrapper.post(new Runnable() {
-                @Override
-                public void run() {
-                    Animations.circularInFromTouch(personSearchWrapper, (int) personSearchWrapper.getX(), (int) personSearchWrapper.getY(), null);
-                }
-            });
-
-        } else {
-
-            personSearchWrapper.startAnimation(slideIn);
-            slideIn.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-        }
 
     }
 
@@ -456,62 +426,20 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
         super.onResume();
     }
 
-    private void hideSearchField(boolean loadFriends) {
-        mFriendsModelArrayList.clear();
-        mFriendsAdapter.notifyDataSetChanged();
-        showSearch();
-        if (loadFriends) {
+    private void hideSearchField() {
+        if (hasContentChanged) {
+            mFriendsModelArrayList.clear();
+            mFriendsAdapter.notifyDataSetChanged();
+            hasContentChanged = false;
             getFriends();
         }
 
         stopSearchAnimation(false);
         isClosed = true;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Animations.circularOut(personSearchWrapper, new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animator) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animator) {
-                    personSearchWrapper.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animator) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animator) {
-
-                }
-            });
-        } else {
-            personSearchWrapper.startAnimation(slideOut);
-        }
-
+        personSearchWrapper.setVisibility(View.GONE);
 
         Keyboard.hideKeyboard(getActivity(), mRecyclerView);
-        slideOut.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                personSearchWrapper.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-
     }
 
     @Override

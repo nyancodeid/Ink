@@ -39,6 +39,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import tyrantgit.explosionfield.ExplosionField;
 
 /**
  * Created by USER on 2016-07-20.
@@ -53,6 +54,7 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
 
     private PacksAdapter packsAdapter;
     private SharedHelper sharedHelper;
+    private ExplosionField mExplosionField;
 
     public static Packs create() {
         Packs packs = new Packs();
@@ -79,6 +81,7 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
         packsRecycler.setLayoutManager(linearLayoutManager);
         packsRecycler.setAdapter(packsAdapter);
         getPacks();
+        mExplosionField = ExplosionField.attach2Window(getActivity());
 
     }
 
@@ -140,7 +143,18 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
     }
 
     @Override
-    public void onBuyClicked(int packPrice, String packId) {
+    public void onBuyClicked(int packPrice, String packId, View clickedView) {
+        if (true) {
+            mExplosionField.explode(clickedView);
+            return;
+        }
+        clickedView.post(new Runnable() {
+            @Override
+            public void run() {
+                mExplosionField.clear();
+            }
+        });
+
         if (User.get().getCoins() != null || !User.get().getCoins().isEmpty()) {
             int userCoins = Integer.valueOf(User.get().getCoins());
             if (userCoins < packPrice) {

@@ -16,12 +16,13 @@ public class SplashScreen extends AppCompatActivity {
     private String debugKeyHas = "GXEMUTFFeZejMCClv1bXr7Zbid8=";
     private String releaseKeyHash = "JeFV2v/aHMVmxkndxmzynZNlMC8=";
     private SharedHelper sharedHelper;
+    private View splashRootView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-
+        splashRootView = findViewById(R.id.splashRootView);
         String currentKeyHash = ink.va.utils.Debug.getKeyHash(this);
         sharedHelper = new SharedHelper(this);
         sharedHelper.putServerNewsOnStartup(true);

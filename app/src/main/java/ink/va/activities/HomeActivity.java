@@ -103,7 +103,6 @@ public class HomeActivity extends BaseActivity
     private Class<?> mLastClassToOpen;
     private boolean shouldOpenActivity;
     private FloatingActionButton mMakePost;
-    private FloatingActionButton searchFriend;
     private ProgressDialog progressDialog;
     private Menu menuItem;
     private boolean activityForResult;
@@ -111,20 +110,11 @@ public class HomeActivity extends BaseActivity
     private ColorChangeListener colorChangeListener;
     private RelativeLayout panelHeader;
     private TextView messagesCountTV;
-    @Bind(R.id.personSearchWrapper)
-    RelativeLayout personSearchWrapper;
-
-    @Bind(R.id.personSearchField)
-    EditText personSearchField;
-
-    @Bind(R.id.closePersonSearch)
-    View closePersonSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        ButterKnife.bind(this);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         PROFILE = getString(R.string.profileText);
@@ -167,7 +157,6 @@ public class HomeActivity extends BaseActivity
         mFab = (FloatingActionMenu) findViewById(R.id.fab);
         mMessages = (FloatingActionButton) findViewById(R.id.messages);
         mMakePost = (FloatingActionButton) findViewById(R.id.makePost);
-        searchFriend = (FloatingActionButton) findViewById(R.id.searchPerson);
         mNewPost = (FloatingActionButton) findViewById(R.id.makePost);
         mFeed = Feed.newInstance();
         mMessages.setOnClickListener(this);
@@ -230,17 +219,6 @@ public class HomeActivity extends BaseActivity
         LocalBroadcastManager.getInstance(this).registerReceiver(feedUpdateReceiver, new IntentFilter(getPackageName() + "HomeActivity"));
     }
 
-    public RelativeLayout getPersonSearchWrapper() {
-        return personSearchWrapper;
-    }
-
-    public EditText getPersonSearchField() {
-        return personSearchField;
-    }
-
-    public View getClosePersonSearch() {
-        return closePersonSearch;
-    }
 
     private void initializeCountDrawer(final TextView messages) {
         messages.setGravity(Gravity.CENTER_VERTICAL);
@@ -651,9 +629,6 @@ public class HomeActivity extends BaseActivity
         }
     }
 
-    public FloatingActionButton getSearchFriend() {
-        return searchFriend;
-    }
 
     private void setLastClassToOpen(Class<?> classToOpen, boolean activityForResult) {
         mLastClassToOpen = classToOpen;
