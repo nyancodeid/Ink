@@ -2,6 +2,8 @@ package ink.va.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -12,7 +14,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,8 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
@@ -40,10 +39,14 @@ import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.ScrollAwareFABBehavior;
 import ink.va.utils.SharedHelper;
+import it.sephiroth.android.library.picasso.NetworkPolicy;
+import it.sephiroth.android.library.picasso.Picasso;
+import it.sephiroth.android.library.picasso.Target;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 
 /**
  * Created by USER on 2016-06-22.
@@ -52,7 +55,7 @@ public class OpponentProfile extends BaseActivity {
     private String mOpponentId;
     private String mFirstName;
     private String mLastName;
-    private ImageView mProfileImage;
+
     private String mFacebookLink;
     private boolean isSocialAccount;
     private boolean hasFriendRequested;
@@ -60,6 +63,8 @@ public class OpponentProfile extends BaseActivity {
     private SharedHelper sharedHelper;
 
     //Butter knife binders.
+    @Bind(R.id.profileImage)
+    ImageView mProfileImage;
     @Bind(R.id.addressTV)
     TextView mAddress;
     @Bind(R.id.phoneTV)
@@ -98,6 +103,7 @@ public class OpponentProfile extends BaseActivity {
     ImageView callUserPhone;
     private String mOpponentImage;
     private boolean isFriend;
+    private Target target;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +113,6 @@ public class OpponentProfile extends BaseActivity {
         ButterKnife.setDebug(true);
         mProfileFab.setEnabled(false);
         Bundle extras = getIntent().getExtras();
-        mProfileImage = (ImageView) findViewById(R.id.profileImage);
         sharedHelper = new SharedHelper(this);
 
         ActionBar actionBar = getSupportActionBar();
@@ -359,34 +364,19 @@ public class OpponentProfile extends BaseActivity {
                             hasFriendRequested = jsonObject.optBoolean("hasFriendRequested");
 
 
-                            Log.d("fafsjklsajfl;af", "onResponse: " + hasFriendRequested);
-                            Log.d("fafsjklsajfl;af", "onResponse: " + mOpponentId);
-                            Log.d("fafsjklsajfl;af", "onResponse: " + sharedHelper.getUserId());
-
                             boolean shouldHighlightFacebook = true;
                             boolean shouldHighlightAddress = true;
                             isSocialAccount = jsonObject.optBoolean("isSocialAccount");
                             if (mOpponentImage != null && !mOpponentImage.isEmpty()) {
                                 if (isSocialAccount) {
-                                    Ion.with(getApplicationContext()).load(mOpponentImage).withBitmap().intoImageView(mProfileImage).setCallback(new FutureCallback<ImageView>() {
-                                        @Override
-                                        public void onCompleted(Exception e, ImageView result) {
-                                            mOpponentImageLoading.setVisibility(View.GONE);
-                                        }
-                                    });
+                                    Picasso.with(getApplicationContext()).load(mOpponentImage).networkPolicy(NetworkPolicy.NO_CACHE).into(getTarget());
                                 } else {
                                     String encodedImage = Uri.encode(mOpponentImage);
-                                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL +
-                                            Constants.USER_IMAGES_FOLDER + encodedImage).withBitmap().intoImageView(mProfileImage).setCallback(new FutureCallback<ImageView>() {
-                                        @Override
-                                        public void onCompleted(Exception e, ImageView result) {
-                                            mOpponentImageLoading.setVisibility(View.GONE);
-                                        }
-                                    });
+                                    Picasso.with(getApplicationContext()).load(Constants.MAIN_URL +
+                                            Constants.USER_IMAGES_FOLDER + encodedImage).networkPolicy(NetworkPolicy.NO_CACHE).into(getTarget());
                                 }
                             } else {
-                                mProfileImage.setBackgroundResource(R.drawable.no_image);
-                                mOpponentImageLoading.setVisibility(View.GONE);
+                                Picasso.with(getApplicationContext()).load(R.drawable.no_image).into(getTarget());
                             }
 
                             if (status.isEmpty()) {
@@ -465,6 +455,29 @@ public class OpponentProfile extends BaseActivity {
                 getSingleUser();
             }
         });
+    }
+
+    private Target getTarget() {
+        if (target == null) {
+            target = new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
+                    mOpponentImageLoading.setVisibility(View.GONE);
+                    mProfileImage.setImageBitmap(bitmap);
+                }
+
+                @Override
+                public void onBitmapFailed(Drawable drawable) {
+                    mOpponentImageLoading.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable drawable) {
+
+                }
+            };
+        }
+        return target;
     }
 
 

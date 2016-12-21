@@ -1,4 +1,4 @@
-#Tue Dec 20 23:43:13 AMT 2016
-base.0=E\:\\Ink\\eventsapp\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main
+#Wed Dec 21 12:26:03 AMT 2016
+base.0=D\:\\Ink\\eventsapp\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main
 renamed.0=classes.dex
-file.0=E\:\\Ink\\eventsapp\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main\\classes.dex
+file.0=D\:\\Ink\\eventsapp\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main\\classes.dex

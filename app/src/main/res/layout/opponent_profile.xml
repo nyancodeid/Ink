@@ -4,7 +4,7 @@
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/chat_background_color">
+    android:background="@drawable/opponent_profile_background">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -15,14 +15,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profileImage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="206dp"
+                android:layout_height="206dp"
+                android:layout_centerHorizontal="true"
                 android:layout_margin="16dp"
-                android:adjustViewBounds="true"
-                android:minHeight="170dp"
-                android:scaleType="fitXY" />
+                app:civ_border_color="@color/vk_white"
+                app:civ_border_width="2dp" />
 
             <com.wang.avi.AVLoadingIndicatorView
                 android:id="@+id/opponentImageLoading"
@@ -30,22 +30,22 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/profileImage"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="35dp"
-                app:indicator_color="@color/colorPrimary" />
+                android:layout_marginTop="100dp"
+                app:indicator_color="@color/vk_white" />
 
 
             <TextView
                 android:id="@+id/userName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/profileImage"
-                android:layout_alignEnd="@+id/profileImage"
-                android:layout_alignRight="@+id/profileImage"
+                android:layout_below="@id/profileImage"
+                android:layout_centerHorizontal="true"
                 android:layout_margin="16dp"
-                android:fontFamily="@string/appFont"
+                android:fontFamily="@string/condensedFont"
                 android:text="@string/loadingText"
-                android:textColor="#000000"
+                android:textColor="@color/vk_white"
                 android:textSize="20sp"
+                android:textStyle="bold"
                 android:transitionName="text" />
 
             <android.support.v7.widget.CardView
@@ -291,10 +291,8 @@
                 android:id="@+id/triangleView"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:layout_alignLeft="@+id/statusCard"
-                android:layout_alignStart="@+id/statusCard"
-                android:layout_below="@+id/profileImage"
-                android:layout_marginLeft="10dp"
+                android:layout_below="@+id/userName"
+                android:layout_centerHorizontal="true"
                 android:background="@drawable/status_triangle" />
 
         </RelativeLayout>
