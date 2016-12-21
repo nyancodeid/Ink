@@ -5,6 +5,11 @@ import android.content.SharedPreferences;
 
 import com.ink.va.R;
 
+import java.util.Map;
+
+import static ink.va.utils.Constants.SERVER_NOTIFICATION_SHARED_KEY;
+import static ink.va.utils.Constants.SHOW_SERVER_NEWS_START_UP_KEY;
+
 
 /**
  * Created by USER on 2016-06-20.
@@ -686,5 +691,32 @@ public class SharedHelper {
 
     public int getMessagesCount() {
         return mSharedPreferences.getInt("messagesCount", 0);
+    }
+
+    public boolean hasShownServerNews(String newsId) {
+        return mSharedPreferences.getBoolean(SERVER_NOTIFICATION_SHARED_KEY + newsId, false);
+    }
+
+    public void putShownServerNews(String newsId) {
+        mEditor.putBoolean(SERVER_NOTIFICATION_SHARED_KEY + newsId, true);
+        mEditor.commit();
+    }
+
+    public Map getAllSharedPrefs() {
+        return mSharedPreferences.getAll();
+    }
+
+    public void removeOjbect(String key) {
+        mEditor.remove(key);
+        mEditor.commit();
+    }
+
+    public boolean showServerNewsOnStartup() {
+        return mSharedPreferences.getBoolean(SHOW_SERVER_NEWS_START_UP_KEY, true);
+    }
+
+    public void putServerNewsOnStartup(boolean value) {
+        mEditor.putBoolean(SHOW_SERVER_NEWS_START_UP_KEY, value);
+        mEditor.commit();
     }
 }

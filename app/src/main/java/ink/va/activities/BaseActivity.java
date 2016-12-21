@@ -1,11 +1,13 @@
 package ink.va.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.v7.app.ActionBar;
@@ -18,22 +20,23 @@ import android.widget.Button;
 
 import com.ink.va.R;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import fab.FloatingActionButton;
 import ink.StartupApplication;
 import ink.va.interfaces.AccountDeleteListener;
+import ink.va.models.ServerInformationModel;
+import ink.va.utils.Constants;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static ink.va.utils.Constants.SERVER_NOTIFICATION_SHARED_KEY;
+
 
 /**
  * Created by USER on 2016-07-24.
@@ -41,6 +44,7 @@ import retrofit2.Response;
 public abstract class BaseActivity extends AppCompatActivity {
 
 
+    private static final long SERVER_INFO_TIME = 300000;//5 minutes each server call
     @Nullable
     @Bind(R.id.sendChatMessage)
     FloatingActionButton sendChatMessage;
@@ -96,12 +100,14 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private AccountDeleteListener accountDeleteListener;
     private SharedHelper sharedHelper;
+    private CountDownTimer countDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         System.gc();
         sharedHelper = new SharedHelper(this);
+        initCountDownTimer();
         checkBan();
         if (sharedHelper.getActionBarColor() != null) {
             ActionBar actionBar = getSupportActionBar();
@@ -117,6 +123,20 @@ public abstract class BaseActivity extends AppCompatActivity {
                 window.setStatusBarColor(Color.parseColor(sharedHelper.getStatusBarColor()));
             }
         }
+    }
+
+    private void initCountDownTimer() {
+        countDownTimer = new CountDownTimer(SERVER_INFO_TIME, 1000) {
+            @Override
+            public void onTick(long l) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                checkBan();
+            }
+        };
     }
 
     @Override
@@ -183,6 +203,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void checkBan() {
+        countDownTimer.cancel();
+        countDownTimer.start();
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -193,47 +215,68 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void callToBanServer() {
-        Call<ResponseBody> banCall = Retrofit.getInstance().getInkService().checkBan(sharedHelper.getUserId());
-        banCall.enqueue(new Callback<ResponseBody>() {
+        Call<ServerInformationModel> banCall = Retrofit.getInstance().getInkService().checkBan(sharedHelper.getUserId());
+        banCall.enqueue(new Callback<ServerInformationModel>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    callToBanServer();
-                    return;
-                }
-                if (response.body() == null) {
-                    callToBanServer();
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean banned = jsonObject.optBoolean("banned");
-                    if (banned) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(((StartupApplication) getApplicationContext()).getCurrentActivity());
-                        builder.setTitle(getString(R.string.ban_title));
-                        builder.setMessage(getString(R.string.ban_message));
-                        builder.setCancelable(false);
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                finish();
-                                System.exit(0);
+            public void onResponse(Call<ServerInformationModel> call, Response<ServerInformationModel> response) {
+                ServerInformationModel serverInformationModel = response.body();
 
+                boolean banned = serverInformationModel.isBanned();
+
+                if (banned) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(((StartupApplication) getApplicationContext()).getCurrentActivity());
+                    builder.setTitle(getString(R.string.ban_title));
+                    builder.setMessage(getString(R.string.ban_message));
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            finish();
+                            System.exit(0);
+
+                        }
+                    });
+                    builder.show();
+                } else {
+                    if (serverInformationModel.HasContent()) {
+                        String content = serverInformationModel.getContent();
+                        boolean singleLoad = serverInformationModel.isSingleLoad();
+                        String newsId = serverInformationModel.getNewsId();
+
+                        if (singleLoad) {
+                            if (!sharedHelper.hasShownServerNews(newsId)) {
+                                Map<String, ?> keys = sharedHelper.getAllSharedPrefs();
+
+                                for (Map.Entry<String, ?> entry : keys.entrySet()) {
+                                    String singleKey = entry.getKey();
+                                    if (singleKey.startsWith(SERVER_NOTIFICATION_SHARED_KEY)) {
+                                        sharedHelper.removeOjbect(singleKey);
+                                    }
+                                }
+
+                                sharedHelper.putShownServerNews(newsId);
+                                Intent intent = new Intent(getApplicationContext(), ServerNotification.class);
+                                intent.putExtra(Constants.SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY, content);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
                             }
-                        });
-                        builder.show();
+                        } else {
+                            if (sharedHelper.showServerNewsOnStartup()) {
+                                Intent intent = new Intent(getApplicationContext(), ServerNotification.class);
+                                intent.putExtra(Constants.SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY, content);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
+                                sharedHelper.putServerNewsOnStartup(false);
+                            }
+
+                        }
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<ServerInformationModel> call, Throwable t) {
                 callToBanServer();
             }
         });

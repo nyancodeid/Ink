@@ -2,6 +2,7 @@ package ink.va.utils;
 
 import java.util.Map;
 
+import ink.va.models.ServerInformationModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -197,7 +198,7 @@ public class Retrofit {
 
         @POST(Constants.CHECK_BAN_URL)
         @FormUrlEncoded
-        Call<ResponseBody> checkBan(@Field("userId") String userId);
+        Call<ServerInformationModel> checkBan(@Field("userId") String userId);
 
         @POST(Constants.WAITERS_QUE)
         @FormUrlEncoded

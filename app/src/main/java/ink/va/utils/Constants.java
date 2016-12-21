@@ -164,6 +164,9 @@ public class Constants {
     public static final String COIN_ICON_FOLDER = "CoinsIcon/";
     public static final String STICKER_URL_EXTRA_KEY = "stickerUrlExtra";
     public static final String STICKER_IS_ANIMATED_EXTRA_KEY = "stickerIsAnimated";
+    public static final String SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY = "SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY";
 
+    public static final String SERVER_NOTIFICATION_SHARED_KEY = "ServerNewsNotification-";
+    public static final String SHOW_SERVER_NEWS_START_UP_KEY = "start_up_news";
 }
 

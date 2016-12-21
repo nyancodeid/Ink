@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_server_notification"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/server_news_background"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="ink.va.activities.ServerNotification">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/closeServerNotification">
+
+        <TextView
+            android:id="@+id/serverNewsContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@string/condensedFont"
+            android:text="Some minor changes across the application"
+            android:textColor="@color/vk_white"
+            android:textSize="20sp" />
+    </android.support.v4.widget.NestedScrollView>
+
+    <Button
+        android:id="@+id/closeServerNotification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/circle_transparent_background_white"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="@string/close"
+        android:textAllCaps="false"
+        android:textColor="@color/vk_white"
+        android:textStyle="bold" />
+</RelativeLayout>

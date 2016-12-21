@@ -86,7 +86,6 @@
             android:name="ink.va.service.NotificationService"
             android:enabled="true"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -260,7 +259,10 @@
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name="ink.va.activities.Policy" />
         <activity android:name="ink.va.activities.StickerChooserActivity" />
-        <activity android:name="ink.va.activities.WhoViewedActivity"></activity>
+        <activity android:name="ink.va.activities.WhoViewedActivity" />
+        <activity
+            android:name="ink.va.activities.ServerNotification"
+            android:theme="@style/Theme.Transparent"></activity>
     </application>
 
 </manifest>
