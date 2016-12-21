@@ -153,12 +153,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     private void configureSearchField() {
         parentActivity.getHomeFab().close(true);
-        if (parentActivity.getSearchFriend().getVisibility() == View.VISIBLE) {
-            parentActivity.getSearchFriend().setVisibility(View.GONE);
-        }
-        if (parentActivity.getPersonSearchWrapper().getVisibility() == View.VISIBLE) {
-            parentActivity.getPersonSearchWrapper().setVisibility(View.GONE);
-        }
+        parentActivity.getSearchFriend().setVisibility(View.GONE);
+        parentActivity.getPersonSearchWrapper().setVisibility(View.GONE);
     }
 
     @Override
