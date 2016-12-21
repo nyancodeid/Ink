@@ -1,5 +1,6 @@
 package ink.va.fragments;
 
+import android.Manifest;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -54,6 +56,7 @@ import ink.va.interfaces.ItemClickListener;
 import ink.va.models.FeedModel;
 import ink.va.utils.Animations;
 import ink.va.utils.Constants;
+import ink.va.utils.PermissionsChecker;
 import ink.va.utils.PopupMenu;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -71,6 +74,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         FeedItemClick, ColorChangeListener {
     private static final String TAG = Feed.class.getSimpleName();
     private static final int SHARE_INTENT_RESULT = 5;
+    private static final int STORAGE_PERMISSION_REQUEST = 115;
     private List<FeedModel> mFeedModelArrayList = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private FeedAdapter mAdapter;
@@ -86,6 +90,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private Bitmap intentBitmap;
     private String shareFileName;
     private File shareOutPutDir;
+    private StringBuilder content;
 
     public static Feed newInstance() {
         Feed feed = new Feed();
@@ -487,7 +492,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     private void openShareView(final FeedModel singleModel) {
 
-        final StringBuilder content = new StringBuilder();
+        content = new StringBuilder();
         content.append(singleModel.getContent());
 
         if (singleModel.hasAttachment()) {
@@ -498,13 +503,13 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         if (singleModel.hasAddress()) {
                             content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
                         }
-                        openShareIntent(intentBitmap, content.toString(), singleModel);
+                        openShareIntent(intentBitmap, content.toString());
                     } else {
                         intentBitmap = result;
                         if (singleModel.hasAddress()) {
                             content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
                         }
-                        openShareIntent(intentBitmap, content.toString(), singleModel);
+                        openShareIntent(intentBitmap, content.toString());
                     }
                 }
             });
@@ -513,13 +518,13 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             if (singleModel.hasAddress()) {
                 content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
             }
-            openShareIntent(intentBitmap, content.toString(), singleModel);
+            openShareIntent(intentBitmap, content.toString());
         }
 
     }
 
 
-    private void openShareIntent(@Nullable Bitmap result, String text, FeedModel singleModel) {
+    private void openShareIntent(@Nullable Bitmap result, String text) {
         if (shareOutPutDir != null && shareOutPutDir.exists()) {
             shareOutPutDir.delete();
         }
@@ -529,6 +534,10 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         shareFileName = "Ink_File" + System.currentTimeMillis() + ".jpg";
 
         if (result != null) {
+            if (!PermissionsChecker.isStoragePermissionGranted(getActivity())) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_REQUEST);
+                return;
+            }
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             result.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 
@@ -694,7 +703,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     @Override
     public void onColorReset() {
-        feedRootLayout.setBackgroundColor(0);
+        feedRootLayout.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.feed_background_color));
     }
 
     private void checkColor() {
@@ -702,6 +711,25 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             if (mSharedHelper.getFeedColor() != null) {
                 feedRootLayout.setBackgroundColor(Color.parseColor(mSharedHelper.getFeedColor()));
             }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case STORAGE_PERMISSION_REQUEST:
+                if (!PermissionsChecker.isStoragePermissionGranted(getActivity())) {
+                    Snackbar.make(mRecyclerView, getString(R.string.storagePermissions), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
+                } else {
+                    openShareIntent(intentBitmap, content.toString());
+                }
+                break;
         }
     }
 }

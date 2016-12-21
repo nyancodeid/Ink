@@ -21,7 +21,7 @@
             android:background="@drawable/com_facebook_tooltip_black_background"
             android:foreground="?android:attr/selectableItemBackground"
             app:cardCornerRadius="8dp"
-            app:cardElevation="5dp">
+            app:cardElevation="10dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
