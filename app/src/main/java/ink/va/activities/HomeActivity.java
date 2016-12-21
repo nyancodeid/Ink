@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -48,8 +49,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.ParseException;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import fab.FloatingActionButton;
 import ink.va.fragments.Feed;
 import ink.va.fragments.MyFriends;
@@ -108,11 +110,20 @@ public class HomeActivity extends BaseActivity
     private ColorChangeListener colorChangeListener;
     private RelativeLayout panelHeader;
     private TextView messagesCountTV;
+    @Bind(R.id.personSearchWrapper)
+    RelativeLayout personSearchWrapper;
+
+    @Bind(R.id.personSearchField)
+    EditText personSearchField;
+
+    @Bind(R.id.closePersonSearch)
+    View closePersonSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        ButterKnife.bind(this);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         PROFILE = getString(R.string.profileText);
@@ -166,11 +177,6 @@ public class HomeActivity extends BaseActivity
         progressDialog.setMessage(getString(R.string.loggingoutPleaseWait));
         setOnAccountDeleteListener(this);
         mSharedHelper.putShouldLoadImage(true);
-        try {
-            testTimezone();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
         FileUtils.deleteDirectoryTree(getApplicationContext().getCacheDir());
 
@@ -223,6 +229,18 @@ public class HomeActivity extends BaseActivity
         LocalBroadcastManager.getInstance(this).registerReceiver(feedUpdateReceiver, new IntentFilter(getPackageName() + "HomeActivity"));
     }
 
+    public RelativeLayout getPersonSearchWrapper() {
+        return personSearchWrapper;
+    }
+
+    public EditText getPersonSearchField() {
+        return personSearchField;
+    }
+
+    public View getClosePersonSearch() {
+        return closePersonSearch;
+    }
+
     private void initializeCountDrawer(final TextView messages) {
         messages.setGravity(Gravity.CENTER_VERTICAL);
         if (mSharedHelper.getLeftSlidingPanelHeaderColor() != null) {
@@ -243,9 +261,6 @@ public class HomeActivity extends BaseActivity
         });
     }
 
-    private void testTimezone() throws ParseException {
-
-    }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);

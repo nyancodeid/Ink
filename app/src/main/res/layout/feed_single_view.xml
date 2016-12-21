@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/feedRootLayout"
     android:layout_width="match_parent"
@@ -7,6 +7,7 @@
 
 
     <RelativeLayout
+        android:id="@+id/feedSpaceWrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -273,12 +274,20 @@
 
     </RelativeLayout>
 
+    <android.support.v4.widget.Space
+        android:id="@+id/spacing"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_below="@+id/feedSpaceWrapper"
+        android:visibility="visible" />
+
+
     <ImageView
         android:id="@+id/feedUserImage"
         android:layout_width="96dp"
         android:layout_height="96dp"
-        android:layout_gravity="center|top"
+        android:layout_centerHorizontal="true"
         android:layout_marginLeft="10dp"
         android:background="?attr/selectableItemBackgroundBorderless" />
 
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

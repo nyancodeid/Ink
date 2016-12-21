@@ -1,11 +1,13 @@
 package ink.va.fragments;
 
+import android.animation.Animator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -52,6 +54,7 @@ import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.FriendsModel;
 import ink.va.models.UserSearchResponse;
 import ink.va.models.UserSearchResult;
+import ink.va.utils.Animations;
 import ink.va.utils.DimDialog;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.Keyboard;
@@ -76,13 +79,12 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     private RelativeLayout mNoFriendsLayout;
     private HomeActivity parentActivity;
     private EditText personSearchField;
-    private ImageView closeSearch;
     private Animation slideIn;
     private Animation slideOut;
     private RelativeLayout personSearchWrapper;
     private boolean isClosed;
-    private Call<ResponseBody> searchPersonCalll;
-    private Gson userSearchGson;
+    private Call<ResponseBody> searchPersonCall;
+    private Gson userSearchGSON;
     private SwipeRefreshLayout friendsSwipe;
     private CircularPathAnimation circularPathAnimation;
     private RelativeLayout searchWrapper;
@@ -107,14 +109,17 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mSharedHelper = new SharedHelper(getActivity());
+        parentActivity = ((HomeActivity) getActivity());
+
         mRecyclerView = (RecyclerView) view.findViewById(R.id.friendsRecyclerView);
-        closeSearch = (ImageView) view.findViewById(R.id.closeSearch);
+        parentActivity.getClosePersonSearch().setOnClickListener(this);
+
         mNoFriendsLayout = (RelativeLayout) view.findViewById(R.id.noFriendsLayout);
         friendsSwipe = (SwipeRefreshLayout) view.findViewById(R.id.friendsSwipe);
         searchFriendIcon = (ImageView) view.findViewById(R.id.searchFriendIcon);
         searchText = (TextView) view.findViewById(R.id.searchText);
-        personSearchWrapper = (RelativeLayout) view.findViewById(R.id.personSearchWrapper);
-        personSearchField = (EditText) view.findViewById(R.id.personSearchField);
+        personSearchWrapper = parentActivity.getPersonSearchWrapper();
+        personSearchField = parentActivity.getPersonSearchField();
         slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in);
         slideOut = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out);
         mFriendsAdapter = new FriendsAdapter(mFriendsModelArrayList, getActivity());
@@ -127,12 +132,11 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         circularPathAnimation.setRepeatMode(Animation.RESTART);
         circularPathAnimation.setDuration(1000);
 
-        userSearchGson = new Gson();
-        parentActivity = ((HomeActivity) getActivity());
+        userSearchGSON = new Gson();
+
         showSearch();
         friendsSwipe.setOnRefreshListener(this);
         parentActivity.getSearchFriend().setOnClickListener(this);
-        closeSearch.setOnClickListener(this);
         mFriendsModelArrayList.clear();
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);
@@ -228,16 +232,16 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     private void doSearch(final String searchValue) {
         System.gc();
         clearAdapter();
-        if (searchPersonCalll != null) {
-            searchPersonCalll.cancel();
+        if (searchPersonCall != null) {
+            searchPersonCall.cancel();
         }
         if (mNoFriendsLayout.getVisibility() == View.VISIBLE) {
             mNoFriendsLayout.setVisibility(View.GONE);
             mRecyclerView.setVisibility(View.VISIBLE);
         }
         startSearchAnimation();
-        searchPersonCalll = Retrofit.getInstance().getInkService().searchPerson(mSharedHelper.getUserId(), searchValue);
-        searchPersonCalll.enqueue(new Callback<ResponseBody>() {
+        searchPersonCall = Retrofit.getInstance().getInkService().searchPerson(mSharedHelper.getUserId(), searchValue);
+        searchPersonCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
@@ -250,7 +254,7 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
                 }
                 try {
                     String responseBody = response.body().string();
-                    UserSearchResponse userSearchResponse = userSearchGson.fromJson(responseBody, UserSearchResponse.class);
+                    UserSearchResponse userSearchResponse = userSearchGSON.fromJson(responseBody, UserSearchResponse.class);
                     if (userSearchResponse.success) {
                         ArrayList<UserSearchResult> userSearchResults = userSearchResponse.userSearchResults;
                         for (int i = 0; i < userSearchResults.size(); i++) {
@@ -386,12 +390,14 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
 
     @Override
     public void onDestroyView() {
+        hideSearchField(false);
         hideSearch();
         super.onDestroyView();
     }
 
     @Override
     public void onDestroy() {
+        hideSearchField(false);
         hideSearch();
         super.onDestroy();
     }
@@ -399,60 +405,60 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
     private void showSearch() {
         personSearchField.requestFocus();
         personSearchField.requestFocusFromTouch();
-        if (parentActivity.getSearchFriend() != null) {
-            parentActivity.getSearchFriend().setVisibility(View.VISIBLE);
-        }
+        parentActivity.getSearchFriend().setVisibility(View.VISIBLE);
     }
 
     private void hideSearch() {
         personSearchField.setText("");
-
-        if (parentActivity.getSearchFriend() != null) {
-            parentActivity.getSearchFriend().setVisibility(View.GONE);
-        }
-
-        parentActivity.getHomeFab().setVisibility(View.VISIBLE);
-        parentActivity.getHomeFab().showMenu(true);
+        parentActivity.getSearchFriend().setVisibility(View.GONE);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.searchPerson:
-                parentActivity.getHomeFab().close(true);
-                parentActivity.getHomeFab().hideMenu(true);
-                parentActivity.getHomeFab().hideMenuButton(true);
-                parentActivity.getHomeFab().close(true);
                 showSearchField();
                 break;
-            case R.id.closeSearch:
-                hideSearchField();
+            case R.id.closePersonSearch:
+                hideSearchField(true);
                 break;
         }
     }
 
 
     private void showSearchField() {
-        getFriends();
         isClosed = false;
         personSearchWrapper.setVisibility(View.VISIBLE);
-        closeSearch.setEnabled(true);
-        personSearchWrapper.startAnimation(slideIn);
-        slideIn.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
+        parentActivity.getHomeFab().close(true);
+        hideSearch();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            personSearchWrapper.post(new Runnable() {
+                @Override
+                public void run() {
+                    Animations.circularInFromTouch(personSearchWrapper, (int) personSearchWrapper.getX(), (int) personSearchWrapper.getY(), null);
+                }
+            });
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
+        } else {
 
-            }
+            personSearchWrapper.startAnimation(slideIn);
+            slideIn.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
+                @Override
+                public void onAnimationEnd(Animation animation) {
 
-            }
-        });
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+        }
+
     }
 
     @Override
@@ -463,23 +469,45 @@ public class MyFriends extends Fragment implements View.OnClickListener, Recycle
         super.onResume();
     }
 
-    private void hideSearchField() {
+    private void hideSearchField(boolean loadFriends) {
         mFriendsModelArrayList.clear();
         mFriendsAdapter.notifyDataSetChanged();
+        showSearch();
+        if (loadFriends) {
+            getFriends();
+        }
 
-        getFriends();
         stopSearchAnimation(false);
         isClosed = true;
-        personSearchWrapper.startAnimation(slideOut);
 
-        //should be before everything else!
-        parentActivity.getHomeFab().showMenu(true);
-        parentActivity.getHomeFab().showMenuButton(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Animations.circularInFromTouch(personSearchWrapper, (int) personSearchWrapper.getX(), (int) personSearchWrapper.getY(), new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
 
-        parentActivity.getHomeFab().setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    personSearchWrapper.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+        } else {
+            personSearchWrapper.startAnimation(slideOut);
+        }
+
 
         Keyboard.hideKeyboard(getActivity(), mRecyclerView);
-        closeSearch.setEnabled(false);
         slideOut.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {

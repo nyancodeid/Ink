@@ -471,7 +471,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="warning">Warning</string>
     <string name="leavingSession">You have an active location session.If you leave,the session will be closed until you request new one.Close the session?</string>
     <string name="acceptedYourFriendRequest">accepted your friend request</string>
-    <string name="intelligentText">Intelligent chatting for you</string>
+    <string name="intelligentText">The World Of Colors Under You\'r Hands</string>
     <integer name="com_vk_sdk_AppId">5593776</integer>
     <string name="thinFont">sans-serif-thin</string>
     <string name="normalFont">sans-serif</string>

@@ -2,10 +2,13 @@ package ink.va.utils;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.AnimRes;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
@@ -13,6 +16,7 @@ import android.view.animation.Transformation;
  * Created by USER on 2016-07-06.
  */
 public class Animations {
+    private static final long CIRCULAR_REVEAL_ANIMATION_DURATION = 300;
 
     public static void animateCircular(View view) {
 
@@ -29,6 +33,50 @@ public class Animations {
         if (anim != null) {
             anim.start();
         }
+    }
+
+    public static void circularOut(View viewToCircularOut, @Nullable Animator.AnimatorListener animatorListener) {
+        int cx = viewToCircularOut.getMeasuredWidth() / 2;
+        int cy = viewToCircularOut.getMeasuredHeight() / 2;
+
+        int initialRadius = viewToCircularOut.getWidth() / 2;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            Animator animation = ViewAnimationUtils.createCircularReveal(viewToCircularOut, cx, cy, initialRadius, 0);
+            animation.addListener(animatorListener);
+            animation.start();
+        } else {
+            if (animatorListener != null) {
+                animatorListener.onAnimationStart(null);
+                animatorListener.onAnimationEnd(null);
+            }
+        }
+    }
+
+    public static void circularInFromTouch(ViewGroup viewGroup,
+                                           int x, int y,
+                                           @Nullable Animator.AnimatorListener animatorListener) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            float finalRadius = (float) Math.hypot(viewGroup.getWidth(), viewGroup.getHeight());
+
+            Animator animator;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                animator = ViewAnimationUtils.createCircularReveal(viewGroup, x, y, 0, finalRadius);
+                animator.setDuration(CIRCULAR_REVEAL_ANIMATION_DURATION);
+                animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                if (animatorListener != null) {
+                    animator.addListener(animatorListener);
+                }
+                animator.start();
+            }
+        } else {
+            if (animatorListener != null) {
+                animatorListener.onAnimationStart(null);
+                animatorListener.onAnimationEnd(null);
+            }
+        }
+
     }
 
 

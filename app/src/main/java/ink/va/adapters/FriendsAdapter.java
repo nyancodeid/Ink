@@ -42,7 +42,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         FriendsModel friendsModel = friendsModelList.get(position);
         ((FriendsViewHolder) holder).init(mContext, friendsModel,
-                position, recyclerItemClickListener);
+                position, recyclerItemClickListener, getItemCount());
 
         lastPosition = Animations.startRecyclerItemAnimation(mContext, ((FriendsViewHolder) holder).getViewToAnimate(),
                 position, lastPosition, R.anim.slide_up_calm);

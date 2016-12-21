@@ -16,7 +16,6 @@ import ink.va.utils.Animations;
 import ink.va.view_holders.FeedViewHolder;
 
 
-
 /**
  * Created by USER on 2016-06-20.
  */
@@ -47,7 +46,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         FeedModel feedModel = feedList.get(position);
 
         ((FeedViewHolder) holder).initData(mContext,
-                feedModel, position, mOnClickListener);
+                feedModel, position, mOnClickListener, getItemCount());
         lastPosition = Animations.startRecyclerItemAnimation(mContext, ((FeedViewHolder) holder).getViewToAnimate(),
                 position, lastPosition, R.anim.slide_up_calm);
     }

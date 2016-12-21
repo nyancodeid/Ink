@@ -8,6 +8,7 @@
     android:fitsSystemWindows="true"
     tools:context="ink.va.activities.HomeActivity">
 
+
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,6 +20,43 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+
+        <RelativeLayout
+            android:id="@+id/personSearchWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="5dp"
+            android:visibility="visible">
+
+
+            <EditText
+                android:id="@+id/personSearchField"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/circle_transparent_background"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/searchPerson"
+                android:imeActionLabel="@string/done_button"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:minHeight="50dp"
+                android:padding="5dp"
+                android:singleLine="true" />
+
+            <ImageView
+                android:id="@+id/closePersonSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="10dp"
+                android:src="@drawable/close_vector_grey" />
+
+        </RelativeLayout>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -33,7 +71,6 @@
         android:layout_marginBottom="8dp"
         android:layout_marginRight="8dp"
         android:src="@drawable/fab_add"
-        app:layout_behavior="ink.va.utils.ScrollAwareFABBehavior"
         fab:menu_colorNormal="@color/colorPrimary"
         fab:menu_colorPressed="@color/colorPrimaryDark"
         fab:menu_colorRipple="#cccccc">
@@ -59,11 +96,11 @@
             fab:fab_size="mini" />
 
         <fab.FloatingActionButton
-            android:visibility="gone"
             android:id="@+id/searchPerson"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/search_music_icon"
+            android:visibility="gone"
             fab:fab_colorNormal="#444f65"
             fab:fab_colorPressed="#636e85"
             fab:fab_label="@string/searchPerson"

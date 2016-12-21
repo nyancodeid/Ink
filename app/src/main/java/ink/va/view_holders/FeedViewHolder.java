@@ -42,10 +42,12 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
     private SharedHelper sharedHelper;
     private FeedItemClick mOnClickListener;
     private View feedRootLayout;
+    private View spacing;
 
     public FeedViewHolder(View view) {
         super(view);
         userPostedTitle = (TextView) view.findViewById(R.id.userPostedTitle);
+        spacing = view.findViewById(R.id.spacing);
         feedRootLayout = view.findViewById(R.id.feedRootLayout);
         commentCountTV = (TextView) view.findViewById(R.id.commentCountTV);
         actionDivider = view.findViewById(R.id.actionDivider);
@@ -67,7 +69,13 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void initData(Context context, FeedModel feedModel, int position,
-                         FeedItemClick feedItemClick) {
+                         FeedItemClick feedItemClick, int maxCount) {
+
+        if (position == (maxCount - 1)) {
+            spacing.setVisibility(View.VISIBLE);
+        } else {
+            spacing.setVisibility(View.GONE);
+        }
 
         mOnClickListener = feedItemClick;
         mContext = context;

@@ -27,10 +27,12 @@ public class FriendsViewHolder extends RecyclerView.ViewHolder {
     private ImageView friendMoreIcon;
     private View cardView;
     private RelativeLayout friendsRootView;
+    private View spacing;
 
     public FriendsViewHolder(View view) {
         super(view);
         name = (TextView) view.findViewById(R.id.friendName);
+        spacing = view.findViewById(R.id.spacing);
         friendImage = (ImageView) view.findViewById(R.id.friendImage);
         friendMoreIcon = (ImageView) view.findViewById(R.id.friendMoreIcon);
         friendsRootView = (RelativeLayout) view.findViewById(R.id.friendsRootView);
@@ -38,7 +40,14 @@ public class FriendsViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void init(Context context, FriendsModel friendsModel,
-                     final int position, final RecyclerItemClickListener recyclerItemClickListener) {
+                     final int position,
+                     final RecyclerItemClickListener recyclerItemClickListener, int maxCount) {
+
+        if (position == (maxCount - 1)) {
+            spacing.setVisibility(View.VISIBLE);
+        } else {
+            spacing.setVisibility(View.GONE);
+        }
         name.setText(friendsModel.getFullName());
 
         if (!friendsModel.getImageLink().isEmpty()) {
