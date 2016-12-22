@@ -50,7 +50,12 @@ public class StickerChooserViewHolder extends RecyclerView.ViewHolder {
 
 
     public void init(Context context, final StickerModel stickerModel,
-                     @Nullable final RecyclerItemClickListener recyclerItemClickListener) {
+                     @Nullable final RecyclerItemClickListener recyclerItemClickListener, boolean hideChooser) {
+        if (hideChooser) {
+            choose.setVisibility(View.GONE);
+        } else {
+            choose.setVisibility(View.VISIBLE);
+        }
         if (stickerModel.isAnimated()) {
             stickerWrapper.setVisibility(View.GONE);
             videoWrapper.setVisibility(View.VISIBLE);

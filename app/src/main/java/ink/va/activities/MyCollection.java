@@ -94,7 +94,9 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
                 startingForActivityResult = extras.getBoolean(STARTING_FOR_RESULT_BUNDLE_KEY);
             }
         }
-
+        initHorizontalRecycler();
+        initVerticalRecycler();
+        stickerAdapter.setHideChooser(startingForActivityResult ? false : true);
         fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
 
         ActionBar actionBar = getSupportActionBar();
@@ -103,9 +105,6 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-
-        initHorizontalRecycler();
-        initVerticalRecycler();
 
         if (!sharedHelper.isEditorHintShown()) {
             editorHintLayout.startAnimation(fadeInAnimation);
