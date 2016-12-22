@@ -289,7 +289,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
 
             }
         });
-        final AlertDialog alertDialog = builder.create();
+        final AlertDialog alertDialog = builder.show();
         alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -303,7 +303,6 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
             }
         });
 
-        alertDialog.show();
 
 
     }
