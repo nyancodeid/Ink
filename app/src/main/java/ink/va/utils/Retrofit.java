@@ -3,7 +3,6 @@ package ink.va.utils;
 import java.util.List;
 import java.util.Map;
 
-import ink.va.activities.MyCollection;
 import ink.va.models.MyCollectionModel;
 import ink.va.models.ServerInformationModel;
 import okhttp3.ResponseBody;
@@ -371,6 +370,10 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getUserStickers(@Field("userId") String userId,
                                            @Field("authKey") String authKey);
+
+        @POST(Constants.USER_GIFS_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getUserStickerByPack(@Field("packId") String packId);
 
         @POST(Constants.GET_USER_COLLECTIONS)
         @FormUrlEncoded

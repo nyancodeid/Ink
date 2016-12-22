@@ -725,4 +725,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="seconds">second(s) ago</string>
     <string name="totalAccountViews">Total Account Views (%1d)</string>
     <string name="serverNewsTitle">News From Server</string>
+    <string name="my_collection_text">My Collection</string>
 </resources>

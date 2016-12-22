@@ -727,4 +727,5 @@
     <string name="noProfileViewText">Никто не просматривал ваш профиль пока.</string>
     <string name="totalAccountViews">Всего просмотров аккаунта (%1d)</string>
     <string name="serverNewsTitle">Новости С Сервера</string>
+    <string name="my_collection_text">Моя коллекция</string>
 </resources>

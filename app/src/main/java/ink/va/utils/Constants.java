@@ -169,5 +169,6 @@ public class Constants {
 
     public static final String SERVER_NOTIFICATION_SHARED_KEY = "ServerNewsNotification-";
     public static final String SHOW_SERVER_NEWS_START_UP_KEY = "start_up_news";
+    public static final String STARTING_FOR_RESULT_BUNDLE_KEY = "startingForActivityResult";
 }
 

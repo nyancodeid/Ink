@@ -37,7 +37,7 @@ public class MyCollectionHorizontalAdapter extends RecyclerView.Adapter<Recycler
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((MyCollectionHorizontalViewHolder)holder).initData(myCollectionModels.get(position));
+        ((MyCollectionHorizontalViewHolder) holder).initData(context, myCollectionModels.get(position), onCollectionClickListener);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class MyCollectionHorizontalAdapter extends RecyclerView.Adapter<Recycler
     }
 
     public interface OnCollectionClickListener {
-        void onMoreClicked(View view);
+        void onMoreClicked(View view, MyCollectionModel myCollectionModel);
 
         void onCollectionClicked(MyCollectionModel myCollectionModel);
     }

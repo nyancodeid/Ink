@@ -397,6 +397,10 @@ public class HomeActivity extends BaseActivity
                 shouldOpenActivity = true;
                 setLastClassToOpen(MyProfile.class, false);
                 break;
+            case R.id.myCollection:
+                shouldOpenActivity = true;
+                setLastClassToOpen(MyCollection.class, false);
+                break;
             case R.id.whoViewed:
                 shouldOpenActivity = true;
                 setLastClassToOpen(WhoViewedActivity.class, false);

@@ -11,9 +11,15 @@
                     android:title="@string/profileText" />
 
                 <item
+                    android:id="@+id/myCollection"
+                    android:icon="@drawable/collection_icon"
+                    android:title="@string/my_collection_text" />
+
+                <item
                     android:id="@+id/whoViewed"
                     android:icon="@drawable/ic_contacts_black_24dp"
                     android:title="@string/whoViewedText" />
+
                 <item
                     android:id="@+id/feeds"
                     android:icon="@drawable/ic_library_books_black_24dp"
