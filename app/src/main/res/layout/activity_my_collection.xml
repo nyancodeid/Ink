@@ -85,7 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:background="#6577d8"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/animationHintText"
