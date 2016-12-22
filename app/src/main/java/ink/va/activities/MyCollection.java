@@ -3,6 +3,7 @@ package ink.va.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -85,6 +86,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
     private SharedHelper sharedHelper;
     private boolean startingForActivityResult;
     private Animation fadeInAnimation;
+    private Snackbar snackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +95,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
         ButterKnife.bind(this);
         sharedHelper = new SharedHelper(this);
         Bundle extras = getIntent().getExtras();
+        snackbar = Snackbar.make(collectionHorizontalRecycler, getString(R.string.deleting), Snackbar.LENGTH_INDEFINITE);
         if (extras != null) {
             if (extras.containsKey(STARTING_FOR_RESULT_BUNDLE_KEY)) {
                 startingForActivityResult = extras.getBoolean(STARTING_FOR_RESULT_BUNDLE_KEY);
@@ -299,6 +302,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
             public void onClick(View view) {
                 deleteCollection(packId);
                 alertDialog.dismiss();
+                snackbar.show();
             }
         });
         alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
@@ -325,6 +329,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
                     return;
                 }
 
+                snackbar.dismiss();
                 try {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
@@ -345,6 +350,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                snackbar.dismiss();
                 Toast.makeText(MyCollection.this, getString(R.string.serverErrorTitle), Toast.LENGTH_SHORT).show();
             }
         });
