@@ -40,7 +40,6 @@ import ink.va.models.MyCollectionModel;
 import ink.va.models.MyCollectionResponseModel;
 import ink.va.models.StickerModel;
 import ink.va.utils.Constants;
-import ink.va.utils.ErrorCause;
 import ink.va.utils.PopupMenu;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -178,29 +177,15 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
                     GifResponse gifResponse = gson.fromJson(responseBody, GifResponse.class);
                     verticalProgress.setVisibility(View.GONE);
                     if (gifResponse.success) {
-                        if (!gifResponse.cause.equals(ErrorCause.NO_GIFS)) {
-                            ArrayList<GifResponseModel> gifResponseModels = gifResponse.gifResponseModels;
-                            for (int i = 0; i < gifResponseModels.size(); i++) {
-                                GifResponseModel eachModel = gifResponseModels.get(i);
-                                stickerModel = new StickerModel(eachModel.id, eachModel.userId, eachModel.gifName, eachModel.isAnimated, eachModel.hasSound);
-                                stickerModelList.add(stickerModel);
-                                stickerAdapter.notifyDataSetChanged();
-                            }
-                            if (stickerModelList.size() <= 0) {
-                                noGifsText.setVisibility(View.VISIBLE);
-                                goToStore.setVisibility(View.VISIBLE);
-                            } else {
-                                noGifsText.setVisibility(View.GONE);
-                                goToStore.setVisibility(View.GONE);
-                            }
-
-                        } else {
-                            noGifsText.setVisibility(View.VISIBLE);
-                            goToStore.setVisibility(View.VISIBLE);
+                        ArrayList<GifResponseModel> gifResponseModels = gifResponse.gifResponseModels;
+                        for (int i = 0; i < gifResponseModels.size(); i++) {
+                            GifResponseModel eachModel = gifResponseModels.get(i);
+                            stickerModel = new StickerModel(eachModel.id, eachModel.userId, eachModel.gifName, eachModel.isAnimated, eachModel.hasSound);
+                            stickerModelList.add(stickerModel);
+                            stickerAdapter.notifyDataSetChanged();
                         }
                     } else {
-                        noGifsText.setVisibility(View.VISIBLE);
-                        goToStore.setVisibility(View.VISIBLE);
+                        Toast.makeText(MyCollection.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -220,6 +205,11 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
         getUserCollections();
     }
 
+    private void showNoCollection() {
+        noGifsText.setVisibility(View.VISIBLE);
+        goToStore.setVisibility(View.VISIBLE);
+    }
+
     private void getUserCollections() {
         if (horizontalProgress.getVisibility() == View.GONE) {
             horizontalProgress.setVisibility(View.VISIBLE);
@@ -233,7 +223,12 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
         listCall.enqueue(new Callback<MyCollectionResponseModel>() {
             @Override
             public void onResponse(Call<MyCollectionResponseModel> call, Response<MyCollectionResponseModel> response) {
-                myCollectionHorizontalAdapter.setMyCollectionModels(response.body().getMyCollectionModels());
+                if (response.body().getMyCollectionModels().isEmpty()) {
+                    showNoCollection();
+                } else {
+                    myCollectionHorizontalAdapter.setMyCollectionModels(response.body().getMyCollectionModels());
+                }
+
                 horizontalProgress.setVisibility(View.GONE);
             }
 
