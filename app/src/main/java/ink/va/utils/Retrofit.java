@@ -370,6 +370,11 @@ public class Retrofit {
         Call<ResponseBody> getUserStickers(@Field("userId") String userId,
                                            @Field("authKey") String authKey);
 
+        @POST(Constants.GET_SINGLE_STICKER_PACK)
+        @FormUrlEncoded
+        Call<ResponseBody> getsSinglePack(@Field("packId") String packId,
+                                           @Field("authKey") String authKey);
+
         @POST(Constants.USER_GIFS_URL)
         @FormUrlEncoded
         Call<ResponseBody> getUserStickerByPack(@Field("packId") String packId);

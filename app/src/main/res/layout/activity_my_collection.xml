@@ -4,10 +4,6 @@
     android:id="@+id/activity_my_collection"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ink.va.activities.MyCollection">
 
     <RelativeLayout
@@ -28,4 +24,68 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true" />
     </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/verticalRecyclerWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/horizontalWrapper">
+
+        <TextView
+            android:id="@+id/myItemsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@string/appFont"
+            android:text="@string/myItems" />
+
+
+        <ProgressBar
+            android:id="@+id/gifLoadingProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/gifsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/gifLoadingProgress">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/noGifsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/myItemsText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            android:fontFamily="@string/appFont"
+            android:text="@string/noGif"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/goToStore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/noGifsText"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="16dp"
+            android:background="@drawable/circle_transparent_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="@string/goToStore"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
 </RelativeLayout>

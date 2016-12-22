@@ -155,7 +155,6 @@ public class StickerChooserActivity extends AppCompatActivity implements Recycle
 
     @Override
     public void onItemClicked(Object object) {
-        System.gc();
         StickerModel singleModel = (StickerModel) object;
 
         String stickerUrl = singleModel.getStickerUrl();
