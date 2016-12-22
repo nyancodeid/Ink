@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.ink.va.R;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -323,7 +324,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
 
                 try {
                     String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject();
+                    JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
                         getUserCollections();
@@ -331,6 +332,10 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
                         Toast.makeText(MyCollection.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(MyCollection.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    Toast.makeText(MyCollection.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
