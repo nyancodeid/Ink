@@ -49,6 +49,11 @@ public class MyCollectionHorizontalAdapter extends RecyclerView.Adapter<Recycler
         this.myCollectionModels = myCollectionModels;
     }
 
+    public void clearItems() {
+        myCollectionModels.clear();
+        notifyDataSetChanged();
+    }
+
     public interface OnCollectionClickListener {
         void onMoreClicked(View view, MyCollectionModel myCollectionModel);
 

@@ -55,4 +55,9 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerChooserViewHolde
     public void setHideChooser(boolean hideChooser) {
         this.hideChooser = hideChooser;
     }
+
+    public void clearItems() {
+        gifAdapterList.clear();
+        notifyDataSetChanged();
+    }
 }

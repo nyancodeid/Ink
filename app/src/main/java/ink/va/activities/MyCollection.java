@@ -208,6 +208,8 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
     private void showNoCollection() {
         noGifsText.setVisibility(View.VISIBLE);
         goToStore.setVisibility(View.VISIBLE);
+        myCollectionHorizontalAdapter.clearItems();
+        stickerAdapter.clearItems();
     }
 
     private void getUserCollections() {
@@ -219,6 +221,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
             stickerAdapter.notifyDataSetChanged();
         }
 
+
         Call<MyCollectionResponseModel> listCall = Retrofit.getInstance().getInkService().getUserCollection(sharedHelper.getUserId());
         listCall.enqueue(new Callback<MyCollectionResponseModel>() {
             @Override
@@ -226,6 +229,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
                 if (response.body().getMyCollectionModels().isEmpty()) {
                     showNoCollection();
                 } else {
+                    hideNoCollection();
                     myCollectionHorizontalAdapter.setMyCollectionModels(response.body().getMyCollectionModels());
                 }
 
@@ -238,6 +242,11 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
                 horizontalProgress.setVisibility(View.GONE);
             }
         });
+    }
+
+    private void hideNoCollection() {
+        noGifsText.setVisibility(View.GONE);
+        goToStore.setVisibility(View.GONE);
     }
 
     @Override
