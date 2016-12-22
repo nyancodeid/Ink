@@ -92,6 +92,11 @@ public class Retrofit {
         Call<ResponseBody> getSingleUserDetails(@Field("user_id") String userId,
                                                 @Field("currentUserId") String currentUserId);
 
+        @POST(Constants.DELETE_USER_PACK)
+        @FormUrlEncoded
+        Call<ResponseBody> deleteCollection(@Field("userId") String userId,
+                                            @Field("packId") String packId);
+
         @POST(Constants.WHO_VIEWED_URL)
         @FormUrlEncoded
         Call<ResponseBody> getWhoViewed(@Field("currentUserId") String userId);
@@ -373,7 +378,7 @@ public class Retrofit {
         @POST(Constants.GET_SINGLE_STICKER_PACK)
         @FormUrlEncoded
         Call<ResponseBody> getsSinglePack(@Field("packId") String packId,
-                                           @Field("authKey") String authKey);
+                                          @Field("authKey") String authKey);
 
         @POST(Constants.USER_GIFS_URL)
         @FormUrlEncoded

@@ -1,5 +1,6 @@
 package ink.va.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -14,9 +15,12 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ink.va.R;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -219,6 +223,11 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
         if (horizontalProgress.getVisibility() == View.GONE) {
             horizontalProgress.setVisibility(View.VISIBLE);
         }
+        if (stickerModelList != null) {
+            stickerModelList.clear();
+            stickerAdapter.notifyDataSetChanged();
+        }
+
         Call<MyCollectionResponseModel> listCall = Retrofit.getInstance().getInkService().getUserCollection(sharedHelper.getUserId());
         listCall.enqueue(new Callback<MyCollectionResponseModel>() {
             @Override
@@ -249,14 +258,88 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
     }
 
     @Override
-    public void onMoreClicked(View view, MyCollectionModel myCollectionModel) {
+    public void onMoreClicked(View view, final MyCollectionModel myCollectionModel) {
 
         PopupMenu.showPopUp(this, view, new ItemClickListener<MenuItem>() {
             @Override
             public void onItemClick(MenuItem clickedItem) {
-
+                switch (clickedItem.getItemId()) {
+                    case 0:
+                        showDeleteWarning(myCollectionModel.getId());
+                        break;
+                }
             }
         }, getString(R.string.delete));
+    }
+
+    private void showDeleteWarning(final String packId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.delete_collection));
+        builder.setMessage(getString(R.string.delete_collection_warning_message));
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteCollection(packId);
+            }
+        });
+        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
+
+
+    }
+
+    private void deleteCollection(final String packId) {
+        Call<ResponseBody> call = Retrofit.getInstance().getInkService().deleteCollection(sharedHelper.getUserId(), packId);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    deleteCollection(packId);
+                    return;
+                }
+                if (response.body() == null) {
+                    deleteCollection(packId);
+                    return;
+                }
+
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject();
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        getUserCollections();
+                    } else {
+                        Toast.makeText(MyCollection.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(MyCollection.this, getString(R.string.serverErrorTitle), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

@@ -59,7 +59,7 @@
     <string name="noFriendsAvailable">You dont have any friends</string>
     <string name="writeMessageHint">Write a message</string>
     <string name="writing">Writing...</string>
-    <string name="serverErrorTitle">Error while connectiont to server...</string>
+    <string name="serverErrorTitle">Error while connecting to server...</string>
     <string name="noMessageText">Once you start a conversation,\nyou\'ll see it listed here</string>
     <string name="sendingNowText">Sending now...</string>
     <string name="sentText">Sent</string>
@@ -727,4 +727,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="serverNewsTitle">News From Server</string>
     <string name="my_collection_text">My Collection</string>
     <string name="animationHintText">Hint : If you have animated sticker,touch the sticker to play it</string>
+    <string name="delete_collection">Delete Collection?</string>
+    <string name="delete_collection_warning_message">This will remove the whole sticker\'s inside you\'r collection,are you sure?</string>
 </resources>
