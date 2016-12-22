@@ -63,6 +63,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
             @Override
             public void onResponse(Call<List<MyCollectionModel>> call, Response<List<MyCollectionModel>> response) {
                 myCollectionHorizontalAdapter.setMyCollectionModels(response.body());
+                horizontalProgress.setVisibility(View.GONE);
             }
 
             @Override
