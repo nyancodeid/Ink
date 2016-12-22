@@ -211,6 +211,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
     private void showNoCollection() {
         noGifsText.setVisibility(View.VISIBLE);
         goToStore.setVisibility(View.VISIBLE);
+        collectionHorizontalRecycler.setVisibility(View.GONE);
         myCollectionHorizontalAdapter.clearItems();
         stickerAdapter.clearItems();
     }
@@ -250,6 +251,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
     private void hideNoCollection() {
         noGifsText.setVisibility(View.GONE);
         goToStore.setVisibility(View.GONE);
+        collectionHorizontalRecycler.setVisibility(View.VISIBLE);
     }
 
     @Override

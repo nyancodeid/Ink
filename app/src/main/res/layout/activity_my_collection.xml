@@ -4,10 +4,8 @@
     android:id="@+id/activity_my_collection"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context="ink.va.activities.MyCollection">
-
-
-
 
     <RelativeLayout
         android:id="@+id/horizontalWrapper"
@@ -17,7 +15,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/collectionHorizontalRecycler"
             android:layout_width="match_parent"
-            android:layout_height="170dp">
+            android:layout_height="170dp"
+            android:background="@drawable/grey_transparent_rectangle">
 
         </android.support.v7.widget.RecyclerView>
 
@@ -79,6 +78,7 @@
             android:visibility="gone" />
 
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/animationHintLayout"
         android:layout_width="match_parent"
