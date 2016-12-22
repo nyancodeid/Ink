@@ -7,37 +7,7 @@
     tools:context="ink.va.activities.MyCollection">
 
 
-    <RelativeLayout
-        android:id="@+id/animationHintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:background="#6577d8"
-        android:visibility="gone">
 
-        <TextView
-            android:id="@+id/animationHintText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:fontFamily="@string/appFont"
-            android:gravity="left"
-            android:text="@string/animationHintText"
-            android:textColor="#ffffff"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/neverShowAnimationHint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/editorHintText"
-            android:layout_margin="5dp"
-            android:padding="10dp"
-            android:text="@string/dontShowAgain"
-            android:textAllCaps="false"
-            android:textColor="#404040" />
-    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/horizontalWrapper"
@@ -109,5 +79,35 @@
             android:visibility="gone" />
 
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/animationHintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#6577d8"
+        android:visibility="gone">
 
+        <TextView
+            android:id="@+id/animationHintText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="@string/appFont"
+            android:gravity="left"
+            android:text="@string/animationHintText"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/neverShowAnimationHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/editorHintText"
+            android:layout_margin="5dp"
+            android:padding="10dp"
+            android:text="@string/dontShowAgain"
+            android:textAllCaps="false"
+            android:textColor="#404040" />
+    </RelativeLayout>
 </RelativeLayout>
