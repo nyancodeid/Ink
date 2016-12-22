@@ -111,7 +111,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
         }
 
 
-        if (!sharedHelper.isEditorHintShown()) {
+        if (!sharedHelper.isAnimationHintShown()) {
             editorHintLayout.startAnimation(fadeInAnimation);
             editorHintLayout.setVisibility(View.VISIBLE);
         }
@@ -128,7 +128,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
     }
 
     private void disableHint() {
-        sharedHelper.putEditorHintShow(true);
+        sharedHelper.putAnimationHintShow(true);
         editorHintLayout.setVisibility(View.GONE);
     }
 
@@ -294,6 +294,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
             @Override
             public void onClick(View view) {
                 deleteCollection(packId);
+                alertDialog.dismiss();
             }
         });
         alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
@@ -302,7 +303,6 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
                 alertDialog.dismiss();
             }
         });
-
 
 
     }
