@@ -719,7 +719,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     }
 
     private void openStickerChooser() {
-        startActivityForResult(new Intent(getApplicationContext(), StickerChooserActivity.class), Constants.REQUEST_CODE_CHOSE_STICKER);
+        startActivityForResult(new Intent(getApplicationContext(), MyCollection.class), Constants.REQUEST_CODE_CHOSE_STICKER);
     }
 
 
