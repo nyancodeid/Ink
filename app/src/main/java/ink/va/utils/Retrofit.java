@@ -1,9 +1,8 @@
 package ink.va.utils;
 
-import java.util.List;
 import java.util.Map;
 
-import ink.va.models.MyCollectionModel;
+import ink.va.models.MyCollectionResponseModel;
 import ink.va.models.ServerInformationModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -377,7 +376,7 @@ public class Retrofit {
 
         @POST(Constants.GET_USER_COLLECTIONS)
         @FormUrlEncoded
-        Call<List<MyCollectionModel>> getUserCollection(@Field("userId") String userId);
+        Call<MyCollectionResponseModel> getUserCollection(@Field("userId") String userId);
 
 
         @POST(Constants.REQUEST_DELETE_URL)

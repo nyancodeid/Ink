@@ -9,13 +9,12 @@ import android.view.View;
 
 import com.ink.va.R;
 
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import ink.va.adapters.MyCollectionHorizontalAdapter;
 import ink.va.interfaces.ItemClickListener;
 import ink.va.models.MyCollectionModel;
+import ink.va.models.MyCollectionResponseModel;
 import ink.va.utils.PopupMenu;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -54,20 +53,21 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         collectionHorizontalRecycler.setLayoutManager(layoutManager);
+        collectionHorizontalRecycler.setAdapter(myCollectionHorizontalAdapter);
         getUserCollections();
     }
 
     private void getUserCollections() {
-        Call<List<MyCollectionModel>> listCall = Retrofit.getInstance().getInkService().getUserCollection(sharedHelper.getUserId());
-        listCall.enqueue(new Callback<List<MyCollectionModel>>() {
+        Call<MyCollectionResponseModel> listCall = Retrofit.getInstance().getInkService().getUserCollection(sharedHelper.getUserId());
+        listCall.enqueue(new Callback<MyCollectionResponseModel>() {
             @Override
-            public void onResponse(Call<List<MyCollectionModel>> call, Response<List<MyCollectionModel>> response) {
-                myCollectionHorizontalAdapter.setMyCollectionModels(response.body());
+            public void onResponse(Call<MyCollectionResponseModel> call, Response<MyCollectionResponseModel> response) {
+                myCollectionHorizontalAdapter.setMyCollectionModels(response.body().getMyCollectionModels());
                 horizontalProgress.setVisibility(View.GONE);
             }
 
             @Override
-            public void onFailure(Call<List<MyCollectionModel>> call, Throwable t) {
+            public void onFailure(Call<MyCollectionResponseModel> call, Throwable t) {
                 buildErrorDialog();
                 horizontalProgress.setVisibility(View.GONE);
             }
