@@ -258,7 +258,6 @@
             android:name="ink.va.activities.NewsAndTrendsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name="ink.va.activities.Policy" />
-        <activity android:name="ink.va.activities.StickerChooserActivity" />
         <activity android:name="ink.va.activities.WhoViewedActivity" />
         <activity
             android:name="ink.va.activities.ServerNotification"
