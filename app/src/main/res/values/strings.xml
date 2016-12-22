@@ -726,4 +726,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="totalAccountViews">Total Account Views (%1d)</string>
     <string name="serverNewsTitle">News From Server</string>
     <string name="my_collection_text">My Collection</string>
+    <string name="animationHintText">Hint : If you have animated sticker,touch the sticker to play it</string>
 </resources>

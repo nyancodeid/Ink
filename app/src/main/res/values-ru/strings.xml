@@ -728,4 +728,5 @@
     <string name="totalAccountViews">Всего просмотров аккаунта (%1d)</string>
     <string name="serverNewsTitle">Новости С Сервера</string>
     <string name="my_collection_text">Моя коллекция</string>
+    <string name="animationHintText">Совет : если у вас есть Анимированный Стикер,просто нажмите на него чтобы воспроизвести</string>
 </resources>

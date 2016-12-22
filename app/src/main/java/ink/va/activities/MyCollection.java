@@ -8,8 +8,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -65,6 +68,9 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
     @Bind(R.id.goToStore)
     Button goToStore;
 
+    @Bind(R.id.animationHintLayout)
+    RelativeLayout editorHintLayout;
+
     private StickerModel stickerModel;
 
     private StickerAdapter stickerAdapter;
@@ -74,6 +80,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
 
     private SharedHelper sharedHelper;
     private boolean startingForActivityResult;
+    private Animation fadeInAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +95,8 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
             }
         }
 
+        fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(getString(R.string.my_collection_text));
@@ -97,6 +106,11 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
 
         initHorizontalRecycler();
         initVerticalRecycler();
+
+        if (!sharedHelper.isEditorHintShown()) {
+            editorHintLayout.startAnimation(fadeInAnimation);
+            editorHintLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private void initHorizontalRecycler() {
@@ -107,6 +121,16 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
         collectionHorizontalRecycler.setLayoutManager(horizontalLayoutManager);
         collectionHorizontalRecycler.setAdapter(myCollectionHorizontalAdapter);
 
+    }
+
+    private void disableHint() {
+        sharedHelper.putEditorHintShow(true);
+        editorHintLayout.setVisibility(View.GONE);
+    }
+
+    @OnClick(R.id.neverShowAnimationHint)
+    public void neverShowEditorHint() {
+        disableHint();
     }
 
     private void initVerticalRecycler() {
