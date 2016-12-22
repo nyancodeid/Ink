@@ -50,8 +50,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import fab.FloatingActionButton;
 import ink.va.fragments.Feed;
 import ink.va.fragments.MyFriends;

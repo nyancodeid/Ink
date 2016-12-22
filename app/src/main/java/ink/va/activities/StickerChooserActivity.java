@@ -84,7 +84,7 @@ public class StickerChooserActivity extends AppCompatActivity implements Recycle
 
 
     private void getUserGifs() {
-        Call<ResponseBody> gifCall = Retrofit.getInstance().getInkService().getUserGifs(mSharedHelper.getUserId(),
+        Call<ResponseBody> gifCall = Retrofit.getInstance().getInkService().getUserStickers(mSharedHelper.getUserId(),
                 Constants.SERVER_AUTH_KEY);
         gifCall.enqueue(new Callback<ResponseBody>() {
             @Override

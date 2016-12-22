@@ -262,7 +262,8 @@
         <activity android:name="ink.va.activities.WhoViewedActivity" />
         <activity
             android:name="ink.va.activities.ServerNotification"
-            android:theme="@style/Theme.Transparent"></activity>
+            android:theme="@style/Theme.Transparent" />
+        <activity android:name="ink.va.activities.MyCollection"></activity>
     </application>
 
 </manifest>

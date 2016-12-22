@@ -1,7 +1,10 @@
 package ink.va.utils;
 
+import java.util.List;
 import java.util.Map;
 
+import ink.va.activities.MyCollection;
+import ink.va.models.MyCollectionModel;
 import ink.va.models.ServerInformationModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -366,8 +369,12 @@ public class Retrofit {
 
         @POST(Constants.USER_GIFS_URL)
         @FormUrlEncoded
-        Call<ResponseBody> getUserGifs(@Field("userId") String userId,
-                                       @Field("authKey") String authKey);
+        Call<ResponseBody> getUserStickers(@Field("userId") String userId,
+                                           @Field("authKey") String authKey);
+
+        @POST(Constants.GET_USER_COLLECTIONS)
+        @FormUrlEncoded
+        Call<List<MyCollectionModel>> getUserCollection(@Field("userId") String userId);
 
 
         @POST(Constants.REQUEST_DELETE_URL)

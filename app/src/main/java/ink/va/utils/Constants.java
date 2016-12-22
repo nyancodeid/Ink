@@ -16,6 +16,7 @@ public class Constants {
     public static final String WHO_VIEWED_URL = "WhoViewed.php";
     public static final String GROUP_REQUESTS_URL = "GetUserRequests.php";
     public static final String USER_GIFS_URL = "GetUserGifs.php";
+    public static final String GET_USER_COLLECTIONS = "GetUserCollection.php";
     public static final String DELETE_ACCOUNT_URL = "DeleteAccount.php";
     public static final String SEARCH_GROUP_URL = "SearchGroups.php";
     public static final String SEND_CHAT_ROULETTE_MESSAGE = "SendChatRouletteMessage.php";
