@@ -60,6 +60,8 @@ public class StickerChooserViewHolder extends RecyclerView.ViewHolder {
             stickerWrapper.setVisibility(View.GONE);
             videoWrapper.setVisibility(View.VISIBLE);
 
+            videoView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+
             HttpProxyCacheServer proxy = StartupApplication.getProxy(context);
             String proxyUrl = proxy.getProxyUrl(Constants.MAIN_URL + stickerModel.getStickerUrl());
             videoView.setVideoPath(proxyUrl);
