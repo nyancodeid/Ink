@@ -5,6 +5,13 @@
     android:layout_height="match_parent"
     android:background="@drawable/hidden_profile_background">
 
+    <ProgressBar
+        android:id="@+id/progress"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -55,12 +62,12 @@
         android:textColor="@color/vk_white" />
 
     <Button
-        android:fontFamily="@string/appFont"
         android:id="@+id/close"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/colorPrimary"
+        android:fontFamily="@string/appFont"
         android:text="@string/close"
         android:textColor="@color/vk_white" />
 

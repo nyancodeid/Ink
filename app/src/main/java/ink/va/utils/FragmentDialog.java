@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -52,6 +53,15 @@ public class FragmentDialog extends DialogFragment implements DialogUtils.Dialog
 
     @Bind(R.id.secondParagraphTV)
     TextView secondParagraphTV;
+
+    @Bind(R.id.doIt)
+    Button doIt;
+
+    @Bind(R.id.close)
+    Button close;
+
+    @Bind(R.id.progress)
+    View progress;
 
     private int userCoins;
     private int orderType;
@@ -97,6 +107,7 @@ public class FragmentDialog extends DialogFragment implements DialogUtils.Dialog
         fragmentDialogRoot.setBackgroundResource(backgroundResource);
         firstParagraphTV.setText(firstParagraphContent);
         secondParagraphTV.setText(secondParagraphContent);
+        setCancelable(false);
         return view;
     }
 
@@ -171,6 +182,8 @@ public class FragmentDialog extends DialogFragment implements DialogUtils.Dialog
     }
 
     private void completeOrder() {
+        progress.setVisibility(View.VISIBLE);
+        disableButtons();
         Call<ResponseBody> responseBodyCall;
         switch (orderType) {
             case ORDER_TYPE_HIDE_PROFILE:
@@ -199,6 +212,8 @@ public class FragmentDialog extends DialogFragment implements DialogUtils.Dialog
                     completeOrder();
                     return;
                 }
+                enableButtons();
+                progress.setVisibility(View.GONE);
                 try {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
@@ -238,12 +253,12 @@ public class FragmentDialog extends DialogFragment implements DialogUtils.Dialog
 
     @Override
     public void onDialogDismissed() {
-        hideDialog(true,lastOrderType);
+        hideDialog(true, lastOrderType);
     }
 
     @Override
     public void onPositiveClicked() {
-        hideDialog(true,lastOrderType);
+        hideDialog(true, lastOrderType);
     }
 
 
@@ -253,8 +268,24 @@ public class FragmentDialog extends DialogFragment implements DialogUtils.Dialog
         void onDialogClosed();
     }
 
+
     @IntDef({ORDER_TYPE_HIDE_PROFILE, ORDER_TYPE_INCOGNITO})
     public @interface OrderType {
 
     }
+
+    private void disableButtons() {
+        doIt.setEnabled(false);
+        doIt.setClickable(false);
+        close.setClickable(false);
+        close.setEnabled(false);
+    }
+
+    private void enableButtons() {
+        doIt.setEnabled(true);
+        doIt.setClickable(true);
+        close.setClickable(true);
+        close.setEnabled(true);
+    }
+
 }

@@ -66,6 +66,7 @@ import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.utils.Constants;
+import ink.va.utils.DialogUtils;
 import ink.va.utils.FileUtils;
 import ink.va.utils.FragmentDialog;
 import ink.va.utils.IonCache;
@@ -581,7 +582,9 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
             builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
+                    completeOrder(ACTION_REMOVE_HIDDEN_PROFILE);
                     dialogInterface.dismiss();
+
                 }
             });
             builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -599,6 +602,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
         }
     }
 
+
     @OnClick(R.id.goIncognito)
     public void goIncognito() {
         closeMenuFab();
@@ -609,6 +613,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
             builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
+                    completeOrder(ACTION_REMOVE_INCOGNITO);
                     dialogInterface.dismiss();
                 }
             });
@@ -624,6 +629,56 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                     getString(R.string.incognito_cost_message, incognitoCost),
                     R.drawable.incognito_background, userCoins, ORDER_TYPE_INCOGNITO, incognitoCost);
         }
+    }
+
+    private void completeOrder(final String actionName) {
+        final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().changeProfile(actionName, mSharedHelper.getUserId());
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    completeOrder(actionName);
+                    return;
+                }
+                if (response.body() == null) {
+                    completeOrder(actionName);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        DialogUtils.showDialog(MyProfile.this, getString(R.string.success), getString(R.string.service_removed),
+                                true, null, false, null);
+                        switch (actionName) {
+                            case ACTION_REMOVE_HIDDEN_PROFILE:
+                                isHidden = false;
+                                break;
+                            case ACTION_REMOVE_INCOGNITO:
+                                isIncognito = false;
+                                break;
+                        }
+                        isDataLoaded = false;
+                        fetchData(lastResponse);
+                    } else {
+                        DialogUtils.showDialog(MyProfile.this, getString(R.string.error), getString(R.string.orderError),
+                                true, null, false, null);
+                    }
+                } catch (IOException e) {
+                    Toast.makeText(MyProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    Toast.makeText(MyProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(MyProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void closeMenuFab() {

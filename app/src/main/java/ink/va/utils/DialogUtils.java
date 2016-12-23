@@ -79,9 +79,8 @@ public class DialogUtils {
                     }
                 }
             });
-            builder.show();
         }
-
+        builder.show();
     }
 
     public interface DialogListener {
