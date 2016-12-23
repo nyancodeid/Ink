@@ -57,7 +57,7 @@ import ink.va.models.FeedModel;
 import ink.va.utils.Animations;
 import ink.va.utils.Constants;
 import ink.va.utils.PermissionsChecker;
-import ink.va.utils.PopupMenu;
+import ink.va.utils.DialogUtils;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -425,7 +425,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     public void onMoreClicked(final int position, View view) {
         final FeedModel singleModel = mFeedModelArrayList.get(position);
         if (singleModel.isPostOwner()) {
-            ink.va.utils.PopupMenu.showPopUp(getActivity(), view, new ItemClickListener<MenuItem>() {
+            DialogUtils.showPopUp(getActivity(), view, new ItemClickListener<MenuItem>() {
                 @Override
                 public void onItemClick(MenuItem clickedItem) {
                     switch (clickedItem.getItemId()) {
@@ -469,7 +469,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 }
             }, getString(R.string.edit), getString(R.string.delete), getString(share));
         } else {
-            PopupMenu.showPopUp(getActivity(), view, new ItemClickListener<MenuItem>() {
+            DialogUtils.showPopUp(getActivity(), view, new ItemClickListener<MenuItem>() {
                 @Override
                 public void onItemClick(MenuItem clickedItem) {
                     switch (clickedItem.getItemId()) {

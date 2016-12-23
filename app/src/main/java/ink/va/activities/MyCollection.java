@@ -41,7 +41,7 @@ import ink.va.models.MyCollectionModel;
 import ink.va.models.MyCollectionResponseModel;
 import ink.va.models.StickerModel;
 import ink.va.utils.Constants;
-import ink.va.utils.PopupMenu;
+import ink.va.utils.DialogUtils;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -270,7 +270,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
     @Override
     public void onMoreClicked(View view, final MyCollectionModel myCollectionModel) {
 
-        PopupMenu.showPopUp(this, view, new ItemClickListener<MenuItem>() {
+        DialogUtils.showPopUp(this, view, new ItemClickListener<MenuItem>() {
             @Override
             public void onItemClick(MenuItem clickedItem) {
                 switch (clickedItem.getItemId()) {

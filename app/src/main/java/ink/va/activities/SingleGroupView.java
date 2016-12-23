@@ -58,7 +58,7 @@ import ink.va.models.MemberModel;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.InputField;
-import ink.va.utils.PopupMenu;
+import ink.va.utils.DialogUtils;
 import ink.va.utils.Retrofit;
 import ink.va.utils.ScrollAwareFABButtonehavior;
 import ink.va.utils.SharedHelper;
@@ -817,7 +817,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     @Override
     public void onAdditionItemClick(int position, View view) {
         final GroupMessagesModel groupMessagesModel = groupMessagesModels.get(position);
-        PopupMenu.showPopUp(SingleGroupView.this, view, new ItemClickListener<MenuItem>() {
+        DialogUtils.showPopUp(SingleGroupView.this, view, new ItemClickListener<MenuItem>() {
             @Override
             public void onItemClick(MenuItem clickedItem) {
                 switch (clickedItem.getItemId()) {

@@ -59,7 +59,7 @@ import ink.va.utils.Animations;
 import ink.va.utils.Constants;
 import ink.va.utils.InputField;
 import ink.va.utils.Keyboard;
-import ink.va.utils.PopupMenu;
+import ink.va.utils.DialogUtils;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -410,7 +410,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     @Override
     public void onMoreClick(int position, View view) {
         if (isPostOwner) {
-            ink.va.utils.PopupMenu.showPopUp(Comments.this, view, new ItemClickListener<MenuItem>() {
+            DialogUtils.showPopUp(Comments.this, view, new ItemClickListener<MenuItem>() {
                 @Override
                 public void onItemClick(MenuItem clickedItem) {
                     switch (clickedItem.getItemId()) {
@@ -450,7 +450,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 }
             }, getString(R.string.edit), getString(R.string.delete));
         } else {
-            PopupMenu.showPopUp(Comments.this, view, new ItemClickListener<MenuItem>() {
+            DialogUtils.showPopUp(Comments.this, view, new ItemClickListener<MenuItem>() {
                 @Override
                 public void onItemClick(MenuItem clickedItem) {
                     String nameParts[] = mName.split("\\s");
@@ -726,7 +726,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         int actualPosition = position - 1;
         try {
             final CommentModel commentModel = mCommentModels.get(actualPosition);
-            ink.va.utils.PopupMenu.showPopUp(Comments.this, view, new ItemClickListener<MenuItem>() {
+            DialogUtils.showPopUp(Comments.this, view, new ItemClickListener<MenuItem>() {
                 @Override
                 public void onItemClick(MenuItem clickedItem) {
                     switch (clickedItem.getItemId()) {

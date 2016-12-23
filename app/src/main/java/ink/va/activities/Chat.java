@@ -80,6 +80,7 @@ import ink.va.models.MessageModel;
 import ink.va.models.UserStatus;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+import ink.va.utils.DialogUtils;
 import ink.va.utils.DimDialog;
 import ink.va.utils.FileUtils;
 import ink.va.utils.Keyboard;
@@ -690,7 +691,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     public void attachmentIcon() {
         System.gc();
 
-        ink.va.utils.PopupMenu.showPopUp(Chat.this, attachmentIcon, new ItemClickListener<MenuItem>() {
+        DialogUtils.showPopUp(Chat.this, attachmentIcon, new ItemClickListener<MenuItem>() {
             @Override
             public void onItemClick(MenuItem clickedItem) {
                 switch (clickedItem.getItemId()) {

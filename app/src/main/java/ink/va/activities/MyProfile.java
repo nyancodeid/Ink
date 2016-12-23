@@ -66,6 +66,7 @@ import fab.FloatingActionButton;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.utils.Constants;
 import ink.va.utils.FileUtils;
+import ink.va.utils.FragmentDialog;
 import ink.va.utils.IonCache;
 import ink.va.utils.PermissionsChecker;
 import ink.va.utils.RealmHelper;
@@ -153,7 +154,9 @@ public class MyProfile extends BaseActivity {
     private ProgressDialog progressDialog;
     private boolean isEditEnabled;
     private boolean isIncognito;
+    private boolean isIncognitoBought;
     private boolean isHidden;
+    private boolean isHiddenBought;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -413,7 +416,9 @@ public class MyProfile extends BaseActivity {
                     mRelationshipToSend = jsonObject.optString("relationship");
                     mStatusToSend = jsonObject.optString("status");
                     isIncognito = jsonObject.optBoolean("isIncognito");
+                    isIncognitoBought = jsonObject.optBoolean("isIncognitoBought");
                     isHidden = jsonObject.optBoolean("isHidden");
+                    isHiddenBought = jsonObject.optBoolean("isHiddenBought");
 
                     cacheUserData();
 
@@ -554,7 +559,7 @@ public class MyProfile extends BaseActivity {
         if (isHidden) {
 
         } else {
-
+            new FragmentDialog().showDialog(FragmentDialog.DIALOG_TYPE_HIDE_PROFILE);
         }
     }
 
@@ -563,7 +568,7 @@ public class MyProfile extends BaseActivity {
         if (isIncognito) {
 
         } else {
-
+            new FragmentDialog().showDialog(FragmentDialog.DIALOG_TYPE_INCOGNITO);
         }
     }
 

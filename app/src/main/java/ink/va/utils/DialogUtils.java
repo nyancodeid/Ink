@@ -10,7 +10,7 @@ import ink.va.interfaces.ItemClickListener;
 /**
  * Created by PC-Comp on 8/12/2016.
  */
-public class PopupMenu {
+public class DialogUtils {
 
     public static void showPopUp(final Context context, View viewToAttach, @Nullable final ItemClickListener<MenuItem> itemClickListener, String... itemsToAdd) {
         System.gc();
@@ -31,4 +31,5 @@ public class PopupMenu {
         });
         popupMenu.show();
     }
+
 }
