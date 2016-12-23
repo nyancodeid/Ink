@@ -733,4 +733,19 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="hideProfile">Hide Profile</string>
     <string name="makeProfileVisible">Make Profile Visible</string>
     <string name="removeIncognito">Remove Incognito</string>
+    <string name="doIt">Do It</string>
+    <string name="hidden_profile_message">You are about to hide you\'r
+        profile from public.You will not be visible during the search,
+        yet this is one-time purchase which is available for lifetime and can be changed
+        (visible profile/hidden profile) without a charge if paid once.</string>
+    <string name="hidden_profile_const_message">The cost is %1$d coins</string>
+    <string name="incognito_message">You are about to go incognito.
+        You will not be visible in any actions except sending friend request:you will be hidden from \'Who\'s Viewed My Profile\'
+        and from Groups.This purchase is for lifetime,meaning you can purchase once,and go on/off with
+        incognito as much as you wish</string>
+    <string name="incognito_cost_message">The cost is %1$d coins</string>
+    <string name="incognito_remove_warning">You are about to remove you\'r \'Incognito\' feature,proceed?</string>
+    <string name="hidden_profile_remove_warning">You are about to make you\'r profile visible to the public,proceed?</string>
+
+
 </resources>

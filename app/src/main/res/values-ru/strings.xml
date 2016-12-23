@@ -735,4 +735,21 @@
     <string name="hideProfile">Закрыть Профиль</string>
     <string name="makeProfileVisible">Открыть Профиль</string>
     <string name="removeIncognito">Удалить Режим Инкогнито</string>
+
+    <string name="hidden_profile_message">Вы собираетесь
+        скрыть свой профиль от публики.Вы не будете видны в поиске,но,все же,это
+        покупка одноразовая,которая будет вам доступна всегда и можно будет изменить
+        видимость профиля безо всякой оплаты если уже оплачено.</string>
+    <string name="hidden_profile_const_message">Стоимость %1$d монет</string>
+
+     <string name="incognito_message">Вы собираетесь перейти в режим Инкогнито.Вас не будет видно ни в
+         каких действиях кроме запроса друзей:
+Вы будете скрыты с \'Кто просмотрел мой профиль\' и с Групп.Покупка одноразовая,а именно,покупаете один раз и можете включить
+         или выключить функцию 'Инкогнито' сколько захотите.</string>
+    <string name="incognito_cost_message">Стоимость %1$d монет</string>
+
+    <string name="incognito_remove_warning">Вы собираетесь удалить вашу функцию \'Инкогнито\',продолжить?</string>
+    <string name="hidden_profile_remove_warning">Вы собираетесь сделать ваш профиль общедоступным,продолжит?</string>
+
+
 </resources>

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Process;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.Snackbar;
@@ -77,7 +78,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MyProfile extends BaseActivity {
+public class MyProfile extends BaseActivity implements FragmentDialog.ResultListener {
+
+    public static final String ACTION_REMOVE_INCOGNITO = "removeIncognito";
+    public static final String ACTION_REMOVE_HIDDEN_PROFILE = "removeHiddenProfile";
+    public static final String TYPE_MAKE_PROFILE_VISIBLE = "makeProfileVisible";
+    public static final String TYPE_GO_INCOGNITO = "goIncognito";
 
     private static final int PICK_IMAGE_RESULT_CODE = 2;
     private static final int STORAGE_PERMISSION_REQUEST = 1;
@@ -157,6 +163,8 @@ public class MyProfile extends BaseActivity {
     private boolean isIncognitoBought;
     private boolean isHidden;
     private boolean isHiddenBought;
+    private int incognitoCost;
+    private int hiddenProfileCost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,7 +198,7 @@ public class MyProfile extends BaseActivity {
             public void onClick(View view) {
                 if (isDataLoaded) {
                     if (mProfileFab.isOpened()) {
-                        mProfileFab.close(true);
+                        closeMenuFab();
                     } else {
                         mProfileFab.open(true);
                     }
@@ -419,6 +427,8 @@ public class MyProfile extends BaseActivity {
                     isIncognitoBought = jsonObject.optBoolean("isIncognitoBought");
                     isHidden = jsonObject.optBoolean("isHidden");
                     isHiddenBought = jsonObject.optBoolean("isHiddenBought");
+                    incognitoCost = jsonObject.optInt("incognitoCost");
+                    hiddenProfileCost = jsonObject.optInt("hiddenProfileCost");
 
                     cacheUserData();
 
@@ -556,31 +566,71 @@ public class MyProfile extends BaseActivity {
 
     @OnClick(R.id.hideProfile)
     public void hideProfileClicked() {
+        closeMenuFab();
         if (isHidden) {
-
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.warning));
+            builder.setMessage(getString(R.string.hidden_profile_remove_warning));
+            builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            builder.show();
         } else {
-            new FragmentDialog().showDialog(FragmentDialog.DIALOG_TYPE_HIDE_PROFILE);
+            new FragmentDialog().showDialog(getSupportFragmentManager(), this, getString(R.string.hidden_profile_message),
+                    getString(R.string.hidden_profile_const_message, hiddenProfileCost),
+                    ContextCompat.getDrawable(this, R.drawable.hidden_profile_background));
         }
     }
 
     @OnClick(R.id.goIncognito)
     public void goIncognito() {
+        closeMenuFab();
         if (isIncognito) {
-
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.warning));
+            builder.setMessage(getString(R.string.incognito_remove_warning));
+            builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            builder.show();
         } else {
-            new FragmentDialog().showDialog(FragmentDialog.DIALOG_TYPE_INCOGNITO);
+            new FragmentDialog().showDialog(getSupportFragmentManager(), this, getString(R.string.incognito_message),
+                    getString(R.string.incognito_cost_message, incognitoCost),
+                    ContextCompat.getDrawable(this, R.drawable.incognito_background));
         }
+    }
+
+    private void closeMenuFab() {
+        mProfileFab.close(true);
     }
 
     @OnClick(R.id.setSecurityQuestion)
     public void setSecurityQuestion() {
-        mProfileFab.close(true);
+        closeMenuFab();
         startActivity(new Intent(getApplicationContext(), SecurityQuestion.class));
     }
 
     @OnClick(R.id.changePassword)
     public void changePassword() {
-        mProfileFab.close(true);
+        closeMenuFab();
         startActivity(new Intent(getApplicationContext(), ChangePassword.class));
     }
 
@@ -1226,5 +1276,26 @@ public class MyProfile extends BaseActivity {
                 });
             }
         }
+    }
+
+    @Override
+    public void onResultSuccess() {
+
+    }
+
+    @Override
+    public void onDialogClosed() {
+
+    }
+
+    private void changeProfileVisibility(@ProfileVisibility String action,
+                                         @ProfileVisibility String type) {
+
+
+    }
+
+    @StringDef({ACTION_REMOVE_HIDDEN_PROFILE, ACTION_REMOVE_HIDDEN_PROFILE, TYPE_GO_INCOGNITO, TYPE_GO_INCOGNITO})
+    private @interface ProfileVisibility {
+
     }
 }

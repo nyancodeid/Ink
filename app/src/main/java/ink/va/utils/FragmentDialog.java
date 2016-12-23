@@ -1,17 +1,21 @@
 package ink.va.utils;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.ink.va.R;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -22,18 +26,22 @@ import butterknife.OnClick;
 public class FragmentDialog extends DialogFragment {
 
 
-    public static final int DIALOG_TYPE_INCOGNITO = 0;
-    public static final int DIALOG_TYPE_HIDE_PROFILE = 1;
+    private ResultListener resultListener;
+    private String firstParagpaphContent;
+    private String secondParagraphContent;
+    private Drawable backgroundResource;
 
-    public static final String DIALOG_TYPE_KEY = "dialog_type";
-    private int type;
+    @Bind(R.id.fragmentDialogRoot)
+    RelativeLayout fragmentDialogRoot;
 
+    @Bind(R.id.firstParagraphTV)
+    TextView firstParagraphTV;
 
-    static FragmentDialog newInstance(int type) {
+    @Bind(R.id.secondParagraphTV)
+    TextView secondParagraphTV;
+
+    static FragmentDialog newInstance() {
         FragmentDialog fragmentDialog = new FragmentDialog();
-        Bundle bundle = new Bundle();
-        bundle.putInt(DIALOG_TYPE_KEY, type);
-        fragmentDialog.setArguments(bundle);
         return fragmentDialog;
     }
 
@@ -45,20 +53,8 @@ public class FragmentDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view;
-        if (getArguments() != null) {
-            type = getArguments().getInt(DIALOG_TYPE_KEY);
-        }
-        switch (type) {
-            case DIALOG_TYPE_HIDE_PROFILE:
-                view = inflater.inflate(R.layout.fragment_dialog_hide_profile, container, false);
-                break;
-            case DIALOG_TYPE_INCOGNITO:
-                view = inflater.inflate(R.layout.fragment_dialog_incognito, container, false);
-                break;
-            default:
-                view = inflater.inflate(R.layout.fragment_dialog_hide_profile, container, false);
-        }
+        View view = inflater.inflate(R.layout.fragment_dialog, container, false);
+
         ButterKnife.bind(this, view);
 
         return view;
@@ -67,28 +63,39 @@ public class FragmentDialog extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        fragmentDialogRoot.setBackground(backgroundResource);
+        firstParagraphTV.setText(firstParagpaphContent);
+        secondParagraphTV.setText(secondParagraphContent);
     }
 
-    public void showDialog(@DialogTypes int type) {
+    public void showDialog(FragmentManager fragmentManager, @Nullable ResultListener resultListener,
+                           String firstParagraphContent,
+                           String secondParagraphContent, Drawable backgroundResource) {
 
         // DialogFragment.show() will take care of adding the fragment
         // in a transaction.  We also want to remove any currently showing
         // dialog, so make our own transaction and take care of that here.
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        this.resultListener = resultListener;
+        this.firstParagpaphContent = firstParagraphContent;
+        this.secondParagraphContent = secondParagraphContent;
+        this.backgroundResource = backgroundResource;
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment prev = fragmentManager.findFragmentByTag("dialog");
         if (prev != null) {
-            ft.remove(prev);
+            fragmentTransaction.remove(prev);
         }
-        ft.addToBackStack(null);
+        fragmentTransaction.addToBackStack(null);
 
         // Create and show the dialog.
-        DialogFragment newFragment = FragmentDialog.newInstance(type);
-        newFragment.show(ft, "dialog");
+        DialogFragment newFragment = FragmentDialog.newInstance();
+        newFragment.show(fragmentTransaction, "dialog");
     }
 
     public void hideDialog() {
         dismiss();
+        if (resultListener != null) {
+            resultListener.onDialogClosed();
+        }
     }
 
     @OnClick(R.id.close)
@@ -96,8 +103,15 @@ public class FragmentDialog extends DialogFragment {
         hideDialog();
     }
 
-    @IntDef({DIALOG_TYPE_INCOGNITO, DIALOG_TYPE_HIDE_PROFILE})
-    private @interface DialogTypes {
+    @OnClick(R.id.doIt)
+    public void doItClicked() {
+        hideDialog();
+    }
 
+
+    public interface ResultListener {
+        void onResultSuccess();
+
+        void onDialogClosed();
     }
 }
