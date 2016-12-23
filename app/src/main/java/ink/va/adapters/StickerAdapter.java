@@ -21,7 +21,7 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerChooserViewHolde
     private List<StickerModel> gifAdapterList;
     private Context context;
     private RecyclerItemClickListener recyclerItemClickListener;
-
+    private boolean hideChooser;
 
     public StickerAdapter(List<StickerModel> gifAdapterList, Context context) {
         this.gifAdapterList = gifAdapterList;
@@ -38,7 +38,7 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerChooserViewHolde
     @Override
     public void onBindViewHolder(final StickerChooserViewHolder holder, final int position) {
         StickerModel stickerModel = gifAdapterList.get(position);
-        holder.init(context, stickerModel, recyclerItemClickListener);
+        holder.init(context, stickerModel, recyclerItemClickListener, hideChooser);
 
     }
 
@@ -50,5 +50,14 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerChooserViewHolde
 
     public void setOnItemClickListener(RecyclerItemClickListener recyclerItemClickListener) {
         this.recyclerItemClickListener = recyclerItemClickListener;
+    }
+
+    public void setHideChooser(boolean hideChooser) {
+        this.hideChooser = hideChooser;
+    }
+
+    public void clearItems() {
+        gifAdapterList.clear();
+        notifyDataSetChanged();
     }
 }

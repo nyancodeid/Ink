@@ -727,4 +727,8 @@
     <string name="noProfileViewText">Никто не просматривал ваш профиль пока.</string>
     <string name="totalAccountViews">Всего просмотров аккаунта (%1d)</string>
     <string name="serverNewsTitle">Новости С Сервера</string>
+    <string name="my_collection_text">Моя коллекция</string>
+    <string name="animationHintText">Совет : если у вас есть Анимированный Стикер,просто нажмите на него чтобы воспроизвести</string>
+    <string name="delete_collection">Удалить Коллекцию?</string>
+    <string name="delete_collection_warning_message">Ета Операция удалит все Стикеры в Коллекции,вы уверены?</string>
 </resources>

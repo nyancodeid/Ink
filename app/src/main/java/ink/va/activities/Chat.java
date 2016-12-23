@@ -100,6 +100,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static ink.va.utils.Constants.REQUEST_CODE_CHOSE_STICKER;
+import static ink.va.utils.Constants.STARTING_FOR_RESULT_BUNDLE_KEY;
 
 public class Chat extends BaseActivity implements ProgressRequestBody.UploadCallbacks {
 
@@ -719,7 +720,9 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     }
 
     private void openStickerChooser() {
-        startActivityForResult(new Intent(getApplicationContext(), StickerChooserActivity.class), Constants.REQUEST_CODE_CHOSE_STICKER);
+        Intent intent = new Intent(getApplicationContext(), MyCollection.class);
+        intent.putExtra(STARTING_FOR_RESULT_BUNDLE_KEY, true);
+        startActivityForResult(intent, Constants.REQUEST_CODE_CHOSE_STICKER);
     }
 
 

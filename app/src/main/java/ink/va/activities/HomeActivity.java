@@ -50,8 +50,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import fab.FloatingActionButton;
 import ink.va.fragments.Feed;
 import ink.va.fragments.MyFriends;
@@ -398,6 +396,10 @@ public class HomeActivity extends BaseActivity
             case R.id.profile:
                 shouldOpenActivity = true;
                 setLastClassToOpen(MyProfile.class, false);
+                break;
+            case R.id.myCollection:
+                shouldOpenActivity = true;
+                setLastClassToOpen(MyCollection.class, false);
                 break;
             case R.id.whoViewed:
                 shouldOpenActivity = true;

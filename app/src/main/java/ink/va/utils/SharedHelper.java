@@ -363,11 +363,21 @@ public class SharedHelper {
         return mSharedPreferences.getBoolean("editorHint", false);
     }
 
+
+
     public void putEditorHintShow(boolean value) {
         mEditor.putBoolean("editorHint", value);
         mEditor.commit();
     }
 
+    public boolean isAnimationHintShown() {
+        return mSharedPreferences.getBoolean("isAnimationHintShown", false);
+    }
+
+    public void putAnimationHintShow(boolean value) {
+        mEditor.putBoolean("isAnimationHintShown", value);
+        mEditor.commit();
+    }
     public void putLoggedIntoGame(boolean value) {
         mEditor.putBoolean("isLoggedIntoGame", value);
         mEditor.commit();

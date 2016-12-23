@@ -258,11 +258,11 @@
             android:name="ink.va.activities.NewsAndTrendsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize" />
         <activity android:name="ink.va.activities.Policy" />
-        <activity android:name="ink.va.activities.StickerChooserActivity" />
         <activity android:name="ink.va.activities.WhoViewedActivity" />
         <activity
             android:name="ink.va.activities.ServerNotification"
-            android:theme="@style/Theme.Transparent"></activity>
+            android:theme="@style/Theme.Transparent" />
+        <activity android:name="ink.va.activities.MyCollection"></activity>
     </application>
 
 </manifest>

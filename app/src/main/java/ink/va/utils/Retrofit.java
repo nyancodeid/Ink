@@ -2,6 +2,7 @@ package ink.va.utils;
 
 import java.util.Map;
 
+import ink.va.models.MyCollectionResponseModel;
 import ink.va.models.ServerInformationModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -90,6 +91,11 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getSingleUserDetails(@Field("user_id") String userId,
                                                 @Field("currentUserId") String currentUserId);
+
+        @POST(Constants.DELETE_USER_PACK)
+        @FormUrlEncoded
+        Call<ResponseBody> deleteCollection(@Field("userId") String userId,
+                                            @Field("packId") String packId);
 
         @POST(Constants.WHO_VIEWED_URL)
         @FormUrlEncoded
@@ -366,8 +372,21 @@ public class Retrofit {
 
         @POST(Constants.USER_GIFS_URL)
         @FormUrlEncoded
-        Call<ResponseBody> getUserGifs(@Field("userId") String userId,
-                                       @Field("authKey") String authKey);
+        Call<ResponseBody> getUserStickers(@Field("userId") String userId,
+                                           @Field("authKey") String authKey);
+
+        @POST(Constants.GET_SINGLE_STICKER_PACK)
+        @FormUrlEncoded
+        Call<ResponseBody> getsSinglePack(@Field("packId") String packId,
+                                          @Field("authKey") String authKey);
+
+        @POST(Constants.USER_GIFS_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getUserStickerByPack(@Field("packId") String packId);
+
+        @POST(Constants.GET_USER_COLLECTIONS)
+        @FormUrlEncoded
+        Call<MyCollectionResponseModel> getUserCollection(@Field("userId") String userId);
 
 
         @POST(Constants.REQUEST_DELETE_URL)
