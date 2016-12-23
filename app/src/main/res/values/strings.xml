@@ -746,6 +746,9 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="incognito_cost_message">The cost is %1$d coins</string>
     <string name="incognito_remove_warning">You are about to remove you\'r \'Incognito\' feature,proceed?</string>
     <string name="hidden_profile_remove_warning">You are about to make you\'r profile visible to the public,proceed?</string>
+    <string name="orderError">There was an error while processing you\'r order,if you keep
+        having this issue,please contact support</string>
+    <string name="order_bought">Congratulations!You\'r order has been arrived and ready to be used!</string>
 
 
 </resources>

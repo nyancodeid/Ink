@@ -78,11 +78,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.utils.FragmentDialog.ORDER_TYPE_HIDE_PROFILE;
+import static ink.va.utils.FragmentDialog.ORDER_TYPE_INCOGNITO;
+
 public class MyProfile extends BaseActivity implements FragmentDialog.ResultListener {
 
     public static final String ACTION_REMOVE_INCOGNITO = "removeIncognito";
     public static final String ACTION_REMOVE_HIDDEN_PROFILE = "removeHiddenProfile";
-    public static final String TYPE_MAKE_PROFILE_VISIBLE = "makeProfileVisible";
+    public static final String TYPE_MAKE_PROFILE_HIDDEN = "makeProfileHidden";
     public static final String TYPE_GO_INCOGNITO = "goIncognito";
 
     private static final int PICK_IMAGE_RESULT_CODE = 2;
@@ -165,6 +168,8 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     private boolean isHiddenBought;
     private int incognitoCost;
     private int hiddenProfileCost;
+    private int userCoins;
+    private Response<ResponseBody> lastResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -393,6 +398,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                     getMyData();
                     return;
                 }
+                lastResponse = response;
                 fetchData(response);
             }
 
@@ -429,6 +435,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                     isHiddenBought = jsonObject.optBoolean("isHiddenBought");
                     incognitoCost = jsonObject.optInt("incognitoCost");
                     hiddenProfileCost = jsonObject.optInt("hiddenProfileCost");
+                    userCoins = jsonObject.optInt("userCoins");
 
                     cacheUserData();
 
@@ -585,9 +592,10 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
             });
             builder.show();
         } else {
-            new FragmentDialog().showDialog(getSupportFragmentManager(), this, getString(R.string.hidden_profile_message),
+            new FragmentDialog().showDialog(getSupportFragmentManager(), getString(R.string.hidden_profile_message),
                     getString(R.string.hidden_profile_const_message, hiddenProfileCost),
-                    ContextCompat.getDrawable(this, R.drawable.hidden_profile_background));
+                    R.drawable.hidden_profile_background, userCoins, FragmentDialog.ORDER_TYPE_HIDE_PROFILE,
+                    hiddenProfileCost);
         }
     }
 
@@ -612,9 +620,9 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
             });
             builder.show();
         } else {
-            new FragmentDialog().showDialog(getSupportFragmentManager(), this, getString(R.string.incognito_message),
+            new FragmentDialog().showDialog(getSupportFragmentManager(), getString(R.string.incognito_message),
                     getString(R.string.incognito_cost_message, incognitoCost),
-                    ContextCompat.getDrawable(this, R.drawable.incognito_background));
+                    R.drawable.incognito_background, userCoins, ORDER_TYPE_INCOGNITO, incognitoCost);
         }
     }
 
@@ -1279,8 +1287,19 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     }
 
     @Override
-    public void onResultSuccess() {
-
+    public void onResultSuccess(@FragmentDialog.OrderType int orderBought) {
+        switch (orderBought) {
+            case ORDER_TYPE_HIDE_PROFILE:
+                isHiddenBought = true;
+                isHidden = true;
+                break;
+            case ORDER_TYPE_INCOGNITO:
+                isIncognitoBought = true;
+                isIncognito = true;
+                break;
+        }
+        isDataLoaded = false;
+        fetchData(lastResponse);
     }
 
     @Override
@@ -1294,7 +1313,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
 
     }
 
-    @StringDef({ACTION_REMOVE_HIDDEN_PROFILE, ACTION_REMOVE_HIDDEN_PROFILE, TYPE_GO_INCOGNITO, TYPE_GO_INCOGNITO})
+    @StringDef({ACTION_REMOVE_HIDDEN_PROFILE, ACTION_REMOVE_HIDDEN_PROFILE, TYPE_GO_INCOGNITO, TYPE_MAKE_PROFILE_HIDDEN})
     private @interface ProfileVisibility {
 
     }

@@ -92,6 +92,11 @@ public class Retrofit {
         Call<ResponseBody> getSingleUserDetails(@Field("user_id") String userId,
                                                 @Field("currentUserId") String currentUserId);
 
+        @POST(Constants.PROFILE_VISIBILITY_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> changeProfile(@Field("type") String action,
+                                         @Field("userId") String userId);
+
         @POST(Constants.DELETE_USER_PACK)
         @FormUrlEncoded
         Call<ResponseBody> deleteCollection(@Field("userId") String userId,
