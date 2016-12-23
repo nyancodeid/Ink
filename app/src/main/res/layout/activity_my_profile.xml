@@ -38,18 +38,20 @@
                 android:minHeight="170dp"
                 android:scaleType="fitXY"
                 app:layout_collapseMode="parallax" />
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/myProfileToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
             <ProgressBar
-                android:visibility="visible"
                 android:id="@+id/imageLoadingProgress"
-                android:layout_gravity="center"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="visible" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -304,7 +306,6 @@
 
                     <Button
                         android:id="@+id/deleteAccont"
-                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/skypeTV"
@@ -314,10 +315,10 @@
                         android:foreground="?attr/selectableItemBackground"
                         android:text="@string/deleteAccount"
                         android:textAllCaps="false"
-                        android:textColor="#ffffff" />
+                        android:textColor="#ffffff"
+                        android:visibility="gone" />
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
-
 
 
             <ImageView
@@ -348,6 +349,26 @@
         fab:menu_colorRipple="#cccccc">
 
         <fab.FloatingActionButton
+            android:id="@+id/hideProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/hide_profile_icon"
+            fab:fab_colorNormal="#444f65"
+            fab:fab_colorPressed="#636e85"
+            fab:fab_label="@string/hideProfile"
+            fab:fab_size="mini" />
+
+        <fab.FloatingActionButton
+            android:id="@+id/goIncognito"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/incognito_icon"
+            fab:fab_colorNormal="#444f65"
+            fab:fab_colorPressed="#636e85"
+            fab:fab_label="@string/goIncognito"
+            fab:fab_size="mini" />
+
+        <fab.FloatingActionButton
             android:id="@+id/editProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -356,6 +377,7 @@
             fab:fab_colorPressed="#636e85"
             fab:fab_label="@string/editProfile"
             fab:fab_size="mini" />
+
         <fab.FloatingActionButton
             android:id="@+id/changePassword"
             android:layout_width="wrap_content"
@@ -365,6 +387,7 @@
             fab:fab_colorPressed="#636e85"
             fab:fab_label="@string/changePassword"
             fab:fab_size="mini" />
+
         <fab.FloatingActionButton
             android:id="@+id/setSecurityQuestion"
             android:layout_width="wrap_content"

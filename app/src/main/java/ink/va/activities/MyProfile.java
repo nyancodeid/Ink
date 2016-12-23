@@ -107,9 +107,13 @@ public class MyProfile extends BaseActivity {
     @Bind(R.id.profileImage)
     ImageView profileImage;
     private boolean isEditing;
-    private boolean isDataDownloaded;
+    private boolean isDataLoaded;
     @Bind(R.id.editProfile)
     FloatingActionButton mEditSaveButton;
+    @Bind(R.id.hideProfile)
+    FloatingActionButton hideProfileButton;
+    @Bind(R.id.goIncognito)
+    FloatingActionButton goIncognitoButton;
     private Menu mCancelMenuItem;
     @Bind(R.id.editImageNameFab)
     FloatingActionButton mEditImageNameFab;
@@ -148,6 +152,8 @@ public class MyProfile extends BaseActivity {
     private String mFacebookName;
     private ProgressDialog progressDialog;
     private boolean isEditEnabled;
+    private boolean isIncognito;
+    private boolean isHidden;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,7 +185,7 @@ public class MyProfile extends BaseActivity {
         mProfileFab.setOnMenuButtonClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isDataDownloaded) {
+                if (isDataLoaded) {
                     if (mProfileFab.isOpened()) {
                         mProfileFab.close(true);
                     } else {
@@ -190,12 +196,7 @@ public class MyProfile extends BaseActivity {
                 }
             }
         });
-        if (!mSharedHelper.isUserProfileCached()) {
-            getMyData();
-        } else {
-            getCachedData();
-        }
-
+        getMyData();
     }
 
     private void getCachedData() {
@@ -360,7 +361,11 @@ public class MyProfile extends BaseActivity {
 
     @OnClick(R.id.profileImage)
     public void profileImage() {
-        openChooserPopUp(true);
+        if (isDataLoaded) {
+            openChooserPopUp(true);
+        } else {
+            Snackbar.make(mProfileFab, getString(R.string.waitTillLoad), Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     private void getMyData() {
@@ -407,6 +412,8 @@ public class MyProfile extends BaseActivity {
                     mAddressToSend = jsonObject.optString("address");
                     mRelationshipToSend = jsonObject.optString("relationship");
                     mStatusToSend = jsonObject.optString("status");
+                    isIncognito = jsonObject.optBoolean("isIncognito");
+                    isHidden = jsonObject.optBoolean("isHidden");
 
                     cacheUserData();
 
@@ -518,7 +525,16 @@ public class MyProfile extends BaseActivity {
         mRelationship.setText(mRelationshipToSend);
         mStatusText.setText(mStatusToSend);
         mGender.setText(mGenderToSend);
-        isDataDownloaded = true;
+
+        if (isHidden) {
+            hideProfileButton.setLabelText(getString(R.string.makeProfileVisible));
+        }
+
+        if (isIncognito) {
+            goIncognitoButton.setLabelText(getString(R.string.removeIncognito));
+        }
+
+        isDataLoaded = true;
         hideSnack();
     }
 
@@ -530,6 +546,24 @@ public class MyProfile extends BaseActivity {
         if (!isEditing) {
             enableEdit();
             isEditing = true;
+        }
+    }
+
+    @OnClick(R.id.hideProfile)
+    public void hideProfileClicked() {
+        if (isHidden) {
+
+        } else {
+
+        }
+    }
+
+    @OnClick(R.id.goIncognito)
+    public void goIncognito() {
+        if (isIncognito) {
+
+        } else {
+
         }
     }
 
@@ -1003,7 +1037,7 @@ public class MyProfile extends BaseActivity {
 
     private void sendUpdatesToServer() {
         showSnack(mProfileFab);
-        isDataDownloaded = false;
+        isDataLoaded = false;
         if (mStatusText.getText().toString().equals(getString(R.string.noStatusText))) {
             mStatusToSend = "";
         }
@@ -1165,7 +1199,7 @@ public class MyProfile extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        isDataDownloaded = false;
+        isDataLoaded = false;
         super.onDestroy();
     }
 

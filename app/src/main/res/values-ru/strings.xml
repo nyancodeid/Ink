@@ -731,4 +731,8 @@
     <string name="animationHintText">Совет : если у вас есть Анимированный Стикер,просто нажмите на него чтобы воспроизвести</string>
     <string name="delete_collection">Удалить Коллекцию?</string>
     <string name="delete_collection_warning_message">Ета Операция удалит все Стикеры в Коллекции,вы уверены?</string>
+    <string name="goIncognito">Перейти В Режим Инкогнито</string>
+    <string name="hideProfile">Закрыть Профиль</string>
+    <string name="makeProfileVisible">Открыть Профиль</string>
+    <string name="removeIncognito">Удалить Режим Инкогнито</string>
 </resources>

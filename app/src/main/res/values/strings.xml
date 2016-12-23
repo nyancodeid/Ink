@@ -729,4 +729,8 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="animationHintText">Hint : If you have animated sticker,touch the sticker to play it</string>
     <string name="delete_collection">Delete Collection?</string>
     <string name="delete_collection_warning_message">This will remove the whole sticker\'s inside you\'r collection,are you sure?</string>
+    <string name="goIncognito">Go Incognito</string>
+    <string name="hideProfile">Hide Profile</string>
+    <string name="makeProfileVisible">Make Profile Visible</string>
+    <string name="removeIncognito">Remove Incognito</string>
 </resources>
