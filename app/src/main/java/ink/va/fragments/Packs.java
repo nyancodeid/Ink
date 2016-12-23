@@ -145,12 +145,6 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
     @Override
     public void onBuyClicked(int packPrice, String packId, View clickedView) {
         mExplosionField.explode(clickedView);
-        clickedView.post(new Runnable() {
-            @Override
-            public void run() {
-                mExplosionField.clear();
-            }
-        });
 
         if (User.get().getCoins() != null || !User.get().getCoins().isEmpty()) {
             int userCoins = Integer.valueOf(User.get().getCoins());
