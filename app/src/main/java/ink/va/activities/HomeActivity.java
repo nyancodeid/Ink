@@ -80,7 +80,7 @@ public class HomeActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AccountDeleteListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
-    public static final int PROFILE_RESULT_CODE = 87815;
+    public static final int PROFILE_RESULT_CODE = 836;
 
     private FloatingActionMenu mFab;
     private ImageView mProfileImage;
