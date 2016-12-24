@@ -134,7 +134,7 @@ public class FragmentDialog extends DialogFragment implements DialogUtils.Dialog
 
         // Create and show the dialog.
         DialogFragment newFragment = FragmentDialog.newInstance(backgroundResource,
-                firstParagraphContent, secondParagraphContent, userCoins, orderType, orderCost);
+                firstParagraphContent, secondParagraphContent, orderType, userCoins, orderCost);
         newFragment.show(fragmentTransaction, "dialog");
         return this;
     }
