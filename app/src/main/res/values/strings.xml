@@ -750,6 +750,8 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
         having this issue,please contact support</string>
     <string name="order_bought">Congratulations!You\'r order has been arrived and ready to be used!</string>
     <string name="service_removed">The service was removed,you can re-active any time without a charge.</string>
+    <string name="incognito">Incognito</string>
+    <string name="incognito_hint">The person is in Incognito Mode and can not be viewed</string>
 
 
 </resources>

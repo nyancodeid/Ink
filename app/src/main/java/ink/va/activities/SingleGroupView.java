@@ -57,8 +57,8 @@ import ink.va.models.GroupMessagesModel;
 import ink.va.models.MemberModel;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
-import ink.va.utils.InputField;
 import ink.va.utils.DialogUtils;
+import ink.va.utils.InputField;
 import ink.va.utils.Retrofit;
 import ink.va.utils.ScrollAwareFABButtonehavior;
 import ink.va.utils.SharedHelper;
@@ -354,20 +354,26 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         memberAdapter.setOnClickListener(new RecyclerItemClickListener() {
             @Override
             public void onItemClicked(int position, View view) {
-                if (memberModels.get(position).getMemberId().equals(mSharedHelper.getUserId())) {
-                    startActivity(new Intent(getApplicationContext(), MyProfile.class));
+                if (memberModels.get(position).isIncognito()) {
+                    DialogUtils.showDialog(SingleGroupView.this, getString(R.string.incognito), getString(R.string.incognito_hint), true,
+                            null, false, null);
                 } else {
-                    String name = memberModels.get(position).getMemberName();
-                    String[] splited = name.split("\\s+");
-                    String firstName = splited[0];
-                    String lastName = splited[1];
-                    Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
-                    intent.putExtra("id", memberModels.get(position).getMemberId());
-                    intent.putExtra("firstName", firstName);
-                    intent.putExtra("isFriend", memberModels.get(position).isFriend());
-                    intent.putExtra("lastName", lastName);
-                    startActivity(intent);
+                    if (memberModels.get(position).getMemberId().equals(mSharedHelper.getUserId())) {
+                        startActivity(new Intent(getApplicationContext(), MyProfile.class));
+                    } else {
+                        String name = memberModels.get(position).getMemberName();
+                        String[] splited = name.split("\\s+");
+                        String firstName = splited[0];
+                        String lastName = splited[1];
+                        Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
+                        intent.putExtra("id", memberModels.get(position).getMemberId());
+                        intent.putExtra("firstName", firstName);
+                        intent.putExtra("isFriend", memberModels.get(position).isFriend());
+                        intent.putExtra("lastName", lastName);
+                        startActivity(intent);
+                    }
                 }
+
             }
 
             @Override
@@ -424,7 +430,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                             String memberItemId = eachObject.optString("participant_item_id");
                             String memberGroupId = eachObject.optString("participant_group_id");
                             String isFriend = eachObject.optString("isFriend");
-                            memberModel = new MemberModel(Boolean.valueOf(isFriend), memberId, memberName, memberImage, memberItemId
+                            boolean isIncognito = eachObject.optBoolean("isIncognito");
+                            memberModel = new MemberModel(Boolean.valueOf(isFriend), isIncognito, memberId, memberName, memberImage, memberItemId
                                     , memberGroupId);
                             memberModels.add(memberModel);
                             memberAdapter.notifyDataSetChanged();
@@ -732,8 +739,9 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                                 String senderName = eachObject.optString("sender_name");
                                 String groupMessageId = eachObject.optString("group_message_id");
                                 String isFriend = eachObject.optString("isFriend");
+                                boolean isIncognito = eachObject.optBoolean("isIncognito");
                                 String fileName = eachObject.optString("file_name");
-                                groupMessagesModel = new GroupMessagesModel(Boolean.valueOf(isFriend), groupId, groupMessage,
+                                groupMessagesModel = new GroupMessagesModel(Boolean.valueOf(isFriend), isIncognito, groupId, groupMessage,
                                         senderId, senderImage, senderName, groupMessageId, isRequested, fileName);
                                 groupMessagesModels.add(groupMessagesModel);
                                 groupMessagesAdapter.notifyDataSetChanged();
@@ -792,20 +800,25 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     }
 
     private void openProfile(GroupMessagesModel singleModel) {
-        if (singleModel.getSenderId().equals(mSharedHelper.getUserId())) {
-            Intent intent = new Intent(getApplicationContext(), MyProfile.class);
-            startActivity(intent);
+        if (singleModel.isIncognito()) {
+            DialogUtils.showDialog(this, getString(R.string.incognito), getString(R.string.incognito_hint), true,
+                    null, false, null);
         } else {
-            String name = singleModel.getSenderName();
-            String[] splited = name.split("\\s+");
-            String firstName = splited[0];
-            String lastName = splited[1];
-            Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
-            intent.putExtra("id", singleModel.getSenderId());
-            intent.putExtra("firstName", firstName);
-            intent.putExtra("isFriend", singleModel.isFriend());
-            intent.putExtra("lastName", lastName);
-            startActivity(intent);
+            if (singleModel.getSenderId().equals(mSharedHelper.getUserId())) {
+                Intent intent = new Intent(getApplicationContext(), MyProfile.class);
+                startActivity(intent);
+            } else {
+                String name = singleModel.getSenderName();
+                String[] splited = name.split("\\s+");
+                String firstName = splited[0];
+                String lastName = splited[1];
+                Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
+                intent.putExtra("id", singleModel.getSenderId());
+                intent.putExtra("firstName", firstName);
+                intent.putExtra("isFriend", singleModel.isFriend());
+                intent.putExtra("lastName", lastName);
+                startActivity(intent);
+            }
         }
     }
 

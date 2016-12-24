@@ -12,13 +12,15 @@ public class GroupMessagesModel {
     private String groupMessageId;
     private boolean isRequested;
     private boolean isFriend;
+    private boolean isIncognito;
     private String fileName;
 
-    public GroupMessagesModel(boolean isFriend, String groupId, String groupMessage,
+    public GroupMessagesModel(boolean isFriend,boolean isIncognito, String groupId, String groupMessage,
                               String senderId, String senderImage,
                               String senderName, String groupMessageId,
                               boolean isRequested, String fileName) {
         this.groupId = groupId;
+        this.isIncognito = isIncognito;
         this.fileName = fileName;
         this.isFriend = isFriend;
         this.isRequested = isRequested;
@@ -47,6 +49,14 @@ public class GroupMessagesModel {
 
     public String getGroupId() {
         return groupId;
+    }
+
+    public boolean isIncognito() {
+        return isIncognito;
+    }
+
+    public void setIncognito(boolean incognito) {
+        isIncognito = incognito;
     }
 
     public void setGroupId(String groupId) {

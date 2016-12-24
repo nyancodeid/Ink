@@ -272,7 +272,8 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                             String firstName = eachObject.optString("commenter_first_name");
                             String lastName = eachObject.optString("commenter_last_name");
                             boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
-                            mCommentModel = new CommentModel(isSocialAccount, Boolean.valueOf(isFriend), commentId,
+                            boolean isIncognito = eachObject.optBoolean("isIncognito");
+                            mCommentModel = new CommentModel(isSocialAccount, isIncognito, Boolean.valueOf(isFriend), commentId,
                                     commenterId, commenterImage, commentBody, postId, firstName,
                                     lastName);
                             mCommentModels.add(mCommentModel);
@@ -656,17 +657,23 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         try {
             CommentModel singleModel = mCommentModels.get(actualPosition);
             String currentId = singleModel.getCommenterId();
-            if (currentId.equals(mSharedHelper.getUserId())) {
-                Intent intent = new Intent(getApplicationContext(), MyProfile.class);
-                startActivity(intent);
+            if (singleModel.isIncognito()) {
+                DialogUtils.showDialog(Comments.this, getString(R.string.incognito), getString(R.string.incognito_hint), true,
+                        null, false, null);
             } else {
-                Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
-                intent.putExtra("id", currentId);
-                intent.putExtra("firstName", singleModel.getFirstName());
-                intent.putExtra("lastName", singleModel.getLastName());
-                intent.putExtra("isFriend", singleModel.isFriend());
-                startActivity(intent);
+                if (currentId.equals(mSharedHelper.getUserId())) {
+                    Intent intent = new Intent(getApplicationContext(), MyProfile.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
+                    intent.putExtra("id", currentId);
+                    intent.putExtra("firstName", singleModel.getFirstName());
+                    intent.putExtra("lastName", singleModel.getLastName());
+                    intent.putExtra("isFriend", singleModel.isFriend());
+                    startActivity(intent);
+                }
             }
+
         } catch (ArrayIndexOutOfBoundsException e) {
             //the header or footer was clicked nothing else.
         }

@@ -10,15 +10,25 @@ public class MemberModel {
     private String memberItemId;
     private String memberGroupId;
     private boolean isFriend;
+    private boolean isIncognito;
 
 
-    public MemberModel(boolean isFriend,String memberId, String memberName, String memberImage, String memberItemId, String memberGroupId) {
+    public MemberModel(boolean isFriend, boolean isIncognito, String memberId, String memberName, String memberImage, String memberItemId, String memberGroupId) {
         this.memberId = memberId;
         this.isFriend = isFriend;
+        this.isIncognito = isIncognito;
         this.memberName = memberName;
         this.memberImage = memberImage;
         this.memberItemId = memberItemId;
         this.memberGroupId = memberGroupId;
+    }
+
+    public boolean isIncognito() {
+        return isIncognito;
+    }
+
+    public void setIncognito(boolean incognito) {
+        isIncognito = incognito;
     }
 
     public boolean isFriend() {

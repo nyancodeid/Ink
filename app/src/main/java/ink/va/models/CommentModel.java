@@ -13,14 +13,16 @@ public class CommentModel {
     private String lastName;
     private boolean isSocialAccount;
     private boolean isFriend;
+    private boolean isIncognito;
 
 
-    public CommentModel(boolean isSocialAccount, boolean isFriend, String commentId, String commenterId,
+    public CommentModel(boolean isSocialAccount, boolean isIncognito, boolean isFriend, String commentId, String commenterId,
                         String commenterImage,
                         String commentBody,
                         String postId, String firstName,
                         String lastName) {
         this.commentId = commentId;
+        this.isIncognito = isIncognito;
         this.isFriend = isFriend;
         this.isSocialAccount = isSocialAccount;
         this.firstName = firstName;
@@ -29,6 +31,14 @@ public class CommentModel {
         this.commenterImage = commenterImage;
         this.commentBody = commentBody;
         this.postId = postId;
+    }
+
+    public boolean isIncognito() {
+        return isIncognito;
+    }
+
+    public void setIncognito(boolean incognito) {
+        isIncognito = incognito;
     }
 
     public boolean isSocialAccount() {
