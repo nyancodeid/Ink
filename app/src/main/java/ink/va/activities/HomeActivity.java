@@ -80,6 +80,7 @@ public class HomeActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AccountDeleteListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
+    public static final int PROFILE_RESULT_CODE = 87815;
 
     private FloatingActionMenu mFab;
     private ImageView mProfileImage;
@@ -302,6 +303,7 @@ public class HomeActivity extends BaseActivity
     };
 
     private void getCoins() {
+        coinsText.setText(getString(R.string.updating));
         Call<ResponseBody> coinsCall = Retrofit.getInstance().getInkService().getCoins(mSharedHelper.getUserId());
         coinsCall.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -395,7 +397,8 @@ public class HomeActivity extends BaseActivity
         switch (id) {
             case R.id.profile:
                 shouldOpenActivity = true;
-                setLastClassToOpen(MyProfile.class, false);
+                lastRequestCode = PROFILE_RESULT_CODE;
+                setLastClassToOpen(MyProfile.class, true);
                 break;
             case R.id.myCollection:
                 shouldOpenActivity = true;
@@ -551,7 +554,8 @@ public class HomeActivity extends BaseActivity
                 break;
             case R.id.profileImage:
                 shouldOpenActivity = true;
-                setLastClassToOpen(MyProfile.class, false);
+                lastRequestCode = PROFILE_RESULT_CODE;
+                setLastClassToOpen(MyProfile.class, true);
                 mDrawer.closeDrawer(Gravity.LEFT);
                 break;
         }
@@ -724,6 +728,9 @@ public class HomeActivity extends BaseActivity
                         resetColors();
                     }
                 }
+                break;
+            case PROFILE_RESULT_CODE:
+                getCoins();
                 break;
         }
     }

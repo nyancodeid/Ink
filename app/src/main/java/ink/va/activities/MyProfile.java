@@ -170,6 +170,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     private int incognitoCost;
     private int hiddenProfileCost;
     private int userCoins;
+    private boolean hasCoinsChanged;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -549,13 +550,13 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
 
         if (isHidden) {
             hideProfileButton.setLabelText(getString(R.string.makeProfileVisible));
-        }else{
+        } else {
             hideProfileButton.setLabelText(getString(R.string.hideProfile));
         }
 
         if (isIncognito) {
             goIncognitoButton.setLabelText(getString(R.string.removeIncognito));
-        }else{
+        } else {
             goIncognitoButton.setLabelText(getString(R.string.goIncognito));
         }
 
@@ -1363,6 +1364,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                 break;
         }
         isDataLoaded = false;
+        hasCoinsChanged = true;
         attachValues(false);
     }
 
@@ -1371,6 +1373,11 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
 
     }
 
+    @Override
+    public void onBackPressed() {
+        setResult(HomeActivity.PROFILE_RESULT_CODE);
+        finish();
+    }
 
     @StringDef({ACTION_REMOVE_HIDDEN_PROFILE, ACTION_REMOVE_HIDDEN_PROFILE, TYPE_GO_INCOGNITO, TYPE_MAKE_PROFILE_HIDDEN})
     private @interface ProfileVisibility {
