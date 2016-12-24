@@ -170,7 +170,6 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     private int incognitoCost;
     private int hiddenProfileCost;
     private int userCoins;
-    private Response<ResponseBody> lastResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -399,7 +398,6 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                     getMyData();
                     return;
                 }
-                lastResponse = response;
                 fetchData(response);
             }
 
@@ -551,10 +549,14 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
 
         if (isHidden) {
             hideProfileButton.setLabelText(getString(R.string.makeProfileVisible));
+        }else{
+            hideProfileButton.setLabelText(getString(R.string.hideProfile));
         }
 
         if (isIncognito) {
             goIncognitoButton.setLabelText(getString(R.string.removeIncognito));
+        }else{
+            goIncognitoButton.setLabelText(getString(R.string.goIncognito));
         }
 
         isDataLoaded = true;
@@ -582,6 +584,9 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
             builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
+                    progressDialog.setTitle(getString(R.string.loadingText));
+                    progressDialog.setMessage(getString(R.string.loadingText));
+                    progressDialog.show();
                     completeOrder(ACTION_REMOVE_HIDDEN_PROFILE);
                     dialogInterface.dismiss();
 
@@ -613,6 +618,9 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
             builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
+                    progressDialog.setTitle(getString(R.string.loadingText));
+                    progressDialog.setMessage(getString(R.string.loadingText));
+                    progressDialog.show();
                     completeOrder(ACTION_REMOVE_INCOGNITO);
                     dialogInterface.dismiss();
                 }
@@ -644,6 +652,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                     completeOrder(actionName);
                     return;
                 }
+                progressDialog.dismiss();
                 try {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
@@ -660,7 +669,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                                 break;
                         }
                         isDataLoaded = false;
-                        fetchData(lastResponse);
+                        attachValues(false);
                     } else {
                         DialogUtils.showDialog(MyProfile.this, getString(R.string.error), getString(R.string.orderError),
                                 true, null, false, null);
@@ -1354,7 +1363,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                 break;
         }
         isDataLoaded = false;
-        fetchData(lastResponse);
+        attachValues(false);
     }
 
     @Override
@@ -1362,11 +1371,6 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
 
     }
 
-    private void changeProfileVisibility(@ProfileVisibility String action,
-                                         @ProfileVisibility String type) {
-
-
-    }
 
     @StringDef({ACTION_REMOVE_HIDDEN_PROFILE, ACTION_REMOVE_HIDDEN_PROFILE, TYPE_GO_INCOGNITO, TYPE_MAKE_PROFILE_HIDDEN})
     private @interface ProfileVisibility {
