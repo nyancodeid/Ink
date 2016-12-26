@@ -262,7 +262,10 @@
         <activity
             android:name="ink.va.activities.ServerNotification"
             android:theme="@style/Theme.Transparent" />
-        <activity android:name="ink.va.activities.MyCollection"></activity>
+        <activity android:name="ink.va.activities.MyCollection" />
+        <activity
+            android:name="ink.va.activities.PackFullScreen"
+            android:theme="@style/Theme.Transparent"></activity>
     </application>
 
 </manifest>
