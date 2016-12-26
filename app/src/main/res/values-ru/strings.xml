@@ -760,4 +760,11 @@
     <string name="buy_text">Купить</string>
     <string name="enableShimmerPostText">Разрешать мерцание Постов</string>
     <string name="vip_chat_title">V.I.P</string>
+    <string name="vip_enter_error">Не смогли войти в VIP,пожалуйста попробуйте позже...</string>
+    <string name="loggingIntoVip">Вход  в VIP комнату,пожалуйста подождите...</string>
+    <string name="notVipText">Не V.I.P.</string>
+    <string name="youAreNotVipText">Вы не V.I.P и не можете войти в комнату.Чтобы иметь право войти в комнату,
+        вам нужно купить доступ который
+        доступен только для избранных персон и стоит оно %1$d монет.Немного информации о V.I.P Персонах : </string>
+    <string name="vip_bought_Text">V.I.P Куплен!Теперь вы можете найти элитных персон и разговаривать с избранными.</string>
 </resources>

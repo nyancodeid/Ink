@@ -92,6 +92,11 @@ public class Retrofit {
         Call<ResponseBody> getSingleUserDetails(@Field("user_id") String userId,
                                                 @Field("currentUserId") String currentUserId);
 
+        @POST(Constants.VIP_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> callVipServer(@Field("user_id") String userId,
+                                         @Field("type") String type);
+
         @POST(Constants.PROFILE_VISIBILITY_URL)
         @FormUrlEncoded
         Call<ResponseBody> changeProfile(@Field("type") String action,

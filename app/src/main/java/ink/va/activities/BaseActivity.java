@@ -103,6 +103,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private AccountDeleteListener accountDeleteListener;
     private SharedHelper sharedHelper;
     private CountDownTimer countDownTimer;
+    private boolean isFirstVipLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -316,5 +317,13 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected boolean isAccountRecoverable() {
         return sharedHelper.isAccountRecoverable();
+    }
+
+    public boolean isFirstVipLogin() {
+        return isFirstVipLogin;
+    }
+
+    public void setIsFirstVipLogin(boolean isFirstVipLogin) {
+        this.isFirstVipLogin = isFirstVipLogin;
     }
 }

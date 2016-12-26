@@ -13,5 +13,7 @@ public class ErrorCause {
     public static final String NO_CUSTOMIZATION = "noCustomization";
     public static final String NO_USER_FOUND = "noUserFound";
     public static final String PACK_ALREADY_BOUGHT = "packAlreadyBought";
+    public static final String NOT_VIP_ERROR = "notVip";
+    public static final String NOT_ENOUGH_COINS = "notEnoughCoins";
 
 }

@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -60,6 +61,7 @@ import ink.va.service.SendTokenService;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.DeviceChecker;
+import ink.va.utils.ErrorCause;
 import ink.va.utils.FileUtils;
 import ink.va.utils.IonCache;
 import ink.va.utils.Keyboard;
@@ -404,8 +406,7 @@ public class HomeActivity extends BaseActivity
                 setLastClassToOpen(MyCollection.class, false);
                 break;
             case R.id.vipChat:
-                shouldOpenActivity = true;
-                setLastClassToOpen(VIPActivity.class, false);
+                callToVipServer(Constants.TYPE_ENTER_VIP);
                 break;
             case R.id.whoViewed:
                 shouldOpenActivity = true;
@@ -508,7 +509,159 @@ public class HomeActivity extends BaseActivity
         return true;
     }
 
+    private void callToVipServer(final String type) {
+        progressDialog.setTitle(getString(R.string.logging));
+        progressDialog.setMessage(getString(R.string.loggingIntoVip));
+        progressDialog.show();
+
+        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().callVipServer(mSharedHelper.getUserId(), type);
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    callToVipServer(type);
+                    return;
+                }
+                if (response.body() == null) {
+                    callToVipServer(type);
+                    return;
+                }
+                progressDialog.dismiss();
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        boolean firstVipLogin = jsonObject.optBoolean("isFirstVipLogin");
+                        setIsFirstVipLogin(firstVipLogin);
+                        if (type.equals(Constants.TYPE_BUY_VIP)) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                            builder.setTitle(getString(R.string.congratulation));
+                            builder.setMessage(getString(R.string.vip_bought_Text));
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                    openVipRoom();
+                                }
+                            });
+                            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dialogInterface) {
+                                    openVipRoom();
+                                }
+                            });
+                            builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialogInterface) {
+                                    openVipRoom();
+                                }
+                            });
+                            builder.show();
+                        } else {
+                            openVipRoom();
+                        }
+                    } else {
+                        String cause = jsonObject.optString("cause");
+                        switch (cause) {
+                            case ErrorCause.SERVER_ERROR:
+                                Snackbar.make(mToolbar, getString(R.string.serverErrorText), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
+                                break;
+                            case ErrorCause.NOT_VIP_ERROR:
+                                int vipPrice = jsonObject.optInt("vipPrice");
+                                String shortInfo = jsonObject.optString("vipDescription");
+                                AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                                builder.setTitle(getString(R.string.notVipText));
+                                builder.setMessage(getString(R.string.youAreNotVipText, vipPrice) + shortInfo);
+                                builder.setPositiveButton(getString(R.string.buy_text), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                    }
+                                });
+                                builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                    }
+                                });
+                                builder.setCancelable(false);
+                                final AlertDialog alertDialog = builder.create();
+                                alertDialog.show();
+                                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        alertDialog.dismiss();
+                                        callToVipServer(Constants.TYPE_BUY_VIP);
+                                    }
+                                });
+                                alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        alertDialog.dismiss();
+                                    }
+                                });
+                                break;
+                            case ErrorCause.NOT_ENOUGH_COINS:
+                                builder = new AlertDialog.Builder(HomeActivity.this);
+                                builder.setMessage(getString(R.string.not_enough_coins));
+                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                });
+                                builder.show();
+                                break;
+                        }
+                    }
+                } catch (IOException e) {
+                    progressDialog.dismiss();
+                    Snackbar.make(mToolbar, getString(R.string.vip_enter_error), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    }).show();
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    progressDialog.dismiss();
+                    Snackbar.make(mToolbar, getString(R.string.vip_enter_error), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    }).show();
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressDialog.dismiss();
+                Snackbar.make(mToolbar, getString(R.string.vip_enter_error), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                }).show();
+            }
+        });
+    }
+
+    private void openVipRoom() {
+        shouldOpenActivity = true;
+        setLastClassToOpen(VIPActivity.class, false);
+    }
+
     private void logoutUser() {
+        progressDialog.setTitle(getString(R.string.loggingout));
+        progressDialog.setMessage(getString(R.string.loggingoutPleaseWait));
         progressDialog.show();
         shouldOpenActivity = false;
         Thread thread = new Thread(new Runnable() {

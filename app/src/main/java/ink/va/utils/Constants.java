@@ -37,6 +37,7 @@ public class Constants {
     public static final String MY_GROUPS_URL = "UserGroups.php";
     public static final String SEARCH_PERSON_URL = "SearchPerson.php";
     public static final String GROUP_PARTICIPANTS_URL = "GroupParticipants.php";
+    public static final String VIP_URL = "Vip.php";
     public static final String GROUP_MESSAGES_URL = "GroupMessages.php";
     public static final String GROUP_MESSAGES_OPTIONS_URL = "GroupMessagesOptions.php";
     public static final String NOTIFY_OPPONENT = "NotifyOpponent.php";
@@ -78,6 +79,8 @@ public class Constants {
     public static final String UPDATE_DETAILS = "UpdateDetails.php";
     public static final String MAKE_POST_URL = "MakePost.php";
     public static final String TYPE_MESSAGE_ATTACHMENT = "TYPE_MESSAGE_ATTACHMENT";
+    public static final String TYPE_ENTER_VIP = "enterVip";
+    public static final String TYPE_BUY_VIP = "buyVip";
     public static final String DELETE_POST_URL = "DeletePost.php";
     public static final String COMMENT_OPTIONS_URL = "CommentOptions.php";
     public static final String REQUEST_RESPONSE_TYPE_GROUP = "group";
