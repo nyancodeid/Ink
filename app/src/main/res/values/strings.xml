@@ -757,6 +757,4 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="incognito_hint">The person is in Incognito Mode and can not be viewed</string>
     <string name="buy_text">Buy</string>
     <string name="enableShimmerPostText">Enable Shimmer For Posts</string>
-
-
 </resources>

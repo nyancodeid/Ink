@@ -12,7 +12,6 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Process;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.NavigationView;
@@ -32,7 +31,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -509,31 +507,43 @@ public class HomeActivity extends BaseActivity
     private void logoutUser() {
         progressDialog.show();
         shouldOpenActivity = false;
-        FileUtils.clearApplicationData(getApplicationContext());
-        boolean editorHintValue = mSharedHelper.isEditorHintShown();
-        mSharedHelper.clean();
-        mSharedHelper.putShouldShowIntro(false);
-        if (editorHintValue) {
-            mSharedHelper.putEditorHintShow(true);
-        }
-        mSharedHelper.putWarned(true);
-        LoginManager.getInstance().logOut();
-        RealmHelper.getInstance().clearDatabase(getApplicationContext());
-        IonCache.clearIonCache(getApplicationContext());
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                LoginManager.getInstance().logOut();
+                RealmHelper.getInstance().clearDatabase(getApplicationContext());
+                IonCache.clearIonCache(getApplicationContext());
+                FileUtils.clearApplicationData(getApplicationContext());
+                boolean editorHintValue = mSharedHelper.isEditorHintShown();
+                mSharedHelper.clean();
+                mSharedHelper.putShouldShowIntro(false);
+                if (editorHintValue) {
+                    mSharedHelper.putEditorHintShow(true);
+                }
+                mSharedHelper.putWarned(true);
+
                 try {
                     FirebaseInstanceId.getInstance().deleteInstanceId();
-                    progressDialog.dismiss();
-                    startActivity(new Intent(getApplicationContext(), Login.class));
-                    finish();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.dismiss();
+                            startActivity(new Intent(getApplicationContext(), Login.class));
+                            finish();
+                        }
+                    });
+
                 } catch (IOException e) {
                     e.printStackTrace();
-                    progressDialog.dismiss();
-                    startActivity(new Intent(getApplicationContext(), Login.class));
-                    finish();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.dismiss();
+                            startActivity(new Intent(getApplicationContext(), Login.class));
+                            finish();
+                        }
+                    });
+
                 }
             }
         });

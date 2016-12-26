@@ -18,6 +18,8 @@ public class PacksModel {
     public String packBackground;
     @SerializedName("pack_image_background")
     public String packImageBackground;
+    @SerializedName("pack_description")
+    public String packDescription;
 
 
 }

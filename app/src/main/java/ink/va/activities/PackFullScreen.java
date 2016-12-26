@@ -8,8 +8,12 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ink.va.R;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,6 +23,7 @@ import java.io.IOException;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.utils.Constants;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -30,7 +35,10 @@ import retrofit2.Response;
 import tyrantgit.explosionfield.ExplosionField;
 
 import static ink.va.fragments.Packs.PACK_BUY_RESULT_CODE;
+import static ink.va.utils.Constants.PACK_BACKGROUND_BUNDLE_KEY;
+import static ink.va.utils.Constants.PACK_CONTENT_BUNDLE_KEY;
 import static ink.va.utils.Constants.PACK_ID_BUNDLE_KEY;
+import static ink.va.utils.Constants.PACK_IMAGE_BUNDLE_KEY;
 
 public class PackFullScreen extends BaseActivity {
     private ExplosionField mExplosionField;
@@ -39,38 +47,87 @@ public class PackFullScreen extends BaseActivity {
     @Bind(R.id.buyButton)
     Button buyButton;
 
+    @Bind(R.id.packBackground)
+    ImageView packBackground;
+
+    @Bind(R.id.packImage)
+    ImageView packImage;
+
+    @Bind(R.id.packContent)
+    TextView packContent;
+
     private Dialog mProgressDialog;
     private String packId;
     private SharedHelper sharedHelper;
+    private Dialog loadingDialog;
+    private boolean packBackgroundLoaded;
+    private boolean packImageLoaded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pack_full_screen);
         ButterKnife.bind(this);
+        changeButtonState(false);
         sharedHelper = new SharedHelper(this);
         Bundle extras = getIntent().getExtras();
         packId = extras.getString(PACK_ID_BUNDLE_KEY);
         initializeDialog();
         mExplosionField = ExplosionField.attach2Window(this);
+        loadingDialog = new Dialog(this, R.style.Theme_Transparent);
+        loadingDialog.setContentView(R.layout.dim_comment_layout);
+        TextView content = (TextView) loadingDialog.findViewById(R.id.addingCommentText);
+        content.setText(getString(R.string.loadingText));
+        loadingDialog.show();
+        String packBackgroundURL = extras.getString(PACK_BACKGROUND_BUNDLE_KEY);
+        String packImageURL = extras.getString(PACK_IMAGE_BUNDLE_KEY);
+        String packContentString = extras.getString(PACK_CONTENT_BUNDLE_KEY);
+        packContent.setText(packContentString);
+
+        Ion.with(this).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packBackgroundURL).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(packBackground).setCallback(new FutureCallback<ImageView>() {
+            @Override
+            public void onCompleted(Exception e, ImageView result) {
+                packBackgroundLoaded = true;
+                notifyImagesLoaded();
+            }
+        });
+        Ion.with(this).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packImageURL).withBitmap().placeholder(R.drawable.no_background_image).intoImageView(packImage).setCallback(new FutureCallback<ImageView>() {
+            @Override
+            public void onCompleted(Exception e, ImageView result) {
+                packImageLoaded = true;
+                notifyImagesLoaded();
+            }
+        });
     }
 
 
     @OnClick(R.id.buyButton)
     public void buyClicked() {
+        buy(rootLayout);
+    }
 
+    public void notifyImagesLoaded() {
+        if (packImageLoaded && packBackgroundLoaded) {
+            loadingDialog.dismiss();
+            changeButtonState(true);
+        }
     }
 
     private void buy(View view) {
+        changeButtonState(false);
         mExplosionField.explode(view, new ExplosionField.ExplosionAnimationListener() {
             @Override
             public void onAnimationEnd() {
                 showProgress();
                 openPack(packId);
-
             }
         });
 
+    }
+
+    private void changeButtonState(boolean state) {
+        buyButton.setEnabled(state);
+        buyButton.setClickable(state);
     }
 
     private void initializeDialog() {

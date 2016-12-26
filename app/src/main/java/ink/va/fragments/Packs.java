@@ -36,7 +36,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.utils.Constants.PACK_BACKGROUND_BUNDLE_KEY;
+import static ink.va.utils.Constants.PACK_CONTENT_BUNDLE_KEY;
 import static ink.va.utils.Constants.PACK_ID_BUNDLE_KEY;
+import static ink.va.utils.Constants.PACK_IMAGE_BUNDLE_KEY;
 
 /**
  * Created by USER on 2016-07-20.
@@ -141,7 +144,7 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
     }
 
     @Override
-    public void onBuyClicked(final int packPrice, final String packId, final View clickedView) {
+    public void onBuyClicked(PacksModel packsModel, final int packPrice, final String packId, final View clickedView) {
 
         if (User.get().getCoins() != null || !User.get().getCoins().isEmpty()) {
             int userCoins = Integer.valueOf(User.get().getCoins());
@@ -150,6 +153,9 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
             } else {
                 Intent intent = new Intent(getActivity(), PackFullScreen.class);
                 intent.putExtra(PACK_ID_BUNDLE_KEY, packId);
+                intent.putExtra(PACK_IMAGE_BUNDLE_KEY, packsModel.packImageBackground);
+                intent.putExtra(PACK_CONTENT_BUNDLE_KEY, packsModel.packDescription);
+                intent.putExtra(PACK_BACKGROUND_BUNDLE_KEY, packsModel.packImageBackground);
                 startActivityForResult(intent, PACK_BUY_RESULT_CODE);
                 ((Shop) getActivity()).overrideActivityAnimation();
             }

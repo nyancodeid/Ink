@@ -174,5 +174,8 @@ public class Constants {
     public static final String SHOW_SERVER_NEWS_START_UP_KEY = "start_up_news";
     public static final String STARTING_FOR_RESULT_BUNDLE_KEY = "startingForActivityResult";
     public static final String PACK_ID_BUNDLE_KEY = "pack_price";
+    public static final String PACK_BACKGROUND_BUNDLE_KEY = "pack_background";
+    public static final String PACK_IMAGE_BUNDLE_KEY = "pack_image";
+    public static final String PACK_CONTENT_BUNDLE_KEY = "pack_content";
 }
 

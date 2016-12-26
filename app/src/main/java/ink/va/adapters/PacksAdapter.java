@@ -73,6 +73,7 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private Shimmer shimmer;
         private String packId;
         private View packRootView;
+        private PacksModel packsModel;
 
 
         public BaseViewHolder(View itemView) {
@@ -87,7 +88,7 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 @Override
                 public void onClick(View view) {
                     if (packClickListener != null) {
-                        packClickListener.onBuyClicked(Integer.valueOf(packCoinCount.getText().toString()),
+                        packClickListener.onBuyClicked(packsModel,Integer.valueOf(packCoinCount.getText().toString()),
                                 packId, packRootView);
                     }
                 }
@@ -95,6 +96,7 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
 
         public void init(PacksModel packsModel) {
+            this.packsModel = packsModel;
             packCoinCount.setText(packsModel.packsPrice);
             packId = String.valueOf(packsModel.packsId);
             packWrapper.setBackground(ContextCompat.getDrawable(context, R.drawable.big_image_place_holder));
@@ -123,6 +125,6 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public interface PackClickListener {
-        void onBuyClicked(int packPrice, String packId, View clickedView);
+        void onBuyClicked(PacksModel packsModel, int packPrice, String packId, View clickedView);
     }
 }
