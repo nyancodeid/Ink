@@ -104,6 +104,7 @@ public class FragmentDialog extends DialogFragment implements DialogUtils.Dialog
         secondParagraphContent = getArguments().getString("secondParagraphContent");
         orderType = getArguments().getInt("orderType");
         userCoins = getArguments().getInt("userCoins");
+        orderCost = getArguments().getInt("orderCost");
 
         fragmentDialogRoot.setBackgroundResource(backgroundResource);
         firstParagraphTV.setText(firstParagraphContent);
@@ -176,7 +177,7 @@ public class FragmentDialog extends DialogFragment implements DialogUtils.Dialog
                 public void onClick(View view) {
 
                 }
-            });
+            }).show();
         } else {
             completeOrder();
         }
