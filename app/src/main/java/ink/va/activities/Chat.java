@@ -872,6 +872,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                         mChatModelArrayList.add(mChatModel);
                         if (eachModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED) && !Regex.isAttachment(message)) {
                             Snackbar.make(mRecyclerView, getString(R.string.unsent_message) + message, Snackbar.LENGTH_SHORT).show();
+                            attemptToQue(message, mChatModelArrayList.indexOf(mChatModel), deleteOpponentId, deleteUserId, isGifChosen, gifUrl, isAnimated);
                         }
                         mChatAdapter.notifyDataSetChanged();
                     }

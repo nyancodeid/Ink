@@ -28,6 +28,7 @@ import ink.va.utils.Time;
  */
 
 public class FeedViewHolder extends RecyclerView.ViewHolder {
+    private static final int SHIMMER_MOVE_DURATION = 3000;
     public TextView feedContent, userPostedTitle,
             whenPosted, feedAddress, feedAttachmentName, likesCountTV;
     private ImageView feedUserImage, likeIcon, commentIcon;
@@ -70,6 +71,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
 
     public void initData(Context context, FeedModel feedModel, int position,
                          FeedItemClick feedItemClick, int maxCount) {
+        sharedHelper = new SharedHelper(context);
 
         if (position == (maxCount - 1)) {
             spacing.setVisibility(View.VISIBLE);
@@ -79,7 +81,6 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
 
         mOnClickListener = feedItemClick;
         mContext = context;
-        sharedHelper = new SharedHelper(context);
         this.feedModel = feedModel;
         switch (feedModel.getType()) {
             case Constants.WALL_TYPE_POST:

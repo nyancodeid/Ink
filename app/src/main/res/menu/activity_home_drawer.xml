@@ -6,6 +6,11 @@
         <item android:title="@string/myAccount">
             <menu>
                 <item
+                    android:id="@+id/vipChat"
+                    android:icon="@drawable/vip_icon"
+                    android:title="@string/vip_chat" />
+
+                <item
                     android:id="@+id/profile"
                     android:icon="@drawable/ic_account_box_black_24dp"
                     android:title="@string/profileText" />
@@ -14,6 +19,7 @@
                     android:id="@+id/myCollection"
                     android:icon="@drawable/collection_icon"
                     android:title="@string/my_collection_text" />
+
 
                 <item
                     android:id="@+id/whoViewed"

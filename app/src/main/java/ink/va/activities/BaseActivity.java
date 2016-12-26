@@ -8,8 +8,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionMenu;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -123,6 +125,23 @@ public abstract class BaseActivity extends AppCompatActivity {
                 window.setStatusBarColor(Color.parseColor(sharedHelper.getStatusBarColor()));
             }
         }
+    }
+
+
+    protected void setStatusBarColor(@ColorRes int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this, color));
+        }
+    }
+
+    protected void setActionBarColor(@ColorRes int color) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, color)));
+        }
+
     }
 
     private void initCountDownTimer() {
@@ -280,6 +299,10 @@ public abstract class BaseActivity extends AppCompatActivity {
                 callToBanServer();
             }
         });
+    }
+
+    public void overrideActivityAnimation() {
+        overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
     }
 
 

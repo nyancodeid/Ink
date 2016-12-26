@@ -56,8 +56,8 @@ import ink.va.interfaces.ItemClickListener;
 import ink.va.models.FeedModel;
 import ink.va.utils.Animations;
 import ink.va.utils.Constants;
-import ink.va.utils.PermissionsChecker;
 import ink.va.utils.DialogUtils;
+import ink.va.utils.PermissionsChecker;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -680,6 +680,10 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             mOffset = 10;
         }
         getFeeds(0, mOffset, true, false, false);
+    }
+
+    public void updateAdapter() {
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override

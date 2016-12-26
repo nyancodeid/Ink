@@ -703,7 +703,7 @@
     <string name="enableLikeNotificationText">Разрешать уведомления \'Лайк\'</string>
     <string name="enableCommentNotificationText">Разрешать уведомления комментариев</string>
     <string name="share_ink_with">Поделится приложением Инк с помощю</string>
-    <string name="unsent_message">неотправленнoе сообщение...</string>
+    <string name="unsent_message">неотправленнoе сообщение.Resending...</string>
     <string name="view_image">Просмотр изображения</string>
     <string name="pleaseWaitDownload">Дождитесь загрузки изооброжения</string>
     <string name="post_shared">Пост опубликован</string>
@@ -751,9 +751,13 @@
     <string name="incognito_remove_warning">Вы собираетесь удалить вашу функцию \'Инкогнито\',продолжить?</string>
     <string name="hidden_profile_remove_warning">Вы собираетесь сделать ваш профиль общедоступным,продолжит?</string>
 
-        <string name="orderError">Проблема с заказом.Если проблема повторяется,пожалуйста,обратитесь в службы поддержки.</string>
+    <string name="orderError">Проблема с заказом.Если проблема повторяется,пожалуйста,обратитесь в службы поддержки.</string>
     <string name="order_bought">Поздравляем!Ваш заказ успешно обработан и вы можете уже использоваться сервиcами.</string>
     <string name="service_removed">Сервис был успешно удален.Вы можете активировать сервис снова,бесплатно.</string>
     <string name="incognito">Инкогнито</string>
     <string name="incognito_hint">Пользователь в режиме Инкогнито и не может быть просмотрен</string>
+    <string name="congratulation">Поздравляем!</string>
+    <string name="buy_text">Купить</string>
+    <string name="enableShimmerPostText">Разрешать мерцание Постов</string>
+    <string name="vip_chat_title">V.I.P</string>
 </resources>

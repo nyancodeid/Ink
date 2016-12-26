@@ -157,7 +157,7 @@ public class Constants {
     public static final String LOCATION_REQUEST_TYPE_DELETE = "delete";
     public static final String DELETE_MESSAGE_REQUESTED = "deleteSingleMessageRequested";
     public static final int BUY_COINS_REQUEST_CODE = 196;
-    public static final int REQUEST_CUSTOMIZE_MADE = 8;
+    public static final int REQUEST_CUSTOMIZE_MADE = 78;
     public static final String WALL_TYPE_POST = "post";
     public static final String WALL_TYPE_GROUP_MESSAGE = "groupMessage";
     public static final int REQUEST_CODE_CHOSE_STICKER = 1;
@@ -173,5 +173,9 @@ public class Constants {
     public static final String SERVER_NOTIFICATION_SHARED_KEY = "ServerNewsNotification-";
     public static final String SHOW_SERVER_NEWS_START_UP_KEY = "start_up_news";
     public static final String STARTING_FOR_RESULT_BUNDLE_KEY = "startingForActivityResult";
+    public static final String PACK_ID_BUNDLE_KEY = "pack_price";
+    public static final String PACK_BACKGROUND_BUNDLE_KEY = "pack_background";
+    public static final String PACK_IMAGE_BUNDLE_KEY = "pack_image";
+    public static final String PACK_CONTENT_BUNDLE_KEY = "pack_content";
 }
 

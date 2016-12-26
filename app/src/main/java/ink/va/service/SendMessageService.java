@@ -93,7 +93,6 @@ public class SendMessageService extends Service {
                     localBroadcastManager.sendBroadcast(intent);
                     stopSelf();
                 } catch (IOException e) {
-                    attachToQue(mOpponentId, message, hasGif, gifUrl, sentItemLocation, mCurrentUserId, isAnimated);
                     e.printStackTrace();
                 } catch (JSONException e) {
                     e.printStackTrace();

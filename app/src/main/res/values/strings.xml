@@ -702,7 +702,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="enableLikeNotificationText">Enable Likes Notification</string>
     <string name="enableCommentNotificationText">Enable Comments Notification</string>
     <string name="share_ink_with">Share INK with</string>
-    <string name="unsent_message">unsent message...</string>
+    <string name="unsent_message">unsent message.Переотпровляем...</string>
     <string name="view_image">View Image</string>
     <string name="pleaseWaitDownload">Pleas wait till image loaded</string>
     <string name="post_shared">Post was shared</string>
@@ -749,9 +749,14 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="orderError">There was an error while processing you\'r order,if you keep
         having this issue,please contact support</string>
     <string name="order_bought">Congratulations!You\'r order has been arrived and ready to be used!</string>
+
+    <string name="congratulation">Congratulations!</string>
+
     <string name="service_removed">The service was removed,you can re-active any time without a charge.</string>
     <string name="incognito">Incognito</string>
     <string name="incognito_hint">The person is in Incognito Mode and can not be viewed</string>
-
-
+    <string name="buy_text">Buy</string>
+    <string name="enableShimmerPostText">Enable Shimmer For Posts</string>
+    <string name="vip_chat">V.I.P Chat</string>
+    <string name="vip_chat_title">V.I.P</string>
 </resources>

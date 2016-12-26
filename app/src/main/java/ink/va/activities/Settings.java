@@ -21,6 +21,7 @@ public class Settings extends BaseActivity {
     @Bind(R.id.commentNotificationSwitch)
     Switch commentSwitch;
 
+
     @Bind(R.id.likeNotificationSwitch)
     Switch likeSwitch;
 
@@ -75,6 +76,7 @@ public class Settings extends BaseActivity {
             sharedHelper.putShowCommentNotification(true);
         }
     }
+
 
     @OnClick(R.id.likeNotificationSwitchWrapper)
     public void setlikeNotificationSwitchWrapper() {

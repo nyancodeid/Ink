@@ -3,12 +3,12 @@ package ink.va.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -67,20 +67,19 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         ImageView packWrapper;
         ImageView packImage;
         TextView packCoinCount;
-        ProgressBar packLoadingProgress;
         ShimmerTextView packTitleTV;
         RelativeLayout buyButtonWrapper;
 
         private Shimmer shimmer;
         private String packId;
         private View packRootView;
+        private PacksModel packsModel;
 
 
         public BaseViewHolder(View itemView) {
             super(itemView);
             packTitleTV = (ShimmerTextView) itemView.findViewById(R.id.pack_title_TV);
             packRootView = itemView.findViewById(R.id.packRootView);
-            packLoadingProgress = (ProgressBar) itemView.findViewById(R.id.pack_loading_progress);
             packCoinCount = (TextView) itemView.findViewById(R.id.pack_coin_count);
             packWrapper = (ImageView) itemView.findViewById(R.id.pack_wrapper);
             packImage = (ImageView) itemView.findViewById(R.id.pack_image);
@@ -89,7 +88,7 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 @Override
                 public void onClick(View view) {
                     if (packClickListener != null) {
-                        packClickListener.onBuyClicked(Integer.valueOf(packCoinCount.getText().toString()),
+                        packClickListener.onBuyClicked(packsModel,Integer.valueOf(packCoinCount.getText().toString()),
                                 packId, packRootView);
                     }
                 }
@@ -97,21 +96,24 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
 
         public void init(PacksModel packsModel) {
+            this.packsModel = packsModel;
             packCoinCount.setText(packsModel.packsPrice);
             packId = String.valueOf(packsModel.packsId);
+            packWrapper.setBackground(ContextCompat.getDrawable(context, R.drawable.big_image_place_holder));
             Ion.with(context).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packsModel.packBackground).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
                 @Override
                 public void onCompleted(Exception e, Bitmap result) {
+                    packWrapper.setBackground(null);
                     if (e == null) {
                         packWrapper.setImageBitmap(result);
                     }
                 }
             });
             Ion.with(context).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packsModel.packImageBackground)
-                    .withBitmap().intoImageView(packImage).setCallback(new FutureCallback<ImageView>() {
+                    .withBitmap().placeholder(R.drawable.no_background_image).intoImageView(packImage).setCallback(new FutureCallback<ImageView>() {
                 @Override
                 public void onCompleted(Exception e, ImageView result) {
-                    packLoadingProgress.setVisibility(View.GONE);
+                    packImage.clearAnimation();
                 }
             });
             packTitleTV.setText(packsModel.packNameEn);
@@ -123,6 +125,6 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     public interface PackClickListener {
-        void onBuyClicked(int packPrice, String packId, View clickedView);
+        void onBuyClicked(PacksModel packsModel, int packPrice, String packId, View clickedView);
     }
 }

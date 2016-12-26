@@ -1,14 +1,13 @@
 package ink.va.fragments;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,19 +18,16 @@ import android.view.Window;
 import com.google.gson.Gson;
 import com.ink.va.R;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import ink.va.activities.PackFullScreen;
 import ink.va.activities.Shop;
 import ink.va.adapters.PacksAdapter;
 import ink.va.models.PacksModel;
 import ink.va.models.PacksResponse;
-import ink.va.utils.ErrorCause;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.User;
@@ -39,13 +35,18 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import tyrantgit.explosionfield.ExplosionField;
+
+import static ink.va.utils.Constants.PACK_BACKGROUND_BUNDLE_KEY;
+import static ink.va.utils.Constants.PACK_CONTENT_BUNDLE_KEY;
+import static ink.va.utils.Constants.PACK_ID_BUNDLE_KEY;
+import static ink.va.utils.Constants.PACK_IMAGE_BUNDLE_KEY;
 
 /**
  * Created by USER on 2016-07-20.
  */
 public class Packs extends Fragment implements PacksAdapter.PackClickListener, SwipeRefreshLayout.OnRefreshListener {
 
+    public static final int PACK_BUY_RESULT_CODE = 8;
     @Bind(R.id.packs_recycler)
     RecyclerView packsRecycler;
     @Bind(R.id.packsSwipe)
@@ -54,7 +55,7 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
 
     private PacksAdapter packsAdapter;
     private SharedHelper sharedHelper;
-    private ExplosionField mExplosionField;
+
 
     public static Packs create() {
         Packs packs = new Packs();
@@ -81,7 +82,7 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
         packsRecycler.setLayoutManager(linearLayoutManager);
         packsRecycler.setAdapter(packsAdapter);
         getPacks();
-        mExplosionField = ExplosionField.attach2Window(getActivity());
+
 
     }
 
@@ -143,17 +144,22 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
     }
 
     @Override
-    public void onBuyClicked(int packPrice, String packId, View clickedView) {
-        mExplosionField.explode(clickedView);
+    public void onBuyClicked(PacksModel packsModel, final int packPrice, final String packId, final View clickedView) {
 
         if (User.get().getCoins() != null || !User.get().getCoins().isEmpty()) {
             int userCoins = Integer.valueOf(User.get().getCoins());
             if (userCoins < packPrice) {
                 Snackbar.make(packsRecycler, getString(R.string.not_enough_coins), Snackbar.LENGTH_SHORT).show();
             } else {
-                showProgress();
-                openPack(packId);
+                Intent intent = new Intent(getActivity(), PackFullScreen.class);
+                intent.putExtra(PACK_ID_BUNDLE_KEY, packId);
+                intent.putExtra(PACK_IMAGE_BUNDLE_KEY, packsModel.packImageBackground);
+                intent.putExtra(PACK_CONTENT_BUNDLE_KEY, packsModel.packDescription);
+                intent.putExtra(PACK_BACKGROUND_BUNDLE_KEY, packsModel.packBackground);
+                startActivityForResult(intent, PACK_BUY_RESULT_CODE);
+                ((Shop) getActivity()).overrideActivityAnimation();
             }
+
         } else {
             Snackbar.make(packsRecycler, getString(R.string.pleaseWait), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
                 @Override
@@ -162,6 +168,7 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
                 }
             }).show();
         }
+
 
     }
 
@@ -183,80 +190,18 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
         });
     }
 
-    private void openPack(final String packId) {
-        Call<ResponseBody> packCall = Retrofit.getInstance().getInkService().openPack(sharedHelper.getUserId(), packId);
-        packCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    openPack(packId);
-                    return;
-                }
-                if (response.body() == null) {
-                    openPack(packId);
-                    return;
-                }
-                try {
-                    hideProgress();
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    if (success) {
-                        String userCoinsLeft = jsonObject.optString("userCoinsLeft");
-                        User.get().setCoins(userCoinsLeft);
-                        ((Shop) getActivity()).updateCoins();
-                        builder.setTitle(getString(R.string.pack_bought));
-                        builder.setMessage(getString(R.string.gift_bought_message));
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        });
-                        builder.show();
-                    } else {
-                        String cause = jsonObject.optString("cause");
-                        if (cause.equals(ErrorCause.PACK_ALREADY_BOUGHT)) {
-                            builder.setTitle(getString(R.string.error));
-                            builder.setMessage(getString(R.string.gift_already_bought));
-                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            });
-                            builder.show();
-                        } else {
-                            builder.setTitle(getString(R.string.error));
-                            builder.setMessage(getString(R.string.serverErrorText));
-                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            });
-                            builder.show();
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    hideProgress();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    hideProgress();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
-    }
-
     @Override
     public void onRefresh() {
         getPacks();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PACK_BUY_RESULT_CODE:
+                ((Shop) getActivity()).updateCoins();
+                break;
+        }
     }
 }
