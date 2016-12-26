@@ -545,20 +545,6 @@ public class HomeActivity extends BaseActivity
                             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    openVipRoom();
-                                    dialogInterface.dismiss();
-                                }
-                            });
-                            builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                @Override
-                                public void onDismiss(DialogInterface dialogInterface) {
-                                    openVipRoom();
-                                }
-                            });
-                            builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                                @Override
-                                public void onCancel(DialogInterface dialogInterface) {
-                                    openVipRoom();
                                 }
                             });
                             final AlertDialog alertDialog = builder.create();
@@ -567,7 +553,7 @@ public class HomeActivity extends BaseActivity
                                 @Override
                                 public void onClick(View view) {
                                     alertDialog.dismiss();
-                                    openVipRoom();
+                                    startActivity(new Intent(getApplicationContext(), VIPActivity.class));
                                 }
                             });
                         } else {
