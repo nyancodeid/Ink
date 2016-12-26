@@ -99,18 +99,20 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public void init(PacksModel packsModel) {
             packCoinCount.setText(packsModel.packsPrice);
             packId = String.valueOf(packsModel.packsId);
-            Ion.with(context).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packsModel.packBackground).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
+            Ion.with(context).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packsModel.packBackground).withBitmap().placeholder(R.drawable.placeholder_animation).asBitmap().setCallback(new FutureCallback<Bitmap>() {
                 @Override
                 public void onCompleted(Exception e, Bitmap result) {
+                    packWrapper.clearAnimation();
                     if (e == null) {
                         packWrapper.setImageBitmap(result);
                     }
                 }
             });
             Ion.with(context).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packsModel.packImageBackground)
-                    .withBitmap().intoImageView(packImage).setCallback(new FutureCallback<ImageView>() {
+                    .withBitmap().placeholder(R.drawable.placeholder_animation).intoImageView(packImage).setCallback(new FutureCallback<ImageView>() {
                 @Override
                 public void onCompleted(Exception e, ImageView result) {
+                    packImage.clearAnimation();
                     packLoadingProgress.setVisibility(View.GONE);
                 }
             });
