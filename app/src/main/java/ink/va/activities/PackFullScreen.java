@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 
 import com.ink.va.R;
 
@@ -17,6 +18,7 @@ import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -34,6 +36,9 @@ public class PackFullScreen extends BaseActivity {
     private ExplosionField mExplosionField;
     @Bind(R.id.activity_pack_full_screen)
     View rootLayout;
+    @Bind(R.id.buyButton)
+    Button buyButton;
+
     private Dialog mProgressDialog;
     private String packId;
     private SharedHelper sharedHelper;
@@ -50,6 +55,11 @@ public class PackFullScreen extends BaseActivity {
         mExplosionField = ExplosionField.attach2Window(this);
     }
 
+
+    @OnClick(R.id.buyButton)
+    public void buyClicked() {
+
+    }
 
     private void buy(View view) {
         mExplosionField.explode(view, new ExplosionField.ExplosionAnimationListener() {
@@ -181,5 +191,9 @@ public class PackFullScreen extends BaseActivity {
         });
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overrideActivityAnimation();
+    }
 }

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -28,6 +29,7 @@ import ink.va.utils.Time;
  */
 
 public class FeedViewHolder extends RecyclerView.ViewHolder {
+    private static final int SHIMMER_MOVE_DURATION = 3000;
     public TextView feedContent, userPostedTitle,
             whenPosted, feedAddress, feedAttachmentName, likesCountTV;
     private ImageView feedUserImage, likeIcon, commentIcon;
@@ -42,12 +44,14 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
     private SharedHelper sharedHelper;
     private FeedItemClick mOnClickListener;
     private View feedRootLayout;
+    private ShimmerFrameLayout feedShimmer;
     private View spacing;
 
     public FeedViewHolder(View view) {
         super(view);
         userPostedTitle = (TextView) view.findViewById(R.id.userPostedTitle);
         spacing = view.findViewById(R.id.spacing);
+        feedShimmer = (ShimmerFrameLayout) view.findViewById(R.id.feedShimmer);
         feedRootLayout = view.findViewById(R.id.feedRootLayout);
         commentCountTV = (TextView) view.findViewById(R.id.commentCountTV);
         actionDivider = view.findViewById(R.id.actionDivider);
@@ -70,16 +74,22 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
 
     public void initData(Context context, FeedModel feedModel, int position,
                          FeedItemClick feedItemClick, int maxCount) {
-
+        sharedHelper = new SharedHelper(context);
         if (position == (maxCount - 1)) {
             spacing.setVisibility(View.VISIBLE);
         } else {
             spacing.setVisibility(View.GONE);
         }
 
+        if (sharedHelper.shallShowPostShimmer()) {
+            feedShimmer.setDuration(SHIMMER_MOVE_DURATION);
+            feedShimmer.startShimmerAnimation();
+        } else {
+            feedShimmer.stopShimmerAnimation();
+        }
+
         mOnClickListener = feedItemClick;
         mContext = context;
-        sharedHelper = new SharedHelper(context);
         this.feedModel = feedModel;
         switch (feedModel.getType()) {
             case Constants.WALL_TYPE_POST:

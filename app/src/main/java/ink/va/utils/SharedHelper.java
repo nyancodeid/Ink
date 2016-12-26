@@ -15,6 +15,7 @@ import static ink.va.utils.Constants.SHOW_SERVER_NEWS_START_UP_KEY;
  * Created by USER on 2016-06-20.
  */
 public class SharedHelper {
+    private static final String SHOW_SHIMMER = "show_shimmer_key";
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
     private Context context;
@@ -364,7 +365,6 @@ public class SharedHelper {
     }
 
 
-
     public void putEditorHintShow(boolean value) {
         mEditor.putBoolean("editorHint", value);
         mEditor.commit();
@@ -378,6 +378,7 @@ public class SharedHelper {
         mEditor.putBoolean("isAnimationHintShown", value);
         mEditor.commit();
     }
+
     public void putLoggedIntoGame(boolean value) {
         mEditor.putBoolean("isLoggedIntoGame", value);
         mEditor.commit();
@@ -728,5 +729,14 @@ public class SharedHelper {
     public void putServerNewsOnStartup(boolean value) {
         mEditor.putBoolean(SHOW_SERVER_NEWS_START_UP_KEY, value);
         mEditor.commit();
+    }
+
+    public void putShowPostShimmer(boolean value) {
+        mEditor.putBoolean(SHOW_SHIMMER, value);
+        mEditor.commit();
+    }
+
+    public boolean shallShowPostShimmer() {
+        return mSharedPreferences.getBoolean(SHOW_SHIMMER, true);
     }
 }

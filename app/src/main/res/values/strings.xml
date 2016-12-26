@@ -755,6 +755,8 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="service_removed">The service was removed,you can re-active any time without a charge.</string>
     <string name="incognito">Incognito</string>
     <string name="incognito_hint">The person is in Incognito Mode and can not be viewed</string>
+    <string name="buy_text">Buy</string>
+    <string name="enableShimmerPostText">Enable Shimmer For Posts</string>
 
 
 </resources>

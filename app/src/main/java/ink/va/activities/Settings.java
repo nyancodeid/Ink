@@ -21,6 +21,9 @@ public class Settings extends BaseActivity {
     @Bind(R.id.commentNotificationSwitch)
     Switch commentSwitch;
 
+    @Bind(R.id.shimmerPostSwitch)
+    Switch shimmerSwitch;
+
     @Bind(R.id.likeNotificationSwitch)
     Switch likeSwitch;
 
@@ -36,6 +39,7 @@ public class Settings extends BaseActivity {
         groupSwitch.setChecked(sharedHelper.showGroupNotification());
         commentSwitch.setChecked(sharedHelper.showCommentNotification());
         likeSwitch.setChecked(sharedHelper.showLikeNotification());
+        shimmerSwitch.setChecked(sharedHelper.shallShowPostShimmer());
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -75,6 +79,18 @@ public class Settings extends BaseActivity {
             sharedHelper.putShowCommentNotification(true);
         }
     }
+
+    @OnClick(R.id.shimmerPostWrapper)
+    public void setShimmer() {
+        if (shimmerSwitch.isChecked()) {
+            shimmerSwitch.setChecked(false);
+            sharedHelper.putShowPostShimmer(false);
+        } else {
+            shimmerSwitch.setChecked(true);
+            sharedHelper.putShowPostShimmer(true);
+        }
+    }
+
 
     @OnClick(R.id.likeNotificationSwitchWrapper)
     public void setlikeNotificationSwitchWrapper() {
