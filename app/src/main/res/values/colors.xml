@@ -17,6 +17,7 @@
     <color name="rainbow_blue">#127a97</color>
     <color name="rainbow_purple">#452b72</color>
     <color name="black_overlay">#66000000</color>
+    <color name="vip_status_bar_color">#1b2d43</color>
 
     <integer-array name="rainbow">
         <item>@color/rainbow_red</item>

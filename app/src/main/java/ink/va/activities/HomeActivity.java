@@ -403,6 +403,10 @@ public class HomeActivity extends BaseActivity
                 shouldOpenActivity = true;
                 setLastClassToOpen(MyCollection.class, false);
                 break;
+            case R.id.vipChat:
+                shouldOpenActivity = true;
+                setLastClassToOpen(VIPActivity.class, false);
+                break;
             case R.id.whoViewed:
                 shouldOpenActivity = true;
                 setLastClassToOpen(WhoViewedActivity.class, false);
