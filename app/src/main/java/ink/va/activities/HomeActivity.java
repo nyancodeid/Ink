@@ -553,7 +553,7 @@ public class HomeActivity extends BaseActivity
                                 @Override
                                 public void onClick(View view) {
                                     alertDialog.dismiss();
-                                    startActivity(new Intent(getApplicationContext(), VIPActivity.class));
+                                    openVipRoom();
                                 }
                             });
                         } else {
@@ -653,8 +653,7 @@ public class HomeActivity extends BaseActivity
     }
 
     private void openVipRoom() {
-        shouldOpenActivity = true;
-        setLastClassToOpen(VIPActivity.class, false);
+        startActivity(new Intent(getApplicationContext(), VIPActivity.class));
     }
 
     private void logoutUser() {
