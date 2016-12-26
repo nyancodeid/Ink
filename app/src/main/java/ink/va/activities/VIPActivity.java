@@ -6,11 +6,10 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.ink.va.R;
-import com.koushikdutta.ion.Ion;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import ink.va.utils.Constants;
+import it.sephiroth.android.library.picasso.Picasso;
 
 public class VIPActivity extends BaseActivity {
 
@@ -28,7 +27,7 @@ public class VIPActivity extends BaseActivity {
             actionBar.hide();
         }
 
-        Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "vip_background").intoImageView(rootImageView);
+        Picasso.with(this).load(R.drawable.vip_background).into(rootImageView);
     }
 
 
