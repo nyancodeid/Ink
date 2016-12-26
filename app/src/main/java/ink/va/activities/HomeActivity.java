@@ -561,7 +561,15 @@ public class HomeActivity extends BaseActivity
                                     openVipRoom();
                                 }
                             });
-                            builder.show();
+                            final AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
+                            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    alertDialog.dismiss();
+                                    openVipRoom();
+                                }
+                            });
                         } else {
                             openVipRoom();
                         }
