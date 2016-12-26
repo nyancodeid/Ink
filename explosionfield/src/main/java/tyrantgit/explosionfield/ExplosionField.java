@@ -111,7 +111,7 @@ public class ExplosionField extends View {
             }
         });
         animator.start();
-        view.animate().setDuration(1500).setStartDelay(startDelay).scaleX(0f).scaleY(0f).alpha(0f).start();
+        view.animate().setDuration(150).setStartDelay(startDelay).scaleX(0f).scaleY(0f).alpha(0f).start();
         explode(Utils.createBitmapFromView(view), r, startDelay, ExplosionAnimator.DEFAULT_DURATION, explosionAnimationListener);
     }
 
