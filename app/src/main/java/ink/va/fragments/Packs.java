@@ -143,25 +143,29 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
     }
 
     @Override
-    public void onBuyClicked(int packPrice, String packId, View clickedView) {
-        mExplosionField.explode(clickedView);
+    public void onBuyClicked(final int packPrice, final String packId, final View clickedView) {
+        mExplosionField.explode(clickedView, new ExplosionField.ExplosionAnimationListener() {
+            @Override
+            public void onAnimationEnd() {
+                if (User.get().getCoins() != null || !User.get().getCoins().isEmpty()) {
+                    int userCoins = Integer.valueOf(User.get().getCoins());
+                    if (userCoins < packPrice) {
+                        Snackbar.make(packsRecycler, getString(R.string.not_enough_coins), Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        showProgress();
+                        openPack(packId);
+                    }
+                } else {
+                    Snackbar.make(packsRecycler, getString(R.string.pleaseWait), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 
-        if (User.get().getCoins() != null || !User.get().getCoins().isEmpty()) {
-            int userCoins = Integer.valueOf(User.get().getCoins());
-            if (userCoins < packPrice) {
-                Snackbar.make(packsRecycler, getString(R.string.not_enough_coins), Snackbar.LENGTH_SHORT).show();
-            } else {
-                showProgress();
-                openPack(packId);
-            }
-        } else {
-            Snackbar.make(packsRecycler, getString(R.string.pleaseWait), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
+                        }
+                    }).show();
                 }
-            }).show();
-        }
+            }
+        });
+
 
     }
 
