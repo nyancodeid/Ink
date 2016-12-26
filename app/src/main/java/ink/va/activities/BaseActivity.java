@@ -128,12 +128,20 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
 
-    protected void changeStatusBarColor(@ColorRes int color) {
+    protected void setStatusBarColor(@ColorRes int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ContextCompat.getColor(this, color));
         }
+    }
+
+    protected void setActionBarColor(@ColorRes int color) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, color)));
+        }
+
     }
 
     private void initCountDownTimer() {
