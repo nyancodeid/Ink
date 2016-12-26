@@ -103,6 +103,7 @@ public class FragmentDialog extends DialogFragment implements DialogUtils.Dialog
         firstParagraphContent = getArguments().getString("firstParagraphContent");
         secondParagraphContent = getArguments().getString("secondParagraphContent");
         orderType = getArguments().getInt("orderType");
+        userCoins = getArguments().getInt("userCoins");
 
         fragmentDialogRoot.setBackgroundResource(backgroundResource);
         firstParagraphTV.setText(firstParagraphContent);
