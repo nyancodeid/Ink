@@ -12,18 +12,12 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ink.va.activities.PackFullScreen">
 
-    <com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/packShimmer"
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/buyButton"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/incognito_background" />
-    </com.facebook.shimmer.ShimmerFrameLayout>
+        android:layout_height="match_parent"
+        android:layout_above="@+id/buyButton"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/incognito_background" />
 
     <Button
         android:id="@+id/buyButton"
