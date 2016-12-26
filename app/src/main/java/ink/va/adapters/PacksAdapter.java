@@ -3,6 +3,7 @@ package ink.va.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,17 +100,18 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public void init(PacksModel packsModel) {
             packCoinCount.setText(packsModel.packsPrice);
             packId = String.valueOf(packsModel.packsId);
-            Ion.with(context).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packsModel.packBackground).withBitmap().placeholder(R.drawable.placeholder_animation).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+            packWrapper.setBackground(ContextCompat.getDrawable(context, R.drawable.big_image_place_holder));
+            Ion.with(context).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packsModel.packBackground).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
                 @Override
                 public void onCompleted(Exception e, Bitmap result) {
-                    packWrapper.clearAnimation();
+                    packWrapper.setBackground(null);
                     if (e == null) {
                         packWrapper.setImageBitmap(result);
                     }
                 }
             });
             Ion.with(context).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packsModel.packImageBackground)
-                    .withBitmap().placeholder(R.drawable.placeholder_animation).intoImageView(packImage).setCallback(new FutureCallback<ImageView>() {
+                    .withBitmap().placeholder(R.drawable.no_background_image).intoImageView(packImage).setCallback(new FutureCallback<ImageView>() {
                 @Override
                 public void onCompleted(Exception e, ImageView result) {
                     packImage.clearAnimation();
