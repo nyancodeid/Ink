@@ -535,14 +535,18 @@ public class HomeActivity extends BaseActivity
                         boolean firstVipLogin = jsonObject.optBoolean("isFirstVipLogin");
                         setIsFirstVipLogin(firstVipLogin);
                         if (type.equals(Constants.TYPE_BUY_VIP)) {
+                            int remainingCoins = jsonObject.optInt("remainingCoins");
+                            User.get().setCoins(String.valueOf(remainingCoins));
+                            coinsText.setText(getString(R.string.coinsText, User.get().getCoins()));
                             AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
                             builder.setTitle(getString(R.string.congratulation));
                             builder.setMessage(getString(R.string.vip_bought_Text));
+                            builder.setCancelable(false);
                             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
                                     openVipRoom();
+                                    dialogInterface.dismiss();
                                 }
                             });
                             builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
