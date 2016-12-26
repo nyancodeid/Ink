@@ -13,11 +13,9 @@ public class VIPActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vip);
         setStatusBarColor(R.color.vip_status_bar_color);
-        setActionBarColor(R.color.vip_status_bar_color);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(getString(R.string.vip_chat_title));
+            actionBar.hide();
         }
     }
 
