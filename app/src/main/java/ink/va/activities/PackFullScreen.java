@@ -119,6 +119,7 @@ public class PackFullScreen extends BaseActivity {
                                 dialogInterface.dismiss();
                                 setResult(PACK_BUY_RESULT_CODE);
                                 finish();
+                                overrideActivityAnimation();
                             }
                         });
                         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -127,6 +128,7 @@ public class PackFullScreen extends BaseActivity {
                                 dialogInterface.dismiss();
                                 setResult(PACK_BUY_RESULT_CODE);
                                 finish();
+                                overrideActivityAnimation();
                             }
                         });
                         builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -135,6 +137,7 @@ public class PackFullScreen extends BaseActivity {
                                 dialogInterface.dismiss();
                                 setResult(PACK_BUY_RESULT_CODE);
                                 finish();
+                                overrideActivityAnimation();
                             }
                         });
                         builder.show();

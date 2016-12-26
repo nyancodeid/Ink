@@ -151,6 +151,7 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
                 Intent intent = new Intent(getActivity(), PackFullScreen.class);
                 intent.putExtra(PACK_ID_BUNDLE_KEY, packId);
                 startActivityForResult(intent, PACK_BUY_RESULT_CODE);
+                ((Shop) getActivity()).overrideActivityAnimation();
             }
 
         } else {

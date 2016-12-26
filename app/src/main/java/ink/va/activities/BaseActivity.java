@@ -282,6 +282,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         });
     }
 
+    public void overrideActivityAnimation() {
+        overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
+    }
+
 
     protected boolean isSocialAccountRegistered() {
         return sharedHelper.isRegistered();
