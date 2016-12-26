@@ -4,31 +4,22 @@
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground">
 
 
-    <ImageView
-        android:id="@+id/messageSenderImage"
-        android:layout_width="46dp"
-        android:layout_height="46dp"
-        android:layout_margin="5dp" />
-
-
-    <android.support.v7.widget.CardView
+    <RelativeLayout
         android:id="@+id/groupMessageCard"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/messageSenderImage"
-        android:layout_toRightOf="@+id/messageSenderImage"
-        android:background="?attr/selectableItemBackground"
+        android:layout_height="300dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/com_facebook_tooltip_black_background"
         android:clickable="true"
-        android:elevation="15dp"
         android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
-        app:cardCornerRadius="25dp">
+        android:foreground="?attr/selectableItemBackground">
 
 
         <RelativeLayout
@@ -49,27 +40,18 @@
                 android:padding="5dp"
                 android:src="@drawable/more_icon" />
 
-            <ImageView
-                android:id="@+id/group_image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/groupMessageBody"
-                android:adjustViewBounds="true"
-                android:minHeight="170dp"
-                android:scaleType="fitXY"
-                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/messageSenderName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="25dp"
                 android:ellipsize="end"
                 android:fontFamily="@string/appFont"
                 android:maxLines="1"
                 android:text="@string/loadingText"
-                android:textColor="#000000"
+                android:textColor="@color/vk_white"
                 android:textStyle="bold" />
 
             <TextView
@@ -77,19 +59,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/messageSenderName"
-                android:autoLink="web"
                 android:layout_alignStart="@+id/messageSenderName"
                 android:layout_below="@+id/messageSenderName"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="5dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="8dp"
-                android:fontFamily="@string/appFont"
+                android:layout_marginTop="15dp"
+                android:autoLink="web"
+                android:fontFamily="@string/condensedFont"
                 android:gravity="start"
                 android:paddingLeft="5dp"
-                android:text="@string/loadingText" />
+                android:text="@string/loadingText"
+                android:textColor="@android:color/holo_orange_dark" />
+
+            <ImageView
+                android:id="@+id/group_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/groupMessageBody"
+                android:layout_centerInParent="true"
+                android:scaleType="fitXY"
+                android:visibility="visible" />
+
         </RelativeLayout>
 
+    </RelativeLayout>
 
-    </android.support.v7.widget.CardView>
+
+    <ImageView
+        android:id="@+id/messageSenderImage"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
+        android:src="@drawable/no_background_image" />
+
 </RelativeLayout>

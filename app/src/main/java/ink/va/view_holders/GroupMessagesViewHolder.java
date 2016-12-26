@@ -1,17 +1,15 @@
 package ink.va.view_holders;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import ink.va.interfaces.RecyclerItemClickListener;
@@ -31,7 +29,7 @@ public class GroupMessagesViewHolder extends RecyclerView.ViewHolder {
     public ImageView messageSenderImage;
     public ImageView groupImageView;
     private ImageView groupMessageMoreIcon;
-    private CardView groupMessageCard;
+    private RelativeLayout groupMessageCard;
     private SharedHelper sharedHelper;
     private View rootLayout;
 
@@ -40,7 +38,7 @@ public class GroupMessagesViewHolder extends RecyclerView.ViewHolder {
         messageSenderName = (TextView) view.findViewById(R.id.messageSenderName);
         rootLayout = view.findViewById(R.id.rootLayout);
         groupMessageBody = (TextView) view.findViewById(R.id.groupMessageBody);
-        groupMessageCard = (CardView) view.findViewById(R.id.groupMessageCard);
+        groupMessageCard = (RelativeLayout) view.findViewById(R.id.groupMessageCard);
         messageSenderImage = (ImageView) view.findViewById(R.id.messageSenderImage);
         groupImageView = (ImageView) view.findViewById(R.id.group_image);
         groupMessageMoreIcon = (ImageView) view.findViewById(R.id.groupMessageMoreIcon);
@@ -64,19 +62,16 @@ public class GroupMessagesViewHolder extends RecyclerView.ViewHolder {
         } else {
             groupImageView.setVisibility(View.VISIBLE);
             String encodedImage = Uri.encode(groupMessagesModel.getFileName());
-            Ion.with(context).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedImage).withBitmap().placeholder(R.drawable.big_image_place_holder).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                @Override
-                public void onCompleted(Exception e, Bitmap result) {
-                    if (e == null) {
-                        groupImageView.setImageBitmap(result);
-                    } else {
-                        groupImageView.setVisibility(View.GONE);
-                    }
-                }
-            });
+            if (encodedImage.isEmpty()) {
+                groupImageView.setVisibility(View.GONE);
+            } else {
+                Ion.with(context).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedImage).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(groupImageView);
+            }
+
         }
         if (!groupMessagesModel.getSenderImage().isEmpty()) {
             String encodedImage = Uri.encode(groupMessagesModel.getSenderImage());
+
             Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
                     encodedImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(messageSenderImage);
         } else {

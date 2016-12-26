@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -68,7 +67,6 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         ImageView packWrapper;
         ImageView packImage;
         TextView packCoinCount;
-        ProgressBar packLoadingProgress;
         ShimmerTextView packTitleTV;
         RelativeLayout buyButtonWrapper;
 
@@ -81,7 +79,6 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             super(itemView);
             packTitleTV = (ShimmerTextView) itemView.findViewById(R.id.pack_title_TV);
             packRootView = itemView.findViewById(R.id.packRootView);
-            packLoadingProgress = (ProgressBar) itemView.findViewById(R.id.pack_loading_progress);
             packCoinCount = (TextView) itemView.findViewById(R.id.pack_coin_count);
             packWrapper = (ImageView) itemView.findViewById(R.id.pack_wrapper);
             packImage = (ImageView) itemView.findViewById(R.id.pack_image);
@@ -115,7 +112,6 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 @Override
                 public void onCompleted(Exception e, ImageView result) {
                     packImage.clearAnimation();
-                    packLoadingProgress.setVisibility(View.GONE);
                 }
             });
             packTitleTV.setText(packsModel.packNameEn);
