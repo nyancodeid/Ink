@@ -731,12 +731,4 @@ public class SharedHelper {
         mEditor.commit();
     }
 
-    public void putShowPostShimmer(boolean value) {
-        mEditor.putBoolean(SHOW_SHIMMER, value);
-        mEditor.commit();
-    }
-
-    public boolean shallShowPostShimmer() {
-        return mSharedPreferences.getBoolean(SHOW_SHIMMER, true);
-    }
 }

@@ -110,6 +110,7 @@ public class HomeActivity extends BaseActivity
     private RelativeLayout panelHeader;
     private TextView messagesCountTV;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -452,7 +453,7 @@ public class HomeActivity extends BaseActivity
 
             case R.id.settings:
                 shouldOpenActivity = true;
-                setLastClassToOpen(Settings.class, false);
+                setLastClassToOpen(Settings.class, true);
                 break;
 
             case R.id.customizeApp:
@@ -732,6 +733,7 @@ public class HomeActivity extends BaseActivity
             case PROFILE_RESULT_CODE:
                 getCoins();
                 break;
+
         }
     }
 

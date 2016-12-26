@@ -157,7 +157,7 @@ public class Constants {
     public static final String LOCATION_REQUEST_TYPE_DELETE = "delete";
     public static final String DELETE_MESSAGE_REQUESTED = "deleteSingleMessageRequested";
     public static final int BUY_COINS_REQUEST_CODE = 196;
-    public static final int REQUEST_CUSTOMIZE_MADE = 8;
+    public static final int REQUEST_CUSTOMIZE_MADE = 78;
     public static final String WALL_TYPE_POST = "post";
     public static final String WALL_TYPE_GROUP_MESSAGE = "groupMessage";
     public static final int REQUEST_CODE_CHOSE_STICKER = 1;

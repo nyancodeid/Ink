@@ -682,6 +682,10 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         getFeeds(0, mOffset, true, false, false);
     }
 
+    public void updateAdapter() {
+        mAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onColorChanged() {
         if (mSharedHelper != null) {
