@@ -15,9 +15,11 @@
     <ImageView
         android:id="@+id/packBackground"
         android:layout_width="match_parent"
+        android:adjustViewBounds="true"
         android:layout_height="match_parent"
         android:layout_above="@+id/buyButton"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:scaleType="fitXY" />
 
     <ImageView
         android:id="@+id/packImage"

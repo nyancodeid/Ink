@@ -16,6 +16,11 @@
                     android:title="@string/my_collection_text" />
 
                 <item
+                    android:id="@+id/vipChat"
+                    android:icon="@drawable/vip_icon"
+                    android:title="@string/vip_chat" />
+
+                <item
                     android:id="@+id/whoViewed"
                     android:icon="@drawable/ic_contacts_black_24dp"
                     android:title="@string/whoViewedText" />

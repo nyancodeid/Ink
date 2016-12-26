@@ -98,7 +98,7 @@ public class ExplosionField extends View {
         r.offset(-location[0], -location[1]);
         r.inset(-mExpandInset[0], -mExpandInset[1]);
         int startDelay = 100;
-        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f).setDuration(150);
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f).setDuration(1500);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
             Random random = new Random();

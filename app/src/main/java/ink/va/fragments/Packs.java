@@ -155,7 +155,7 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
                 intent.putExtra(PACK_ID_BUNDLE_KEY, packId);
                 intent.putExtra(PACK_IMAGE_BUNDLE_KEY, packsModel.packImageBackground);
                 intent.putExtra(PACK_CONTENT_BUNDLE_KEY, packsModel.packDescription);
-                intent.putExtra(PACK_BACKGROUND_BUNDLE_KEY, packsModel.packImageBackground);
+                intent.putExtra(PACK_BACKGROUND_BUNDLE_KEY, packsModel.packBackground);
                 startActivityForResult(intent, PACK_BUY_RESULT_CODE);
                 ((Shop) getActivity()).overrideActivityAnimation();
             }

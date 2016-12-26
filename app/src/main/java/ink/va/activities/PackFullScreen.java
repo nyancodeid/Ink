@@ -217,6 +217,8 @@ public class PackFullScreen extends BaseActivity {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     dialogInterface.dismiss();
+                                    finish();
+                                    overrideActivityAnimation();
                                 }
                             });
                             builder.show();
@@ -227,6 +229,8 @@ public class PackFullScreen extends BaseActivity {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     dialogInterface.dismiss();
+                                    finish();
+                                    overrideActivityAnimation();
                                 }
                             });
                             builder.show();
@@ -235,15 +239,20 @@ public class PackFullScreen extends BaseActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                     hideProgress();
+                    finish();
+                    overrideActivityAnimation();
                 } catch (JSONException e) {
                     e.printStackTrace();
                     hideProgress();
+                    finish();
+                    overrideActivityAnimation();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                finish();
+                overrideActivityAnimation();
             }
         });
     }
