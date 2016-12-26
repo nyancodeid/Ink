@@ -759,4 +759,5 @@
     <string name="congratulation">Поздравляем!</string>
     <string name="buy_text">Купить</string>
     <string name="enableShimmerPostText">Разрешать мерцание Постов</string>
+    <string name="vip_chat_title">V.I.P</string>
 </resources>

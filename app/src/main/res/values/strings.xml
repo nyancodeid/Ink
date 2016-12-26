@@ -758,4 +758,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="buy_text">Buy</string>
     <string name="enableShimmerPostText">Enable Shimmer For Posts</string>
     <string name="vip_chat">V.I.P Chat</string>
+    <string name="vip_chat_title">V.I.P</string>
 </resources>

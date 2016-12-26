@@ -16,6 +16,7 @@ public class VIPActivity extends BaseActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getString(R.string.vip_chat_title));
         }
     }
 
