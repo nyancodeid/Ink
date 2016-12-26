@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.ink.va.R;
 
 import org.json.JSONException;
@@ -38,6 +39,8 @@ public class PackFullScreen extends BaseActivity {
     View rootLayout;
     @Bind(R.id.buyButton)
     Button buyButton;
+    @Bind(R.id.packShimmer)
+    ShimmerFrameLayout packShimmer;
 
     private Dialog mProgressDialog;
     private String packId;
@@ -49,6 +52,7 @@ public class PackFullScreen extends BaseActivity {
         setContentView(R.layout.activity_pack_full_screen);
         ButterKnife.bind(this);
         sharedHelper = new SharedHelper(this);
+        packShimmer.startShimmerAnimation();
         Bundle extras = getIntent().getExtras();
         packId = extras.getString(PACK_ID_BUNDLE_KEY);
         initializeDialog();
