@@ -9,7 +9,6 @@ import com.ink.va.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import it.sephiroth.android.library.picasso.Picasso;
 
 public class VIPActivity extends BaseActivity {
 
@@ -27,7 +26,6 @@ public class VIPActivity extends BaseActivity {
             actionBar.hide();
         }
 
-        Picasso.with(this).load(R.drawable.vip_background).into(rootImageView);
     }
 
 
