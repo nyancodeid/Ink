@@ -2,8 +2,12 @@ package ink.va.utils;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.va.R;
@@ -44,11 +48,26 @@ public class DimDialog {
     }
 
     public static Dialog showVipLoading(Context context) {
+        Animation pulseAnimation = AnimationUtils.loadAnimation(context, R.anim.pulse_animation);
         Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.vip_progress_dialog);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(context, android.R.color.transparent)));
+        final ImageView imageView = (ImageView) dialog.findViewById(R.id.vip_place_holder_image);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                imageView.clearAnimation();
+            }
+        });
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                imageView.clearAnimation();
+            }
+        });
+        imageView.startAnimation(pulseAnimation);
         dialog.show();
         return dialog;
     }
