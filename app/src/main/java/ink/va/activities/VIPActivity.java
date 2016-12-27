@@ -63,9 +63,8 @@ public class VIPActivity extends BaseActivity {
         boolean isFirstVipLogin = extras != null ? extras.getBoolean("firstVipLogin") : false;
         boolean hasGift = extras != null ? extras.getBoolean("hasGift") : false;
         giftType = extras != null ? extras.getString("giftType") : null;
-
         if (isFirstVipLogin) {
-            changeButtonVisibility(true);
+            changeButtonVisibility(false);
             showIntro(hasGift);
         } else {
             changeButtonVisibility(false);
@@ -114,7 +113,7 @@ public class VIPActivity extends BaseActivity {
 
     @OnClick(R.id.vipGlobalChat)
     public void globeChatClicked() {
-
+        showIntro(true);
     }
 
     @OnClick(R.id.exploreVip)
