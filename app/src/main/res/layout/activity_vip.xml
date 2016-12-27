@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@drawable/vip_gradient_button"
-            android:text="@string/close"
+            android:text="@string/acceptText"
             android:fontFamily="@string/condensedFont"
             android:textAllCaps="false"
             android:textColor="@color/vk_white" />
