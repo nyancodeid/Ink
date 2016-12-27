@@ -54,4 +54,189 @@ public class UserModel {
     private boolean isFirstVipLogin;
     @SerializedName("vipMembershipType")
     private boolean vipMembershipType;
+
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public boolean isSocialAccount() {
+        return isSocialAccount;
+    }
+
+    public void setSocialAccount(boolean socialAccount) {
+        isSocialAccount = socialAccount;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getPhone_number() {
+        return phone_number;
+    }
+
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
+    }
+
+    public String getFacebookProfile() {
+        return facebookProfile;
+    }
+
+    public void setFacebookProfile(String facebookProfile) {
+        this.facebookProfile = facebookProfile;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getSkype() {
+        return skype;
+    }
+
+    public void setSkype(String skype) {
+        this.skype = skype;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getRelationship() {
+        return relationship;
+    }
+
+    public void setRelationship(String relationship) {
+        this.relationship = relationship;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getFacebookName() {
+        return facebookName;
+    }
+
+    public void setFacebookName(String facebookName) {
+        this.facebookName = facebookName;
+    }
+
+    public String getLastVisited() {
+        return lastVisited;
+    }
+
+    public void setLastVisited(String lastVisited) {
+        this.lastVisited = lastVisited;
+    }
+
+    public boolean isBanned() {
+        return banned;
+    }
+
+    public void setBanned(boolean banned) {
+        this.banned = banned;
+    }
+
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
+    }
+
+    public boolean isIncognito() {
+        return isIncognito;
+    }
+
+    public void setIncognito(boolean incognito) {
+        isIncognito = incognito;
+    }
+
+    public boolean isIncognitoBought() {
+        return isIncognitoBought;
+    }
+
+    public void setIncognitoBought(boolean incognitoBought) {
+        isIncognitoBought = incognitoBought;
+    }
+
+    public boolean isHiddenBought() {
+        return isHiddenBought;
+    }
+
+    public void setHiddenBought(boolean hiddenBought) {
+        isHiddenBought = hiddenBought;
+    }
+
+    public boolean isVip() {
+        return isVip;
+    }
+
+    public void setVip(boolean vip) {
+        isVip = vip;
+    }
+
+    public boolean isFirstVipLogin() {
+        return isFirstVipLogin;
+    }
+
+    public void setFirstVipLogin(boolean firstVipLogin) {
+        isFirstVipLogin = firstVipLogin;
+    }
+
+    public boolean isVipMembershipType() {
+        return vipMembershipType;
+    }
+
+    public void setVipMembershipType(boolean vipMembershipType) {
+        this.vipMembershipType = vipMembershipType;
+    }
 }
