@@ -756,11 +756,15 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="incognito_hint">The person is in Incognito Mode and can not be viewed</string>
     <string name="buy_text">Buy</string>
     <string name="enableShimmerPostText">Enable Shimmer For Posts</string>
-    <string name="vip_chat">V.I.P Chat</string>
-    <string name="vip_chat_title">V.I.P</string>
+    <string name="vip_chat">V.I.P. Chat</string>
+    <string name="vip_chat_title">V.I.P.</string>
     <string name="vip_enter_error">Could not enter vip,try again later</string>
     <string name="loggingIntoVip">Logging you into VIP Room,please wait...</string>
     <string name="notVipText">Not a V.I.P.</string>
-    <string name="youAreNotVipText">You\'r not a V.I.P member and can not enter the room.To be eligible to enter V.I.P you need to buy a membership which are only for chosen ones and cost %1$d coins. A little information about V.I.P Persons :</string>
-    <string name="vip_bought_Text">V.I.P Bought! Now you can explore elite persons and talk with chosen ones</string>
+    <string name="youAreNotVipText">You\'r not a V.I.P. member and can not enter the room.To be eligible to enter V.I.P. you need to buy a membership which are only for
+        chosen ones and cost %1$d coins. A little information about V.I.P. Persons :</string>
+    <string name="vip_bought_Text">V.I.P. Bought! Now you can explore elite persons and talk with chosen ones</string>
+    <string name="explore_vips">Explore V.I.P. Members</string>
+    <string name="vipGlobeChat">V.I.P. Globe Chat</string>
+    <string name="vipHallText">V.I.P. Hall</string>
 </resources>

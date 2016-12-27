@@ -5,23 +5,27 @@ import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.ink.va.R;
-import com.romainpiel.shimmer.ShimmerButton;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class VIPActivity extends BaseActivity {
 
     @Bind(R.id.rootImageView)
     ImageView rootImageView;
 
-    @Bind(R.id.vipShimmerButton)
-    ShimmerButton vipShimmerButton;
+    @Bind(R.id.exploreVip)
+    Button vipShimmerButton;
 
-    private Animation animation;
+    @Bind(R.id.vipGlobalChat)
+    Button vipGlobalChat;
+
+    private Animation slideInWithFade;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +37,12 @@ public class VIPActivity extends BaseActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
-        animation = AnimationUtils.loadAnimation(this, R.anim.slide_in_with_fade);
-        vipShimmerButton.animate();
-        vipShimmerButton.startAnimation(animation);
+        slideInWithFade = AnimationUtils.loadAnimation(this, R.anim.slide_in_with_fade);
+
 
         Bundle extras = getIntent().getExtras();
         boolean isFirstVipLogin = extras != null ? extras.getBoolean("firstVipLogin") : false;
+        boolean hasGift = extras != null ? extras.getBoolean("hasGift") : false;
         if (isFirstVipLogin) {
             showIntro();
         } else {
@@ -47,7 +51,8 @@ public class VIPActivity extends BaseActivity {
     }
 
     private void loadMenu() {
-
+        vipShimmerButton.startAnimation(slideInWithFade);
+        vipGlobalChat.startAnimation(slideInWithFade);
     }
 
     private void showIntro() {
@@ -59,5 +64,15 @@ public class VIPActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
         return super.onOptionsItemSelected(item);
+    }
+
+    @OnClick(R.id.vipGlobalChat)
+    public void globeChatClicked() {
+
+    }
+
+    @OnClick(R.id.exploreVip)
+    public void exploreClicked() {
+
     }
 }

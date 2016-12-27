@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools=" http://schemas.android.com/tools"
     android:id="@+id/activity_vip"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ink.va.activities.VIPActivity">
+
 
     <ImageView
         android:id="@+id/rootImageView"
@@ -13,13 +15,35 @@
         android:scaleType="fitXY"
         android:src="@drawable/vip_main_background" />
 
-    <com.romainpiel.shimmer.ShimmerButton
-        android:id="@+id/vipShimmerButton"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:fontPath="fonts/vip_regular.ttf"
+        android:text="@string/vipHallText"
+        android:textColor="@color/vk_white"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/exploreVip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_margin="16dp"
         android:background="@drawable/vip_gradient_button"
-        android:text="@string/somethingWentWrong"
+        android:text="@string/explore_vips"
+        android:textAllCaps="false"
+        android:textColor="@color/vk_white" />
+
+    <Button
+        android:id="@+id/vipGlobalChat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/exploreVip"
+        android:layout_margin="16dp"
+        android:background="@drawable/vip_gradient_button"
+        android:text="@string/vipGlobeChat"
+        android:textAllCaps="false"
         android:textColor="@color/vk_white" />
 </RelativeLayout>

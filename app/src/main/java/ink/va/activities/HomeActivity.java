@@ -534,8 +534,10 @@ public class HomeActivity extends BaseActivity
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
                         final boolean firstVipLogin = jsonObject.optBoolean("isFirstVipLogin");
+                        final boolean hasGift = jsonObject.optBoolean("hasGift");
                         final Bundle bundle = new Bundle();
                         bundle.putBoolean("firstVipLogin", firstVipLogin);
+                        bundle.putBoolean("hasGift", hasGift);
                         if (type.equals(Constants.TYPE_BUY_VIP)) {
                             int remainingCoins = jsonObject.optInt("remainingCoins");
                             User.get().setCoins(String.valueOf(remainingCoins));

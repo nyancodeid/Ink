@@ -76,6 +76,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.github.ybq:Android-SpinKit:1.0.4'
     compile 'com.github.yukuku:ambilwarna:2.0.1'
+    compile 'uk.co.chrisjenx:calligraphy:2.2.0'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'com.google.android.gms:play-services-gcm:9.0.2'
     compile 'com.adobe.creativesdk.foundation:auth:0.9.1062'
