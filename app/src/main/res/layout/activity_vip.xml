@@ -8,8 +8,18 @@
 
     <ImageView
         android:id="@+id/rootImageView"
-        android:src="@drawable/vip_main_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY" />
+        android:scaleType="fitXY"
+        android:src="@drawable/vip_main_background" />
+
+    <com.romainpiel.shimmer.ShimmerButton
+        android:id="@+id/vipShimmerButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="16dp"
+        android:background="@drawable/vip_gradient_button"
+        android:text="@string/somethingWentWrong"
+        android:textColor="@color/vk_white" />
 </RelativeLayout>

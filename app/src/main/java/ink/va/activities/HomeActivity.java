@@ -12,6 +12,7 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.NavigationView;
@@ -532,8 +533,9 @@ public class HomeActivity extends BaseActivity
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
-                        boolean firstVipLogin = jsonObject.optBoolean("isFirstVipLogin");
-                        setIsFirstVipLogin(firstVipLogin);
+                        final boolean firstVipLogin = jsonObject.optBoolean("isFirstVipLogin");
+                        final Bundle bundle = new Bundle();
+                        bundle.putBoolean("firstVipLogin", firstVipLogin);
                         if (type.equals(Constants.TYPE_BUY_VIP)) {
                             int remainingCoins = jsonObject.optInt("remainingCoins");
                             User.get().setCoins(String.valueOf(remainingCoins));
@@ -553,11 +555,12 @@ public class HomeActivity extends BaseActivity
                                 @Override
                                 public void onClick(View view) {
                                     alertDialog.dismiss();
-                                    openVipRoom();
+
+                                    openVipRoom(bundle);
                                 }
                             });
                         } else {
-                            openVipRoom();
+                            openVipRoom(bundle);
                         }
                     } else {
                         String cause = jsonObject.optString("cause");
@@ -652,8 +655,12 @@ public class HomeActivity extends BaseActivity
         });
     }
 
-    private void openVipRoom() {
-        startActivity(new Intent(getApplicationContext(), VIPActivity.class));
+    private void openVipRoom(@Nullable Bundle bundle) {
+        Intent intent = new Intent(getApplicationContext(), VIPActivity.class);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
+        startActivity(intent);
     }
 
     private void logoutUser() {

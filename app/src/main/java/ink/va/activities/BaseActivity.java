@@ -318,12 +318,4 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected boolean isAccountRecoverable() {
         return sharedHelper.isAccountRecoverable();
     }
-
-    public boolean isFirstVipLogin() {
-        return isFirstVipLogin;
-    }
-
-    public void setIsFirstVipLogin(boolean isFirstVipLogin) {
-        this.isFirstVipLogin = isFirstVipLogin;
-    }
 }
