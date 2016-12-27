@@ -56,7 +56,7 @@
         android:layout_centerInParent="true"
         android:layout_margin="16dp"
         android:background="@color/dimColor"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/membershipTitle"
@@ -75,8 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/membershipTypeTV"
-            android:layout_below="@+id/membershipTitle"
-            android:src="@drawable/black_member_card" />
+            android:layout_below="@+id/membershipTitle" />
 
         <Button
             android:id="@+id/closeGiftView"

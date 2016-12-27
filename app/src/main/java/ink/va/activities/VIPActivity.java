@@ -44,6 +44,9 @@ public class VIPActivity extends BaseActivity {
     @Bind(R.id.membershipTitle)
     TextView membershipTitle;
 
+    @Bind(R.id.giftImageView)
+    ImageView giftImageView;
+
     private Animation slideInWithFade;
     private Animation slideOutWithFade;
     private Typeface typeface;
@@ -69,14 +72,24 @@ public class VIPActivity extends BaseActivity {
         boolean isFirstVipLogin = extras != null ? extras.getBoolean("firstVipLogin") : false;
         boolean hasGift = extras != null ? extras.getBoolean("hasGift") : false;
         giftType = extras != null ? extras.getString("giftType") : null;
-        if(giftType!=null){
-            switch (giftType){
+        int resourceId = R.drawable.black_member_card;
+        if (giftType != null) {
+            switch (giftType) {
                 case "Gold":
+                    resourceId = R.drawable.gold_member_card;
                     break;
                 case "Red":
+                    resourceId = R.drawable.red_member_card;
+                    break;
+                case "Black":
+                    resourceId = R.drawable.black_member_card;
                     break;
             }
         }
+        if (hasGift) {
+            giftImageView.setImageResource(resourceId);
+        }
+
         membershipTypeTV.setText(giftType != null ? getString(R.string.membershipType, giftType) : "");
         if (isFirstVipLogin) {
             changeButtonVisibility(true);
