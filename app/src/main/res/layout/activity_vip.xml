@@ -52,16 +52,27 @@
     <RelativeLayout
         android:id="@+id/giftWrapper"
         android:layout_width="wrap_content"
+        android:background="@color/dimColor"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_margin="16dp"
-        android:visibility="gone">
+        android:visibility="visible">
+
+        <TextView
+            android:textColor="@color/vk_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:text="@string/vip_gift_congratulations"
+            android:textSize="20sp" />
 
         <ImageView
             android:id="@+id/giftImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/closeGiftView" />
+            android:layout_above="@+id/closeGiftView"
+            android:src="@drawable/black_member_card" />
 
         <Button
             android:id="@+id/closeGiftView"

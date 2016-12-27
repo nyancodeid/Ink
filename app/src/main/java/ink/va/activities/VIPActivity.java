@@ -64,7 +64,7 @@ public class VIPActivity extends BaseActivity {
         boolean hasGift = extras != null ? extras.getBoolean("hasGift") : false;
         giftType = extras != null ? extras.getString("giftType") : null;
         if (isFirstVipLogin) {
-            changeButtonVisibility(false);
+            changeButtonVisibility(true);
             showIntro(hasGift);
         } else {
             changeButtonVisibility(false);
@@ -81,10 +81,11 @@ public class VIPActivity extends BaseActivity {
         if (hasGift) {
             closeGiftView.setClickable(false);
             closeGiftView.setEnabled(false);
+            giftWrapper.setVisibility(View.VISIBLE);
             slideInWithFade.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
-                    giftWrapper.setVisibility(View.VISIBLE);
+
                 }
 
                 @Override
@@ -126,6 +127,7 @@ public class VIPActivity extends BaseActivity {
         giftWrapper.clearAnimation();
         closeGiftView.setClickable(false);
         closeGiftView.setEnabled(false);
+        giftWrapper.startAnimation(slideOutWithFade);
         slideOutWithFade.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {

@@ -48,7 +48,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ((FeedViewHolder) holder).initData(mContext,
                 feedModel, position, mOnClickListener, getItemCount());
         lastPosition = Animations.startRecyclerItemAnimation(mContext, ((FeedViewHolder) holder).getViewToAnimate(),
-                position, lastPosition, R.anim.slide_up_calm);
+                position, lastPosition, R.anim.slide_up_with_fade_fast);
     }
 
 
