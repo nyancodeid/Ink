@@ -55,6 +55,7 @@ public class VIPActivity extends BaseActivity {
     private Animation slideOutWithFade;
     private Typeface typeface;
     private String giftType;
+    private String chosenMembership;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,12 +81,15 @@ public class VIPActivity extends BaseActivity {
         if (giftType != null) {
             switch (giftType) {
                 case MEMBERSHIP_TYPE_GOLD:
+                    chosenMembership = MEMBERSHIP_TYPE_GOLD;
                     resourceId = R.drawable.gold_member_card;
                     break;
                 case MEMBERSHIP_TYPE_RED:
+                    chosenMembership = MEMBERSHIP_TYPE_RED;
                     resourceId = R.drawable.red_member_card;
                     break;
                 case MEMBERSHIP_TYPE_BLACK:
+                    chosenMembership = MEMBERSHIP_TYPE_BLACK;
                     resourceId = R.drawable.black_member_card;
                     break;
             }
@@ -146,7 +150,6 @@ public class VIPActivity extends BaseActivity {
 
     @OnClick(R.id.vipGlobalChat)
     public void globeChatClicked() {
-        showIntro(true);
     }
 
     @OnClick(R.id.exploreVip)

@@ -42,4 +42,14 @@ public class DimDialog {
     public static boolean isDialogAlive() {
         return dialog != null && dialog.isShowing();
     }
+
+    public static Dialog showVipLoading(Context context) {
+        Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.vip_progress_dialog);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(context, android.R.color.transparent)));
+        dialog.show();
+        return dialog;
+    }
 }
