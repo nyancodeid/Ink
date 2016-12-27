@@ -20,7 +20,6 @@ import com.vk.sdk.api.VKError;
 
 import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * Created by USER on 2016-06-26.
@@ -86,7 +85,7 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        super.attachBaseContext(newBase);
         MultiDex.install(this);
     }
 

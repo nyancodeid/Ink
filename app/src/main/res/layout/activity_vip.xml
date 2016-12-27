@@ -16,15 +16,14 @@
         android:src="@drawable/vip_main_background" />
 
     <TextView
+        android:id="@+id/vipRootTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:text="@string/vipHallText"
         android:textColor="@color/vk_white"
-        android:textSize="24sp"
-        app:fontPath="fonts/vip_regular.ttf"
-        tools:ignore="MissingPrefix" />
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/exploreVip"
@@ -35,7 +34,8 @@
         android:background="@drawable/vip_gradient_button"
         android:text="@string/explore_vips"
         android:textAllCaps="false"
-        android:textColor="@color/vk_white" />
+        android:textColor="@color/vk_white"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/vipGlobalChat"
@@ -46,5 +46,32 @@
         android:background="@drawable/vip_gradient_button"
         android:text="@string/vipGlobeChat"
         android:textAllCaps="false"
-        android:textColor="@color/vk_white" />
+        android:textColor="@color/vk_white"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/giftWrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="16dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/giftImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/closeGiftView" />
+
+        <Button
+            android:id="@+id/closeGiftView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/vip_gradient_button"
+            android:text="@string/close"
+            android:textAllCaps="false"
+            android:textColor="@color/vk_white" />
+    </RelativeLayout>
+
 </RelativeLayout>
