@@ -10,7 +10,7 @@
     <color name="defaultGroupPressedColor">#1C1C1C</color>
     <color name="red">@android:color/holo_red_dark</color>
     <color name="green">#58f409</color>
-
+    <color name="grey_transparent_20">#20606060</color>
     <color name="rainbow_red">#bf0c43</color>
     <color name="rainbow_yellow">#f9ba15</color>
     <color name="rainbow_green">#8eac00</color>

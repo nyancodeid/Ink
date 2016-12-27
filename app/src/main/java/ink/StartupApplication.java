@@ -18,6 +18,7 @@ import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 
+import ink.va.utils.QBResRequestExecutor;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
 
@@ -30,6 +31,8 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
     private SharedHelper sharedHelper;
     private Activity mActivity = null;
     private HttpProxyCacheServer proxy;
+    private QBResRequestExecutor qbResRequestExecutor;
+    private static StartupApplication instance;
 
     @Override
     public void onCreate() {
@@ -113,6 +116,11 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
 
     }
 
+    public static synchronized StartupApplication getInstance() {
+        return instance;
+    }
+
+
     public static HttpProxyCacheServer getProxy(Context context) {
         StartupApplication app = (StartupApplication) context.getApplicationContext();
         return app.proxy == null ? (app.proxy = app.newProxy()) : app.proxy;
@@ -123,5 +131,11 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
                 .maxCacheSize(1024 * 1024 * 1024)
                 .cacheDirectory(getCacheDir())
                 .build();
+    }
+
+    public QBResRequestExecutor getQbResRequestExecutor() {
+        return qbResRequestExecutor == null
+                ? qbResRequestExecutor = new QBResRequestExecutor()
+                : qbResRequestExecutor;
     }
 }

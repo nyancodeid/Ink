@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.ink.va.R;
+import com.quickblox.users.model.QBUser;
 
 import ink.va.animations.DepthPageTransformer;
 import ink.va.fragments.FirstIntroFragment;
@@ -61,7 +62,7 @@ public class Intro extends AppCompatActivity {
             }
         });
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar!=null){
+        if (actionBar != null) {
             actionBar.hide();
         }
         if (mSharedHelper.shouldShowIntro()) {
@@ -156,4 +157,6 @@ public class Intro extends AppCompatActivity {
             return NUM_PAGES;
         }
     }
+
+
 }

@@ -47,6 +47,9 @@ import com.google.gson.Gson;
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.quickblox.videochat.webrtc.QBRTCClient;
+import com.quickblox.videochat.webrtc.QBRTCSession;
+import com.quickblox.videochat.webrtc.QBRTCTypes;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -87,6 +90,7 @@ import ink.va.utils.Keyboard;
 import ink.va.utils.Notification;
 import ink.va.utils.PingHelper;
 import ink.va.utils.ProgressRequestBody;
+import ink.va.utils.PushNotificationSender;
 import ink.va.utils.QueHelper;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.RecyclerTouchListener;
@@ -94,6 +98,7 @@ import ink.va.utils.Regex;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
+import ink.va.utils.WebRtcSessionManager;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -1364,5 +1369,26 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
     @Override
     public void onFinish() {
+    }
+
+
+    private void startCall(boolean isVideoCall) {
+
+        ArrayList<Integer> opponentsList = new ArrayList<>();
+        opponentsList.add(Integer.valueOf(mOpponentId));
+
+        QBRTCTypes.QBConferenceType conferenceType = isVideoCall
+                ? QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_VIDEO
+                : QBRTCTypes.QBConferenceType.QB_CONFERENCE_TYPE_AUDIO;
+
+        QBRTCClient qbrtcClient = QBRTCClient.getInstance(getApplicationContext());
+
+        QBRTCSession newQbRtcSession = qbrtcClient.createNewSessionWithOpponents(opponentsList, conferenceType);
+
+        WebRtcSessionManager.getInstance(this).setCurrentSession(newQbRtcSession);
+
+        PushNotificationSender.sendPushMessage(opponentsList, firstName + " " + lasChosenGifName);
+
+        CallActivity.start(this, false);
     }
 }

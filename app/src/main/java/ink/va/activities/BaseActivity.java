@@ -33,6 +33,7 @@ import ink.va.interfaces.AccountDeleteListener;
 import ink.va.models.ServerInformationModel;
 import ink.va.utils.Constants;
 import ink.va.utils.DimDialog;
+import ink.va.utils.QBResRequestExecutor;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import retrofit2.Call;
@@ -107,11 +108,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     private CountDownTimer countDownTimer;
     private boolean isFirstVipLogin;
     private Dialog vipLoadingDiloag;
+    protected QBResRequestExecutor requestExecutor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         System.gc();
+        requestExecutor = ((StartupApplication)getApplicationContext()).getQbResRequestExecutor();
         sharedHelper = new SharedHelper(this);
         initCountDownTimer();
         checkBan();
@@ -277,7 +280,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                                 for (Map.Entry<String, ?> entry : keys.entrySet()) {
                                     String singleKey = entry.getKey();
                                     if (singleKey.startsWith(SERVER_NOTIFICATION_SHARED_KEY)) {
-                                        sharedHelper.removeOjbect(singleKey);
+                                        sharedHelper.removeObject(singleKey);
                                     }
                                 }
 

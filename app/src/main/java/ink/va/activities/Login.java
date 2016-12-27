@@ -45,6 +45,10 @@ import com.linkedin.platform.listeners.ApiListener;
 import com.linkedin.platform.listeners.ApiResponse;
 import com.linkedin.platform.listeners.AuthListener;
 import com.linkedin.platform.utils.Scope;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.users.model.QBUser;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
@@ -65,10 +69,13 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.callbacks.GeneralCallback;
+import ink.va.service.CallService;
 import ink.va.utils.Constants;
+import ink.va.utils.Consts;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.SocialSignIn;
+import ink.va.utils.UsersUtils;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -95,6 +102,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
     private Button mLoginButton;
     private ProgressDialog progressDialog;
     private CallbackManager mCallbackManager;
+    private QBUser userForSave;
 
 
     @Override
@@ -124,8 +132,8 @@ public class Login extends BaseActivity implements View.OnClickListener {
         }
 
         if (mSharedHelper.isLoggedIn()) {
-            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-            finish();
+            startLoginService(mSharedHelper.getQbUser());
+            startHomeActivity();
         }
         mLoginView = (AutoCompleteTextView) findViewById(R.id.email);
         loginInput = (TextInputLayout) findViewById(R.id.loginInput);
@@ -324,10 +332,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                                 if (imageLink != null && !imageLink.isEmpty()) {
                                     mSharedHelper.putImageLink(imageLink);
                                 }
-                                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                startActivity(intent);
-                                finish();
+                                startSignUpNewUser(createQBUserWithCurrentData(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), userId));
                             } else {
                                 builder.setTitle(getString(R.string.ban_title));
                                 builder.setMessage(getString(R.string.ban_message));
@@ -358,6 +363,87 @@ public class Login extends BaseActivity implements View.OnClickListener {
         });
     }
 
+    private void startHomeActivity() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.show();
+        }
+
+        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    private void startSignUpNewUser(final QBUser newUser) {
+        requestExecutor.signUpNewUser(newUser, new QBEntityCallback<QBUser>() {
+                    @Override
+                    public void onSuccess(QBUser result, Bundle params) {
+                        loginToChat(result);
+                    }
+
+                    @Override
+                    public void onError(QBResponseException e) {
+                        if (e.getHttpStatusCode() == Consts.ERR_LOGIN_ALREADY_TAKEN_HTTP_STATUS) {
+                            signInCreatedUser(newUser, true);
+                        } else {
+                            startHomeActivity();
+                        }
+                    }
+                }
+        );
+    }
+
+
+    private void signInCreatedUser(final QBUser user, final boolean deleteCurrentUser) {
+        requestExecutor.signInUser(user, new QBEntityCallbackImpl<QBUser>() {
+            @Override
+            public void onSuccess(QBUser result, Bundle params) {
+                if (deleteCurrentUser) {
+                    removeAllUserData(result);
+                } else {
+                    startHomeActivity();
+                }
+            }
+
+            @Override
+            public void onError(QBResponseException responseException) {
+                startHomeActivity();
+            }
+        });
+    }
+
+    private void removeAllUserData(final QBUser user) {
+        requestExecutor.deleteCurrentUser(user.getId(), new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void aVoid, Bundle bundle) {
+                UsersUtils.removeUserData(getApplicationContext());
+                startSignUpNewUser(createQBUserWithCurrentData(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), mSharedHelper.getUserId()));
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+            }
+        });
+    }
+
+
+    private QBUser createQBUserWithCurrentData(String userName, String userId) {
+        QBUser qbUser = null;
+        if (!TextUtils.isEmpty(userName)) {
+            qbUser = new QBUser();
+            qbUser.setFullName(userName);
+            qbUser.setLogin(userId);
+            qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
+        }
+
+        return qbUser;
+    }
+
+    private void loginToChat(final QBUser qbUser) {
+        userForSave = qbUser;
+        startLoginService(qbUser);
+        startHomeActivity();
+    }
 
     private boolean isPasswordValid(String password) {
         return password.length() > 0;
@@ -798,11 +884,12 @@ public class Login extends BaseActivity implements View.OnClickListener {
         mSharedHelper.putIsRegistered(isRegistered);
         mSharedHelper.putIsSocialAccount(isSocial);
         mSharedHelper.putImageLink(imageUrl);
-        progressDialog.dismiss();
-        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-        finish();
+        startSignUpNewUser(createQBUserWithCurrentData(firstName + " " + lastName, userId));
     }
 
+    protected void startLoginService(QBUser qbUser) {
+        CallService.start(this, qbUser);
+    }
 }
 
 

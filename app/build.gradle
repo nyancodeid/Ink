@@ -92,5 +92,7 @@ dependencies {
     compile project(':linkedin-sdk')
     compile project(path: ':explosionfield')
     compile 'com.google.android.gms:play-services-appindexing:9.0.2'
+    compile "com.quickblox:quickblox-android-sdk-videochat-webrtc:3.2.0"
+    compile "com.quickblox:quickblox-android-sdk-messages:3.2.0"
 }
 apply plugin: 'com.google.gms.google-services'

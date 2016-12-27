@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentIncomeCall"
+    style="@style/MatchParent">
+
+    <LinearLayout
+        android:id="@+id/layout_info_about_call"
+        style="@style/MatchWidth"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+
+            android:id="@+id/image_caller_avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/text_caller_name"
+            style="@style/WrapContent"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingTop="20dp"
+            tools:text="Very long opponent's User Name" />
+
+        <TextView
+            android:id="@+id/call_type"
+            style="@style/WrapContent"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/text_also_on_call"
+            style="@style/WrapContent"
+            android:layout_marginTop="48dp" />
+
+        <TextView
+            android:id="@+id/text_other_inc_users"
+            style="@style/WrapContent"
+            android:layout_marginTop="10dp"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        style="@style/WrapContent"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center">
+
+        <ImageButton
+            android:id="@+id/image_button_reject_call"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageButton
+            android:id="@+id/image_button_accept_call"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/image_button_reject_call"
+            tools:ignore="RtlCompat" />
+
+    </RelativeLayout>
+</RelativeLayout>

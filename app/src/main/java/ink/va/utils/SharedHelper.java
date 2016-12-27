@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.ink.va.R;
+import com.quickblox.core.helper.StringifyArrayList;
+import com.quickblox.users.model.QBUser;
 
 import java.util.Map;
 
@@ -16,6 +18,12 @@ import static ink.va.utils.Constants.SHOW_SERVER_NEWS_START_UP_KEY;
  */
 public class SharedHelper {
     private static final String SHOW_SHIMMER = "show_shimmer_key";
+    private static final String QB_USER_ID = "qb_user_id";
+    private static final String QB_USER_LOGIN = "qb_user_login";
+    private static final String QB_USER_PASSWORD = "qb_user_password";
+    private static final String QB_USER_FULL_NAME = "qb_user_full_name";
+    private static final String QB_USER_TAGS = "qb_user_tags";
+
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
     private Context context;
@@ -46,6 +54,51 @@ public class SharedHelper {
 
     public int getLastNotificationCount(String notificationId) {
         return mSharedPreferences.getInt("notificationCount" + notificationId, 1);
+    }
+
+    public boolean hasQbUser() {
+        return has(QB_USER_LOGIN) && has(QB_USER_PASSWORD);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public <T> T get(String key) {
+        return (T) mSharedPreferences.getAll().get(key);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T get(String key, T defValue) {
+        T returnValue = (T) mSharedPreferences.getAll().get(key);
+        return returnValue == null ? defValue : returnValue;
+    }
+
+    public boolean has(String key) {
+        return mSharedPreferences.contains(key);
+    }
+
+    public QBUser getQbUser() {
+        if (hasQbUser()) {
+            Integer id = get(QB_USER_ID);
+            String login = get(QB_USER_LOGIN);
+            String password = get(QB_USER_PASSWORD);
+            String fullName = get(QB_USER_FULL_NAME);
+            String tagsInString = get(QB_USER_TAGS);
+
+            StringifyArrayList<String> tags = null;
+
+            if (tagsInString != null) {
+                tags = new StringifyArrayList<>();
+                tags.add(tagsInString.split(","));
+            }
+
+            QBUser user = new QBUser(login, password);
+            user.setId(id);
+            user.setFullName(fullName);
+            user.setTags(tags);
+            return user;
+        } else {
+            return null;
+        }
     }
 
     public void putLastNotificationCount(String id) {
@@ -717,7 +770,7 @@ public class SharedHelper {
         return mSharedPreferences.getAll();
     }
 
-    public void removeOjbect(String key) {
+    public void removeObject(String key) {
         mEditor.remove(key);
         mEditor.commit();
     }
