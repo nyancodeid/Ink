@@ -173,14 +173,14 @@ public class VIPActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
-        overridePendingTransition(R.anim.slide_in_with_fade, R.anim.slide_out_with_fade);
+        overrideActivityAnimation();
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
         finish();
-        overridePendingTransition(R.anim.slide_in_with_fade, R.anim.slide_out_with_fade);
+        overrideActivityAnimation();
     }
 
     @OnClick(R.id.vipGlobalChat)

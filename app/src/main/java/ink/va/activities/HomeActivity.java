@@ -666,7 +666,7 @@ public class HomeActivity extends BaseActivity
             intent.putExtras(bundle);
         }
         startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_with_fade, R.anim.slide_out_with_fade);
+        overrideActivityAnimation();
     }
 
     private void logoutUser() {

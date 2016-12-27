@@ -312,7 +312,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
     }
 
-
     protected boolean isSocialAccountRegistered() {
         return sharedHelper.isRegistered();
     }
