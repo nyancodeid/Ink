@@ -92,6 +92,11 @@ public class Retrofit {
         Call<ResponseBody> getSingleUserDetails(@Field("user_id") String userId,
                                                 @Field("currentUserId") String currentUserId);
 
+        @POST(Constants.CHANGE_VIP_MEMBERSHIP)
+        @FormUrlEncoded
+        Call<ResponseBody> changeMembership(@Field("user_id") String userId,
+                                            @Field("membershipType") String user_id);
+
         @POST(Constants.VIP_URL)
         @FormUrlEncoded
         Call<ResponseBody> callVipServer(@Field("user_id") String userId,

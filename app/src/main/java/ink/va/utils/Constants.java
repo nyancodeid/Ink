@@ -12,6 +12,7 @@ public class Constants {
     public static final String PACK_BACKGROUNDS_FOLDER = "PackBackgrounds/";
     public static final String GROUP_IMAGES_FOLDER = "GroupImages/";
     public static final String ADD_GROUP_URL = "AddGroup.php";
+    public static final String CHANGE_VIP_MEMBERSHIP = "ChangeVipMembership.php";
     public static final String CHECK_BAN_URL = "CheckBan.php";
     public static final String WHO_VIEWED_URL = "WhoViewed.php";
     public static final String GROUP_REQUESTS_URL = "GetUserRequests.php";

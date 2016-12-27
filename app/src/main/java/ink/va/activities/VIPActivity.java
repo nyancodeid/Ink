@@ -17,6 +17,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static ink.va.utils.MembershipTypes.MEMBERSHIP_TYPE_BLACK;
+import static ink.va.utils.MembershipTypes.MEMBERSHIP_TYPE_GOLD;
+import static ink.va.utils.MembershipTypes.MEMBERSHIP_TYPE_RED;
+
 
 public class VIPActivity extends BaseActivity {
 
@@ -75,13 +79,13 @@ public class VIPActivity extends BaseActivity {
         int resourceId = R.drawable.black_member_card;
         if (giftType != null) {
             switch (giftType) {
-                case "Gold":
+                case MEMBERSHIP_TYPE_GOLD:
                     resourceId = R.drawable.gold_member_card;
                     break;
-                case "Red":
+                case MEMBERSHIP_TYPE_RED:
                     resourceId = R.drawable.red_member_card;
                     break;
-                case "Black":
+                case MEMBERSHIP_TYPE_BLACK:
                     resourceId = R.drawable.black_member_card;
                     break;
             }
