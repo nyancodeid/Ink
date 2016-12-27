@@ -91,5 +91,6 @@ dependencies {
     compile 'com.vk:androidsdk:1.6.5'
     compile project(':linkedin-sdk')
     compile project(path: ':explosionfield')
+    compile 'com.google.android.gms:play-services-appindexing:9.0.2'
 }
 apply plugin: 'com.google.gms.google-services'

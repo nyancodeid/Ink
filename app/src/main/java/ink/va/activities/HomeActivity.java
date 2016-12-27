@@ -62,7 +62,6 @@ import ink.va.service.SendTokenService;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.DeviceChecker;
-import ink.va.utils.DimDialog;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.FileUtils;
 import ink.va.utils.IonCache;
@@ -175,8 +174,6 @@ public class HomeActivity extends BaseActivity
 
         checkIsWarned();
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        DimDialog.showVipLoading(this);
 
         toggle = new ActionBarDrawerToggle(this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             public void onDrawerClosed(View view) {

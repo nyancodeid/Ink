@@ -47,7 +47,7 @@ public class DimDialog {
         return dialog != null && dialog.isShowing();
     }
 
-    public static Dialog showVipLoading(Context context) {
+    public static Dialog createVipLoadingDialog(Context context) {
         Animation pulseAnimation = AnimationUtils.loadAnimation(context, R.anim.pulse_animation);
         Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.vip_progress_dialog);
@@ -68,7 +68,6 @@ public class DimDialog {
             }
         });
         imageView.startAnimation(pulseAnimation);
-        dialog.show();
         return dialog;
     }
 }

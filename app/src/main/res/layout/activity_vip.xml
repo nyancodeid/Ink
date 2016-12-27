@@ -78,7 +78,7 @@
             android:layout_below="@+id/membershipTitle" />
 
         <Button
-            android:id="@+id/closeGiftView"
+            android:id="@+id/acceptGift"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -93,7 +93,7 @@
             android:id="@+id/membershipTypeTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/closeGiftView"
+            android:layout_above="@+id/acceptGift"
             android:fontFamily="@string/condensedFont"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="10dp"

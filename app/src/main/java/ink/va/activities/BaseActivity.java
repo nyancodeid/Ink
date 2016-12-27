@@ -1,5 +1,6 @@
 package ink.va.activities;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -31,6 +32,7 @@ import ink.StartupApplication;
 import ink.va.interfaces.AccountDeleteListener;
 import ink.va.models.ServerInformationModel;
 import ink.va.utils.Constants;
+import ink.va.utils.DimDialog;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import retrofit2.Call;
@@ -104,6 +106,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private SharedHelper sharedHelper;
     private CountDownTimer countDownTimer;
     private boolean isFirstVipLogin;
+    private Dialog vipLoadingDiloag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +115,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         sharedHelper = new SharedHelper(this);
         initCountDownTimer();
         checkBan();
+        if(vipLoadingDiloag==null){
+            vipLoadingDiloag = DimDialog.createVipLoadingDialog(this);
+        }
         if (sharedHelper.getActionBarColor() != null) {
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
@@ -317,5 +323,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected boolean isAccountRecoverable() {
         return sharedHelper.isAccountRecoverable();
+    }
+    protected void showVipLoading(){
+        vipLoadingDiloag.show();
+    }
+    protected void hideVipLoading(){
+        vipLoadingDiloag.dismiss();
     }
 }
