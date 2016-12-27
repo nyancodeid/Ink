@@ -164,7 +164,8 @@ public class VIPActivity extends BaseActivity {
             });
             giftWrapper.startAnimation(slideInWithFade);
         } else {
-
+            changeButtonVisibility(false);
+            loadMenu();
         }
     }
 
