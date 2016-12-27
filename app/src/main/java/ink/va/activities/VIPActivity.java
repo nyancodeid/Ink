@@ -38,6 +38,12 @@ public class VIPActivity extends BaseActivity {
     @Bind(R.id.closeGiftView)
     Button closeGiftView;
 
+    @Bind(R.id.membershipTypeTV)
+    TextView membershipTypeTV;
+
+    @Bind(R.id.membershipTitle)
+    TextView membershipTitle;
+
     private Animation slideInWithFade;
     private Animation slideOutWithFade;
     private Typeface typeface;
@@ -63,6 +69,15 @@ public class VIPActivity extends BaseActivity {
         boolean isFirstVipLogin = extras != null ? extras.getBoolean("firstVipLogin") : false;
         boolean hasGift = extras != null ? extras.getBoolean("hasGift") : false;
         giftType = extras != null ? extras.getString("giftType") : null;
+        if(giftType!=null){
+            switch (giftType){
+                case "Gold":
+                    break;
+                case "Red":
+                    break;
+            }
+        }
+        membershipTypeTV.setText(giftType != null ? getString(R.string.membershipType, giftType) : "");
         if (isFirstVipLogin) {
             changeButtonVisibility(true);
             showIntro(hasGift);

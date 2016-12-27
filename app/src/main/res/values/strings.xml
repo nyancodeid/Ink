@@ -768,4 +768,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="vipGlobeChat">V.I.P. Globe Chat</string>
     <string name="vipHallText">V.I.P. HALL</string>
     <string name="vip_gift_congratulations">Congratulations!You have received you\'r V.I.P Membership as gift from us</string>
+    <string name="membershipType">Membership type - %1$s</string>
 </resources>

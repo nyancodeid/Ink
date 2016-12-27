@@ -768,4 +768,5 @@
     <string name="vip_bought_Text">V.I.P. Куплен!Теперь вы можете найти элитных персон и разговаривать с избранными.</string>
     <string name="explore_vips">Просмотреть  V.I.P. Участников</string>
     <string name="vipGlobeChat">V.I.P. Глобальный Чат</string>
+    <string name="membershipType">Tип членства - %1$s</string>
 </resources>
