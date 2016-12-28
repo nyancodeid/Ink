@@ -106,20 +106,19 @@ public abstract class BaseActivity extends AppCompatActivity {
     private AccountDeleteListener accountDeleteListener;
     private SharedHelper sharedHelper;
     private CountDownTimer countDownTimer;
-    private boolean isFirstVipLogin;
-    private Dialog vipLoadingDiloag;
+    private Dialog vipLoadingDialog;
     protected QBResRequestExecutor requestExecutor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         System.gc();
-        requestExecutor = ((StartupApplication)getApplicationContext()).getQbResRequestExecutor();
+        requestExecutor = ((StartupApplication) getApplicationContext()).getQbResRequestExecutor();
         sharedHelper = new SharedHelper(this);
         initCountDownTimer();
         checkBan();
-        if(vipLoadingDiloag==null){
-            vipLoadingDiloag = DimDialog.createVipLoadingDialog(this);
+        if (vipLoadingDialog == null) {
+            vipLoadingDialog = DimDialog.createVipLoadingDialog(this);
         }
         if (sharedHelper.getActionBarColor() != null) {
             ActionBar actionBar = getSupportActionBar();
@@ -326,10 +325,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected boolean isAccountRecoverable() {
         return sharedHelper.isAccountRecoverable();
     }
-    protected void showVipLoading(){
-        vipLoadingDiloag.show();
+
+    protected void showVipLoading() {
+        vipLoadingDialog.show();
     }
-    protected void hideVipLoading(){
-        vipLoadingDiloag.dismiss();
+
+    protected void hideVipLoading() {
+        vipLoadingDialog.dismiss();
     }
 }

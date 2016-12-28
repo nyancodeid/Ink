@@ -135,7 +135,10 @@ public class HomeActivity extends BaseActivity
             startMessageDownloadService();
         }
 
-        silentQbUseSignIn(mSharedHelper.getQbUser());
+        if (mSharedHelper.getQbUser() != null) {
+            silentQbUseSignIn(mSharedHelper.getQbUser());
+        }
+
 
         if (!mSharedHelper.isSecurityQuestionSet() && isAccountRecoverable()) {
             View warningView = getLayoutInflater().inflate(R.layout.app_warning_view, null);

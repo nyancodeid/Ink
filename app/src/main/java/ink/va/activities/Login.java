@@ -302,12 +302,12 @@ public class Login extends BaseActivity implements View.OnClickListener {
                     proceedLogin();
                     return;
                 }
+                AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
                 try {
                     try {
                         String responseString = response.body().string();
                         JSONObject jsonObject = new JSONObject(responseString);
                         boolean success = jsonObject.optBoolean("success");
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
                         if (!success) {
                             mProgressView.setVisibility(View.GONE);
                             builder.setTitle(getString(R.string.errorLogin));
@@ -322,7 +322,6 @@ public class Login extends BaseActivity implements View.OnClickListener {
                             });
                             builder.show();
                         } else {
-                            mProgressView.setVisibility(View.GONE);
                             boolean banned = jsonObject.optBoolean("banned");
                             if (!banned) {
                                 String userId = jsonObject.optString("user_id");
@@ -355,11 +354,33 @@ public class Login extends BaseActivity implements View.OnClickListener {
                             }
                         }
                     } catch (JSONException e) {
-                        attemptLogin();
+                        mProgressView.setVisibility(View.GONE);
+                        builder.setTitle(getString(R.string.errorLogin));
+                        builder.setMessage(getString(R.string.errorLoginMessage));
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+
+                            }
+                        });
+                        builder.show();
                         e.printStackTrace();
                     }
                 } catch (IOException e) {
-                    attemptLogin();
+                    mProgressView.setVisibility(View.GONE);
+                    builder.setTitle(getString(R.string.errorLogin));
+                    builder.setMessage(getString(R.string.errorLoginMessage));
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+
+                        }
+                    });
+                    builder.show();
                     e.printStackTrace();
                 }
             }
@@ -373,7 +394,10 @@ public class Login extends BaseActivity implements View.OnClickListener {
 
     private void startHomeActivity() {
         if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.show();
+            progressDialog.dismiss();
+        }
+        if (mProgressView.getVisibility() == View.VISIBLE) {
+            mProgressView.setVisibility(View.GONE);
         }
 
         Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
@@ -386,13 +410,13 @@ public class Login extends BaseActivity implements View.OnClickListener {
         requestExecutor.signUpNewUser(newUser, new QBEntityCallback<QBUser>() {
                     @Override
                     public void onSuccess(QBUser result, Bundle params) {
-                        signInCreatedUser(newUser, true);
+                        signInCreatedUser(newUser);
                     }
 
                     @Override
                     public void onError(QBResponseException e) {
                         if (e.getHttpStatusCode() == Consts.ERR_LOGIN_ALREADY_TAKEN_HTTP_STATUS) {
-                            signInCreatedUser(newUser, true);
+                            signInCreatedUser(newUser);
                         } else {
                             startHomeActivity();
                         }
@@ -402,15 +426,11 @@ public class Login extends BaseActivity implements View.OnClickListener {
     }
 
 
-    private void signInCreatedUser(final QBUser user, final boolean deleteCurrentUser) {
+    private void signInCreatedUser(final QBUser user) {
         requestExecutor.signInUser(user, new QBEntityCallbackImpl<QBUser>() {
             @Override
             public void onSuccess(QBUser result, Bundle params) {
-                if (deleteCurrentUser) {
-                    removeAllUserData(result);
-                } else {
-                    loginToChat(result);
-                }
+                loginToChat(result);
             }
 
             @Override
@@ -441,7 +461,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
             qbUser = new QBUser();
             qbUser.setFullName(userName);
             qbUser.setLogin(userId);
-            qbUser.setPassword(mSharedHelper.getUserPassword());
+            qbUser.setPassword(mSharedHelper.getUserPassword().length() < 8 ? mSharedHelper.getUserPassword() + "minorPas" : mSharedHelper.getUserPassword());
         }
 
         return qbUser;
