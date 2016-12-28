@@ -12,12 +12,14 @@ import com.adobe.creativesdk.foundation.auth.IAdobeAuthClientCredentials;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.quickblox.auth.session.QBSettings;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 
+import ink.va.utils.Consts;
 import ink.va.utils.QBResRequestExecutor;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
@@ -37,6 +39,7 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
     @Override
     public void onCreate() {
         RealmHelper.getInstance().initRealm(getApplicationContext());
+        initCredentials(Consts.APP_ID, Consts.AUTH_KEY, Consts.AUTH_SECRET, Consts.ACCOUNT_KEY);
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         sharedHelper = new SharedHelper(this);
@@ -114,6 +117,11 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
     @Override
     public void onError(VKError error) {
 
+    }
+
+    public void initCredentials(String APP_ID, String AUTH_KEY, String AUTH_SECRET, String ACCOUNT_KEY) {
+        QBSettings.getInstance().init(getApplicationContext(), APP_ID, AUTH_KEY, AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(ACCOUNT_KEY);
     }
 
     public static synchronized StartupApplication getInstance() {
