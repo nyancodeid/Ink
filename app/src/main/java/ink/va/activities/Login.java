@@ -136,6 +136,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                 startLoginService(mSharedHelper.getQbUser());
                 startHomeActivity();
             } else {
+                progressDialog.setMessage(getString(R.string.recovering_session));
                 startSignUpNewUser(createQBUserWithCurrentData(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), mSharedHelper.getUserId()));
             }
 
