@@ -45,10 +45,6 @@ import com.linkedin.platform.listeners.ApiListener;
 import com.linkedin.platform.listeners.ApiResponse;
 import com.linkedin.platform.listeners.AuthListener;
 import com.linkedin.platform.utils.Scope;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.users.model.QBUser;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
@@ -69,13 +65,10 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.callbacks.GeneralCallback;
-import ink.va.service.CallService;
 import ink.va.utils.Constants;
-import ink.va.utils.Consts;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.SocialSignIn;
-import ink.va.utils.UsersUtils;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -103,7 +96,6 @@ public class Login extends BaseActivity implements View.OnClickListener {
     private Button mLoginButton;
     private ProgressDialog progressDialog;
     private CallbackManager mCallbackManager;
-    private QBUser userForSave;
 
 
     @Override
@@ -133,14 +125,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
         }
 
         if (mSharedHelper.isLoggedIn()) {
-            if (mSharedHelper.getQbUser() != null) {
-                loginToChat(mSharedHelper.getQbUser());
-            } else {
-                progressDialog.setMessage(getString(R.string.recovering_session));
-                progressDialog.show();
-                startSignUpNewUser(createQBUserWithCurrentData(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), mSharedHelper.getLogin()));
-            }
-
+            startHomeActivity();
         }
         mLoginView = (AutoCompleteTextView) findViewById(R.id.email);
         loginInput = (TextInputLayout) findViewById(R.id.loginInput);
@@ -340,7 +325,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                                 if (imageLink != null && !imageLink.isEmpty()) {
                                     mSharedHelper.putImageLink(imageLink);
                                 }
-                                startSignUpNewUser(createQBUserWithCurrentData(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), mSharedHelper.getLogin()));
+                                startHomeActivity();
                             } else {
                                 mProgressView.setVisibility(View.GONE);
                                 enableButtons();
@@ -411,78 +396,6 @@ public class Login extends BaseActivity implements View.OnClickListener {
         enableButtons();
     }
 
-    private void startSignUpNewUser(final QBUser newUser) {
-        requestExecutor.signUpNewUser(newUser, new QBEntityCallback<QBUser>() {
-                    @Override
-                    public void onSuccess(QBUser result, Bundle params) {
-                        signInCreatedUser(newUser);
-                    }
-
-                    @Override
-                    public void onError(QBResponseException e) {
-                        if (e.getHttpStatusCode() == Consts.ERR_LOGIN_ALREADY_TAKEN_HTTP_STATUS) {
-                            signInCreatedUser(newUser);
-                        } else {
-                            startHomeActivity();
-                        }
-                    }
-                }
-        );
-    }
-
-
-    private void signInCreatedUser(final QBUser user) {
-        requestExecutor.signInUser(user, new QBEntityCallbackImpl<QBUser>() {
-            @Override
-            public void onSuccess(QBUser result, Bundle params) {
-                loginToChat(result);
-            }
-
-            @Override
-            public void onError(QBResponseException responseException) {
-                startHomeActivity();
-            }
-        });
-    }
-
-
-    private void removeAllUserData(final QBUser user) {
-        requestExecutor.deleteCurrentUser(user.getId(), new QBEntityCallback<Void>() {
-            @Override
-            public void onSuccess(Void aVoid, Bundle bundle) {
-                UsersUtils.removeUserData(getApplicationContext());
-                startSignUpNewUser(createQBUserWithCurrentData(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), mSharedHelper.getLogin()));
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-            }
-        });
-    }
-
-
-    private QBUser createQBUserWithCurrentData(String fullName, String userName) {
-        QBUser qbUser = null;
-        if (!TextUtils.isEmpty(fullName)) {
-            qbUser = new QBUser();
-            qbUser.setFullName(fullName);
-            qbUser.setLogin(userName);
-            qbUser.setPassword(mSharedHelper.getUserPassword().length() < 8 ? mSharedHelper.getUserPassword() + "minorPas" : mSharedHelper.getUserPassword());
-        }
-
-        return qbUser;
-    }
-
-    private void loginToChat(final QBUser qbUser) {
-        userForSave = qbUser;
-        saveUserData(qbUser);
-        startLoginService(qbUser);
-        startHomeActivity();
-    }
-
-    private void saveUserData(QBUser qbUser) {
-        mSharedHelper.saveQbUser(qbUser);
-    }
 
     private boolean isPasswordValid(String password) {
         return password.length() > 0;
@@ -741,7 +654,6 @@ public class Login extends BaseActivity implements View.OnClickListener {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
                 GoogleSignInAccount account = result.getSignInAccount();
-                getFriends();
                 // Get account information
                 progressDialog.show();
                 String fullName = account.getDisplayName();
@@ -814,35 +726,6 @@ public class Login extends BaseActivity implements View.OnClickListener {
             }
         }))
             mCallbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void getFriends() {
-//        Plus.People.List listPeople = plus.people().list(
-//                "me", "visible");
-//        listPeople.setMaxResults(5L);
-//
-//        PeopleFeed peopleFeed = listPeople.execute();
-//        List<Person> people = peopleFeed.getItems();
-//
-//// Loop through until we arrive at an empty page
-//        while (people != null) {
-//            for (Person person : people) {
-//                System.out.println(person.getDisplayName());
-//            }
-//
-//            // We will know we are on the last page when the next page token is
-//            // null.
-//            // If this is the case, break.
-//            if (peopleFeed.getNextPageToken() == null) {
-//                break;
-//            }
-//
-//            // Prepare the next page of results
-//            listPeople.setPageToken(peopleFeed.getNextPageToken());
-//
-//            // Execute and process the next page request
-//            peopleFeed = listPeople.execute();
-//            people = peopleFeed.getItems();
     }
 
     private void loginUser(final String login,
@@ -923,12 +806,9 @@ public class Login extends BaseActivity implements View.OnClickListener {
         mSharedHelper.putIsRegistered(isRegistered);
         mSharedHelper.putIsSocialAccount(isSocial);
         mSharedHelper.putImageLink(imageUrl);
-        startSignUpNewUser(createQBUserWithCurrentData(firstName + " " + lastName, mSharedHelper.getLogin()));
+        startHomeActivity();
     }
 
-    protected void startLoginService(QBUser qbUser) {
-        CallService.start(this, qbUser);
-    }
 }
 
 

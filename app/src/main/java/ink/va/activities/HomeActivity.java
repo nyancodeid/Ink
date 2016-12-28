@@ -26,6 +26,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,6 +44,7 @@ import com.google.gson.Gson;
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBEntityCallbackImpl;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.messages.services.SubscribeService;
@@ -66,12 +68,14 @@ import ink.va.service.LocationRequestSessionDestroyer;
 import ink.va.service.SendTokenService;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+import ink.va.utils.Consts;
 import ink.va.utils.DeviceChecker;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.FileUtils;
 import ink.va.utils.IonCache;
 import ink.va.utils.Keyboard;
 import ink.va.utils.PingHelper;
+import ink.va.utils.QBUtils;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -115,6 +119,7 @@ public class HomeActivity extends BaseActivity
     private ColorChangeListener colorChangeListener;
     private RelativeLayout panelHeader;
     private TextView messagesCountTV;
+    private QBUtils qbUtils;
 
 
     @Override
@@ -135,9 +140,8 @@ public class HomeActivity extends BaseActivity
             startMessageDownloadService();
         }
 
-        if (mSharedHelper.getQbUser() != null) {
-            silentQbUseSignIn(mSharedHelper.getQbUser());
-        }
+        qbUtils = new QBUtils(requestExecutor, this, mSharedHelper);
+        qbUtils.silentQbLogin();
 
 
         if (!mSharedHelper.isSecurityQuestionSet() && isAccountRecoverable()) {
@@ -230,17 +234,10 @@ public class HomeActivity extends BaseActivity
     }
 
     private void silentQbUseSignIn(final QBUser user) {
-        requestExecutor.signInUser(user, new QBEntityCallbackImpl<QBUser>() {
-            @Override
-            public void onSuccess(QBUser result, Bundle params) {
 
-            }
 
-            @Override
-            public void onError(QBResponseException responseException) {
-            }
-        });
     }
+
 
     private void initializeCountDrawer(final TextView messages) {
         messages.setGravity(Gravity.CENTER_VERTICAL);
