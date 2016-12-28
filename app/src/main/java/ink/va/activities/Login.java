@@ -138,7 +138,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
             } else {
                 progressDialog.setMessage(getString(R.string.recovering_session));
                 progressDialog.show();
-                startSignUpNewUser(createQBUserWithCurrentData(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), mSharedHelper.getUserId()));
+                startSignUpNewUser(createQBUserWithCurrentData(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), mSharedHelper.getLogin()));
             }
 
         }
@@ -293,7 +293,6 @@ public class Login extends BaseActivity implements View.OnClickListener {
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                enableButtons();
                 if (response == null) {
                     proceedLogin();
                     return;
@@ -309,6 +308,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                         JSONObject jsonObject = new JSONObject(responseString);
                         boolean success = jsonObject.optBoolean("success");
                         if (!success) {
+                            enableButtons();
                             mProgressView.setVisibility(View.GONE);
                             builder.setTitle(getString(R.string.errorLogin));
                             builder.setMessage(getString(R.string.errorLoginMessage));
@@ -333,14 +333,17 @@ public class Login extends BaseActivity implements View.OnClickListener {
                                 mSharedHelper.setPassword(jsonObject.optString("password"));
                                 mSharedHelper.putUserId(userId);
                                 mSharedHelper.putShouldShowIntro(false);
+                                mSharedHelper.putLogin(jsonObject.optString("login"));
                                 mSharedHelper.putIsSocialAccount(false);
                                 mSharedHelper.putIsAccountRecoverable(true);
                                 String imageLink = jsonObject.optString("imageLink");
                                 if (imageLink != null && !imageLink.isEmpty()) {
                                     mSharedHelper.putImageLink(imageLink);
                                 }
-                                startSignUpNewUser(createQBUserWithCurrentData(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), userId));
+                                startSignUpNewUser(createQBUserWithCurrentData(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), mSharedHelper.getLogin()));
                             } else {
+                                mProgressView.setVisibility(View.GONE);
+                                enableButtons();
                                 builder.setTitle(getString(R.string.ban_title));
                                 builder.setMessage(getString(R.string.ban_message));
                                 builder.setCancelable(false);
@@ -354,6 +357,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                             }
                         }
                     } catch (JSONException e) {
+                        enableButtons();
                         mProgressView.setVisibility(View.GONE);
                         builder.setTitle(getString(R.string.errorLogin));
                         builder.setMessage(getString(R.string.errorLoginMessage));
@@ -369,6 +373,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                         e.printStackTrace();
                     }
                 } catch (IOException e) {
+                    enableButtons();
                     mProgressView.setVisibility(View.GONE);
                     builder.setTitle(getString(R.string.errorLogin));
                     builder.setMessage(getString(R.string.errorLoginMessage));
@@ -393,17 +398,17 @@ public class Login extends BaseActivity implements View.OnClickListener {
     }
 
     private void startHomeActivity() {
+        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
         if (mProgressView.getVisibility() == View.VISIBLE) {
             mProgressView.setVisibility(View.GONE);
         }
-
-        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
-        finish();
+        enableButtons();
     }
 
     private void startSignUpNewUser(final QBUser newUser) {
@@ -446,7 +451,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
             @Override
             public void onSuccess(Void aVoid, Bundle bundle) {
                 UsersUtils.removeUserData(getApplicationContext());
-                startSignUpNewUser(createQBUserWithCurrentData(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), mSharedHelper.getUserId()));
+                startSignUpNewUser(createQBUserWithCurrentData(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), mSharedHelper.getLogin()));
             }
 
             @Override
@@ -456,12 +461,12 @@ public class Login extends BaseActivity implements View.OnClickListener {
     }
 
 
-    private QBUser createQBUserWithCurrentData(String userName, String userId) {
+    private QBUser createQBUserWithCurrentData(String fullName, String userName) {
         QBUser qbUser = null;
-        if (!TextUtils.isEmpty(userName)) {
+        if (!TextUtils.isEmpty(fullName)) {
             qbUser = new QBUser();
-            qbUser.setFullName(userName);
-            qbUser.setLogin(userId);
+            qbUser.setFullName(fullName);
+            qbUser.setLogin(userName);
             qbUser.setPassword(mSharedHelper.getUserPassword().length() < 8 ? mSharedHelper.getUserPassword() + "minorPas" : mSharedHelper.getUserPassword());
         }
 
@@ -918,7 +923,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
         mSharedHelper.putIsRegistered(isRegistered);
         mSharedHelper.putIsSocialAccount(isSocial);
         mSharedHelper.putImageLink(imageUrl);
-        startSignUpNewUser(createQBUserWithCurrentData(firstName + " " + lastName, userId));
+        startSignUpNewUser(createQBUserWithCurrentData(firstName + " " + lastName, mSharedHelper.getLogin()));
     }
 
     protected void startLoginService(QBUser qbUser) {

@@ -602,17 +602,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     }
 
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.chat_menu, menu);
-//        chatMenuItem = menu;
-//        if (mSharedHelper.isRainbowMessageActivated()) {
-//            menu.getItem(0).setTitle(getString(R.string.removeRainbowEffect));
-//        } else {
-//            menu.getItem(0).setTitle(getString(R.string.showAsRainbow));
-//        }
-//        return super.onCreateOptionsMenu(menu);
-//    }
 
 
     private void getStatus() {
