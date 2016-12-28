@@ -7,10 +7,10 @@ import android.Manifest;
  */
 public interface Consts {
 
-    String APP_ID = "39854";
-    String AUTH_KEY = "JtensAa9y4AM5Yk";
-    String AUTH_SECRET = "AsDFwwwxpr3LN5w";
-    String ACCOUNT_KEY = "7yvNe17TnjNUqDoPwfqp";
+    String APP_ID = "44423";
+    String AUTH_KEY = "L8zW6NRcsDUWUbW";
+    String AUTH_SECRET = "tXvqsFsEr3HzqTd";
+    String ACCOUNT_KEY = "1rHS51P2KfxmgjRMpRZL";
 
     // In GCM, the Sender ID is a project ID that you acquire from the API console
     String GCM_SENDER_ID = "761750217637";
