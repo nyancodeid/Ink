@@ -144,6 +144,8 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     ImageView attachmentIcon;
     @Bind(R.id.messageFiledDivider)
     View messageFiledDivider;
+    @Bind(R.id.callIcon)
+    ImageView callIcon;
 
     private String mOpponentId;
     String mCurrentUserId;
@@ -536,6 +538,11 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                 deleteMessage(messageId, positionOfItem);
             }
         });
+    }
+
+    @OnClick(R.id.callIcon)
+    public void callClcked() {
+        startCall(false);
     }
 
     @OnClick(R.id.scrollDownChat)
@@ -1373,7 +1380,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
 
     private void startCall(boolean isVideoCall) {
-
         ArrayList<Integer> opponentsList = new ArrayList<>();
         opponentsList.add(Integer.valueOf(mOpponentId));
 

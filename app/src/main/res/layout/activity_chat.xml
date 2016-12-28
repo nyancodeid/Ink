@@ -75,6 +75,16 @@
                         android:layout_toRightOf="@+id/opponentImage"
                         android:background="@drawable/circle_green"
                         android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/callIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="16dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/audi_call_icon_white" />
                 </RelativeLayout>
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
