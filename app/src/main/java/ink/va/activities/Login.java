@@ -440,6 +440,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
         });
     }
 
+
     private void removeAllUserData(final QBUser user) {
         requestExecutor.deleteCurrentUser(user.getId(), new QBEntityCallback<Void>() {
             @Override
