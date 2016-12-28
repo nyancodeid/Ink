@@ -9,6 +9,8 @@ import com.quickblox.users.model.QBUser;
 
 import java.util.Map;
 
+import ink.StartupApplication;
+
 import static ink.va.utils.Constants.SERVER_NOTIFICATION_SHARED_KEY;
 import static ink.va.utils.Constants.SHOW_SERVER_NEWS_START_UP_KEY;
 
@@ -27,8 +29,10 @@ public class SharedHelper {
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
     private Context context;
+    private static SharedHelper instance;
 
     public SharedHelper(Context context) {
+        instance = this;
         mSharedPreferences = context.getSharedPreferences("ink_session", Context.MODE_PRIVATE);
         mEditor = mSharedPreferences.edit();
         this.context = context;
@@ -46,6 +50,14 @@ public class SharedHelper {
     public void putImageLink(String imageLink) {
         mEditor.putString("imageLink", imageLink);
         mEditor.commit();
+    }
+
+    public static synchronized SharedHelper getInstance() {
+        if (instance == null) {
+            instance = new SharedHelper(StartupApplication.getInstance().getApplicationContext());
+        }
+
+        return instance;
     }
 
     public String getLastNotificationId(String notificationId) {
