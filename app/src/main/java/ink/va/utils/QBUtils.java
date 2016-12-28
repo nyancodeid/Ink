@@ -20,7 +20,7 @@ public class QBUtils {
     private QBResRequestExecutor requestExecutor;
     private Context context;
     private SharedHelper sharedHelper;
-    private QBLoginListener onQbLoginListener;
+    private QBEventListener onQbEventListener;
 
     public QBUtils(QBResRequestExecutor requestExecutor, Context context, SharedHelper sharedHelper) {
         this.requestExecutor = requestExecutor;
@@ -29,8 +29,8 @@ public class QBUtils {
     }
 
     public void silentQbLogin() {
-        startSignUpNewUser(createQBUserWithCurrentData(this.sharedHelper.getFirstName() + " " + this.sharedHelper.getLastName(), this.sharedHelper.getLogin()));
-
+        startSignUpNewUser(createQBUserWithCurrentData(this.sharedHelper.getFirstName() + " " +
+                this.sharedHelper.getLastName(), this.sharedHelper.getLogin()));
     }
 
 
@@ -58,8 +58,8 @@ public class QBUtils {
                     public void onError(QBResponseException e) {
                         if (e.getHttpStatusCode() == Consts.ERR_LOGIN_ALREADY_TAKEN_HTTP_STATUS) {
                             signInCreatedUser(newUser);
-                        }else{
-                            triggerQBEvenet(false, e.toString());
+                        } else {
+                            triggerQBEvent(false, e.toString());
                         }
                     }
                 }
@@ -75,28 +75,28 @@ public class QBUtils {
 
             @Override
             public void onError(QBResponseException responseException) {
-                triggerQBEvenet(false, responseException.toString());
+                triggerQBEvent(false, responseException.toString());
             }
         });
     }
 
-    public void setOnQbLoginListener(QBLoginListener onQbLoginListener) {
-        this.onQbLoginListener = onQbLoginListener;
+    public void setOnQbEventListener(QBEventListener onQbEventListener) {
+        this.onQbEventListener = onQbEventListener;
     }
 
     private void loginToChat(final QBUser qbUser) {
         saveUserData(qbUser);
         CallService.start(context, qbUser);
-        triggerQBEvenet(true, qbUser);
+        triggerQBEvent(true, qbUser);
     }
 
 
-    private void triggerQBEvenet(boolean success, Object argument) {
-        if (onQbLoginListener != null) {
+    private void triggerQBEvent(boolean success, Object argument) {
+        if (onQbEventListener != null) {
             if (success) {
-                onQbLoginListener.onLoginSuccess((QBUser) argument);
+                onQbEventListener.onLoginSuccess((QBUser) argument);
             } else {
-                onQbLoginListener.onLoginFailed((String) argument);
+                onQbEventListener.onLoginFailed((String) argument);
             }
         }
     }
@@ -105,7 +105,7 @@ public class QBUtils {
         sharedHelper.saveQbUser(qbUser);
     }
 
-    public interface QBLoginListener {
+    public interface QBEventListener {
         void onLoginSuccess(QBUser qbUser);
 
         void onLoginFailed(String reason);

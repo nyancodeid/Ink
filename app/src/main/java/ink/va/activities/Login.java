@@ -390,7 +390,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
-        if (mProgressView.getVisibility() == View.VISIBLE) {
+        if (mProgressView != null && mProgressView.getVisibility() == View.VISIBLE) {
             mProgressView.setVisibility(View.GONE);
         }
         enableButtons();
@@ -640,10 +640,13 @@ public class Login extends BaseActivity implements View.OnClickListener {
     }
 
     private void enableButtons() {
-        mLoginView.setEnabled(true);
-        mPasswordView.setEnabled(true);
-        mLoginButton.setEnabled(true);
-        mRegisterWrapper.setEnabled(true);
+        if (mLoginView != null) {
+            mLoginView.setEnabled(true);
+            mPasswordView.setEnabled(true);
+            mLoginButton.setEnabled(true);
+            mRegisterWrapper.setEnabled(true);
+        }
+
     }
 
     @Override
