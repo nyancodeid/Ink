@@ -57,7 +57,7 @@ public class SharedHelper {
     }
 
     public boolean hasQbUser() {
-        return has(QB_USER_LOGIN) && has(QB_USER_PASSWORD);
+        return has(QB_USER_LOGIN);
     }
 
 
@@ -217,6 +217,15 @@ public class SharedHelper {
 
     public String getLogin() {
         return mSharedPreferences.getString("login", null);
+    }
+
+    public String getUserPassword() {
+        return mSharedPreferences.getString("password", null);
+    }
+
+    public void setPassword(String value) {
+        mEditor.putString("password", value);
+        mEditor.commit();
     }
 
     public void clean() {

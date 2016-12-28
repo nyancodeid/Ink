@@ -43,6 +43,10 @@ import com.google.gson.Gson;
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.messages.services.SubscribeService;
+import com.quickblox.users.model.QBUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,6 +61,7 @@ import ink.va.interfaces.AccountDeleteListener;
 import ink.va.interfaces.ColorChangeListener;
 import ink.va.models.CoinsResponse;
 import ink.va.service.BackgroundTaskService;
+import ink.va.service.CallService;
 import ink.va.service.LocationRequestSessionDestroyer;
 import ink.va.service.SendTokenService;
 import ink.va.utils.CircleTransform;
@@ -129,6 +134,8 @@ public class HomeActivity extends BaseActivity
         if (!mSharedHelper.isMessagesDownloaded()) {
             startMessageDownloadService();
         }
+
+        silentQbUseSignIn(mSharedHelper.getQbUser());
 
         if (!mSharedHelper.isSecurityQuestionSet() && isAccountRecoverable()) {
             View warningView = getLayoutInflater().inflate(R.layout.app_warning_view, null);
@@ -219,6 +226,18 @@ public class HomeActivity extends BaseActivity
         LocalBroadcastManager.getInstance(this).registerReceiver(feedUpdateReceiver, new IntentFilter(getPackageName() + "HomeActivity"));
     }
 
+    private void silentQbUseSignIn(final QBUser user) {
+        requestExecutor.signInUser(user, new QBEntityCallbackImpl<QBUser>() {
+            @Override
+            public void onSuccess(QBUser result, Bundle params) {
+
+            }
+
+            @Override
+            public void onError(QBResponseException responseException) {
+            }
+        });
+    }
 
     private void initializeCountDrawer(final TextView messages) {
         messages.setGravity(Gravity.CENTER_VERTICAL);
@@ -485,6 +504,7 @@ public class HomeActivity extends BaseActivity
 
             case R.id.logout:
                 System.gc();
+                logOutQbUser();
                 AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
                 builder.setTitle(getString(R.string.warning));
                 builder.setMessage(getString(R.string.logoutWaring));
@@ -508,6 +528,16 @@ public class HomeActivity extends BaseActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void logOutQbUser() {
+        unsubscribeFromPushes();
+        CallService.logout(this);
+    }
+
+    private void unsubscribeFromPushes() {
+        SubscribeService.unSubscribeFromPushes(this);
+    }
+
 
     private void callToVipServer(final String type) {
         progressDialog.setTitle(getString(R.string.logging));

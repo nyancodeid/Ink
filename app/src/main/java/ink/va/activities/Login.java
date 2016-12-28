@@ -81,6 +81,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.ink.va.R.id.login;
 import static ink.va.utils.Constants.PEOPLE_LINKEDIN_URL;
 
 /**
@@ -133,8 +134,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
 
         if (mSharedHelper.isLoggedIn()) {
             if (mSharedHelper.getQbUser() != null) {
-                startLoginService(mSharedHelper.getQbUser());
-                startHomeActivity();
+                loginToChat(mSharedHelper.getQbUser());
             } else {
                 progressDialog.setMessage(getString(R.string.recovering_session));
                 progressDialog.show();
@@ -200,7 +200,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                if (id == login || id == EditorInfo.IME_NULL) {
                     attemptLogin();
                     return true;
                 }
@@ -331,6 +331,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                                 mSharedHelper.putFirstName(jsonObject.optString("first_name"));
                                 mSharedHelper.putIsAccountRecoverable(true);
                                 mSharedHelper.putLastName(jsonObject.optString("last_name"));
+                                mSharedHelper.setPassword(jsonObject.optString("password"));
                                 mSharedHelper.putUserId(userId);
                                 mSharedHelper.putShouldShowIntro(false);
                                 mSharedHelper.putIsSocialAccount(false);
@@ -385,7 +386,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
         requestExecutor.signUpNewUser(newUser, new QBEntityCallback<QBUser>() {
                     @Override
                     public void onSuccess(QBUser result, Bundle params) {
-                        loginToChat(result);
+                        signInCreatedUser(newUser, true);
                     }
 
                     @Override
@@ -408,7 +409,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
                 if (deleteCurrentUser) {
                     removeAllUserData(result);
                 } else {
-                    startHomeActivity();
+                    loginToChat(result);
                 }
             }
 
@@ -440,7 +441,7 @@ public class Login extends BaseActivity implements View.OnClickListener {
             qbUser = new QBUser();
             qbUser.setFullName(userName);
             qbUser.setLogin(userId);
-            qbUser.setPassword(Consts.DEFAULT_USER_PASSWORD);
+            qbUser.setPassword(mSharedHelper.getUserPassword());
         }
 
         return qbUser;
@@ -454,7 +455,6 @@ public class Login extends BaseActivity implements View.OnClickListener {
     }
 
     private void saveUserData(QBUser qbUser) {
-        mSharedHelper.save(Consts.PREF_CURREN_ROOM_NAME, qbUser.getTags().get(0));
         mSharedHelper.saveQbUser(qbUser);
     }
 

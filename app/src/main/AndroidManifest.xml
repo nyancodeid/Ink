@@ -108,6 +108,8 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <service android:name="ink.va.service.CallService" />
         <service
             android:name="ink.va.service.FirebaseInstanceService"
             android:enabled="true"
