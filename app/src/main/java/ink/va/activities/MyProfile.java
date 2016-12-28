@@ -47,6 +47,8 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,6 +76,7 @@ import ink.va.utils.PermissionsChecker;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
+import ink.va.utils.UsersUtils;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -1000,6 +1003,20 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     }
 
     private void deleteAccountRequest() {
+        if (mSharedHelper.getQbUser() != null) {
+            requestExecutor.deleteCurrentUser(mSharedHelper.getQbUser().getId(), new QBEntityCallback<Void>() {
+                @Override
+                public void onSuccess(Void aVoid, Bundle bundle) {
+                    UsersUtils.removeUserData(getApplicationContext());
+                }
+
+                @Override
+                public void onError(QBResponseException e) {
+
+                }
+            });
+        }
+
         final Call<ResponseBody> deleteAccountCall = Retrofit.getInstance().getInkService().deleteAccount(mSharedHelper.getUserId());
         deleteAccountCall.enqueue(new Callback<ResponseBody>() {
             @Override
