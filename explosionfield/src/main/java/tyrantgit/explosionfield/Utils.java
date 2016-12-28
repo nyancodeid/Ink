@@ -16,6 +16,9 @@
 package tyrantgit.explosionfield;
 
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -68,5 +71,16 @@ public class Utils {
             }
             return null;
         }
+    }
+
+    public static int getAppVersionCode(Context context) {
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        return pInfo.versionCode;
     }
 }

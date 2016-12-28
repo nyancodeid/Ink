@@ -132,8 +132,13 @@ public class Login extends BaseActivity implements View.OnClickListener {
         }
 
         if (mSharedHelper.isLoggedIn()) {
-            startLoginService(mSharedHelper.getQbUser());
-            startHomeActivity();
+            if (mSharedHelper.getQbUser() != null) {
+                startLoginService(mSharedHelper.getQbUser());
+                startHomeActivity();
+            } else {
+                startSignUpNewUser(createQBUserWithCurrentData(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), mSharedHelper.getUserId()));
+            }
+
         }
         mLoginView = (AutoCompleteTextView) findViewById(R.id.email);
         loginInput = (TextInputLayout) findViewById(R.id.loginInput);
@@ -441,8 +446,14 @@ public class Login extends BaseActivity implements View.OnClickListener {
 
     private void loginToChat(final QBUser qbUser) {
         userForSave = qbUser;
+        saveUserData(qbUser);
         startLoginService(qbUser);
         startHomeActivity();
+    }
+
+    private void saveUserData(QBUser qbUser) {
+        mSharedHelper.save(Consts.PREF_CURREN_ROOM_NAME, qbUser.getTags().get(0));
+        mSharedHelper.saveQbUser(qbUser);
     }
 
     private boolean isPasswordValid(String password) {

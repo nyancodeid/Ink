@@ -76,6 +76,35 @@ public class SharedHelper {
         return mSharedPreferences.contains(key);
     }
 
+    public void save(String key, Object value) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        if (value instanceof Boolean) {
+            editor.putBoolean(key, (Boolean) value);
+        } else if (value instanceof Integer) {
+            editor.putInt(key, (Integer) value);
+        } else if (value instanceof Float) {
+            editor.putFloat(key, (Float) value);
+        } else if (value instanceof Long) {
+            editor.putLong(key, (Long) value);
+        } else if (value instanceof String) {
+            editor.putString(key, (String) value);
+        } else if (value instanceof Enum) {
+            editor.putString(key, value.toString());
+        } else if (value != null) {
+            throw new RuntimeException("Attempting to save non-supported preference");
+        }
+
+        editor.commit();
+    }
+
+    public void saveQbUser(QBUser qbUser) {
+        save(QB_USER_ID, qbUser.getId());
+        save(QB_USER_LOGIN, qbUser.getLogin());
+        save(QB_USER_PASSWORD, qbUser.getPassword());
+        save(QB_USER_FULL_NAME, qbUser.getFullName());
+        save(QB_USER_TAGS, qbUser.getTags().getItemsAsString());
+    }
+
     public QBUser getQbUser() {
         if (hasQbUser()) {
             Integer id = get(QB_USER_ID);
