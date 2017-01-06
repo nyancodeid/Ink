@@ -289,6 +289,7 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            hideProgress();
                                             scrollToBottom();
                                             RandomChatModel randomChatModel = new RandomChatModel(message, false);
                                             chatModels.add(randomChatModel);
@@ -305,7 +306,9 @@ public class WaitRoom extends BaseActivity {
                                         @Override
                                         public void run() {
                                             hideKeyboard();
+                                            hideProgress();
                                             chosenTypeSpinner.setEnabled(true);
+                                            chatRouletteMessageBody.setText("");
                                             chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
                                             chatRouletteMessageBody.setEnabled(false);
                                             connected = false;
@@ -322,6 +325,7 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            hideProgress();
 //                                            actualStatus.setText(getString(R.string.typing));
                                         }
                                     });
@@ -333,6 +337,7 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
+                                             hideProgress();
                                             actualStatus.setText(getString(R.string.connectedToOpponent));
                                         }
                                     });
@@ -344,7 +349,7 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-
+                                            hideProgress();
                                         }
                                     });
                                 }
@@ -355,7 +360,7 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-
+                                            hideProgress();
                                         }
                                     });
                                 }
@@ -366,7 +371,7 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-
+                                            hideProgress();
                                         }
                                     });
                                 }
@@ -377,7 +382,7 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-
+                                            hideProgress();
                                         }
                                     });
                                 }
@@ -388,7 +393,7 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-
+                                            hideProgress();
                                         }
                                     });
                                 }
@@ -399,7 +404,16 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-
+                                            hideKeyboard();
+                                            hideProgress();
+                                            chosenTypeSpinner.setEnabled(true);
+                                            chatRouletteMessageBody.setText("");
+                                            chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
+                                            chatRouletteMessageBody.setEnabled(false);
+                                            connected = false;
+                                            connectDisconnectButton.setText(getString(R.string.connect));
+                                            actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.red));
+                                            actualStatus.setText(getString(R.string.disconnectedToOpponent));
                                         }
                                     });
                                 }
@@ -410,7 +424,7 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-
+                                            hideProgress();
                                         }
                                     });
                                 }
@@ -425,6 +439,7 @@ public class WaitRoom extends BaseActivity {
                                                 @Override
                                                 public void run() {
                                                     hideKeyboard();
+                                                    hideProgress();
                                                     chosenTypeSpinner.setEnabled(true);
                                                     chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
                                                     chatRouletteMessageBody.setEnabled(false);
@@ -445,6 +460,7 @@ public class WaitRoom extends BaseActivity {
                                         @Override
                                         public void run() {
                                             scrollToBottom();
+                                            hideProgress();
                                             mSendThread = null;
                                             progressBar.setVisibility(View.GONE);
                                             chatRouletteMessageBody.setEnabled(true);
@@ -460,19 +476,7 @@ public class WaitRoom extends BaseActivity {
                                 @Override
                                 public void chatDisconnected(OmegleSession session) {
                                     super.chatDisconnected(session);
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            hideKeyboard();
-                                            chosenTypeSpinner.setEnabled(true);
-                                            chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
-                                            chatRouletteMessageBody.setEnabled(false);
-                                            connected = false;
-                                            connectDisconnectButton.setText(getString(R.string.connect));
-                                            actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.red));
-                                            actualStatus.setText(getString(R.string.disconnectedToOpponent));
-                                        }
-                                    });
+                                    hideProgress();
                                 }
                             });
                         } catch (OmegleException e) {
@@ -499,7 +503,7 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            progressBar.setVisibility(View.GONE);
+                                            hideProgress();
                                             actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.colorPrimary));
                                             actualStatus.setText(getString(R.string.youWatchingNow) + " " + question);
                                         }
@@ -511,6 +515,7 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            hideProgress();
                                             switch (stranger) {
                                                 case Stranger_1:
                                                     chatModel = new RandomChatModel(message, true);
@@ -533,19 +538,7 @@ public class WaitRoom extends BaseActivity {
                                 @Override
                                 public void chatDisconnected(OmegleSession session) {
                                     super.chatDisconnected(session);
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            hideKeyboard();
-                                            chosenTypeSpinner.setEnabled(true);
-                                            chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
-                                            chatRouletteMessageBody.setEnabled(false);
-                                            connected = false;
-                                            connectDisconnectButton.setText(getString(R.string.connect));
-                                            actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.red));
-                                            actualStatus.setText(getString(R.string.disconnectedToOpponent));
-                                        }
-                                    });
+                                    hideProgress();
                                 }
 
                                 @Override
@@ -554,6 +547,7 @@ public class WaitRoom extends BaseActivity {
                                         @Override
                                         public void run() {
                                             hideKeyboard();
+                                            hideProgress();
                                             chosenTypeSpinner.setEnabled(true);
                                             chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
                                             chatRouletteMessageBody.setEnabled(false);
@@ -567,7 +561,7 @@ public class WaitRoom extends BaseActivity {
 
                                 @Override
                                 public void question(OmegleSession session, String question) {
-
+                                    hideProgress();
                                 }
 
                                 @Override
@@ -576,6 +570,7 @@ public class WaitRoom extends BaseActivity {
                                         @Override
                                         public void run() {
                                             hideKeyboard();
+                                            hideProgress();
                                             chosenTypeSpinner.setEnabled(true);
                                             chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
                                             chatRouletteMessageBody.setEnabled(false);
@@ -597,6 +592,12 @@ public class WaitRoom extends BaseActivity {
         });
         mWorkerThread.start();
 
+    }
+
+    private void hideProgress() {
+        if(progressBar.getVisibility()==View.VISIBLE){
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     private void hideKeyboard() {
