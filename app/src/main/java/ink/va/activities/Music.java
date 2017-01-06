@@ -62,8 +62,6 @@ public class Music extends BaseActivity implements MusicClickListener {
     TextView currentlyPlayingName;
     @Bind(R.id.playPauseButton)
     ImageView playPauseButton;
-    @Bind(R.id.closeMusicSheet)
-    ImageView closeMusicSheet;
     @Bind(R.id.currentlyPlayingImage)
     ImageView currentlyPlayingImage;
     @Bind(R.id.musicGeneralTitle)
