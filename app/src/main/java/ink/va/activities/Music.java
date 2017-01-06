@@ -124,7 +124,6 @@ public class Music extends BaseActivity implements MusicClickListener {
 
                 musicInfoSheet.setVisibility(View.VISIBLE);
                 musicInfoSheet.startAnimation(slideUp);
-                openMusicSheet.clearAnimation();
                 openMusicSheet.setVisibility(View.GONE);
             }
         });
@@ -160,7 +159,6 @@ public class Music extends BaseActivity implements MusicClickListener {
             musicInfoSheet.startAnimation(slideUp);
         }
 
-        openMusicSheet.clearAnimation();
         openMusicSheet.setVisibility(View.GONE);
 
         isMusicChosen = true;
