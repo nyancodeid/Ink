@@ -305,16 +305,7 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            hideKeyboard();
-                                            hideProgress();
-                                            chosenTypeSpinner.setEnabled(true);
-                                            chatRouletteMessageBody.setText("");
-                                            chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
-                                            chatRouletteMessageBody.setEnabled(false);
-                                            connected = false;
-                                            connectDisconnectButton.setText(getString(R.string.connect));
-                                            actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.red));
-                                            actualStatus.setText(getString(R.string.disconnectedToOpponent));
+                                            configureDisconnectView();
                                         }
                                     });
                                 }
@@ -337,7 +328,7 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                             hideProgress();
+                                            hideProgress();
                                             actualStatus.setText(getString(R.string.connectedToOpponent));
                                         }
                                     });
@@ -404,16 +395,7 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            hideKeyboard();
-                                            hideProgress();
-                                            chosenTypeSpinner.setEnabled(true);
-                                            chatRouletteMessageBody.setText("");
-                                            chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
-                                            chatRouletteMessageBody.setEnabled(false);
-                                            connected = false;
-                                            connectDisconnectButton.setText(getString(R.string.connect));
-                                            actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.red));
-                                            actualStatus.setText(getString(R.string.disconnectedToOpponent));
+                                            configureDisconnectView();
                                         }
                                     });
                                 }
@@ -438,15 +420,7 @@ public class WaitRoom extends BaseActivity {
                                             runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    hideKeyboard();
-                                                    hideProgress();
-                                                    chosenTypeSpinner.setEnabled(true);
-                                                    chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
-                                                    chatRouletteMessageBody.setEnabled(false);
-                                                    connected = false;
-                                                    connectDisconnectButton.setText(getString(R.string.connect));
-                                                    actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.red));
-                                                    actualStatus.setText(getString(R.string.disconnectedToOpponent));
+                                                    configureDisconnectView();
                                                 }
                                             });
                                         }
@@ -546,15 +520,7 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            hideKeyboard();
-                                            hideProgress();
-                                            chosenTypeSpinner.setEnabled(true);
-                                            chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
-                                            chatRouletteMessageBody.setEnabled(false);
-                                            connected = false;
-                                            connectDisconnectButton.setText(getString(R.string.connect));
-                                            actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.red));
-                                            actualStatus.setText(getString(R.string.disconnectedToOpponent));
+                                            configureDisconnectView();
                                         }
                                     });
                                 }
@@ -569,15 +535,7 @@ public class WaitRoom extends BaseActivity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            hideKeyboard();
-                                            hideProgress();
-                                            chosenTypeSpinner.setEnabled(true);
-                                            chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
-                                            chatRouletteMessageBody.setEnabled(false);
-                                            connected = false;
-                                            connectDisconnectButton.setText(getString(R.string.connect));
-                                            actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.red));
-                                            actualStatus.setText(getString(R.string.disconnectedToOpponent));
+                                            configureDisconnectView();
                                         }
                                     });
 
@@ -594,8 +552,21 @@ public class WaitRoom extends BaseActivity {
 
     }
 
+    private void configureDisconnectView() {
+        hideKeyboard();
+        hideProgress();
+        chosenTypeSpinner.setEnabled(true);
+        chatRouletteMessageBody.setText("");
+        chatRouletteMessageBody.setHint(getString(R.string.waitingToFindOpponent));
+        chatRouletteMessageBody.setEnabled(false);
+        connected = false;
+        connectDisconnectButton.setText(getString(R.string.connect));
+        actualStatus.setTextColor(ContextCompat.getColor(WaitRoom.this, R.color.red));
+        actualStatus.setText(getString(R.string.disconnectedToOpponent));
+    }
+
     private void hideProgress() {
-        if(progressBar.getVisibility()==View.VISIBLE){
+        if (progressBar.getVisibility() == View.VISIBLE) {
             progressBar.setVisibility(View.GONE);
         }
     }
