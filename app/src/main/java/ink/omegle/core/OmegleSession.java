@@ -380,7 +380,7 @@ public class OmegleSession {
                 throw new OmegleException("Unable to disconnect, response: "
                         + resp);
             }
-            fireEvent(OmegleEvent.disconnected, null);
+            fireEvent(OmegleEvent.strangerDisconnected, null);
             omegle.removeSession(this);
         } catch (IOException e) {
             throw new OmegleException(e);
