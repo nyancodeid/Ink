@@ -3,6 +3,7 @@ package ink.va.activities;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,7 +33,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import ink.va.adapters.MusicAdapter;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.decorators.DividerItemDecoration;
@@ -45,6 +45,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+
 
 public class Music extends BaseActivity implements MusicClickListener {
 
@@ -99,6 +101,12 @@ public class Music extends BaseActivity implements MusicClickListener {
 
         checkForMusicPlaying();
 
+        findViewById(R.id.closeMusicSheet).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeMenuSheet();
+            }
+        });
         playPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -198,7 +206,7 @@ public class Music extends BaseActivity implements MusicClickListener {
         } else {
             bottomSheetImageProgress.setVisibility(View.GONE);
             currentlyPlayingImage.setBackground(null);
-            currentlyPlayingImage.setImageResource(R.drawable.gradient_no_image);
+            currentlyPlayingImage.setBackground(ContextCompat.getDrawable(this, R.drawable.gradient_no_image));
         }
         currentlyPlayingName.setText(title);
 
@@ -213,7 +221,7 @@ public class Music extends BaseActivity implements MusicClickListener {
 
             @Override
             public void onFailure(Object o) {
-
+                statusText.setText(getString(R.string.errorPlaying));
             }
         });
     }
@@ -276,8 +284,7 @@ public class Music extends BaseActivity implements MusicClickListener {
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick(R.id.closeMusicSheet)
-    public void closeMusicSheet() {
+    public void closeMenuSheet() {
         openMusicSheet.setVisibility(View.VISIBLE);
         musicInfoSheet.startAnimation(slideDown);
         slideDown.setAnimationListener(new Animation.AnimationListener() {

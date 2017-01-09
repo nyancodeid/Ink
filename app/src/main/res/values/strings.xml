@@ -770,5 +770,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="vip_gift_congratulations">Congratulations!You have received you\'r V.I.P Membership as gift from us</string>
     <string name="membershipType">Membership type - %1$s</string>
     <string name="membershipChangeError">Could not change you\'r membership type,please try again later and if the issue remains,contact support</string>
+    <string name="errorPlaying">Error while trying to play</string>
 
 </resources>

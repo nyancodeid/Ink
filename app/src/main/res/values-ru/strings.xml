@@ -770,6 +770,5 @@
     <string name="vipGlobeChat">V.I.P. Глобальный Чат</string>
     <string name="membershipType">Tип членства - %1$s</string>
     <string name="membershipChangeError">Не смогли изменить тип членства,пожалуйста попробуйте позже,и если ошибка повторяется,обратитесь в службу поддержки</string>
-
-
+    <string name="errorPlaying">Ошибка при воспроизведении </string>
 </resources>
