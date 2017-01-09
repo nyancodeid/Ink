@@ -19,7 +19,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.ink.va.R;
 
@@ -308,7 +311,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         });
     }
 
-    protected void hideActionBar(){
+    protected void hideActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
@@ -332,6 +335,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void showVipLoading() {
+        final ImageView imageView = (ImageView) vipLoadingDialog.findViewById(R.id.vip_place_holder_image);
+        Animation pulseAnimation = AnimationUtils.loadAnimation(this, R.anim.pulse_animation);
+        imageView.startAnimation(pulseAnimation);
         vipLoadingDialog.show();
     }
 

@@ -35,6 +35,7 @@ import butterknife.ButterKnife;
 import ink.va.adapters.MessagesAdapter;
 import ink.va.decorators.DividerItemDecoration;
 import ink.va.models.UserMessagesModel;
+import ink.va.service.BackgroundTaskService;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.RecyclerTouchListener;
 import ink.va.utils.Retrofit;
@@ -71,6 +72,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
         setContentView(R.layout.activity_messages);
         sharedHelper = new SharedHelper(this);
         ButterKnife.bind(this);
+        startService(new Intent(getApplicationContext(), BackgroundTaskService.class));
         mMessagesSwipe.setColorSchemeColors(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
         userMessagesModels = new ArrayList<>();
         messagesAdapter = new MessagesAdapter(userMessagesModels, this);

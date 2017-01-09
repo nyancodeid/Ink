@@ -775,5 +775,10 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="exploreVipMembers">Explore V.I.P Members</string>
     <string name="noVipMembers">No V.I.P Members Yet</string>
     <string name="sendCoins">Send Coins</string>
+    <string name="enterAmount">Enter Amount</string>
+    <string name="input_number">Please,input number and nothing else</string>
+    <string name="trasnferring">Transferring...</string>
+    <string name="trasnferring_coins_text">Transferring you\'r coins,please wait</string>
+    <string name="coins_transferred">Coins were transferred</string>
 
 </resources>

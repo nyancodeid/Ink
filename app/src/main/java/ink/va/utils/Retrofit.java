@@ -182,6 +182,11 @@ public class Retrofit {
         Call<ResponseBody> deletePost(@Field("postId") String postId,
                                       @Field("attachmentName") String attachmentName);
 
+        @POST(Constants.TRANSFER_COINS_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> transferCoins(@Field("transferrerId") String transferrerId,
+                                         @Field("receiverId") String receiverId, @Field("amount") int amount);
+
         @POST(Constants.GROUP_REQUESTS_URL)
         @FormUrlEncoded
         Call<ResponseBody> getMyRequests(@Field("ownerId") String userId);

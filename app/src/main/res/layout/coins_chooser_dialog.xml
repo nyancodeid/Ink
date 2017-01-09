@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/defaultGroupColor"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/coinsFiled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        android:hint="@string/enterAmount"
+        android:inputType="numberDecimal"
+        android:textColor="@color/vk_white"
+        android:textColorHint="#cccccc" />
+
+    <View
+        android:id="@+id/centerDivider"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true">
+
+    </View>
+
+    <Button
+        android:id="@+id/acceptCoins"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/coinsFiled"
+        android:layout_margin="16dp"
+        android:layout_toRightOf="@+id/centerDivider"
+        android:background="@drawable/vip_gradient_button"
+        android:text="@string/acceptText"
+        android:textAllCaps="false"
+        android:textColor="@color/vk_white" />
+
+    <Button
+        android:id="@+id/cancelCoins"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/coinsFiled"
+        android:layout_margin="16dp"
+        android:layout_toLeftOf="@+id/centerDivider"
+        android:background="@drawable/vip_gradient_button"
+        android:text="@string/cancel"
+        android:textAllCaps="false"
+        android:textColor="@color/vk_white" />
+</RelativeLayout>

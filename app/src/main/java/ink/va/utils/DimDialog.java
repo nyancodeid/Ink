@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -48,7 +46,6 @@ public class DimDialog {
     }
 
     public static Dialog createVipLoadingDialog(Context context) {
-        Animation pulseAnimation = AnimationUtils.loadAnimation(context, R.anim.pulse_animation);
         Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.vip_progress_dialog);
         dialog.setCancelable(false);
@@ -67,7 +64,6 @@ public class DimDialog {
                 imageView.clearAnimation();
             }
         });
-        imageView.startAnimation(pulseAnimation);
         return dialog;
     }
 }

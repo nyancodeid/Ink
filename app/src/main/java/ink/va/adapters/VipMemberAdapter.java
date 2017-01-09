@@ -54,6 +54,12 @@ public class VipMemberAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         notifyDataSetChanged();
     }
 
+    public void addSingleUser(UserModel userModel) {
+        userModels.add(userModel);
+        int insertedItemPosition = userModels.indexOf(userModel);
+        notifyItemInserted(insertedItemPosition);
+    }
+
     public void clear() {
         userModels.clear();
         notifyDataSetChanged();

@@ -775,4 +775,8 @@
     <string name="exploreVipMembers">Просмотреть  V.I.P. Участников</string>
     <string name="noVipMembers">Нету  V.I.P. Участников</string>
     <string name="sendCoins">Отправить Монет</string>
+    <string name="input_number">Пожалуйста введите число и ничего кроме.</string>
+    <string name="trasnferring">Передача...</string>
+    <string name="trasnferring_coins_text">Передача ваших монет,пожалуйста подождите</string>
+    <string name="coins_transferred">Монеты переданы </string>
 </resources>

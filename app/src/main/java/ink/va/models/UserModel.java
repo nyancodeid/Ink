@@ -13,6 +13,8 @@ public class UserModel {
     @SerializedName("isSocialAccount")
     private boolean isSocialAccount;
     @SerializedName("login")
+    private int coins;
+    @SerializedName("coins")
     private String login;
     @SerializedName("first_name")
     private String firstName;
@@ -238,5 +240,13 @@ public class UserModel {
 
     public void setVipMembershipType(String vipMembershipType) {
         this.vipMembershipType = vipMembershipType;
+    }
+
+    public int getCoins() {
+        return coins;
+    }
+
+    public void setCoins(int coins) {
+        this.coins = coins;
     }
 }
