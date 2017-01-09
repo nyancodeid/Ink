@@ -1,9 +1,11 @@
 package ink.va.utils;
 
+import java.util.List;
 import java.util.Map;
 
 import ink.va.models.MyCollectionResponseModel;
 import ink.va.models.ServerInformationModel;
+import ink.va.models.UserModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -77,6 +79,10 @@ public class Retrofit {
         @FormUrlEncoded
         @POST(Constants.LOGIN_URL)
         Call<ResponseBody> login(@Field("login") String login, @Field("password") String password);
+
+        @FormUrlEncoded
+        @POST(Constants.VIP_MEMBERS_URL)
+        Call<List<UserModel>> getVipMembers(@Field("userId") String userId);
 
 
         @POST(Constants.FRIENDS_URL)

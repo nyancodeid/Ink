@@ -181,5 +181,6 @@ public class Constants {
     public static final String PACK_BACKGROUND_BUNDLE_KEY = "pack_background";
     public static final String PACK_IMAGE_BUNDLE_KEY = "pack_image";
     public static final String PACK_CONTENT_BUNDLE_KEY = "pack_content";
+    public static final String VIP_MEMBERS_URL = "VipMembers.php";
 }
 
