@@ -53,7 +53,7 @@ public class UserModel {
     @SerializedName("isFirstVipLogin")
     private boolean isFirstVipLogin;
     @SerializedName("vipMembershipType")
-    private boolean vipMembershipType;
+    private String vipMembershipType;
 
 
     public String getUserId() {
@@ -232,11 +232,11 @@ public class UserModel {
         isFirstVipLogin = firstVipLogin;
     }
 
-    public boolean isVipMembershipType() {
+    public String getVipMembershipType() {
         return vipMembershipType;
     }
 
-    public void setVipMembershipType(boolean vipMembershipType) {
+    public void setVipMembershipType(String vipMembershipType) {
         this.vipMembershipType = vipMembershipType;
     }
 }

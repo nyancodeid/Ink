@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/folding_cell"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
+
 
     <RelativeLayout
         android:id="@+id/vipMemberRoot"
@@ -10,13 +14,11 @@
         android:layout_height="wrap_content"
         android:background="@drawable/com_facebook_tooltip_black_background">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/vipMemberImage"
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:layout_margin="10dp"
-            app:civ_border_color="@color/darkGoldColor"
-            app:civ_border_width="2dp" />
+            android:layout_margin="10dp" />
 
         <TextView
             android:id="@+id/vipMemberName"
@@ -32,10 +34,132 @@
             android:textColor="@color/vk_white" />
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/moreInfoLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <View
+            android:id="@+id/infoFirstDivider"
+            android:layout_width="2dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:background="@drawable/vip_gradient_button"></View>
+
+        <RelativeLayout
+            android:id="@+id/membershipTypeWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/infoFirstDivider"
+            android:background="@drawable/com_facebook_tooltip_black_background">
+
+            <TextView
+                android:id="@+id/membershipTypeTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:padding="10dp"
+                android:text="@string/membershipType"
+                android:textColor="@color/vk_white" />
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/infoSecondDivider"
+            android:layout_width="2dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/membershipTypeWrapper"
+            android:layout_centerInParent="true"
+            android:background="@drawable/vip_gradient_button"></View>
+
+
+        <RelativeLayout
+            android:id="@+id/genderWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/infoSecondDivider"
+            android:background="@drawable/com_facebook_tooltip_black_background">
+
+            <TextView
+                android:id="@+id/genderTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:padding="10dp"
+                android:text="@string/noGender"
+                android:textColor="@color/vk_white" />
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/centerDivider"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_below="@+id/genderWrapper"
+            android:layout_centerHorizontal="true">
+
+        </View>
+
+        <View
+            android:id="@+id/infoThirdDivider"
+            android:layout_width="2dp"
+            android:layout_height="100dp"
+            android:layout_below="@+id/genderWrapper"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="30dp"
+            android:layout_toLeftOf="@+id/centerDivider"
+            android:background="@drawable/vip_gradient_button"
+            android:rotation="25"></View>
+
+        <View
+            android:id="@+id/infoForthDivider"
+            android:layout_width="2dp"
+            android:layout_height="100dp"
+            android:layout_below="@+id/genderWrapper"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@+id/centerDivider"
+            android:background="@drawable/vip_gradient_button"
+            android:rotation="-25"></View>
+
+        <Button
+            android:id="@+id/sendCoins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/infoThirdDivider"
+            android:layout_alignParentLeft="true"
+            android:layout_alignRight="@+id/infoThirdDivider"
+            android:layout_below="@+id/infoForthDivider"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/vip_gradient_button"
+            android:text="@string/sendCoins"
+            android:textAllCaps="false"
+            android:textColor="@color/vk_white" />
+
+
+        <Button
+            android:id="@+id/sendMessageVip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/infoForthDivider"
+            android:layout_alignParentRight="true"
+            android:layout_alignStart="@+id/infoForthDivider"
+            android:layout_below="@+id/infoForthDivider"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/vip_gradient_button"
+            android:text="@string/sendMessage"
+            android:textAllCaps="false"
+            android:textColor="@color/vk_white" />
+
+    </RelativeLayout>
+
     <android.support.v4.widget.Space
         android:id="@+id/bottomSpacing"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_below="@+id/vipMemberRoot"
         android:visibility="gone" />
-</RelativeLayout>
+</LinearLayout>

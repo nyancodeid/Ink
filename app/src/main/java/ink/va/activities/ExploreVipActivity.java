@@ -2,6 +2,7 @@ package ink.va.activities;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +18,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.adapters.VipMemberAdapter;
-import ink.va.interfaces.ItemClickListener;
+import ink.va.interfaces.VipMemberItemClickListener;
 import ink.va.models.UserModel;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -25,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ExploreVipActivity extends BaseActivity implements ItemClickListener {
+public class ExploreVipActivity extends BaseActivity implements VipMemberItemClickListener {
 
     @Bind(R.id.exploreVipRootTitle)
     TextView exploreVipRootTitle;
@@ -90,10 +91,6 @@ public class ExploreVipActivity extends BaseActivity implements ItemClickListene
         refreshVipMembers.setVisibility(makeVisible ? View.GONE : View.VISIBLE);
     }
 
-    @Override
-    public void onItemClick(Object clickedItem) {
-
-    }
 
     @Override
     public void onBackPressed() {
@@ -105,5 +102,20 @@ public class ExploreVipActivity extends BaseActivity implements ItemClickListene
     public void refreshClicked() {
         showVipLoading();
         getVipMembers();
+    }
+
+    @Override
+    public void onItemClicked(@Nullable UserModel userModel) {
+
+    }
+
+    @Override
+    public void onSendCoinsClicked(@Nullable UserModel userModel) {
+
+    }
+
+    @Override
+    public void onSendMessageClicked(@Nullable UserModel userModel) {
+
     }
 }

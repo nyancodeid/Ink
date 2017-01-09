@@ -1,9 +1,5 @@
 [
     {
-        "merged": "D:\\Ink\\linkedin-sdk\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-mdpi-v4\\ic_launcher.png",
-        "source": "D:\\Ink\\linkedin-sdk\\build\\intermediates\\bundles\\debug\\res\\drawable-mdpi-v4\\ic_launcher.png"
-    },
-    {
         "merged": "E:\\Ink\\linkedin-sdk\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-mdpi-v4\\ic_launcher.png",
         "source": "E:\\Ink\\linkedin-sdk\\build\\intermediates\\bundles\\debug\\res\\drawable-mdpi-v4\\ic_launcher.png"
     }

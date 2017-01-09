@@ -11,7 +11,7 @@ import com.ink.va.R;
 import java.util.LinkedList;
 import java.util.List;
 
-import ink.va.interfaces.ItemClickListener;
+import ink.va.interfaces.VipMemberItemClickListener;
 import ink.va.models.UserModel;
 import ink.va.view_holders.VipMemberViewHolder;
 
@@ -22,10 +22,10 @@ import ink.va.view_holders.VipMemberViewHolder;
 public class VipMemberAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<UserModel> userModels;
-    private ItemClickListener itemClickListener;
+    private VipMemberItemClickListener itemClickListener;
     private Context context;
 
-    public VipMemberAdapter(ItemClickListener itemClickListener) {
+    public VipMemberAdapter(VipMemberItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
         userModels = new LinkedList<>();
     }

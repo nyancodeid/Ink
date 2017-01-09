@@ -1,9 +1,5 @@
 [
     {
-        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\menu\\api.xml",
-        "source": "D:\\Ink\\sampleapp\\src\\main\\res\\menu\\api.xml"
-    },
-    {
         "merged": "E:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\menu\\api.xml",
         "source": "E:\\Ink\\sampleapp\\src\\main\\res\\menu\\api.xml"
     },
@@ -12,15 +8,7 @@
         "source": "E:\\Ink\\sampleapp\\src\\main\\res\\menu\\deeplink.xml"
     },
     {
-        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\menu\\main.xml",
-        "source": "D:\\Ink\\sampleapp\\src\\main\\res\\menu\\main.xml"
-    },
-    {
         "merged": "E:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\menu\\main.xml",
         "source": "E:\\Ink\\sampleapp\\src\\main\\res\\menu\\main.xml"
-    },
-    {
-        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\menu\\deeplink.xml",
-        "source": "D:\\Ink\\sampleapp\\src\\main\\res\\menu\\deeplink.xml"
     }
 ]

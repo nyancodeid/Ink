@@ -10,4 +10,13 @@
         android:layout_height="150dp"
         android:layout_centerInParent="true"
         android:src="@drawable/vip_image_placeholder" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/vip_place_holder_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="@string/loadingText"
+        android:textColor="@color/vk_white" />
 </RelativeLayout>

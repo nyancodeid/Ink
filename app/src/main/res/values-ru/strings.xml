@@ -774,4 +774,5 @@
     <string name="enableSnow">Разрешить Эффект Снега</string>
     <string name="exploreVipMembers">Просмотреть  V.I.P. Участников</string>
     <string name="noVipMembers">Нету  V.I.P. Участников</string>
+    <string name="sendCoins">Отправить Монет</string>
 </resources>

@@ -774,5 +774,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="enableSnow">Enable Snow Effect</string>
     <string name="exploreVipMembers">Explore V.I.P Members</string>
     <string name="noVipMembers">No V.I.P Members Yet</string>
+    <string name="sendCoins">Send Coins</string>
 
 </resources>
