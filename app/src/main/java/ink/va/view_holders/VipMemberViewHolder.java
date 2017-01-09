@@ -60,16 +60,16 @@ public class VipMemberViewHolder extends RecyclerView.ViewHolder {
                          Context context, int maxSize) {
         switch (userModel.getVipMembershipType()) {
             case MEMBERSHIP_TYPE_GOLD:
-                membershipTypeImage.setBackground(ContextCompat.getDrawable(context, R.drawable.gold_member_card));
+                membershipTypeImage.setBackground(ContextCompat.getDrawable(context, R.drawable.gold_member_card_small));
                 break;
             case MEMBERSHIP_TYPE_RED:
-                membershipTypeImage.setBackground(ContextCompat.getDrawable(context, R.drawable.red_member_card));
+                membershipTypeImage.setBackground(ContextCompat.getDrawable(context, R.drawable.red_member_card_small));
                 break;
             case MEMBERSHIP_TYPE_BLACK:
-                membershipTypeImage.setBackground(ContextCompat.getDrawable(context, R.drawable.black_member_card));
+                membershipTypeImage.setBackground(ContextCompat.getDrawable(context, R.drawable.black_member_card_small));
                 break;
             default:
-                membershipTypeImage.setBackgroundColor(ContextCompat.getColor(context, R.color.defaultGroupColor));
+                membershipTypeImage.setBackground(ContextCompat.getDrawable(context, R.drawable.no_membership_small));
         }
         this.context = context;
         this.userModel = userModel;
