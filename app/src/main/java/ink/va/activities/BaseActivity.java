@@ -307,6 +307,13 @@ public abstract class BaseActivity extends AppCompatActivity {
         });
     }
 
+    protected void hideActionBar(){
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
+    }
+
     public void overrideActivityAnimation() {
         overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
     }

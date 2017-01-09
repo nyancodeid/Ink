@@ -1,8 +1,8 @@
 package ink.va.activities;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -77,10 +77,7 @@ public class VIPActivity extends BaseActivity {
         ButterKnife.bind(this);
         setStatusBarColor(R.color.vip_status_bar_color);
         sharedHelper = new SharedHelper(this);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
+        hideActionBar();
         slideInWithFade = AnimationUtils.loadAnimation(this, R.anim.slide_in_with_fade);
         slideOutWithFade = AnimationUtils.loadAnimation(this, R.anim.slide_out_with_fade);
 
@@ -176,7 +173,7 @@ public class VIPActivity extends BaseActivity {
 
     @OnClick(R.id.exploreVip)
     public void exploreClicked() {
-
+        startActivity(new Intent(this, ExploreVipActivity.class));
     }
 
     @OnClick(R.id.acceptGift)
