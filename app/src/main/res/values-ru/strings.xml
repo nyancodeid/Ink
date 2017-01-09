@@ -773,4 +773,5 @@
     <string name="errorPlaying">Ошибка при воспроизведении </string>
     <string name="enableSnow">Разрешить Эффект Снега</string>
     <string name="exploreVipMembers">Просмотреть  V.I.P. Участников</string>
+    <string name="noVipMembers">Нету  V.I.P. Участников</string>
 </resources>
