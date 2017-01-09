@@ -44,8 +44,13 @@ public class VipMemberViewHolder extends RecyclerView.ViewHolder {
         this.userModel = userModel;
         this.itemClickListener = itemClickListener;
         vipMemberName.setText(userModel.getFirstName() + " " + userModel.getLastName());
-        Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + userModel.getImageUrl()).withBitmap().placeholder(R.drawable.vip_image_placeholder).
-                intoImageView(vipMemberImage);
+        if (userModel.getImageUrl().isEmpty()) {
+            vipMemberImage.setImageResource(R.drawable.vip_image_placeholder);
+        } else {
+            Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + userModel.getImageUrl()).withBitmap().placeholder(R.drawable.vip_image_placeholder).
+                    intoImageView(vipMemberImage);
+        }
+
         bottomSpacing.setVisibility(position == maxSize ? View.VISIBLE : View.GONE);
     }
 
