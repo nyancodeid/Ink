@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/globalVipMemberRoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/com_facebook_tooltip_black_background">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/globalVipMemberImage"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_margin="10dp"
+            app:civ_border_color="@color/darkGoldColor"
+            app:civ_border_width="2dp" />
+
+        <RelativeLayout
+            android:id="@+id/globalVipChatWrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/globalVipMemberImage"
+            android:layout_margin="10dp"
+            android:layout_toRightOf="@+id/globalVipMemberImage"
+            android:background="@drawable/incoming_message_bg">
+
+
+            <TextView
+                android:id="@+id/globalVipChatContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="@string/loadingText"
+                android:textColor="@color/vk_white" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/globalVipMemberName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
+            android:layout_toRightOf="@+id/globalVipMemberImage"
+            android:ellipsize="end"
+            android:gravity="right"
+            android:maxLines="1"
+            android:text="@string/loadingText"
+            android:textColor="@color/vk_white" />
+    </RelativeLayout>
+</RelativeLayout>

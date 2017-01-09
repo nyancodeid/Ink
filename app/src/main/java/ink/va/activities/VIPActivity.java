@@ -175,6 +175,7 @@ public class VIPActivity extends BaseActivity {
         Intent intent = new Intent(this, ExploreVipActivity.class);
         intent.putExtra("membershipType", chosenMembership);
         startActivity(intent);
+        overrideActivityAnimation();
     }
 
     @OnClick(R.id.acceptGift)

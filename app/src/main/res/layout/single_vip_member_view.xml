@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/vipMemberRoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/com_facebook_tooltip_black_background">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/vipMemberImage"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_margin="10dp"
+            app:civ_border_color="@color/darkGoldColor"
+            app:civ_border_width="2dp" />
+
+        <TextView
+            android:id="@+id/vipMemberName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
+            android:layout_toRightOf="@+id/vipMemberImage"
+            android:ellipsize="end"
+            android:gravity="right"
+            android:maxLines="1"
+            android:text="@string/loadingText"
+            android:textColor="@color/vk_white" />
+    </RelativeLayout>
+
+    <android.support.v4.widget.Space
+        android:id="@+id/bottomSpacing"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/vipMemberRoot"
+        android:visibility="gone" />
+</RelativeLayout>
