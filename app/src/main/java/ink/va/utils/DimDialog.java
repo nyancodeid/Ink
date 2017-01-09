@@ -53,7 +53,6 @@ public class DimDialog {
         dialog.setContentView(R.layout.vip_progress_dialog);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(context, android.R.color.transparent)));
         final ImageView imageView = (ImageView) dialog.findViewById(R.id.vip_place_holder_image);
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
