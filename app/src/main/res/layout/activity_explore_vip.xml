@@ -33,10 +33,11 @@
         android:id="@+id/noVipUsers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:text="@string/noVipMembers"
         android:textColor="@color/vk_white"
         android:textSize="24sp"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 </RelativeLayout>
