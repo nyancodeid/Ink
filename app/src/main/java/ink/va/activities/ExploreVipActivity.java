@@ -157,7 +157,7 @@ public class ExploreVipActivity extends BaseActivity implements VipMemberItemCli
                     if (inputtedCoins == 0) {
                         dialog.dismiss();
                         Snackbar.make(recyclerView, getString(R.string.input_number), Snackbar.LENGTH_LONG).show();
-                    } else if (inputtedCoins < userModel.getCoins()) {
+                    } else if (inputtedCoins < Integer.valueOf(User.get().getCoins())) {
                         dialog.dismiss();
                         Snackbar.make(recyclerView, getString(R.string.not_enough_coins), Snackbar.LENGTH_LONG).show();
                     } else {
