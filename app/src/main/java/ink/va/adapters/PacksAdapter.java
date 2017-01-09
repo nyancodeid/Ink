@@ -88,7 +88,7 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 @Override
                 public void onClick(View view) {
                     if (packClickListener != null) {
-                        packClickListener.onBuyClicked(packsModel,Integer.valueOf(packCoinCount.getText().toString()),
+                        packClickListener.onBuyClicked(packsModel, Integer.valueOf(packCoinCount.getText().toString()),
                                 packId, packRootView);
                     }
                 }
@@ -110,7 +110,7 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             });
             Ion.with(context).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packsModel.packImageBackground)
-                    .withBitmap().placeholder(R.drawable.no_background_image).intoImageView(packImage).setCallback(new FutureCallback<ImageView>() {
+                    .withBitmap().placeholder(R.drawable.gift_box_vector).intoImageView(packImage).setCallback(new FutureCallback<ImageView>() {
                 @Override
                 public void onCompleted(Exception e, ImageView result) {
                     packImage.clearAnimation();

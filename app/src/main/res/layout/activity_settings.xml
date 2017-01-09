@@ -111,7 +111,36 @@
         </RelativeLayout>
 
 
+        <RelativeLayout
+            android:id="@+id/snowWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:minHeight="50dp">
 
+            <TextView
+                android:id="@+id/enableSnowTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/snowSwitch"
+                android:fontFamily="@string/condensedFont"
+                android:text="@string/enableSnow" />
+
+            <Switch
+                android:id="@+id/snowSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:clickable="false"
+                android:focusable="false" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

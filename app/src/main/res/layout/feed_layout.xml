@@ -3,12 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/feedRootLayout"
-    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@drawable/feed_background_color"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="ink.va.activities.HomeActivity">
+
+
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/feedRefresh"
@@ -74,4 +76,8 @@
             android:fontFamily="@string/appFont"
             android:text="@string/noPostsYet" />
     </RelativeLayout>
+
+    <ink.va.custom_views.SnowView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </RelativeLayout>

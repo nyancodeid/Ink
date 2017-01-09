@@ -174,6 +174,15 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public void putShowSnow(boolean value) {
+        mEditor.putBoolean("showSnow", value);
+        mEditor.commit();
+    }
+
+    public boolean showSnow() {
+        return mSharedPreferences.getBoolean("showSnow", true);
+    }
+
     public String getUserId() {
         return mSharedPreferences.getString("user_id", null);
     }

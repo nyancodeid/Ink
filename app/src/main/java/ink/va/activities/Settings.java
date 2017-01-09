@@ -25,6 +25,9 @@ public class Settings extends BaseActivity {
     @Bind(R.id.likeNotificationSwitch)
     Switch likeSwitch;
 
+    @Bind(R.id.snowSwitch)
+    Switch snowSwitch;
+
     private SharedHelper sharedHelper;
 
     @Override
@@ -37,6 +40,7 @@ public class Settings extends BaseActivity {
         groupSwitch.setChecked(sharedHelper.showGroupNotification());
         commentSwitch.setChecked(sharedHelper.showCommentNotification());
         likeSwitch.setChecked(sharedHelper.showLikeNotification());
+        snowSwitch.setChecked(sharedHelper.showSnow());
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -86,6 +90,17 @@ public class Settings extends BaseActivity {
         } else {
             likeSwitch.setChecked(true);
             sharedHelper.putShowLikeNotification(true);
+        }
+    }
+
+    @OnClick(R.id.snowWrapper)
+    public void setSnowWrapper() {
+        if (snowSwitch.isChecked()) {
+            snowSwitch.setChecked(false);
+            sharedHelper.putShowSnow(false);
+        } else {
+            snowSwitch.setChecked(true);
+            sharedHelper.putShowSnow(true);
         }
     }
 }
