@@ -413,4 +413,10 @@ public class OmegleSession {
     public String getId() {
         return id;
     }
+
+    public void triggerDisconnectCallback() {
+        for (OmegleEventListener listener : listeners) {
+            listener.strangerDisconnected(this);
+        }
+    }
 }

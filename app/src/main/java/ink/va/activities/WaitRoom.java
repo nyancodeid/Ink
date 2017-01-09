@@ -208,8 +208,10 @@ public class WaitRoom extends BaseActivity {
                 public void run() {
                     try {
                         omegleSession.disconnect();
+                        omegleSession.triggerDisconnectCallback();
                     } catch (OmegleException e) {
                         e.printStackTrace();
+                        omegleSession.triggerDisconnectCallback();
                     }
                 }
             });
