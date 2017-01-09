@@ -33,6 +33,7 @@ import ink.va.models.UserModel;
 import ink.va.utils.ProgressDialog;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
+import ink.va.utils.User;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -181,7 +182,7 @@ public class ExploreVipActivity extends BaseActivity implements VipMemberItemCli
 
     private void transferCoins(final int coinsAmount, final String transferrerId, final String receiverId) {
         transferDialog.show();
-        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().transferCoins(transferrerId, receiverId,coinsAmount);
+        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().transferCoins(transferrerId, receiverId, coinsAmount);
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -199,6 +200,8 @@ public class ExploreVipActivity extends BaseActivity implements VipMemberItemCli
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
                         transferDialog.hide();
+                        String userCoinsLeft = jsonObject.optString("userCoinsLeft");
+                        User.get().setCoins(userCoinsLeft);
                         Toast.makeText(ExploreVipActivity.this, getString(R.string.coins_transferred), Toast.LENGTH_SHORT).show();
                     } else {
                         Snackbar.make(recyclerView, getString(R.string.serverErrorText), Snackbar.LENGTH_LONG).show();
