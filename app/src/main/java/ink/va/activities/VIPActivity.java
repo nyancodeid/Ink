@@ -106,11 +106,13 @@ public class VIPActivity extends BaseActivity {
             giftImageView.setImageResource(resourceId);
         }
 
+
         membershipTypeTV.setText(giftType != null ? getString(R.string.membershipType, giftType) : "");
         if (isFirstVipLogin) {
             changeButtonVisibility(true);
             showIntro(hasGift);
         } else {
+            chosenMembership = extras != null ? extras.containsKey("membershipType") ? extras.getString("membershipType") : null : null;
             changeButtonVisibility(false);
             loadMenu();
         }
@@ -170,7 +172,9 @@ public class VIPActivity extends BaseActivity {
 
     @OnClick(R.id.exploreVip)
     public void exploreClicked() {
-        startActivity(new Intent(this, ExploreVipActivity.class));
+        Intent intent = new Intent(this, ExploreVipActivity.class);
+        intent.putExtra("membershipType", chosenMembership);
+        startActivity(intent);
     }
 
     @OnClick(R.id.acceptGift)

@@ -26,6 +26,7 @@ public class ExploreVipActivity extends BaseActivity {
     @Bind(R.id.noVipUsers)
     TextView noVipUsers;
 
+    private String chosenMembership;
     private Typeface typeface;
     private SharedHelper sharedHelper;
 
@@ -42,6 +43,7 @@ public class ExploreVipActivity extends BaseActivity {
         noVipUsers.setTypeface(typeface);
         showVipLoading();
         getVipMembers();
+        chosenMembership = getIntent().getExtras() != null ? getIntent().getExtras().getString("membershipType") : null;
     }
 
     private void getVipMembers() {

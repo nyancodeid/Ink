@@ -107,6 +107,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private CountDownTimer countDownTimer;
     private Dialog vipLoadingDialog;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
