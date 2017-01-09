@@ -60,7 +60,7 @@ public class Settings extends BaseActivity {
 
 
     @OnClick(R.id.groupNotificationSwitchWrapper)
-    public void setgroupNotificationSwitchWrapper() {
+    public void setGroupNotificationSwitchWrapper() {
         if (groupSwitch.isChecked()) {
             groupSwitch.setChecked(false);
             sharedHelper.putShowGroupNotification(false);
@@ -71,7 +71,7 @@ public class Settings extends BaseActivity {
     }
 
     @OnClick(R.id.commentNotificationSwitchWrapper)
-    public void setcommentNotificationSwitchWrapper() {
+    public void setCommentNotificationSwitchWrapper() {
         if (commentSwitch.isChecked()) {
             commentSwitch.setChecked(false);
             sharedHelper.putShowCommentNotification(false);
@@ -83,7 +83,7 @@ public class Settings extends BaseActivity {
 
 
     @OnClick(R.id.likeNotificationSwitchWrapper)
-    public void setlikeNotificationSwitchWrapper() {
+    public void setLikeNotificationSwitchWrapper() {
         if (likeSwitch.isChecked()) {
             likeSwitch.setChecked(false);
             sharedHelper.putShowLikeNotification(false);
