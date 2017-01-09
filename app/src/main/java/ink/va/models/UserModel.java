@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName;
 
 public class UserModel {
 
+    @SerializedName("coins")
+    private int coins;
     @SerializedName("user_id")
     private String userId;
     @SerializedName("isSocialAccount")
     private boolean isSocialAccount;
     @SerializedName("login")
-    private int coins;
-    @SerializedName("coins")
     private String login;
     @SerializedName("first_name")
     private String firstName;

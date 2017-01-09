@@ -138,10 +138,7 @@ public class ExploreVipActivity extends BaseActivity implements VipMemberItemCli
     private void showVipCoinsDialog(final UserModel userModel) {
         final Dialog dialog = new Dialog(ExploreVipActivity.this);
         dialog.setContentView(R.layout.coins_chooser_dialog);
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
         final Button acceptCoins = (Button) dialog.findViewById(R.id.acceptCoins);
-        Button cancelCoins = (Button) dialog.findViewById(R.id.cancelCoins);
         final EditText coinsFiled = (EditText) dialog.findViewById(R.id.coinsFiled);
         acceptCoins.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,12 +166,6 @@ public class ExploreVipActivity extends BaseActivity implements VipMemberItemCli
                     }
                 }
 
-            }
-        });
-        cancelCoins.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
             }
         });
         dialog.show();

@@ -2,6 +2,7 @@ package ink.va.view_holders;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,6 +19,10 @@ import ink.va.interfaces.VipMemberItemClickListener;
 import ink.va.models.UserModel;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+
+import static ink.va.utils.MembershipTypes.MEMBERSHIP_TYPE_BLACK;
+import static ink.va.utils.MembershipTypes.MEMBERSHIP_TYPE_GOLD;
+import static ink.va.utils.MembershipTypes.MEMBERSHIP_TYPE_RED;
 
 
 /**
@@ -38,6 +43,8 @@ public class VipMemberViewHolder extends RecyclerView.ViewHolder {
     TextView genderTV;
     @Bind(R.id.moreInfoLayout)
     RelativeLayout moreInfoLayout;
+    @Bind(R.id.membershipTypeImage)
+    ImageView membershipTypeImage;
 
     private VipMemberItemClickListener itemClickListener;
     private UserModel userModel;
@@ -51,6 +58,19 @@ public class VipMemberViewHolder extends RecyclerView.ViewHolder {
 
     public void initData(UserModel userModel, int position, VipMemberItemClickListener itemClickListener,
                          Context context, int maxSize) {
+        switch (userModel.getVipMembershipType()) {
+            case MEMBERSHIP_TYPE_GOLD:
+                membershipTypeImage.setBackground(ContextCompat.getDrawable(context, R.drawable.gold_member_card));
+                break;
+            case MEMBERSHIP_TYPE_RED:
+                membershipTypeImage.setBackground(ContextCompat.getDrawable(context, R.drawable.red_member_card));
+                break;
+            case MEMBERSHIP_TYPE_BLACK:
+                membershipTypeImage.setBackground(ContextCompat.getDrawable(context, R.drawable.black_member_card));
+                break;
+            default:
+                membershipTypeImage.setBackgroundColor(ContextCompat.getColor(context, R.color.defaultGroupColor));
+        }
         this.context = context;
         this.userModel = userModel;
         this.itemClickListener = itemClickListener;
