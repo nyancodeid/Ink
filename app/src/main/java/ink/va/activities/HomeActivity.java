@@ -26,7 +26,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,11 +43,6 @@ import com.google.gson.Gson;
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.messages.services.SubscribeService;
-import com.quickblox.users.model.QBUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,19 +57,16 @@ import ink.va.interfaces.AccountDeleteListener;
 import ink.va.interfaces.ColorChangeListener;
 import ink.va.models.CoinsResponse;
 import ink.va.service.BackgroundTaskService;
-import ink.va.service.CallService;
 import ink.va.service.LocationRequestSessionDestroyer;
 import ink.va.service.SendTokenService;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
-import ink.va.utils.Consts;
 import ink.va.utils.DeviceChecker;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.FileUtils;
 import ink.va.utils.IonCache;
 import ink.va.utils.Keyboard;
 import ink.va.utils.PingHelper;
-import ink.va.utils.QBUtils;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -119,7 +110,6 @@ public class HomeActivity extends BaseActivity
     private ColorChangeListener colorChangeListener;
     private RelativeLayout panelHeader;
     private TextView messagesCountTV;
-    private QBUtils qbUtils;
 
 
     @Override
@@ -140,8 +130,6 @@ public class HomeActivity extends BaseActivity
             startMessageDownloadService();
         }
 
-        qbUtils = new QBUtils(requestExecutor, this, mSharedHelper);
-        qbUtils.silentQbLogin();
 
 
         if (!mSharedHelper.isSecurityQuestionSet() && isAccountRecoverable()) {
@@ -231,11 +219,6 @@ public class HomeActivity extends BaseActivity
         panelHeader = (RelativeLayout) headerView.findViewById(R.id.panelHeader);
         navigationView.setNavigationItemSelectedListener(this);
         LocalBroadcastManager.getInstance(this).registerReceiver(feedUpdateReceiver, new IntentFilter(getPackageName() + "HomeActivity"));
-    }
-
-    private void silentQbUseSignIn(final QBUser user) {
-
-
     }
 
 
@@ -504,7 +487,6 @@ public class HomeActivity extends BaseActivity
 
             case R.id.logout:
                 System.gc();
-                logOutQbUser();
                 AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
                 builder.setTitle(getString(R.string.warning));
                 builder.setMessage(getString(R.string.logoutWaring));
@@ -529,14 +511,6 @@ public class HomeActivity extends BaseActivity
         return true;
     }
 
-    private void logOutQbUser() {
-        unsubscribeFromPushes();
-        CallService.logout(this);
-    }
-
-    private void unsubscribeFromPushes() {
-        SubscribeService.unSubscribeFromPushes(this);
-    }
 
 
     private void callToVipServer(final String type) {

@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.ink.va.R;
-import com.quickblox.users.model.QBUser;
 
 import ink.va.animations.DepthPageTransformer;
 import ink.va.fragments.FirstIntroFragment;

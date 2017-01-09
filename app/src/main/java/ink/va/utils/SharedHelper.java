@@ -4,12 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.ink.va.R;
-import com.quickblox.core.helper.StringifyArrayList;
-import com.quickblox.users.model.QBUser;
 
 import java.util.Map;
-
-import ink.StartupApplication;
 
 import static ink.va.utils.Constants.SERVER_NOTIFICATION_SHARED_KEY;
 import static ink.va.utils.Constants.SHOW_SERVER_NEWS_START_UP_KEY;
@@ -52,13 +48,6 @@ public class SharedHelper {
         mEditor.commit();
     }
 
-    public static synchronized SharedHelper getInstance() {
-        if (instance == null) {
-            instance = new SharedHelper(StartupApplication.getInstance().getApplicationContext());
-        }
-
-        return instance;
-    }
 
     public String getLastNotificationId(String notificationId) {
         return mSharedPreferences.getString(notificationId, null);
@@ -107,39 +96,6 @@ public class SharedHelper {
         }
 
         editor.commit();
-    }
-
-    public void saveQbUser(QBUser qbUser) {
-        save(QB_USER_ID, qbUser.getId());
-        save(QB_USER_LOGIN, qbUser.getLogin());
-        save(QB_USER_PASSWORD, qbUser.getPassword());
-        save(QB_USER_FULL_NAME, qbUser.getFullName());
-        save(QB_USER_TAGS, qbUser.getTags().getItemsAsString());
-    }
-
-    public QBUser getQbUser() {
-        if (hasQbUser()) {
-            Integer id = get(QB_USER_ID);
-            String login = get(QB_USER_LOGIN);
-            String password = get(QB_USER_PASSWORD);
-            String fullName = get(QB_USER_FULL_NAME);
-            String tagsInString = get(QB_USER_TAGS);
-
-            StringifyArrayList<String> tags = null;
-
-            if (tagsInString != null) {
-                tags = new StringifyArrayList<>();
-                tags.add(tagsInString.split(","));
-            }
-
-            QBUser user = new QBUser(login, password);
-            user.setId(id);
-            user.setFullName(fullName);
-            user.setTags(tags);
-            return user;
-        } else {
-            return null;
-        }
     }
 
     public void putLastNotificationCount(String id) {
