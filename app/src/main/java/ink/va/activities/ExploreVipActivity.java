@@ -20,6 +20,7 @@ public class ExploreVipActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explore_vip);
         ButterKnife.bind(this);
+        setStatusBarColor(R.color.vip_status_bar_color);
         hideActionBar();
         typeface = Typeface.createFromAsset(getAssets(), "fonts/vip_regular.ttf");
         exploreVipRootTitle.setTypeface(typeface);

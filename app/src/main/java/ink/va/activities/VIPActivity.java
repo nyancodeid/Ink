@@ -36,9 +36,6 @@ import static ink.va.utils.MembershipTypes.MEMBERSHIP_TYPE_RED;
 
 public class VIPActivity extends BaseActivity {
 
-    @Bind(R.id.rootImageView)
-    ImageView rootImageView;
-
     @Bind(R.id.exploreVip)
     Button exploreButton;
 
