@@ -80,10 +80,16 @@ public class VipMemberViewHolder extends RecyclerView.ViewHolder {
                     .withBitmap().transform(new CircleTransform())
                     .intoImageView(vipMemberImage);
         } else {
-            String encodedImage = Uri.encode(userModel.getImageUrl());
-            Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage).
-                    withBitmap().placeholder(R.drawable.vip_image_placeholder).transform(new CircleTransform())
-                    .intoImageView(vipMemberImage);
+            if (userModel.isSocialAccount()) {
+                Ion.with(context).load(userModel.getImageUrl()).
+                        withBitmap().placeholder(R.drawable.vip_image_placeholder).transform(new CircleTransform())
+                        .intoImageView(vipMemberImage);
+            } else {
+                String encodedImage = Uri.encode(userModel.getImageUrl());
+                Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage).
+                        withBitmap().placeholder(R.drawable.vip_image_placeholder).transform(new CircleTransform())
+                        .intoImageView(vipMemberImage);
+            }
         }
 
         bottomSpacing.setVisibility(position == maxSize ? View.VISIBLE : View.GONE);
