@@ -16,6 +16,7 @@ public class Constants {
     public static final String CHECK_BAN_URL = "CheckBan.php";
     public static final String WHO_VIEWED_URL = "WhoViewed.php";
     public static final String GROUP_REQUESTS_URL = "GetUserRequests.php";
+    public static final String VIP_GLOBAL_CHAT_URL = "VipGlobalChat.php";
     public static final String USER_GIFS_URL = "GetUserGifs.php";
     public static final String GET_USER_COLLECTIONS = "GetUserCollection.php";
     public static final String GET_SINGLE_STICKER_PACK = "GetSingleStickerPack.php";
@@ -183,5 +184,7 @@ public class Constants {
     public static final String PACK_CONTENT_BUNDLE_KEY = "pack_content";
     public static final String VIP_MEMBERS_URL = "VipMembers.php";
     public static final String TRANSFER_COINS_URL = "TransferCoins.php";
+    public static final String GLOBAL_CHAT_TYPE_SEND = "SEND";
+    public static final String GLOBAL_CHAT_TYPE_GET = "GET";
 }
 
