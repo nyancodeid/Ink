@@ -37,11 +37,17 @@ public class GlobalVipChat extends BaseActivity {
             @Override
             public void onResponse(Call<VipGlobalChatResponseModel> call, Response<VipGlobalChatResponseModel> response) {
                 VipGlobalChatResponseModel vipGlobalChatResponseModel = response.body();
-                if (vipGlobalChatResponseModel.getVipGlobalChatModels().isEmpty()) {
 
+                if (vipGlobalChatResponseModel.isSuccess()) {
+                    if (vipGlobalChatResponseModel.getVipGlobalChatModels().isEmpty()) {
+
+                    } else {
+
+                    }
                 } else {
-
+                    Snackbar.make(globalChatRecycler, getString(R.string.serverErrorText), Snackbar.LENGTH_SHORT).show();
                 }
+
             }
 
             @Override
