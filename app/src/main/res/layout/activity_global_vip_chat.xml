@@ -16,8 +16,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/globalChatBgHeader"
-        android:rotation="180"
-        android:background="@drawable/global_chat_background_main"></RelativeLayout>
+        android:background="@drawable/global_chat_background_main"
+        android:rotation="180"></RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/globalChatRecycler"
@@ -29,5 +29,14 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"></android.support.v7.widget.RecyclerView>
 
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/noVipMessages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/noVipMessages"
+        android:textColor="@color/vk_white"
+        android:textSize="24sp" />
 
 </RelativeLayout>

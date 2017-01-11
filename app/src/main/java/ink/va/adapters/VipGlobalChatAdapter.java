@@ -71,4 +71,8 @@ public class VipGlobalChatAdapter extends RecyclerView.Adapter<RecyclerView.View
         chatModels.clear();
         notifyDataSetChanged();
     }
+
+    public boolean isListEmpty() {
+        return chatModels.isEmpty();
+    }
 }

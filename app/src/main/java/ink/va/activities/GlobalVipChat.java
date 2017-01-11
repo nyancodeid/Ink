@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
@@ -38,6 +39,8 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
 
     @Bind(R.id.globalChatRecycler)
     RecyclerView globalChatRecycler;
+    @Bind(R.id.noVipMessages)
+    TextView noVipMessages;
     private String chosenMembership;
     private VipGlobalChatAdapter vipGlobalChatAdapter;
     private Gson gson;
@@ -71,6 +74,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
                 hideVipLoading();
                 if (vipGlobalChatResponseModel.isSuccess()) {
                     if (!vipGlobalChatResponseModel.getVipGlobalChatModels().isEmpty()) {
+                        hideNoChat();
                         vipGlobalChatAdapter.setChatModels(vipGlobalChatResponseModel.getVipGlobalChatModels());
                     } else {
                         showNoChat();
@@ -105,6 +109,16 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
     }
 
     private void showNoChat() {
+        if (noVipMessages.getVisibility() == View.GONE) {
+            noVipMessages.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    private void hideNoChat() {
+        if (noVipMessages.getVisibility() == View.VISIBLE) {
+            noVipMessages.setVisibility(View.GONE);
+        }
 
     }
 
@@ -143,14 +157,14 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
                             }
                         });
                         final AlertDialog alertDialog = builder.show();
-                        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 alertDialog.dismiss();
                                 deleteMessage(vipGlobalChatModel);
                             }
                         });
-                        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 alertDialog.dismiss();
@@ -172,6 +186,12 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
                 hideVipLoading();
                 if (response.body().isSuccess()) {
                     vipGlobalChatAdapter.removeItem(vipGlobalChatModel);
+
+                    if (vipGlobalChatAdapter.isListEmpty()) {
+                        showNoChat();
+                    } else {
+                        hideNoChat();
+                    }
                     Snackbar.make(globalChatRecycler, getString(R.string.messageDeleted), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
