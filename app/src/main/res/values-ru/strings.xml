@@ -779,5 +779,5 @@
     <string name="trasnferring">Передача...</string>
     <string name="trasnferring_coins_text">Передача ваших монет,пожалуйста подождите</string>
     <string name="coins_transferred">Монеты переданы </string>
-    <string name="noVipMessages">Сообшений Пока Нет,Напишите Одну Прямо Сейчас!</string>
+    <string name="noVipMessages">Сообшений Пока Нет\nНапишите Одну Прямо Сейчас!</string>
 </resources>

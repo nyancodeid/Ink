@@ -780,6 +780,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="trasnferring">Transferring...</string>
     <string name="trasnferring_coins_text">Transferring you\'r coins,please wait</string>
     <string name="coins_transferred">Coins were transferred</string>
-    <string name="noVipMessages">No Messages Yet,Write One Now!</string>
+    <string name="noVipMessages">No Messages Yet\nWrite One Now!</string>
 
 </resources>
