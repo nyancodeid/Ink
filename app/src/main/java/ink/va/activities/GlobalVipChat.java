@@ -32,7 +32,7 @@ public class GlobalVipChat extends BaseActivity {
 
 
     private void getMessages() {
-        Call<VipGlobalChatResponseModel> getMessages = Retrofit.getInstance().getInkService().vipGlobalChatAction(null, null, Constants.GLOBAL_CHAT_TYPE_GET);
+        Call<VipGlobalChatResponseModel> getMessages = Retrofit.getInstance().getInkService().vipGlobalChatAction(null, null, Constants.VIP_GLOBAL_CHAT_TYPE_GET);
         getMessages.enqueue(new Callback<VipGlobalChatResponseModel>() {
             @Override
             public void onResponse(Call<VipGlobalChatResponseModel> call, Response<VipGlobalChatResponseModel> response) {
