@@ -64,7 +64,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
                 VipGlobalChatResponseModel vipGlobalChatResponseModel = response.body();
 
                 if (vipGlobalChatResponseModel.isSuccess()) {
-                    if (vipGlobalChatResponseModel.getVipGlobalChatModels().isEmpty()) {
+                    if (!vipGlobalChatResponseModel.getVipGlobalChatModels().isEmpty()) {
                         vipGlobalChatAdapter.setChatModels(vipGlobalChatResponseModel.getVipGlobalChatModels());
                     } else {
                         showNoChat();

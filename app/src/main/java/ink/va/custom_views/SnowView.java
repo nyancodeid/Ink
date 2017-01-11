@@ -20,6 +20,8 @@ public class SnowView extends View {
 
     private SnowFlake[] snowflakes;
     private SharedHelper sharedHelper;
+    private int oldWidth;
+    private int oldHeight;
 
     public SnowView(Context context) {
         super(context);
@@ -55,6 +57,8 @@ public class SnowView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        oldWidth = w;
+        oldHeight = h;
         if (sharedHelper.showSnow()) {
             if (w != oldw || h != oldh) {
                 resize(w, h);
@@ -67,6 +71,9 @@ public class SnowView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (sharedHelper.showSnow()) {
+            if (snowflakes == null) {
+                resize(oldWidth, oldHeight);
+            }
             for (SnowFlake snowFlake : snowflakes) {
                 snowFlake.draw(canvas);
             }

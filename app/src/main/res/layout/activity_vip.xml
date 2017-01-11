@@ -22,6 +22,7 @@
     <Button
         android:id="@+id/exploreVip"
         android:layout_width="match_parent"
+        android:fontFamily="@string/appFont"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_margin="16dp"
@@ -33,6 +34,7 @@
 
     <Button
         android:id="@+id/vipGlobalChat"
+        android:fontFamily="@string/appFont"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/exploreVip"
