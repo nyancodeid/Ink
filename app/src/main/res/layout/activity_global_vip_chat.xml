@@ -45,7 +45,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@color/adobe_csdk_transparent_color"
         android:hint="@string/writeMessageHint"
+        android:maxHeight="100dp"
+        android:minHeight="60dp"
         android:textColor="@color/vk_white"
         android:textColorHint="#cccccc" />
 
@@ -53,8 +56,8 @@
     <ProgressBar
         android:id="@+id/sendingProgress"
         style="@style/AdobeImageWidget.ProgressBar.Large"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:visibility="gone" />
@@ -65,6 +68,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:padding="5dp"
+        android:padding="7dp"
         android:src="@drawable/send_button_states" />
 </RelativeLayout>
