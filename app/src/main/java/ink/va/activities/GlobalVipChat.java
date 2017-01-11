@@ -42,6 +42,7 @@ import retrofit2.Response;
 
 import static ink.va.utils.Constants.VIP_GLOBAL_CHAT_TYPE_DELETE;
 import static ink.va.utils.Constants.VIP_GLOBAL_CHAT_TYPE_GET;
+import static ink.va.utils.Constants.VIP_GLOBAL_CHAT_TYPE_SEND;
 
 public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickListener {
 
@@ -273,7 +274,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
         Keyboard.hideKeyboard(getApplicationContext(), globalChatRecycler);
         changeMessageFieldsState(false);
         sendingProgress.setVisibility(View.VISIBLE);
-        Call<VipGlobalChatResponseModel> sendMessageCall = Retrofit.getInstance().getInkService().vipGlobalChatAction(null, sharedHelper.getUserId(), message, null);
+        Call<VipGlobalChatResponseModel> sendMessageCall = Retrofit.getInstance().getInkService().vipGlobalChatAction(null, sharedHelper.getUserId(), message, VIP_GLOBAL_CHAT_TYPE_SEND);
         sendMessageCall.enqueue(new Callback<VipGlobalChatResponseModel>() {
             @Override
             public void onResponse(Call<VipGlobalChatResponseModel> call, Response<VipGlobalChatResponseModel> response) {
