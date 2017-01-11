@@ -12,8 +12,12 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.messaging.RemoteMessage;
@@ -22,6 +26,7 @@ import com.ink.va.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ink.va.adapters.VipGlobalChatAdapter;
 import ink.va.interfaces.ItemClickListener;
 import ink.va.interfaces.VipGlobalChatClickListener;
@@ -29,6 +34,7 @@ import ink.va.models.VipGlobalChatModel;
 import ink.va.models.VipGlobalChatResponseModel;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.Retrofit;
+import ink.va.utils.SharedHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -42,18 +48,46 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
     RecyclerView globalChatRecycler;
     @Bind(R.id.noVipMessages)
     TextView noVipMessages;
+    @Bind(R.id.globalChatField)
+    EditText globalChatField;
+    @Bind(R.id.sendGlobalMessage)
+    ImageView sendGlobalMessage;
     private String chosenMembership;
     private VipGlobalChatAdapter vipGlobalChatAdapter;
     private Gson gson;
     private Typeface typeface;
+    private SharedHelper sharedHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_global_vip_chat);
         ButterKnife.bind(this);
+        sharedHelper = new SharedHelper(this);
         setStatusBarColor(R.color.vip_status_bar_color);
         hideActionBar();
+        sendGlobalMessage.setEnabled(false);
+
+        globalChatField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.toString().trim().isEmpty()) {
+                    sendGlobalMessage.setEnabled(false);
+                } else {
+                    sendGlobalMessage.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         gson = new Gson();
         typeface = Typeface.createFromAsset(getAssets(), "fonts/vip_regular.ttf");
         noVipMessages.setTypeface(typeface);
@@ -103,6 +137,9 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
             Bundle extras = intent.getExtras();
             RemoteMessage remoteMessage = extras.getParcelable("data");
             VipGlobalChatResponseModel vipGlobalChatResponseModel = gson.fromJson(remoteMessage.getData().get("data"), VipGlobalChatResponseModel.class);
+            if (!vipGlobalChatResponseModel.getVipGlobalChatModels().get(0).getUser().getUserId().equals(sharedHelper.getUserId())) {
+                vipGlobalChatAdapter.insertItem(vipGlobalChatResponseModel.getVipGlobalChatModels().get(0));
+            }
         }
     };
 
@@ -218,6 +255,44 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
                 Snackbar.make(globalChatRecycler, getString(R.string.serverErrorText), Snackbar.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @OnClick(R.id.sendGlobalMessage)
+    public void sendClicked() {
+        String message = globalChatField.getText().toString();
+        sendMessage(message);
+    }
+
+    private void sendMessage(String message) {
+        changeMessageFieldsState(false);
+        Call<VipGlobalChatResponseModel> sendMessageCall = Retrofit.getInstance().getInkService().vipGlobalChatAction(null, sharedHelper.getUserId(), message, null);
+        sendMessageCall.enqueue(new Callback<VipGlobalChatResponseModel>() {
+            @Override
+            public void onResponse(Call<VipGlobalChatResponseModel> call, Response<VipGlobalChatResponseModel> response) {
+                changeMessageFieldsState(true);
+                if (response.body().isSuccess()) {
+                    globalChatField.setText("");
+                    vipGlobalChatAdapter.insertItem(response.body().getVipGlobalChatModels().get(0));
+                } else {
+                    Snackbar.make(globalChatRecycler, getString(R.string.messageNotSent), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    }).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<VipGlobalChatResponseModel> call, Throwable t) {
+                changeMessageFieldsState(true);
+            }
+        });
+    }
+
+    private void changeMessageFieldsState(boolean enable) {
+        globalChatField.setEnabled(enable);
+        sendGlobalMessage.setEnabled(enable);
     }
 
     @Override
