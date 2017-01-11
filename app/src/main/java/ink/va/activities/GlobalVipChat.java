@@ -146,6 +146,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
             VipGlobalChatResponseModel vipGlobalChatResponseModel = gson.fromJson(remoteMessage.getData().get("data"), VipGlobalChatResponseModel.class);
             if (!vipGlobalChatResponseModel.getVipGlobalChatModels().get(0).getUser().getUserId().equals(sharedHelper.getUserId())) {
                 vipGlobalChatAdapter.insertItem(vipGlobalChatResponseModel.getVipGlobalChatModels().get(0));
+                hideNoChat();
             }
         }
     };
@@ -280,6 +281,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
             public void onResponse(Call<VipGlobalChatResponseModel> call, Response<VipGlobalChatResponseModel> response) {
                 changeMessageFieldsState(true);
                 sendingProgress.setVisibility(View.GONE);
+                hideNoChat();
                 if (response.body().isSuccess()) {
                     globalChatField.setText("");
                     vipGlobalChatAdapter.insertItem(response.body().getVipGlobalChatModels().get(0));
