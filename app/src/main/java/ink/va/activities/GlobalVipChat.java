@@ -43,6 +43,8 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_global_vip_chat);
         ButterKnife.bind(this);
+        setStatusBarColor(R.color.vip_status_bar_color);
+        hideActionBar();
         gson = new Gson();
         vipGlobalChatAdapter = new VipGlobalChatAdapter(this);
         vipGlobalChatAdapter.setVipGlobalChatClickListener(this);
@@ -55,14 +57,14 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
 
 
     private void getMessages() {
+        showVipLoading();
         vipGlobalChatAdapter.clear();
-
         Call<VipGlobalChatResponseModel> getMessages = Retrofit.getInstance().getInkService().vipGlobalChatAction(null, null, null, Constants.VIP_GLOBAL_CHAT_TYPE_GET);
         getMessages.enqueue(new Callback<VipGlobalChatResponseModel>() {
             @Override
             public void onResponse(Call<VipGlobalChatResponseModel> call, Response<VipGlobalChatResponseModel> response) {
                 VipGlobalChatResponseModel vipGlobalChatResponseModel = response.body();
-
+                hideVipLoading();
                 if (vipGlobalChatResponseModel.isSuccess()) {
                     if (!vipGlobalChatResponseModel.getVipGlobalChatModels().isEmpty()) {
                         vipGlobalChatAdapter.setChatModels(vipGlobalChatResponseModel.getVipGlobalChatModels());
@@ -77,6 +79,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
 
             @Override
             public void onFailure(Call<VipGlobalChatResponseModel> call, Throwable t) {
+                hideVipLoading();
                 Snackbar.make(globalChatRecycler, getString(R.string.serverErrorText), Snackbar.LENGTH_SHORT).show();
             }
         });
