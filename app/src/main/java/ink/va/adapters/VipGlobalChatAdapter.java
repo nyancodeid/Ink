@@ -11,6 +11,7 @@ import com.ink.va.R;
 import java.util.LinkedList;
 import java.util.List;
 
+import ink.va.interfaces.VipGlobalChatClickListener;
 import ink.va.models.VipGlobalChatModel;
 import ink.va.view_holders.VipGlobalChatViewHolder;
 
@@ -21,6 +22,7 @@ import ink.va.view_holders.VipGlobalChatViewHolder;
 public class VipGlobalChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<VipGlobalChatModel> chatModels;
     private Context context;
+    private VipGlobalChatClickListener vipGlobalChatClickListener;
 
     public VipGlobalChatAdapter(Context context) {
         chatModels = new LinkedList<>();
@@ -35,7 +37,7 @@ public class VipGlobalChatAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((VipGlobalChatViewHolder) holder).initData(chatModels.get(position), context);
+        ((VipGlobalChatViewHolder) holder).initData(chatModels.get(position), context, vipGlobalChatClickListener);
     }
 
     @Override
@@ -47,5 +49,21 @@ public class VipGlobalChatAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.chatModels.clear();
         this.chatModels.addAll(chatModels);
         notifyDataSetChanged();
+    }
+
+    public void setVipGlobalChatClickListener(VipGlobalChatClickListener vipGlobalChatClickListener) {
+        this.vipGlobalChatClickListener = vipGlobalChatClickListener;
+    }
+
+    public void removeItem(VipGlobalChatModel item) {
+        int itemPosition = chatModels.indexOf(item);
+        chatModels.remove(item);
+        notifyItemRemoved(itemPosition);
+    }
+
+    public void insertItem(VipGlobalChatModel item) {
+        chatModels.add(item);
+        int itemPosition = chatModels.indexOf(item);
+        notifyItemInserted(itemPosition);
     }
 }

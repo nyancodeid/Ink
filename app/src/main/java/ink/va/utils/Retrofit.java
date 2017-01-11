@@ -109,7 +109,8 @@ public class Retrofit {
 
         @POST(Constants.VIP_GLOBAL_CHAT_URL)
         @FormUrlEncoded
-        Call<VipGlobalChatResponseModel> vipGlobalChatAction(@Nullable @Field("userId") String userId,
+        Call<VipGlobalChatResponseModel> vipGlobalChatAction(@Nullable @Field("messageId") String messageId,
+                                                             @Nullable @Field("userId") String userId,
                                                              @Nullable @Field("message") String message,
                                                              @NonNull @Field("type") String type);
 

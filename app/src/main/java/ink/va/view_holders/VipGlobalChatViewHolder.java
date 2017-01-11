@@ -15,6 +15,8 @@ import com.koushikdutta.ion.Ion;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import ink.va.interfaces.VipGlobalChatClickListener;
 import ink.va.models.UserModel;
 import ink.va.models.VipGlobalChatModel;
 import ink.va.utils.CircleTransform;
@@ -42,13 +44,17 @@ public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
 
     private Context context;
     private UserModel userModel;
+    private VipGlobalChatClickListener vipGlobalChatClickListener;
+    private VipGlobalChatModel vipGlobalChatModel;
 
     public VipGlobalChatViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
 
-    public void initData(VipGlobalChatModel vipGlobalChatModel, Context context) {
+    public void initData(VipGlobalChatModel vipGlobalChatModel, Context context, VipGlobalChatClickListener vipGlobalChatClickListener) {
+        this.vipGlobalChatClickListener = vipGlobalChatClickListener;
+        this.vipGlobalChatModel = vipGlobalChatModel;
         this.context = context;
         userModel = vipGlobalChatModel.getUser();
         if (sharedHelper == null) {
@@ -63,6 +69,19 @@ public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
         configureUserImage();
     }
 
+    @OnClick(R.id.vipGlobalChatMoreIcon)
+    public void moreClicked() {
+        if (vipGlobalChatClickListener != null) {
+            vipGlobalChatClickListener.onMoreIconClicked(vipGlobalChatMoreIcon, vipGlobalChatModel);
+        }
+    }
+
+    @OnClick(R.id.globalVipMemberRoot)
+    public void itemClicked() {
+        if (vipGlobalChatClickListener != null) {
+            vipGlobalChatClickListener.onItemClicked(vipGlobalChatModel);
+        }
+    }
 
     private void configureUserImage() {
         if (userModel.getImageUrl().isEmpty()) {
@@ -82,4 +101,6 @@ public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
             }
         }
     }
+
+
 }
