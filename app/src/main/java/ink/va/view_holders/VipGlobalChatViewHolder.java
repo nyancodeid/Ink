@@ -40,6 +40,8 @@ public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
     RelativeLayout globalVipMemberRoot;
     @Bind(R.id.vipGlobalChatMoreIcon)
     ImageView vipGlobalChatMoreIcon;
+    @Bind(R.id.globalChatBottomSpace)
+    View globalChatBottomSpace;
     private SharedHelper sharedHelper;
 
     private Context context;
@@ -52,7 +54,7 @@ public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void initData(VipGlobalChatModel vipGlobalChatModel, Context context, VipGlobalChatClickListener vipGlobalChatClickListener) {
+    public void initData(VipGlobalChatModel vipGlobalChatModel, Context context, VipGlobalChatClickListener vipGlobalChatClickListener, int position, int size) {
         this.vipGlobalChatClickListener = vipGlobalChatClickListener;
         this.vipGlobalChatModel = vipGlobalChatModel;
         this.context = context;
@@ -60,6 +62,8 @@ public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
         if (sharedHelper == null) {
             sharedHelper = new SharedHelper(context);
         }
+
+        globalChatBottomSpace.setVisibility(position == size ? View.VISIBLE : View.GONE);
 
         vipGlobalChatMoreIcon.setVisibility(userModel.getUserId().equals(sharedHelper.getUserId()) ? View.VISIBLE : View.GONE);
 

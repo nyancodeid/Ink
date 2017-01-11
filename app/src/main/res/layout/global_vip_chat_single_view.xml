@@ -30,8 +30,8 @@
                 android:id="@+id/globalVipChatContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
                 android:fontFamily="@string/appFont"
+                android:padding="5dp"
                 android:text="@string/loadingText"
                 android:textColor="@color/vk_black" />
 
@@ -42,22 +42,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:layout_toLeftOf="@+id/vipGlobalChatMoreIcon"
             android:layout_toRightOf="@+id/globalVipMemberImage"
             android:ellipsize="end"
             android:fontFamily="@string/appFont"
             android:gravity="right"
-            android:layout_toLeftOf="@+id/vipGlobalChatMoreIcon"
             android:maxLines="1"
             android:text="@string/loadingText"
             android:textColor="@color/vk_white" />
 
         <ImageView
-            android:visibility="gone"
             android:id="@+id/vipGlobalChatMoreIcon"
-            android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:padding="5dp"
-            android:src="@drawable/more_icon" />
+            android:src="@drawable/more_icon"
+            android:visibility="gone" />
     </RelativeLayout>
+
+    <android.support.v4.widget.Space
+        android:id="@+id/globalChatBottomSpace"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/globalVipMemberRoot"
+        android:visibility="gone" />
 </RelativeLayout>

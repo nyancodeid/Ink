@@ -53,6 +53,27 @@
         android:textSize="24sp"
         android:visibility="gone" />
 
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/newMessageWrapper"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_above="@+id/globalChatField"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/rounded_button">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@string/appFont"
+            android:text="@string/newMessageGlobal"
+            android:textColor="@color/vk_white"
+            android:textSize="12.5sp" />
+    </RelativeLayout>
+
     <EditText
         android:id="@+id/globalChatField"
         android:layout_width="match_parent"
@@ -60,6 +81,7 @@
         android:layout_alignParentBottom="true"
         android:background="@color/adobe_csdk_transparent_color"
         android:hint="@string/writeMessageHint"
+        android:inputType="textEmailAddress"
         android:maxHeight="100dp"
         android:minHeight="60dp"
         android:textColor="@color/vk_white"

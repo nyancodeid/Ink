@@ -37,7 +37,7 @@ public class VipGlobalChatAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((VipGlobalChatViewHolder) holder).initData(chatModels.get(position), context, vipGlobalChatClickListener);
+        ((VipGlobalChatViewHolder) holder).initData(chatModels.get(position), context, vipGlobalChatClickListener,position,chatModels.size()-1);
     }
 
     @Override

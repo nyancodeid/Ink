@@ -16,8 +16,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.messaging.RemoteMessage;
@@ -30,6 +33,7 @@ import butterknife.OnClick;
 import ink.va.adapters.VipGlobalChatAdapter;
 import ink.va.interfaces.ItemClickListener;
 import ink.va.interfaces.VipGlobalChatClickListener;
+import ink.va.models.UserModel;
 import ink.va.models.VipGlobalChatModel;
 import ink.va.models.VipGlobalChatResponseModel;
 import ink.va.utils.DialogUtils;
@@ -58,12 +62,17 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
     View sendingProgress;
     @Bind(R.id.refreshGlobalChat)
     ImageView refreshGlobalChat;
+    @Bind(R.id.newMessageWrapper)
+    RelativeLayout newMessageWrapper;
 
     private String chosenMembership;
     private VipGlobalChatAdapter vipGlobalChatAdapter;
     private Gson gson;
     private Typeface typeface;
     private SharedHelper sharedHelper;
+    private LinearLayoutManager linearLayoutManager;
+    private Animation fadeInAnimation;
+    private Animation fadeOutAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +83,27 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
         setStatusBarColor(R.color.vip_status_bar_color);
         hideActionBar();
         sendGlobalMessage.setEnabled(false);
+        fadeInAnimation = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
+        fadeInAnimation = AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
+
+        globalChatRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
+
+                if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                    changeNewMessageVisibility(false);
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
 
         globalChatField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -101,12 +131,23 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
         vipGlobalChatAdapter = new VipGlobalChatAdapter(this);
         vipGlobalChatAdapter.setVipGlobalChatClickListener(this);
         chosenMembership = getIntent().getExtras() != null ? getIntent().getExtras().getString("membershipType") : null;
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setStackFromEnd(true);
         globalChatRecycler.setLayoutManager(linearLayoutManager);
         globalChatRecycler.setAdapter(vipGlobalChatAdapter);
         getMessages();
     }
 
+
+    private void scrollToBottom() {
+        globalChatRecycler.post(new Runnable() {
+            @Override
+            public void run() {
+                globalChatRecycler.smoothScrollToPosition(vipGlobalChatAdapter.getItemCount());
+            }
+        });
+
+    }
 
     private void getMessages() {
         showVipLoading();
@@ -120,6 +161,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
                 if (vipGlobalChatResponseModel.isSuccess()) {
                     if (!vipGlobalChatResponseModel.getVipGlobalChatModels().isEmpty()) {
                         hideNoChat();
+                        scrollToBottom();
                         vipGlobalChatAdapter.setChatModels(vipGlobalChatResponseModel.getVipGlobalChatModels());
                     } else {
                         showNoChat();
@@ -143,18 +185,104 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
             RemoteMessage remoteMessage = extras.getParcelable("data");
-            VipGlobalChatResponseModel vipGlobalChatResponseModel = gson.fromJson(remoteMessage.getData().get("data"), VipGlobalChatResponseModel.class);
-            if (!vipGlobalChatResponseModel.getVipGlobalChatModels().get(0).getUser().getUserId().equals(sharedHelper.getUserId())) {
-                vipGlobalChatAdapter.insertItem(vipGlobalChatResponseModel.getVipGlobalChatModels().get(0));
-                hideNoChat();
+
+            String messageId = remoteMessage.getData().get("messageId");
+            String senderId = remoteMessage.getData().get("senderId");
+            String message = remoteMessage.getData().get("message");
+            String senderImageUrl = remoteMessage.getData().get("senderImageUrl");
+            String firstName = remoteMessage.getData().get("firstName");
+            String lastName = remoteMessage.getData().get("lastName");
+            String isSocialAccount = remoteMessage.getData().get("isSocialAccount");
+            String vipMembershipType = remoteMessage.getData().get("vipMembershipType");
+            String gender = remoteMessage.getData().get("gender");
+
+            UserModel userModel = new UserModel();
+            userModel.setImageUrl(senderImageUrl);
+            userModel.setFirstName(firstName);
+            userModel.setLastName(lastName);
+            userModel.setUserId(senderId);
+            userModel.setSocialAccount(Boolean.valueOf(isSocialAccount));
+            userModel.setGender(gender);
+            userModel.setVipMembershipType(vipMembershipType);
+
+
+            VipGlobalChatModel vipGlobalChatModel = new VipGlobalChatModel();
+            vipGlobalChatModel.setMessage(message);
+            vipGlobalChatModel.setMessageId(Integer.valueOf(messageId));
+            vipGlobalChatModel.setSenderId(senderId);
+            vipGlobalChatModel.setUser(userModel);
+
+            vipGlobalChatAdapter.insertItem(vipGlobalChatModel);
+            hideNoChat();
+            if (!isLastItemDisplaying()) {
+                changeNewMessageVisibility(true);
             }
         }
     };
+
+    private void changeNewMessageVisibility(boolean visible) {
+        if (visible && newMessageWrapper.getVisibility() != View.VISIBLE) {
+
+            fadeInAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    newMessageWrapper.setVisibility(View.VISIBLE);
+                    newMessageWrapper.setEnabled(true);
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            newMessageWrapper.startAnimation(fadeInAnimation);
+        } else if (!visible && newMessageWrapper.getVisibility() != View.GONE) {
+            fadeOutAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    newMessageWrapper.setEnabled(false);
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    newMessageWrapper.setVisibility(View.GONE);
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            newMessageWrapper.startAnimation(fadeOutAnimation);
+        }
+    }
+
+    @OnClick(R.id.newMessageWrapper)
+    public void hideNewMessage() {
+        changeNewMessageVisibility(false);
+        scrollToBottom();
+    }
 
     @Override
     protected void onStart() {
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(getPackageName() + ".GlobalVipChat"));
         super.onStart();
+    }
+
+
+    private boolean isLastItemDisplaying() {
+        if (globalChatRecycler.getAdapter().getItemCount() != 0) {
+            int lastVisibleItemPosition = ((LinearLayoutManager) globalChatRecycler.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+            if (lastVisibleItemPosition != RecyclerView.NO_POSITION && lastVisibleItemPosition == globalChatRecycler.getAdapter().getItemCount() - 1)
+                return true;
+        }
+        return false;
     }
 
     private void showNoChat() {
@@ -285,6 +413,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
                 if (response.body().isSuccess()) {
                     globalChatField.setText("");
                     vipGlobalChatAdapter.insertItem(response.body().getVipGlobalChatModels().get(0));
+                    scrollToBottom();
                 } else {
                     Snackbar.make(globalChatRecycler, getString(R.string.messageNotSent), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
                         @Override

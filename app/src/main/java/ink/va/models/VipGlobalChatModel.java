@@ -32,4 +32,20 @@ public class VipGlobalChatModel {
     public UserModel getUser() {
         return user;
     }
+
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
+    }
+
+    public void setMessageId(int messageId) {
+        this.messageId = messageId;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setUser(UserModel user) {
+        this.user = user;
+    }
 }

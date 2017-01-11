@@ -782,4 +782,5 @@
     <string name="noVipMessages">Сообшений Пока Нет\nНапишите Одну Прямо Сейчас!</string>
     <string name="login_too_short">Логин слишком короткий (Мин 5 символов)</string>
     <string name="password_too_short">Пароль слишком короткий (Мин 5 символов)</string>
+    <string name="newMessageGlobal">Новое сообщение</string>
 </resources>

@@ -783,5 +783,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="noVipMessages">No Messages Yet\nWrite One Now!</string>
     <string name="login_too_short">Login is too short (Min 5 symbols)</string>
     <string name="password_too_short">Password is too short (Min 5 symbols)</string>
-
+    <string name="newMessageGlobal">New Message</string>
 </resources>
