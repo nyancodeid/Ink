@@ -147,6 +147,7 @@ public class Constants {
     public static final String REQUEST_RESPONSE_TYPE_FRIEND_REQUEST = "friendRequest";
     public static final String REQUEST_RESPONSE_TYPE_LOCATION_REQUEST = "locationRequest";
     public static final String NOTIFICATION_TYPE_MESSAGE = "message";
+    public static final String NOTIFICAITON_TYPE_GLOBAL_CHAT_MESSAGE = "globalChatMessage";
     public static final String NOTIFICATION_TYPE_GROUP_REQUEST = "request";
     public static final String TYPE_MESSAGE_SENT = "messageSent";
     public static final String NOTIFICATION_TYPE_FRIEND_REQUEST = "NOTIFICATION_TYPE_FRIEND_REQUEST";

@@ -51,6 +51,23 @@ import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
+import static ink.va.utils.Constants.DELETE_MESSAGE_REQUESTED;
+import static ink.va.utils.Constants.NOTIFICAITON_TYPE_GLOBAL_CHAT_MESSAGE;
+import static ink.va.utils.Constants.NOTIFICATION_TYPE_CALL;
+import static ink.va.utils.Constants.NOTIFICATION_TYPE_CHAT_ROULETTE;
+import static ink.va.utils.Constants.NOTIFICATION_TYPE_COMMENT_ADDED;
+import static ink.va.utils.Constants.NOTIFICATION_TYPE_FRIEND_REQUEST;
+import static ink.va.utils.Constants.NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED;
+import static ink.va.utils.Constants.NOTIFICATION_TYPE_GROUP_REQUEST;
+import static ink.va.utils.Constants.NOTIFICATION_TYPE_LOCATION_REQUEST_ACCEPTED;
+import static ink.va.utils.Constants.NOTIFICATION_TYPE_LOCATION_REQUEST_DECLINED;
+import static ink.va.utils.Constants.NOTIFICATION_TYPE_LOCATION_SESSION_ENDED;
+import static ink.va.utils.Constants.NOTIFICATION_TYPE_LOCATION_UPDATES;
+import static ink.va.utils.Constants.NOTIFICATION_TYPE_MESSAGE;
+import static ink.va.utils.Constants.NOTIFICATION_TYPE_POSTED_IN_GROUP;
+import static ink.va.utils.Constants.NOTIFICATION_TYPE_POST_LIKED;
+import static ink.va.utils.Constants.NOTIFICATION_TYPE_REQUESTING_LOCATION;
+
 public class NotificationService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
@@ -78,7 +95,7 @@ public class NotificationService extends FirebaseMessagingService {
         String type = response.get("type");
 
         switch (type) {
-            case Constants.NOTIFICATION_TYPE_MESSAGE:
+            case NOTIFICATION_TYPE_MESSAGE:
                 Looper looper = Looper.getMainLooper();
                 Handler handler = new Handler(looper);
                 handler.post(new Runnable() {
@@ -135,12 +152,12 @@ public class NotificationService extends FirebaseMessagingService {
 
                 }
                 break;
-            case Constants.NOTIFICATION_TYPE_GROUP_REQUEST:
+            case NOTIFICATION_TYPE_GROUP_REQUEST:
                 sendGroupRequestNotification(getApplicationContext(), response.get("requesterName"),
                         response.get("requestedGroup"), response.get("requestId"));
                 break;
 
-            case Constants.NOTIFICATION_TYPE_CHAT_ROULETTE:
+            case NOTIFICATION_TYPE_CHAT_ROULETTE:
                 Intent intent = new Intent(getPackageName() + "WaitRoom");
                 intent.putExtra("currentUserId", response.get("currentUserId"));
                 intent.putExtra("opponentId", response.get("opponentId"));
@@ -148,33 +165,39 @@ public class NotificationService extends FirebaseMessagingService {
                 intent.putExtra("isDisconnected", response.get("isDisconnected"));
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 break;
-            case Constants.NOTIFICATION_TYPE_CALL:
-
+            case NOTIFICATION_TYPE_CALL:
                 break;
 
-            case Constants.NOTIFICATION_TYPE_FRIEND_REQUEST:
+            case NOTIFICAITON_TYPE_GLOBAL_CHAT_MESSAGE:
+                intent = new Intent(getPackageName() + ".GlobalVipChat");
+                intent.putExtra("data", remoteMessage);
+                LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+                localBroadcastManager.sendBroadcast(intent);
+                break;
+
+            case NOTIFICATION_TYPE_FRIEND_REQUEST:
                 Log.d(TAG, "onMessageReceived: " + "user with id " + response.get("requesterId") + " with the name " + response.get("requesterName") + " with the image"
                         + response.get("requesterImage") + " requested to be friend with you");
 
                 sendFriendRequestNotification(getApplicationContext(), response.get("requesterName"), response.get("requestId"));
                 break;
 
-            case Constants.NOTIFICATION_TYPE_REQUESTING_LOCATION:
+            case NOTIFICATION_TYPE_REQUESTING_LOCATION:
                 String requesterName = response.get("requesterName");
                 String requesterId = response.get("requesterId");
                 sendLocationRequestNotification(getApplicationContext(), requesterId, requesterName);
                 break;
 
-            case Constants.NOTIFICATION_TYPE_LOCATION_SESSION_ENDED:
+            case NOTIFICATION_TYPE_LOCATION_SESSION_ENDED:
                 requesterName = response.get("requesterName");
                 intent = new Intent(getPackageName() + ".Chat");
                 intent.putExtra("requesterName", requesterName);
-                intent.putExtra("type", Constants.NOTIFICATION_TYPE_LOCATION_SESSION_ENDED);
-                LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+                intent.putExtra("type", NOTIFICATION_TYPE_LOCATION_SESSION_ENDED);
+                 localBroadcastManager = LocalBroadcastManager.getInstance(this);
                 localBroadcastManager.sendBroadcast(intent);
                 break;
 
-            case Constants.NOTIFICATION_TYPE_COMMENT_ADDED:
+            case NOTIFICATION_TYPE_COMMENT_ADDED:
                 if (mSharedHelper.showCommentNotification()) {
                     String firstName = response.get("firstName");
                     String lastName = response.get("lastName");
@@ -188,7 +211,7 @@ public class NotificationService extends FirebaseMessagingService {
                 break;
 
 
-            case Constants.NOTIFICATION_TYPE_POSTED_IN_GROUP:
+            case NOTIFICATION_TYPE_POSTED_IN_GROUP:
                 if (mSharedHelper.showGroupNotification()) {
                     String name = response.get("name");
                     String id = response.get("id");
@@ -202,7 +225,7 @@ public class NotificationService extends FirebaseMessagingService {
 
                 break;
 
-            case Constants.NOTIFICATION_TYPE_POST_LIKED:
+            case NOTIFICATION_TYPE_POST_LIKED:
                 if (mSharedHelper.showLikeNotification()) {
                     String firstName = response.get("firstName");
                     String lastName = response.get("lastName");
@@ -217,7 +240,7 @@ public class NotificationService extends FirebaseMessagingService {
                 break;
 
 
-            case Constants.NOTIFICATION_TYPE_LOCATION_REQUEST_DECLINED:
+            case NOTIFICATION_TYPE_LOCATION_REQUEST_DECLINED:
                 requesterName = response.get("requesterName");
                 intent = new Intent(getPackageName() + ".Chat");
                 intent.putExtra("requesterName", requesterName);
@@ -227,7 +250,7 @@ public class NotificationService extends FirebaseMessagingService {
                 localBroadcastManager.sendBroadcast(intent);
                 break;
 
-            case Constants.NOTIFICATION_TYPE_LOCATION_REQUEST_ACCEPTED:
+            case NOTIFICATION_TYPE_LOCATION_REQUEST_ACCEPTED:
                 requesterName = response.get("requesterName");
                 intent = new Intent(getPackageName() + ".Chat");
                 intent.putExtra("requesterName", requesterName);
@@ -236,29 +259,29 @@ public class NotificationService extends FirebaseMessagingService {
                 localBroadcastManager = LocalBroadcastManager.getInstance(this);
                 localBroadcastManager.sendBroadcast(intent);
                 break;
-            case Constants.NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED:
+            case NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED:
                 sendGeneralNotification(getApplicationContext(), response.get("requesterId"), response.get("requesterName") + " " +
                         getString(R.string.acceptedYourFriendRequest), "", HomeActivity.class);
                 break;
-            case Constants.NOTIFICATION_TYPE_LOCATION_UPDATES:
+            case NOTIFICATION_TYPE_LOCATION_UPDATES:
                 String latitude = response.get("latitude");
                 String longitude = response.get("longitude");
 
                 intent = new Intent(getPackageName() + ".Chat");
                 intent.putExtra("latitude", latitude);
                 intent.putExtra("longitude", longitude);
-                intent.putExtra("type", Constants.NOTIFICATION_TYPE_LOCATION_UPDATES);
+                intent.putExtra("type", NOTIFICATION_TYPE_LOCATION_UPDATES);
                 localBroadcastManager = LocalBroadcastManager.getInstance(this);
                 localBroadcastManager.sendBroadcast(intent);
                 break;
-            case Constants.DELETE_MESSAGE_REQUESTED:
+            case DELETE_MESSAGE_REQUESTED:
                 String messageId = response.get("messageId");
                 if (Notification.get().isSendingRemote()) {
                     RealmHelper.getInstance().removeMessage(messageId);
                 } else {
                     intent = new Intent(getPackageName() + ".Chat");
                     intent.putExtra("messageId", messageId);
-                    intent.putExtra("type", Constants.DELETE_MESSAGE_REQUESTED);
+                    intent.putExtra("type", DELETE_MESSAGE_REQUESTED);
                     localBroadcastManager = LocalBroadcastManager.getInstance(this);
                     localBroadcastManager.sendBroadcast(intent);
                 }

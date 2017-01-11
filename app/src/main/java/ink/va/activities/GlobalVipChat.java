@@ -1,12 +1,19 @@
 package ink.va.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
 import com.ink.va.R;
 
 import butterknife.Bind;
@@ -29,12 +36,14 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
     RecyclerView globalChatRecycler;
     private String chosenMembership;
     private VipGlobalChatAdapter vipGlobalChatAdapter;
+    private Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_global_vip_chat);
         ButterKnife.bind(this);
+        gson = new Gson();
         vipGlobalChatAdapter = new VipGlobalChatAdapter(this);
         vipGlobalChatAdapter.setVipGlobalChatClickListener(this);
         chosenMembership = getIntent().getExtras() != null ? getIntent().getExtras().getString("membershipType") : null;
@@ -46,6 +55,8 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
 
 
     private void getMessages() {
+        vipGlobalChatAdapter.clear();
+
         Call<VipGlobalChatResponseModel> getMessages = Retrofit.getInstance().getInkService().vipGlobalChatAction(null, null, null, Constants.VIP_GLOBAL_CHAT_TYPE_GET);
         getMessages.enqueue(new Callback<VipGlobalChatResponseModel>() {
             @Override
@@ -69,6 +80,21 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
                 Snackbar.make(globalChatRecycler, getString(R.string.serverErrorText), Snackbar.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle extras = intent.getExtras();
+            RemoteMessage remoteMessage = extras.getParcelable("data");
+            VipGlobalChatResponseModel vipGlobalChatResponseModel = gson.fromJson(remoteMessage.getData().get("data"), VipGlobalChatResponseModel.class);
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter(getPackageName() + ".GlobalVipChat"));
+        super.onStart();
     }
 
     private void showNoChat() {
@@ -129,5 +155,15 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
                 Snackbar.make(globalChatRecycler, getString(R.string.serverErrorText), Snackbar.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        try {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        super.onDestroy();
     }
 }

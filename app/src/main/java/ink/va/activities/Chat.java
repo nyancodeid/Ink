@@ -596,8 +596,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     }
 
 
-
-
     private void getStatus() {
         if (mOpponentId != null && !mOpponentId.isEmpty()) {
             final Call<ResponseBody> statusCall = Retrofit.getInstance().getInkService().getUserStatus(mOpponentId);
@@ -960,7 +958,11 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
         statusRunnable = null;
         handler = null;
         Notification.get().setSendingRemote(true);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(generalReceiver);
+        try {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(generalReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         super.onDestroy();
     }
 

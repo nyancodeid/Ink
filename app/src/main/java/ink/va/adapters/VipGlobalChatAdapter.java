@@ -66,4 +66,9 @@ public class VipGlobalChatAdapter extends RecyclerView.Adapter<RecyclerView.View
         int itemPosition = chatModels.indexOf(item);
         notifyItemInserted(itemPosition);
     }
+
+    public void clear() {
+        chatModels.clear();
+        notifyDataSetChanged();
+    }
 }
