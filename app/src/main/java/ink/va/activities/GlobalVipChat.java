@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
@@ -44,6 +45,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
     private String chosenMembership;
     private VipGlobalChatAdapter vipGlobalChatAdapter;
     private Gson gson;
+    private Typeface typeface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,8 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
         setStatusBarColor(R.color.vip_status_bar_color);
         hideActionBar();
         gson = new Gson();
+        typeface = Typeface.createFromAsset(getAssets(), "fonts/vip_regular.ttf");
+        noVipMessages.setTypeface(typeface);
         vipGlobalChatAdapter = new VipGlobalChatAdapter(this);
         vipGlobalChatAdapter.setVipGlobalChatClickListener(this);
         chosenMembership = getIntent().getExtras() != null ? getIntent().getExtras().getString("membershipType") : null;
