@@ -52,6 +52,9 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
     EditText globalChatField;
     @Bind(R.id.sendGlobalMessage)
     ImageView sendGlobalMessage;
+    @Bind(R.id.sendingProgress)
+    View sendingProgress;
+
     private String chosenMembership;
     private VipGlobalChatAdapter vipGlobalChatAdapter;
     private Gson gson;
@@ -265,11 +268,13 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
 
     private void sendMessage(String message) {
         changeMessageFieldsState(false);
+        sendingProgress.setVisibility(View.VISIBLE);
         Call<VipGlobalChatResponseModel> sendMessageCall = Retrofit.getInstance().getInkService().vipGlobalChatAction(null, sharedHelper.getUserId(), message, null);
         sendMessageCall.enqueue(new Callback<VipGlobalChatResponseModel>() {
             @Override
             public void onResponse(Call<VipGlobalChatResponseModel> call, Response<VipGlobalChatResponseModel> response) {
                 changeMessageFieldsState(true);
+                sendingProgress.setVisibility(View.GONE);
                 if (response.body().isSuccess()) {
                     globalChatField.setText("");
                     vipGlobalChatAdapter.insertItem(response.body().getVipGlobalChatModels().get(0));
@@ -285,6 +290,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
 
             @Override
             public void onFailure(Call<VipGlobalChatResponseModel> call, Throwable t) {
+                sendingProgress.setVisibility(View.GONE);
                 changeMessageFieldsState(true);
             }
         });
