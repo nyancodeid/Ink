@@ -2,12 +2,14 @@ package ink.va.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.ink.va.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import ink.va.adapters.VipGlobalChatAdapter;
 import ink.va.models.VipGlobalChatResponseModel;
 import ink.va.utils.Constants;
 import ink.va.utils.Retrofit;
@@ -20,13 +22,18 @@ public class GlobalVipChat extends BaseActivity {
     @Bind(R.id.globalChatRecycler)
     RecyclerView globalChatRecycler;
     private String chosenMembership;
+    private VipGlobalChatAdapter vipGlobalChatAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_global_vip_chat);
         ButterKnife.bind(this);
+        vipGlobalChatAdapter = new VipGlobalChatAdapter(this);
         chosenMembership = getIntent().getExtras() != null ? getIntent().getExtras().getString("membershipType") : null;
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        globalChatRecycler.setLayoutManager(linearLayoutManager);
+        globalChatRecycler.setAdapter(vipGlobalChatAdapter);
         getMessages();
     }
 
@@ -40,9 +47,9 @@ public class GlobalVipChat extends BaseActivity {
 
                 if (vipGlobalChatResponseModel.isSuccess()) {
                     if (vipGlobalChatResponseModel.getVipGlobalChatModels().isEmpty()) {
-
+                        vipGlobalChatAdapter.setChatModels(vipGlobalChatResponseModel.getVipGlobalChatModels());
                     } else {
-
+                        showNoChat();
                     }
                 } else {
                     Snackbar.make(globalChatRecycler, getString(R.string.serverErrorText), Snackbar.LENGTH_SHORT).show();
@@ -55,6 +62,10 @@ public class GlobalVipChat extends BaseActivity {
                 Snackbar.make(globalChatRecycler, getString(R.string.serverErrorText), Snackbar.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void showNoChat() {
+
     }
 
     @Override

@@ -10,13 +10,11 @@
         android:layout_height="wrap_content"
         android:background="@drawable/com_facebook_tooltip_black_background">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/globalVipMemberImage"
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:layout_margin="10dp"
-            app:civ_border_color="@color/darkGoldColor"
-            app:civ_border_width="2dp" />
+            android:layout_margin="10dp" />
 
         <RelativeLayout
             android:id="@+id/globalVipChatWrapper"
@@ -42,13 +40,22 @@
             android:id="@+id/globalVipMemberName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_margin="10dp"
             android:layout_toRightOf="@+id/globalVipMemberImage"
             android:ellipsize="end"
             android:gravity="right"
+            android:layout_toLeftOf="@+id/vipGlobalChatMoreIcon"
             android:maxLines="1"
             android:text="@string/loadingText"
             android:textColor="@color/vk_white" />
+
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/vipGlobalChatMoreIcon"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@drawable/more_icon" />
     </RelativeLayout>
 </RelativeLayout>
