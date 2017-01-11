@@ -2,11 +2,13 @@ package ink.va.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -23,12 +25,14 @@ import ink.va.interfaces.ItemClickListener;
 import ink.va.interfaces.VipGlobalChatClickListener;
 import ink.va.models.VipGlobalChatModel;
 import ink.va.models.VipGlobalChatResponseModel;
-import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.Retrofit;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static ink.va.utils.Constants.VIP_GLOBAL_CHAT_TYPE_DELETE;
+import static ink.va.utils.Constants.VIP_GLOBAL_CHAT_TYPE_GET;
 
 public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickListener {
 
@@ -59,7 +63,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
     private void getMessages() {
         showVipLoading();
         vipGlobalChatAdapter.clear();
-        Call<VipGlobalChatResponseModel> getMessages = Retrofit.getInstance().getInkService().vipGlobalChatAction(null, null, null, Constants.VIP_GLOBAL_CHAT_TYPE_GET);
+        Call<VipGlobalChatResponseModel> getMessages = Retrofit.getInstance().getInkService().vipGlobalChatAction(null, null, null, VIP_GLOBAL_CHAT_TYPE_GET);
         getMessages.enqueue(new Callback<VipGlobalChatResponseModel>() {
             @Override
             public void onResponse(Call<VipGlobalChatResponseModel> call, Response<VipGlobalChatResponseModel> response) {
@@ -122,7 +126,36 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
             public void onItemClick(MenuItem clickedItem) {
                 switch (clickedItem.getItemId()) {
                     case 0:
-                        deleteMessage(vipGlobalChatModel);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(GlobalVipChat.this);
+                        builder.setTitle(getString(R.string.areYouSure));
+                        builder.setCancelable(false);
+                        builder.setMessage(getString(R.string.deleteMessageWarning));
+                        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        });
+                        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        });
+                        final AlertDialog alertDialog = builder.show();
+                        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                alertDialog.dismiss();
+                                deleteMessage(vipGlobalChatModel);
+                            }
+                        });
+                        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                alertDialog.dismiss();
+                            }
+                        });
                         break;
                 }
             }
@@ -130,11 +163,13 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
     }
 
     private void deleteMessage(final VipGlobalChatModel vipGlobalChatModel) {
+        showVipLoading();
         Call<VipGlobalChatResponseModel> deleteCall = Retrofit.getInstance().getInkService().vipGlobalChatAction(String.valueOf(vipGlobalChatModel.getMessageId()),
-                null, null, null);
+                null, null, VIP_GLOBAL_CHAT_TYPE_DELETE);
         deleteCall.enqueue(new Callback<VipGlobalChatResponseModel>() {
             @Override
             public void onResponse(Call<VipGlobalChatResponseModel> call, Response<VipGlobalChatResponseModel> response) {
+                hideVipLoading();
                 if (response.body().isSuccess()) {
                     vipGlobalChatAdapter.removeItem(vipGlobalChatModel);
                     Snackbar.make(globalChatRecycler, getString(R.string.messageDeleted), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
@@ -155,6 +190,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
 
             @Override
             public void onFailure(Call<VipGlobalChatResponseModel> call, Throwable t) {
+                hideVipLoading();
                 Snackbar.make(globalChatRecycler, getString(R.string.serverErrorText), Snackbar.LENGTH_SHORT).show();
             }
         });
