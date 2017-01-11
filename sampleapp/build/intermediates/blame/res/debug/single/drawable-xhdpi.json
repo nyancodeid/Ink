@@ -76,12 +76,12 @@
         "source": "D:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xhdpi\\abc_textfield_search_right_default_holo_dark.9.png"
     },
     {
-        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_share_pack_holo_light.9.png",
-        "source": "D:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xhdpi\\abc_ab_share_pack_holo_light.9.png"
-    },
-    {
         "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_go.png",
         "source": "D:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xhdpi\\abc_ic_go.png"
+    },
+    {
+        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_share_pack_holo_light.9.png",
+        "source": "D:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xhdpi\\abc_ab_share_pack_holo_light.9.png"
     },
     {
         "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_bottom_transparent_light_holo.9.png",
@@ -124,12 +124,12 @@
         "source": "D:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xhdpi\\abc_ab_solid_light_holo.9.png"
     },
     {
-        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_tab_unselected_pressed_holo.9.png",
-        "source": "D:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xhdpi\\abc_tab_unselected_pressed_holo.9.png"
-    },
-    {
         "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_focused_holo_dark.9.png",
         "source": "D:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xhdpi\\abc_spinner_ab_focused_holo_dark.9.png"
+    },
+    {
+        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_tab_unselected_pressed_holo.9.png",
+        "source": "D:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xhdpi\\abc_tab_unselected_pressed_holo.9.png"
     },
     {
         "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_default_holo_dark.9.png",
@@ -192,12 +192,12 @@
         "source": "D:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xhdpi\\abc_textfield_search_default_holo_light.9.png"
     },
     {
-        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\ic_launcher.png",
-        "source": "D:\\Ink\\sampleapp\\src\\main\\res\\drawable-xhdpi\\ic_launcher.png"
-    },
-    {
         "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_share_pack_holo_dark.9.png",
         "source": "D:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xhdpi\\abc_ab_share_pack_holo_dark.9.png"
+    },
+    {
+        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\ic_launcher.png",
+        "source": "D:\\Ink\\sampleapp\\src\\main\\res\\drawable-xhdpi\\ic_launcher.png"
     },
     {
         "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_focused_holo_light.9.png",
@@ -248,12 +248,12 @@
         "source": "D:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xhdpi\\abc_spinner_ab_pressed_holo_light.9.png"
     },
     {
-        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_divider_holo_light.9.png",
-        "source": "D:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xhdpi\\abc_list_divider_holo_light.9.png"
-    },
-    {
         "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_divider_holo_dark.9.png",
         "source": "D:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xhdpi\\abc_list_divider_holo_dark.9.png"
+    },
+    {
+        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_divider_holo_light.9.png",
+        "source": "D:\\Ink\\sampleapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xhdpi\\abc_list_divider_holo_light.9.png"
     },
     {
         "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_menu_moreoverflow_normal_holo_dark.png",

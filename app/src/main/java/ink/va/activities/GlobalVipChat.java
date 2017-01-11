@@ -33,6 +33,7 @@ import ink.va.interfaces.VipGlobalChatClickListener;
 import ink.va.models.VipGlobalChatModel;
 import ink.va.models.VipGlobalChatResponseModel;
 import ink.va.utils.DialogUtils;
+import ink.va.utils.Keyboard;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import retrofit2.Call;
@@ -54,6 +55,8 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
     ImageView sendGlobalMessage;
     @Bind(R.id.sendingProgress)
     View sendingProgress;
+    @Bind(R.id.refreshGlobalChat)
+    ImageView refreshGlobalChat;
 
     private String chosenMembership;
     private VipGlobalChatAdapter vipGlobalChatAdapter;
@@ -267,6 +270,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
     }
 
     private void sendMessage(String message) {
+        Keyboard.hideKeyboard(getApplicationContext(), globalChatRecycler);
         changeMessageFieldsState(false);
         sendingProgress.setVisibility(View.VISIBLE);
         Call<VipGlobalChatResponseModel> sendMessageCall = Retrofit.getInstance().getInkService().vipGlobalChatAction(null, sharedHelper.getUserId(), message, null);
@@ -290,10 +294,22 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
 
             @Override
             public void onFailure(Call<VipGlobalChatResponseModel> call, Throwable t) {
+                Snackbar.make(globalChatRecycler, getString(R.string.serverErrorText), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                }).show();
                 sendingProgress.setVisibility(View.GONE);
                 changeMessageFieldsState(true);
             }
         });
+    }
+
+    @OnClick(R.id.refreshGlobalChat)
+    public void refresh() {
+        Keyboard.hideKeyboard(getApplicationContext(), globalChatRecycler);
+        getMessages();
     }
 
     private void changeMessageFieldsState(boolean enable) {

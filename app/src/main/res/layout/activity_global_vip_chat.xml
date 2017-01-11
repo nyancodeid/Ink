@@ -20,11 +20,24 @@
         android:background="@drawable/global_chat_background_main"
         android:rotation="180"></RelativeLayout>
 
+    <ImageView
+        android:id="@+id/refreshGlobalChat"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/globalChatBgHeader"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:padding="10dp"
+        android:src="@drawable/refresh_vector"
+        android:visibility="visible" />
+
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/globalChatRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/globalChatBgHeader"
+        android:layout_below="@+id/refreshGlobalChat"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
