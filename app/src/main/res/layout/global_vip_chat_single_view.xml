@@ -41,8 +41,10 @@
             android:id="@+id/membershipTypeImage"
             android:layout_width="60dp"
             android:layout_height="40dp"
-            android:layout_alignBottom="@+id/globalVipMemberImage"
-            android:layout_alignParentRight="true"
+            android:layout_alignLeft="@+id/globalVipMemberImage"
+            android:layout_alignParentLeft="true"
+            android:layout_alignStart="@+id/globalVipMemberImage"
+            android:layout_below="@+id/globalVipMemberImage"
             android:layout_margin="5dp" />
 
         <TextView
