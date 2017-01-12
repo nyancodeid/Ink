@@ -55,7 +55,6 @@ public class VipMemberViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
-
     public void initData(UserModel userModel, int position, VipMemberItemClickListener itemClickListener,
                          Context context, int maxSize) {
         switch (userModel.getVipMembershipType()) {
@@ -75,6 +74,26 @@ public class VipMemberViewHolder extends RecyclerView.ViewHolder {
         this.userModel = userModel;
         this.itemClickListener = itemClickListener;
         vipMemberName.setText(userModel.getFirstName() + " " + userModel.getLastName());
+
+        configureUserImage();
+
+        bottomSpacing.setVisibility(position == maxSize ? View.VISIBLE : View.GONE);
+        membershipTypeTV.setText(context.getString(R.string.membershipType, userModel.getVipMembershipType()));
+        if (userModel.getGender().isEmpty()) {
+            genderTV.setText(context.getString(R.string.noGender));
+        } else {
+            switch (userModel.getGender()) {
+                case Constants.GENDER_FEMALE:
+                    genderTV.setText(context.getString(R.string.femaleGender));
+                    break;
+                case Constants.GENDER_MALE:
+                    genderTV.setText(context.getString(R.string.maleGender));
+                    break;
+            }
+        }
+    }
+
+    private void configureUserImage() {
         if (userModel.getImageUrl().isEmpty()) {
             Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "vip_image_placeholder")
                     .withBitmap().transform(new CircleTransform())
@@ -89,21 +108,6 @@ public class VipMemberViewHolder extends RecyclerView.ViewHolder {
                 Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage).
                         withBitmap().placeholder(R.drawable.vip_image_placeholder).transform(new CircleTransform())
                         .intoImageView(vipMemberImage);
-            }
-        }
-
-        bottomSpacing.setVisibility(position == maxSize ? View.VISIBLE : View.GONE);
-        membershipTypeTV.setText(context.getString(R.string.membershipType, userModel.getVipMembershipType()));
-        if (userModel.getGender().isEmpty()) {
-            genderTV.setText(context.getString(R.string.noGender));
-        } else {
-            switch (userModel.getGender()) {
-                case Constants.GENDER_FEMALE:
-                    genderTV.setText(context.getString(R.string.femaleGender));
-                    break;
-                case Constants.GENDER_MALE:
-                    genderTV.setText(context.getString(R.string.maleGender));
-                    break;
             }
         }
     }

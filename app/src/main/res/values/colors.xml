@@ -20,6 +20,7 @@
     <color name="vip_status_bar_color">#1b2d43</color>
     <color name="dimColor">#80323232</color>
     <color name="darkGoldColor">#996600</color>
+    <color name="orangeColor">#ff6633</color>
 
     <integer-array name="rainbow">
         <item>@color/rainbow_red</item>

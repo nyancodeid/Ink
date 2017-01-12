@@ -15,11 +15,13 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:fontFamily="@string/appFont"
+        android:fontFamily="@string/thinFont"
         android:text="@string/serverNewsTitle"
+        android:autoLink="web"
         android:textColor="@color/vk_white"
         android:textSize="21sp"
         android:textStyle="bold" />
+
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -33,8 +35,9 @@
         <TextView
             android:id="@+id/serverNewsContent"
             android:layout_width="match_parent"
+            android:autoLink="web"
             android:layout_height="match_parent"
-            android:fontFamily="@string/condensedFont"
+            android:fontFamily="@string/appFont"
             android:text="Some minor changes across the application"
             android:textColor="@color/vk_white"
             android:textSize="20sp" />

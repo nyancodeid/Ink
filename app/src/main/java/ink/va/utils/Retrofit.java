@@ -1,11 +1,15 @@
 package ink.va.utils;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.util.List;
 import java.util.Map;
 
 import ink.va.models.MyCollectionResponseModel;
 import ink.va.models.ServerInformationModel;
 import ink.va.models.UserModel;
+import ink.va.models.VipGlobalChatResponseModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -102,6 +106,13 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> changeMembership(@Field("user_id") String userId,
                                             @Field("membershipType") String user_id);
+
+        @POST(Constants.VIP_GLOBAL_CHAT_URL)
+        @FormUrlEncoded
+        Call<VipGlobalChatResponseModel> vipGlobalChatAction(@Nullable @Field("messageId") String messageId,
+                                                             @Nullable @Field("userId") String userId,
+                                                             @Nullable @Field("message") String message,
+                                                             @NonNull @Field("type") String type);
 
         @POST(Constants.VIP_URL)
         @FormUrlEncoded
@@ -230,7 +241,8 @@ public class Retrofit {
 
         @POST(Constants.CHECK_BAN_URL)
         @FormUrlEncoded
-        Call<ServerInformationModel> checkBan(@Field("userId") String userId);
+        Call<ServerInformationModel> checkBan(@Field("userId") String userId,
+                                              @Field("appVersion") int appVersion);
 
         @POST(Constants.WAITERS_QUE)
         @FormUrlEncoded

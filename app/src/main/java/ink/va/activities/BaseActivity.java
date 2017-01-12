@@ -38,11 +38,14 @@ import ink.va.utils.Constants;
 import ink.va.utils.DimDialog;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
+import ink.va.utils.Version;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.utils.Constants.KILL_APP_BUNDLE_KEY;
 import static ink.va.utils.Constants.SERVER_NOTIFICATION_SHARED_KEY;
+import static ink.va.utils.Constants.WARNING_TEXT_BUNDLE_KEY;
 
 
 /**
@@ -82,6 +85,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     FloatingActionButton editImageNameFab;
 
     @Nullable
+    @Bind(R.id.saveProfileEdits)
+    FloatingActionButton saveProfileEdits;
+
+    @Nullable
     @Bind(R.id.createGroup)
     FloatingActionButton createGroup;
 
@@ -109,7 +116,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private SharedHelper sharedHelper;
     private CountDownTimer countDownTimer;
     private Dialog vipLoadingDialog;
-
+    private int appVersionCode = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,6 +213,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
             if (editImageNameFab != null) {
                 editImageNameFab.setColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
+                saveProfileEdits.setColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
             }
             if (createGroup != null) {
                 createGroup.setColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
@@ -244,7 +252,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void callToBanServer() {
-        Call<ServerInformationModel> banCall = Retrofit.getInstance().getInkService().checkBan(sharedHelper.getUserId());
+        appVersionCode = Version.getVersionCode(this);
+        Call<ServerInformationModel> banCall = Retrofit.getInstance().getInkService().checkBan(sharedHelper.getUserId(), appVersionCode);
         banCall.enqueue(new Callback<ServerInformationModel>() {
             @Override
             public void onResponse(Call<ServerInformationModel> call, Response<ServerInformationModel> response) {
@@ -268,37 +277,12 @@ public abstract class BaseActivity extends AppCompatActivity {
                     });
                     builder.show();
                 } else {
-                    if (serverInformationModel.HasContent()) {
-                        String content = serverInformationModel.getContent();
-                        boolean singleLoad = serverInformationModel.isSingleLoad();
-                        String newsId = serverInformationModel.getNewsId();
-
-                        if (singleLoad) {
-                            if (!sharedHelper.hasShownServerNews(newsId)) {
-                                Map<String, ?> keys = sharedHelper.getAllSharedPrefs();
-
-                                for (Map.Entry<String, ?> entry : keys.entrySet()) {
-                                    String singleKey = entry.getKey();
-                                    if (singleKey.startsWith(SERVER_NOTIFICATION_SHARED_KEY)) {
-                                        sharedHelper.removeObject(singleKey);
-                                    }
-                                }
-
-                                sharedHelper.putShownServerNews(newsId);
-                                Intent intent = new Intent(getApplicationContext(), ServerNotification.class);
-                                intent.putExtra(Constants.SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY, content);
-                                startActivity(intent);
-                                overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
-                            }
-                        } else {
-                            if (sharedHelper.showServerNewsOnStartup()) {
-                                Intent intent = new Intent(getApplicationContext(), ServerNotification.class);
-                                intent.putExtra(Constants.SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY, content);
-                                startActivity(intent);
-                                overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
-                                sharedHelper.putServerNewsOnStartup(false);
-                            }
-
+                    if (serverInformationModel.isOdlAppSupport()) {
+                        proceedToShow(serverInformationModel, false);
+                    } else {
+                        int serverAppVersion = serverInformationModel.getServerAppVersion();
+                        if (appVersionCode < serverAppVersion) {
+                            proceedToShow(serverInformationModel, true);
                         }
                     }
                 }
@@ -309,6 +293,46 @@ public abstract class BaseActivity extends AppCompatActivity {
                 callToBanServer();
             }
         });
+    }
+
+    private void proceedToShow(ServerInformationModel serverInformationModel, boolean killApp) {
+        if (serverInformationModel.HasContent()) {
+            String content = serverInformationModel.getContent();
+            boolean singleLoad = serverInformationModel.isSingleLoad();
+            String newsId = serverInformationModel.getNewsId();
+
+            if (singleLoad) {
+                if (!sharedHelper.hasShownServerNews(newsId)) {
+                    Map<String, ?> keys = sharedHelper.getAllSharedPrefs();
+
+                    for (Map.Entry<String, ?> entry : keys.entrySet()) {
+                        String singleKey = entry.getKey();
+                        if (singleKey.startsWith(SERVER_NOTIFICATION_SHARED_KEY)) {
+                            sharedHelper.removeObject(singleKey);
+                        }
+                    }
+
+                    sharedHelper.putShownServerNews(newsId);
+                    Intent intent = new Intent(getApplicationContext(), ServerNotification.class);
+                    intent.putExtra(Constants.SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY, content);
+                    intent.putExtra(KILL_APP_BUNDLE_KEY, killApp);
+                    intent.putExtra(WARNING_TEXT_BUNDLE_KEY, serverInformationModel.getWarningText());
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
+                }
+            } else {
+                if (sharedHelper.showServerNewsOnStartup()) {
+                    Intent intent = new Intent(getApplicationContext(), ServerNotification.class);
+                    intent.putExtra(Constants.SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY, content);
+                    intent.putExtra(KILL_APP_BUNDLE_KEY, killApp);
+                    intent.putExtra(WARNING_TEXT_BUNDLE_KEY, serverInformationModel.getWarningText());
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
+                    sharedHelper.putServerNewsOnStartup(false);
+                }
+
+            }
+        }
     }
 
     protected void hideActionBar() {

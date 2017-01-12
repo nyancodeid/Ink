@@ -779,4 +779,13 @@
     <string name="trasnferring">Передача...</string>
     <string name="trasnferring_coins_text">Передача ваших монет,пожалуйста подождите</string>
     <string name="coins_transferred">Монеты переданы </string>
+    <string name="noVipMessages">Сообшений Пока Нет\nНапишите Одну Прямо Сейчас!</string>
+    <string name="login_too_short">Логин слишком короткий (Мин 5 символов)</string>
+    <string name="password_too_short">Пароль слишком короткий (Мин 5 символов)</string>
+    <string name="newMessageGlobal">Новое сообщение</string>
+    <string name="versionName">Версия v%1$s</string>
+    <string name="aboutTitle">О Приложении</string>
+     <string name="aboutContent">Инк является оффициальной торговой маркой Компании V.A. Entertainment.Логотипы,идеи и персонажи либо собственнось Компании,либо использованны под лицензией о свободном распространении.
+\nДля любых ворпосов или для помощи,вы можете связатся с одним из членом нашей команди прямо из приложения.
+\n\nИНК-Мир Красок.</string>
 </resources>

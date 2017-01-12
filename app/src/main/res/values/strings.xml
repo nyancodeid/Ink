@@ -780,5 +780,14 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="trasnferring">Transferring...</string>
     <string name="trasnferring_coins_text">Transferring you\'r coins,please wait</string>
     <string name="coins_transferred">Coins were transferred</string>
-
+    <string name="noVipMessages">No Messages Yet\nWrite One Now!</string>
+    <string name="login_too_short">Login is too short (Min 5 symbols)</string>
+    <string name="password_too_short">Password is too short (Min 5 symbols)</string>
+    <string name="newMessageGlobal">New Message</string>
+    <string name="versionName">Version v%1$s</string>
+    <string name="aboutContent">Ink is an official trademark of V.A. Entertainment.The logos,ideas and characters are either owned by the Company or has been used under the
+    \'open source\' license.
+    \nFor any questions or for an help,you can contact with one of our team members straight away from the application.
+    \n\nINK-THE WORLD OF COLORS</string>
+    <string name="aboutTitle">About</string>
 </resources>

@@ -70,6 +70,7 @@ public class UserModel {
         return isSocialAccount;
     }
 
+
     public void setSocialAccount(boolean socialAccount) {
         isSocialAccount = socialAccount;
     }

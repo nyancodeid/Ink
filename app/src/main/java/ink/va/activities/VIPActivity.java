@@ -168,6 +168,10 @@ public class VIPActivity extends BaseActivity {
 
     @OnClick(R.id.vipGlobalChat)
     public void globeChatClicked() {
+        Intent intent = new Intent(this, GlobalVipChat.class);
+        intent.putExtra("membershipType", chosenMembership);
+        startActivity(intent);
+        overrideActivityAnimation();
     }
 
     @OnClick(R.id.exploreVip)

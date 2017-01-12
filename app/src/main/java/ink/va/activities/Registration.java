@@ -69,8 +69,8 @@ public class Registration extends BaseActivity implements View.OnClickListener {
      * Register user to the server
      */
     private void register(final String login, final String password, final String firstName, final String lastName) {
-        if (!mLogin.getText().toString().isEmpty()
-                && !mPassword.getText().toString().isEmpty()
+        if (!mLogin.getText().toString().isEmpty() && mLogin.getText().toString().length() >= 5
+                && !mPassword.getText().toString().isEmpty() && mPassword.getText().toString().length() >= 5
                 && !mConfirmPassword.getText().toString().isEmpty()
                 && mPassword.getText().toString().equals(mConfirmPassword.getText().toString())
                 && !mFirstName.getText().toString().isEmpty()
@@ -154,6 +154,14 @@ public class Registration extends BaseActivity implements View.OnClickListener {
             if (mLogin.getText().toString().isEmpty()) {
                 mLogin.setError(getString(R.string.error_field_required));
             }
+
+            if (mLogin.getText().toString().length() < 5) {
+                mLogin.setError(getString(R.string.login_too_short));
+            }
+            if (mPassword.getText().toString().length() < 5) {
+                mPassword.setError(getString(R.string.password_too_short));
+            }
+
             if (mFirstName.getText().toString().isEmpty()) {
                 mFirstName.setError(getString(R.string.errorFirstName));
             }
