@@ -31,6 +31,7 @@ public class ServerNotification extends BaseActivity {
             actionBar.setTitle(R.string.serverNewsTitle);
             actionBar.setDisplayHomeAsUpEnabled(false);
         }
+        setStatusBarColor(R.color.orangeColor);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             String content = bundle.getString(Constants.SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY);

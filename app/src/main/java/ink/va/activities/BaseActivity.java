@@ -84,6 +84,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     FloatingActionButton editImageNameFab;
 
     @Nullable
+    @Bind(R.id.saveProfileEdits)
+    FloatingActionButton saveProfileEdits;
+
+    @Nullable
     @Bind(R.id.createGroup)
     FloatingActionButton createGroup;
 
@@ -208,6 +212,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
             if (editImageNameFab != null) {
                 editImageNameFab.setColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
+                saveProfileEdits.setColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
             }
             if (createGroup != null) {
                 createGroup.setColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));

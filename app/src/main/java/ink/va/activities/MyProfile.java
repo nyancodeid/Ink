@@ -26,7 +26,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -128,6 +127,8 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     private Menu mCancelMenuItem;
     @Bind(R.id.editImageNameFab)
     FloatingActionButton mEditImageNameFab;
+    @Bind(R.id.saveProfileEdits)
+    FloatingActionButton saveProfileEdits;
     @Bind(R.id.changePassword)
     FloatingActionButton changePassword;
     @Bind(R.id.setSecurityQuestion)
@@ -180,6 +181,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
         ButterKnife.bind(this);
         registerFacebookCallback();
         mEditImageNameFab.hide(false);
+        saveProfileEdits.hide(false);
         setSupportActionBar(mToolbar);
         facebookAttachDialog = new ProgressDialog(this);
         facebookAttachDialog.setTitle("Please wait...");
@@ -792,6 +794,11 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
         openChooserPopUp(false);
     }
 
+    @OnClick(R.id.saveProfileEdits)
+    public void saveClicked() {
+        promptUser();
+    }
+
     private void openChooserPopUp(boolean showViewImage) {
         if (!showViewImage) {
             mEditPopUp = new PopupMenu(MyProfile.this, mEditImageNameFab);
@@ -912,19 +919,12 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
             case android.R.id.home:
                 finish();
                 break;
-            case R.id.save:
-                promptUser();
-                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.my_profile_menu, menu);
-        mCancelMenuItem = menu;
-        menu.getItem(0).setVisible(false);
         return true;
     }
 
@@ -954,6 +954,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
             mSkype.setHint(skype);
 
             mEditImageNameFab.show(true);
+            saveProfileEdits.show(true);
             mCancelMenuItem.getItem(0).setVisible(true);
             mStatusText.setFocusable(true);
             mStatusText.setFocusableInTouchMode(true);
@@ -1074,6 +1075,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     private void saveEdit() {
         isEditing = false;
         mEditImageNameFab.hide(true);
+        saveProfileEdits.hide(true);
         mStatusText.setFocusable(false);
         mStatusText.setFocusableInTouchMode(false);
         mAddress.setFocusable(false);
