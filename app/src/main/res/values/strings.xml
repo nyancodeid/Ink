@@ -785,8 +785,9 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="password_too_short">Password is too short (Min 5 symbols)</string>
     <string name="newMessageGlobal">New Message</string>
     <string name="versionName">Version v%1$s</string>
-    <string name="aboutContent">Инк является оффициальной торговой маркой Компании V.A. Entertainment.Логотипы,идеи и персонажи либо собственнось Компании,либо использованны под лицензией о свободном распространении.
-\nДля любых ворпосов или для помощи,вы можете связатся с одним из членом нашей команди прямо из приложения.
-\nИНК-Мир Красок.</string>
+    <string name="aboutContent">Ink is an official trademark of V.A. Entertainment.The logos,ideas and characters are either owned by the Company or has been used under the
+    'open source' license.
+    \nFor any questions or for an help,you can contact with one of our team members straight away from the application.
+    \nINK-THE WORLD OF COLORS</string>
     <string name="aboutTitle">About</string>
 </resources>
