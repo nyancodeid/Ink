@@ -55,7 +55,6 @@ public class VipMemberViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
-
     public void initData(UserModel userModel, int position, VipMemberItemClickListener itemClickListener,
                          Context context, int maxSize) {
         switch (userModel.getVipMembershipType()) {
