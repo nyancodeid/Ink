@@ -75,7 +75,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/globalVipMemberRoot"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <View
             android:id="@+id/infoFirstDivider"

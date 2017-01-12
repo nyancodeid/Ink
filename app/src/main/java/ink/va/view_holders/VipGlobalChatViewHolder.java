@@ -137,13 +137,6 @@ public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    @OnClick(R.id.globalVipMemberRoot)
-    public void itemClicked() {
-        if (itemClickListener != null) {
-            itemClickListener.onItemClicked(vipGlobalChatModel);
-        }
-    }
-
     private void configureUserImage() {
         if (userModel.getImageUrl().isEmpty()) {
             Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "vip_image_placeholder")
@@ -163,7 +156,7 @@ public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    @OnClick(R.id.vipMemberRoot)
+    @OnClick(R.id.globalVipMemberRoot)
     public void clicked() {
         if (itemClickListener != null) {
             itemClickListener.onItemClicked(vipGlobalChatModel);
