@@ -786,8 +786,8 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="newMessageGlobal">New Message</string>
     <string name="versionName">Version v%1$s</string>
     <string name="aboutContent">Ink is an official trademark of V.A. Entertainment.The logos,ideas and characters are either owned by the Company or has been used under the
-    'open source' license.
+    \'open source\' license.
     \nFor any questions or for an help,you can contact with one of our team members straight away from the application.
-    \nINK-THE WORLD OF COLORS</string>
+    \n\nINK-THE WORLD OF COLORS</string>
     <string name="aboutTitle">About</string>
 </resources>
