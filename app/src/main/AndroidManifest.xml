@@ -286,7 +286,8 @@
             android:theme="@style/Theme.Transparent" />
         <activity android:name="ink.va.activities.VIPActivity" />
         <activity android:name="ink.va.activities.ExploreVipActivity" />
-        <activity android:name="ink.va.activities.GlobalVipChat"></activity>
+        <activity android:name="ink.va.activities.GlobalVipChat" />
+        <activity android:name="ink.va.activities.About"></activity>
     </application>
 
 </manifest>

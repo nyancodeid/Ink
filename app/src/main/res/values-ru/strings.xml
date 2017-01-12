@@ -783,4 +783,6 @@
     <string name="login_too_short">Логин слишком короткий (Мин 5 символов)</string>
     <string name="password_too_short">Пароль слишком короткий (Мин 5 символов)</string>
     <string name="newMessageGlobal">Новое сообщение</string>
+    <string name="versionName">Версия v%1$s</string>
+    <string name="aboutTitle">О Приложении</string>
 </resources>

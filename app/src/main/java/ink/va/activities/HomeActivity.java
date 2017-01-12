@@ -131,7 +131,6 @@ public class HomeActivity extends BaseActivity
         }
 
 
-
         if (!mSharedHelper.isSecurityQuestionSet() && isAccountRecoverable()) {
             View warningView = getLayoutInflater().inflate(R.layout.app_warning_view, null);
             final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
@@ -466,6 +465,12 @@ public class HomeActivity extends BaseActivity
                 lastRequestCode = Constants.REQUEST_CUSTOMIZE_MADE;
                 setLastClassToOpen(CustomizeLook.class, true);
                 break;
+
+            case R.id.about:
+                shouldOpenActivity = true;
+                setLastClassToOpen(About.class, true);
+                break;
+
             case R.id.nav_share:
                 shouldOpenActivity = false;
 
@@ -510,7 +515,6 @@ public class HomeActivity extends BaseActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 
 
     private void callToVipServer(final String type) {

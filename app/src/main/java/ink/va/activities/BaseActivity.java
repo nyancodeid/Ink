@@ -3,8 +3,6 @@ package ink.va.activities;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
@@ -40,6 +38,7 @@ import ink.va.utils.Constants;
 import ink.va.utils.DimDialog;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
+import ink.va.utils.Version;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -253,13 +252,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private void callToBanServer() {
-        try {
-            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            appVersionCode = packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
+        appVersionCode = Version.getVersionCode(this);
         Call<ServerInformationModel> banCall = Retrofit.getInstance().getInkService().checkBan(sharedHelper.getUserId(), appVersionCode);
         banCall.enqueue(new Callback<ServerInformationModel>() {
             @Override

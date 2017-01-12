@@ -64,6 +64,12 @@
                     android:id="@+id/customizeApp"
                     android:icon="@drawable/customize_icon"
                     android:title="@string/customizeAppText" />
+
+                <item android:id="@+id/about"
+                    android:icon="@drawable/information_icon"
+                    android:title="@string/aboutTitle">
+
+                </item>
                 <item
                     android:id="@+id/logout"
                     android:icon="@drawable/ic_exit_to_app_black_24dp"
