@@ -30,9 +30,11 @@
             android:layout_below="@+id/globalVipMemberName"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/globalVipMemberImage"
-            android:background="@drawable/incoming_message_bg">
+            android:background="@drawable/incoming_message_bg"
+            android:scaleY="-1">
 
 
             <TextView
@@ -41,6 +43,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@string/appFont"
                 android:padding="5dp"
+                android:scaleY="-1"
                 android:text="@string/loadingText"
                 android:textColor="@color/vk_black" />
 
