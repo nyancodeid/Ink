@@ -4,6 +4,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
 
 import com.ink.va.R;
@@ -25,6 +26,7 @@ public class ServerNotification extends BaseActivity {
         setContentView(R.layout.activity_server_notification);
         ButterKnife.bind(this);
         ActionBar actionBar = getSupportActionBar();
+        serverNewsContent.setMovementMethod(new LinkMovementMethod());
         if (actionBar != null) {
             actionBar.setTitle(R.string.serverNewsTitle);
             actionBar.setDisplayHomeAsUpEnabled(false);

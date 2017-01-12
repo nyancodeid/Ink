@@ -17,6 +17,7 @@
         android:layout_marginTop="20dp"
         android:fontFamily="@string/appFont"
         android:text="@string/serverNewsTitle"
+        android:autoLink="web"
         android:textColor="@color/vk_white"
         android:textSize="21sp"
         android:textStyle="bold" />
