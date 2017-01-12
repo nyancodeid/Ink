@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,6 +24,10 @@ import ink.va.models.VipGlobalChatModel;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.SharedHelper;
+
+import static ink.va.utils.MembershipTypes.MEMBERSHIP_TYPE_BLACK;
+import static ink.va.utils.MembershipTypes.MEMBERSHIP_TYPE_GOLD;
+import static ink.va.utils.MembershipTypes.MEMBERSHIP_TYPE_RED;
 
 /**
  * Created by PC-Comp on 1/11/2017.
@@ -42,12 +48,26 @@ public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
     ImageView vipGlobalChatMoreIcon;
     @Bind(R.id.globalChatBottomSpace)
     View globalChatBottomSpace;
+    @Bind(R.id.membershipTypeTV)
+    TextView membershipTypeTV;
+    @Bind(R.id.genderTV)
+    TextView genderTV;
+    @Bind(R.id.moreInfoLayout)
+    RelativeLayout moreInfoLayout;
+    @Bind(R.id.membershipTypeImage)
+    ImageView membershipTypeImage;
+    @Bind(R.id.sendCoins)
+    Button sendCoins;
+    @Bind(R.id.sendMessageVip)
+    Button sendMessageVip;
+
     private SharedHelper sharedHelper;
 
     private Context context;
     private UserModel userModel;
-    private VipGlobalChatClickListener vipGlobalChatClickListener;
+    private VipGlobalChatClickListener itemClickListener;
     private VipGlobalChatModel vipGlobalChatModel;
+    private boolean isInfoVisible;
 
     public VipGlobalChatViewHolder(View itemView) {
         super(itemView);
@@ -55,12 +75,49 @@ public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void initData(VipGlobalChatModel vipGlobalChatModel, Context context, VipGlobalChatClickListener vipGlobalChatClickListener, int position, int size) {
-        this.vipGlobalChatClickListener = vipGlobalChatClickListener;
+        this.itemClickListener = vipGlobalChatClickListener;
         this.vipGlobalChatModel = vipGlobalChatModel;
         this.context = context;
         userModel = vipGlobalChatModel.getUser();
         if (sharedHelper == null) {
             sharedHelper = new SharedHelper(context);
+        }
+
+        if(sharedHelper.getUserId().equals(userModel.getUserId())){
+            sendMessageVip.setAlpha((float) 0.5);
+            sendCoins.setAlpha((float) 0.5);
+        }else{
+            sendCoins.setAlpha(1);
+            sendMessageVip.setAlpha(1);
+        }
+
+        switch (userModel.getVipMembershipType()) {
+            case MEMBERSHIP_TYPE_GOLD:
+                membershipTypeImage.setBackground(ContextCompat.getDrawable(context, R.drawable.gold_member_card_small));
+                break;
+            case MEMBERSHIP_TYPE_RED:
+                membershipTypeImage.setBackground(ContextCompat.getDrawable(context, R.drawable.red_member_card_small));
+                break;
+            case MEMBERSHIP_TYPE_BLACK:
+                membershipTypeImage.setBackground(ContextCompat.getDrawable(context, R.drawable.black_member_card_small));
+                break;
+            default:
+                membershipTypeImage.setBackground(ContextCompat.getDrawable(context, R.drawable.no_membership_small));
+        }
+
+        membershipTypeTV.setText(context.getString(R.string.membershipType, userModel.getVipMembershipType()));
+
+        if (userModel.getGender().isEmpty()) {
+            genderTV.setText(context.getString(R.string.noGender));
+        } else {
+            switch (userModel.getGender()) {
+                case Constants.GENDER_FEMALE:
+                    genderTV.setText(context.getString(R.string.femaleGender));
+                    break;
+                case Constants.GENDER_MALE:
+                    genderTV.setText(context.getString(R.string.maleGender));
+                    break;
+            }
         }
 
         globalChatBottomSpace.setVisibility(position == size ? View.VISIBLE : View.GONE);
@@ -75,15 +132,15 @@ public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
 
     @OnClick(R.id.vipGlobalChatMoreIcon)
     public void moreClicked() {
-        if (vipGlobalChatClickListener != null) {
-            vipGlobalChatClickListener.onMoreIconClicked(vipGlobalChatMoreIcon, vipGlobalChatModel);
+        if (itemClickListener != null) {
+            itemClickListener.onMoreIconClicked(vipGlobalChatMoreIcon, vipGlobalChatModel);
         }
     }
 
     @OnClick(R.id.globalVipMemberRoot)
     public void itemClicked() {
-        if (vipGlobalChatClickListener != null) {
-            vipGlobalChatClickListener.onItemClicked(vipGlobalChatModel);
+        if (itemClickListener != null) {
+            itemClickListener.onItemClicked(vipGlobalChatModel);
         }
     }
 
@@ -106,5 +163,32 @@ public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    @OnClick(R.id.vipMemberRoot)
+    public void clicked() {
+        if (itemClickListener != null) {
+            itemClickListener.onItemClicked(vipGlobalChatModel);
+        }
+        if (!isInfoVisible) {
+            moreInfoLayout.setVisibility(View.VISIBLE);
+            isInfoVisible = true;
+        } else {
+            moreInfoLayout.setVisibility(View.GONE);
+            isInfoVisible = false;
+        }
+    }
+
+    @OnClick(R.id.sendMessageVip)
+    public void vipSendMessage() {
+        if (itemClickListener != null && !userModel.getUserId().equals(sharedHelper.getUserId())) {
+            itemClickListener.onSendMessageClicked(userModel);
+        }
+    }
+
+    @OnClick(R.id.sendCoins)
+    public void vipSendCoins() {
+        if (itemClickListener != null && !userModel.getUserId().equals(sharedHelper.getUserId())) {
+            itemClickListener.onSendCoinsClicked(userModel);
+        }
+    }
 
 }
