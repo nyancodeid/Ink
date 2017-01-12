@@ -37,6 +37,14 @@
 
         </RelativeLayout>
 
+        <ImageView
+            android:id="@+id/membershipTypeImage"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_alignBottom="@+id/globalVipMemberImage"
+            android:layout_alignParentRight="true"
+            android:layout_margin="5dp" />
+
         <TextView
             android:id="@+id/globalVipMemberName"
             android:layout_width="wrap_content"
