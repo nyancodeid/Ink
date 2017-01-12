@@ -788,4 +788,9 @@
      <string name="aboutContent">Инк является оффициальной торговой маркой Компании V.A. Entertainment.Логотипы,идеи и персонажи либо собственнось Компании,либо использованны под лицензией о свободном распространении.
 \nДля любых ворпосов или для помощи,вы можете связатся с одним из членом нашей команди прямо из приложения.
 \n\nИНК-Мир Красок.</string>
+    <string name="enterAmount">Внесите Сумму</string>
+    <string name="doIt">Сделать это</string>
+    <string name="vip_chat">V.I.P. Чат</string>
+    <string name="vipHallText">V.I.P. Зал</string>
+    <string name="vip_gift_congratulations">Поздравляем!Вы получили V.I.P. членство от нас в подарок!</string>
 </resources>
