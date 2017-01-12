@@ -198,7 +198,6 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
             changePassword.setVisibility(View.GONE);
             setSecurityQuestion.setVisibility(View.GONE);
         }
-
         mProfileFab.setOnMenuButtonClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

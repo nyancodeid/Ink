@@ -241,7 +241,8 @@ public class Retrofit {
 
         @POST(Constants.CHECK_BAN_URL)
         @FormUrlEncoded
-        Call<ServerInformationModel> checkBan(@Field("userId") String userId);
+        Call<ServerInformationModel> checkBan(@Field("userId") String userId,
+                                              @Field("appVersion") int appVersion);
 
         @POST(Constants.WAITERS_QUE)
         @FormUrlEncoded
