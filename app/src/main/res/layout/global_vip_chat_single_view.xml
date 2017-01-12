@@ -4,10 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <android.support.v4.widget.Space
+        android:id="@+id/topSpacing"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:visibility="gone" />
+
     <RelativeLayout
         android:id="@+id/globalVipMemberRoot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/topSpacing"
         android:background="@drawable/com_facebook_tooltip_black_background">
 
         <ImageView

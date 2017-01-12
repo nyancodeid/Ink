@@ -40,6 +40,8 @@ public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
     TextView globalVipChatContent;
     @Bind(R.id.globalVipChatWrapper)
     RelativeLayout globalVipChatWrapper;
+    @Bind(R.id.topSpacing)
+    View topSpacing;
     @Bind(R.id.globalVipMemberImage)
     ImageView globalVipMemberImage;
     @Bind(R.id.globalVipMemberRoot)
@@ -83,10 +85,10 @@ public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
             sharedHelper = new SharedHelper(context);
         }
 
-        if(sharedHelper.getUserId().equals(userModel.getUserId())){
+        if (sharedHelper.getUserId().equals(userModel.getUserId())) {
             sendMessageVip.setAlpha((float) 0.5);
             sendCoins.setAlpha((float) 0.5);
-        }else{
+        } else {
             sendCoins.setAlpha(1);
             sendMessageVip.setAlpha(1);
         }
@@ -121,6 +123,7 @@ public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
         }
 
         globalChatBottomSpace.setVisibility(position == size ? View.VISIBLE : View.GONE);
+        topSpacing.setVisibility(position <= 0 ? View.VISIBLE : View.GONE);
 
         vipGlobalChatMoreIcon.setVisibility(userModel.getUserId().equals(sharedHelper.getUserId()) ? View.VISIBLE : View.GONE);
 
