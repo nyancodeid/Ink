@@ -124,7 +124,6 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     FloatingActionButton hideProfileButton;
     @Bind(R.id.goIncognito)
     FloatingActionButton goIncognitoButton;
-    private Menu mCancelMenuItem;
     @Bind(R.id.editImageNameFab)
     FloatingActionButton mEditImageNameFab;
     @Bind(R.id.saveProfileEdits)
@@ -955,7 +954,6 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
 
             mEditImageNameFab.show(true);
             saveProfileEdits.show(true);
-            mCancelMenuItem.getItem(0).setVisible(true);
             mStatusText.setFocusable(true);
             mStatusText.setFocusableInTouchMode(true);
             mStatusText.requestFocus();
@@ -1151,7 +1149,6 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                 sendUpdatesToServer();
                 mProfileFab.showMenuButton(true);
                 saveEdit();
-                mCancelMenuItem.getItem(0).setVisible(false);
             }
         });
         promptBuilder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
