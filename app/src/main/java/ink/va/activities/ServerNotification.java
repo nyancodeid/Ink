@@ -12,13 +12,18 @@ import com.ink.va.R;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import ink.va.utils.Constants;
+
+import static ink.va.utils.Constants.KILL_APP_BUNDLE_KEY;
+import static ink.va.utils.Constants.SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY;
+import static ink.va.utils.Constants.WARNING_TEXT_BUNDLE_KEY;
 
 public class ServerNotification extends BaseActivity {
 
 
     @Bind(R.id.serverNewsContent)
     TextView serverNewsContent;
+    private boolean killApp;
+    private String warningText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +39,22 @@ public class ServerNotification extends BaseActivity {
         setStatusBarColor(R.color.orangeColor);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            String content = bundle.getString(Constants.SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                serverNewsContent.setText(Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY));
+            String content = bundle.getString(SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY);
+            killApp = bundle.getBoolean(KILL_APP_BUNDLE_KEY);
+            warningText = bundle.getString(WARNING_TEXT_BUNDLE_KEY);
+            if (killApp) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    serverNewsContent.setText(Html.fromHtml(warningText, Html.FROM_HTML_MODE_LEGACY));
+                } else {
+                    serverNewsContent.setText(Html.fromHtml(warningText));
+                }
             } else {
-                serverNewsContent.setText(Html.fromHtml(content));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    serverNewsContent.setText(Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY));
+                } else {
+                    serverNewsContent.setText(Html.fromHtml(content));
+                }
+
             }
 
         }
@@ -47,12 +63,21 @@ public class ServerNotification extends BaseActivity {
 
     @OnClick(R.id.closeServerNotification)
     public void close() {
-        finish();
-        overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
+        if (killApp) {
+            finish();
+            System.exit(0);
+        } else {
+            finish();
+            overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
+        }
+
     }
 
     @Override
     public void onBackPressed() {
-
+        if (killApp) {
+            finish();
+            System.exit(0);
+        }
     }
 }

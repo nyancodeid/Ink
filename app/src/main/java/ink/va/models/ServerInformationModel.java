@@ -9,19 +9,33 @@ import com.google.gson.annotations.SerializedName;
 public class ServerInformationModel {
 
     @SerializedName("banned")
-    boolean banned;
+    private boolean banned;
     @SerializedName("hasContent")
-    boolean hasContent;
+    private boolean hasContent;
     @SerializedName("singleLoad")
-    boolean singleLoad;
+    private boolean singleLoad;
     @SerializedName("content")
-    String content;
+    private String content;
     @SerializedName("newsId")
-    String newsId;
+    private String newsId;
+    @SerializedName("odlAppSupport")
+    private boolean odlAppSupport;
+    @SerializedName("serverAppVersion")
+    private int serverAppVersion;
+    @SerializedName("warningText")
+    private String warningText;
 
 
     public String getNewsId() {
         return newsId;
+    }
+
+    public String getWarningText() {
+        return warningText;
+    }
+
+    public void setWarningText(String warningText) {
+        this.warningText = warningText;
     }
 
     public void setNewsId(String newsId) {
@@ -59,5 +73,21 @@ public class ServerInformationModel {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public boolean isOdlAppSupport() {
+        return odlAppSupport;
+    }
+
+    public void setOdlAppSupport(boolean odlAppSupport) {
+        this.odlAppSupport = odlAppSupport;
+    }
+
+    public int getServerAppVersion() {
+        return serverAppVersion;
+    }
+
+    public void setServerAppVersion(int serverAppVersion) {
+        this.serverAppVersion = serverAppVersion;
     }
 }
