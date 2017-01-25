@@ -15,6 +15,7 @@ public class SplashScreen extends AppCompatActivity {
     private boolean isAppOriginal;
     private String debugKeyHas = "GXEMUTFFeZejMCClv1bXr7Zbid8=";
     private String releaseKeyHash = "JeFV2v/aHMVmxkndxmzynZNlMC8=";
+    private String amazonKeyHash = "C2MtEkZmc42C5GvtiILtYM+/OI8=";
     private SharedHelper sharedHelper;
     private View splashRootView;
 
@@ -30,6 +31,8 @@ public class SplashScreen extends AppCompatActivity {
         if (currentKeyHash.trim().equals(debugKeyHas.trim())) {
             isAppOriginal = true;
         } else if (currentKeyHash.trim().equals(releaseKeyHash.trim())) {
+            isAppOriginal = true;
+        } else if (currentKeyHash.trim().equals(amazonKeyHash.trim())) {
             isAppOriginal = true;
         }
 
