@@ -171,16 +171,7 @@ public class FragmentDialog extends DialogFragment implements DialogUtils.Dialog
 
     @OnClick(R.id.doIt)
     public void doItClicked() {
-        if (userCoins < orderCost) {
-            Snackbar.make(firstParagraphTV, getString(R.string.not_enough_coins), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            }).show();
-        } else {
-            completeOrder();
-        }
+        completeOrder();
     }
 
     private void completeOrder() {
@@ -224,9 +215,21 @@ public class FragmentDialog extends DialogFragment implements DialogUtils.Dialog
                         DialogUtils.showDialog(context, getString(R.string.success), getString(R.string.order_bought),
                                 true, FragmentDialog.this, false, null);
                     } else {
-                        DialogUtils.showDialog(context, getString(R.string.error), getString(R.string.orderError),
-                                true, null, false, null);
-                        hideDialog(false, lastOrderType);
+                        String cause = jsonObject.optString("cause");
+                        switch (cause) {
+                            case ErrorCause.NOT_ENOUGH_COINS:
+                                Snackbar.make(firstParagraphTV, getString(R.string.not_enough_coins), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
+                                break;
+                            default:
+                                DialogUtils.showDialog(context, getString(R.string.error), getString(R.string.orderError),
+                                        true, null, false, null);
+                                hideDialog(false, lastOrderType);
+                        }
 
                     }
                 } catch (IOException e) {
