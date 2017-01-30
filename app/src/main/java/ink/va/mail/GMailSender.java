@@ -27,7 +27,7 @@ public class GMailSender extends javax.mail.Authenticator {
     private static final String TAG = GMailSender.class.getSimpleName();
     private String mailHost = "smtp.gmail.com";
     private static final String AUTH_EMAIL = "vaentertaiment@gmail.com";
-    private static final String AUTH_PASSWORD = "5369615737425";
+    private static final String AUTH_PASSWORD = "vladimirarevshatyan";
     private Session session;
     private Thread mNetworkThread;
 
