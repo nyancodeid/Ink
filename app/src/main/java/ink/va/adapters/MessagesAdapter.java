@@ -67,7 +67,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             message = userMessagesModel.getMessage().substring(index + 1, userMessagesModel.getMessage().length());
         }
 
-        String finalMessage = StringEscapeUtils.escapeJava(message);
+        String finalMessage = StringEscapeUtils.unescapeJava(message);
 
         holder.messageBody.setText(finalMessage);
         if (!userMessagesModel.getImageName().isEmpty()) {
