@@ -279,7 +279,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                         if (FileUtils.isImageType(chatModel.getMessage())) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
                             builder.setTitle(getString(R.string.downloadQuestion));
-                            builder.setMessage(getString(R.string.downloadTheFile) + " " + finalFileName.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT,""));
+                            builder.setMessage(getString(R.string.downloadTheFile) + " " + finalFileName.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, ""));
                             builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -725,9 +725,10 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
         if (mNoMessageLayout.getVisibility() == View.VISIBLE) {
             mNoMessageLayout.setVisibility(View.GONE);
         }
-        String message = StringEscapeUtils.escapeJava(mWriteEditText.getText().toString().trim());
+        String message = StringEscapeUtils.escapeJava(mWriteEditText.getText().toString().replaceAll(":\\)", "\uD83D\uDE42")
+                .replaceAll(":\\(", "\uD83D\uDE41").replaceAll(":D", "\uD83D\uDE00"));
         dismissStickerChooser();
-        ChatModel tempChat = new ChatModel(false, isGifChosen, lasChosenGifName, null, mCurrentUserId, mOpponentId, StringEscapeUtils.unescapeJava(message.trim()),
+        ChatModel tempChat = new ChatModel(false, isGifChosen, lasChosenGifName, null, mCurrentUserId, mOpponentId,StringEscapeUtils.unescapeJava(message),
                 false, Constants.STATUS_NOT_DELIVERED,
                 mUserImage, mOpponentImage, "", isAnimated);
         mChatModelArrayList.add(tempChat);
@@ -735,7 +736,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
         int itemLocation = mChatModelArrayList.indexOf(tempChat);
 
-        attemptToQue(message.trim(), itemLocation, mDeleteOpponentId, mDeleteUserId, isGifChosen, lasChosenGifName, isAnimated);
+        attemptToQue(message, itemLocation, mDeleteOpponentId, mDeleteUserId, isGifChosen, lasChosenGifName, isAnimated);
         mChatAdapter.notifyDataSetChanged();
 
 
