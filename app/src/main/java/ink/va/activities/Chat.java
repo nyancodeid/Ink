@@ -230,7 +230,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                 super.onScrollStateChanged(recyclerView, newState);
                 System.gc();
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                    Keyboard.hideKeyboard(getApplicationContext(), mRecyclerView);
+                    Keyboard.hideKeyboard(Chat.this);
                 }
 
                 LinearLayoutManager layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());

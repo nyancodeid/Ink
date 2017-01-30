@@ -142,7 +142,6 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     @Bind(R.id.imageLoadingProgress)
     ProgressBar imageLoadingProgress;
 
-    private Snackbar updateSnackBar;
     private String mFirstNameToSend;
     private String mLastNameToSend;
     private String mGenderToSend;
@@ -171,6 +170,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     private int hiddenProfileCost;
     private int userCoins;
     private boolean hasCoinsChanged;
+    private ProgressDialog updateDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,6 +179,11 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
         setContentView(R.layout.activity_my_profile);
         ButterKnife.bind(this);
         registerFacebookCallback();
+        updateDialog = new ProgressDialog(this);
+        updateDialog.setTitle(getString(R.string.pleaseWait));
+        updateDialog.setMessage(getString(R.string.updating));
+        updateDialog.setCancelable(false);
+        updateDialog.setCanceledOnTouchOutside(false);
         mEditImageNameFab.hide(false);
         saveProfileEdits.hide(false);
         setSupportActionBar(mToolbar);
@@ -561,6 +566,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
         }
 
         isDataLoaded = true;
+        isEditing = false;
         hideSnack();
     }
 
@@ -1224,6 +1230,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                     sendUpdatesToServer();
                     return;
                 }
+                isEditEnabled = false;
                 try {
                     String body = response.body().string();
                     try {
@@ -1331,22 +1338,12 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
 
 
     private void showSnack(View view) {
-        updateSnackBar = Snackbar.make(view, getString(R.string.updating), Snackbar.LENGTH_INDEFINITE);
-        updateSnackBar.show();
+        updateDialog.show();
     }
 
     private void hideSnack() {
-        if (updateSnackBar != null) {
-            if (updateSnackBar.isShown()) {
-                updateSnackBar.setText(getString(R.string.saved));
-                updateSnackBar.setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        updateSnackBar.dismiss();
-                    }
-                });
-            }
-        }
+        Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show();
+        progressDialog.dismiss();
     }
 
     @Override

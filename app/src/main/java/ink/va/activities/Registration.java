@@ -77,7 +77,7 @@ public class Registration extends BaseActivity implements View.OnClickListener {
                 && !mLastName.getText().toString().isEmpty()
                 && !mPassword.getText().toString().isEmpty()) {
 
-            Keyboard.hideKeyboard(this, mRootRegistrationLayout);
+            Keyboard.hideKeyboard(this);
             registrationScrollView.post(new Runnable() {
                 @Override
                 public void run() {

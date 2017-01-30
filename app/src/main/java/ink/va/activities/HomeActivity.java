@@ -193,7 +193,7 @@ public class HomeActivity extends BaseActivity
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
-                Keyboard.hideKeyboard(HomeActivity.this, getWindow().getDecorView().getRootView() != null ? getWindow().getDecorView().getRootView() : mDrawer);
+                Keyboard.hideKeyboard(HomeActivity.this);
                 super.onDrawerOpened(drawerView);
             }
         };

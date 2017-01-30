@@ -744,7 +744,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                                     snackbar.show();
                                     AlertDialog dialog = (AlertDialog) result[1];
                                     dialog.dismiss();
-                                    Keyboard.hideKeyboard(getApplicationContext(), commentCard);
+                                    Keyboard.hideKeyboard(Comments.this);
                                     callCommentServer(Constants.COMMENT_TYPE_EDIT, commentModel.getCommentId(), String.valueOf(result[0]));
 
 

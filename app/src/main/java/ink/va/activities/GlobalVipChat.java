@@ -528,7 +528,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
     }
 
     private void sendMessage(String message) {
-        Keyboard.hideKeyboard(getApplicationContext(), globalChatRecycler);
+        Keyboard.hideKeyboard(this);
         changeMessageFieldsState(false);
         sendingProgress.setVisibility(View.VISIBLE);
         Call<VipGlobalChatResponseModel> sendMessageCall = Retrofit.getInstance().getInkService().vipGlobalChatAction(null, sharedHelper.getUserId(), message, VIP_GLOBAL_CHAT_TYPE_SEND);
@@ -568,7 +568,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
 
     @OnClick(R.id.refreshGlobalChat)
     public void refresh() {
-        Keyboard.hideKeyboard(getApplicationContext(), globalChatRecycler);
+        Keyboard.hideKeyboard(this);
         getMessages();
     }
 

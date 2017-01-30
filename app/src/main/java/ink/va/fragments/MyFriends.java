@@ -439,7 +439,7 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
 
         personSearchWrapper.setVisibility(View.GONE);
 
-        Keyboard.hideKeyboard(getActivity(), mRecyclerView);
+        Keyboard.hideKeyboard(getActivity());
     }
 
     @Override
