@@ -788,13 +788,16 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     @Override
     public void onItemClicked(int position, View view) {
 
+
         GroupMessagesModel singleModel = groupMessagesModels.get(position);
 
-        String encoded = Uri.encode(singleModel.getFileName());
-        String url = Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encoded;
-        Intent intent = new Intent(this, FullscreenActivity.class);
-        intent.putExtra("link", url);
-        startActivity(intent);
+        if (!singleModel.getFileName().isEmpty()) {
+            String encoded = Uri.encode(singleModel.getFileName());
+            String url = Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encoded;
+            Intent intent = new Intent(this, FullscreenActivity.class);
+            intent.putExtra("link", url);
+            startActivity(intent);
+        }
 
 
     }

@@ -316,7 +316,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
         addCommentDialog.show();
         addComment(mCommentBody.getText().toString().trim(), mSharedHelper.getImageLink(), mSharedHelper.getUserId(), mPostId);
-    }
+}
 
     private void addComment(final String commentBody, final String userImage, final String commenterId, final String postId) {
         Call<ResponseBody> addCommentCall = Retrofit.getInstance().getInkService().addComment(commenterId,
