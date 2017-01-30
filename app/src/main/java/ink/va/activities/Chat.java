@@ -725,7 +725,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
         if (mNoMessageLayout.getVisibility() == View.VISIBLE) {
             mNoMessageLayout.setVisibility(View.GONE);
         }
-        String message = StringEscapeUtils.escapeJava(mWriteEditText.getText().toString().replaceAll(":\\)", "\uD83D\uDE42")
+        String message = StringEscapeUtils.escapeJava(mWriteEditText.getText().toString().replaceAll(":\\)", "\u263A")
                 .replaceAll(":\\(", "\uD83D\uDE41").replaceAll(":D", "\uD83D\uDE00"));
         dismissStickerChooser();
         ChatModel tempChat = new ChatModel(false, isGifChosen, lasChosenGifName, null, mCurrentUserId, mOpponentId,StringEscapeUtils.unescapeJava(message),
