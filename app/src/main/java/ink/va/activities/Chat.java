@@ -279,7 +279,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                         if (FileUtils.isImageType(chatModel.getMessage())) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
                             builder.setTitle(getString(R.string.downloadQuestion));
-                            builder.setMessage(getString(R.string.downloadTheFile) + " " + finalFileName);
+                            builder.setMessage(getString(R.string.downloadTheFile) + " " + finalFileName.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT,""));
                             builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {

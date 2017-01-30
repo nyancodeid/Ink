@@ -118,7 +118,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
 
         holder.message.setMovementMethod(LinkMovementMethod.getInstance());
-        holder.message.setText(messageBody);
+        holder.message.setText(messageBody.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, ""));
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.chatViewBubble.getLayoutParams();
         LinearLayout.LayoutParams deliveryStatusParams = (LinearLayout.LayoutParams) holder.deliveryStatus.getLayoutParams();
         LinearLayout.LayoutParams gifChatViewLayoutParams = (LinearLayout.LayoutParams) holder.imageViewWrapper.getLayoutParams();
