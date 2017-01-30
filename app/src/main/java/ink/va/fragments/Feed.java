@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
@@ -270,12 +271,13 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         }
                     });
                     e.printStackTrace();
+                    Toast.makeText(parentActivity, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getFeeds(offset, count, clearItems, newDataLoading, showNewFeed);
+                Toast.makeText(parentActivity, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }

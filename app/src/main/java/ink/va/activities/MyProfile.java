@@ -69,6 +69,7 @@ import ink.va.utils.DialogUtils;
 import ink.va.utils.FileUtils;
 import ink.va.utils.FragmentDialog;
 import ink.va.utils.IonCache;
+import ink.va.utils.Keyboard;
 import ink.va.utils.PermissionsChecker;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
@@ -567,7 +568,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
 
         isDataLoaded = true;
         isEditing = false;
-        hideSnack();
+        hideSnack(false);
     }
 
 
@@ -1077,6 +1078,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     }
 
     private void saveEdit() {
+        Keyboard.hideKeyboard(this);
         isEditing = false;
         mEditImageNameFab.hide(true);
         saveProfileEdits.hide(true);
@@ -1239,7 +1241,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                         if (success) {
                             mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
                             attachValues(false);
-                            hideSnack();
+                            hideSnack(true);
                             String imageId = jsonObject.optString("image_id");
                             if (imageId != null && !imageId.isEmpty()) {
                                 String imageLink = mSharedHelper.getUserId() + ".png";
@@ -1250,7 +1252,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                             }
                             cacheUserData();
                         } else {
-                            hideSnack();
+                            hideSnack(false);
                             promptBuilder = new AlertDialog.Builder(MyProfile.this);
                             promptBuilder.setTitle(getString(R.string.error));
                             promptBuilder.setMessage(getString(R.string.couldNotUpdate));
@@ -1263,7 +1265,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                             promptBuilder.show();
                         }
                     } catch (JSONException e) {
-                        hideSnack();
+                        hideSnack(false);
                         promptBuilder = new AlertDialog.Builder(MyProfile.this);
                         promptBuilder.setTitle(getString(R.string.error));
                         promptBuilder.setMessage(getString(R.string.couldNotUpdate));
@@ -1277,13 +1279,24 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                         e.printStackTrace();
                     }
                 } catch (IOException e) {
+                    hideSnack(false);
+                    promptBuilder = new AlertDialog.Builder(MyProfile.this);
+                    promptBuilder.setTitle(getString(R.string.error));
+                    promptBuilder.setMessage(getString(R.string.couldNotUpdate));
+                    promptBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    promptBuilder.show();
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                sendUpdatesToServer();
+                progressDialog.dismiss();
             }
         });
 
@@ -1341,9 +1354,11 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
         updateDialog.show();
     }
 
-    private void hideSnack() {
-        Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show();
-        progressDialog.dismiss();
+    private void hideSnack(boolean showToast) {
+        if (showToast) {
+            Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show();
+        }
+        updateDialog.dismiss();
     }
 
     @Override

@@ -138,7 +138,6 @@
             android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
             android:name="ink.va.activities.MyProfile"
-            android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.Profile" />
         <activity android:name="ink.va.activities.Messages" />
         <activity
