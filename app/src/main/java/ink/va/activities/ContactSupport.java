@@ -34,6 +34,7 @@ import ink.va.utils.AlertDialogView;
 import ink.va.utils.Constants;
 import ink.va.utils.PermissionsChecker;
 import ink.va.utils.Regex;
+import ink.va.utils.SharedHelper;
 import ink.va.utils.UserDetails;
 
 public class ContactSupport extends BaseActivity {
@@ -58,6 +59,7 @@ public class ContactSupport extends BaseActivity {
     private List<String> userAccounts;
     private Animation slideDownAnimation;
     private ProgressDialog progressDialog;
+    private SharedHelper sharedHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,7 @@ public class ContactSupport extends BaseActivity {
         slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_down);
         userAccounts = UserDetails.getUserAccountList(this);
         ActionBar actionBar = getSupportActionBar();
+        sharedHelper = new SharedHelper(this);
         progressDialog = new ProgressDialog(ContactSupport.this);
         progressDialog.setTitle(getString(R.string.sending));
         progressDialog.setMessage(getString(R.string.messageBeingSent));
@@ -161,7 +164,8 @@ public class ContactSupport extends BaseActivity {
         String senderEmail = emailTV.getText().toString();
         gMailSender.sendMail(Constants.SUBJECT_REQUEST_SUPPORT,
                 "User message : " + supportMessageInputField.getText().toString().trim() + " \n\n Sender Email : " + senderEmail +
-                        "\n\n Issue Type : " + issueTypeTV.getText().toString()
+                        "\n\n Issue Type : " + issueTypeTV.getText().toString() +
+                        "\n\n User Id : \n" + sharedHelper.getUserId()
                 , senderEmail, Constants.CONTACT_EMAIL, new GeneralCallback<String>() {
                     @Override
                     public void onSuccess(String s) {

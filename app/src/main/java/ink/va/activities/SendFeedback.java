@@ -31,6 +31,7 @@ import ink.va.utils.Constants;
 import ink.va.utils.Device;
 import ink.va.utils.PermissionsChecker;
 import ink.va.utils.Regex;
+import ink.va.utils.SharedHelper;
 import ink.va.utils.UserDetails;
 
 public class SendFeedback extends BaseActivity {
@@ -51,6 +52,7 @@ public class SendFeedback extends BaseActivity {
     android.support.v7.widget.AppCompatCheckBox useDeviceInfoCheckBox;
     private Snackbar progressSnack;
     private List<String> userAccounts;
+    private SharedHelper sharedHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,7 @@ public class SendFeedback extends BaseActivity {
         userAccounts = UserDetails.getUserAccountList(this);
         sendFeedbackButton.setEnabled(false);
         actualEmail.setText(mSenderEmail);
+        sharedHelper = new SharedHelper(this);
         progressSnack = Snackbar.make(sendFeedbackButton, getString(R.string.sendingFeedback), Snackbar.LENGTH_INDEFINITE);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -172,7 +175,8 @@ public class SendFeedback extends BaseActivity {
         gMailSender.sendMail(Constants.SUBJECT_FEEDBACK,
                 "User message : " + feedbackBody + " \n\n Sender Email : " + mSenderEmail
                         +
-                        "\n\n Device information : \n" + deviceInfo
+                        "\n\n Device information : \n" + deviceInfo +
+                        "\n\n User Id : \n" + sharedHelper.getUserId()
 
                 , mSenderEmail, Constants.FEEDBACK_EMAIL, new GeneralCallback<String>() {
                     @Override
