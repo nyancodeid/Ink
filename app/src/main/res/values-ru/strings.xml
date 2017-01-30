@@ -793,4 +793,6 @@
     <string name="vip_chat">V.I.P. Чат</string>
     <string name="vipHallText">V.I.P. Зал</string>
     <string name="vip_gift_congratulations">Поздравляем!Вы получили V.I.P. членство от нас в подарок!</string>
+    <string name="unreadMessage">У вас непрочитанные сообщения</string>
+    <string name="view">Посмотреть</string>
 </resources>

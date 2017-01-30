@@ -240,6 +240,15 @@ public class HomeActivity extends BaseActivity
                 );
                 if (notificationCount == 0) {
                     ShortcutBadger.removeCount(getApplicationContext());
+                } else {
+                    Snackbar.make(mToolbar, getString(R.string.unreadMessage), Snackbar.LENGTH_LONG).setAction(
+                            getString(R.string.view), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    startActivity(new Intent(getApplicationContext(),Messages.class));
+                                }
+                            }
+                    ).show();
                 }
             }
         });

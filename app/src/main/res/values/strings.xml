@@ -790,4 +790,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     \nFor any questions or for an help,you can contact with one of our team members straight away from the application.
     \n\nINK-THE WORLD OF COLORS</string>
     <string name="aboutTitle">About</string>
+    <string name="unreadMessage">You have unread messages</string>
+    <string name="view">View</string>
 </resources>

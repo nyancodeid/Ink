@@ -12,8 +12,6 @@ import android.widget.TextView;
 import com.ink.va.R;
 import com.koushikdutta.ion.Ion;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import java.util.List;
 
 import ink.va.models.UserMessagesModel;
@@ -67,7 +65,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             message = userMessagesModel.getMessage().substring(index + 1, userMessagesModel.getMessage().length());
         }
 
-        String finalMessage = StringEscapeUtils.unescapeJava(message.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT,""));
+        String finalMessage =message.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, "");
 
         holder.messageBody.setText(finalMessage);
         if (!userMessagesModel.getImageName().isEmpty()) {

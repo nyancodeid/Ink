@@ -122,7 +122,9 @@ public class OpponentProfile extends BaseActivity {
             mLastName = extras.getString("lastName");
             isFriend = extras.getBoolean("isFriend");
             if (extras.containsKey("disableButton")) {
-                if (extras.getBoolean("disableButton")) {
+                if (extras.getBoolean("disableButton") && !isFriend) {
+                    sendMessage.setVisibility(View.VISIBLE);
+                } else if (extras.getBoolean("disableButton")) {
                     sendMessage.setVisibility(View.GONE);
                 }
             }
