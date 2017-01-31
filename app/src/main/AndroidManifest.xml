@@ -249,13 +249,13 @@
 
         <activity
             android:name="ink.va.activities.FullscreenActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_fullscreen"
             android:screenOrientation="portrait"
-            android:theme="@style/FullscreenTheme" />
+            android:theme="@style/Theme.Transparent" />
         <activity
             android:name="ink.va.activities.Settings"
-            android:label="@string/title_activity_settings" />
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait" />
         <activity
             android:name="ink.va.activities.ForgotPassword"
             android:screenOrientation="portrait"
@@ -273,20 +273,35 @@
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity
             android:name="ink.va.activities.NewsAndTrendsActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
-        <activity android:name="ink.va.activities.Policy" />
-        <activity android:name="ink.va.activities.WhoViewedActivity" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ink.va.activities.Policy"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ink.va.activities.WhoViewedActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="ink.va.activities.ServerNotification"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
         <activity android:name="ink.va.activities.MyCollection" />
         <activity
             android:name="ink.va.activities.PackFullScreen"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
-        <activity android:name="ink.va.activities.VIPActivity" />
-        <activity android:name="ink.va.activities.ExploreVipActivity" />
-        <activity android:name="ink.va.activities.GlobalVipChat" />
-        <activity android:name="ink.va.activities.About"></activity>
+        <activity
+            android:name="ink.va.activities.VIPActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ink.va.activities.ExploreVipActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ink.va.activities.GlobalVipChat"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ink.va.activities.About"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
