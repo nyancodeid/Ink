@@ -792,4 +792,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="aboutTitle">About</string>
     <string name="unreadMessage">You have unread messages</string>
     <string name="view">View</string>
+    <string name="freedomTitle">Trying to hack?Not good...</string>
+    <string name="freedomText">As we have detected the Freedom installed and running on you\'r device,we can not let you proceed…
+        the risk is too high you would love to hack us,so sorry this one will not work...Be sure to turn the freedom off or remove it completely so we can let you enjoy the app</string>
 </resources>

@@ -795,4 +795,7 @@
     <string name="vip_gift_congratulations">Поздравляем!Вы получили V.I.P. членство от нас в подарок!</string>
     <string name="unreadMessage">У вас непрочитанные сообщения</string>
     <string name="view">Посмотреть</string>
+
+    <string name="freedomTitle">Пытаетесь хакнуть?</string>
+    <string name="freedomText">Так как мы знаем что у вас есть приложение freedom,то по этой причине Риск что вы не сдержитесь и попытаетесь хакнуть нас слишком велик :),мы не можем отставить это так,и просим вас удалить приложение и зайти обратно.</string>
 </resources>

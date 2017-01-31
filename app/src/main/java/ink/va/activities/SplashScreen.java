@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.ink.va.R;
@@ -23,6 +22,7 @@ public class SplashScreen extends AppCompatActivity {
     private String amazonKeyHash = "C2MtEkZmc42C5GvtiILtYM+/OI8=";
     private SharedHelper sharedHelper;
     private View splashRootView;
+    private boolean isFreedomRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +43,32 @@ public class SplashScreen extends AppCompatActivity {
 
         List<String> processes = ProcessManager.getRunningProcesses(this);
         for (String process : processes) {
-            Log.d("fsakjfksajflksa", "onCreate: " + process);
+            if (process.contains("freedom")) {
+                isFreedomRunning = true;
+                break;
+            }
         }
 
-        if (isAppOriginal) {
-            Intent intent = new Intent(this, Intro.class);
-            startActivity(intent);
-            finish();
-        } else {
+        if (isFreedomRunning) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.freedomTitle));
+            builder.setMessage(getString(R.string.freedomText));
+            builder.setCancelable(false);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                }
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
+        } else if (!isAppOriginal) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getString(R.string.thisWontWork));
             builder.setMessage(getString(R.string.applicationModified));
@@ -69,6 +87,10 @@ public class SplashScreen extends AppCompatActivity {
                     finish();
                 }
             });
+        } else {
+            Intent intent = new Intent(this, Intro.class);
+            startActivity(intent);
+            finish();
         }
 
     }
