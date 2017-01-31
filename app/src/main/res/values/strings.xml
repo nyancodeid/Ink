@@ -800,4 +800,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="badge_hint">Note : Only one Badge per one user</string>
     <string name="purchasing">Purchasing...</string>
     <string name="badgeBought">Badge was bought successfully,it will be attached to you\'r profile shortly</string>
+    <string name="badge_already_bought">You already have bought this badge</string>
 </resources>

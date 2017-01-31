@@ -152,6 +152,17 @@ public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefr
                             }
                         });
                         builder.show();
+                    } else if (cause.equals(ErrorCause.ALREADY_BOUGHT)) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(BadgeShop.this);
+                        builder.setTitle(getString(R.string.error));
+                        builder.setMessage(getString(R.string.badge_already_bought));
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        builder.show();
                     } else {
                         Toast.makeText(BadgeShop.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                     }

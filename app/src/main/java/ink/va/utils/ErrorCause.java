@@ -15,5 +15,6 @@ public class ErrorCause {
     public static final String PACK_ALREADY_BOUGHT = "packAlreadyBought";
     public static final String NOT_VIP_ERROR = "notVip";
     public static final String NOT_ENOUGH_COINS = "notEnoughCoins";
+    public static final String ALREADY_BOUGHT = "alreadyBought";
 
 }
