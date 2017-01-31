@@ -21,8 +21,6 @@ public class UserMessagesModel {
     private String lastName;
     @SerializedName("imageName")
     private String imageName;
-    @SerializedName("user_id")
-    private String imageLink;
     @SerializedName("isSocialAccount")
     private boolean isSocialAccount;
     @SerializedName("isFriend")
@@ -59,9 +57,6 @@ public class UserMessagesModel {
         return imageName;
     }
 
-    public String getImageLink() {
-        return imageLink;
-    }
 
     public boolean isSocialAccount() {
         return isSocialAccount;

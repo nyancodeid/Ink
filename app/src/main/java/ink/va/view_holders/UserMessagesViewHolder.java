@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.ink.va.R;
 import com.koushikdutta.ion.Ion;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -50,11 +52,6 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
         this.userMessagesModel = userMessagesModel;
 
         String message = userMessagesModel.getMessage();
-        if (userMessagesModel.getMessage().contains(":")) {
-            int index = userMessagesModel.getMessage().indexOf(":");
-            message = userMessagesModel.getMessage().substring(index + 1, userMessagesModel.getMessage().length());
-        }
-
         String finalMessage;
 
         if (userMessagesModel.getUserId().equals(sharedHelper.getUserId())) {
@@ -72,13 +69,13 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
             }
         }
 
-        messageBody.setText(finalMessage);
+        messageBody.setText(StringEscapeUtils.unescapeJava(finalMessage));
         if (!userMessagesModel.getImageName().isEmpty()) {
-            String encodedImage = Uri.encode(userMessagesModel.getImageLink());
+            String encodedImage = Uri.encode(userMessagesModel.getImageName());
 
             String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage;
             if (userMessagesModel.isSocialAccount()) {
-                url = userMessagesModel.getImageLink();
+                url = userMessagesModel.getImageName();
             }
             Ion.with(context).load(url)
                     .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(messagesImage);

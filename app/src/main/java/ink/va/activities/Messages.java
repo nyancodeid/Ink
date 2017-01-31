@@ -94,8 +94,8 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
 
         mRecyclerView.setAdapter(messagesAdapter);
+        messagesAdapter.setOnItemClickListener(this);
         mSharedHelper = new SharedHelper(this);
-        getUserMessages();
     }
 
     private void makeDeleteRequest(final String opponentId) {
@@ -135,9 +135,14 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getUserMessages();
+    }
+
     private void getUserMessages() {
 
-        messagesAdapter.clear();
 
         Call<MyMessagesModel> myMessagesCall = Retrofit.getInstance()
                 .getInkService().getMyMessages(mSharedHelper.getUserId());
@@ -155,7 +160,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                     mMessagesLoadingProgress.setVisibility(View.GONE);
 
                     List<UserMessagesModel> userMessagesModels = response.body().getUserMessagesModels();
-
+                    messagesAdapter.clear();
                     if (userMessagesModels.isEmpty()) {
                         mNoMessageLayout.setVisibility(View.VISIBLE);
                     } else {
