@@ -56,8 +56,6 @@ import ink.va.fragments.MyFriends;
 import ink.va.interfaces.AccountDeleteListener;
 import ink.va.interfaces.ColorChangeListener;
 import ink.va.models.CoinsResponse;
-import ink.va.service.BackgroundTaskService;
-import ink.va.service.LocationRequestSessionDestroyer;
 import ink.va.service.SendTokenService;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
@@ -765,7 +763,7 @@ public class HomeActivity extends BaseActivity
     }
 
     private void startMessageDownloadService() {
-        startService(new Intent(getApplicationContext(), BackgroundTaskService.class));
+//        startService(new Intent(getApplicationContext(), BackgroundTaskService.class));
     }
 
     private void startTokenService() {
