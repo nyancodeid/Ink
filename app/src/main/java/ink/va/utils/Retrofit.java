@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import ink.va.models.MyCollectionResponseModel;
+import ink.va.models.MyMessagesModel;
 import ink.va.models.ServerInformationModel;
+import ink.va.models.UserMessagesModel;
 import ink.va.models.UserModel;
 import ink.va.models.VipGlobalChatResponseModel;
 import okhttp3.ResponseBody;
@@ -306,7 +308,7 @@ public class Retrofit {
 
         @POST(Constants.SINGLE_USER_MESSAGES)
         @FormUrlEncoded
-        Call<ResponseBody> getMyMessages(@Field("user_id") String userId);
+        Call<MyMessagesModel> getMyMessages(@Field("user_id") String userId);
 
         @POST(Constants.GROUP_PARTICIPANTS_URL)
         @FormUrlEncoded

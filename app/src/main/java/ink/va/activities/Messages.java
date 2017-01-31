@@ -20,25 +20,24 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.ink.va.R;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import ink.va.adapters.MessagesAdapter;
 import ink.va.decorators.DividerItemDecoration;
+import ink.va.interfaces.MyMessagesItemClickListener;
+import ink.va.models.MyMessagesModel;
 import ink.va.models.UserMessagesModel;
 import ink.va.service.BackgroundTaskService;
 import ink.va.utils.RealmHelper;
-import ink.va.utils.RecyclerTouchListener;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -46,7 +45,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, MyMessagesItemClickListener {
 
     private SharedHelper mSharedHelper;
 
@@ -60,12 +59,12 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
     NestedScrollView mNoMessageLayout;
     @Bind(R.id.messagesRootLayout)
     RelativeLayout messagesRootLayout;
-    private List<UserMessagesModel> userMessagesModels;
     private UserMessagesModel userMessagesModel;
     private MessagesAdapter messagesAdapter;
     private String finalOpponentId;
     private Snackbar deleteRequestSnack;
     private SharedHelper sharedHelper;
+    private Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,10 +72,10 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
         setContentView(R.layout.activity_messages);
         sharedHelper = new SharedHelper(this);
         ButterKnife.bind(this);
+        gson = new Gson();
         startService(new Intent(getApplicationContext(), BackgroundTaskService.class));
         mMessagesSwipe.setColorSchemeColors(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
-        userMessagesModels = new ArrayList<>();
-        messagesAdapter = new MessagesAdapter(userMessagesModels, this);
+        messagesAdapter = new MessagesAdapter(this);
         mMessagesSwipe.setOnRefreshListener(this);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -95,87 +94,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 new DividerItemDecoration(this));
 
 
-        mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, mRecyclerView, new RecyclerTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                String finalId;
-                if (userMessagesModels.get(position).getUserId().equals(mSharedHelper.getUserId())) {
-                    finalId = userMessagesModels.get(position).getOpponentId();
-                } else {
-                    finalId = userMessagesModels.get(position).getUserId();
-                }
-
-                RealmHelper.getInstance().removeMessageCount(Integer.valueOf(finalId));
-
-                Intent intent = new Intent(getApplicationContext(), Chat.class);
-                intent.putExtra("firstName", userMessagesModels.get(position).getFirstName());
-                intent.putExtra("lastName", userMessagesModels.get(position).getLastName());
-                intent.putExtra("opponentId", finalId);
-                intent.putExtra("isSocialAccount", userMessagesModels.get(position).isSocialAccount());
-                intent.putExtra("opponentImage", userMessagesModels.get(position).getImageName());
-                startActivity(intent);
-            }
-
-            @Override
-            public void onLongClick(View view, final int position) {
-                System.gc();
-                if (userMessagesModels.get(position).getUserId().equals(mSharedHelper.getUserId())) {
-                    finalOpponentId = userMessagesModels.get(position).getOpponentId();
-                } else {
-                    finalOpponentId = userMessagesModels.get(position).getUserId();
-                }
-                final AlertDialog.Builder builder = new AlertDialog.Builder(Messages.this);
-                builder.setTitle(getString(R.string.chooseAction));
-                builder.setMessage(getString(R.string.profileText) + " : " +
-                        userMessagesModels.get(position).getFirstName() + " "
-                        + userMessagesModels.get(position).getLastName());
-
-
-                builder.setNegativeButton(getString(R.string.dismiss), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                });
-                builder.setPositiveButton(getString(R.string.viewProfile), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
-                        intent.putExtra("id", finalOpponentId);
-                        intent.putExtra("firstName", userMessagesModels.get(position).getFirstName());
-                        intent.putExtra("lastName", userMessagesModels.get(position).getLastName());
-                        intent.putExtra("isFriend", userMessagesModels.get(position).isFriend());
-                        startActivity(intent);
-                    }
-                });
-                builder.setNegativeButton(getString(R.string.deleteMessage), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        dialogInterface.dismiss();
-                        System.gc();
-                        AlertDialog.Builder yesNoDialog = new AlertDialog.Builder(Messages.this);
-                        yesNoDialog.setTitle(getString(R.string.areYouSure));
-                        yesNoDialog.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        });
-                        yesNoDialog.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                showSnack();
-                                makeDeleteRequest(finalOpponentId);
-                            }
-                        });
-                        yesNoDialog.show();
-
-                    }
-                });
-                builder.show();
-            }
-        }));
         mRecyclerView.setAdapter(messagesAdapter);
         mSharedHelper = new SharedHelper(this);
         getUserMessages();
@@ -219,87 +137,42 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
     }
 
     private void getUserMessages() {
-        if (userMessagesModels != null) {
-            userMessagesModels.clear();
-        }
-        messagesAdapter.notifyDataSetChanged();
 
-        Call<ResponseBody> myMessagesCall = Retrofit.getInstance()
+        messagesAdapter.clear();
+
+        Call<MyMessagesModel> myMessagesCall = Retrofit.getInstance()
                 .getInkService().getMyMessages(mSharedHelper.getUserId());
-        myMessagesCall.enqueue(new Callback<ResponseBody>() {
+        myMessagesCall.enqueue(new Callback<MyMessagesModel>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    if (response == null) {
-                        getUserMessages();
-                        return;
-                    }
-                    if (response.body() == null) {
-                        getUserMessages();
-                        return;
-                    }
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    JSONArray messages = jsonObject.optJSONArray("messages");
+            public void onResponse(Call<MyMessagesModel> call, Response<MyMessagesModel> response) {
 
-                    String currentUserId = mSharedHelper.getUserId();
-                    for (int i = 0; i < messages.length(); i++) {
-                        JSONObject eachObject = messages.optJSONObject(i);
-                        String userId = eachObject.optString("user_id");
-                        String opponentId = eachObject.optString("opponent_id");
-                        String messageId = eachObject.optString("message_id");
-                        String message = StringEscapeUtils.unescapeJava(eachObject.optString("message"));
-                        String firstName = eachObject.optString("firstName");
-                        String lastName = eachObject.optString("lastName");
-                        String imageName = eachObject.optString("imageName");
-                        String isFriend = eachObject.optString("isFriend");
-                        String date = eachObject.optString("date");
-                        boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
-                        String deleteUserId = eachObject.optString("delete_user_id");
-                        String deleteOpponentId = eachObject.optString("delete_opponent_id");
+                boolean success = response.body().isSuccess();
 
-                        if (currentUserId.equals(deleteUserId) || currentUserId.equals(deleteOpponentId)) {
-                            continue;
-                        }
-                        if (userId.equals(mSharedHelper.getUserId())) {
-                            String messageOld = message;
-                            if (messageOld.trim().isEmpty()) {
-                                messageOld = getString(R.string.sentSticker);
-                            }
-                            message = getString(R.string.you) + " " + messageOld;
-                        } else {
-                            String messageOld = message;
-                            if (messageOld.isEmpty()) {
-                                message = firstName + " " + lastName + " " + getString(R.string.sentSticker);
-                            }
-                        }
-                        userMessagesModel = new UserMessagesModel(isSocialAccount, Boolean.valueOf(isFriend), userId, opponentId, messageId, message,
-                                firstName, lastName, imageName, imageName);
-                        userMessagesModels.add(userMessagesModel);
-                        messagesAdapter.notifyDataSetChanged();
-                    }
-
-                    if (mMessagesSwipe != null) {
+                if (success) {
+                    hideSnack(true);
+                    if (mMessagesSwipe != null && mMessagesSwipe.isRefreshing()) {
                         mMessagesSwipe.setRefreshing(false);
                     }
                     mMessagesLoadingProgress.setVisibility(View.GONE);
-                    if (userMessagesModels.size() <= 0) {
+
+                    List<UserMessagesModel> userMessagesModels = response.body().getUserMessagesModels();
+
+                    if (userMessagesModels.isEmpty()) {
                         mNoMessageLayout.setVisibility(View.VISIBLE);
                     } else {
+                        messagesAdapter.setUserMessagesModels(userMessagesModels);
                         mNoMessageLayout.setVisibility(View.GONE);
                     }
-                    hideSnack(true);
-                } catch (IOException e) {
-                    hideSnack(true);
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    hideSnack(true);
-                    e.printStackTrace();
+
+                } else {
+                    Toast.makeText(Messages.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                 }
+
+
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<MyMessagesModel> call, Throwable t) {
                 Toast.makeText(Messages.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
@@ -344,4 +217,86 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
         }
     }
 
+    @Override
+    public void onItemClick(Object clickedItem) {
+        String finalId;
+        UserMessagesModel userMessagesModel = (UserMessagesModel) clickedItem;
+
+        if (userMessagesModel.getUserId().equals(mSharedHelper.getUserId())) {
+            finalId = userMessagesModel.getOpponentId();
+        } else {
+            finalId = userMessagesModel.getUserId();
+        }
+
+        RealmHelper.getInstance().removeMessageCount(Integer.valueOf(finalId));
+
+        Intent intent = new Intent(getApplicationContext(), Chat.class);
+        intent.putExtra("firstName", userMessagesModel.getFirstName());
+        intent.putExtra("lastName", userMessagesModel.getLastName());
+        intent.putExtra("opponentId", finalId);
+        intent.putExtra("isSocialAccount", userMessagesModel.isSocialAccount());
+        intent.putExtra("opponentImage", userMessagesModel.getImageName());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onItemLongClick(Object clickedItem) {
+        final UserMessagesModel userMessagesModel = (UserMessagesModel) clickedItem;
+
+        if (userMessagesModel.getUserId().equals(mSharedHelper.getUserId())) {
+            finalOpponentId = userMessagesModel.getOpponentId();
+        } else {
+            finalOpponentId = userMessagesModel.getUserId();
+        }
+        final AlertDialog.Builder builder = new AlertDialog.Builder(Messages.this);
+        builder.setTitle(getString(R.string.chooseAction));
+        builder.setMessage(getString(R.string.profileText) + " : " +
+                userMessagesModel.getFirstName() + " "
+                + userMessagesModel.getLastName());
+
+
+        builder.setNegativeButton(getString(R.string.dismiss), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setPositiveButton(getString(R.string.viewProfile), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
+                intent.putExtra("id", finalOpponentId);
+                intent.putExtra("firstName", userMessagesModel.getFirstName());
+                intent.putExtra("lastName", userMessagesModel.getLastName());
+                intent.putExtra("isFriend", userMessagesModel.isFriend());
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton(getString(R.string.deleteMessage), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                dialogInterface.dismiss();
+                System.gc();
+                AlertDialog.Builder yesNoDialog = new AlertDialog.Builder(Messages.this);
+                yesNoDialog.setTitle(getString(R.string.areYouSure));
+                yesNoDialog.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                yesNoDialog.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        showSnack();
+                        makeDeleteRequest(finalOpponentId);
+                    }
+                });
+                yesNoDialog.show();
+
+            }
+        });
+        builder.show();
+    }
 }

@@ -1,90 +1,67 @@
 package ink.va.adapters;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.ion.Ion;
 
+import java.util.LinkedList;
 import java.util.List;
 
+import ink.va.interfaces.MyMessagesItemClickListener;
 import ink.va.models.UserMessagesModel;
-import ink.va.utils.CircleTransform;
-import ink.va.utils.Constants;
 import ink.va.utils.SharedHelper;
+import ink.va.view_holders.UserMessagesViewHolder;
 
 /**
  * Created by USER on 2016-07-02.
  */
-public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
+public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<UserMessagesModel> userMessagesModels;
     private Context mContext;
     private SharedHelper mSharedHelper;
+    private MyMessagesItemClickListener onItemClickListener;
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView messagesUserName, messageBody;
-        public ImageView messagesImage;
-
-        public ViewHolder(View view) {
-            super(view);
-            messagesUserName = (TextView) view.findViewById(R.id.messagesUserName);
-            messageBody = (TextView) view.findViewById(R.id.messageBody);
-            messagesImage = (ImageView) view.findViewById(R.id.messagesImage);
-        }
-    }
-
-
-    public MessagesAdapter(List<UserMessagesModel> friendsModelList, Context context) {
+    public MessagesAdapter(Context context) {
         mContext = context;
-        this.userMessagesModels = friendsModelList;
+        userMessagesModels = new LinkedList<>();
         mSharedHelper = new SharedHelper(context);
     }
 
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.user_messages_single_item, parent, false);
-        return new ViewHolder(itemView);
+    public void setUserMessagesModels(List<UserMessagesModel> userMessagesModels) {
+        this.userMessagesModels.clear();
+        this.userMessagesModels.addAll(userMessagesModels);
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        this.userMessagesModels.clear();
+        notifyDataSetChanged();
+    }
+
+    public void setOnItemClickListener(MyMessagesItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        UserMessagesModel userMessagesModel = userMessagesModels.get(position);
-        holder.messagesUserName.setText(userMessagesModel.getFirstName() + " " + userMessagesModel.getLastName());
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.user_messages_single_item, parent, false);
+        return new UserMessagesViewHolder(itemView);
+    }
 
-        String message = userMessagesModel.getMessage();
-        if (userMessagesModel.getMessage().contains(":")) {
-            int index = userMessagesModel.getMessage().indexOf(":");
-            message = userMessagesModel.getMessage().substring(index + 1, userMessagesModel.getMessage().length());
-        }
-
-        String finalMessage =message.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, "");
-
-        holder.messageBody.setText(finalMessage);
-        if (!userMessagesModel.getImageName().isEmpty()) {
-            String encodedImage = Uri.encode(userMessagesModel.getImageLink());
-
-            String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage;
-            if (userMessagesModel.isSocialAccount()) {
-                url = userMessagesModel.getImageLink();
-            }
-            Ion.with(mContext).load(url)
-                    .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.messagesImage);
-        } else {
-            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap()
-                    .transform(new CircleTransform()).intoImageView(holder.messagesImage);
-        }
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        ((UserMessagesViewHolder) holder).initData(userMessagesModels.get(position), mContext,onItemClickListener);
     }
 
     @Override
     public int getItemCount() {
         return userMessagesModels.size();
     }
+
 }
