@@ -146,30 +146,30 @@ public class RealmHelper {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mRealm.executeTransaction(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                            MessageModel messageModel = realm.createObject(MessageModel.class);
 
-                            messageModel.setId(id);
-                            messageModel.setMessageId(messageId);
-                            messageModel.setMessage(message);
-                            messageModel.setUserId(userId);
-                            messageModel.setOpponentId(opponentId);
-                            messageModel.setAnimated(animated);
-                            messageModel.setDeliveryStatus(deliveryStatus);
-                            messageModel.setUserImage(userImage);
-                            messageModel.setOpponentImage(opponentImage);
-                            messageModel.setDate(date);
-                            messageModel.setHasGif(hasGif);
-                            messageModel.setGifUrl(gifUrl);
-                            messageModel.setDeleteUserId(deleteUserId);
-                            messageModel.setDeleteOpponentId(deleteOpponentId);
-                        }
-                    });
                 }
             });
+            mRealm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    MessageModel messageModel = realm.createObject(MessageModel.class);
 
+                    messageModel.setId(id);
+                    messageModel.setMessageId(messageId);
+                    messageModel.setMessage(message);
+                    messageModel.setUserId(userId);
+                    messageModel.setOpponentId(opponentId);
+                    messageModel.setAnimated(animated);
+                    messageModel.setDeliveryStatus(deliveryStatus);
+                    messageModel.setUserImage(userImage);
+                    messageModel.setOpponentImage(opponentImage);
+                    messageModel.setDate(date);
+                    messageModel.setHasGif(hasGif);
+                    messageModel.setGifUrl(gifUrl);
+                    messageModel.setDeleteUserId(deleteUserId);
+                    messageModel.setDeleteOpponentId(deleteOpponentId);
+                }
+            });
         }
 
 

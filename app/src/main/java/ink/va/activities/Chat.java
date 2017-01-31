@@ -871,7 +871,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                             scrollToBottom();
                         }
                     });
-
+                    mChatAdapter.notifyDataSetChanged();
                 }
             }
 

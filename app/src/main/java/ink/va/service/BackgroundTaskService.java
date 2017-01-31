@@ -2,7 +2,6 @@ package ink.va.service;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -36,7 +35,6 @@ public class BackgroundTaskService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Bundle extras = intent.getExtras();
         mSharedHelper = new SharedHelper(this);
         getMyMessages(mSharedHelper.getUserId());
         return super.onStartCommand(intent, flags, startId);
@@ -44,6 +42,7 @@ public class BackgroundTaskService extends Service {
 
     private void getMyMessages(final String userId) {
         RealmHelper.getInstance().clearDatabase(this);
+        RealmHelper.getInstance().initRealm(getApplicationContext());
         Call<ResponseBody> myMessagesResponse = Retrofit.getInstance().getInkService().getChatMessages(userId);
         myMessagesResponse.enqueue(new Callback<ResponseBody>() {
             @Override
