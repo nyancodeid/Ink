@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -56,7 +55,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
     @Bind(R.id.messagesSwipe)
     SwipeRefreshLayout mMessagesSwipe;
     @Bind(R.id.noMessageLayout)
-    NestedScrollView mNoMessageLayout;
+    View mNoMessageLayout;
     @Bind(R.id.messagesRootLayout)
     RelativeLayout messagesRootLayout;
     private UserMessagesModel userMessagesModel;
