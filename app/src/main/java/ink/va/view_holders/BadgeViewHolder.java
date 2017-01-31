@@ -1,6 +1,7 @@
 package ink.va.view_holders;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.va.R;
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import butterknife.Bind;
@@ -34,7 +36,7 @@ public class BadgeViewHolder extends RecyclerView.ViewHolder {
 
     public BadgeViewHolder(View itemView) {
         super(itemView);
-        ButterKnife.bind(this,itemView);
+        ButterKnife.bind(this, itemView);
     }
 
 
@@ -42,8 +44,17 @@ public class BadgeViewHolder extends RecyclerView.ViewHolder {
         this.onClickListener = onClickListener;
         this.badgeModel = badgeModel;
         Ion.with(context).load(Constants.MAIN_URL + badgeModel.getBadgeName())
-                .withBitmap().placeholder(R.drawable.badge_placeholder)
-                .intoImageView(badgeImageView);
+                .withBitmap().placeholder(R.drawable.badge_placeholder).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+            @Override
+            public void onCompleted(Exception e, Bitmap result) {
+                if (e == null) {
+                    badgeImageView.setImageBitmap(result);
+                } else {
+                    e.printStackTrace();
+                }
+
+            }
+        });
         badgePrice.setText(context.getString(R.string.coinsText, badgeModel.getBadgePrice()));
         badgeNameTV.setText(badgeModel.getBadgeTitle());
     }
