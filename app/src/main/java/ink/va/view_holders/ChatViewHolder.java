@@ -220,6 +220,16 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
                     }
                 });
                 imageViewWrapper.setVisibility(View.VISIBLE);
+            } else {
+                chatVideo.setVisibility(View.GONE);
+                chatVideoWrapper.setVisibility(View.GONE);
+                imageView.setImageResource(0);
+                if (chatModel.getMessage().trim().isEmpty()) {
+                    chatViewBubble.setVisibility(View.GONE);
+                } else {
+                    chatViewBubble.setVisibility(View.VISIBLE);
+                }
+                imageViewWrapper.setVisibility(View.GONE);
             }
 
         } else {
