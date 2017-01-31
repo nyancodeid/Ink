@@ -161,7 +161,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 super.onScrollStateChanged(recyclerView, newState);
 
                 LinearLayoutManager layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
-                int firstVisiblePosition = layoutManager.findLastVisibleItemPosition();
+                int firstVisiblePosition = layoutManager.findFirstVisibleItemPosition();
                 if (mAdapter.getItemCount() > 5) {
                     if (firstVisiblePosition < mAdapter.getItemCount() - 4) {
                         if (scrollUpFeed.getTag().equals(getString(R.string.notVisible))) {
