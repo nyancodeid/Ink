@@ -97,10 +97,11 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
     }
 
     @OnLongClick(R.id.myMessagesRootLayout)
-    public void longClicked() {
+    public boolean longClicked() {
         if (onItemClickListener != null) {
             onItemClickListener.onItemLongClick(userMessagesModel);
         }
+        return false;
     }
 
 }
