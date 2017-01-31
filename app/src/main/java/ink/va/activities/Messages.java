@@ -16,10 +16,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.ink.va.R;
-import com.wang.avi.AVLoadingIndicatorView;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
@@ -52,7 +52,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
     @Bind(R.id.messagesRecyclerView)
     RecyclerView mRecyclerView;
     @Bind(R.id.messagesLoadingProgress)
-    AVLoadingIndicatorView mMessagesLoadingProgress;
+    ProgressBar mMessagesLoadingProgress;
     @Bind(R.id.messagesSwipe)
     SwipeRefreshLayout mMessagesSwipe;
     @Bind(R.id.noMessageLayout)

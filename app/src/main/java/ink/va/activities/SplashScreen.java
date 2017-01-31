@@ -5,11 +5,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.ink.va.R;
 
+import java.util.List;
+
+import ink.va.utils.ProcessManager;
 import ink.va.utils.SharedHelper;
+
 
 public class SplashScreen extends AppCompatActivity {
     private boolean isAppOriginal;
@@ -34,6 +39,11 @@ public class SplashScreen extends AppCompatActivity {
             isAppOriginal = true;
         } else if (currentKeyHash.trim().equals(amazonKeyHash.trim())) {
             isAppOriginal = true;
+        }
+
+        List<String> processes = ProcessManager.getRunningProcesses(this);
+        for (String process : processes) {
+            Log.d("fsakjfksajflksa", "onCreate: " + process);
         }
 
         if (isAppOriginal) {

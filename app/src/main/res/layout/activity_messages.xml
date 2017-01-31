@@ -52,11 +52,9 @@
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 
-    <com.wang.avi.AVLoadingIndicatorView
+    <ProgressBar
         android:id="@+id/messagesLoadingProgress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        app:indicator="BallTrianglePath"
-        app:indicator_color="@color/colorPrimary" />
+        android:layout_centerInParent="true" />
 </RelativeLayout>
