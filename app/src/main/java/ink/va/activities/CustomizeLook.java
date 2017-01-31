@@ -283,7 +283,6 @@ public class CustomizeLook extends BaseActivity {
                 }
                 break;
             case R.id.restoreFromCloud:
-                System.gc();
                 AlertDialog.Builder builder = new AlertDialog.Builder(CustomizeLook.this);
                 builder.setTitle(getString(R.string.warning));
                 builder.setMessage(getString(R.string.localOverwritingWarning));
@@ -302,7 +301,6 @@ public class CustomizeLook extends BaseActivity {
                 builder.show();
                 break;
             case R.id.resetToDefault:
-                System.gc();
                 builder = new AlertDialog.Builder(CustomizeLook.this);
                 builder.setTitle(getString(R.string.chooseWhichReset));
                 final View resetView = getLayoutInflater().inflate(R.layout.reset_view, null);
@@ -326,7 +324,6 @@ public class CustomizeLook extends BaseActivity {
                 builder.show();
                 break;
             case R.id.removeFromCloud:
-                System.gc();
                 builder = new AlertDialog.Builder(CustomizeLook.this);
                 builder.setTitle(getString(R.string.warning));
                 builder.setMessage(getString(R.string.removeFromCloudWarning));

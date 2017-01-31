@@ -286,7 +286,6 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                         mCommentRefresher.setRefreshing(false);
                         if (shouldFocus) {
                             if (addCommentDialog.isShowing()) {
-                                System.gc();
                                 addCommentDialog.dismiss();
                             }
                             mCommentBody.setText("");
@@ -427,7 +426,6 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                             startActivity(intent);
                             break;
                         case 1:
-                            System.gc();
                             AlertDialog.Builder builder = new AlertDialog.Builder(Comments.this);
                             builder.setTitle(getString(R.string.deletePost));
                             builder.setMessage(getString(R.string.areYouSure));
@@ -526,7 +524,6 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     }
 
     private void showPromptDialog(final String fileName) {
-        System.gc();
         int index = fileName.indexOf(":");
         String finalFileName = fileName.substring(index + 1, fileName.length());
 
@@ -729,7 +726,6 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onAdditionItemClick(int position, View view) {
-        System.gc();
         int actualPosition = position - 1;
         try {
             final CommentModel commentModel = mCommentModels.get(actualPosition);

@@ -463,7 +463,6 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
 
 
     private void makePost(File chosenFile, String postBody, String chosenGoogleAddress) {
-        System.gc();
         if (chosenFile != null) {
             Map<String, ProgressRequestBody> map = new HashMap<>();
             ProgressRequestBody requestBody = new ProgressRequestBody(chosenFile, this);
@@ -575,7 +574,6 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
 
 
     private void showFailureDialog() {
-        System.gc();
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
@@ -593,7 +591,6 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     }
 
     private void showSuccessDialog() {
-        System.gc();
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
         }

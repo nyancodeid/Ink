@@ -228,7 +228,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                System.gc();
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                     Keyboard.hideKeyboard(Chat.this);
                 }
@@ -266,7 +265,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                         }
 
                     } else if (chatModel.isAttachment()) {
-                        System.gc();
                         String finalFileName;
                         if (chatModel.getMessage().contains(":")) {
                             int index = chatModel.getMessage().indexOf(":");
@@ -351,7 +349,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
             @Override
             public void onLongClick(View view, final int position) {
-                System.gc();
                 final ChatModel chatModel = mChatModelArrayList.get(position);
                 String date = chatModel.getDate();
                 AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
@@ -463,7 +460,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     }
 
     private void showDeleteWarning(final String messageId, final int position) {
-        System.gc();
         AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
         builder.setTitle(getString(R.string.warning));
         builder.setMessage(getString(R.string.deleteMessageWarning));
@@ -673,7 +669,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     @OnClick(R.id.trashIcon)
     public void trashIcon() {
         isGifChosen = false;
-        System.gc();
         dismissStickerChooser();
         if (mWriteEditText.getText().toString().trim().isEmpty()) {
             mSendChatMessage.setEnabled(false);
@@ -682,8 +677,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
     @OnClick(R.id.attachmentIcon)
     public void attachmentIcon() {
-        System.gc();
-
         DialogUtils.showPopUp(Chat.this, attachmentIcon, new ItemClickListener<MenuItem>() {
             @Override
             public void onItemClick(MenuItem clickedItem) {
@@ -753,7 +746,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     }
 
     private void dismissStickerChooser() {
-        System.gc();
         sendMessageGifView.setBackground(null);
         sendMessageGifView.setImageResource(0);
         if (sendMessageGifViewWrapper.getVisibility() == View.VISIBLE) {
@@ -800,7 +792,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     }
 
     private void handleMessageSent(String response, int sentItemLocation) {
-        System.gc();
         try {
             JSONObject jsonObject = new JSONObject(response);
             boolean success = jsonObject.optBoolean("success");
@@ -952,7 +943,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
     @Override
     protected void onDestroy() {
-        System.gc();
         handler.removeCallbacks(statusRunnable);
         statusRunnable = null;
         handler = null;
@@ -1030,7 +1020,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
     @Override
     protected void onResume() {
-        System.gc();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.cancel(Integer.valueOf(mOpponentId));
         mSharedHelper.removeLastNotificationId(mOpponentId);
@@ -1141,7 +1130,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
     @Override
     protected void onPause() {
-        System.gc();
         Notification.get().setSendingRemote(true);
         super.onPause();
     }
@@ -1294,7 +1282,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     }
 
     private void sendMessageWithAttachment(final File file, final int sentItemLocation) {
-        System.gc();
         if (mNoMessageLayout.getVisibility() == View.VISIBLE) {
             mNoMessageLayout.setVisibility(View.GONE);
         }

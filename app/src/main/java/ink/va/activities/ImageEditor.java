@@ -95,7 +95,6 @@ public class ImageEditor extends BaseActivity {
                             openEditor(pickedImageUri);
                         }
                     }, 1000);
-                    System.gc();
                 } else {
                     Snackbar.make(downArrow, getString(R.string.imageNotChosen), Snackbar.LENGTH_LONG).show();
                 }

@@ -241,7 +241,6 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
     }
 
     private void doSearch(final String searchValue) {
-        System.gc();
         clearAdapter();
         if (searchPersonCall != null) {
             searchPersonCall.cancel();
@@ -483,7 +482,6 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
 
     private void removeFriend(final String friendId) {
 
-        System.gc();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.removeFriend));
         builder.setMessage(getString(R.string.removefriendHint));

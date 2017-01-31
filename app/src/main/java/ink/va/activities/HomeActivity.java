@@ -504,7 +504,6 @@ public class HomeActivity extends BaseActivity
                 break;
 
             case R.id.logout:
-                System.gc();
                 AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
                 builder.setTitle(getString(R.string.warning));
                 builder.setMessage(getString(R.string.logoutWaring));
@@ -749,7 +748,6 @@ public class HomeActivity extends BaseActivity
                 break;
             case R.id.makePost:
                 mFab.close(true);
-                System.gc();
                 startActivity(new Intent(getApplicationContext(), MakePost.class));
                 overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
                 break;
@@ -992,7 +990,6 @@ public class HomeActivity extends BaseActivity
         if (mSharedHelper.getLeftSlidingPanelHeaderColor() != null) {
             panelHeader.setBackgroundColor(Color.parseColor(mSharedHelper.getLeftSlidingPanelHeaderColor()));
         }
-        System.gc();
     }
 
 
@@ -1027,6 +1024,5 @@ public class HomeActivity extends BaseActivity
                 window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
             }
         }
-        System.gc();
     }
 }

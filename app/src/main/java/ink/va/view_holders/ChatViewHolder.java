@@ -143,7 +143,6 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void checkForSticker(final ChatModel chatModel) {
-        System.gc();
         if (chatModel.hasSticker()) {
             if (chatModel.isAnimated()) {
                 imageView.setImageResource(0);

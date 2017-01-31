@@ -309,7 +309,6 @@ public class Music extends BaseActivity implements MusicClickListener {
     }
 
     private void openSearchDialog() {
-        System.gc();
         final Dialog dialog = new Dialog(Music.this);
         dialog.setContentView(R.layout.search_dialog_view);
         final AutoCompleteTextView searchField = (AutoCompleteTextView) dialog.findViewById(R.id.searchField);

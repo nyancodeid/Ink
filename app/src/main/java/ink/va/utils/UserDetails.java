@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
  */
 public class UserDetails {
     public static List<String> getUserAccountList(Context context) {
-        System.gc();
         List<String> accountList = new ArrayList<>();
         Pattern emailPattern = Patterns.EMAIL_ADDRESS;
         Account[] accounts = AccountManager.get(context).getAccounts();

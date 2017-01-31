@@ -201,8 +201,6 @@ public class WhoViewedActivity extends AppCompatActivity implements
 
 
     private void removeFriend(final String friendId) {
-
-        System.gc();
         AlertDialog.Builder builder = new AlertDialog.Builder(WhoViewedActivity.this);
         builder.setTitle(getString(R.string.removeFriend));
         builder.setMessage(getString(R.string.removefriendHint));

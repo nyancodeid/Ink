@@ -236,7 +236,6 @@ public class OpponentProfile extends BaseActivity {
     }
 
     private void removeFriend(final String friendId) {
-        System.gc();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.removeFriend));
         builder.setMessage(getString(R.string.removefriendHint));

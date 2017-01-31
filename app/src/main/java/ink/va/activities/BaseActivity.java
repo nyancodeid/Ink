@@ -121,7 +121,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.gc();
         sharedHelper = new SharedHelper(this);
         initCountDownTimer();
         checkBan();

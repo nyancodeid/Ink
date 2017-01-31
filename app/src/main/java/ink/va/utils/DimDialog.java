@@ -18,7 +18,6 @@ public class DimDialog {
     private static Dialog dialog;
 
     public static void showDimDialog(Context context, String textToShow) {
-        System.gc();
         if (dialog == null) {
             dialog = new Dialog(context);
             dialog.setContentView(R.layout.request_friend_dialog);

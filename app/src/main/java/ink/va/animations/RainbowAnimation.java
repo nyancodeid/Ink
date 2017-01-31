@@ -40,7 +40,6 @@ public class RainbowAnimation {
         objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                System.gc();
                 if (!stopCalled) {
                     textViewToAttach.setText(spannableString);
                 }
@@ -71,7 +70,6 @@ public class RainbowAnimation {
     }
 
     public void stopRainbowAnimation() {
-        System.gc();
         stopCalled = true;
         if (!objectAnimators.isEmpty()) {
             for (int i = 0; i < objectAnimators.size(); i++) {

@@ -336,7 +336,6 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     }
 
     private void getParticipants() {
-        System.gc();
         if (memberModels != null) {
             memberModels.clear();
         }
@@ -555,7 +554,6 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     }
 
     private void showEditDialog() {
-        System.gc();
         View editGroupView = getLayoutInflater().inflate(R.layout.edit_group_layout, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(SingleGroupView.this);
         builder.setView(editGroupView);
@@ -662,7 +660,6 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
 
 
     private void deleteGroup() {
-        System.gc();
         AlertDialog.Builder builder = new AlertDialog.Builder(SingleGroupView.this);
         builder.setTitle(getString(R.string.deleteGroup));
         builder.setMessage(getString(R.string.deleteGroupWarning));
@@ -693,7 +690,6 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     }
 
     private void getGroupMessages() {
-        System.gc();
         if (noGroupMessageLayout.getVisibility() == View.VISIBLE) {
             noGroupMessageLayout.setVisibility(View.GONE);
         }

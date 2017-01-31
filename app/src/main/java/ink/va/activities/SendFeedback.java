@@ -119,7 +119,6 @@ public class SendFeedback extends BaseActivity {
     }
 
     private void initAccounts() {
-        System.gc();
         if (userAccounts.size() <= 0) {
             final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(SendFeedback.this);
             bottomSheetDialog.setContentView(R.layout.enter_email_view);
@@ -144,7 +143,6 @@ public class SendFeedback extends BaseActivity {
             });
             bottomSheetDialog.show();
         } else {
-            System.gc();
             PopupMenu popupMenu = new PopupMenu(SendFeedback.this, emailWrapper);
             for (int i = 0; i < userAccounts.size(); i++) {
                 String singleAccount = userAccounts.get(i);

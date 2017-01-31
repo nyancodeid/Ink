@@ -15,7 +15,6 @@ import ink.va.interfaces.ItemClickListener;
 public class DialogUtils {
 
     public static void showPopUp(final Context context, View viewToAttach, @Nullable final ItemClickListener<MenuItem> itemClickListener, String... itemsToAdd) {
-        System.gc();
         android.support.v7.widget.PopupMenu popupMenu = new android.support.v7.widget.PopupMenu(context, viewToAttach);
 
         for (int i = 0; i < itemsToAdd.length; i++) {

@@ -416,7 +416,6 @@ public class Login extends BaseActivity implements View.OnClickListener {
     }
 
     private void showOptions() {
-        System.gc();
         AlertDialog alertDialog;
         View optionsView = getLayoutInflater().inflate(R.layout.sign_in_options_view, null);
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);

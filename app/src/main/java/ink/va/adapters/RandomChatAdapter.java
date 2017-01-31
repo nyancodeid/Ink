@@ -110,8 +110,6 @@ public class RandomChatAdapter extends RecyclerView.Adapter<RandomChatAdapter.Vi
     @Override
     public void onBindViewHolder(final RandomChatAdapter.ViewHolder holder, final int position) {
         RandomChatModel chatModel = chatModelList.get(position);
-
-        System.gc();
         String messageBody = chatModel.getMessage();
         if (chatModel.getMessage().contains(":")) {
             int index = chatModel.getMessage().indexOf(":");
@@ -182,7 +180,6 @@ public class RandomChatAdapter extends RecyclerView.Adapter<RandomChatAdapter.Vi
 
 
     private void checkForSticker(final ChatModel chatModel, final RandomChatAdapter.ViewHolder holder) {
-        System.gc();
         if (chatModel.hasSticker()) {
             if (chatModel.isAnimated()) {
                 holder.imageView.setImageResource(0);

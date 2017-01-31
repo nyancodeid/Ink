@@ -811,7 +811,6 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
 
     @OnClick(R.id.editImageNameFab)
     public void editImageName() {
-        System.gc();
         openChooserPopUp(false);
     }
 
@@ -902,7 +901,6 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     }
 
     private void openNameChanger() {
-        System.gc();
         promptBuilder = new AlertDialog.Builder(this);
         promptBuilder.setCancelable(false);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -1152,7 +1150,6 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     }
 
     private void showAlertWithValues() {
-        System.gc();
         promptBuilder = new AlertDialog.Builder(this);
         promptBuilder.setCancelable(false);
         String statusText = mStatusToSend;

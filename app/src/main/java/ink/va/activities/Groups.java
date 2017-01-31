@@ -460,8 +460,6 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
 
 
     private void showAddGroupDialog() {
-        System.gc();
-
         chosenColor = "";
         mImageLinkToSend = "";
 

@@ -140,7 +140,6 @@ public class ForgotPassword extends AppCompatActivity {
                             startScaleOutAnimation(loginContainer, securityQuestionContainer);
                             questionHolder.setText(securityQuestion);
                         } else {
-                            System.gc();
                             AlertDialog.Builder builder = new AlertDialog.Builder(ForgotPassword.this);
                             builder.setTitle(getString(R.string.noSecurityQuestion));
                             builder.setMessage(getString(R.string.noSecurityQuestionMessage));

@@ -441,8 +441,6 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
         int index = fileName.indexOf(":");
         String finalFileName = fileName.substring(index + 1, fileName.length());
-
-        System.gc();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.downloadQuestion));
         builder.setMessage(getString(R.string.downloadTheFile) + " " + finalFileName);
@@ -525,7 +523,6 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
                             break;
                         case 1:
-                            System.gc();
                             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                             builder.setTitle(getString(R.string.deletePost));
                             builder.setMessage(getString(R.string.areYouSure));
@@ -758,7 +755,6 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     }
 
     public void triggerFeedUpdate() {
-        System.gc();
         if (mOffset == 0) {
             mOffset = 10;
         }

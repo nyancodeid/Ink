@@ -35,7 +35,6 @@ import ink.va.decorators.DividerItemDecoration;
 import ink.va.interfaces.MyMessagesItemClickListener;
 import ink.va.models.MyMessagesModel;
 import ink.va.models.UserMessagesModel;
-import ink.va.service.BackgroundTaskService;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -72,7 +71,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
         sharedHelper = new SharedHelper(this);
         ButterKnife.bind(this);
         gson = new Gson();
-        startService(new Intent(getApplicationContext(), BackgroundTaskService.class));
         mMessagesSwipe.setColorSchemeColors(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
         messagesAdapter = new MessagesAdapter(this);
         mMessagesSwipe.setOnRefreshListener(this);
@@ -281,7 +279,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
             public void onClick(DialogInterface dialogInterface, int i) {
 
                 dialogInterface.dismiss();
-                System.gc();
                 AlertDialog.Builder yesNoDialog = new AlertDialog.Builder(Messages.this);
                 yesNoDialog.setTitle(getString(R.string.areYouSure));
                 yesNoDialog.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {

@@ -123,7 +123,6 @@ public class ContactSupport extends BaseActivity {
 
     @OnClick(R.id.chooseEmailLayout)
     public void chooseEmailLayout() {
-        System.gc();
         if (PermissionsChecker.isAccountPermissionGranted(getApplicationContext())) {
             initAccounts();
         } else {
@@ -243,7 +242,6 @@ public class ContactSupport extends BaseActivity {
     }
 
     private void initAccounts() {
-        System.gc();
         if (userAccounts.size() <= 0) {
             final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(ContactSupport.this);
             bottomSheetDialog.setContentView(R.layout.enter_email_view);
@@ -267,7 +265,6 @@ public class ContactSupport extends BaseActivity {
             });
             bottomSheetDialog.show();
         } else {
-            System.gc();
             PopupMenu popupMenu = new PopupMenu(ContactSupport.this, chooseEmailLayout);
             for (int i = 0; i < userAccounts.size(); i++) {
                 String singleAccount = userAccounts.get(i);

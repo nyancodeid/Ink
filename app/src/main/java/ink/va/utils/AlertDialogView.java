@@ -14,7 +14,6 @@ public class AlertDialogView {
                                         String title,
                                         String message,
                                         @Nullable boolean isCancelable) {
-        System.gc();
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setCancelable(isCancelable);
         builder.setTitle(title);

@@ -16,7 +16,6 @@ public class ProgressDialog {
 
     public ProgressDialog buildProgressDialog(Context context, String title,
                                               String message, boolean cancelable) {
-        System.gc();
         progressDialogBuilder = new android.app.ProgressDialog(context);
         progressDialogBuilder.setTitle(title);
         progressDialogBuilder.setMessage(message);

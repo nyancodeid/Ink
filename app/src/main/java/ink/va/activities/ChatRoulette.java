@@ -28,7 +28,6 @@ public class ChatRoulette extends BaseActivity {
             actionBar.setTitle(getString(R.string.chatRoulette));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        System.gc();
     }
 
 
