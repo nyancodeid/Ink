@@ -43,7 +43,7 @@ public class BadgeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return 0;
+        return badgeModels.size();
     }
 
     public void setOnClickListener(BadgeClickListener onClickListener) {
@@ -55,7 +55,8 @@ public class BadgeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.badgeModels.addAll(badgeModels);
         notifyDataSetChanged();
     }
-    public void clear(){
+
+    public void clear() {
         badgeModels.clear();
         notifyDataSetChanged();
     }
