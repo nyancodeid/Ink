@@ -56,6 +56,8 @@ public class UserModel {
     private boolean isFirstVipLogin;
     @SerializedName("vipMembershipType")
     private String vipMembershipType;
+    @SerializedName("'badge_name'")
+    private String badgeName;
 
 
     public String getUserId() {
@@ -121,6 +123,10 @@ public class UserModel {
 
     public void setFacebookProfile(String facebookProfile) {
         this.facebookProfile = facebookProfile;
+    }
+
+    public String getBadgeName() {
+        return badgeName;
     }
 
     public String getImageUrl() {
