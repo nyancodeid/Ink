@@ -38,6 +38,7 @@ public class Constants {
     public static final String SEND_CHAT_ROULETTE_MESSAGE = "SendChatRouletteMessage.php";
     public static final String GET_USER_STATUS = "GetUserStatus.php";
     public static final String DISCONNECT_URL = "Disconnect.php";
+    public static final String BADGE_SHOP_URL = "BadgeShop.php";
     public static final String USER_COINS_URL = "GetUserCoins.php";
     public static final String SHOP_COINS_URL = "GetCoinsShop.php";
     public static final String PING_TIME_URL = "PingTime.php";
@@ -141,6 +142,8 @@ public class Constants {
      * Type Constants
      */
     public static final String TYPE_MESSAGE_ATTACHMENT = "TYPE_MESSAGE_ATTACHMENT";
+    public static final String BADGE_TYPE_VIEW = "view";
+    public static final String BADGE_TYPE_BUY = "buy";
     public static final String TYPE_ENTER_VIP = "enterVip";
     public static final String TYPE_BUY_VIP = "buyVip";
     public static final String REQUEST_RESPONSE_TYPE_GROUP = "group";

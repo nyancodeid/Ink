@@ -6,10 +6,10 @@ import android.support.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
+import ink.va.models.BadgeResponseModel;
 import ink.va.models.MyCollectionResponseModel;
 import ink.va.models.MyMessagesModel;
 import ink.va.models.ServerInformationModel;
-import ink.va.models.UserMessagesModel;
 import ink.va.models.UserModel;
 import ink.va.models.VipGlobalChatResponseModel;
 import okhttp3.ResponseBody;
@@ -108,6 +108,17 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> changeMembership(@Field("user_id") String userId,
                                             @Field("membershipType") String user_id);
+
+
+        @POST(Constants.BADGE_SHOP_URL)
+        @FormUrlEncoded
+        Call<BadgeResponseModel> getBagdes(@Field("type") String actionType);
+
+        @POST(Constants.BADGE_SHOP_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> buyBadge(@Field("type") String actionType,
+                                      @Field("userId") String userId,
+                                      @Field("badgeId") String badgeId);
 
         @POST(Constants.VIP_GLOBAL_CHAT_URL)
         @FormUrlEncoded

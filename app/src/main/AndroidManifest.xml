@@ -209,7 +209,12 @@
             android:name="ink.va.activities.WaitRoom"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
-        <activity android:name="ink.va.activities.Shop" />
+        <activity
+            android:name="ink.va.activities.Shop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ink.va.activities.BadgeShop"
+            android:screenOrientation="portrait" />
         <activity
             android:name="ink.va.activities.BuyCoins"
             android:screenOrientation="portrait"

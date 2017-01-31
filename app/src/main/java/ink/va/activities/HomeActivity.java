@@ -55,6 +55,7 @@ import ink.va.fragments.Feed;
 import ink.va.fragments.MyFriends;
 import ink.va.interfaces.AccountDeleteListener;
 import ink.va.interfaces.ColorChangeListener;
+import ink.va.interfaces.ItemClickListener;
 import ink.va.models.CoinsResponse;
 import ink.va.service.BackgroundTaskService;
 import ink.va.service.LocationRequestSessionDestroyer;
@@ -62,6 +63,7 @@ import ink.va.service.SendTokenService;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.DeviceChecker;
+import ink.va.utils.DialogUtils;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.FileUtils;
 import ink.va.utils.IonCache;
@@ -245,7 +247,7 @@ public class HomeActivity extends BaseActivity
                             getString(R.string.view), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    startActivity(new Intent(getApplicationContext(),Messages.class));
+                                    startActivity(new Intent(getApplicationContext(), Messages.class));
                                 }
                             }
                     ).show();
@@ -384,14 +386,27 @@ public class HomeActivity extends BaseActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         switch (item.getItemId()) {
             case R.id.notifications:
                 startActivity(new Intent(getApplicationContext(), RequestsView.class));
                 break;
             case R.id.shop:
-                startActivity(new Intent(getApplicationContext(), Shop.class));
+                View shopView = item.getActionView();
+                DialogUtils.showPopUp(this, shopView, new ItemClickListener<MenuItem>() {
+                    @Override
+                    public void onItemClick(MenuItem clickedItem) {
+                        switch (clickedItem.getItemId()) {
+                            case 0:
+                                startActivity(new Intent(getApplicationContext(), Shop.class));
+                                break;
+                            case 1:
+                                startActivity(new Intent(getApplicationContext(), BadgeShop.class));
+                                break;
+                        }
+                    }
+                }, getString(R.string.stickerShop), getString(R.string.badgeShop));
+
                 break;
             case R.id.news:
                 startActivity(new Intent(getApplicationContext(), NewsAndTrendsActivity.class));
