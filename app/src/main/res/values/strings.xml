@@ -798,4 +798,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="stickerShop">Sticker Shop</string>
     <string name="badgeShop">Badge Shop</string>
     <string name="badge_hint">Note : Only one Badge per one user</string>
+    <string name="purchasing">Purchasing...</string>
+    <string name="badgeBought">Badge was bought successfully,it will be attached to you\'r profile shortly</string>
 </resources>

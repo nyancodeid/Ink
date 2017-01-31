@@ -1,7 +1,9 @@
 package ink.va.activities;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -21,6 +23,7 @@ import ink.va.interfaces.BadgeClickListener;
 import ink.va.models.BadgeModel;
 import ink.va.models.BadgeResponseModel;
 import ink.va.utils.Constants;
+import ink.va.utils.ErrorCause;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -40,12 +43,18 @@ public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefr
     SwipeRefreshLayout badgeRefresh;
     private BadgeAdapter badgeAdapter;
     private SharedHelper sharedHelper;
+    private android.app.ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.badge_shop_view);
         ButterKnife.bind(this);
+        progressDialog = new android.app.ProgressDialog(this);
+        progressDialog.setTitle(getString(R.string.pleaseWait));
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setMessage(getString(R.string.purchasing));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         badgeAdapter = new BadgeAdapter(this);
         sharedHelper = new SharedHelper(this);
@@ -72,7 +81,8 @@ public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onBuyClicked(BadgeModel badgeModel) {
-
+        progressDialog.show();
+        buyBadge(badgeModel.getBadgeId());
     }
 
     public void getBadges() {
@@ -115,13 +125,42 @@ public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefr
                     buyBadge(badgeId);
                     return;
                 }
+                progressDialog.dismiss();
                 try {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    String cause = jsonObject.optString("cause");
+                    if (success) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(BadgeShop.this);
+                        builder.setTitle(getString(R.string.congratulation));
+                        builder.setMessage(getString(R.string.badgeBought));
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        builder.show();
+                    } else if (cause.equals(ErrorCause.NOT_ENOUGH_COINS)) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(BadgeShop.this);
+                        builder.setMessage(getString(R.string.not_enough_coins));
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        builder.show();
+                    } else {
+                        Toast.makeText(BadgeShop.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                    }
                 } catch (IOException e) {
+                    progressDialog.dismiss();
                     Toast.makeText(BadgeShop.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    progressDialog.dismiss();
                     Toast.makeText(BadgeShop.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
@@ -129,6 +168,7 @@ public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefr
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressDialog.dismiss();
                 Toast.makeText(BadgeShop.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });

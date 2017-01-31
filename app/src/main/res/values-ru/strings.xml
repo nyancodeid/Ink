@@ -803,4 +803,6 @@
     <string name="stickerShop">Магазин Стикеров</string>
     <string name="badgeShop">Магазин Значков</string>
     <string name="badge_hint">Информация : Только один значок на одного пользователя</string>
+    <string name="purchasing">Покупаем...</string>
+    <string name="badgeBought">Значок успешно куплен.Оно появится в вашем профиле очень скоро</string>
 </resources>
