@@ -912,13 +912,11 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     }
 
     private void removeRainbow() {
-        mChatAdapter.setShowAsRainbow(false);
         mChatAdapter.notifyDataSetChanged();
         chatMenuItem.getItem(0).setTitle(getString(R.string.showAsRainbow));
     }
 
     private void updateToRainbow() {
-        mChatAdapter.setShowAsRainbow(true);
         mChatAdapter.notifyDataSetChanged();
         if (DimDialog.isDialogAlive()) {
             DimDialog.hideDialog();
