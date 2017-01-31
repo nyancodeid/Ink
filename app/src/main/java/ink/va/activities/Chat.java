@@ -18,7 +18,6 @@ import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -111,7 +110,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     @Bind(R.id.messageBody)
     EditText mWriteEditText;
     @Bind(R.id.noMessageLayout)
-    NestedScrollView mNoMessageLayout;
+    View mNoMessageLayout;
     @Bind(R.id.chatRecyclerView)
     RecyclerView mRecyclerView;
     @Bind(R.id.chatTitle)

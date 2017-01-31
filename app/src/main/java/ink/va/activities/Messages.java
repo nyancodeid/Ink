@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.ink.va.R;
 
@@ -177,6 +178,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
         }));
         mRecyclerView.setAdapter(messagesAdapter);
         mSharedHelper = new SharedHelper(this);
+        getUserMessages();
     }
 
     private void makeDeleteRequest(final String opponentId) {
@@ -217,6 +219,11 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
     }
 
     private void getUserMessages() {
+        if (userMessagesModels != null) {
+            userMessagesModels.clear();
+        }
+        messagesAdapter.notifyDataSetChanged();
+
         Call<ResponseBody> myMessagesCall = Retrofit.getInstance()
                 .getInkService().getMyMessages(mSharedHelper.getUserId());
         myMessagesCall.enqueue(new Callback<ResponseBody>() {
@@ -231,11 +238,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                         getUserMessages();
                         return;
                     }
-                    System.gc();
-                    if (userMessagesModels != null) {
-                        userMessagesModels.clear();
-                    }
-                    messagesAdapter.notifyDataSetChanged();
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     JSONArray messages = jsonObject.optJSONArray("messages");
@@ -298,7 +300,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getUserMessages();
+                Toast.makeText(Messages.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -310,13 +312,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
         return super.onOptionsItemSelected(item);
     }
 
-
-    @Override
-    protected void onResume() {
-        System.gc();
-        getUserMessages();
-        super.onResume();
-    }
 
     @Override
     public void onRefresh() {
