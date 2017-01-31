@@ -2,7 +2,7 @@ package ink.va.activities;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -50,8 +50,8 @@ public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefr
         badgeAdapter = new BadgeAdapter(this);
         sharedHelper = new SharedHelper(this);
         badgeRefresh.setOnRefreshListener(this);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-        badgeRecycler.setLayoutManager(gridLayoutManager);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        badgeRecycler.setLayoutManager(linearLayoutManager);
         badgeRecycler.setAdapter(badgeAdapter);
         badgeAdapter.setOnClickListener(this);
         badgeRefresh.post(new Runnable() {

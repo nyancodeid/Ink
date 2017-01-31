@@ -34,7 +34,7 @@ public class BadgeViewHolder extends RecyclerView.ViewHolder {
 
     public BadgeViewHolder(View itemView) {
         super(itemView);
-        ButterKnife.bind(itemView);
+        ButterKnife.bind(this,itemView);
     }
 
 
@@ -45,7 +45,7 @@ public class BadgeViewHolder extends RecyclerView.ViewHolder {
                 .withBitmap().placeholder(R.drawable.badge_placeholder)
                 .intoImageView(badgeImageView);
         badgePrice.setText(context.getString(R.string.coinsText, badgeModel.getBadgePrice()));
-        badgeNameTV.setText(badgeModel.getBadgeName());
+        badgeNameTV.setText(badgeModel.getBadgeTitle());
     }
 
     @OnClick(R.id.buyBadge)

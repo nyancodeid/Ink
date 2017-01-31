@@ -6,24 +6,24 @@
 
     <TextView
         android:id="@+id/badgeNameTV"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/badgeImageView"
-        android:layout_alignLeft="@+id/badgeImageView"
-        android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/badgeImageView"
-        android:layout_alignStart="@+id/badgeImageView"
-        android:layout_margin="10dp"
+        android:layout_above="@+id/buyBadge"
+        android:layout_alignTop="@+id/badgeImageView"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_toRightOf="@+id/badgeImageView"
         android:fontFamily="@string/appFont"
-        android:gravity="center"
+        android:gravity="top|left"
         android:text="@string/loadingText" />
 
     <ImageView
         android:id="@+id/badgeImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/badgeNameTV"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
         android:src="@drawable/badge_placeholder" />
 
     <TextView
@@ -42,12 +42,12 @@
 
     <Button
         android:id="@+id/buyBadge"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/badgeImageView"
         android:layout_alignStart="@+id/badgeImageView"
         android:layout_below="@+id/badgePrice"
-        android:layout_marginTop="10dp"
+        android:layout_margin="10dp"
         android:background="@drawable/buy_button_background"
         android:clickable="true"
         android:focusable="true"
