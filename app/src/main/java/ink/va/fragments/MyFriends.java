@@ -64,7 +64,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-
 /**
  * Created by USER on 2016-06-21.
  */
@@ -271,7 +270,7 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
                         ArrayList<UserSearchResult> userSearchResults = userSearchResponse.userSearchResults;
                         for (int i = 0; i < userSearchResults.size(); i++) {
                             UserSearchResult userSearchResult = userSearchResults.get(i);
-                            mFriendsModel = new FriendsModel(userSearchResult.isFriend, Boolean.valueOf(userSearchResult.isSocialAccount), userSearchResult.firstName + " " + userSearchResult.lastName,
+                            mFriendsModel = new FriendsModel(userSearchResult.badgeName, userSearchResult.isFriend, Boolean.valueOf(userSearchResult.isSocialAccount), userSearchResult.firstName + " " + userSearchResult.lastName,
                                     userSearchResult.imageLink, "", userSearchResult.userId, userSearchResult.firstName, userSearchResult.lastName);
                             mFriendsModelArrayList.add(mFriendsModel);
                             mFriendsAdapter.notifyDataSetChanged();
@@ -359,6 +358,7 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
                                     JSONObject eachObject = friendsArray.optJSONObject(i);
                                     String firstName = eachObject.optString("first_name");
                                     String lastname = eachObject.optString("last_name");
+                                    String badgeName = eachObject.optString("badge_name");
                                     String phoneNumber = eachObject.optString("phone_number");
                                     String imageLink = eachObject.optString("image_link");
                                     String isSocialAccount = eachObject.optString("isSocialAccount");
@@ -373,7 +373,7 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
                                         phoneNumber = getString(R.string.noPhone);
                                     }
                                     String friendId = eachObject.optString("friend_id");
-                                    mFriendsModel = new FriendsModel(true, Boolean.valueOf(isSocialAccount), name, imageLink, phoneNumber, friendId, firstName, lastname);
+                                    mFriendsModel = new FriendsModel(badgeName, true, Boolean.valueOf(isSocialAccount), name, imageLink, phoneNumber, friendId, firstName, lastname);
                                     mFriendsModelArrayList.add(mFriendsModel);
                                     mFriendsAdapter.notifyDataSetChanged();
                                 }

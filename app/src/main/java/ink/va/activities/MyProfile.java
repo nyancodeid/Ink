@@ -139,6 +139,8 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     Toolbar mToolbar;
     @Bind(R.id.deleteAccont)
     Button deleteAccount;
+    @Bind(R.id.badgeIcon)
+    ImageView badgeIcon;
 
     @Bind(R.id.imageLoadingProgress)
     ProgressBar imageLoadingProgress;
@@ -172,6 +174,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     private int userCoins;
     private boolean hasCoinsChanged;
     private ProgressDialog updateDialog;
+    private String mBadgeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -427,6 +430,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                     mFirstNameToSend = jsonObject.optString("first_name");
                     mLastNameToSend = jsonObject.optString("last_name");
                     mGenderToSend = jsonObject.optString("gender");
+                    mBadgeName = jsonObject.optString("badge_name");
                     mPhoneNumberToSend = jsonObject.optString("phone_number");
                     mFacebookProfileToSend = jsonObject.optString("facebook_profile");
                     mFacebookName = jsonObject.optString("facebook_name");
@@ -446,6 +450,17 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                     cacheUserData();
 
                     attachValues(true);
+
+                    Ion.with(this).load(Constants.MAIN_URL + mBadgeName).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                        @Override
+                        public void onCompleted(Exception e, Bitmap result) {
+                            if (e == null) {
+                                badgeIcon.setImageBitmap(result);
+                            } else {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MyProfile.this);
                     builder.setTitle(getString(R.string.singleUserErrorTile));

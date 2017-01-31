@@ -22,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ink.va.R;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
@@ -101,6 +103,8 @@ public class OpponentProfile extends BaseActivity {
     FloatingActionButton removeFriend;
     @Bind(R.id.callUserPhone)
     ImageView callUserPhone;
+    @Bind(R.id.singleUserBadge)
+    ImageView singleUserBadge;
     private String mOpponentImage;
     private boolean isFriend;
     private Target target;
@@ -355,6 +359,7 @@ public class OpponentProfile extends BaseActivity {
                             String firstName = jsonObject.optString("first_name");
                             String lastName = jsonObject.optString("last_name");
                             String gender = jsonObject.optString("gender");
+                            String badgeName = jsonObject.optString("badge_name");
                             String phoneNumber = jsonObject.optString("phone_number");
                             mFacebookLink = jsonObject.optString("facebook_profile");
                             mOpponentImage = jsonObject.optString("image_link");
@@ -365,6 +370,16 @@ public class OpponentProfile extends BaseActivity {
                             String facebookName = jsonObject.optString("facebook_name");
                             hasFriendRequested = jsonObject.optBoolean("hasFriendRequested");
 
+                            Ion.with(OpponentProfile.this).load(Constants.MAIN_URL + badgeName).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                                @Override
+                                public void onCompleted(Exception e, Bitmap result) {
+                                    if (e == null) {
+                                        singleUserBadge.setImageBitmap(result);
+                                    } else {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
 
                             boolean shouldHighlightFacebook = true;
                             boolean shouldHighlightAddress = true;

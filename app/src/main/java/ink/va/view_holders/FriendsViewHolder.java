@@ -1,6 +1,7 @@
 package ink.va.view_holders;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import ink.va.interfaces.RecyclerItemClickListener;
@@ -25,6 +27,7 @@ public class FriendsViewHolder extends RecyclerView.ViewHolder {
     public TextView name;
     public ImageView friendImage;
     private ImageView friendMoreIcon;
+    private ImageView friendBadge;
     private View cardView;
     private RelativeLayout friendsRootView;
     private View spacing;
@@ -35,6 +38,7 @@ public class FriendsViewHolder extends RecyclerView.ViewHolder {
         spacing = view.findViewById(R.id.spacing);
         friendImage = (ImageView) view.findViewById(R.id.friendImage);
         friendMoreIcon = (ImageView) view.findViewById(R.id.friendMoreIcon);
+        friendBadge = (ImageView) view.findViewById(R.id.friendBadge);
         friendsRootView = (RelativeLayout) view.findViewById(R.id.friendsRootView);
         cardView = view.findViewById(R.id.friendsCardView);
     }
@@ -86,6 +90,17 @@ public class FriendsViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View view) {
                 if (recyclerItemClickListener != null) {
                     recyclerItemClickListener.onItemClicked(position, friendsRootView);
+                }
+            }
+        });
+
+        Ion.with(context).load(Constants.MAIN_URL + friendsModel.getBadgeName()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+            @Override
+            public void onCompleted(Exception e, Bitmap result) {
+                if (e == null) {
+                    friendBadge.setImageBitmap(result);
+                } else {
+                    e.printStackTrace();
                 }
             }
         });

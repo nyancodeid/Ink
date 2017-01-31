@@ -18,4 +18,6 @@ public class UserSearchResult {
     public boolean isFriend;
     @SerializedName("user_id")
     public String userId;
+    @SerializedName("badge_name")
+    public String badgeName;
 }

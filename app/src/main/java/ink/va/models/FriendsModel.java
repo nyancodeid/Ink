@@ -13,10 +13,12 @@ public class FriendsModel {
     private String lastName;
     private boolean isFriend;
     private boolean isSocialAccount;
+    private String badgeName;
 
 
-    public FriendsModel(boolean isFriend, boolean isSocialAccount, String fullName, String imageLink, String phoneNumber, String friendId, String firstName, String lastName) {
+    public FriendsModel(String badgeName,boolean isFriend, boolean isSocialAccount, String fullName, String imageLink, String phoneNumber, String friendId, String firstName, String lastName) {
         this.fullName = fullName;
+        this.badgeName = badgeName;
         this.isFriend = isFriend;
         this.isSocialAccount = isSocialAccount;
         this.friendId = friendId;
@@ -26,6 +28,14 @@ public class FriendsModel {
         this.phoneNumber = phoneNumber;
     }
 
+
+    public String getBadgeName() {
+        return badgeName;
+    }
+
+    public void setBadgeName(String badgeName) {
+        this.badgeName = badgeName;
+    }
 
     public String getFullName() {
         return fullName;
