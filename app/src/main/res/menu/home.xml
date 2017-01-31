@@ -13,10 +13,21 @@
         android:orderInCategory="2"
         android:title="@string/notificationTitle"
         app:showAsAction="always" />
+
+
     <item
         android:id="@+id/shop"
         android:icon="@drawable/shop_icon"
         android:orderInCategory="3"
         android:title="@string/shopTitle"
-        app:showAsAction="always" />
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/stickerShop"
+                android:title="@string/stickerShop" />
+            <item
+                android:id="@+id/badgeShop"
+                android:title="@string/badgeShop" />
+        </menu>
+    </item>
 </menu>

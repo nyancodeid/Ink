@@ -55,7 +55,6 @@ import ink.va.fragments.Feed;
 import ink.va.fragments.MyFriends;
 import ink.va.interfaces.AccountDeleteListener;
 import ink.va.interfaces.ColorChangeListener;
-import ink.va.interfaces.ItemClickListener;
 import ink.va.models.CoinsResponse;
 import ink.va.service.BackgroundTaskService;
 import ink.va.service.LocationRequestSessionDestroyer;
@@ -63,7 +62,6 @@ import ink.va.service.SendTokenService;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.DeviceChecker;
-import ink.va.utils.DialogUtils;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.FileUtils;
 import ink.va.utils.IonCache;
@@ -391,23 +389,14 @@ public class HomeActivity extends BaseActivity
             case R.id.notifications:
                 startActivity(new Intent(getApplicationContext(), RequestsView.class));
                 break;
-            case R.id.shop:
-                View shopView = item.getActionView();
-                DialogUtils.showPopUp(this, shopView, new ItemClickListener<MenuItem>() {
-                    @Override
-                    public void onItemClick(MenuItem clickedItem) {
-                        switch (clickedItem.getItemId()) {
-                            case 0:
-                                startActivity(new Intent(getApplicationContext(), Shop.class));
-                                break;
-                            case 1:
-                                startActivity(new Intent(getApplicationContext(), BadgeShop.class));
-                                break;
-                        }
-                    }
-                }, getString(R.string.stickerShop), getString(R.string.badgeShop));
-
+            case R.id.stickerShop:
+                startActivity(new Intent(getApplicationContext(), Shop.class));
                 break;
+
+            case R.id.badgeShop:
+                startActivity(new Intent(getApplicationContext(), BadgeShop.class));
+                break;
+
             case R.id.news:
                 startActivity(new Intent(getApplicationContext(), NewsAndTrendsActivity.class));
                 break;

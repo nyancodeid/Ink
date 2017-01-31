@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.ink.va.R;
@@ -45,6 +46,7 @@ public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.badge_shop_view);
         ButterKnife.bind(this);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         badgeAdapter = new BadgeAdapter(this);
         sharedHelper = new SharedHelper(this);
         badgeRefresh.setOnRefreshListener(this);
@@ -92,6 +94,12 @@ public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefr
                 Toast.makeText(BadgeShop.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return super.onOptionsItemSelected(item);
     }
 
     public void buyBadge(final String badgeId) {

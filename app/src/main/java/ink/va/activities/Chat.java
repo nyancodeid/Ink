@@ -223,6 +223,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(itemAnimator);
         mRecyclerView.setAdapter(mChatAdapter);
+
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {

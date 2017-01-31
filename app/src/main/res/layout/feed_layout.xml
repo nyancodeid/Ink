@@ -11,7 +11,6 @@
     tools:context="ink.va.activities.HomeActivity">
 
 
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/feedRefresh"
         android:layout_width="match_parent"
@@ -79,5 +78,18 @@
 
     <ink.va.custom_views.SnowView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
+
+
+    <ImageView
+        android:id="@+id/scrollUpFeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:padding="10dp"
+        android:rotation="180"
+        android:src="@drawable/scroll_down_icon"
+        android:tag="@string/notVisible"
+        android:visibility="gone" />
 </RelativeLayout>
