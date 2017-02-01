@@ -315,6 +315,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                     }
                     if (checkCommentAutomatic) {
                         checkShowComment();
+                    } else {
+                        mSharedHelper.putPostId("");
                     }
                 } catch (IOException e) {
                     feedRefresh.post(new Runnable() {
