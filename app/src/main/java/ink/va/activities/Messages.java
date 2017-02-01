@@ -15,7 +15,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -49,8 +48,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     @Bind(R.id.messagesRecyclerView)
     RecyclerView mRecyclerView;
-    @Bind(R.id.messagesLoadingProgress)
-    ProgressBar mMessagesLoadingProgress;
     @Bind(R.id.messagesSwipe)
     SwipeRefreshLayout mMessagesSwipe;
     @Bind(R.id.noMessageLayout)
@@ -94,6 +91,12 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
         mRecyclerView.setAdapter(messagesAdapter);
         messagesAdapter.setOnItemClickListener(this);
         mSharedHelper = new SharedHelper(this);
+        mMessagesSwipe.post(new Runnable() {
+            @Override
+            public void run() {
+                mMessagesSwipe.setRefreshing(true);
+            }
+        });
     }
 
     private void makeDeleteRequest(final String opponentId) {
@@ -141,7 +144,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     private void getUserMessages() {
 
-
         Call<MyMessagesModel> myMessagesCall = Retrofit.getInstance()
                 .getInkService().getMyMessages(mSharedHelper.getUserId());
         myMessagesCall.enqueue(new Callback<MyMessagesModel>() {
@@ -155,7 +157,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                     if (mMessagesSwipe != null && mMessagesSwipe.isRefreshing()) {
                         mMessagesSwipe.setRefreshing(false);
                     }
-                    mMessagesLoadingProgress.setVisibility(View.GONE);
 
                     List<UserMessagesModel> userMessagesModels = response.body().getUserMessagesModels();
                     messagesAdapter.clear();
