@@ -34,6 +34,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ink.va.R;
 
@@ -232,7 +233,10 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     private void getComments(final String postId, final boolean shouldFocus) {
         isResponseReceived = false;
-        mCommentsLoading.setVisibility(View.VISIBLE);
+        if (mCommentsLoading.getVisibility() == View.GONE) {
+            mCommentsLoading.setVisibility(View.VISIBLE);
+        }
+
         mCommentModels.clear();
         mCommentAdapter.notifyDataSetChanged();
         Call<ResponseBody> commentsCall = Retrofit.getInstance().getInkService().getComments(mSharedHelper.getUserId(), postId);
@@ -292,19 +296,22 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                                 addCommentDialog.dismiss();
                             }
                             mCommentBody.setText("");
-//                            focusUp();
                         }
                     }
                 } catch (IOException e) {
+                    Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                    mCommentsLoading.setVisibility(View.GONE);
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                    mCommentsLoading.setVisibility(View.GONE);
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getComments(postId, shouldFocus);
+                Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }
