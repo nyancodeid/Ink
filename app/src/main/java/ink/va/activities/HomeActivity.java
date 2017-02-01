@@ -230,33 +230,37 @@ public class HomeActivity extends BaseActivity
         RealmHelper.getInstance().getMessagesCount(new RealmHelper.QueryReadyListener() {
             @Override
             public void onQueryReady(Object result) {
-                int notificationCount = (int) result;
-                messages.setText(
-                        String.valueOf(notificationCount != 0 ?
-                                notificationCount : "")
+                final int notificationCount = (int) result;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        messages.setText(
+                                String.valueOf(notificationCount != 0 ?
+                                        notificationCount : "")
 
-                );
-                if (notificationCount == 0) {
-                    ShortcutBadger.removeCount(getApplicationContext());
-                } else {
-                    messages.setText(
-                            String.valueOf(notificationCount != 0 ?
-                                    notificationCount : ""));
+                        );
+                        if (notificationCount == 0) {
+                            ShortcutBadger.removeCount(getApplicationContext());
+                        } else {
+                            messages.setText(
+                                    String.valueOf(notificationCount != 0 ?
+                                            notificationCount : ""));
                             ShortcutBadger.applyCount(getApplicationContext(), notificationCount);
-                    Snackbar.make(mToolbar, getString(R.string.unreadMessage), Snackbar.LENGTH_LONG).setAction(
-                            getString(R.string.view), new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    startActivity(new Intent(getApplicationContext(), Messages.class));
-                                }
-                            }
-                    ).show();
-                }
+                            Snackbar.make(mToolbar, getString(R.string.unreadMessage), Snackbar.LENGTH_LONG).setAction(
+                                    getString(R.string.view), new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            startActivity(new Intent(getApplicationContext(), Messages.class));
+                                        }
+                                    }
+                            ).show();
+                        }
+                    }
+                });
+
             }
         });
     }
-
-
 
 
     private void checkIsWarned() {
