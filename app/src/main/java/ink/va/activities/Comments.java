@@ -232,6 +232,9 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     private void getComments(final String postId, final boolean shouldFocus) {
         isResponseReceived = false;
+        mCommentsLoading.setVisibility(View.VISIBLE);
+        mCommentModels.clear();
+        mCommentAdapter.notifyDataSetChanged();
         Call<ResponseBody> commentsCall = Retrofit.getInstance().getInkService().getComments(mSharedHelper.getUserId(), postId);
         commentsCall.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -315,7 +318,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
         addCommentDialog.show();
         addComment(mCommentBody.getText().toString().trim(), mSharedHelper.getImageLink(), mSharedHelper.getUserId(), mPostId);
-}
+    }
 
     private void addComment(final String commentBody, final String userImage, final String commenterId, final String postId) {
         Call<ResponseBody> addCommentCall = Retrofit.getInstance().getInkService().addComment(commenterId,
