@@ -186,7 +186,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         getFeeds(0, mOffset, true, false, false, true);
     }
 
-    private void checkShowComment() {
+    public void checkShowComment() {
         if (mSharedHelper.showComments()) {
             int id = Integer.valueOf(mSharedHelper.getPostId());
             for (FeedModel feedModel : mFeedModelArrayList) {

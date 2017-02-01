@@ -305,7 +305,17 @@ public class HomeActivity extends BaseActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             if (mFeed != null) {
+                Bundle extras = intent.getExtras();
+                final String postId = extras.getString("postId");
+
                 mFeed.triggerFeedUpdate(false);
+                Snackbar.make(coinsText, getString(R.string.newComment), Snackbar.LENGTH_LONG).setAction(getString(R.string.view), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mSharedHelper.putPostId(postId);
+                        mFeed.checkShowComment();
+                    }
+                }).show();
             }
         }
     };

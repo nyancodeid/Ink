@@ -199,7 +199,8 @@ public class NotificationService extends FirebaseMessagingService {
 
             case NOTIFICATION_TYPE_COMMENT_ADDED:
                 if (mSharedHelper.showCommentNotification()) {
-                    mSharedHelper.putPostId(response.get("postId"));
+                    String postId = response.get("postId");
+                    mSharedHelper.putPostId(postId);
                     String firstName = response.get("firstName");
                     String lastName = response.get("lastName");
                     String commentId = response.get("id");
@@ -207,8 +208,10 @@ public class NotificationService extends FirebaseMessagingService {
 
                     sendGeneralNotification(getApplicationContext(), commentId, firstName + " " + lastName + " " + getString(R.string.commented_post),
                             commentBody, SplashScreen.class);
+                    Intent commentIntent = new Intent(getPackageName() + "HomeActivity");
+                    commentIntent.putExtra("postId", postId);
+                    LocalBroadcastManager.getInstance(NotificationService.this).sendBroadcast(commentIntent);
                 }
-                LocalBroadcastManager.getInstance(NotificationService.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
                 break;
 
 
