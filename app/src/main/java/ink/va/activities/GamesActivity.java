@@ -28,6 +28,7 @@ public class GamesActivity extends BaseActivity implements ItemClickListener {
         setContentView(R.layout.activity_games);
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getString(R.string.games));
         gamesAdapter = new GamesAdapter();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         gamesRecycler.setLayoutManager(linearLayoutManager);

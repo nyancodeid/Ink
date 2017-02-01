@@ -1,11 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/gameImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_margin="10dp"
-        android:src="@drawable/black_jack_background" />
+        android:src="@drawable/badge_placeholder" />
+
+    <TextView
+        android:id="@+id/gameTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/gameImage"
+        android:layout_marginRight="10dp"
+        android:layout_toRightOf="@+id/gameImage"
+        android:fontFamily="@string/appFont"
+        android:text="@string/loadingText"
+        android:textColor="@color/vk_white" />
+
+    <TextView
+        android:id="@+id/gameDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/gameTitle"
+        android:layout_marginTop="20dp"
+        android:layout_toRightOf="@+id/gameImage"
+        android:fontFamily="@string/appFont"
+        android:text="@string/loadingText"
+        android:textColor="@color/vk_white" />
+
+    <Button
+        android:id="@+id/play"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_below="@+id/gameDescription"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/gameImage"
+        android:background="@drawable/blue_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:fontFamily="@string/appFont"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="@string/letsPlay"
+        android:textAllCaps="false"
+        android:textColor="@color/vk_white" />
 </RelativeLayout>
