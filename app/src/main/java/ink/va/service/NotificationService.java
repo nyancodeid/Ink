@@ -722,8 +722,8 @@ public class NotificationService extends FirebaseMessagingService {
         builder.setGroup(GROUP_KEY_MESSAGES);
         builder.setDefaults(android.app.Notification.DEFAULT_ALL);
         builder.setStyle(new NotificationCompat.BigTextStyle()
-                .setSummaryText(contentText)
-                .setBigContentTitle(contentText)
+                .setSummaryText(title)
+                .setBigContentTitle(title)
                 .bigText(contentText)
         );
 
