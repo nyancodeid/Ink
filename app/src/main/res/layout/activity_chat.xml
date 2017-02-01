@@ -31,6 +31,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <ProgressBar
+                        android:id="@+id/messageLoadingProgress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true" />
+
                     <TextView
                         android:id="@+id/chatTitle"
                         android:layout_width="wrap_content"
@@ -78,14 +84,14 @@
 
                     <ImageView
                         android:id="@+id/callIcon"
-                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:padding="16dp"
-                        android:src="@drawable/audi_call_icon_white" />
+                        android:src="@drawable/audi_call_icon_white"
+                        android:visibility="gone" />
                 </RelativeLayout>
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>

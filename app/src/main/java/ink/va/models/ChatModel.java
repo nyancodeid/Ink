@@ -127,4 +127,10 @@ public class ChatModel {
     public void setDate(String date) {
         this.date = date;
     }
+
+
+    @Override
+    public int hashCode() {
+        return messageId.hashCode();
+    }
 }

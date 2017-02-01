@@ -35,6 +35,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -140,6 +141,8 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     View messageFiledDivider;
     @Bind(R.id.callIcon)
     ImageView callIcon;
+    @Bind(R.id.messageLoadingProgress)
+    ProgressBar messageLoadingProgress;
 
     private String mOpponentId;
     String mCurrentUserId;
@@ -169,6 +172,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     private Toolbar chatToolbar;
     private Handler handler;
     private boolean isAnimated;
+    private Handler notifyHandler;
 
 
     @Override
@@ -176,7 +180,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
         super.onCreate(savedInstanceState);
         mSharedHelper = new SharedHelper(this);
         handler = new Handler();
-
+        notifyHandler = new Handler();
 
         if (mSharedHelper.getChatColor() != null) {
             getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor(mSharedHelper.getChatColor())));
@@ -721,7 +725,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
         String message = StringEscapeUtils.escapeJava(mWriteEditText.getText().toString().replaceAll(":\\)", "\u263A")
                 .replaceAll(":\\(", "\uD83D\uDE41").replaceAll(":D", "\uD83D\uDE00"));
         dismissStickerChooser();
-        ChatModel tempChat = new ChatModel(false, isGifChosen, lasChosenGifName, null, mCurrentUserId, mOpponentId,StringEscapeUtils.unescapeJava(message),
+        ChatModel tempChat = new ChatModel(false, isGifChosen, lasChosenGifName, null, mCurrentUserId, mOpponentId, StringEscapeUtils.unescapeJava(message),
                 false, Constants.STATUS_NOT_DELIVERED,
                 mUserImage, mOpponentImage, "", isAnimated);
         mChatModelArrayList.add(tempChat);
@@ -859,7 +863,16 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                             Snackbar.make(mRecyclerView, getString(R.string.unsent_message) + message, Snackbar.LENGTH_SHORT).show();
                             attemptToQue(message, mChatModelArrayList.indexOf(mChatModel), deleteOpponentId, deleteUserId, isGifChosen, gifUrl, isAnimated);
                         }
-                        mChatAdapter.notifyDataSetChanged();
+
+
+                        final Runnable notifyRunnable = new Runnable() {
+                            public void run() {
+                                int insertedItemPosition = mChatModelArrayList.indexOf(mChatModel);
+                                mChatAdapter.notifyItemInserted(insertedItemPosition);
+                            }
+                        };
+
+                        notifyHandler.post(notifyRunnable);
                     }
 
                     if (mChatModelArrayList.size() <= 0) {
@@ -868,6 +881,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                     mRecyclerView.post(new Runnable() {
                         @Override
                         public void run() {
+                            messageLoadingProgress.setVisibility(View.GONE);
                             scrollToBottom();
                         }
                     });
