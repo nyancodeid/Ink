@@ -35,7 +35,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -141,8 +140,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     View messageFiledDivider;
     @Bind(R.id.callIcon)
     ImageView callIcon;
-    @Bind(R.id.messageLoadingProgress)
-    ProgressBar messageLoadingProgress;
 
     private String mOpponentId;
     String mCurrentUserId;
@@ -173,6 +170,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     private Handler handler;
     private boolean isAnimated;
     private Handler notifyHandler;
+    private Runnable notifyRunnable;
 
 
     @Override
@@ -180,7 +178,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
         super.onCreate(savedInstanceState);
         mSharedHelper = new SharedHelper(this);
         handler = new Handler();
-        notifyHandler = new Handler();
 
         if (mSharedHelper.getChatColor() != null) {
             getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor(mSharedHelper.getChatColor())));
@@ -545,7 +542,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
-                mRecyclerView.scrollToPosition(mChatAdapter.getItemCount() - 1);
+               scrollToBottom();
             }
         });
         hideScroller();
@@ -864,14 +861,15 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                             attemptToQue(message, mChatModelArrayList.indexOf(mChatModel), deleteOpponentId, deleteUserId, isGifChosen, gifUrl, isAnimated);
                         }
 
-
-                        final Runnable notifyRunnable = new Runnable() {
+                        notifyHandler = new Handler();
+                        notifyRunnable = new Runnable() {
                             public void run() {
                                 int insertedItemPosition = mChatModelArrayList.indexOf(mChatModel);
                                 mChatAdapter.notifyItemInserted(insertedItemPosition);
+                                notifyHandler = null;
+                                notifyRunnable = null;
                             }
                         };
-
                         notifyHandler.post(notifyRunnable);
                     }
 
@@ -881,8 +879,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                     mRecyclerView.post(new Runnable() {
                         @Override
                         public void run() {
-                            messageLoadingProgress.setVisibility(View.GONE);
-                            scrollToBottom();
+                            mRecyclerView.scrollToPosition(mChatAdapter.getItemCount() - 1);
                         }
                     });
                 }
@@ -890,7 +887,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
             @Override
             public void onFailure(List<MessageModel> messageModels) {
-
+                Toast.makeText(Chat.this, getString(R.string.messagesLoadingError), Toast.LENGTH_SHORT).show();
             }
         });
 
