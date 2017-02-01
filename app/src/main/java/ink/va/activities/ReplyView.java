@@ -96,7 +96,7 @@ public class ReplyView extends BaseActivity {
     @OnClick(R.id.replyMessage)
     public void replyMessage() {
         String messageToSend = StringEscapeUtils.escapeJava(mReplyBody.getText().toString().replaceAll(":\\)", "\u263A")
-                .replaceAll(":\\(", "\uD83D\uDE41").replaceAll(":D", "\uD83D\uDE00"));
+                .replaceAll(":\\(", "\u2639").replaceAll(":D", "\uD83D\uDE00"));
         Intent intent = new Intent(getApplicationContext(), SendReplyService.class);
         intent.putExtra("message", messageToSend);
         intent.putExtra("currentUserId", mCurrentUserId);
