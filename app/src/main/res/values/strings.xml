@@ -803,4 +803,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="badge_already_bought">You already have bought this badge</string>
     <string name="messagesLoadingError">Could not load messages</string>
     <string name="newComment">New comment was added,view?</string>
+    <string name="viewGames">View Games</string>
 </resources>

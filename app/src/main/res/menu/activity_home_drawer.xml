@@ -2,6 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item android:title="@string/games">
+        <menu>
+            <item
+                android:id="@+id/games"
+                android:icon="@drawable/game_pad_icon"
+                android:title="@string/viewGames" />
+        </menu>
+    </item>
+
     <group android:checkableBehavior="single">
         <item android:title="@string/myAccount">
             <menu>

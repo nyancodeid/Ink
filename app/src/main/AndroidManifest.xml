@@ -306,7 +306,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="ink.va.activities.About"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name="ink.va.activities.GamesActivity"></activity>
     </application>
 
 </manifest>

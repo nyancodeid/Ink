@@ -808,4 +808,5 @@
     <string name="badge_already_bought">У вас уже есть этот значок</string>
     <string name="messagesLoadingError">Не удалось загрузить сообщения</string>
     <string name="newComment">Был добавлен новый комментарий,посмотреть?</string>
+    <string name="viewGames">Посмотреть Игры</string>
 </resources>
