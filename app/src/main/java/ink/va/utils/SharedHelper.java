@@ -387,6 +387,20 @@ public class SharedHelper {
         return mSharedPreferences.contains("isMessagesDownloaded");
     }
 
+
+    public boolean showComments() {
+        return !mSharedPreferences.getString("postId", "").isEmpty();
+    }
+
+    public String getPostId() {
+        return mSharedPreferences.getString("postId", "");
+    }
+
+    public void putPostId(String value) {
+        mEditor.putString("postId", value);
+        mEditor.commit();
+    }
+
     public String getToken() {
         return mSharedPreferences.getString("token", "no token");
     }

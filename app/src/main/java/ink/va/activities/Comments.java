@@ -331,6 +331,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                     addComment(commentBody, userImage, commenterId, postId);
                     return;
                 }
+                addCommentDialog.dismiss();
                 try {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
@@ -344,8 +345,6 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                                     }
                                 }).show();
                         getComments(postId, true);
-                    } else {
-                        addCommentDialog.dismiss();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -680,17 +679,17 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     public void onItemLongClick(int position) {
     }
 
-    private void callCommentServer(final String type, final String commentId, final String newCommmentBody) {
-        Call<ResponseBody> commentOptionsCall = Retrofit.getInstance().getInkService().commentOptions(type, commentId, newCommmentBody);
+    private void callCommentServer(final String type, final String commentId, final String newCommentBody) {
+        Call<ResponseBody> commentOptionsCall = Retrofit.getInstance().getInkService().commentOptions(type, commentId, newCommentBody);
         commentOptionsCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    callCommentServer(type, commentId, newCommmentBody);
+                    callCommentServer(type, commentId, newCommentBody);
                     return;
                 }
                 if (response.body() == null) {
-                    callCommentServer(type, commentId, newCommmentBody);
+                    callCommentServer(type, commentId, newCommentBody);
                     return;
                 }
                 try {
@@ -719,7 +718,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                callCommentServer(type, commentId, newCommmentBody);
+                callCommentServer(type, commentId, newCommentBody);
             }
         });
     }

@@ -156,7 +156,6 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         });
 
 
-
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -187,22 +186,27 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         getFeeds(0, mOffset, true, false, false);
     }
 
-    private void testScroll(int id) {
-        for (FeedModel feedModel : mFeedModelArrayList) {
-            int eachId = Integer.valueOf(feedModel.getId());
-            if (eachId == id) {
-                final int positionOfItem = mFeedModelArrayList.indexOf(feedModel);
-                mRecyclerView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mRecyclerView.scrollToPosition(positionOfItem);
-                        onCommentClicked(positionOfItem, null);
-                    }
-                });
+    private void checkShowComment() {
+        if (mSharedHelper.showComments()) {
+            int id = Integer.valueOf(mSharedHelper.getPostId());
+            for (FeedModel feedModel : mFeedModelArrayList) {
+                int eachId = Integer.valueOf(feedModel.getId());
+                if (eachId == id) {
+                    final int positionOfItem = mFeedModelArrayList.indexOf(feedModel);
+                    mRecyclerView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mRecyclerView.scrollToPosition(positionOfItem);
+                            mSharedHelper.putPostId("");
+                            onCommentClicked(positionOfItem, null);
+                        }
+                    });
 
-                break;
+                    break;
+                }
             }
         }
+
     }
 
 
@@ -328,7 +332,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                     e.printStackTrace();
                     Toast.makeText(parentActivity, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                 }
-                testScroll(170);
+                checkShowComment();
             }
 
             @Override

@@ -193,12 +193,13 @@ public class NotificationService extends FirebaseMessagingService {
                 intent = new Intent(getPackageName() + ".Chat");
                 intent.putExtra("requesterName", requesterName);
                 intent.putExtra("type", NOTIFICATION_TYPE_LOCATION_SESSION_ENDED);
-                 localBroadcastManager = LocalBroadcastManager.getInstance(this);
+                localBroadcastManager = LocalBroadcastManager.getInstance(this);
                 localBroadcastManager.sendBroadcast(intent);
                 break;
 
             case NOTIFICATION_TYPE_COMMENT_ADDED:
                 if (mSharedHelper.showCommentNotification()) {
+                    mSharedHelper.putPostId(response.get("postId"));
                     String firstName = response.get("firstName");
                     String lastName = response.get("lastName");
                     String commentId = response.get("id");
