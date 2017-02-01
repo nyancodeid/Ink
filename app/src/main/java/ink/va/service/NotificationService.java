@@ -717,6 +717,7 @@ public class NotificationService extends FirebaseMessagingService {
         builder.setContentText(contentText);
         builder.setGroup(GROUP_KEY_MESSAGES);
         builder.setDefaults(android.app.Notification.DEFAULT_ALL);
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(contentText));
 
         Intent requestsViewIntent = new Intent(context, SplashScreen.class);
         requestsViewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
