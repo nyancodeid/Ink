@@ -183,7 +183,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             mOffset = 10;
         }
         checkColor();
-        getFeeds(0, mOffset, true, false, false);
+        getFeeds(0, mOffset, true, false, false, true);
     }
 
     private void checkShowComment() {
@@ -212,14 +212,14 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     @Override
     public void onRefresh() {
-        getFeeds(0, mOffset, true, false, false);
+        getFeeds(0, mOffset, true, false, false, false);
     }
 
     private void getFeeds(final int offset,
                           final int count,
                           final boolean clearItems,
                           final boolean newDataLoading,
-                          final boolean showNewFeed) {
+                          final boolean showNewFeed, final boolean checkCommentAutomatic) {
         if (clearItems) {
             if (feedRefresh != null) {
                 feedRefresh.post(new Runnable() {
@@ -236,11 +236,11 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    getFeeds(offset, count, clearItems, newDataLoading, showNewFeed);
+                    getFeeds(offset, count, clearItems, newDataLoading, showNewFeed, checkCommentAutomatic);
                     return;
                 }
                 if (response.body() == null) {
-                    getFeeds(offset, count, clearItems, newDataLoading, showNewFeed);
+                    getFeeds(offset, count, clearItems, newDataLoading, showNewFeed, checkCommentAutomatic);
                     return;
                 }
 
@@ -313,6 +313,9 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                     if (newDataLoading) {
                         mOffset += 10;
                     }
+                    if (checkCommentAutomatic) {
+                        checkShowComment();
+                    }
                 } catch (IOException e) {
                     feedRefresh.post(new Runnable() {
                         @Override
@@ -332,7 +335,6 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                     e.printStackTrace();
                     Toast.makeText(parentActivity, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                 }
-                checkShowComment();
             }
 
             @Override
@@ -721,7 +723,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         deleteDialog.dismiss();
                         Snackbar.make(mRecyclerView, getString(R.string.couldNotDeletePost), Snackbar.LENGTH_LONG).show();
                     }
-                    getFeeds(0, mOffset, true, false, false);
+                    getFeeds(0, mOffset, true, false, false, false);
                 } catch (IOException e) {
                     e.printStackTrace();
                     deleteDialog.dismiss();
@@ -782,11 +784,11 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         });
     }
 
-    public void triggerFeedUpdate() {
+    public void triggerFeedUpdate(boolean checkCommentAutomatic) {
         if (mOffset == 0) {
             mOffset = 10;
         }
-        getFeeds(0, mOffset, true, false, false);
+        getFeeds(0, mOffset, true, false, false, checkCommentAutomatic);
     }
 
     public void updateAdapter() {

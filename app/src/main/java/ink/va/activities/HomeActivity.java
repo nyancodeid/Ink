@@ -305,7 +305,7 @@ public class HomeActivity extends BaseActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             if (mFeed != null) {
-                mFeed.triggerFeedUpdate();
+                mFeed.triggerFeedUpdate(false);
             }
         }
     };
