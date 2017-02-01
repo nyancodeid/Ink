@@ -1,6 +1,5 @@
 package ink.va.activities;
 
-import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -240,6 +239,10 @@ public class HomeActivity extends BaseActivity
                 if (notificationCount == 0) {
                     ShortcutBadger.removeCount(getApplicationContext());
                 } else {
+                    messages.setText(
+                            String.valueOf(notificationCount != 0 ?
+                                    notificationCount : ""));
+                            ShortcutBadger.applyCount(getApplicationContext(), notificationCount);
                     Snackbar.make(mToolbar, getString(R.string.unreadMessage), Snackbar.LENGTH_LONG).setAction(
                             getString(R.string.view), new View.OnClickListener() {
                                 @Override
@@ -254,15 +257,6 @@ public class HomeActivity extends BaseActivity
     }
 
 
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
 
 
     private void checkIsWarned() {

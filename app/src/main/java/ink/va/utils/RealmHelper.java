@@ -2,7 +2,7 @@ package ink.va.utils;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.HandlerThread;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -18,6 +18,8 @@ import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
+import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
+
 /**
  * Created by USER on 2016-06-26.
  */
@@ -30,13 +32,17 @@ public class RealmHelper {
     private Handler handler;
     private boolean clearDBSuccess;
     private boolean isMessageExist;
+    private HandlerThread mHandlerThread;
 
     public static RealmHelper getInstance() {
         return ourInstance;
     }
 
     private RealmHelper() {
-        handler = new Handler(Looper.getMainLooper());
+        mHandlerThread = new HandlerThread("HandlerThread");
+        mHandlerThread.setPriority(THREAD_PRIORITY_BACKGROUND);
+        mHandlerThread.start();
+        handler = new Handler(mHandlerThread.getLooper());
     }
 
     public void initRealm(final Context context) {
@@ -146,30 +152,30 @@ public class RealmHelper {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
+                    mRealm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            MessageModel messageModel = realm.createObject(MessageModel.class);
 
+                            messageModel.setId(id);
+                            messageModel.setMessageId(messageId);
+                            messageModel.setMessage(message);
+                            messageModel.setUserId(userId);
+                            messageModel.setOpponentId(opponentId);
+                            messageModel.setAnimated(animated);
+                            messageModel.setDeliveryStatus(deliveryStatus);
+                            messageModel.setUserImage(userImage);
+                            messageModel.setOpponentImage(opponentImage);
+                            messageModel.setDate(date);
+                            messageModel.setHasGif(hasGif);
+                            messageModel.setGifUrl(gifUrl);
+                            messageModel.setDeleteUserId(deleteUserId);
+                            messageModel.setDeleteOpponentId(deleteOpponentId);
+                        }
+                    });
                 }
             });
-            mRealm.executeTransactionAsync(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    MessageModel messageModel = realm.createObject(MessageModel.class);
 
-                    messageModel.setId(id);
-                    messageModel.setMessageId(messageId);
-                    messageModel.setMessage(message);
-                    messageModel.setUserId(userId);
-                    messageModel.setOpponentId(opponentId);
-                    messageModel.setAnimated(animated);
-                    messageModel.setDeliveryStatus(deliveryStatus);
-                    messageModel.setUserImage(userImage);
-                    messageModel.setOpponentImage(opponentImage);
-                    messageModel.setDate(date);
-                    messageModel.setHasGif(hasGif);
-                    messageModel.setGifUrl(gifUrl);
-                    messageModel.setDeleteUserId(deleteUserId);
-                    messageModel.setDeleteOpponentId(deleteOpponentId);
-                }
-            });
         }
 
 
@@ -302,7 +308,7 @@ public class RealmHelper {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                mRealm.executeTransaction(new Realm.Transaction() {
+                mRealm.executeTransactionAsync(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
                         RealmResults<MessageModel> realmResults = realm.where(MessageModel.class).equalTo("opponentId", opponentId).equalTo("userId", userId)
