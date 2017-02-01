@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
@@ -13,6 +14,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -35,6 +37,7 @@ import butterknife.ButterKnife;
 import ink.va.adapters.CoinsAdapter;
 import ink.va.models.CoinsModel;
 import ink.va.utils.Constants;
+import ink.va.utils.ProcessManager;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.User;
@@ -59,6 +62,7 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
     private SwipeRefreshLayout coinsRefresh;
     private CoinsAdapter coinsAdapter;
     private Gson gson;
+    private boolean isFreedomRunning;
 
 
     @Override
@@ -184,54 +188,77 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
             String dataSignature = data.getStringExtra("INAPP_DATA_SIGNATURE");
 
             if (resultCode == RESULT_OK) {
-                try {
-                    JSONObject jo = new JSONObject(purchaseData);
-                    String sku = jo.getString("productId");
-                    switch (chosenItem) {
-                        case SMALL_PACK:
-                            showProgress();
-                            isCoinsBought = true;
-                            int currentUserCoins = Integer.valueOf(User.get().getCoins());
-                            int finalCoins = currentUserCoins + 120;
-                            User.get().setCoins(String.valueOf(finalCoins));
-                            updateCoinsOnServer(String.valueOf(finalCoins));
-                            break;
-                        case MEDIUM_PACK:
-                            showProgress();
-                            isCoinsBought = true;
-                            currentUserCoins = Integer.valueOf(User.get().getCoins());
-                            finalCoins = currentUserCoins + 300;
-                            User.get().setCoins(String.valueOf(finalCoins));
-                            updateCoinsOnServer(String.valueOf(finalCoins));
-                            break;
-                        case BIG_PACK:
-                            showProgress();
-                            isCoinsBought = true;
-                            currentUserCoins = Integer.valueOf(User.get().getCoins());
-                            finalCoins = currentUserCoins + 500;
-                            User.get().setCoins(String.valueOf(finalCoins));
-                            updateCoinsOnServer(String.valueOf(finalCoins));
-                            break;
-                        case LARGE_PACK:
-                            showProgress();
-                            isCoinsBought = true;
-                            currentUserCoins = Integer.valueOf(User.get().getCoins());
-                            finalCoins = currentUserCoins + 800;
-                            User.get().setCoins(String.valueOf(finalCoins));
-                            updateCoinsOnServer(String.valueOf(finalCoins));
-                            break;
-                        case EXTRA_LARGE_PACK:
-                            showProgress();
-                            isCoinsBought = true;
-                            currentUserCoins = Integer.valueOf(User.get().getCoins());
-                            finalCoins = currentUserCoins + 1200;
-                            User.get().setCoins(String.valueOf(finalCoins));
-                            updateCoinsOnServer(String.valueOf(finalCoins));
-                            break;
+                isFreedomRunning = false;
+                List<String> processes = ProcessManager.getRunningProcesses(this);
+                for (String process : processes) {
+                    if (process.contains("freedom")) {
+                        isFreedomRunning = true;
+                        break;
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
+
+                if (isFreedomRunning) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(BuyCoins.this);
+                    builder.setTitle(getString(R.string.error));
+                    builder.setMessage(getString(R.string.freedomRunning));
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+                } else {
+                    try {
+                        JSONObject jo = new JSONObject(purchaseData);
+                        String sku = jo.getString("productId");
+                        switch (chosenItem) {
+                            case SMALL_PACK:
+                                showProgress();
+                                isCoinsBought = true;
+                                int currentUserCoins = Integer.valueOf(User.get().getCoins());
+                                int finalCoins = currentUserCoins + 120;
+                                User.get().setCoins(String.valueOf(finalCoins));
+                                updateCoinsOnServer(String.valueOf(finalCoins));
+                                break;
+                            case MEDIUM_PACK:
+                                showProgress();
+                                isCoinsBought = true;
+                                currentUserCoins = Integer.valueOf(User.get().getCoins());
+                                finalCoins = currentUserCoins + 300;
+                                User.get().setCoins(String.valueOf(finalCoins));
+                                updateCoinsOnServer(String.valueOf(finalCoins));
+                                break;
+                            case BIG_PACK:
+                                showProgress();
+                                isCoinsBought = true;
+                                currentUserCoins = Integer.valueOf(User.get().getCoins());
+                                finalCoins = currentUserCoins + 500;
+                                User.get().setCoins(String.valueOf(finalCoins));
+                                updateCoinsOnServer(String.valueOf(finalCoins));
+                                break;
+                            case LARGE_PACK:
+                                showProgress();
+                                isCoinsBought = true;
+                                currentUserCoins = Integer.valueOf(User.get().getCoins());
+                                finalCoins = currentUserCoins + 800;
+                                User.get().setCoins(String.valueOf(finalCoins));
+                                updateCoinsOnServer(String.valueOf(finalCoins));
+                                break;
+                            case EXTRA_LARGE_PACK:
+                                showProgress();
+                                isCoinsBought = true;
+                                currentUserCoins = Integer.valueOf(User.get().getCoins());
+                                finalCoins = currentUserCoins + 1200;
+                                User.get().setCoins(String.valueOf(finalCoins));
+                                updateCoinsOnServer(String.valueOf(finalCoins));
+                                break;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
         }
     }

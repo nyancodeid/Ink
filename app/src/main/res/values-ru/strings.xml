@@ -809,4 +809,6 @@
     <string name="messagesLoadingError">Не удалось загрузить сообщения</string>
     <string name="newComment">Был добавлен новый комментарий,посмотреть?</string>
     <string name="viewGames">Посмотреть Игры</string>
+    <string name="blackJackTitle">BlackJack</string>
+    <string name="blackJackDescription">Начните игру и заработайте много монет чтобы потратить в Инке!</string>
 </resources>

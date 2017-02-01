@@ -215,5 +215,10 @@ public class Constants {
     public static final String SHOW_SERVER_NEWS_START_UP_KEY = "start_up_news";
     public static final String KILL_APP_BUNDLE_KEY = "kill_app_key";
     public static final String WARNING_TEXT_BUNDLE_KEY = "warning_text_key";
+
+    /**
+     * Game Constants
+     */
+    public static final String GAME_BLACK_JACK = "blackJack";
 }
 

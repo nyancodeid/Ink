@@ -1,17 +1,39 @@
 package ink.va.activities;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 
 import com.ink.va.R;
 
-public class GamesActivity extends BaseActivity {
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import ink.va.adapters.GamesAdapter;
+import ink.va.interfaces.ItemClickListener;
+import ink.va.models.GameModel;
+import ink.va.utils.GameList;
+
+import static ink.va.utils.Constants.GAME_BLACK_JACK;
+
+public class GamesActivity extends BaseActivity implements ItemClickListener {
+
+    @Bind(R.id.gamesRecycler)
+    RecyclerView gamesRecycler;
+    private GamesAdapter gamesAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_games);
+        ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        gamesAdapter = new GamesAdapter();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        gamesRecycler.setLayoutManager(linearLayoutManager);
+        gamesRecycler.setAdapter(gamesAdapter);
+        gamesAdapter.setOnItemClickListener(this);
+        gamesAdapter.setGameModelList(GameList.buildGameList(this));
     }
 
     @Override
@@ -22,5 +44,14 @@ public class GamesActivity extends BaseActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemClick(Object clickedItem) {
+        GameModel gameModel = (GameModel) clickedItem;
+        switch (gameModel.getGameType()) {
+            case GAME_BLACK_JACK:
+                break;
+        }
     }
 }
