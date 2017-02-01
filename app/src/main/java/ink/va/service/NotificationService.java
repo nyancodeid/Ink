@@ -721,7 +721,11 @@ public class NotificationService extends FirebaseMessagingService {
         builder.setContentText(contentText);
         builder.setGroup(GROUP_KEY_MESSAGES);
         builder.setDefaults(android.app.Notification.DEFAULT_ALL);
-        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(contentText));
+        builder.setStyle(new NotificationCompat.BigTextStyle()
+                .setSummaryText(contentText)
+                .setBigContentTitle(contentText)
+                .bigText(contentText)
+        );
 
         Intent requestsViewIntent = new Intent(context, SplashScreen.class);
         requestsViewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -731,8 +735,6 @@ public class NotificationService extends FirebaseMessagingService {
         PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(uniqueId), requestsViewIntent, 0);
         builder.setContentIntent(requestsViewPending);
 
-
-        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(contentText));
         builder.setShowWhen(true);
         android.app.Notification notification = builder.build();
         notificationManagerCompat.notify(Integer.valueOf(uniqueId), notification);
