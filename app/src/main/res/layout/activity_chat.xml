@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appBar"
             android:layout_width="match_parent"
@@ -259,16 +260,6 @@
                     android:foreground="?attr/selectableItemBackground"
                     android:padding="8dp"
                     android:src="@drawable/attach_vector_white" />
-
-                <ImageView
-                    android:id="@+id/locationSessionIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/messageBody"
-                    android:layout_centerHorizontal="true"
-                    android:padding="5dp"
-                    android:src="@drawable/location_session_icon"
-                    android:visibility="gone" />
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>

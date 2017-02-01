@@ -132,8 +132,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     AVLoadingIndicatorView singleGifViewLoading;
     @Bind(R.id.scrollDownChat)
     ImageView scrollDownChat;
-    @Bind(R.id.locationSessionIcon)
-    ImageView locationSessionIcon;
     @Bind(R.id.attachmentIcon)
     ImageView attachmentIcon;
     @Bind(R.id.messageFiledDivider)
@@ -542,7 +540,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
-               scrollToBottom();
+                scrollToBottom();
             }
         });
         hideScroller();
