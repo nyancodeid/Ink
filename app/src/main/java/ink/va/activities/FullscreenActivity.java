@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -22,12 +21,14 @@ import com.koushikdutta.ion.ProgressCallback;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import uk.co.senab.photoview.PhotoViewAttacher;
+
 
 public class FullscreenActivity extends BaseActivity {
     private String fullUrlToLoad;
 
     @Bind(R.id.fullscreen_content)
-    com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView mImageView;
+    ImageView mImageView;
     @Bind(R.id.imageLoadingProgress)
     LinearLayout imageLoadingProgress;
     @Bind(R.id.loadingProgressBar)
@@ -37,6 +38,7 @@ public class FullscreenActivity extends BaseActivity {
     private boolean mVisible;
     private ActionBar actionBar;
     private boolean isDataLoaded;
+    private PhotoViewAttacher mAttacher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,7 @@ public class FullscreenActivity extends BaseActivity {
         ButterKnife.bind(this);
         Bundle extras = getIntent().getExtras();
         mVisible = true;
-        mImageView = (com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView) findViewById(R.id.fullscreen_content);
+
 
         actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -73,9 +75,10 @@ public class FullscreenActivity extends BaseActivity {
                         e.printStackTrace();
                     }
                     if (result != null) {
-                        mImageView.setImage(ImageSource.bitmap(result));
+                        mImageView.setImageBitmap(result);
                         imageLoadingProgress.setVisibility(View.GONE);
                         isDataLoaded = true;
+                        mAttacher = new PhotoViewAttacher(mImageView);
                     }
 
                 }
