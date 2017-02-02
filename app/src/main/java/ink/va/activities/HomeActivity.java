@@ -1155,9 +1155,10 @@ public class HomeActivity extends BaseActivity
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
                         String coins = jsonObject.optString("userCoins");
+                        int reward = jsonObject.optInt("reward");
                         User.get().setCoins(coins);
                         coinsText.setText(getString(R.string.coinsText, Integer.valueOf(coins)));
-                        Toast.makeText(HomeActivity.this, getString(R.string.redeemed, Integer.valueOf(coins)), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(HomeActivity.this, getString(R.string.redeemed, reward), Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(HomeActivity.this, getString(R.string.redeemError), Toast.LENGTH_SHORT).show();
                     }
