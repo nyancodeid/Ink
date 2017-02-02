@@ -8,7 +8,7 @@ import android.view.MenuItem;
 
 import com.ink.va.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.adapters.GamesAdapter;
 import ink.va.interfaces.ItemClickListener;
@@ -19,7 +19,7 @@ import static ink.va.utils.Constants.GAME_BLACK_JACK;
 
 public class GamesActivity extends BaseActivity implements ItemClickListener {
 
-    @Bind(R.id.gamesRecycler)
+    @BindView(R.id.gamesRecycler)
     RecyclerView gamesRecycler;
     private GamesAdapter gamesAdapter;
 

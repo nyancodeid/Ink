@@ -46,7 +46,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.adapters.GroupMessagesAdapter;
@@ -69,35 +69,35 @@ import retrofit2.Response;
 
 public class SingleGroupView extends BaseActivity implements RecyclerItemClickListener, AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener {
 
-    @Bind(R.id.groupCollapsingToolbar)
+    @BindView(R.id.groupCollapsingToolbar)
     CollapsingToolbarLayout mCollapsingToolbar;
-    @Bind(R.id.groupToolbar)
+    @BindView(R.id.groupToolbar)
     Toolbar mToolbar;
-    @Bind(R.id.groupImage)
+    @BindView(R.id.groupImage)
     ImageView mGroupImageView;
-    @Bind(R.id.groupBackgroundColor)
+    @BindView(R.id.groupBackgroundColor)
     RelativeLayout mGroupBackgroundColor;
-    @Bind(R.id.joinGroupButton)
+    @BindView(R.id.joinGroupButton)
     Button mJoinGroupButton;
-    @Bind(R.id.groupSingleDescription)
+    @BindView(R.id.groupSingleDescription)
     TextView mGroupSingleDescription;
-    @Bind(R.id.groupSingleFollowersCount)
+    @BindView(R.id.groupSingleFollowersCount)
     TextView mGroupSingleFollowersCount;
-    @Bind(R.id.ownerImageView)
+    @BindView(R.id.ownerImageView)
     ImageView mOwnerImageView;
-    @Bind(R.id.addMessageToGroup)
+    @BindView(R.id.addMessageToGroup)
     android.support.design.widget.FloatingActionButton mAddMessageToGroup;
-    @Bind(R.id.groupMessagesRecycler)
+    @BindView(R.id.groupMessagesRecycler)
     RecyclerView groupMessagesRecycler;
-    @Bind(R.id.groupMessagesLoading)
+    @BindView(R.id.groupMessagesLoading)
     AVLoadingIndicatorView groupMessagesLoading;
-    @Bind(R.id.groupImageLoading)
+    @BindView(R.id.groupImageLoading)
     ProgressBar groupImageLoading;
-    @Bind(R.id.noGroupMessageLayout)
+    @BindView(R.id.noGroupMessageLayout)
     RelativeLayout noGroupMessageLayout;
-    @Bind(R.id.singleGroupSwipe)
+    @BindView(R.id.singleGroupSwipe)
     SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.singleGroupAppBar)
+    @BindView(R.id.singleGroupAppBar)
     AppBarLayout singleGroupAppBar;
 
     private String mGroupName = "";

@@ -31,7 +31,7 @@ import com.ink.va.R;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
@@ -42,11 +42,11 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int REQUEST_LOCATION_CODE = 454;
-    @Bind(R.id.mapsToolbar)
+    @BindView(R.id.mapsToolbar)
     Toolbar mMapsToolbar;
-    @Bind(R.id.mapsToolbarTitle)
+    @BindView(R.id.mapsToolbarTitle)
     TextView mMapsToolbarTitle;
-    @Bind(R.id.acceptLocation)
+    @BindView(R.id.acceptLocation)
     FloatingActionButton mAcceptLocation;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;

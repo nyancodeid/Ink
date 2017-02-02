@@ -14,7 +14,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.utils.Constants;
@@ -28,11 +28,11 @@ import retrofit2.Response;
 
 public class ChangePassword extends BaseActivity {
 
-    @Bind(R.id.currentPassword)
+    @BindView(R.id.currentPassword)
     EditText currentPassword;
-    @Bind(R.id.newPassword)
+    @BindView(R.id.newPassword)
     EditText newPassword;
-    @Bind(R.id.repeatPassword)
+    @BindView(R.id.repeatPassword)
     EditText repeatPassword;
     private ink.va.utils.ProgressDialog progressDialog;
     private SharedHelper sharedHelper;

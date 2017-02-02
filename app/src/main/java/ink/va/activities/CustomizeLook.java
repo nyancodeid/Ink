@@ -26,7 +26,7 @@ import com.ink.va.R;
 
 import java.io.IOException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
@@ -48,115 +48,115 @@ import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class CustomizeLook extends BaseActivity {
 
-    @Bind(R.id.customizeToolbar)
+    @BindView(R.id.customizeToolbar)
     Toolbar customizeToolbar;
 
-    @Bind(R.id.customizeFabMenu)
+    @BindView(R.id.customizeFabMenu)
     android.support.design.widget.FloatingActionMenu customizeFabMenu;
 
-    @Bind(R.id.customizeFabMenuText)
+    @BindView(R.id.customizeFabMenuText)
     TextView customizeFabMenuText;
 
-    @Bind(R.id.pickNotificationIconColorText)
+    @BindView(R.id.pickNotificationIconColorText)
     TextView pickNotificationIconColorText;
 
-    @Bind(R.id.pickShopIconColorText)
+    @BindView(R.id.pickShopIconColorText)
     TextView pickShopIconColorText;
 
-    @Bind(R.id.pickLeftDrawerColorText)
+    @BindView(R.id.pickLeftDrawerColorText)
     TextView pickLeftDrawerColorText;
 
-    @Bind(R.id.postBackgroundColorText)
+    @BindView(R.id.postBackgroundColorText)
     TextView postBackgroundColorText;
 
-    @Bind(R.id.friendsBackgroundColorText)
+    @BindView(R.id.friendsBackgroundColorText)
     TextView friendsBackgroundColorText;
 
-    @Bind(R.id.messagesBackgroundColorText)
+    @BindView(R.id.messagesBackgroundColorText)
     TextView messagesBackgroundColorText;
 
-    @Bind(R.id.chatBackgroundColorText)
+    @BindView(R.id.chatBackgroundColorText)
     TextView chatBackgroundColorText;
 
-    @Bind(R.id.requestsBackgroundColorText)
+    @BindView(R.id.requestsBackgroundColorText)
     TextView requestsBackgroundColorText;
 
-    @Bind(R.id.opponentBubbleIcon)
+    @BindView(R.id.opponentBubbleIcon)
     ImageView opponentBubbleIcon;
 
-    @Bind(R.id.ownBubbleIcon)
+    @BindView(R.id.ownBubbleIcon)
     ImageView ownBubbleIcon;
 
-    @Bind(R.id.notificationIcon)
+    @BindView(R.id.notificationIcon)
     ImageView notificationIcon;
 
-    @Bind(R.id.shopIcon)
+    @BindView(R.id.shopIcon)
     ImageView shopIcon;
 
-    @Bind(R.id.pickTrendIcon)
+    @BindView(R.id.pickTrendIcon)
     ImageView pickTrendIcon;
 
-    @Bind(R.id.pickHamburgerIcon)
+    @BindView(R.id.pickHamburgerIcon)
     ImageView hamburgerIcon;
 
-    @Bind(R.id.ownBubbleCleaner)
+    @BindView(R.id.ownBubbleCleaner)
     ImageView ownBubbleCleaner;
 
-    @Bind(R.id.opponentBubbleCleaner)
+    @BindView(R.id.opponentBubbleCleaner)
     ImageView opponentBubbleCleaner;
 
-    @Bind(R.id.actionBarCleaner)
+    @BindView(R.id.actionBarCleaner)
     ImageView actionBarCleaner;
 
-    @Bind(R.id.chatFieldCleaner)
+    @BindView(R.id.chatFieldCleaner)
     ImageView chatFieldCleaner;
 
-    @Bind(R.id.ownTextCleaner)
+    @BindView(R.id.ownTextCleaner)
     ImageView ownTextCleaner;
 
-    @Bind(R.id.opponentTextCleaner)
+    @BindView(R.id.opponentTextCleaner)
     ImageView opponentTextCleaner;
 
-    @Bind(R.id.hamburgerCleaner)
+    @BindView(R.id.hamburgerCleaner)
     ImageView hamburgerCleaner;
 
-    @Bind(R.id.statusBarCleaner)
+    @BindView(R.id.statusBarCleaner)
     ImageView statusBarCleaner;
 
-    @Bind(R.id.fabButtonCleaner)
+    @BindView(R.id.fabButtonCleaner)
     ImageView fabButtonCleaner;
 
-    @Bind(R.id.notificationCleaner)
+    @BindView(R.id.notificationCleaner)
     ImageView notificationCleaner;
 
-    @Bind(R.id.shopCleaner)
+    @BindView(R.id.shopCleaner)
     ImageView shopCleaner;
 
-    @Bind(R.id.leftPanelCleaner)
+    @BindView(R.id.leftPanelCleaner)
     ImageView leftPanelCleaner;
 
-    @Bind(R.id.feedCleaner)
+    @BindView(R.id.feedCleaner)
     ImageView feedCleaner;
 
-    @Bind(R.id.sendButtonIcon)
+    @BindView(R.id.sendButtonIcon)
     FloatingActionButton sendButtonIcon;
 
-    @Bind(R.id.sendButtonCleaner)
+    @BindView(R.id.sendButtonCleaner)
     ImageView sendButtonCleaner;
 
-    @Bind(R.id.friendsCleaner)
+    @BindView(R.id.friendsCleaner)
     ImageView friendsCleaner;
 
-    @Bind(R.id.trendCleaner)
+    @BindView(R.id.trendCleaner)
     ImageView trendCleaner;
 
-    @Bind(R.id.messagesCleaner)
+    @BindView(R.id.messagesCleaner)
     ImageView messagesCleaner;
 
-    @Bind(R.id.chatCleaner)
+    @BindView(R.id.chatCleaner)
     ImageView chatCleaner;
 
-    @Bind(R.id.requestCleaner)
+    @BindView(R.id.requestCleaner)
     ImageView requestCleaner;
 
     private boolean actionBarColorPicked;

@@ -21,7 +21,7 @@ import com.ink.va.R;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
@@ -40,15 +40,15 @@ public class SendFeedback extends BaseActivity {
     public String phoneManufacture = "No phone manufacture";
     public String phoneModel = "No phone model";
     public String processorsCount;
-    @Bind(R.id.sendFeedbackButton)
+    @BindView(R.id.sendFeedbackButton)
     FloatingActionButton sendFeedbackButton;
-    @Bind(R.id.feedbackInputField)
+    @BindView(R.id.feedbackInputField)
     EditText feedbackInputField;
-    @Bind(R.id.actualEmail)
+    @BindView(R.id.actualEmail)
     TextView actualEmail;
-    @Bind(R.id.emailWrapper)
+    @BindView(R.id.emailWrapper)
     RelativeLayout emailWrapper;
-    @Bind(R.id.useDeviceInfoCheckBox)
+    @BindView(R.id.useDeviceInfoCheckBox)
     android.support.v7.widget.AppCompatCheckBox useDeviceInfoCheckBox;
     private Snackbar progressSnack;
     private List<String> userAccounts;

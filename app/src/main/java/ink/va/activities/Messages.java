@@ -27,7 +27,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.adapters.MessagesAdapter;
 import ink.va.decorators.DividerItemDecoration;
@@ -46,13 +46,13 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     private SharedHelper mSharedHelper;
 
-    @Bind(R.id.messagesRecyclerView)
+    @BindView(R.id.messagesRecyclerView)
     RecyclerView mRecyclerView;
-    @Bind(R.id.messagesSwipe)
+    @BindView(R.id.messagesSwipe)
     SwipeRefreshLayout mMessagesSwipe;
-    @Bind(R.id.noMessageLayout)
+    @BindView(R.id.noMessageLayout)
     View mNoMessageLayout;
-    @Bind(R.id.messagesRootLayout)
+    @BindView(R.id.messagesRootLayout)
     RelativeLayout messagesRootLayout;
     private UserMessagesModel userMessagesModel;
     private MessagesAdapter messagesAdapter;

@@ -9,13 +9,13 @@ import android.widget.Button;
 
 import com.ink.va.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ChatRoulette extends BaseActivity {
 
-    @Bind(R.id.joinWaitRoom)
+    @BindView(R.id.joinWaitRoom)
     Button joinWaitRoom;
 
     @Override

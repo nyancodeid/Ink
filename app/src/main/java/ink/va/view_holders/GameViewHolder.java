@@ -8,7 +8,8 @@ import android.widget.TextView;
 
 import com.ink.va.R;
 
-import butterknife.Bind;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.interfaces.ItemClickListener;
@@ -21,11 +22,11 @@ import ink.va.models.GameModel;
 public class GameViewHolder extends RecyclerView.ViewHolder {
     GameModel gameModel;
     private ItemClickListener onItemClickListener;
-    @Bind(R.id.gameImage)
+    @BindView(R.id.gameImage)
     ImageView gameImage;
-    @Bind(R.id.gameTitle)
+    @BindView(R.id.gameTitle)
     TextView gameTitle;
-    @Bind(R.id.gameDescription)
+    @BindView(R.id.gameDescription)
     TextView gameDescription;
 
     public GameViewHolder(View itemView) {

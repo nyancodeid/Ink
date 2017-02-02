@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.utils.Constants;
@@ -38,27 +38,27 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ForgotPassword extends AppCompatActivity {
-    @Bind(R.id.resetPasswordText)
+    @BindView(R.id.resetPasswordText)
     TextView resetPasswordText;
-    @Bind(R.id.loginContainer)
+    @BindView(R.id.loginContainer)
     LinearLayout loginContainer;
-    @Bind(R.id.loginField)
+    @BindView(R.id.loginField)
     EditText loginField;
-    @Bind(R.id.securityQuestionContainer)
+    @BindView(R.id.securityQuestionContainer)
     LinearLayout securityQuestionContainer;
-    @Bind(R.id.securityQuestionField)
+    @BindView(R.id.securityQuestionField)
     EditText securityQuestionField;
-    @Bind(R.id.questionHolder)
+    @BindView(R.id.questionHolder)
     TextView questionHolder;
-    @Bind(R.id.forgotPasswordResultContainer)
+    @BindView(R.id.forgotPasswordResultContainer)
     LinearLayout forgotPasswordResultContainer;
-    @Bind(R.id.resultPasswordHolder)
+    @BindView(R.id.resultPasswordHolder)
     TextView resultPasswordHolder;
-    @Bind(R.id.forgotPasswordProgress)
+    @BindView(R.id.forgotPasswordProgress)
     ProgressBar forgotPasswordProgress;
-    @Bind(R.id.proceedLogin)
+    @BindView(R.id.proceedLogin)
     Button proceedButton;
-    @Bind(R.id.submitSecurityAnswer)
+    @BindView(R.id.submitSecurityAnswer)
     Button submitSecurityAnswer;
     private Animation scaleOut;
     private Animation scaleIn;

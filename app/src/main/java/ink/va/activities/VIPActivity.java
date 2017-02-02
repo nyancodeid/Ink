@@ -18,7 +18,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.utils.DialogUtils;
@@ -36,28 +36,28 @@ import static ink.va.utils.MembershipTypes.MEMBERSHIP_TYPE_RED;
 
 public class VIPActivity extends BaseActivity {
 
-    @Bind(R.id.exploreVip)
+    @BindView(R.id.exploreVip)
     Button exploreButton;
 
-    @Bind(R.id.vipGlobalChat)
+    @BindView(R.id.vipGlobalChat)
     Button globalChatButton;
 
-    @Bind(R.id.vipRootTitle)
+    @BindView(R.id.vipRootTitle)
     TextView vipRootTitle;
 
-    @Bind(R.id.giftWrapper)
+    @BindView(R.id.giftWrapper)
     View giftWrapper;
 
-    @Bind(R.id.acceptGift)
+    @BindView(R.id.acceptGift)
     Button closeGiftView;
 
-    @Bind(R.id.membershipTypeTV)
+    @BindView(R.id.membershipTypeTV)
     TextView membershipTypeTV;
 
-    @Bind(R.id.membershipTitle)
+    @BindView(R.id.membershipTitle)
     TextView membershipTitle;
 
-    @Bind(R.id.giftImageView)
+    @BindView(R.id.giftImageView)
     ImageView giftImageView;
 
     private Animation slideInWithFade;

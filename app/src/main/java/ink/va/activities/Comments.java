@@ -46,7 +46,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
@@ -70,18 +70,18 @@ import retrofit2.Response;
 
 public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, CommentClickHandler, RecyclerItemClickListener {
 
-    @Bind(R.id.commentBody)
+    @BindView(R.id.commentBody)
     EditText mCommentBody;
 
-    @Bind(R.id.commentsLoading)
+    @BindView(R.id.commentsLoading)
     ProgressBar mCommentsLoading;
-    @Bind(R.id.addCommentButton)
+    @BindView(R.id.addCommentButton)
     FloatingActionButton mAaddCommentButton;
-    @Bind(R.id.commentRecycler)
+    @BindView(R.id.commentRecycler)
     RecyclerView mCommentRecycler;
-    @Bind(R.id.commentRefresher)
+    @BindView(R.id.commentRefresher)
     SwipeRefreshLayout mCommentRefresher;
-    @Bind(R.id.commentCard)
+    @BindView(R.id.commentCard)
     CardView commentCard;
     private String mPostId;
     private String mUserImage;
@@ -98,7 +98,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     private String mLikesCount;
     private boolean isLiked;
     private Dialog addCommentDialog;
-    @Bind(R.id.commentRootLayout)
+    @BindView(R.id.commentRootLayout)
     View contentView;
     private boolean isResponseReceived;
     private boolean hasComments;

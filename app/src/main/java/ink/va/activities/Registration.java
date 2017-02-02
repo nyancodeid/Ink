@@ -18,7 +18,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.Keyboard;
@@ -30,23 +30,23 @@ import retrofit2.Response;
 
 public class Registration extends BaseActivity implements View.OnClickListener {
 
-    @Bind(R.id.login)
+    @BindView(R.id.login)
     EditText mLogin;
-    @Bind(R.id.password)
+    @BindView(R.id.password)
     EditText mPassword;
-    @Bind(R.id.confirmPassword)
+    @BindView(R.id.confirmPassword)
     EditText mConfirmPassword;
-    @Bind(R.id.register)
+    @BindView(R.id.register)
     Button mRegister;
-    @Bind(R.id.rootRegistrationLayout)
+    @BindView(R.id.rootRegistrationLayout)
     LinearLayout mRootRegistrationLayout;
-    @Bind(R.id.registrationScrollView)
+    @BindView(R.id.registrationScrollView)
     ScrollView registrationScrollView;
     private View mRegisterLoading;
 
-    @Bind(R.id.firstName)
+    @BindView(R.id.firstName)
     EditText mFirstName;
-    @Bind(R.id.lastName)
+    @BindView(R.id.lastName)
     EditText mLastName;
 
     @Override

@@ -20,7 +20,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.utils.Constants;
@@ -42,18 +42,18 @@ import static ink.va.utils.Constants.PACK_IMAGE_BUNDLE_KEY;
 
 public class PackFullScreen extends BaseActivity {
     private ExplosionField mExplosionField;
-    @Bind(R.id.activity_pack_full_screen)
+    @BindView(R.id.activity_pack_full_screen)
     View rootLayout;
-    @Bind(R.id.buyButton)
+    @BindView(R.id.buyButton)
     Button buyButton;
 
-    @Bind(R.id.packBackground)
+    @BindView(R.id.packBackground)
     ImageView packBackground;
 
-    @Bind(R.id.packImage)
+    @BindView(R.id.packImage)
     ImageView packImage;
 
-    @Bind(R.id.packContent)
+    @BindView(R.id.packContent)
     TextView packContent;
 
     private Dialog mProgressDialog;

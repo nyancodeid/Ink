@@ -59,7 +59,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
@@ -93,56 +93,56 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     private static final int STORAGE_PERMISSION_REQUEST = 1;
     private SharedHelper mSharedHelper;
     //Butter knife binders.
-    @Bind(R.id.addressTV)
+    @BindView(R.id.addressTV)
     EditText mAddress;
-    @Bind(R.id.phoneTV)
+    @BindView(R.id.phoneTV)
     EditText mPhone;
-    @Bind(R.id.relationshipTV)
+    @BindView(R.id.relationshipTV)
     EditText mRelationship;
-    @Bind(R.id.genderTV)
+    @BindView(R.id.genderTV)
     EditText mGender;
-    @Bind(R.id.facebookTV)
+    @BindView(R.id.facebookTV)
     EditText mFacebook;
-    @Bind(R.id.skypeTV)
+    @BindView(R.id.skypeTV)
     EditText mSkype;
-    @Bind(R.id.triangleView)
+    @BindView(R.id.triangleView)
     ImageView mTriangleView;
-    @Bind(R.id.statusCard)
+    @BindView(R.id.statusCard)
     CardView mCardView;
-    @Bind(R.id.genderIcon)
+    @BindView(R.id.genderIcon)
     ImageView mGenderImageView;
-    @Bind(R.id.statusText)
+    @BindView(R.id.statusText)
     EditText mStatusText;
-    @Bind(R.id.profileFab)
+    @BindView(R.id.profileFab)
     FloatingActionMenu mProfileFab;
-    @Bind(R.id.profileImage)
+    @BindView(R.id.profileImage)
     ImageView profileImage;
     private boolean isEditing;
     private boolean isDataLoaded;
-    @Bind(R.id.editProfile)
+    @BindView(R.id.editProfile)
     FloatingActionButton mEditSaveButton;
-    @Bind(R.id.hideProfile)
+    @BindView(R.id.hideProfile)
     FloatingActionButton hideProfileButton;
-    @Bind(R.id.goIncognito)
+    @BindView(R.id.goIncognito)
     FloatingActionButton goIncognitoButton;
-    @Bind(R.id.editImageNameFab)
+    @BindView(R.id.editImageNameFab)
     FloatingActionButton mEditImageNameFab;
-    @Bind(R.id.saveProfileEdits)
+    @BindView(R.id.saveProfileEdits)
     FloatingActionButton saveProfileEdits;
-    @Bind(R.id.changePassword)
+    @BindView(R.id.changePassword)
     FloatingActionButton changePassword;
-    @Bind(R.id.setSecurityQuestion)
+    @BindView(R.id.setSecurityQuestion)
     FloatingActionButton setSecurityQuestion;
-    @Bind(R.id.collapsing_toolbar)
+    @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout mCollapsingToolbar;
-    @Bind(R.id.myProfileToolbar)
+    @BindView(R.id.myProfileToolbar)
     Toolbar mToolbar;
-    @Bind(R.id.deleteAccont)
+    @BindView(R.id.deleteAccont)
     Button deleteAccount;
-    @Bind(R.id.badgeIcon)
+    @BindView(R.id.badgeIcon)
     ImageView badgeIcon;
 
-    @Bind(R.id.imageLoadingProgress)
+    @BindView(R.id.imageLoadingProgress)
     ProgressBar imageLoadingProgress;
 
     private String mFirstNameToSend;

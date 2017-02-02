@@ -24,7 +24,7 @@ import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.StartupApplication;
 import ink.va.models.ChatModel;
@@ -39,21 +39,21 @@ import ink.va.utils.SharedHelper;
  */
 
 public class ChatViewHolder extends RecyclerView.ViewHolder {
-    @Bind(R.id.messageContainer)
+    @BindView(R.id.messageContainer)
     TextView message;
-    @Bind(R.id.deliveryStatus)
+    @BindView(R.id.deliveryStatus)
     TextView deliveryStatus;
-    @Bind(R.id.chatViewBubble)
+    @BindView(R.id.chatViewBubble)
     LinearLayout chatViewBubble;
-    @Bind(R.id.gifChatView)
+    @BindView(R.id.gifChatView)
     ImageView imageView;
-    @Bind(R.id.singleGifViewWrapper)
+    @BindView(R.id.singleGifViewWrapper)
     LinearLayout imageViewWrapper;
-    @Bind(R.id.chatVideoWrapper)
+    @BindView(R.id.chatVideoWrapper)
     RelativeLayout chatVideoWrapper;
-    @Bind(R.id.chatVideo)
+    @BindView(R.id.chatVideo)
     VideoView chatVideo;
-    @Bind(R.id.video_loading_progress)
+    @BindView(R.id.video_loading_progress)
     ProgressBar videoLoadingProgress;
     private SharedHelper sharedHelper;
     private boolean updating = false;

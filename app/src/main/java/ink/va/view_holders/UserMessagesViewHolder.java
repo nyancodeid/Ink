@@ -13,7 +13,7 @@ import com.koushikdutta.ion.Ion;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
@@ -28,11 +28,11 @@ import ink.va.utils.SharedHelper;
  */
 
 public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
-    @Bind(R.id.messagesUserName)
+    @BindView(R.id.messagesUserName)
     TextView messagesUserName;
-    @Bind(R.id.messageBody)
+    @BindView(R.id.messageBody)
     TextView messageBody;
-    @Bind(R.id.messagesImage)
+    @BindView(R.id.messagesImage)
     ImageView messagesImage;
     private MyMessagesItemClickListener onItemClickListener;
     private UserMessagesModel userMessagesModel;

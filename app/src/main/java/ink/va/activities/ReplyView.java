@@ -13,7 +13,7 @@ import com.ink.va.R;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.service.SendReplyService;
@@ -21,11 +21,11 @@ import ink.va.utils.SharedHelper;
 
 public class ReplyView extends BaseActivity {
 
-    @Bind(R.id.messageReceived)
+    @BindView(R.id.messageReceived)
     TextView mMessageReceived;
-    @Bind(R.id.replyBody)
+    @BindView(R.id.replyBody)
     EditText mReplyBody;
-    @Bind(R.id.replyMessage)
+    @BindView(R.id.replyMessage)
     fab.FloatingActionButton mReplyMessage;
     private String mOpponentId;
     private String mCurrentUserId;

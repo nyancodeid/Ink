@@ -18,7 +18,7 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.ProgressCallback;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -27,15 +27,15 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 public class FullscreenActivity extends BaseActivity {
     private String fullUrlToLoad;
 
-    @Bind(R.id.fullscreen_content)
+    @BindView(R.id.fullscreen_content)
     ImageView mImageView;
-    @Bind(R.id.imageLoadingProgress)
+    @BindView(R.id.imageLoadingProgress)
     LinearLayout imageLoadingProgress;
-    @Bind(R.id.loadingProgressBar)
+    @BindView(R.id.loadingProgressBar)
     ProgressBar loadingProgressBar;
-    @Bind(R.id.gifHolder)
+    @BindView(R.id.gifHolder)
     ImageView gifHolder;
-    @Bind(R.id.download_icon)
+    @BindView(R.id.download_icon)
     View downloadIcon;
     private boolean mVisible;
     private ActionBar actionBar;

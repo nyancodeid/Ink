@@ -16,7 +16,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.adapters.BadgeAdapter;
 import ink.va.interfaces.BadgeClickListener;
@@ -37,9 +37,9 @@ import retrofit2.Response;
 
 public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, BadgeClickListener {
 
-    @Bind(R.id.badgeRecycler)
+    @BindView(R.id.badgeRecycler)
     RecyclerView badgeRecycler;
-    @Bind(R.id.badgeRefresh)
+    @BindView(R.id.badgeRefresh)
     SwipeRefreshLayout badgeRefresh;
     private BadgeAdapter badgeAdapter;
     private SharedHelper sharedHelper;

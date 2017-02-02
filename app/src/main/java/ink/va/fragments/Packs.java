@@ -21,7 +21,7 @@ import com.ink.va.R;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.activities.PackFullScreen;
 import ink.va.activities.Shop;
@@ -47,9 +47,9 @@ import static ink.va.utils.Constants.PACK_IMAGE_BUNDLE_KEY;
 public class Packs extends Fragment implements PacksAdapter.PackClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     public static final int PACK_BUY_RESULT_CODE = 8;
-    @Bind(R.id.packs_recycler)
+    @BindView(R.id.packs_recycler)
     RecyclerView packsRecycler;
-    @Bind(R.id.packsSwipe)
+    @BindView(R.id.packsSwipe)
     SwipeRefreshLayout swipeRefreshLayout;
     private Dialog mProgressDialog;
 

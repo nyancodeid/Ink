@@ -23,7 +23,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.adapters.RequestsAdapter;
 import ink.va.interfaces.RequestListener;
@@ -40,13 +41,13 @@ import retrofit2.Response;
 public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, RequestListener {
 
     private SharedHelper sharedHelper;
-    @Bind(R.id.requestsRecycler)
+    @BindView(R.id.requestsRecycler)
     RecyclerView requestsRecycler;
-    @Bind(R.id.requestSwipe)
+    @BindView(R.id.requestSwipe)
     SwipeRefreshLayout requestSwipe;
-    @Bind(R.id.noRequestsLayout)
+    @BindView(R.id.noRequestsLayout)
     RelativeLayout noRequestsLayout;
-    @Bind(R.id.requestsRootLayout)
+    @BindView(R.id.requestsRootLayout)
     RelativeLayout requestsRootLayout;
     private RequestsAdapter requestsAdapter;
     private RequestsModel requestsModel;

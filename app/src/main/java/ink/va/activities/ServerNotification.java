@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.ink.va.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -21,7 +21,7 @@ import static ink.va.utils.Constants.WARNING_TEXT_BUNDLE_KEY;
 public class ServerNotification extends BaseActivity {
 
 
-    @Bind(R.id.serverNewsContent)
+    @BindView(R.id.serverNewsContent)
     TextView serverNewsContent;
     private boolean killApp;
     private String warningText;

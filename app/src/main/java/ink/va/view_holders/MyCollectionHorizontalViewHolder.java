@@ -11,7 +11,7 @@ import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.adapters.MyCollectionHorizontalAdapter;
 import ink.va.models.MyCollectionModel;
@@ -23,15 +23,15 @@ import ink.va.utils.Constants;
 
 public class MyCollectionHorizontalViewHolder extends RecyclerView.ViewHolder {
 
-    @Bind(R.id.collection_image)
+    @BindView(R.id.collection_image)
     ImageView collectionImage;
-    @Bind(R.id.collectionName)
+    @BindView(R.id.collectionName)
     TextView collectionName;
 
-    @Bind(R.id.collectionCardView)
+    @BindView(R.id.collectionCardView)
     View collectionCardView;
 
-    @Bind(R.id.collectionMoreIcon)
+    @BindView(R.id.collectionMoreIcon)
     View collectionMoreIcon;
 
     public MyCollectionHorizontalViewHolder(View itemView) {

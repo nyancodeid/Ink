@@ -28,7 +28,7 @@ import com.ink.va.R;
 
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import fab.FloatingActionButton;
 import ink.StartupApplication;
@@ -56,60 +56,60 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private static final long SERVER_INFO_TIME = 300000;//5 minutes each server call
     @Nullable
-    @Bind(R.id.sendChatMessage)
+    @BindView(R.id.sendChatMessage)
     FloatingActionButton sendChatMessage;
 
     @Nullable
-    @Bind(R.id.makePostToolbar)
+    @BindView(R.id.makePostToolbar)
     Toolbar makePostToolbar;
 
 
     @Nullable
-    @Bind(R.id.chatRouletteSendMessage)
+    @BindView(R.id.chatRouletteSendMessage)
     FloatingActionButton chatRouletteSendMessage;
 
     @Nullable
-    @Bind(R.id.replyMessage)
+    @BindView(R.id.replyMessage)
     FloatingActionButton replyMessage;
 
     @Nullable
-    @Bind(R.id.sendGroupMessage)
+    @BindView(R.id.sendGroupMessage)
     FloatingActionButton sendGroupMessage;
 
     @Nullable
-    @Bind(R.id.profileFab)
+    @BindView(R.id.profileFab)
     FloatingActionMenu profileFab;
 
     @Nullable
-    @Bind(R.id.editImageNameFab)
+    @BindView(R.id.editImageNameFab)
     FloatingActionButton editImageNameFab;
 
     @Nullable
-    @Bind(R.id.saveProfileEdits)
+    @BindView(R.id.saveProfileEdits)
     FloatingActionButton saveProfileEdits;
 
     @Nullable
-    @Bind(R.id.createGroup)
+    @BindView(R.id.createGroup)
     FloatingActionButton createGroup;
 
     @Nullable
-    @Bind(R.id.sendFeedbackButton)
+    @BindView(R.id.sendFeedbackButton)
     FloatingActionButton sendFeedbackButton;
 
     @Nullable
-    @Bind(R.id.sendIssueButton)
+    @BindView(R.id.sendIssueButton)
     FloatingActionButton sendIssueButton;
 
     @Nullable
-    @Bind(R.id.pickImageButton)
+    @BindView(R.id.pickImageButton)
     FloatingActionButton pickImageButton;
 
     @Nullable
-    @Bind(R.id.connectDisconnectButton)
+    @BindView(R.id.connectDisconnectButton)
     Button connectDisconnectButton;
 
     @Nullable
-    @Bind(R.id.joinWaitRoom)
+    @BindView(R.id.joinWaitRoom)
     Button joinWaitRoom;
 
     private AccountDeleteListener accountDeleteListener;

@@ -24,7 +24,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.adapters.VipMemberAdapter;
@@ -41,13 +41,13 @@ import retrofit2.Response;
 
 public class ExploreVipActivity extends BaseActivity implements VipMemberItemClickListener {
 
-    @Bind(R.id.exploreVipRootTitle)
+    @BindView(R.id.exploreVipRootTitle)
     TextView exploreVipRootTitle;
-    @Bind(R.id.noVipUsers)
+    @BindView(R.id.noVipUsers)
     TextView noVipUsers;
-    @Bind(R.id.refreshVipMembers)
+    @BindView(R.id.refreshVipMembers)
     ImageView refreshVipMembers;
-    @Bind(R.id.vipMemberRecycler)
+    @BindView(R.id.vipMemberRecycler)
     RecyclerView recyclerView;
 
     private String chosenMembership;

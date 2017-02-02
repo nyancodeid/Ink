@@ -19,7 +19,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.utils.Constants;
@@ -33,23 +33,23 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SecurityQuestion extends BaseActivity {
-    @Bind(R.id.ownSecurityQuestion)
+    @BindView(R.id.ownSecurityQuestion)
     EditText ownSecurityQuestion;
-    @Bind(R.id.ownAnswer)
+    @BindView(R.id.ownAnswer)
     EditText ownAnswer;
     private SharedHelper sharedHelper;
     private ProgressDialog progressDialog;
-    @Bind(R.id.securityQuestionContainer)
+    @BindView(R.id.securityQuestionContainer)
     LinearLayout securityQuestionContainer;
-    @Bind(R.id.currentPasswordContainer)
+    @BindView(R.id.currentPasswordContainer)
     LinearLayout currentPasswordContainer;
-    @Bind(R.id.proceedPasswordCheck)
+    @BindView(R.id.proceedPasswordCheck)
     Button proceedPasswordCheck;
-    @Bind(R.id.currentPasswordField)
+    @BindView(R.id.currentPasswordField)
     EditText currentPasswordField;
     private Animation scaleOut;
     private Animation scaleIn;
-    @Bind(R.id.securityQuestionProgress)
+    @BindView(R.id.securityQuestionProgress)
     ProgressBar securityQuestionProgress;
 
     @Override

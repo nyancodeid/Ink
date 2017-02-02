@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.adobe.creativesdk.aviary.AdobeImageIntent;
 import com.ink.va.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
@@ -29,15 +29,15 @@ public class ImageEditor extends BaseActivity {
 
     private static final int RESULT_IMAGE_DONE = 1;
     private static final int RESULT_IMAGE_PICKED = 2;
-    @Bind(R.id.finalResultImage)
+    @BindView(R.id.finalResultImage)
     ImageView finalResultImage;
-    @Bind(R.id.pickImageButton)
+    @BindView(R.id.pickImageButton)
     FloatingActionButton pickImageButton;
-    @Bind(R.id.editorHintLayout)
+    @BindView(R.id.editorHintLayout)
     RelativeLayout editorHintLayout;
-    @Bind(R.id.downArrow)
+    @BindView(R.id.downArrow)
     ImageView downArrow;
-    @Bind(R.id.imageChooseStatus)
+    @BindView(R.id.imageChooseStatus)
     TextView imageChooseStatus;
     private Animation fadeInAnimation;
     private Animation slideDownAnimation;

@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
@@ -52,19 +52,19 @@ import static ink.omegle.core.OmegleMode.SPY_QUESTION;
 public class WaitRoom extends BaseActivity {
 
     private static final String TAG = WaitRoom.class.getSimpleName();
-    @Bind(R.id.chatRouletteRecycler)
+    @BindView(R.id.chatRouletteRecycler)
     RecyclerView chatRouletteRecycler;
-    @Bind(R.id.chatRouletteMessageBody)
+    @BindView(R.id.chatRouletteMessageBody)
     EditText chatRouletteMessageBody;
-    @Bind(R.id.chatRouletteSendMessage)
+    @BindView(R.id.chatRouletteSendMessage)
     FloatingActionButton chatRouletteSendMessage;
-    @Bind(R.id.connectDisconnectButton)
+    @BindView(R.id.connectDisconnectButton)
     Button connectDisconnectButton;
-    @Bind(R.id.actualStatus)
+    @BindView(R.id.actualStatus)
     TextView actualStatus;
-    @Bind(R.id.progressBar)
+    @BindView(R.id.progressBar)
     ProgressBar progressBar;
-    @Bind(R.id.chosenTypeSpinner)
+    @BindView(R.id.chosenTypeSpinner)
     AppCompatSpinner chosenTypeSpinner;
 
     private SharedHelper sharedHelper;

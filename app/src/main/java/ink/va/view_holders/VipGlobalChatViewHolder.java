@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.ink.va.R;
 import com.koushikdutta.ion.Ion;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.interfaces.VipGlobalChatClickListener;
@@ -34,33 +34,33 @@ import static ink.va.utils.MembershipTypes.MEMBERSHIP_TYPE_RED;
  */
 
 public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
-    @Bind(R.id.globalVipMemberName)
+    @BindView(R.id.globalVipMemberName)
     TextView globalVipMemberName;
-    @Bind(R.id.globalVipChatContent)
+    @BindView(R.id.globalVipChatContent)
     TextView globalVipChatContent;
-    @Bind(R.id.globalVipChatWrapper)
+    @BindView(R.id.globalVipChatWrapper)
     RelativeLayout globalVipChatWrapper;
-    @Bind(R.id.topSpacing)
+    @BindView(R.id.topSpacing)
     View topSpacing;
-    @Bind(R.id.globalVipMemberImage)
+    @BindView(R.id.globalVipMemberImage)
     ImageView globalVipMemberImage;
-    @Bind(R.id.globalVipMemberRoot)
+    @BindView(R.id.globalVipMemberRoot)
     RelativeLayout globalVipMemberRoot;
-    @Bind(R.id.vipGlobalChatMoreIcon)
+    @BindView(R.id.vipGlobalChatMoreIcon)
     ImageView vipGlobalChatMoreIcon;
-    @Bind(R.id.globalChatBottomSpace)
+    @BindView(R.id.globalChatBottomSpace)
     View globalChatBottomSpace;
-    @Bind(R.id.membershipTypeTV)
+    @BindView(R.id.membershipTypeTV)
     TextView membershipTypeTV;
-    @Bind(R.id.genderTV)
+    @BindView(R.id.genderTV)
     TextView genderTV;
-    @Bind(R.id.moreInfoLayout)
+    @BindView(R.id.moreInfoLayout)
     RelativeLayout moreInfoLayout;
-    @Bind(R.id.membershipTypeImage)
+    @BindView(R.id.membershipTypeImage)
     ImageView membershipTypeImage;
-    @Bind(R.id.sendCoins)
+    @BindView(R.id.sendCoins)
     Button sendCoins;
-    @Bind(R.id.sendMessageVip)
+    @BindView(R.id.sendMessageVip)
     Button sendMessageVip;
 
     private SharedHelper sharedHelper;

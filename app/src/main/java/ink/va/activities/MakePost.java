@@ -45,7 +45,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.utils.Constants;
@@ -64,21 +64,21 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     private static final int PICK_FILE_REQUEST_CODE = 5584;
     private static final int STORAGE_PERMISSION_REQUEST = 45485;
     public static final long MAX_FILE_SIZE = 20971520;
-    @Bind(R.id.closeWrapper)
+    @BindView(R.id.closeWrapper)
     RelativeLayout mCloseWrapper;
-    @Bind(R.id.checkWrapper)
+    @BindView(R.id.checkWrapper)
     RelativeLayout mCheckWrapper;
-    @Bind(R.id.postBody)
+    @BindView(R.id.postBody)
     EditText mPostBody;
-    @Bind(R.id.addedAttachmentLayout)
+    @BindView(R.id.addedAttachmentLayout)
     LinearLayout mAddedAttachmentLayout;
-    @Bind(R.id.addressWrapper)
+    @BindView(R.id.addressWrapper)
     RelativeLayout mAddressWrapper;
-    @Bind(R.id.fileAttachmentWrapper)
+    @BindView(R.id.fileAttachmentWrapper)
     RelativeLayout fileAttachmentWrapper;
-    @Bind(R.id.addressHint)
+    @BindView(R.id.addressHint)
     TextView mAddressHint;
-    @Bind(R.id.attachmentHint)
+    @BindView(R.id.attachmentHint)
     TextView mAttachmentHint;
     private boolean canProceed;
     private BroadcastReceiver mBroadcastReceiver;

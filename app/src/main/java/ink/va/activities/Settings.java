@@ -7,7 +7,7 @@ import android.widget.Switch;
 
 import com.ink.va.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.utils.SharedHelper;
@@ -15,17 +15,17 @@ import ink.va.utils.SharedHelper;
 
 public class Settings extends BaseActivity {
 
-    @Bind(R.id.groupNotificationSwitch)
+    @BindView(R.id.groupNotificationSwitch)
     Switch groupSwitch;
 
-    @Bind(R.id.commentNotificationSwitch)
+    @BindView(R.id.commentNotificationSwitch)
     Switch commentSwitch;
 
 
-    @Bind(R.id.likeNotificationSwitch)
+    @BindView(R.id.likeNotificationSwitch)
     Switch likeSwitch;
 
-    @Bind(R.id.snowSwitch)
+    @BindView(R.id.snowSwitch)
     Switch snowSwitch;
 
     private SharedHelper sharedHelper;

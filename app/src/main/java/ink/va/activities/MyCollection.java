@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.adapters.MyCollectionHorizontalAdapter;
@@ -56,24 +56,24 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
 
     private MyCollectionHorizontalAdapter myCollectionHorizontalAdapter;
 
-    @Bind(R.id.collectionHorizontalRecycler)
+    @BindView(R.id.collectionHorizontalRecycler)
     RecyclerView collectionHorizontalRecycler;
 
-    @Bind(R.id.horizontalProgress)
+    @BindView(R.id.horizontalProgress)
     View horizontalProgress;
 
-    @Bind(R.id.gifsRecycler)
+    @BindView(R.id.gifsRecycler)
     RecyclerView gifsRecycler;
-    @Bind(R.id.gifLoadingProgress)
+    @BindView(R.id.gifLoadingProgress)
     ProgressBar verticalProgress;
 
-    @Bind(R.id.noGifsText)
+    @BindView(R.id.noGifsText)
     TextView noGifsText;
 
-    @Bind(R.id.goToStore)
+    @BindView(R.id.goToStore)
     Button goToStore;
 
-    @Bind(R.id.animationHintLayout)
+    @BindView(R.id.animationHintLayout)
     RelativeLayout editorHintLayout;
 
     private StickerModel stickerModel;

@@ -24,7 +24,7 @@ import com.ink.va.R;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
@@ -39,19 +39,19 @@ import ink.va.utils.UserDetails;
 
 public class ContactSupport extends BaseActivity {
 
-    @Bind(R.id.issueTypeLayout)
+    @BindView(R.id.issueTypeLayout)
     RelativeLayout issueTypeLayout;
-    @Bind(R.id.chooseEmailLayout)
+    @BindView(R.id.chooseEmailLayout)
     RelativeLayout chooseEmailLayout;
-    @Bind(R.id.issueTypeTV)
+    @BindView(R.id.issueTypeTV)
     TextView issueTypeTV;
-    @Bind(R.id.emailTV)
+    @BindView(R.id.emailTV)
     TextView emailTV;
-    @Bind(R.id.sendIssueButton)
+    @BindView(R.id.sendIssueButton)
     FloatingActionButton sendIssueButton;
-    @Bind(R.id.supportMessageInputField)
+    @BindView(R.id.supportMessageInputField)
     EditText supportMessageInputField;
-    @Bind(R.id.warningLayout)
+    @BindView(R.id.warningLayout)
     RelativeLayout warningLayout;
     Animation bounceAnimation;
     private String[] issueTypes;

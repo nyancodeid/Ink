@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.ink.va.R;
 import com.koushikdutta.ion.Ion;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.interfaces.VipMemberItemClickListener;
@@ -31,19 +31,19 @@ import static ink.va.utils.MembershipTypes.MEMBERSHIP_TYPE_RED;
 
 public class VipMemberViewHolder extends RecyclerView.ViewHolder {
 
-    @Bind(R.id.vipMemberImage)
+    @BindView(R.id.vipMemberImage)
     ImageView vipMemberImage;
-    @Bind(R.id.vipMemberName)
+    @BindView(R.id.vipMemberName)
     TextView vipMemberName;
-    @Bind(R.id.bottomSpacing)
+    @BindView(R.id.bottomSpacing)
     View bottomSpacing;
-    @Bind(R.id.membershipTypeTV)
+    @BindView(R.id.membershipTypeTV)
     TextView membershipTypeTV;
-    @Bind(R.id.genderTV)
+    @BindView(R.id.genderTV)
     TextView genderTV;
-    @Bind(R.id.moreInfoLayout)
+    @BindView(R.id.moreInfoLayout)
     RelativeLayout moreInfoLayout;
-    @Bind(R.id.membershipTypeImage)
+    @BindView(R.id.membershipTypeImage)
     ImageView membershipTypeImage;
 
     private VipMemberItemClickListener itemClickListener;

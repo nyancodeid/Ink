@@ -50,7 +50,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
@@ -71,17 +71,17 @@ import yuku.ambilwarna.AmbilWarnaDialog;
 public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private SharedHelper mSharedHelper;
-    @Bind(R.id.groupsRecycler)
+    @BindView(R.id.groupsRecycler)
     RecyclerView mRecyclerView;
-    @Bind(R.id.createGroup)
+    @BindView(R.id.createGroup)
     FloatingActionButton mCreateGroup;
-    @Bind(R.id.groupSwipe)
+    @BindView(R.id.groupSwipe)
     SwipeRefreshLayout groupSwipe;
-    @Bind(R.id.noGroupsLayout)
+    @BindView(R.id.noGroupsLayout)
     RelativeLayout noGroupsLayout;
-    @Bind(R.id.nothingFoundLayout)
+    @BindView(R.id.nothingFoundLayout)
     RelativeLayout nothingFoundLayout;
-    @Bind(R.id.searchProgress)
+    @BindView(R.id.searchProgress)
     AVLoadingIndicatorView searchProgress;
     private AlertDialog addGroupDialog = null;
     private String chosenColor = "";

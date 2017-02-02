@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.adapters.WhoViewedAdapter;
 import ink.va.models.WhoViewedModel;
@@ -45,13 +45,13 @@ public class WhoViewedActivity extends AppCompatActivity implements
         SwipeRefreshLayout.OnRefreshListener, WhoViewedAdapter.OnItemClickListener {
 
 
-    @Bind(R.id.recyclerWhoViewed)
+    @BindView(R.id.recyclerWhoViewed)
     RecyclerView recyclerView;
-    @Bind(R.id.swipeWhoViewed)
+    @BindView(R.id.swipeWhoViewed)
     SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.noProfileViewWrapper)
+    @BindView(R.id.noProfileViewWrapper)
     RelativeLayout noProfileViewWrapper;
-    @Bind(R.id.totalAccountViews)
+    @BindView(R.id.totalAccountViews)
     TextView totalAccountViews;
 
     private SharedHelper sharedHelper;

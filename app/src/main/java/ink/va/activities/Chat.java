@@ -67,7 +67,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.StartupApplication;
@@ -105,38 +105,38 @@ import static ink.va.utils.Constants.STARTING_FOR_RESULT_BUNDLE_KEY;
 public class Chat extends BaseActivity implements ProgressRequestBody.UploadCallbacks {
 
     private static final int PICK_FILE_REQUEST_CODE = 400;
-    @Bind(R.id.sendChatMessage)
+    @BindView(R.id.sendChatMessage)
     fab.FloatingActionButton mSendChatMessage;
-    @Bind(R.id.messageBody)
+    @BindView(R.id.messageBody)
     EditText mWriteEditText;
-    @Bind(R.id.noMessageLayout)
+    @BindView(R.id.noMessageLayout)
     View mNoMessageLayout;
-    @Bind(R.id.chatRecyclerView)
+    @BindView(R.id.chatRecyclerView)
     RecyclerView mRecyclerView;
-    @Bind(R.id.chatTitle)
+    @BindView(R.id.chatTitle)
     TextView chatTitle;
     private boolean isImageLoaded = false;
-    @Bind(R.id.opponentImage)
+    @BindView(R.id.opponentImage)
     ImageView opponentImage;
-    @Bind(R.id.opponentStatus)
+    @BindView(R.id.opponentStatus)
     TextView opponentStatus;
-    @Bind(R.id.statusColor)
+    @BindView(R.id.statusColor)
     ImageView statusColor;
-    @Bind(R.id.sendMessageGifView)
+    @BindView(R.id.sendMessageGifView)
     ImageView sendMessageGifView;
-    @Bind(R.id.sendMessageGifViewWrapper)
+    @BindView(R.id.sendMessageGifViewWrapper)
     RelativeLayout sendMessageGifViewWrapper;
-    @Bind(R.id.single_video_view)
+    @BindView(R.id.single_video_view)
     VideoView singleVideoView;
-    @Bind(R.id.singleGifViewLoading)
+    @BindView(R.id.singleGifViewLoading)
     AVLoadingIndicatorView singleGifViewLoading;
-    @Bind(R.id.scrollDownChat)
+    @BindView(R.id.scrollDownChat)
     ImageView scrollDownChat;
-    @Bind(R.id.attachmentIcon)
+    @BindView(R.id.attachmentIcon)
     ImageView attachmentIcon;
-    @Bind(R.id.messageFiledDivider)
+    @BindView(R.id.messageFiledDivider)
     View messageFiledDivider;
-    @Bind(R.id.callIcon)
+    @BindView(R.id.callIcon)
     ImageView callIcon;
 
     private String mOpponentId;

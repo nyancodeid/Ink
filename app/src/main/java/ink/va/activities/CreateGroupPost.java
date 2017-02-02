@@ -37,7 +37,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
@@ -57,24 +57,24 @@ import static ink.va.activities.MakePost.MAX_FILE_SIZE;
 public class CreateGroupPost extends BaseActivity implements ProgressRequestBody.UploadCallbacks {
 
     private static final int PICK_FILE_REQUEST_CODE = 5;
-    @Bind(R.id.currentUserName)
+    @BindView(R.id.currentUserName)
     TextView currentUserName;
-    @Bind(R.id.currentUserImage)
+    @BindView(R.id.currentUserImage)
     ImageView currentUserImage;
-    @Bind(R.id.groupInputField)
+    @BindView(R.id.groupInputField)
     EditText groupInputField;
-    @Bind(R.id.sendGroupMessage)
+    @BindView(R.id.sendGroupMessage)
     FloatingActionButton sendGroupMessageIcon;
-    @Bind(R.id.groupMessageSpin)
+    @BindView(R.id.groupMessageSpin)
     SpinKitView groupMessageSpin;
 
-    @Bind(R.id.imageChooserIV)
+    @BindView(R.id.imageChooserIV)
     ImageView imageChooserIV;
 
-    @Bind(R.id.image_picker_view)
+    @BindView(R.id.image_picker_view)
     ImageView imagePickerIV;
 
-    @Bind(R.id.imageChosenWrapper)
+    @BindView(R.id.imageChosenWrapper)
     RelativeLayout imageChosenWrapper;
 
     private String groupId;

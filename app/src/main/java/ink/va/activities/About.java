@@ -5,12 +5,12 @@ import android.widget.TextView;
 
 import com.ink.va.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.utils.Version;
 
 public class About extends BaseActivity {
-    @Bind(R.id.versionTV)
+    @BindView(R.id.versionTV)
     TextView versionTV;
 
     @Override

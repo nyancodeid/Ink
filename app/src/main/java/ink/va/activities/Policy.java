@@ -12,14 +12,14 @@ import android.widget.ProgressBar;
 
 import com.ink.va.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class Policy extends AppCompatActivity {
 
-    @Bind(R.id.policyLoading)
+    @BindView(R.id.policyLoading)
     ProgressBar policyLoading;
-    @Bind(R.id.webView)
+    @BindView(R.id.webView)
     WebView webView;
 
     @Override

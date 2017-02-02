@@ -35,10 +35,10 @@
 
     <!--The Player Place-->
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
 
         <ImageSwitcher
             android:id="@+id/playerFirstCard"
@@ -60,8 +60,8 @@
 
     <Button
         android:id="@+id/flipIt"
-        android:text="Flit It"
-        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Flit It" />
 </RelativeLayout>

@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.adapters.MusicAdapter;
 import ink.va.callbacks.GeneralCallback;
@@ -50,25 +50,25 @@ import retrofit2.Response;
 
 public class Music extends BaseActivity implements MusicClickListener {
 
-    @Bind(R.id.musicRecycler)
+    @BindView(R.id.musicRecycler)
     RecyclerView musicRecycler;
-    @Bind(R.id.musicLoading)
+    @BindView(R.id.musicLoading)
     AVLoadingIndicatorView musicLoading;
-    @Bind(R.id.musicInfoSheet)
+    @BindView(R.id.musicInfoSheet)
     View musicInfoSheet;
-    @Bind(R.id.openCloseMusicSheet)
+    @BindView(R.id.openCloseMusicSheet)
     ImageView openMusicSheet;
-    @Bind(R.id.statusText)
+    @BindView(R.id.statusText)
     TextView statusText;
-    @Bind(R.id.currentlyPlayingName)
+    @BindView(R.id.currentlyPlayingName)
     TextView currentlyPlayingName;
-    @Bind(R.id.playPauseButton)
+    @BindView(R.id.playPauseButton)
     ImageView playPauseButton;
-    @Bind(R.id.currentlyPlayingImage)
+    @BindView(R.id.currentlyPlayingImage)
     ImageView currentlyPlayingImage;
-    @Bind(R.id.musicGeneralTitle)
+    @BindView(R.id.musicGeneralTitle)
     TextView musicGeneralTitle;
-    @Bind(R.id.bottomSheetImageProgress)
+    @BindView(R.id.bottomSheetImageProgress)
     ProgressBar bottomSheetImageProgress;
     private boolean isMusicChosen;
     private Animation slideUp;

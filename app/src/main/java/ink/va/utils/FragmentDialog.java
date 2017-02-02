@@ -23,7 +23,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.activities.MyProfile;
@@ -45,22 +45,22 @@ public class FragmentDialog extends DialogFragment implements DialogUtils.Dialog
     private String secondParagraphContent;
     private int backgroundResource;
 
-    @Bind(R.id.fragmentDialogRoot)
+    @BindView(R.id.fragmentDialogRoot)
     RelativeLayout fragmentDialogRoot;
 
-    @Bind(R.id.firstParagraphTV)
+    @BindView(R.id.firstParagraphTV)
     TextView firstParagraphTV;
 
-    @Bind(R.id.secondParagraphTV)
+    @BindView(R.id.secondParagraphTV)
     TextView secondParagraphTV;
 
-    @Bind(R.id.doIt)
+    @BindView(R.id.doIt)
     Button doIt;
 
-    @Bind(R.id.close)
+    @BindView(R.id.close)
     Button close;
 
-    @Bind(R.id.progress)
+    @BindView(R.id.progress)
     View progress;
 
     private int userCoins;

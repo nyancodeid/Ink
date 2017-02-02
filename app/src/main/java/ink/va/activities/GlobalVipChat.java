@@ -37,7 +37,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.adapters.VipGlobalChatAdapter;
@@ -64,19 +64,19 @@ import static ink.va.utils.Constants.VIP_GLOBAL_CHAT_TYPE_SEND;
 
 public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickListener {
 
-    @Bind(R.id.globalChatRecycler)
+    @BindView(R.id.globalChatRecycler)
     RecyclerView globalChatRecycler;
-    @Bind(R.id.noVipMessages)
+    @BindView(R.id.noVipMessages)
     TextView noVipMessages;
-    @Bind(R.id.globalChatField)
+    @BindView(R.id.globalChatField)
     EditText globalChatField;
-    @Bind(R.id.sendGlobalMessage)
+    @BindView(R.id.sendGlobalMessage)
     ImageView sendGlobalMessage;
-    @Bind(R.id.sendingProgress)
+    @BindView(R.id.sendingProgress)
     View sendingProgress;
-    @Bind(R.id.refreshGlobalChat)
+    @BindView(R.id.refreshGlobalChat)
     ImageView refreshGlobalChat;
-    @Bind(R.id.newMessageWrapper)
+    @BindView(R.id.newMessageWrapper)
     RelativeLayout newMessageWrapper;
 
     private String chosenMembership;

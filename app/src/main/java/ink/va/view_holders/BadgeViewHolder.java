@@ -12,7 +12,7 @@ import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.interfaces.BadgeClickListener;
@@ -25,11 +25,11 @@ import ink.va.utils.Constants;
 
 public class BadgeViewHolder extends RecyclerView.ViewHolder {
 
-    @Bind(R.id.badgeNameTV)
+    @BindView(R.id.badgeNameTV)
     TextView badgeNameTV;
-    @Bind(R.id.badgeImageView)
+    @BindView(R.id.badgeImageView)
     ImageView badgeImageView;
-    @Bind(R.id.badgePrice)
+    @BindView(R.id.badgePrice)
     TextView badgePrice;
     private BadgeClickListener onClickListener;
     private BadgeModel badgeModel;

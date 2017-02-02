@@ -1,18 +1,19 @@
 package ink.va.activities;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageSwitcher;
 
 import com.ink.va.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class BlackJack extends BaseActivity {
 
-    @Bind(R.id.playerSecondCard)
+    @BindView(R.id.playerSecondCard)
     ImageSwitcher playerSecondCard;
 
     @Override
@@ -28,6 +29,6 @@ public class BlackJack extends BaseActivity {
 
     @OnClick(R.id.flipIt)
     public void flipItClicked() {
-        playerSecondCard.setImageResource(R.drawable.ace_black_heart);
+        playerSecondCard.setBackground(ContextCompat.getDrawable(this,R.drawable.ace_black_heart));
     }
 }

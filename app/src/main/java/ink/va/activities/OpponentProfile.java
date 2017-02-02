@@ -31,7 +31,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
@@ -65,45 +65,45 @@ public class OpponentProfile extends BaseActivity {
     private SharedHelper sharedHelper;
 
     //Butter knife binders.
-    @Bind(R.id.profileImage)
+    @BindView(R.id.profileImage)
     ImageView mProfileImage;
-    @Bind(R.id.addressTV)
+    @BindView(R.id.addressTV)
     TextView mAddress;
-    @Bind(R.id.phoneTV)
+    @BindView(R.id.phoneTV)
     TextView mPhone;
-    @Bind(R.id.relationshipTV)
+    @BindView(R.id.relationshipTV)
     TextView mRelationship;
-    @Bind(R.id.genderTV)
+    @BindView(R.id.genderTV)
     TextView mGender;
-    @Bind(R.id.facebookTV)
+    @BindView(R.id.facebookTV)
     TextView mFacebook;
-    @Bind(R.id.facebookWrapper)
+    @BindView(R.id.facebookWrapper)
     RelativeLayout mFacebookWrapper;
-    @Bind(R.id.skypeTV)
+    @BindView(R.id.skypeTV)
     TextView mSkype;
-    @Bind(R.id.triangleView)
+    @BindView(R.id.triangleView)
     ImageView mTriangleView;
-    @Bind(R.id.statusCard)
+    @BindView(R.id.statusCard)
     CardView mCardView;
-    @Bind(R.id.genderIcon)
+    @BindView(R.id.genderIcon)
     ImageView mGenderImageView;
-    @Bind(R.id.statusText)
+    @BindView(R.id.statusText)
     TextView mStatusText;
-    @Bind(R.id.userName)
+    @BindView(R.id.userName)
     TextView mUsername;
-    @Bind(R.id.profileFab)
+    @BindView(R.id.profileFab)
     FloatingActionMenu mProfileFab;
-    @Bind(R.id.opponentImageLoading)
+    @BindView(R.id.opponentImageLoading)
     AVLoadingIndicatorView mOpponentImageLoading;
-    @Bind(R.id.addressWrapper)
+    @BindView(R.id.addressWrapper)
     RelativeLayout mAddressWrapper;
-    @Bind(R.id.sendMessage)
+    @BindView(R.id.sendMessage)
     FloatingActionButton sendMessage;
-    @Bind(R.id.removeFriend)
+    @BindView(R.id.removeFriend)
     FloatingActionButton removeFriend;
-    @Bind(R.id.callUserPhone)
+    @BindView(R.id.callUserPhone)
     ImageView callUserPhone;
-    @Bind(R.id.singleUserBadge)
+    @BindView(R.id.singleUserBadge)
     ImageView singleUserBadge;
     private String mOpponentImage;
     private boolean isFriend;

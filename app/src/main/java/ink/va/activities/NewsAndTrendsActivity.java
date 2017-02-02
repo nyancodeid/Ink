@@ -14,16 +14,16 @@ import com.ink.va.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.fragments.GlobalNews;
 import ink.va.fragments.WhatsTrending;
 
 public class NewsAndTrendsActivity extends BaseActivity {
 
-    @Bind(R.id.newsPager)
+    @BindView(R.id.newsPager)
     ViewPager viewPager;
-    @Bind(R.id.newsTabs)
+    @BindView(R.id.newsTabs)
     TabLayout tabLayout;
 
 
