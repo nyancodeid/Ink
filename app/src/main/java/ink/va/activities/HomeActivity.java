@@ -354,6 +354,7 @@ public class HomeActivity extends BaseActivity
 
     @OnClick(R.id.earnCoins)
     public void earnClicked() {
+        mFab.close(true);
         initPollFish();
     }
 
