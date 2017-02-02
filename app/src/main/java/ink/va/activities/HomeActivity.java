@@ -63,7 +63,6 @@ import java.io.IOException;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
-import ink.va.callbacks.GeneralCallback;
 import ink.va.fragments.Feed;
 import ink.va.fragments.MyFriends;
 import ink.va.interfaces.AccountDeleteListener;
@@ -844,17 +843,8 @@ public class HomeActivity extends BaseActivity
 
     private void initPollFish() {
         DimDialog.showDimDialog(this, getString(R.string.loadingSurvey));
-        pollFish.initPollFish(new GeneralCallback() {
-            @Override
-            public void onSuccess(Object o) {
-                pollFish.hidePollFish();
-            }
-
-            @Override
-            public void onFailure(Object o) {
-
-            }
-        });
+        pollFish.initPollFish();
+        pollFish.hidePollFish();
 
     }
 
