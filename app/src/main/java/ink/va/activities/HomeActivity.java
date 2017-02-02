@@ -127,7 +127,6 @@ public class HomeActivity extends BaseActivity
     private RelativeLayout panelHeader;
     private TextView messagesCountTV;
     private PollFish pollFish;
-    private ProgressDialog surveyDialog;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -155,9 +154,6 @@ public class HomeActivity extends BaseActivity
         if (!mSharedHelper.isMessagesDownloaded()) {
             startMessageDownloadService();
         }
-
-        surveyDialog = new ProgressDialog(this);
-        surveyDialog.setCanceledOnTouchOutside(false);
 
         if (!mSharedHelper.isSecurityQuestionSet() && isAccountRecoverable()) {
             View warningView = getLayoutInflater().inflate(R.layout.app_warning_view, null);
@@ -846,9 +842,7 @@ public class HomeActivity extends BaseActivity
     }
 
     private void initPollFish() {
-        surveyDialog.setTitle(getString(R.string.loadingText));
-        surveyDialog.setMessage(getString(R.string.loadingSurvey));
-        surveyDialog.show();
+        DimDialog.showDimDialog(this, getString(R.string.loadingSurvey));
         pollFish.initPollFish();
         pollFish.hidePollFish();
     }
@@ -1119,7 +1113,7 @@ public class HomeActivity extends BaseActivity
 
     @Override
     public void onUserNotEligible() {
-        surveyDialog.dismiss();
+        DimDialog.hideDialog();
         Toast.makeText(this, getString(R.string.notEligible), Toast.LENGTH_SHORT).show();
     }
 
@@ -1129,12 +1123,12 @@ public class HomeActivity extends BaseActivity
 
     @Override
     public void onPollfishOpened() {
-        surveyDialog.dismiss();
+        DimDialog.hideDialog();
     }
 
     @Override
     public void onPollfishSurveyCompleted(boolean b, int i) {
-        surveyDialog.dismiss();
+        DimDialog.hideDialog();
         getReward();
     }
 
@@ -1184,7 +1178,7 @@ public class HomeActivity extends BaseActivity
 
     @Override
     public void onPollfishSurveyNotAvailable() {
-        surveyDialog.dismiss();
+        DimDialog.hideDialog();
         Toast.makeText(this, getString(R.string.noSurvey), Toast.LENGTH_LONG).show();
     }
 
