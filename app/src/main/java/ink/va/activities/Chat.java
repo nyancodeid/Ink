@@ -824,7 +824,13 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
             @Override
             public void onSuccess(List<MessageModel> messageModels) {
                 if (messageModels.isEmpty()) {
-                    mNoMessageLayout.setVisibility(View.VISIBLE);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mNoMessageLayout.setVisibility(View.VISIBLE);
+                        }
+                    });
+
                 } else {
 
                     for (int i = 0; i < messageModels.size(); i++) {
@@ -872,7 +878,13 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                     }
 
                     if (mChatModelArrayList.size() <= 0) {
-                        mNoMessageLayout.setVisibility(View.VISIBLE);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mNoMessageLayout.setVisibility(View.VISIBLE);
+                            }
+                        });
+
                     }
                     mRecyclerView.post(new Runnable() {
                         @Override

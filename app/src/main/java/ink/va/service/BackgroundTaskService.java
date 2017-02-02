@@ -10,7 +10,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
+import ink.va.models.MessageModel;
 import ink.va.utils.Constants;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
@@ -41,7 +44,6 @@ public class BackgroundTaskService extends Service {
     }
 
     private void getMyMessages(final String userId) {
-        RealmHelper.getInstance().clearDatabase(this);
         Call<ResponseBody> myMessagesResponse = Retrofit.getInstance().getInkService().getChatMessages(userId);
         myMessagesResponse.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -59,6 +61,8 @@ public class BackgroundTaskService extends Service {
                     JSONObject jsonObject = new JSONObject(responseString);
                     JSONArray messagesArray = jsonObject.optJSONArray("messages");
                     RealmHelper realmHelper = RealmHelper.getInstance();
+                    List<MessageModel> messageModels = new LinkedList<>();
+
                     if (messagesArray.length() > 0) {
                         for (int i = 0; i < messagesArray.length(); i++) {
                             JSONObject eachObject = messagesArray.optJSONObject(i);
@@ -78,20 +82,39 @@ public class BackgroundTaskService extends Service {
                             boolean isAnimated = eachObject.optBoolean("isAnimated");
                             String hasSound = eachObject.optString("hasSound");
 
+                            MessageModel messageModel = new MessageModel();
                             if (mSharedHelper.getUserId().equals(userId)) {
-
-                                realmHelper.insertMessage(userId,
-                                        opponentId, message, messageId, Time.convertToLocalTime(date), messageId,
-                                        deliveryStatus,
-                                        userIdImage, opponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl, isAnimated);
+                                messageModel.setUserId(userId);
+                                messageModel.setOpponentId(opponentId);
+                                messageModel.setMessage(message);
+                                messageModel.setMessageId(messageId);
+                                messageModel.setDate(Time.convertToLocalTime(date));
+                                messageModel.setDeliveryStatus(deliveryStatus);
+                                messageModel.setUserImage(userIdImage);
+                                messageModel.setOpponentImage(opponentImage);
+                                messageModel.setDeleteOpponentId(deleteOpponentId);
+                                messageModel.setDeleteUserId(deleteUserId);
+                                messageModel.setHasGif(hasGif);
+                                messageModel.setGifUrl(gifUrl);
+                                messageModel.setAnimated(isAnimated);
                             } else {
-
-                                realmHelper.insertMessage(userId,
-                                        opponentId, message, messageId, date, messageId,
-                                        deliveryStatus,
-                                        userIdImage, opponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl, isAnimated);
+                                messageModel.setUserId(userId);
+                                messageModel.setOpponentId(opponentId);
+                                messageModel.setMessage(message);
+                                messageModel.setMessageId(messageId);
+                                messageModel.setDate(date);
+                                messageModel.setDeliveryStatus(deliveryStatus);
+                                messageModel.setUserImage(userIdImage);
+                                messageModel.setOpponentImage(opponentImage);
+                                messageModel.setDeleteOpponentId(deleteOpponentId);
+                                messageModel.setDeleteUserId(deleteUserId);
+                                messageModel.setHasGif(hasGif);
+                                messageModel.setGifUrl(gifUrl);
+                                messageModel.setAnimated(isAnimated);
                             }
+                            messageModels.add(messageModel);
                         }
+                        realmHelper.insertMessage(messageModels);
                     }
                     stopSelf();
 

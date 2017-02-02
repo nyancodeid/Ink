@@ -223,7 +223,20 @@ public class PackFullScreen extends BaseActivity {
                                 }
                             });
                             builder.show();
+                        } else if (cause.equals(ErrorCause.NOT_ENOUGH_COINS)) {
+
+                            builder.setMessage(getString(R.string.not_enough_coins));
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                    finish();
+                                    overrideActivityAnimation();
+                                }
+                            });
+                            builder.show();
                         } else {
+
                             builder.setTitle(getString(R.string.error));
                             builder.setMessage(getString(R.string.serverErrorText));
                             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
