@@ -803,7 +803,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="badge_already_bought">You already have bought this badge</string>
     <string name="messagesLoadingError">Could not load messages</string>
     <string name="newComment">New comment was added,view?</string>
-    <string name="viewGames">View Games</string>
+    <string name="viewGames">Ink Games</string>
     <string name="blackJackTitle">BlackJack</string>
     <string name="blackJackDescription">Get on it going and win coins to spend!</string>
     <string name="freedomRunning">Could not complete the purchase as the freedom apk is running and conflicting with the purchase,if you try this couple times you will be banned</string>
@@ -814,4 +814,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="redeemed">%1$d coins redeemed</string>
     <string name="redeeming">Redeeming coins,please wait...</string>
     <string name="notEligible">You are not eligible for survey...</string>
+    <string name="games_in_beta">Games are in beta yet</string>
 </resources>

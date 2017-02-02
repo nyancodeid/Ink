@@ -23,7 +23,7 @@ public class PollFish {
     public void initPollFish() {
         com.pollfish.main.PollFish.ParamsBuilder paramsBuilder = new com.pollfish.main.PollFish.ParamsBuilder("a0c8426f-32be-417b-9c26-c26424225e11").build()
                 .indicatorPadding(5)
-                .releaseMode(false)
+                .releaseMode(true)
                 .customMode(true)
                 .build();
         com.pollfish.main.PollFish.initWith(activity, paramsBuilder);

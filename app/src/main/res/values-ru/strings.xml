@@ -808,7 +808,7 @@
     <string name="badge_already_bought">У вас уже есть этот значок</string>
     <string name="messagesLoadingError">Не удалось загрузить сообщения</string>
     <string name="newComment">Был добавлен новый комментарий,посмотреть?</string>
-    <string name="viewGames">Посмотреть Игры</string>
+    <string name="viewGames">Ink Игры</string>
     <string name="blackJackTitle">BlackJack</string>
     <string name="blackJackDescription">Начните игру и заработайте много монет чтобы потратить в Инке!</string>
     <string name="earnCoins">Заработать Бесплатные Монеты</string>
@@ -819,4 +819,5 @@
     <string name="redeeming">Выплачиватываем монеты,пожалуйста подождите...</string>
     <string name="notEligible">Вы не допускаетесь к опросу</string>
     <string name="freedomRunning">Не смогли завершить покупку так как приложение Freedom запущено,если вы попытаетесь несколько раз подряд сделать то же самое,вы будете забанены</string>
+    <string name="games_in_beta">Игры пока что в Бета тестировании</string>
 </resources>
