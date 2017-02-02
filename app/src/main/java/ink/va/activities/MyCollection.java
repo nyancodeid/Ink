@@ -220,10 +220,8 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
         if (horizontalProgress.getVisibility() == View.GONE) {
             horizontalProgress.setVisibility(View.VISIBLE);
         }
-        if (stickerModelList != null) {
-            stickerModelList.clear();
-            stickerAdapter.notifyDataSetChanged();
-        }
+        myCollectionHorizontalAdapter.clearItems();
+        stickerAdapter.clearItems();
 
 
         Call<MyCollectionResponseModel> listCall = Retrofit.getInstance().getInkService().getUserCollection(sharedHelper.getUserId());

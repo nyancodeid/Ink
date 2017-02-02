@@ -50,8 +50,11 @@ public class MyCollectionHorizontalAdapter extends RecyclerView.Adapter<Recycler
     }
 
     public void clearItems() {
-        myCollectionModels.clear();
-        notifyDataSetChanged();
+        if(myCollectionModels!=null){
+            myCollectionModels.clear();
+            notifyDataSetChanged();
+        }
+
     }
 
     public interface OnCollectionClickListener {

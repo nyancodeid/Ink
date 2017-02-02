@@ -175,6 +175,7 @@ public class PackFullScreen extends BaseActivity {
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     AlertDialog.Builder builder = new AlertDialog.Builder(PackFullScreen.this);
+                    builder.setCancelable(false);
                     if (success) {
                         String userCoinsLeft = jsonObject.optString("userCoinsLeft");
                         User.get().setCoins(userCoinsLeft);

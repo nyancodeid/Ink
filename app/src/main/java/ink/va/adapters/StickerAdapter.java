@@ -57,7 +57,10 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerChooserViewHolde
     }
 
     public void clearItems() {
-        gifAdapterList.clear();
-        notifyDataSetChanged();
+        if(gifAdapterList!=null){
+            gifAdapterList.clear();
+            notifyDataSetChanged();
+        }
+
     }
 }

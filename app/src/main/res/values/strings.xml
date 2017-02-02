@@ -491,7 +491,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="locationSent">Location sent</string>
     <string name="locationSendError">Location was not send,please try again</string>
     <string name="updatedLocation">updated the location</string>
-    <string name="sentSticker">Send sticker</string>
+    <string name="sentSticker">Sent sticker</string>
     <string name="you">You:</string>
     <string name="noMessages">You don\'t have any messages</string>
     <string name="messageMissing">Message missing</string>
