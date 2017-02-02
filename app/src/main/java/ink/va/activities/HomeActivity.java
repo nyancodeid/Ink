@@ -140,6 +140,7 @@ public class HomeActivity extends BaseActivity
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         pollFish = PollFish.get();
+        pollFish.setActivity(this);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         PROFILE = getString(R.string.profileText);
@@ -847,7 +848,6 @@ public class HomeActivity extends BaseActivity
         surveyDialog.setTitle(getString(R.string.loadingText));
         surveyDialog.setMessage(getString(R.string.loadingSurvey));
         surveyDialog.show();
-        pollFish.setActivity(this);
         pollFish.initPollFish();
         pollFish.hidePollFish();
     }
@@ -1153,7 +1153,14 @@ public class HomeActivity extends BaseActivity
                     getReward();
                     return;
                 }
-                surveyDialog.dismiss();
+                pollFish.hidePollFish();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        surveyDialog.dismiss();
+                    }
+                });
+
                 try {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
@@ -1175,7 +1182,14 @@ public class HomeActivity extends BaseActivity
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                surveyDialog.dismiss();
+                pollFish.hidePollFish();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        surveyDialog.dismiss();
+                    }
+                });
+
                 Toast.makeText(HomeActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
