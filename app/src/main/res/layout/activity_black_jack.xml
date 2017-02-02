@@ -8,38 +8,60 @@
     tools:context="ink.va.activities.BlackJack">
 
     <!--The Dealer Place-->
-    <ImageSwitcher
-        android:id="@+id/dealerFirstCard"
-        android:layout_width="120dp"
-        android:layout_height="160dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="-60dp"
-        android:layout_toLeftOf="@+id/playerSecondCard"
-        android:background="@drawable/ten_black_arrow"></ImageSwitcher>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:orientation="horizontal">
 
-    <ImageSwitcher
-        android:id="@+id/dealerSecondCard"
-        android:layout_width="120dp"
-        android:layout_height="160dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/card_background"></ImageSwitcher>
+        <ImageSwitcher
+            android:id="@+id/dealerFirstCard"
+            android:layout_width="120dp"
+            android:layout_height="160dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="-60dp"
+            android:layout_toLeftOf="@+id/playerSecondCard"
+            android:background="@drawable/ten_black_arrow"></ImageSwitcher>
+
+        <ImageSwitcher
+            android:id="@+id/dealerSecondCard"
+            android:layout_width="120dp"
+            android:layout_height="160dp"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/card_background"></ImageSwitcher>
+
+    </LinearLayout>
 
     <!--The Player Place-->
-    <ImageSwitcher
-        android:id="@+id/playerFirstCard"
-        android:layout_width="120dp"
-        android:layout_height="160dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginRight="-60dp"
-        android:layout_toLeftOf="@+id/playerSecondCard"
-        android:background="@drawable/ten_black_arrow"></ImageSwitcher>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
 
-    <ImageSwitcher
-        android:id="@+id/playerSecondCard"
-        android:layout_width="120dp"
-        android:layout_height="160dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/ten_red_arrow"></ImageSwitcher>
+        <ImageSwitcher
+            android:id="@+id/playerFirstCard"
+            android:layout_width="120dp"
+            android:layout_height="160dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="-60dp"
+            android:layout_toLeftOf="@+id/playerSecondCard"
+            android:background="@drawable/ten_black_arrow"></ImageSwitcher>
+
+        <ImageSwitcher
+            android:id="@+id/playerSecondCard"
+            android:layout_width="120dp"
+            android:layout_height="160dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/ten_red_arrow"></ImageSwitcher>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/flipIt"
+        android:text="Flit It"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </RelativeLayout>
