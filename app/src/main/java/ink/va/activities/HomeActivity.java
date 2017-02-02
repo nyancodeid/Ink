@@ -73,6 +73,7 @@ import ink.va.service.SendTokenService;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.DeviceChecker;
+import ink.va.utils.DimDialog;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.FileUtils;
 import ink.va.utils.IonCache;
@@ -1138,9 +1139,7 @@ public class HomeActivity extends BaseActivity
     }
 
     private void getReward() {
-        surveyDialog.setTitle(getString(R.string.loadingText));
-        surveyDialog.setMessage(getString(R.string.redeeming));
-        surveyDialog.show();
+        DimDialog.showDimDialog(this, getString(R.string.redeeming));
         Call<ResponseBody> getRewardCall = Retrofit.getInstance().getInkService().getReward(mSharedHelper.getUserId(), Constants.POLLFISH_TOKEN);
         getRewardCall.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -1154,13 +1153,7 @@ public class HomeActivity extends BaseActivity
                     return;
                 }
                 pollFish.hidePollFish();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        surveyDialog.dismiss();
-                    }
-                });
-
+                DimDialog.hideDialog();
                 try {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
@@ -1169,7 +1162,7 @@ public class HomeActivity extends BaseActivity
                         String coins = jsonObject.optString("userCoins");
                         User.get().setCoins(coins);
                         coinsText.setText(getString(R.string.coinsText, Integer.valueOf(coins)));
-                        Toast.makeText(HomeActivity.this, getString(R.string.redeemed), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(HomeActivity.this, getString(R.string.redeemed, Integer.valueOf(coins)), Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(HomeActivity.this, getString(R.string.redeemError), Toast.LENGTH_SHORT).show();
                     }
@@ -1183,13 +1176,7 @@ public class HomeActivity extends BaseActivity
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 pollFish.hidePollFish();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        surveyDialog.dismiss();
-                    }
-                });
-
+                DimDialog.hideDialog();
                 Toast.makeText(HomeActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
