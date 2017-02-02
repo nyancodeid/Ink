@@ -63,6 +63,7 @@ public class Constants {
     public static final String RESPOND_TYPE_ACCEPT_LOCATION_REQUEST = "acceptLocationRequest";
     public static final String LOGIN_URL = "Login.php";
     public static final String OPEN_PACK_URL = "OpenPack.php";
+    public static final String POLLFISH_URL = "PollFishReward.php";
     public static final String FRIENDS_URL = "UserFriends.php";
     public static final String SINGLE_USER_URL = "SingleUser.php";
     public static final String SEND_FRIEND_REQUEST_URL = "SendFriendRequest.php";
@@ -135,6 +136,7 @@ public class Constants {
     public static final int REQUEST_CODE_CHOSE_STICKER = 1;
     public static final String COINS_BOUGHT_KEY = "coins_bought";
     public static final String PASSWORD_REQUEST_TOKEN = "fasjflkgkaga7g8asggf-a0gf98asu-gangas-g389t-nke_wrlPg_h34890udglka";
+    public static final String POLLFISH_TOKEN = "asklfhauigagq2-464erhtnsq-bsd0hwh73t3r-hfd4x0hrhsx-ertgeseghpr4450-afaui3290lk[asz";
     public static final String USER_LOGIN_TOKEN = "asjflkasf_gasjgkla=-gsangklasjklsag-sagnas3r532r3w52r523q-gsa43-t3t54a-";
     public static final String SERVER_NOTIFICATION_SHARED_KEY = "ServerNewsNotification-";
 

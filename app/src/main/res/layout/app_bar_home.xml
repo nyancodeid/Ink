@@ -39,6 +39,17 @@
         fab:menu_colorPressed="@color/colorPrimaryDark"
         fab:menu_colorRipple="#cccccc">
 
+
+        <fab.FloatingActionButton
+            android:id="@+id/earnCoins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/coins_icon"
+            fab:fab_colorNormal="#444f65"
+            fab:fab_colorPressed="#636e85"
+            fab:fab_label="@string/earnCoins"
+            fab:fab_size="mini" />
+
         <fab.FloatingActionButton
             android:id="@+id/messages"
             android:layout_width="wrap_content"

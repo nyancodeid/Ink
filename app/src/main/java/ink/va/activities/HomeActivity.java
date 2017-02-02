@@ -35,13 +35,24 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.pollfish.interfaces.PollfishClosedListener;
+import com.pollfish.interfaces.PollfishOpenedListener;
+import com.pollfish.interfaces.PollfishSurveyCompletedListener;
+import com.pollfish.interfaces.PollfishSurveyNotAvailableListener;
+import com.pollfish.interfaces.PollfishSurveyReceivedListener;
+import com.pollfish.interfaces.PollfishUserNotEligibleListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +60,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.va.fragments.Feed;
 import ink.va.fragments.MyFriends;
@@ -65,6 +78,7 @@ import ink.va.utils.FileUtils;
 import ink.va.utils.IonCache;
 import ink.va.utils.Keyboard;
 import ink.va.utils.PingHelper;
+import ink.va.utils.PollFish;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -76,10 +90,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AccountDeleteListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AccountDeleteListener, PollfishSurveyCompletedListener, PollfishOpenedListener,
+        PollfishClosedListener, PollfishSurveyReceivedListener,
+        PollfishSurveyNotAvailableListener, PollfishUserNotEligibleListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
     public static final int PROFILE_RESULT_CODE = 836;
+
 
     private FloatingActionMenu mFab;
     private ImageView mProfileImage;
@@ -108,12 +125,21 @@ public class HomeActivity extends BaseActivity
     private ColorChangeListener colorChangeListener;
     private RelativeLayout panelHeader;
     private TextView messagesCountTV;
+    private PollFish pollFish;
+    private ProgressDialog surveyDialog;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        ButterKnife.bind(this);
+        pollFish = PollFish.get();
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         PROFILE = getString(R.string.profileText);
@@ -128,6 +154,8 @@ public class HomeActivity extends BaseActivity
             startMessageDownloadService();
         }
 
+        surveyDialog = new ProgressDialog(this);
+        surveyDialog.setCanceledOnTouchOutside(false);
 
         if (!mSharedHelper.isSecurityQuestionSet() && isAccountRecoverable()) {
             View warningView = getLayoutInflater().inflate(R.layout.app_warning_view, null);
@@ -189,7 +217,9 @@ public class HomeActivity extends BaseActivity
                 super.onDrawerClosed(view);
             }
 
-            /** Called when a drawer has settled in a completely open state. */
+            /**
+             * Called when a drawer has settled in a completely open state.
+             */
             public void onDrawerOpened(View drawerView) {
                 Keyboard.hideKeyboard(HomeActivity.this);
                 super.onDrawerOpened(drawerView);
@@ -216,6 +246,9 @@ public class HomeActivity extends BaseActivity
         panelHeader = (RelativeLayout) headerView.findViewById(R.id.panelHeader);
         navigationView.setNavigationItemSelectedListener(this);
         LocalBroadcastManager.getInstance(this).registerReceiver(feedUpdateReceiver, new IntentFilter(getPackageName() + "HomeActivity"));
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
 
@@ -319,6 +352,12 @@ public class HomeActivity extends BaseActivity
             }
         }
     };
+
+
+    @OnClick(R.id.earnCoins)
+    public void earnClicked() {
+        initPollFish();
+    }
 
     private void getCoins() {
         coinsText.setText(getString(R.string.updating));
@@ -804,6 +843,16 @@ public class HomeActivity extends BaseActivity
         super.onResume();
     }
 
+    private void initPollFish() {
+        surveyDialog.setTitle(getString(R.string.loadingText));
+        surveyDialog.setMessage(getString(R.string.loadingSurvey));
+        surveyDialog.show();
+        pollFish.setActivity(this);
+        pollFish.initPollFish();
+        pollFish.hidePollFish();
+    }
+
+
     private void loadImage() {
         if (mSharedHelper.hasImage()) {
 
@@ -1029,4 +1078,116 @@ public class HomeActivity extends BaseActivity
             }
         }
     }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Home Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
+    }
+
+
+    @Override
+    public void onUserNotEligible() {
+
+    }
+
+    @Override
+    public void onPollfishClosed() {
+    }
+
+    @Override
+    public void onPollfishOpened() {
+    }
+
+    @Override
+    public void onPollfishSurveyCompleted(boolean b, int i) {
+        surveyDialog.dismiss();
+        getReward();
+    }
+
+    private void getReward() {
+        surveyDialog.setTitle(getString(R.string.loadingText));
+        surveyDialog.setMessage(getString(R.string.redeeming));
+        surveyDialog.show();
+        Call<ResponseBody> getRewardCall = Retrofit.getInstance().getInkService().getReward(mSharedHelper.getUserId(), Constants.POLLFISH_TOKEN);
+        getRewardCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    getReward();
+                    return;
+                }
+                if (response.body() == null) {
+                    getReward();
+                    return;
+                }
+                surveyDialog.dismiss();
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        String coins = jsonObject.optString("userCoins");
+                        User.get().setCoins(coins);
+                        coinsText.setText(getString(R.string.coinsText, Integer.valueOf(coins)));
+                        Toast.makeText(HomeActivity.this, getString(R.string.redeemed), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(HomeActivity.this, getString(R.string.redeemError), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                surveyDialog.dismiss();
+                Toast.makeText(HomeActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onPollfishSurveyNotAvailable() {
+        surveyDialog.dismiss();
+        Toast.makeText(this, getString(R.string.noSurvey), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onPollfishSurveyReceived(boolean b, int i) {
+        pollFish.showPolfish();
+    }
+
 }

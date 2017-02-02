@@ -807,4 +807,10 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="blackJackTitle">BlackJack</string>
     <string name="blackJackDescription">Get on it going and win coins to spend!</string>
     <string name="freedomRunning">Could not complete the purchase as the freedom apk is running and conflicting with the purchase,if you try this couple times you will be banned</string>
+    <string name="earnCoins">Earn Free Coins</string>
+    <string name="loadingSurvey">Loading you\'r survey,please standby</string>
+    <string name="noSurvey">No survey available yet,try again later</string>
+    <string name="redeemError">Could not redeem you\'r reward...</string>
+    <string name="redeemed">%1$d coins redeemed</string>
+    <string name="redeeming">Redeeming coins,please wait...</string>
 </resources>

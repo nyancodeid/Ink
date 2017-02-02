@@ -811,4 +811,10 @@
     <string name="viewGames">Посмотреть Игры</string>
     <string name="blackJackTitle">BlackJack</string>
     <string name="blackJackDescription">Начните игру и заработайте много монет чтобы потратить в Инке!</string>
+    <string name="earnCoins">Заработать Бесплатные Монеты</string>
+    <string name="loadingSurvey">Загрузка вашего опроса, пожалуйста подождите</string>
+    <string name="noSurvey">Опросов пока что нету,попробуйте позже</string>
+    <string name="redeemError">Мы не смогли наличить ваши монеты</string>
+    <string name="redeemed">%1$d монет получено</string>
+    <string name="redeeming">Выплачиватываем монеты,пожалуйста подождите...</string>
 </resources>

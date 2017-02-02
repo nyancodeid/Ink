@@ -1,1 +1,1 @@
-include ':app', ':sampleapp', ':linkedin-sdk', ':eventsapp', ':explosionfield'
+include ':app', ':sampleapp', ':linkedin-sdk', ':eventsapp', ':explosionfield', ':pollfish-googleplay-4.3.1'

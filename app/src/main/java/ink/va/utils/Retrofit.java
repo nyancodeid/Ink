@@ -109,6 +109,11 @@ public class Retrofit {
         Call<ResponseBody> changeMembership(@Field("user_id") String userId,
                                             @Field("membershipType") String user_id);
 
+        @POST(Constants.POLLFISH_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> getReward(@Field("userId") String userId,
+                                     @Field("token") String token);
+
 
         @POST(Constants.BADGE_SHOP_URL)
         @FormUrlEncoded
@@ -117,8 +122,8 @@ public class Retrofit {
         @POST(Constants.BADGE_SHOP_URL)
         @FormUrlEncoded
         Call<ResponseBody> buyBadge(@Field("type") String actionType,
-                                      @Field("userId") String userId,
-                                      @Field("badgeId") String badgeId);
+                                    @Field("userId") String userId,
+                                    @Field("badgeId") String badgeId);
 
         @POST(Constants.VIP_GLOBAL_CHAT_URL)
         @FormUrlEncoded
