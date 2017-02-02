@@ -818,4 +818,5 @@
     <string name="redeemed">%1$d монет получено</string>
     <string name="redeeming">Выплачиватываем монеты,пожалуйста подождите...</string>
     <string name="notEligible">Вы не допускаетесь к опросу</string>
+    <string name="freedomRunning">Не смогли завершить покупку так как приложение Freedom запущено,если вы попытаетесь несколько раз подряд сделать то же самое,вы будете забанены</string>
 </resources>
