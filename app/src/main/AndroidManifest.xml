@@ -307,7 +307,8 @@
         <activity
             android:name="ink.va.activities.About"
             android:screenOrientation="portrait" />
-        <activity android:name="ink.va.activities.GamesActivity"></activity>
+        <activity android:name="ink.va.activities.GamesActivity" />
+        <activity android:name="ink.va.activities.BlackJack"></activity>
     </application>
 
 </manifest>
