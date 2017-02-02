@@ -92,6 +92,6 @@ dependencies {
     compile project(':linkedin-sdk')
     compile project(path: ':explosionfield')
     compile 'com.google.android.gms:play-services-appindexing:9.0.2'
-    compile project(':pollfish-googleplay-4.3.1')
+    compile files('src/main/libs/pollfish-googleplay-4.3.1.jar')
 }
 apply plugin: 'com.google.gms.google-services'

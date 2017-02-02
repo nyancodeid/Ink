@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="D:\Ink\linkedin-sdk\src\main\assets"/><source path="D:\Ink\linkedin-sdk\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="D:\Ink\linkedin-sdk\src\debug\assets"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="E:\Ink\linkedin-sdk\src\main\assets"/><source path="E:\Ink\linkedin-sdk\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="E:\Ink\linkedin-sdk\src\debug\assets"/></dataSet></merger>
