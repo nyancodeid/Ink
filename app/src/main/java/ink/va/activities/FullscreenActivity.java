@@ -35,6 +35,8 @@ public class FullscreenActivity extends BaseActivity {
     ProgressBar loadingProgressBar;
     @Bind(R.id.gifHolder)
     ImageView gifHolder;
+    @Bind(R.id.download_icon)
+    View downloadIcon;
     private boolean mVisible;
     private ActionBar actionBar;
     private boolean isDataLoaded;
@@ -58,6 +60,12 @@ public class FullscreenActivity extends BaseActivity {
 
         if (extras != null) {
             fullUrlToLoad = extras.getString("link");
+
+            if (fullUrlToLoad.contains("Sticker")) {
+                downloadIcon.setVisibility(View.GONE);
+            } else {
+                downloadIcon.setVisibility(View.VISIBLE);
+            }
 
             gifHolder.setVisibility(View.GONE);
             mImageView.setVisibility(View.VISIBLE);
