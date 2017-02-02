@@ -49,7 +49,8 @@ public class RealmHelper {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                mRealmConfiguration = new RealmConfiguration.Builder(context)
+                Realm.init(context);
+                mRealmConfiguration = new RealmConfiguration.Builder()
                         .name("messages.realm")
                         .deleteRealmIfMigrationNeeded()
                         .build();
