@@ -813,4 +813,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="redeemError">Could not redeem you\'r reward...</string>
     <string name="redeemed">%1$d coins redeemed</string>
     <string name="redeeming">Redeeming coins,please wait...</string>
+    <string name="notEligible">You are not eligible for survey...</string>
 </resources>

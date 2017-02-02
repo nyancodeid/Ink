@@ -1118,7 +1118,8 @@ public class HomeActivity extends BaseActivity
 
     @Override
     public void onUserNotEligible() {
-
+        surveyDialog.dismiss();
+        Toast.makeText(this, getString(R.string.notEligible), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -1127,6 +1128,7 @@ public class HomeActivity extends BaseActivity
 
     @Override
     public void onPollfishOpened() {
+        surveyDialog.dismiss();
     }
 
     @Override
@@ -1187,7 +1189,7 @@ public class HomeActivity extends BaseActivity
 
     @Override
     public void onPollfishSurveyReceived(boolean b, int i) {
-        pollFish.showPolfish();
+        pollFish.showPolFish();
     }
 
 }

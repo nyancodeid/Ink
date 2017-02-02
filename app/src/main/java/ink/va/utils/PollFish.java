@@ -32,7 +32,7 @@ public class PollFish {
         com.pollfish.main.PollFish.hide();
     }
 
-    public void showPolfish() {
+    public void showPolFish() {
         com.pollfish.main.PollFish.show();
     }
 

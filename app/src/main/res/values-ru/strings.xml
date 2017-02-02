@@ -817,4 +817,5 @@
     <string name="redeemError">Мы не смогли наличить ваши монеты</string>
     <string name="redeemed">%1$d монет получено</string>
     <string name="redeeming">Выплачиватываем монеты,пожалуйста подождите...</string>
+    <string name="notEligible">Вы не допускаетесь к опросу</string>
 </resources>
