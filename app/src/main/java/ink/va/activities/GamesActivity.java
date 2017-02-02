@@ -1,5 +1,6 @@
 package ink.va.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -52,6 +53,7 @@ public class GamesActivity extends BaseActivity implements ItemClickListener {
         GameModel gameModel = (GameModel) clickedItem;
         switch (gameModel.getGameType()) {
             case GAME_BLACK_JACK:
+                startActivity(new Intent(this, BlackJack.class));
                 break;
         }
     }

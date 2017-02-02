@@ -307,8 +307,13 @@
         <activity
             android:name="ink.va.activities.About"
             android:screenOrientation="portrait" />
-        <activity android:name="ink.va.activities.GamesActivity" />
-        <activity android:name="ink.va.activities.BlackJack"></activity>
+        <activity
+            android:name="ink.va.activities.GamesActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="ink.va.activities.BlackJack"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
