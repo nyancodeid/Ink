@@ -815,4 +815,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="redeeming">Redeeming coins,please wait...</string>
     <string name="notEligible">You are not eligible for survey...</string>
     <string name="games_in_beta">Games are in beta yet</string>
+    <string name="player_hand">You\'r hand is %1$s</string>
 </resources>

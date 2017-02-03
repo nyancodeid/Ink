@@ -21,4 +21,8 @@ public class Random {
         return RANDOM.nextInt(upper);
     }
 
+    public static int getRandomNumberInRange(int min, int max) {
+        java.util.Random r = new java.util.Random();
+        return r.nextInt((max - min) + 1) + min;
+    }
 }

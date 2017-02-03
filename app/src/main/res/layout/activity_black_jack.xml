@@ -34,6 +34,15 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/playerScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/playerLayout"
+        android:layout_centerHorizontal="true"
+        android:text="@string/player_hand"
+        android:textColor="@color/vk_white" />
+
     <!--The Player Place-->
     <LinearLayout
         android:id="@+id/playerLayout"
@@ -44,24 +53,6 @@
         android:paddingBottom="10dp"
         android:paddingTop="10dp">
 
-        <ImageView
-            android:id="@+id/playerFirstCard"
-            android:layout_width="120dp"
-            android:layout_height="160dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="-70dp"
-            android:layout_toLeftOf="@+id/playerSecondCard"
-            android:background="@drawable/ten_black_arrow">
-
-        </ImageView>
-
-        <ImageView
-            android:id="@+id/playerSecondCard"
-            android:layout_width="120dp"
-            android:layout_height="160dp"
-            android:background="@drawable/ten_red_arrow"></ImageView>
-
     </LinearLayout>
 
     <Button
@@ -70,4 +61,12 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="Ask For A Card" />
+
+    <Button
+        android:id="@+id/stand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/flipIt"
+        android:text="stand" />
 </RelativeLayout>
