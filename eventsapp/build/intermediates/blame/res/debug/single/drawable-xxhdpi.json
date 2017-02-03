@@ -112,12 +112,12 @@
         "source": "D:\\Ink\\eventsapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xxhdpi\\abc_ic_cab_done_holo_dark.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\abc_ab_transparent_light_holo.9.png",
-        "source": "D:\\Ink\\eventsapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xxhdpi\\abc_ab_transparent_light_holo.9.png"
-    },
-    {
         "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\abc_ab_bottom_transparent_dark_holo.9.png",
         "source": "D:\\Ink\\eventsapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xxhdpi\\abc_ab_bottom_transparent_dark_holo.9.png"
+    },
+    {
+        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\abc_ab_transparent_light_holo.9.png",
+        "source": "D:\\Ink\\eventsapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xxhdpi\\abc_ab_transparent_light_holo.9.png"
     },
     {
         "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\abc_textfield_search_right_selected_holo_light.9.png",
@@ -172,12 +172,12 @@
         "source": "D:\\Ink\\eventsapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xxhdpi\\abc_textfield_search_right_default_holo_light.9.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\abc_list_selector_disabled_holo_dark.9.png",
-        "source": "D:\\Ink\\eventsapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xxhdpi\\abc_list_selector_disabled_holo_dark.9.png"
-    },
-    {
         "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\abc_cab_background_bottom_holo_light.9.png",
         "source": "D:\\Ink\\eventsapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xxhdpi\\abc_cab_background_bottom_holo_light.9.png"
+    },
+    {
+        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\abc_list_selector_disabled_holo_dark.9.png",
+        "source": "D:\\Ink\\eventsapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xxhdpi\\abc_list_selector_disabled_holo_dark.9.png"
     },
     {
         "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\abc_ic_go.png",
@@ -272,11 +272,11 @@
         "source": "D:\\Ink\\eventsapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xxhdpi\\abc_ic_clear_search_api_holo_light.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\abc_textfield_search_right_selected_holo_dark.9.png",
-        "source": "D:\\Ink\\eventsapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xxhdpi\\abc_textfield_search_right_selected_holo_dark.9.png"
-    },
-    {
         "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\abc_ic_voice_search_api_holo_light.png",
         "source": "D:\\Ink\\eventsapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xxhdpi\\abc_ic_voice_search_api_holo_light.png"
+    },
+    {
+        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\abc_textfield_search_right_selected_holo_dark.9.png",
+        "source": "D:\\Ink\\eventsapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\drawable-xxhdpi\\abc_textfield_search_right_selected_holo_dark.9.png"
     }
 ]

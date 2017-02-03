@@ -9,8 +9,6 @@ import android.view.View;
 
 import com.ink.va.R;
 
-import java.util.List;
-
 import ink.va.utils.ProcessManager;
 import ink.va.utils.SharedHelper;
 
@@ -22,7 +20,7 @@ public class SplashScreen extends AppCompatActivity {
     private String amazonKeyHash = "C2MtEkZmc42C5GvtiILtYM+/OI8=";
     private SharedHelper sharedHelper;
     private View splashRootView;
-    private boolean isFreedomRunning;
+    private boolean hasHacks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +39,9 @@ public class SplashScreen extends AppCompatActivity {
             isAppOriginal = true;
         }
 
-        List<String> processes = ProcessManager.getRunningProcesses(this);
-        for (String process : processes) {
-            if (process.contains("freedom")) {
-                isFreedomRunning = true;
-                break;
-            }
-        }
+        hasHacks = ProcessManager.hasHacks(this);
 
-        if (isFreedomRunning) {
+        if (hasHacks) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getString(R.string.freedomTitle));
             builder.setMessage(getString(R.string.freedomText));

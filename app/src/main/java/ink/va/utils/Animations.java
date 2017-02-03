@@ -2,6 +2,7 @@ package ink.va.utils;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.AnimRes;
 import android.support.annotation.Nullable;
@@ -140,5 +141,31 @@ public class Animations {
             lastPosition = position;
         }
         return lastPosition;
+    }
+
+    public static void flip(final View viewToFlip, final Drawable resourceToApply) {
+        viewToFlip.setRotationY(0f);
+        viewToFlip.animate().rotationY(90f).setListener(new Animator.AnimatorListener() {
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                viewToFlip.setBackground(resourceToApply);
+                viewToFlip.setRotationY(270f);
+                viewToFlip.animate().rotationY(360f).setListener(null);
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+        });
     }
 }

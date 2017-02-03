@@ -62,7 +62,7 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
     private SwipeRefreshLayout coinsRefresh;
     private CoinsAdapter coinsAdapter;
     private Gson gson;
-    private boolean isFreedomRunning;
+    private boolean hasHacks;
 
 
     @Override
@@ -188,16 +188,9 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
             String dataSignature = data.getStringExtra("INAPP_DATA_SIGNATURE");
 
             if (resultCode == RESULT_OK) {
-                isFreedomRunning = false;
-                List<String> processes = ProcessManager.getRunningProcesses(this);
-                for (String process : processes) {
-                    if (process.contains("freedom")) {
-                        isFreedomRunning = true;
-                        break;
-                    }
-                }
+                hasHacks = ProcessManager.hasHacks(this);
 
-                if (isFreedomRunning) {
+                if (hasHacks) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(BuyCoins.this);
                     builder.setTitle(getString(R.string.error));
                     builder.setMessage(getString(R.string.freedomRunning));
