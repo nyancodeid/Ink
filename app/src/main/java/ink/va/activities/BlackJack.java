@@ -136,7 +136,7 @@ public class BlackJack extends BaseActivity {
         int randomNumber = Random.getRandomNumberInRange(1, 52);
         switch (randomNumber) {
             case 1:
-                if (playerSumCount >= blackJack) {
+                if (playerSumCount + 11 >= blackJack) {
                     playerCount = 1;
                 } else {
                     playerCount = 11;
@@ -193,7 +193,7 @@ public class BlackJack extends BaseActivity {
 
                 return ContextCompat.getDrawable(this, R.drawable.king_red_heart);
             case 15:
-                if (playerSumCount >= blackJack) {
+                if (playerSumCount + 11 >= blackJack) {
                     playerCount = 1;
                 } else {
                     playerCount = 11;
@@ -249,7 +249,7 @@ public class BlackJack extends BaseActivity {
 
                 return ContextCompat.getDrawable(this, R.drawable.king_black_heart);
             case 28:
-                if (playerSumCount >= blackJack) {
+                if (playerSumCount + 11 >= blackJack) {
                     playerCount = 1;
                 } else {
                     playerCount = 11;
@@ -305,7 +305,7 @@ public class BlackJack extends BaseActivity {
 
                 return ContextCompat.getDrawable(this, R.drawable.king_red_arrow);
             case 41:
-                if (playerSumCount >= blackJack) {
+                if (playerSumCount + 11 >= blackJack) {
                     playerCount = 1;
                 } else {
                     playerCount = 11;
