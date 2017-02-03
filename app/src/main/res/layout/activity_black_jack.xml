@@ -40,18 +40,31 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/takeCard"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/buttonsWrapper"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="@string/takeCard" />
+        android:layout_above="@+id/playerScore"
+        android:gravity="center">
 
-    <Button
-        android:id="@+id/openCards"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/takeCard"
-        android:text="@string/openCards" />
+        <Button
+            android:id="@+id/takeCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/glass_button"
+            android:text="@string/takeCard"
+            android:textColor="@color/vk_white" />
+
+        <Button
+            android:id="@+id/openCards"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/takeCard"
+            android:background="@drawable/glass_button"
+            android:text="@string/openCards"
+            android:textColor="@color/vk_white" />
+    </LinearLayout>
 </RelativeLayout>
