@@ -821,4 +821,11 @@
     <string name="freedomRunning">Не смогли завершить покупку так как приложение Freedom запущено,если вы попытаетесь несколько раз подряд сделать то же самое,вы будете забанены</string>
     <string name="games_in_beta">Игры пока что в Бета тестировании</string>
     <string name="player_hand">Ваша рука составляет %1$s</string>
+    <string name="blackjack_hit">У вас BlackJack,будьте осторожни</string>
+    <string name="you_lost">Вы проиграли...</string>
+    <string name="restart">Перезапустить?</string>
+    <string name="takeCard">Взять карту</string>
+    <string name="openCards">Открыть карты</string>
+    <string name="you_won">Вы выграли %1$d монет!</string>
+    <string name="draw">Ничья : Возврат монет</string>
 </resources>

@@ -816,4 +816,11 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="notEligible">You are not eligible for survey...</string>
     <string name="games_in_beta">Games are in beta yet</string>
     <string name="player_hand">You\'r hand is %1$s</string>
+    <string name="blackjack_hit">You\'ve got BlackJack be careful</string>
+    <string name="you_lost">You\'ve lost...</string>
+    <string name="restart">Restart?</string>
+    <string name="takeCard">Take Card</string>
+    <string name="openCards">Open Cards</string>
+    <string name="you_won">You won %1$d coins!</string>
+    <string name="draw">Game on draw : Coins Back</string>
 </resources>

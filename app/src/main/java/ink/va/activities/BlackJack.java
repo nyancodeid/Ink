@@ -3,7 +3,9 @@ package ink.va.activities;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -34,8 +36,10 @@ public class BlackJack extends BaseActivity {
     LinearLayout dealerLayout;
     @BindView(R.id.playerScore)
     TextView playerScore;
-    @BindView(R.id.flipIt)
-    Button flipIt;
+    @BindView(R.id.takeCard)
+    Button takeCard;
+    @BindView(R.id.openCards)
+    Button openCards;
     private Animation fadeInAnimation;
     private int blackJack = 21;
     private List<Integer> dealerCountArray;
@@ -83,18 +87,9 @@ public class BlackJack extends BaseActivity {
         drawDealerCard(true, null);
     }
 
-    @OnClick(R.id.flipIt)
-    public void flipItClicked() {
-        if (restart) {
-            flipIt.setText("ask for a card");
-            endGame();
-            restart = false;
-            drawGame();
-        } else {
-            flipIt.setText("Flip It");
-            drawPlayerCard(true, null);
-        }
-
+    @OnClick(R.id.takeCard)
+    public void takeCardClicked() {
+        drawPlayerCard(true, null);
     }
 
     private void drawPlayerCard(boolean applyMargin, @Nullable GeneralCallback generalCallback) {
@@ -153,7 +148,7 @@ public class BlackJack extends BaseActivity {
 
     }
 
-    @OnClick(R.id.stand)
+    @OnClick(R.id.openCards)
     public void stand() {
         openDealersCard();
     }
@@ -216,15 +211,52 @@ public class BlackJack extends BaseActivity {
 
     private void openDealersCard() {
         checkDealerHand();
+        changeButtons(false);
         restart = true;
-        flipIt.setText("restart");
         for (int i = 0; i < dealersHiddenImageView.size(); i++) {
             Drawable drawable = dealersHiddenCard.get(i);
             ImageView imageView = dealersHiddenImageView.get(i);
             Animations.flip(imageView, drawable);
         }
 
+        if (dealerSumCount > playerSumCount) {
+            Snackbar.make(dealerLayout, getString(R.string.you_lost), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    restartGame();
+                }
+            }).show();
+        } else if (dealerSumCount < playerSumCount) {
+            Snackbar.make(dealerLayout, getString(R.string.you_won), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    restartGame();
+                }
+            }).show();
+        } else if (dealerSumCount == playerSumCount) {
+            Snackbar.make(dealerLayout, getString(R.string.draw), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    restartGame();
+                }
+            }).show();
+        }
+
         Toast.makeText(this, "dealers hand is " + dealerSumCount, Toast.LENGTH_SHORT).show();
+    }
+
+    private void changeButtons(boolean enabled) {
+        if (enabled) {
+            takeCard.setEnabled(true);
+            takeCard.setAlpha(1);
+            openCards.setEnabled(true);
+            openCards.setAlpha(1);
+        } else {
+            takeCard.setEnabled(false);
+            takeCard.setAlpha((float) 0.7);
+            openCards.setEnabled(false);
+            openCards.setAlpha((float) 0.7);
+        }
     }
 
 
@@ -736,38 +768,39 @@ public class BlackJack extends BaseActivity {
         if (playerSumCount > blackJack) {
             //the game has ended for the player
             playerScore.setText(getString(R.string.player_hand, playerSumCount));
-            flipIt.setText("restart");
             restart = true;
+            Snackbar.make(dealerLayout, getString(R.string.you_lost), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    restartGame();
+                }
+            }).show();
         } else {
-            //check the AI logic of dealer to see if we need to grab the new card
-            checkDealerHand();
             playerScore.setText(getString(R.string.player_hand, playerSumCount));
             if (maxCardsExceeded()) {
                 restart = true;
-                flipIt.setText("restart");
                 playerScore.setText(getString(R.string.player_hand, playerSumCount));
                 openDealersCard();
 
             } else {
-                if (playerCountArray.size() == 2 && playerCountArray.get(0) + playerCountArray.get(1) == blackJack) {
-                    boolean dealerHasBlackJack = false;
-                    //meaning user has the black jack,now check the dealers hand see if the dealer got the 10
-                    for (int dealersCount : dealerCountArray) {
-                        if (dealersCount == 10) {
-                            dealerHasBlackJack = true;
+                if (playerSumCount == blackJack) {
+                    Snackbar.make(dealerLayout, getString(R.string.blackjack_hit), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
                         }
-                    }
-                    if (dealerHasBlackJack) {
-                        Toast.makeText(this, "dealer has black jack", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "dealer has not  black jack", Toast.LENGTH_SHORT).show();
-                    }
-                } else if (playerSumCount == blackJack) {
-                    Toast.makeText(this, "you have black jack now be careful", Toast.LENGTH_SHORT).show();
+                    }).show();
                 }
             }
         }
 
+    }
+
+    private void restartGame() {
+        endGame();
+        restart = false;
+        drawGame();
+        changeButtons(true);
     }
 
     private void endGame() {

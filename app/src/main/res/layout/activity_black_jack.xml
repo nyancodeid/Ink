@@ -41,17 +41,17 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/flipIt"
+        android:id="@+id/takeCard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="Ask For A Card" />
+        android:text="@string/takeCard" />
 
     <Button
-        android:id="@+id/stand"
+        android:id="@+id/openCards"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/flipIt"
-        android:text="stand" />
+        android:layout_toRightOf="@+id/takeCard"
+        android:text="@string/openCards" />
 </RelativeLayout>
