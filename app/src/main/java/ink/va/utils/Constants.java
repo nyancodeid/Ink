@@ -26,6 +26,7 @@ public class Constants {
     public static final String CHANGE_VIP_MEMBERSHIP = "ChangeVipMembership.php";
     public static final String CHECK_BAN_URL = "CheckBan.php";
     public static final String WHO_VIEWED_URL = "WhoViewed.php";
+    public static final String USER_COINS_UPDATE = "CoinsUpdate.php";
     public static final String GROUP_REQUESTS_URL = "GetUserRequests.php";
     public static final String VIP_GLOBAL_CHAT_URL = "VipGlobalChat.php";
     public static final String USER_GIFS_URL = "GetUserGifs.php";
@@ -130,6 +131,7 @@ public class Constants {
     public static final String FUNNY_USER_IMAGE = "funny_image.jpg";
     public static final int TEXT_VIEW_DEFAULT_COLOR = android.R.color.tab_indicator_text;
     public static final String TREND_CATEGORIES_TOKEN = "Fasfklasgjp_KIkGPKAGKA=ga558787as785as-as6539sa-6gas32-ga6s";
+    public static final String USER_COINS_TOKEN = "Fsalkghasfiugehwt34t04334-2:2io5l25:f:::Faskl80-r03fas-=2q935saf5a223419ga65z23....265";
     public static final String DELETE_MESSAGE_REQUESTED = "deleteSingleMessageRequested";
     public static final int BUY_COINS_REQUEST_CODE = 196;
     public static final int REQUEST_CUSTOMIZE_MADE = 78;

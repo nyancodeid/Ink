@@ -823,4 +823,12 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="openCards">Open Cards</string>
     <string name="you_won">You won %1$d coins!</string>
     <string name="draw">Game on draw : Coins Back</string>
+    <string name="blackjack_home_text">Welcome to BlackJack,
+        enjoy you\'r time while playing the game and getting Ink Coins to spend around the application. You can choose the Pot based on you\'r taste.</string>
+    <string name="low_pot">1 coins pot</string>
+    <string name="medium_pot">5 coins pot</string>
+    <string name="high_pot">10 coins pot</string>
+    <string name="hack_engine_detected">Sorry,we have detected
+        cheat engine running on you\'r device at the moment and we can not
+        let you proceed,be aware of that if you continue using it multiple times you will be banned. Please turn any cheat engine off or delete them and come back again.</string>
 </resources>

@@ -1,10 +1,13 @@
 package ink.va.activities;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -49,10 +52,10 @@ public class BlackJack extends BaseActivity {
     private int dealerCount;
     private int playerSumCount;
     private int dealerSumCount;
-    private boolean restart;
     private List<Drawable> dealersHiddenCard;
     private List<ImageView> dealersHiddenImageView;
     private int dealerMinimumHand = 17;
+    private int maximumPot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +66,9 @@ public class BlackJack extends BaseActivity {
         playerCountArray = new LinkedList<>();
         dealersHiddenCard = new LinkedList<>();
         dealersHiddenImageView = new LinkedList<>();
-
+        maximumPot = getIntent().getExtras() != null ? getIntent().getExtras().getInt("pot") : 0;
         fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_fast);
 
-        if (ProcessManager.hasHacks(this)) {
-
-        } else {
-
-        }
 
         playerLayout.post(new Runnable() {
             @Override
@@ -78,6 +76,33 @@ public class BlackJack extends BaseActivity {
                 drawGame();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (ProcessManager.hasHacks(this)) {
+            AlertDialog alertDialog;
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setCancelable(false);
+            builder.setTitle(getString(R.string.error));
+            builder.setMessage(getString(R.string.hack_engine_detected));
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            alertDialog = builder.show();
+            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                    finish();
+                }
+            });
+
+        }
     }
 
     private void drawGame() {
@@ -212,7 +237,6 @@ public class BlackJack extends BaseActivity {
     private void openDealersCard() {
         checkDealerHand();
         changeButtons(false);
-        restart = true;
         for (int i = 0; i < dealersHiddenImageView.size(); i++) {
             Drawable drawable = dealersHiddenCard.get(i);
             ImageView imageView = dealersHiddenImageView.get(i);
@@ -775,7 +799,6 @@ public class BlackJack extends BaseActivity {
         if (playerSumCount > blackJack) {
             //the game has ended for the player
             playerScore.setText(getString(R.string.player_hand, playerSumCount));
-            restart = true;
             changeButtons(false);
             Snackbar.make(dealerLayout, getString(R.string.you_lost), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
                 @Override
@@ -786,7 +809,6 @@ public class BlackJack extends BaseActivity {
         } else {
             playerScore.setText(getString(R.string.player_hand, playerSumCount));
             if (maxCardsExceeded()) {
-                restart = true;
                 playerScore.setText(getString(R.string.player_hand, playerSumCount));
                 openDealersCard();
 
@@ -806,7 +828,6 @@ public class BlackJack extends BaseActivity {
 
     private void restartGame() {
         endGame();
-        restart = false;
         drawGame();
         changeButtons(true);
     }

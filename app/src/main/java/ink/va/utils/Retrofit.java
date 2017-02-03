@@ -195,6 +195,12 @@ public class Retrofit {
                                               @Field("longitude") String longitude,
                                               @Field("latitude") String latitude);
 
+        @POST(Constants.USER_COINS_UPDATE)
+        @FormUrlEncoded
+        Call<ResponseBody> silentCoinsUpdate(@Field("userId") String userId,
+                                              @Field("coinsAmount") String coinsAmount,
+                                              @Field("coinsToken") String coinsToken);
+
         @POST(Constants.SEARCH_GROUP_URL)
         @FormUrlEncoded
         Call<ResponseBody> searchGroups(@Field("userId") String userId,

@@ -468,9 +468,8 @@ public class HomeActivity extends BaseActivity
                 callToVipServer(Constants.TYPE_ENTER_VIP);
                 break;
             case R.id.games:
-                Toast.makeText(this, getString(R.string.games_in_beta), Toast.LENGTH_SHORT).show();
                 shouldOpenActivity = true;
-                setLastClassToOpen(GamesActivity.class, false);
+                setLastClassToOpen(BlackJackHome.class, false);
                 break;
             case R.id.whoViewed:
                 shouldOpenActivity = true;
