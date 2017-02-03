@@ -2,6 +2,7 @@ package ink.va.activities;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -19,6 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.callbacks.GeneralCallback;
 import ink.va.utils.Animations;
 import ink.va.utils.ProcessManager;
 import ink.va.utils.Random;
@@ -44,6 +46,9 @@ public class BlackJack extends BaseActivity {
     private int playerSumCount;
     private int dealerSumCount;
     private boolean restart;
+    private List<Drawable> dealersHiddenCard;
+    private List<ImageView> dealersHiddenImageView;
+    private int dealerMinimumHand = 17;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +57,8 @@ public class BlackJack extends BaseActivity {
         ButterKnife.bind(this);
         dealerCountArray = new LinkedList<>();
         playerCountArray = new LinkedList<>();
+        dealersHiddenCard = new LinkedList<>();
+        dealersHiddenImageView = new LinkedList<>();
 
         fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_fast);
 
@@ -70,8 +77,10 @@ public class BlackJack extends BaseActivity {
     }
 
     private void drawGame() {
-        drawPlayerCard(false);
-        drawPlayerCard(true);
+        drawPlayerCard(false, null);
+        drawPlayerCard(true, null);
+        drawDealerCard(false, null);
+        drawDealerCard(true, null);
     }
 
     @OnClick(R.id.flipIt)
@@ -83,24 +92,24 @@ public class BlackJack extends BaseActivity {
             drawGame();
         } else {
             flipIt.setText("Flip It");
-            drawPlayerCard(true);
+            drawPlayerCard(true, null);
         }
 
     }
 
-    private void drawPlayerCard(boolean applyMargin) {
-        final Drawable newCard = getRandomCard();
-        sumUpPlayer();
-        openNewCard(false, applyMargin, newCard);
+    private void drawPlayerCard(boolean applyMargin, @Nullable GeneralCallback generalCallback) {
+        final Drawable newCard = getRandomCard(false);
+        sumUpHandValue(false);
+        openNewCard(false, applyMargin, newCard, generalCallback);
     }
 
-    private void drawDealerCard(boolean applyMargin) {
-        final Drawable newCard = getRandomCard();
-        sumUpPlayer();
-        openNewCard(false, applyMargin, newCard);
+    private void drawDealerCard(boolean applyMargin, @Nullable GeneralCallback generalCallback) {
+        final Drawable newCard = getRandomCard(true);
+        sumUpHandValue(true);
+        openNewCard(true, applyMargin, newCard, generalCallback);
     }
 
-    private void openNewCard(boolean dealersCard, boolean applyMargin, final Drawable newCard) {
+    private void openNewCard(boolean dealersCard, boolean applyMargin, final Drawable newCard, GeneralCallback generalCallback) {
         final ImageView imageView = new ImageView(this);
         imageView.setBackground(ContextCompat.getDrawable(this, R.drawable.card_background));
         imageView.setLayoutParams(new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen.image_view_width), (int) getResources().getDimension(R.dimen.image_view_height)));
@@ -113,249 +122,609 @@ public class BlackJack extends BaseActivity {
             playerLayout.addView(imageView);
         }
         imageView.startAnimation(fadeInAnimation);
-        Animations.flip(imageView, newCard);
+        if (applyMargin && dealersCard) {
+            dealersHiddenCard.add(newCard);
+            dealersHiddenImageView.add(imageView);
+        }
+        Animations.flip(imageView, applyMargin && dealersCard ? ContextCompat.getDrawable(this, R.drawable.card_background) : newCard);
+        if (generalCallback != null) {
+            generalCallback.onSuccess(null);
+        }
     }
 
-    private void sumUpPlayer() {
-        playerCountArray.add(playerCount);
-        int sum = 0;
-        for (int playerCurrentCount : playerCountArray) {
-            sum = sum + playerCurrentCount;
+    private void sumUpHandValue(boolean sumDealer) {
+        if (sumDealer) {
+            dealerCountArray.add(dealerCount);
+            int sum = 0;
+            for (int playerCurrentCount : dealerCountArray) {
+                sum = sum + playerCurrentCount;
+            }
+            dealerSumCount = sum;
+        } else {
+            playerCountArray.add(playerCount);
+            int sum = 0;
+            for (int playerCurrentCount : playerCountArray) {
+                sum = sum + playerCurrentCount;
+            }
+            playerSumCount = sum;
         }
-        playerSumCount = sum;
+
         checkBlackJackAndBurn();
 
     }
 
     @OnClick(R.id.stand)
     public void stand() {
-
+        openDealersCard();
     }
 
-    public Drawable getRandomCard() {
+    private void checkDealerHand() {
+        boolean checkDealerCards = false;
+        int randomLogic = Random.getRandomNumberInRange(0, 10);
+        switch (randomLogic) {
+            case 0:
+                checkDealerCards = true;
+                break;
+            case 1:
+                checkDealerCards = false;
+                break;
+            case 2:
+                checkDealerCards = false;
+                break;
+            case 3:
+                checkDealerCards = true;
+                break;
+            case 4:
+                checkDealerCards = true;
+                break;
+            case 5:
+                checkDealerCards = false;
+                break;
+            case 6:
+                checkDealerCards = false;
+                break;
+            case 7:
+                checkDealerCards = true;
+                break;
+            case 8:
+                checkDealerCards = false;
+                break;
+            case 9:
+                checkDealerCards = true;
+                break;
+            case 10:
+                checkDealerCards = true;
+                break;
+
+        }
+        if (checkDealerCards) {
+            if (dealerSumCount < dealerMinimumHand) {
+                drawDealerCard(true, new GeneralCallback() {
+                    @Override
+                    public void onSuccess(Object o) {
+                        checkDealerHand();
+                    }
+
+                    @Override
+                    public void onFailure(Object o) {
+
+                    }
+                });
+            }
+        }
+    }
+
+    private void openDealersCard() {
+        checkDealerHand();
+        restart = true;
+        flipIt.setText("restart");
+        for (int i = 0; i < dealersHiddenImageView.size(); i++) {
+            Drawable drawable = dealersHiddenCard.get(i);
+            ImageView imageView = dealersHiddenImageView.get(i);
+            Animations.flip(imageView, drawable);
+        }
+
+        Toast.makeText(this, "dealers hand is " + dealerSumCount, Toast.LENGTH_SHORT).show();
+    }
+
+
+    public Drawable getRandomCard(boolean dealerCard) {
         int randomNumber = Random.getRandomNumberInRange(1, 52);
         switch (randomNumber) {
             case 1:
-                if (playerSumCount + 11 >= blackJack) {
-                    playerCount = 1;
+                if (dealerCard) {
+                    if (dealerSumCount + 11 > blackJack) {
+                        dealerCount = 1;
+                    } else {
+                        dealerCount = 11;
+                    }
                 } else {
-                    playerCount = 11;
+                    if (playerSumCount + 11 > blackJack) {
+                        playerCount = 1;
+                    } else {
+                        playerCount = 11;
+                    }
                 }
+
                 return ContextCompat.getDrawable(this, R.drawable.ace_red_heart);
             case 2:
-                playerCount = 2;
+                if (dealerCard) {
+                    dealerCount = 2;
+                } else {
+                    playerCount = 2;
+                }
+
                 return ContextCompat.getDrawable(this, R.drawable.two_red_heart);
             case 3:
-                playerCount = 3;
+                if (dealerCard) {
+                    dealerCount = 3;
+                } else {
+                    playerCount = 3;
+                }
                 return ContextCompat.getDrawable(this, R.drawable.three_red_heart);
             case 4:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
 
                 return ContextCompat.getDrawable(this, R.drawable.king_black_arrow);
             case 5:
-                playerCount = 4;
+                if (dealerCard) {
+                    dealerCount = 4;
+                } else {
+                    playerCount = 4;
+                }
 
                 return ContextCompat.getDrawable(this, R.drawable.four_red_heart);
             case 6:
-                playerCount = 5;
+                if (dealerCard) {
+                    dealerCount = 5;
+                } else {
+                    playerCount = 5;
+                }
 
                 return ContextCompat.getDrawable(this, R.drawable.five_red_heart);
             case 7:
-                playerCount = 6;
+                if (dealerCard) {
+                    dealerCount = 6;
+                } else {
+                    playerCount = 6;
+                }
 
                 return ContextCompat.getDrawable(this, R.drawable.six_red_heart);
             case 8:
-                playerCount = 7;
+                if (dealerCard) {
+                    dealerCount = 7;
+                } else {
+                    playerCount = 7;
+                }
 
                 return ContextCompat.getDrawable(this, R.drawable.seven_red_heart);
             case 9:
-                playerCount = 8;
+                if (dealerCard) {
+                    dealerCount = 8;
+                } else {
+                    playerCount = 8;
+                }
 
                 return ContextCompat.getDrawable(this, R.drawable.eight_red_heart);
             case 10:
-                playerCount = 9;
+                if (dealerCard) {
+                    dealerCount = 9;
+                } else {
+                    playerCount = 9;
+                }
 
                 return ContextCompat.getDrawable(this, R.drawable.nine_red_heart);
             case 11:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
 
                 return ContextCompat.getDrawable(this, R.drawable.ten_red_heart);
             case 12:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
 
                 return ContextCompat.getDrawable(this, R.drawable.vallet_red_heart);
             case 13:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
 
                 return ContextCompat.getDrawable(this, R.drawable.queen_red_heart);
             case 14:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
 
                 return ContextCompat.getDrawable(this, R.drawable.king_red_heart);
             case 15:
-                if (playerSumCount + 11 >= blackJack) {
-                    playerCount = 1;
+
+                if (dealerCard) {
+                    if (dealerSumCount + 11 > blackJack) {
+                        dealerCount = 1;
+                    } else {
+                        dealerCount = 11;
+                    }
+
                 } else {
-                    playerCount = 11;
+                    if (playerSumCount + 11 > blackJack) {
+                        playerCount = 1;
+                    } else {
+                        playerCount = 11;
+                    }
+
                 }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.ace_black_heart);
             case 16:
-                playerCount = 2;
+                if (dealerCard) {
+                    dealerCount = 2;
+                } else {
+                    playerCount = 2;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.two_black_heart);
             case 17:
-                playerCount = 3;
+                if (dealerCard) {
+                    dealerCount = 3;
+                } else {
+                    playerCount = 3;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.three_black_heart);
             case 18:
-                playerCount = 4;
+                if (dealerCard) {
+                    dealerCount = 4;
+                } else {
+                    playerCount = 10;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.four_black_heart);
             case 19:
-                playerCount = 5;
+                if (dealerCard) {
+                    dealerCount = 5;
+                } else {
+                    playerCount = 5;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.five_black_heart);
             case 20:
 
-                playerCount = 6;
+                if (dealerCard) {
+                    dealerCount = 6;
+                } else {
+                    playerCount = 6;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.six_black_heart);
             case 21:
-                playerCount = 7;
+                if (dealerCard) {
+                    dealerCount = 7;
+                } else {
+                    playerCount = 7;
+                }
+
                 return ContextCompat.getDrawable(this, R.drawable.seven_black_heart);
             case 22:
-                playerCount = 8;
+                if (dealerCard) {
+                    dealerCount = 8;
+                } else {
+                    playerCount = 8;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.eight_black_heart);
             case 23:
-                playerCount = 9;
+                if (dealerCard) {
+                    dealerCount = 9;
+                } else {
+                    playerCount = 9;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.nine_black_heart);
             case 24:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.ten_black_heart);
             case 25:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.vallet_black_heart);
             case 26:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.queen_black_heart);
             case 27:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.king_black_heart);
             case 28:
-                if (playerSumCount + 11 >= blackJack) {
-                    playerCount = 1;
+                if (dealerCard) {
+                    if (dealerSumCount + 11 > dealerSumCount) {
+                        dealerCount = 1;
+                    } else {
+                        dealerCount = 11;
+                    }
+
                 } else {
-                    playerCount = 11;
+                    if (playerSumCount + 11 > blackJack) {
+                        playerCount = 1;
+                    } else {
+                        playerCount = 11;
+                    }
+
                 }
 
                 return ContextCompat.getDrawable(this, R.drawable.ace_red_arrow);
             case 29:
-                playerCount = 2;
+                if (dealerCard) {
+                    dealerCount = 2;
+                } else {
+                    playerCount = 2;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.two_red_arrow);
             case 30:
-                playerCount = 3;
+                if (dealerCard) {
+                    dealerCount = 3;
+                } else {
+                    playerCount = 3;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.three_red_arrow);
             case 31:
-                playerCount = 4;
+                if (dealerCard) {
+                    dealerCount = 4;
+                } else {
+                    playerCount = 4;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.four_red_arrow);
             case 32:
-                playerCount = 5;
+                if (dealerCard) {
+                    dealerCount = 5;
+                } else {
+                    playerCount = 5;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.five_red_arrow);
             case 33:
-                playerCount = 6;
+                if (dealerCard) {
+                    dealerCount = 6;
+                } else {
+                    playerCount = 6;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.six_red_arrow);
             case 34:
-                playerCount = 7;
+                if (dealerCard) {
+                    dealerCount = 7;
+                } else {
+                    playerCount = 7;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.seven_red_arrow);
             case 35:
-                playerCount = 8;
+                if (dealerCard) {
+                    dealerCount = 8;
+                } else {
+                    playerCount = 8;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.eight_red_arrow);
             case 36:
-                playerCount = 9;
+                if (dealerCard) {
+                    dealerCount = 9;
+                } else {
+                    playerCount = 9;
+                }
+
                 return ContextCompat.getDrawable(this, R.drawable.nine_red_arrow);
             case 37:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.ten_red_arrow);
             case 38:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.vallet_red_arrow);
             case 39:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.queen_red_arrow);
             case 40:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.king_red_arrow);
             case 41:
-                if (playerSumCount + 11 >= blackJack) {
-                    playerCount = 1;
+                if (dealerCard) {
+                    if (dealerSumCount + 11 > blackJack) {
+                        dealerCount = 1;
+                    } else {
+                        dealerCount = 11;
+                    }
                 } else {
-                    playerCount = 11;
+                    if (playerSumCount + 11 > blackJack) {
+                        playerCount = 1;
+                    } else {
+                        playerCount = 11;
+                    }
                 }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.ace_black_arrow);
             case 42:
-                playerCount = 2;
+                if (dealerCard) {
+                    dealerCount = 2;
+                } else {
+                    playerCount = 2;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.two_black_arrow);
             case 43:
-                playerCount = 3;
+                if (dealerCard) {
+                    dealerCount = 3;
+                } else {
+                    playerCount = 3;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.three_black_arrow);
             case 44:
-                playerCount = 4;
+                if (dealerCard) {
+                    dealerCount = 4;
+                } else {
+                    playerCount = 4;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.four_black_arrow);
             case 45:
-                playerCount = 5;
+                if (dealerCard) {
+                    dealerCount = 5;
+                } else {
+                    playerCount = 5;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.five_black_arrow);
             case 46:
-                playerCount = 6;
+                if (dealerCard) {
+                    dealerCount = 6;
+                } else {
+                    playerCount = 6;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.six_black_arrow);
             case 47:
-                playerCount = 7;
+                if (dealerCard) {
+                    dealerCount = 7;
+                } else {
+                    playerCount = 7;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.seven_black_arrow);
             case 48:
-                playerCount = 8;
+                if (dealerCard) {
+                    dealerCount = 8;
+                } else {
+                    playerCount = 8;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.eight_black_arrow);
             case 49:
-                playerCount = 9;
+                if (dealerCard) {
+                    dealerCount = 9;
+                } else {
+                    playerCount = 9;
+                }
+
                 return ContextCompat.getDrawable(this, R.drawable.nine_black_arrow);
             case 50:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.ten_black_arrow);
             case 51:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.vallet_black_arrow);
             case 52:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.queen_black_arrow);
             default:
-                playerCount = 10;
+                if (dealerCard) {
+                    dealerCount = 10;
+                } else {
+                    playerCount = 10;
+                }
+
 
                 return ContextCompat.getDrawable(this, R.drawable.king_black_arrow);
         }
@@ -365,13 +734,20 @@ public class BlackJack extends BaseActivity {
     private void checkBlackJackAndBurn() {
         //Meaning the player got 2 cards,so we need to check for the blackjack and we shall check if the player had burn while taking the cards
         if (playerSumCount > blackJack) {
+            //the game has ended for the player
             playerScore.setText(getString(R.string.player_hand, playerSumCount));
             flipIt.setText("restart");
             restart = true;
         } else {
+            //check the AI logic of dealer to see if we need to grab the new card
+            checkDealerHand();
             playerScore.setText(getString(R.string.player_hand, playerSumCount));
             if (maxCardsExceeded()) {
-                Toast.makeText(this, "must open cards automatically", Toast.LENGTH_SHORT).show();
+                restart = true;
+                flipIt.setText("restart");
+                playerScore.setText(getString(R.string.player_hand, playerSumCount));
+                openDealersCard();
+
             } else {
                 if (playerCountArray.size() == 2 && playerCountArray.get(0) + playerCountArray.get(1) == blackJack) {
                     boolean dealerHasBlackJack = false;
@@ -401,6 +777,10 @@ public class BlackJack extends BaseActivity {
         dealerCountArray.clear();
         dealerCount = 0;
         dealerSumCount = 0;
+        dealersHiddenImageView.clear();
+        dealersHiddenCard.clear();
+        dealerLayout.removeAllViews();
+        dealerLayout.invalidate();
         playerLayout.removeAllViews();
         playerLayout.invalidate();
     }

@@ -17,21 +17,6 @@
         android:paddingBottom="10dp"
         android:paddingTop="10dp">
 
-        <ImageView
-            android:id="@+id/dealerFirstCard"
-            android:layout_width="120dp"
-            android:layout_height="160dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="-70dp"
-            android:layout_toLeftOf="@+id/playerSecondCard"
-            android:background="@drawable/ten_black_arrow"></ImageView>
-
-        <ImageView
-            android:id="@+id/dealerSecondCard"
-            android:layout_width="120dp"
-            android:layout_height="160dp"
-            android:background="@drawable/card_background"></ImageView>
-
     </LinearLayout>
 
     <TextView
