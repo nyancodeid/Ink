@@ -469,8 +469,8 @@ public class HomeActivity extends BaseActivity
                 break;
             case R.id.games:
                 Toast.makeText(this, getString(R.string.games_in_beta), Toast.LENGTH_SHORT).show();
-                shouldOpenActivity = true;
-                setLastClassToOpen(GamesActivity.class, false);
+//                shouldOpenActivity = true;
+//                setLastClassToOpen(GamesActivity.class, false);
                 break;
             case R.id.whoViewed:
                 shouldOpenActivity = true;

@@ -511,6 +511,7 @@ public class RealmHelper {
                                     for (MessageModel messageModel : realmResults) {
                                         mModelArray.add(messageModel);
                                     }
+
                                     listGeneralCallback.onSuccess(mModelArray);
                                 }
                             });

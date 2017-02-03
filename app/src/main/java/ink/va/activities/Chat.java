@@ -833,8 +833,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
                 } else {
 
-                    for (int i = 0; i < messageModels.size(); i++) {
-                        MessageModel eachModel = messageModels.get(i);
+                    for (MessageModel eachModel : messageModels) {
                         String messageId = eachModel.getMessageId();
                         String opponentId = eachModel.getOpponentId();
                         String message = StringEscapeUtils.unescapeJava(eachModel.getMessage());
@@ -864,17 +863,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                             Snackbar.make(mRecyclerView, getString(R.string.unsent_message) + message, Snackbar.LENGTH_SHORT).show();
                             attemptToQue(message, mChatModelArrayList.indexOf(mChatModel), deleteOpponentId, deleteUserId, isGifChosen, gifUrl, isAnimated);
                         }
-
-                        notifyHandler = new Handler();
-                        notifyRunnable = new Runnable() {
-                            public void run() {
-                                int insertedItemPosition = mChatModelArrayList.indexOf(mChatModel);
-                                mChatAdapter.notifyItemInserted(insertedItemPosition);
-                                notifyHandler = null;
-                                notifyRunnable = null;
-                            }
-                        };
-                        notifyHandler.post(notifyRunnable);
                     }
 
                     if (mChatModelArrayList.size() <= 0) {
@@ -889,6 +877,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                     mRecyclerView.post(new Runnable() {
                         @Override
                         public void run() {
+                            mChatAdapter.notifyDataSetChanged();
                             mRecyclerView.scrollToPosition(mChatAdapter.getItemCount() - 1);
                         }
                     });
