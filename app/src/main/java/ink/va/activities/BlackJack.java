@@ -285,8 +285,7 @@ public class BlackJack extends BaseActivity {
 
                 return ContextCompat.getDrawable(this, R.drawable.eight_red_arrow);
             case 36:
-                playerCount = 8;
-
+                playerCount = 9;
                 return ContextCompat.getDrawable(this, R.drawable.nine_red_arrow);
             case 37:
                 playerCount = 10;
@@ -365,7 +364,6 @@ public class BlackJack extends BaseActivity {
 
     private void checkBlackJackAndBurn() {
         //Meaning the player got 2 cards,so we need to check for the blackjack and we shall check if the player had burn while taking the cards
-
         if (playerSumCount > blackJack) {
             playerScore.setText(getString(R.string.player_hand, playerSumCount));
             flipIt.setText("restart");
@@ -388,6 +386,8 @@ public class BlackJack extends BaseActivity {
                     } else {
                         Toast.makeText(this, "dealer has not  black jack", Toast.LENGTH_SHORT).show();
                     }
+                } else if (playerSumCount == blackJack) {
+                    Toast.makeText(this, "you have black jack now be careful", Toast.LENGTH_SHORT).show();
                 }
             }
         }
