@@ -219,14 +219,14 @@ public class BlackJack extends BaseActivity {
             Animations.flip(imageView, drawable);
         }
 
-        if (dealerSumCount > playerSumCount) {
+        if (dealerSumCount <= blackJack && dealerSumCount > playerSumCount) {
             Snackbar.make(dealerLayout, getString(R.string.you_lost), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     restartGame();
                 }
             }).show();
-        } else if (dealerSumCount < playerSumCount) {
+        } else if (dealerSumCount < playerSumCount && playerSumCount <= blackJack) {
             Snackbar.make(dealerLayout, getString(R.string.you_won), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -235,6 +235,13 @@ public class BlackJack extends BaseActivity {
             }).show();
         } else if (dealerSumCount == playerSumCount) {
             Snackbar.make(dealerLayout, getString(R.string.draw), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    restartGame();
+                }
+            }).show();
+        } else if (dealerSumCount > blackJack) {
+            Snackbar.make(dealerLayout, getString(R.string.you_won), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     restartGame();
@@ -769,6 +776,7 @@ public class BlackJack extends BaseActivity {
             //the game has ended for the player
             playerScore.setText(getString(R.string.player_hand, playerSumCount));
             restart = true;
+            changeButtons(false);
             Snackbar.make(dealerLayout, getString(R.string.you_lost), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
