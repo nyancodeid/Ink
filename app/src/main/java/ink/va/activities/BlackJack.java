@@ -101,11 +101,11 @@ public class BlackJack extends BaseActivity {
         }
 
         initCoinsPot();
-        silentCoinsUpdate();
     }
 
     private boolean initCoinsPot() {
         if (User.get().getCoins() < maximumPot) {
+            silentCoinsUpdate();
             Snackbar.make(dealerLayout, getString(R.string.not_enough_coins), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.buyCoins), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -122,6 +122,7 @@ public class BlackJack extends BaseActivity {
             int userLeftCoins = User.get().getCoins() - maximumPot;
             User.get().setCoins(userLeftCoins);
             coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
+            silentCoinsUpdate();
             return true;
         }
 
