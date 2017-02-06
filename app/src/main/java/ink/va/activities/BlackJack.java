@@ -19,6 +19,10 @@ import android.widget.Toast;
 
 import com.ink.va.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,9 +31,16 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.utils.Animations;
+import ink.va.utils.Constants;
 import ink.va.utils.ProcessManager;
 import ink.va.utils.Random;
+import ink.va.utils.Retrofit;
+import ink.va.utils.SharedHelper;
 import ink.va.utils.User;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class BlackJack extends BaseActivity {
@@ -62,12 +73,14 @@ public class BlackJack extends BaseActivity {
     private int dealerMinimumHand = 17;
     private int maximumPot;
     int currentBanks = 0;
+    private SharedHelper sharedHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_black_jack);
         ButterKnife.bind(this);
+        sharedHelper = new SharedHelper(this);
         dealerCountArray = new LinkedList<>();
         playerCountArray = new LinkedList<>();
         dealersHiddenCard = new LinkedList<>();
@@ -86,19 +99,30 @@ public class BlackJack extends BaseActivity {
                 potTV.setText(getString(R.string.high_pot));
                 break;
         }
-        coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
 
-        drawGame();
+        initCoinsPot();
+
+    }
+
+    private boolean initCoinsPot() {
+        coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
         if (User.get().getCoins() < maximumPot) {
+            Snackbar.make(dealerLayout, getString(R.string.not_enough_coins), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.buyCoins), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivityForResult(new Intent(getApplicationContext(), BuyCoins.class), Constants.BUY_COINS_REQUEST_CODE);
+                }
+            }).show();
             changeButtons(false);
+            return false;
         } else {
+            drawGame();
             changeButtons(true);
             currentBanks = maximumPot * 2;
             int userLeftCoins = User.get().getCoins() - currentBanks;
             User.get().setCoins(userLeftCoins);
-
+            return true;
         }
-
 
     }
 
@@ -127,6 +151,23 @@ public class BlackJack extends BaseActivity {
             });
 
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case Constants.BUY_COINS_REQUEST_CODE:
+                boolean coinsBought = data.getExtras().getBoolean(Constants.COINS_BOUGHT_KEY);
+                if (coinsBought) {
+                    updateUserCoins();
+                }
+                break;
+        }
+    }
+
+    private void updateUserCoins() {
+        initCoinsPot();
     }
 
     private void drawGame() {
@@ -271,6 +312,8 @@ public class BlackJack extends BaseActivity {
         }
 
         if (dealerSumCount <= blackJack && dealerSumCount > playerSumCount) {
+            User.get().setCoins(User.get().getCoins() - currentBanks);
+            coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
             Snackbar.make(dealerLayout, getString(R.string.you_lost), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -278,13 +321,17 @@ public class BlackJack extends BaseActivity {
                 }
             }).show();
         } else if (dealerSumCount < playerSumCount && playerSumCount <= blackJack) {
-            Snackbar.make(dealerLayout, getString(R.string.you_won), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
+            User.get().setCoins(User.get().getCoins() + currentBanks);
+            coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
+            Snackbar.make(dealerLayout, getString(R.string.you_won, currentBanks), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     restartGame();
                 }
             }).show();
         } else if (dealerSumCount == playerSumCount) {
+            User.get().setCoins(User.get().getCoins() + maximumPot);
+            coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
             Snackbar.make(dealerLayout, getString(R.string.draw), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -292,15 +339,52 @@ public class BlackJack extends BaseActivity {
                 }
             }).show();
         } else if (dealerSumCount > blackJack) {
-            Snackbar.make(dealerLayout, getString(R.string.you_won), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
+            User.get().setCoins(User.get().getCoins() + currentBanks);
+            coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
+            Snackbar.make(dealerLayout, getString(R.string.you_won, currentBanks), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     restartGame();
                 }
             }).show();
         }
+        silentCoinsUpdate();
+    }
 
-        Toast.makeText(this, "dealers hand is " + dealerSumCount, Toast.LENGTH_SHORT).show();
+    private void silentCoinsUpdate() {
+
+        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().silentCoinsUpdate(sharedHelper.getUserId(), String.valueOf(User.get().getCoins()), Constants.USER_COINS_TOKEN);
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    silentCoinsUpdate();
+                    return;
+                }
+                if (response.body() == null) {
+                    silentCoinsUpdate();
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (!success) {
+                        Toast.makeText(BlackJack.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(BlackJack.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    Toast.makeText(BlackJack.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(BlackJack.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void changeButtons(boolean enabled) {
@@ -855,8 +939,7 @@ public class BlackJack extends BaseActivity {
 
     private void restartGame() {
         endGame();
-        drawGame();
-        changeButtons(true);
+        initCoinsPot();
     }
 
     private void endGame() {

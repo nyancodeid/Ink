@@ -376,10 +376,10 @@ public class HomeActivity extends BaseActivity
                 try {
                     CoinsResponse coinsResponse = gson.fromJson(response.body().string(), CoinsResponse.class);
                     if (coinsResponse.success) {
-                        User.get().setCoins(String.valueOf(coinsResponse.coins));
+                        User.get().setCoins(coinsResponse.coins);
                         coinsText.setText(getString(R.string.coinsText, coinsResponse.coins));
                         User.get().setCoinsLoaded(true);
-                        User.get().setCoins(String.valueOf(coinsResponse.coins));
+                        User.get().setCoins(coinsResponse.coins);
                     } else {
                         getCoins();
                     }
@@ -617,7 +617,7 @@ public class HomeActivity extends BaseActivity
 
                         if (type.equals(Constants.TYPE_BUY_VIP)) {
                             int remainingCoins = jsonObject.optInt("remainingCoins");
-                            User.get().setCoins(String.valueOf(remainingCoins));
+                            User.get().setCoins(remainingCoins);
                             coinsText.setText(getString(R.string.coinsText, User.get().getCoins()));
                             AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
                             builder.setTitle(getString(R.string.congratulation));
@@ -842,7 +842,7 @@ public class HomeActivity extends BaseActivity
     }
 
     private void updateUserCoins() {
-        if (User.get().getCoins() != null) {
+        if (User.get().getCoins() != 0) {
             if (coinsText != null) {
                 coinsText.setText(getString(R.string.coinsText, User.get().getCoins()));
             }
@@ -1168,7 +1168,7 @@ public class HomeActivity extends BaseActivity
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
-                        String coins = jsonObject.optString("userCoins");
+                        int coins = jsonObject.optInt("userCoins");
                         int reward = jsonObject.optInt("reward");
                         User.get().setCoins(coins);
                         coinsText.setText(getString(R.string.coinsText, Integer.valueOf(coins)));
