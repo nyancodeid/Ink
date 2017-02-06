@@ -45,12 +45,12 @@ public class BlackJackHome extends AppCompatActivity {
 
             }
         });
-        alertDialog = builder.show();
+        alertDialog = builder.create();
     }
 
 
     @OnClick(R.id.playBlackJack)
     public void playClicked() {
-
+        alertDialog.show();
     }
 }

@@ -472,7 +472,7 @@ public class HomeActivity extends BaseActivity
                 break;
             case R.id.games:
                 shouldOpenActivity = true;
-                setLastClassToOpen(BlackJackHome.class, false);
+                setLastClassToOpen(GamesActivity.class, false);
                 break;
             case R.id.whoViewed:
                 shouldOpenActivity = true;
