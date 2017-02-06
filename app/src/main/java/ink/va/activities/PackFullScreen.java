@@ -177,7 +177,7 @@ public class PackFullScreen extends BaseActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(PackFullScreen.this);
                     builder.setCancelable(false);
                     if (success) {
-                        String userCoinsLeft = jsonObject.optString("userCoinsLeft");
+                        int userCoinsLeft = jsonObject.optInt("userCoinsLeft");
                         User.get().setCoins(userCoinsLeft);
                         builder.setTitle(getString(R.string.congratulation));
                         builder.setMessage(getString(R.string.gift_bought_message));

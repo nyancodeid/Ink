@@ -180,6 +180,7 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
     };
 
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1001) {
@@ -211,7 +212,7 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
                                 isCoinsBought = true;
                                 int currentUserCoins = Integer.valueOf(User.get().getCoins());
                                 int finalCoins = currentUserCoins + 120;
-                                User.get().setCoins(String.valueOf(finalCoins));
+                                User.get().setCoins(finalCoins);
                                 updateCoinsOnServer(String.valueOf(finalCoins));
                                 break;
                             case MEDIUM_PACK:
@@ -219,7 +220,7 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
                                 isCoinsBought = true;
                                 currentUserCoins = Integer.valueOf(User.get().getCoins());
                                 finalCoins = currentUserCoins + 300;
-                                User.get().setCoins(String.valueOf(finalCoins));
+                                User.get().setCoins(finalCoins);
                                 updateCoinsOnServer(String.valueOf(finalCoins));
                                 break;
                             case BIG_PACK:
@@ -227,7 +228,7 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
                                 isCoinsBought = true;
                                 currentUserCoins = Integer.valueOf(User.get().getCoins());
                                 finalCoins = currentUserCoins + 500;
-                                User.get().setCoins(String.valueOf(finalCoins));
+                                User.get().setCoins(finalCoins);
                                 updateCoinsOnServer(String.valueOf(finalCoins));
                                 break;
                             case LARGE_PACK:
@@ -235,7 +236,7 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
                                 isCoinsBought = true;
                                 currentUserCoins = Integer.valueOf(User.get().getCoins());
                                 finalCoins = currentUserCoins + 800;
-                                User.get().setCoins(String.valueOf(finalCoins));
+                                User.get().setCoins(finalCoins);
                                 updateCoinsOnServer(String.valueOf(finalCoins));
                                 break;
                             case EXTRA_LARGE_PACK:
@@ -243,7 +244,7 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
                                 isCoinsBought = true;
                                 currentUserCoins = Integer.valueOf(User.get().getCoins());
                                 finalCoins = currentUserCoins + 1200;
-                                User.get().setCoins(String.valueOf(finalCoins));
+                                User.get().setCoins(finalCoins);
                                 updateCoinsOnServer(String.valueOf(finalCoins));
                                 break;
                         }

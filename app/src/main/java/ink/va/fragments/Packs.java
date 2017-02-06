@@ -146,30 +146,18 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
     @Override
     public void onBuyClicked(PacksModel packsModel, final int packPrice, final String packId, final View clickedView) {
 
-        if (User.get().getCoins() != null || !User.get().getCoins().isEmpty()) {
-            int userCoins = Integer.valueOf(User.get().getCoins());
-            if (userCoins < packPrice) {
-                Snackbar.make(packsRecycler, getString(R.string.not_enough_coins), Snackbar.LENGTH_SHORT).show();
-            } else {
-                Intent intent = new Intent(getActivity(), PackFullScreen.class);
-                intent.putExtra(PACK_ID_BUNDLE_KEY, packId);
-                intent.putExtra(PACK_IMAGE_BUNDLE_KEY, packsModel.packImageBackground);
-                intent.putExtra(PACK_CONTENT_BUNDLE_KEY, packsModel.packDescription);
-                intent.putExtra(PACK_BACKGROUND_BUNDLE_KEY, packsModel.packBackground);
-                startActivityForResult(intent, PACK_BUY_RESULT_CODE);
-                ((Shop) getActivity()).overrideActivityAnimation();
-            }
-
+        int userCoins = User.get().getCoins();
+        if (userCoins < packPrice) {
+            Snackbar.make(packsRecycler, getString(R.string.not_enough_coins), Snackbar.LENGTH_SHORT).show();
         } else {
-            Snackbar.make(packsRecycler, getString(R.string.pleaseWait), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            }).show();
+            Intent intent = new Intent(getActivity(), PackFullScreen.class);
+            intent.putExtra(PACK_ID_BUNDLE_KEY, packId);
+            intent.putExtra(PACK_IMAGE_BUNDLE_KEY, packsModel.packImageBackground);
+            intent.putExtra(PACK_CONTENT_BUNDLE_KEY, packsModel.packDescription);
+            intent.putExtra(PACK_BACKGROUND_BUNDLE_KEY, packsModel.packBackground);
+            startActivityForResult(intent, PACK_BUY_RESULT_CODE);
+            ((Shop) getActivity()).overrideActivityAnimation();
         }
-
-
     }
 
     public void showProgress() {

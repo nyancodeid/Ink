@@ -191,7 +191,7 @@ public class ExploreVipActivity extends BaseActivity implements VipMemberItemCli
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
                         transferDialog.hide();
-                        String userCoinsLeft = jsonObject.optString("userCoinsLeft");
+                        int userCoinsLeft = jsonObject.optInt("userCoinsLeft");
                         User.get().setCoins(userCoinsLeft);
                         Toast.makeText(ExploreVipActivity.this, getString(R.string.coins_transferred), Toast.LENGTH_SHORT).show();
                     } else {

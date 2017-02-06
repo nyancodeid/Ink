@@ -842,10 +842,8 @@ public class HomeActivity extends BaseActivity
     }
 
     private void updateUserCoins() {
-        if (User.get().getCoins() != 0) {
-            if (coinsText != null) {
-                coinsText.setText(getString(R.string.coinsText, User.get().getCoins()));
-            }
+        if (coinsText != null) {
+            coinsText.setText(getString(R.string.coinsText, User.get().getCoins()));
         }
     }
 

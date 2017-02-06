@@ -96,9 +96,7 @@ public class Shop extends BaseActivity {
         this.menu = menu;
         if (menu != null) {
             this.menu = menu;
-            if (User.get().getCoins() != null) {
-                menu.findItem(R.id.myCoinsMenu).setTitle(getString(R.string.coinsText, User.get().getCoins()));
-            }
+            menu.findItem(R.id.myCoinsMenu).setTitle(getString(R.string.coinsText, User.get().getCoins()));
         }
         return true;
     }
@@ -106,9 +104,7 @@ public class Shop extends BaseActivity {
 
     public void updateCoins() {
         if (menu != null) {
-            if (User.get().getCoins() != null) {
-                menu.findItem(R.id.myCoinsMenu).setTitle(getString(R.string.coinsText, User.get().getCoins()));
-            }
+            menu.findItem(R.id.myCoinsMenu).setTitle(getString(R.string.coinsText, User.get().getCoins()));
         }
     }
 

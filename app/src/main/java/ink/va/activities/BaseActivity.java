@@ -17,6 +17,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -36,6 +37,7 @@ import ink.va.interfaces.AccountDeleteListener;
 import ink.va.models.ServerInformationModel;
 import ink.va.utils.Constants;
 import ink.va.utils.DimDialog;
+import ink.va.utils.ProcessManager;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Version;
@@ -124,6 +126,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         sharedHelper = new SharedHelper(this);
         initCountDownTimer();
         checkBan();
+        checkHacks();
         if (vipLoadingDialog == null) {
             vipLoadingDialog = DimDialog.createVipLoadingDialog(this);
         }
@@ -140,6 +143,31 @@ public abstract class BaseActivity extends AppCompatActivity {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.setStatusBarColor(Color.parseColor(sharedHelper.getStatusBarColor()));
             }
+        }
+    }
+
+    private void checkHacks() {
+        if (ProcessManager.hasHacks(this)) {
+            AlertDialog alertDialog;
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setCancelable(false);
+            builder.setTitle(getString(R.string.error));
+            builder.setMessage(getString(R.string.hack_engine_detected));
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            alertDialog = builder.show();
+            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                    System.exit(0);
+                }
+            });
+
         }
     }
 
