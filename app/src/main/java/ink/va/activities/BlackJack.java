@@ -119,7 +119,7 @@ public class BlackJack extends BaseActivity {
             drawGame();
             changeButtons(true);
             currentBanks = maximumPot * 2;
-            int userLeftCoins = User.get().getCoins() - currentBanks;
+            int userLeftCoins = User.get().getCoins() - maximumPot;
             User.get().setCoins(userLeftCoins);
             coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
             return true;
