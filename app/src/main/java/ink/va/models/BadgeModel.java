@@ -31,4 +31,20 @@ public class BadgeModel {
     public int getBadgePrice() {
         return badgePrice;
     }
+
+    public void setBadgeId(String badgeId) {
+        this.badgeId = badgeId;
+    }
+
+    public void setBadgeName(String badgeName) {
+        this.badgeName = badgeName;
+    }
+
+    public void setBadgeTitle(String badgeTitle) {
+        this.badgeTitle = badgeTitle;
+    }
+
+    public void setBadgePrice(int badgePrice) {
+        this.badgePrice = badgePrice;
+    }
 }

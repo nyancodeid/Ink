@@ -314,7 +314,7 @@
             android:name="ink.va.activities.BlackJack"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Profile" />
-        <activity android:name="ink.va.activities.BlackJackHome"></activity>
+        <activity android:name="ink.va.activities.BlackJackHome" />
     </application>
 
 </manifest>
