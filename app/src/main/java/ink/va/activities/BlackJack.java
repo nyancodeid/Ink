@@ -89,13 +89,13 @@ public class BlackJack extends BaseActivity {
         fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_fast);
 
         switch (maximumPot) {
-            case 0:
+            case 1:
                 potTV.setText(getString(R.string.low_pot));
                 break;
-            case 1:
+            case 5:
                 potTV.setText(getString(R.string.medium_pot));
                 break;
-            case 2:
+            case 10:
                 potTV.setText(getString(R.string.high_pot));
                 break;
         }
