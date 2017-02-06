@@ -105,7 +105,6 @@ public class BlackJack extends BaseActivity {
     }
 
     private boolean initCoinsPot() {
-        coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
         if (User.get().getCoins() < maximumPot) {
             Snackbar.make(dealerLayout, getString(R.string.not_enough_coins), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.buyCoins), new View.OnClickListener() {
                 @Override
@@ -114,6 +113,7 @@ public class BlackJack extends BaseActivity {
                 }
             }).show();
             changeButtons(false);
+            coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
             return false;
         } else {
             drawGame();
@@ -121,6 +121,7 @@ public class BlackJack extends BaseActivity {
             currentBanks = maximumPot * 2;
             int userLeftCoins = User.get().getCoins() - currentBanks;
             User.get().setCoins(userLeftCoins);
+            coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
             return true;
         }
 
