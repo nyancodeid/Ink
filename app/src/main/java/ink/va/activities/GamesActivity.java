@@ -53,7 +53,7 @@ public class GamesActivity extends BaseActivity implements ItemClickListener {
         GameModel gameModel = (GameModel) clickedItem;
         switch (gameModel.getGameType()) {
             case GAME_BLACK_JACK:
-                startActivity(new Intent(this, BlackJack.class));
+                startActivity(new Intent(this, BlackJackHome.class));
                 break;
         }
     }

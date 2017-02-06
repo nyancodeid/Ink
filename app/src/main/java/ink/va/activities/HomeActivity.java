@@ -437,6 +437,9 @@ public class HomeActivity extends BaseActivity
             case R.id.stickerShop:
                 startActivity(new Intent(getApplicationContext(), Shop.class));
                 break;
+            case R.id.buyCoins:
+                startActivityForResult(new Intent(getApplicationContext(), BuyCoins.class), Constants.BUY_COINS_REQUEST_CODE);
+                break;
 
             case R.id.badgeShop:
                 startActivity(new Intent(getApplicationContext(), BadgeShop.class));
@@ -830,16 +833,20 @@ public class HomeActivity extends BaseActivity
         if (mSharedHelper.isTokenRefreshed()) {
             startTokenService();
         }
-        if (User.get().getCoins() != null) {
-            if (coinsText != null) {
-                coinsText.setText(getString(R.string.coinsText, User.get().getCoins()));
-            }
-        }
+        updateUserCoins();
         mUserNameTV.setText(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
         if (mSharedHelper.shouldLoadImage()) {
             loadImage();
         }
         super.onResume();
+    }
+
+    private void updateUserCoins() {
+        if (User.get().getCoins() != null) {
+            if (coinsText != null) {
+                coinsText.setText(getString(R.string.coinsText, User.get().getCoins()));
+            }
+        }
     }
 
     private void initPollFish() {
@@ -965,6 +972,12 @@ public class HomeActivity extends BaseActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
+            case Constants.BUY_COINS_REQUEST_CODE:
+                boolean coinsBought = data.getExtras().getBoolean(Constants.COINS_BOUGHT_KEY);
+                if (coinsBought) {
+                    updateUserCoins();
+                }
+                break;
             case Constants.REQUEST_CUSTOMIZE_MADE:
                 boolean anythingChanged = data.getExtras().getBoolean("anythingChanged");
                 if (anythingChanged) {

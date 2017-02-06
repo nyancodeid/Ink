@@ -23,6 +23,9 @@
         app:showAsAction="always">
         <menu>
             <item
+                android:id="@+id/buyCoins"
+                android:title="@string/buyCoins" />
+            <item
                 android:id="@+id/stickerShop"
                 android:title="@string/stickerShop" />
             <item

@@ -7,12 +7,31 @@
     android:background="@drawable/black_jack_game_background"
     tools:context="ink.va.activities.BlackJack">
 
+    <TextView
+        android:id="@+id/coinsTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:text="200 coins"
+        android:textColor="@color/darkGoldColor" />
+
+    <TextView
+        android:id="@+id/potTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/coinsTV"
+        android:layout_centerHorizontal="true"
+        android:text="@string/medium_pot"
+        android:textColor="@color/vk_white" />
+
     <!--The Dealer Place-->
     <LinearLayout
         android:id="@+id/dealerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_below="@+id/coinsTV"
         android:orientation="horizontal"
         android:paddingBottom="10dp"
         android:paddingTop="10dp">

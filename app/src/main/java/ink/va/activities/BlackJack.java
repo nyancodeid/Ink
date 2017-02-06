@@ -29,6 +29,7 @@ import ink.va.callbacks.GeneralCallback;
 import ink.va.utils.Animations;
 import ink.va.utils.ProcessManager;
 import ink.va.utils.Random;
+import ink.va.utils.User;
 
 
 public class BlackJack extends BaseActivity {
@@ -43,6 +44,10 @@ public class BlackJack extends BaseActivity {
     Button takeCard;
     @BindView(R.id.openCards)
     Button openCards;
+    @BindView(R.id.coinsTV)
+    TextView coinsTV;
+    @BindView(R.id.potTV)
+    TextView potTV;
     private Animation fadeInAnimation;
     private int blackJack = 21;
     private List<Integer> dealerCountArray;
@@ -56,6 +61,7 @@ public class BlackJack extends BaseActivity {
     private List<ImageView> dealersHiddenImageView;
     private int dealerMinimumHand = 17;
     private int maximumPot;
+    int currentBanks = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,13 +75,31 @@ public class BlackJack extends BaseActivity {
         maximumPot = getIntent().getExtras() != null ? getIntent().getExtras().getInt("pot") : 0;
         fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_fast);
 
+        switch (maximumPot) {
+            case 0:
+                potTV.setText(getString(R.string.low_pot));
+                break;
+            case 1:
+                potTV.setText(getString(R.string.medium_pot));
+                break;
+            case 2:
+                potTV.setText(getString(R.string.high_pot));
+                break;
+        }
+        coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
 
-        playerLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                drawGame();
-            }
-        });
+        drawGame();
+        if (User.get().getCoins() < maximumPot) {
+            changeButtons(false);
+        } else {
+            changeButtons(true);
+            currentBanks = maximumPot * 2;
+            int userLeftCoins = User.get().getCoins() - currentBanks;
+            User.get().setCoins(userLeftCoins);
+
+        }
+
+
     }
 
     @Override
@@ -216,6 +240,9 @@ public class BlackJack extends BaseActivity {
                 checkDealerCards = true;
                 break;
 
+        }
+        if (dealerSumCount <= 10) {
+            checkDealerCards = true;
         }
         if (checkDealerCards) {
             if (dealerSumCount < dealerMinimumHand) {
