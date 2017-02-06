@@ -312,7 +312,7 @@ public class BlackJack extends BaseActivity {
         }
 
         if (dealerSumCount <= blackJack && dealerSumCount > playerSumCount) {
-            User.get().setCoins(User.get().getCoins() - currentBanks);
+            User.get().setCoins(User.get().getCoins() - maximumPot);
             coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
             Snackbar.make(dealerLayout, getString(R.string.you_lost), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
                 @Override
@@ -321,8 +321,8 @@ public class BlackJack extends BaseActivity {
                 }
             }).show();
         } else if (dealerSumCount < playerSumCount && playerSumCount <= blackJack) {
-            User.get().setCoins(User.get().getCoins() + currentBanks);
-            coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
+            int finalUserCoins = User.get().getCoins() + currentBanks;
+            User.get().setCoins(finalUserCoins);
             Snackbar.make(dealerLayout, getString(R.string.you_won, currentBanks), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -339,7 +339,8 @@ public class BlackJack extends BaseActivity {
                 }
             }).show();
         } else if (dealerSumCount > blackJack) {
-            User.get().setCoins(User.get().getCoins() + currentBanks);
+            int finalUserCoins = User.get().getCoins() + currentBanks;
+            User.get().setCoins(finalUserCoins);
             coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
             Snackbar.make(dealerLayout, getString(R.string.you_won, currentBanks), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
                 @Override
@@ -911,6 +912,8 @@ public class BlackJack extends BaseActivity {
             //the game has ended for the player
             playerScore.setText(getString(R.string.player_hand, playerSumCount));
             changeButtons(false);
+            User.get().setCoins(User.get().getCoins() - maximumPot);
+            coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
             Snackbar.make(dealerLayout, getString(R.string.you_lost), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
