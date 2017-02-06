@@ -101,7 +101,7 @@ public class BlackJack extends BaseActivity {
         }
 
         initCoinsPot();
-
+        silentCoinsUpdate();
     }
 
     private boolean initCoinsPot() {
@@ -324,6 +324,7 @@ public class BlackJack extends BaseActivity {
         } else if (dealerSumCount < playerSumCount && playerSumCount <= blackJack) {
             int finalUserCoins = User.get().getCoins() + currentBanks;
             User.get().setCoins(finalUserCoins);
+            coinsTV.setText(getString(R.string.coinsText, User.get().getCoins()));
             Snackbar.make(dealerLayout, getString(R.string.you_won, currentBanks), Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.restart), new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
