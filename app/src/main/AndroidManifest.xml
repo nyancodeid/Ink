@@ -315,6 +315,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Profile" />
         <activity android:name="ink.va.activities.BlackJackHome" />
+        <activity android:name="ink.va.activities.Mafia"></activity>
     </application>
 
 </manifest>

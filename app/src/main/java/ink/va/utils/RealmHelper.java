@@ -322,7 +322,12 @@ public class RealmHelper {
                         }
                     });
                 } else {
-
+                    mRealm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            realm.where(MessageModel.class).equalTo("messageId", messageId).findAll().deleteAllFromRealm();
+                        }
+                    });
                 }
 
 
@@ -486,7 +491,13 @@ public class RealmHelper {
                         }
                     });
                 } else {
-
+                    mRealm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            NotificationModel notificationModel = realm.createObject(NotificationModel.class);
+                            notificationModel.setOpponentId(opponentId);
+                        }
+                    });
                 }
 
             }
