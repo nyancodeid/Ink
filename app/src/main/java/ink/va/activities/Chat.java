@@ -26,7 +26,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -156,19 +155,15 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     private String lastName;
     private boolean isGifChosen = false;
     private String lasChosenGifName;
-    private Gson gson;
     private Animation slideIn;
     private Animation slideOut;
     private boolean hasFriendCheckLoaded;
     private boolean isFriend;
     private ProgressDialog progressDialog;
     private boolean scrolledToBottom;
-    private Menu chatMenuItem;
     private Toolbar chatToolbar;
     private Handler handler;
     private boolean isAnimated;
-    private Handler notifyHandler;
-    private Runnable notifyRunnable;
 
 
     @Override
@@ -913,7 +908,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
     private void removeRainbow() {
         mChatAdapter.notifyDataSetChanged();
-        chatMenuItem.getItem(0).setTitle(getString(R.string.showAsRainbow));
     }
 
     private void updateToRainbow() {
@@ -921,7 +915,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
         if (DimDialog.isDialogAlive()) {
             DimDialog.hideDialog();
         }
-        chatMenuItem.getItem(0).setTitle(getString(R.string.removeRainbowEffect));
     }
 
 
