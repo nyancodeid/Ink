@@ -292,6 +292,10 @@ public class NotificationService extends FirebaseMessagingService {
 
 
                 break;
+            default:
+                sendGeneralNotification(getApplicationContext(),
+                        response.get("uniqueId"), response.get("title"),
+                        response.get("content"), SplashScreen.class);
         }
 
     }
