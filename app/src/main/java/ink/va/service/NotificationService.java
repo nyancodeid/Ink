@@ -302,7 +302,7 @@ public class NotificationService extends FirebaseMessagingService {
 
 
         android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
-        builder.setSmallIcon(R.drawable.request_friend_icon);
+        builder.setSmallIcon(R.drawable.ic_account_multiple_plus_white_24dp);
         builder.setAutoCancel(true);
 
 
@@ -663,7 +663,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(requestId), requestsViewIntent, 0);
         android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
-        builder.setSmallIcon(R.drawable.group_request_vector);
+        builder.setSmallIcon(R.drawable.ic_account_switch_white_24dp);
         builder.setAutoCancel(true);
 
 
@@ -691,7 +691,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         PendingIntent requestsViewPending = PendingIntent.getActivity(context, Integer.valueOf(requestId), requestsViewIntent, 0);
         android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
-        builder.setSmallIcon(R.drawable.request_friend_icon);
+        builder.setSmallIcon(R.drawable.ic_account_multiple_plus_white_24dp);
         builder.setAutoCancel(true);
 
 
@@ -713,7 +713,7 @@ public class NotificationService extends FirebaseMessagingService {
         NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
         android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
-        builder.setSmallIcon(R.drawable.notification_icon);
+        builder.setSmallIcon(R.drawable.ic_bell_ring_outline_white_24dp);
         builder.setAutoCancel(true);
 
 
