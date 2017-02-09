@@ -337,7 +337,7 @@ public class HomeActivity extends BaseActivity
         public void onReceive(Context context, Intent intent) {
             if (mFeed != null) {
                 //meaning new comment triggered the broadcast
-                if (intent != null) {
+                if (intent.getExtras() != null) {
                     Bundle extras = intent.getExtras();
                     final String postId = extras.getString("postId");
 
