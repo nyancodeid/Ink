@@ -336,17 +336,24 @@ public class HomeActivity extends BaseActivity
         @Override
         public void onReceive(Context context, Intent intent) {
             if (mFeed != null) {
-                Bundle extras = intent.getExtras();
-                final String postId = extras.getString("postId");
+                //meaning new comment triggered the broadcast
+                if (intent != null) {
+                    Bundle extras = intent.getExtras();
+                    final String postId = extras.getString("postId");
 
-                mFeed.triggerFeedUpdate(false);
-                Snackbar.make(coinsText, getString(R.string.newComment), Snackbar.LENGTH_LONG).setAction(getString(R.string.view), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mSharedHelper.putPostId(postId);
-                        mFeed.checkShowComment();
-                    }
-                }).show();
+                    mFeed.triggerFeedUpdate(false);
+                    Snackbar.make(coinsText, getString(R.string.newComment), Snackbar.LENGTH_LONG).setAction(getString(R.string.view), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mSharedHelper.putPostId(postId);
+                            mFeed.checkShowComment();
+                        }
+                    }).show();
+                } else {
+                    //meaning just trigger the feed update
+                    mFeed.triggerFeedUpdate(false);
+                }
+
             }
         }
     };

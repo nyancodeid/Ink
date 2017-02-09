@@ -282,7 +282,7 @@ public class NotificationService extends FirebaseMessagingService {
             case NOTIFICATION_TYPE_POST_MADE:
                 String postId = response.get("postId");
                 String firstName = response.get("firstName");
-                String lastName = response.get("firstName");
+                String lastName = response.get("lastName");
                 sendGeneralNotification(getApplicationContext(), postId, getString(R.string.newPost),
                         firstName + " " + lastName + getString(R.string.madePost), SplashScreen.class);
                 break;
