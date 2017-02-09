@@ -284,7 +284,7 @@ public class NotificationService extends FirebaseMessagingService {
                 String firstName = response.get("firstName");
                 String lastName = response.get("lastName");
                 sendGeneralNotification(getApplicationContext(), postId, getString(R.string.newPost),
-                        firstName + " " + lastName + getString(R.string.madePost), SplashScreen.class);
+                        firstName + " " + lastName + " " + getString(R.string.madePost), SplashScreen.class);
                 break;
             case DELETE_MESSAGE_REQUESTED:
                 String messageId = response.get("messageId");
