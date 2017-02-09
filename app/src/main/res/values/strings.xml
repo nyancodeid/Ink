@@ -831,4 +831,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="hack_engine_detected">Sorry,we have detected
         cheat engine running on you\'r device at the moment and we can not
         let you proceed,be aware of that if you continue using it multiple times you will be banned. Please turn any cheat engine off or delete them and come back again.</string>
+    <string name="newPost">New Post</string>
+    <string name="madePost">made a new post</string>
 </resources>

@@ -66,6 +66,7 @@ import static ink.va.utils.Constants.NOTIFICATION_TYPE_LOCATION_UPDATES;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_MESSAGE;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_POSTED_IN_GROUP;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_POST_LIKED;
+import static ink.va.utils.Constants.NOTIFICATION_TYPE_POST_MADE;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_REQUESTING_LOCATION;
 
 public class NotificationService extends FirebaseMessagingService {
@@ -277,6 +278,13 @@ public class NotificationService extends FirebaseMessagingService {
                 intent.putExtra("type", NOTIFICATION_TYPE_LOCATION_UPDATES);
                 localBroadcastManager = LocalBroadcastManager.getInstance(this);
                 localBroadcastManager.sendBroadcast(intent);
+                break;
+            case NOTIFICATION_TYPE_POST_MADE:
+                String postId = response.get("postId");
+                String firstName = response.get("firstName");
+                String lastName = response.get("firstName");
+                sendGeneralNotification(getApplicationContext(), postId, getString(R.string.newPost),
+                        firstName + " " + lastName + getString(R.string.madePost), SplashScreen.class);
                 break;
             case DELETE_MESSAGE_REQUESTED:
                 String messageId = response.get("messageId");

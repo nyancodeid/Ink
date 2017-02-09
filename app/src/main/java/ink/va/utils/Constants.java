@@ -133,6 +133,7 @@ public class Constants {
     public static final String TREND_CATEGORIES_TOKEN = "Fasfklasgjp_KIkGPKAGKA=ga558787as785as-as6539sa-6gas32-ga6s";
     public static final String USER_COINS_TOKEN = "Fsalkghasfiugehwt34t04334-2:2io5l25:f:::Faskl80-r03fas-=2q935saf5a223419ga65z23....265";
     public static final String DELETE_MESSAGE_REQUESTED = "deleteSingleMessageRequested";
+    public static final String NOTIFICATION_TYPE_POST_MADE = "postMade";
     public static final int BUY_COINS_REQUEST_CODE = 196;
     public static final int REQUEST_CUSTOMIZE_MADE = 78;
     public static final int REQUEST_CODE_CHOSE_STICKER = 1;
