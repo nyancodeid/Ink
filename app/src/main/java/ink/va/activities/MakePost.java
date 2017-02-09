@@ -109,10 +109,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
         progressDialog.setMessage(getString(R.string.postingYourShare));
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setProgress(0);
-        progressDialog.setMax(100);
+
 
 
         Bundle extras = getIntent().getExtras();
@@ -474,6 +471,8 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     }
 
     private void callToServerWithoutBody(final String postBody, final String googleAdress) {
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(false);
         String finalType = Constants.POST_TYPE_CREATE;
         if (isEditing) {
             finalType = Constants.POST_TYPE_EDIT;
@@ -525,7 +524,10 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     }
 
     private void callToServerWithBody(final Map<String, ProgressRequestBody> map, final String postBody, final String googleAddress) {
-
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setProgress(0);
+        progressDialog.setMax(100);
         String finalType = Constants.POST_TYPE_CREATE;
         if (isEditing) {
             finalType = Constants.POST_TYPE_EDIT;
