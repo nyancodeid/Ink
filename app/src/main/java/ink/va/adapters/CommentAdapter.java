@@ -318,11 +318,11 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.gifChatView);
-            imageViewWrapper = (LinearLayout) itemView.findViewById(R.id.singleGifViewWrapper);
-            chatVideoWrapper = (RelativeLayout) itemView.findViewById(R.id.chatVideoWrapper);
-            chatVideo = (VideoView) itemView.findViewById(R.id.chatVideo);
-            videoLoadingProgress = (ProgressBar) itemView.findViewById(R.id.video_loading_progress);
+            imageView = (ImageView) itemView.findViewById(R.id.stickerView);
+            imageViewWrapper = (LinearLayout) itemView.findViewById(R.id.stickerWrapper);
+            chatVideoWrapper = (RelativeLayout) itemView.findViewById(R.id.stickerVideoWrapper);
+            chatVideo = (VideoView) itemView.findViewById(R.id.stickerVideo);
+            videoLoadingProgress = (ProgressBar) itemView.findViewById(R.id.stickerVideoLoading);
 
             commentMoreIcon = (ImageView) itemView.findViewById(R.id.commentMoreIcon);
             commenterBody = (TextView) itemView.findViewById(R.id.commenterBody);
