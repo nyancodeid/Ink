@@ -73,6 +73,7 @@ import ink.StartupApplication;
 import ink.va.adapters.ChatAdapter;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.interfaces.ItemClickListener;
+import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.ChatModel;
 import ink.va.models.MessageModel;
 import ink.va.models.UserStatus;
@@ -87,7 +88,6 @@ import ink.va.utils.PingHelper;
 import ink.va.utils.ProgressRequestBody;
 import ink.va.utils.QueHelper;
 import ink.va.utils.RealmHelper;
-import ink.va.utils.RecyclerTouchListener;
 import ink.va.utils.Regex;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -101,7 +101,7 @@ import retrofit2.Response;
 import static ink.va.utils.Constants.REQUEST_CODE_CHOSE_STICKER;
 import static ink.va.utils.Constants.STARTING_FOR_RESULT_BUNDLE_KEY;
 
-public class Chat extends BaseActivity implements ProgressRequestBody.UploadCallbacks {
+public class Chat extends BaseActivity implements ProgressRequestBody.UploadCallbacks, RecyclerItemClickListener {
 
     private static final int PICK_FILE_REQUEST_CODE = 400;
     @BindView(R.id.sendChatMessage)
@@ -153,8 +153,8 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     private Animation fadeAnimation;
     private String firstName;
     private String lastName;
-    private boolean isGifChosen = false;
-    private String lasChosenGifName;
+    private boolean isStickerChosen = false;
+    private String lastChosenStickerName;
     private Animation slideIn;
     private Animation slideOut;
     private boolean hasFriendCheckLoaded;
@@ -164,6 +164,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     private Toolbar chatToolbar;
     private Handler handler;
     private boolean isAnimated;
+    private int lastMessageId;
 
 
     @Override
@@ -204,6 +205,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
 
         mChatAdapter = new ChatAdapter(mChatModelArrayList, this);
+        mChatAdapter.setOnItemClickListener(this);
         mRealHelper = RealmHelper.getInstance();
 
         configureChat(getIntent());
@@ -245,162 +247,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
         scheduleTask();
         checkForActionBar();
-        mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, mRecyclerView, new RecyclerTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                final ChatModel chatModel = mChatModelArrayList.get(position);
-
-                if (chatModel.isClickable()) {
-                    if (chatModel.hasSticker()) {
-                        if (!chatModel.isAnimated()) {
-                            Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
-                            intent.putExtra("link", Constants.MAIN_URL + chatModel.getStickerUrl());
-                            startActivity(intent);
-                        }
-
-                    } else if (chatModel.isAttachment()) {
-                        String finalFileName;
-                        if (chatModel.getMessage().contains(":")) {
-                            int index = chatModel.getMessage().indexOf(":");
-                            finalFileName = chatModel.getMessage().substring(index + 1, chatModel.getMessage().length());
-                        } else {
-                            int index = chatModel.getMessage().indexOf(":");
-                            finalFileName = chatModel.getMessage().substring(index + 1, chatModel.getMessage().length());
-                        }
-
-                        if (FileUtils.isImageType(chatModel.getMessage())) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
-                            builder.setTitle(getString(R.string.downloadQuestion));
-                            builder.setMessage(getString(R.string.downloadTheFile) + " " + finalFileName.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, ""));
-                            builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            });
-                            builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    String downloadFileName = chatModel.getMessage();
-
-                                    queDownload(downloadFileName, chatModel);
-                                }
-                            });
-                            builder.setNeutralButton(getString(R.string.viewImage), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    if (chatModel == null) {
-                                        Snackbar.make(sendMessageGifView, getString(R.string.pleaseWait), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-
-                                            }
-                                        }).show();
-                                    } else {
-                                        Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
-                                        String encodedFileName = Uri.encode(chatModel.getMessage());
-                                        intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedFileName);
-                                        startActivity(intent);
-                                    }
-
-                                }
-                            });
-                            builder.show();
-                        } else {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
-                            if (chatModel.getMessage().contains(":")) {
-                                int index = chatModel.getMessage().indexOf(":");
-                                finalFileName = chatModel.getMessage().substring(index + 1, chatModel.getMessage().length());
-                            } else {
-                                int index = chatModel.getMessage().indexOf(":");
-                                finalFileName = chatModel.getMessage().substring(index + 1, chatModel.getMessage().length());
-                            }
-                            builder.setTitle(getString(R.string.downloadQuestion));
-                            builder.setMessage(getString(R.string.downloadTheFile) + " " + finalFileName);
-                            builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            });
-                            builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    String downloadFileName = chatModel.getMessage();
-
-                                    queDownload(downloadFileName, chatModel);
-                                }
-                            });
-                            builder.show();
-                        }
-
-                    }
-                } else {
-                    Snackbar.make(chatTitle, getString(R.string.waitTillSent), Snackbar.LENGTH_SHORT).show();
-                }
-
-            }
-
-            @Override
-            public void onLongClick(View view, final int position) {
-                final ChatModel chatModel = mChatModelArrayList.get(position);
-                String date = chatModel.getDate();
-                AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
-                builder.setTitle("Message Details");
-                builder.setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                });
-
-                Calendar calendar = Calendar.getInstance();
-                SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                if (mCurrentUserId.equals(chatModel.getUserId())) {
-                    try {
-                        calendar.setTime(sourceFormat.parse(date));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    String monthName = new SimpleDateFormat("MMMM").format(calendar.getTime());
-
-                    String weekName = new SimpleDateFormat("EEEE").format(calendar.getTime());
-
-                    builder.setMessage(getString(R.string.dateOfMessage) + calendar.get(Calendar.YEAR) + "," + weekName + "," + monthName
-                            + "-" + (calendar.get(Calendar.DAY_OF_MONTH) < 10 ? "0" + calendar.get(Calendar.DAY_OF_MONTH) : calendar.get(Calendar.DAY_OF_MONTH))
-                            + " (" + (calendar.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + calendar.get(Calendar.HOUR_OF_DAY) : calendar.get(Calendar.HOUR_OF_DAY)) + ":"
-                            + (calendar.get(Calendar.MINUTE) < 10 ? "0" + calendar.get(Calendar.MINUTE) : calendar.get(Calendar.MINUTE)) +
-                            ":" + (calendar.get(Calendar.SECOND) < 10 ? "0" + calendar.get(Calendar.SECOND) : calendar.get(Calendar.SECOND)) + ")");
-
-                    builder.setNegativeButton(getString(R.string.deleteMessage), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                            showDeleteWarning(chatModel.getMessageId(), position);
-                        }
-                    });
-                } else {
-
-                    try {
-                        calendar.setTime(sourceFormat.parse(Time.convertToLocalTime(date)));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    String monthName = new SimpleDateFormat("MMMM").format(calendar.getTime());
-
-                    String weekName = new SimpleDateFormat("EEEE").format(calendar.getTime());
-
-                    builder.setMessage(getString(R.string.dateOfMessage) + calendar.get(Calendar.YEAR) + "," + weekName + "," + monthName
-                            + "-" + (calendar.get(Calendar.DAY_OF_MONTH) < 10 ? "0" + calendar.get(Calendar.DAY_OF_MONTH) : calendar.get(Calendar.DAY_OF_MONTH))
-                            + " (" + (calendar.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + calendar.get(Calendar.HOUR_OF_DAY) : calendar.get(Calendar.HOUR_OF_DAY)) + ":"
-                            + (calendar.get(Calendar.MINUTE) < 10 ? "0" + calendar.get(Calendar.MINUTE) : calendar.get(Calendar.MINUTE)) +
-                            ":" + (calendar.get(Calendar.SECOND) < 10 ? "0" + calendar.get(Calendar.SECOND) : calendar.get(Calendar.SECOND)) + ")");
-                }
-
-
-                builder.show();
-            }
-        }));
 
         mSendChatMessage.setEnabled(false);
         mWriteEditText.addTextChangedListener(chatTextWatcher);
@@ -409,6 +255,159 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
             mWriteEditText.setTextColor(Color.parseColor(mSharedHelper.getChatFieldTextColor()));
             messageFiledDivider.setBackgroundColor(Color.parseColor(mSharedHelper.getChatFieldTextColor()));
             attachmentIcon.setColorFilter(Color.parseColor(mSharedHelper.getChatFieldTextColor()), PorterDuff.Mode.SRC_ATOP);
+        }
+
+    }
+
+    private void handleChatItemLongClicked(final int position) {
+        final ChatModel chatModel = mChatModelArrayList.get(position);
+        String date = chatModel.getDate();
+        AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
+        builder.setTitle("Message Details");
+        builder.setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (mCurrentUserId.equals(chatModel.getUserId())) {
+            try {
+                calendar.setTime(sourceFormat.parse(date));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            String monthName = new SimpleDateFormat("MMMM").format(calendar.getTime());
+
+            String weekName = new SimpleDateFormat("EEEE").format(calendar.getTime());
+
+            builder.setMessage(getString(R.string.dateOfMessage) + calendar.get(Calendar.YEAR) + "," + weekName + "," + monthName
+                    + "-" + (calendar.get(Calendar.DAY_OF_MONTH) < 10 ? "0" + calendar.get(Calendar.DAY_OF_MONTH) : calendar.get(Calendar.DAY_OF_MONTH))
+                    + " (" + (calendar.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + calendar.get(Calendar.HOUR_OF_DAY) : calendar.get(Calendar.HOUR_OF_DAY)) + ":"
+                    + (calendar.get(Calendar.MINUTE) < 10 ? "0" + calendar.get(Calendar.MINUTE) : calendar.get(Calendar.MINUTE)) +
+                    ":" + (calendar.get(Calendar.SECOND) < 10 ? "0" + calendar.get(Calendar.SECOND) : calendar.get(Calendar.SECOND)) + ")");
+
+            builder.setNegativeButton(getString(R.string.deleteMessage), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                    showDeleteWarning(chatModel.getMessageId(), position);
+                }
+            });
+        } else {
+
+            try {
+                calendar.setTime(sourceFormat.parse(Time.convertToLocalTime(date)));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            String monthName = new SimpleDateFormat("MMMM").format(calendar.getTime());
+
+            String weekName = new SimpleDateFormat("EEEE").format(calendar.getTime());
+
+            builder.setMessage(getString(R.string.dateOfMessage) + calendar.get(Calendar.YEAR) + "," + weekName + "," + monthName
+                    + "-" + (calendar.get(Calendar.DAY_OF_MONTH) < 10 ? "0" + calendar.get(Calendar.DAY_OF_MONTH) : calendar.get(Calendar.DAY_OF_MONTH))
+                    + " (" + (calendar.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + calendar.get(Calendar.HOUR_OF_DAY) : calendar.get(Calendar.HOUR_OF_DAY)) + ":"
+                    + (calendar.get(Calendar.MINUTE) < 10 ? "0" + calendar.get(Calendar.MINUTE) : calendar.get(Calendar.MINUTE)) +
+                    ":" + (calendar.get(Calendar.SECOND) < 10 ? "0" + calendar.get(Calendar.SECOND) : calendar.get(Calendar.SECOND)) + ")");
+        }
+
+
+        builder.show();
+    }
+
+    private void handleChatItemClicked(int position) {
+        final ChatModel chatModel = mChatModelArrayList.get(position);
+
+        if (chatModel.isClickable()) {
+            if (chatModel.hasSticker()) {
+                if (!chatModel.isAnimated()) {
+                    Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
+                    intent.putExtra("link", Constants.MAIN_URL + chatModel.getStickerUrl());
+                    startActivity(intent);
+                }
+
+            } else if (chatModel.isAttachment()) {
+                String finalFileName;
+                if (chatModel.getMessage().contains(":")) {
+                    int index = chatModel.getMessage().indexOf(":");
+                    finalFileName = chatModel.getMessage().substring(index + 1, chatModel.getMessage().length());
+                } else {
+                    int index = chatModel.getMessage().indexOf(":");
+                    finalFileName = chatModel.getMessage().substring(index + 1, chatModel.getMessage().length());
+                }
+
+                if (FileUtils.isImageType(chatModel.getMessage())) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
+                    builder.setTitle(getString(R.string.downloadQuestion));
+                    builder.setMessage(getString(R.string.downloadTheFile) + " " + finalFileName.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, ""));
+                    builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String downloadFileName = chatModel.getMessage();
+
+                            queDownload(downloadFileName, chatModel);
+                        }
+                    });
+                    builder.setNeutralButton(getString(R.string.viewImage), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if (chatModel == null) {
+                                Snackbar.make(sendMessageGifView, getString(R.string.pleaseWait), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                    }
+                                }).show();
+                            } else {
+                                Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
+                                String encodedFileName = Uri.encode(chatModel.getMessage());
+                                intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedFileName);
+                                startActivity(intent);
+                            }
+
+                        }
+                    });
+                    builder.show();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
+                    if (chatModel.getMessage().contains(":")) {
+                        int index = chatModel.getMessage().indexOf(":");
+                        finalFileName = chatModel.getMessage().substring(index + 1, chatModel.getMessage().length());
+                    } else {
+                        int index = chatModel.getMessage().indexOf(":");
+                        finalFileName = chatModel.getMessage().substring(index + 1, chatModel.getMessage().length());
+                    }
+                    builder.setTitle(getString(R.string.downloadQuestion));
+                    builder.setMessage(getString(R.string.downloadTheFile) + " " + finalFileName);
+                    builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String downloadFileName = chatModel.getMessage();
+
+                            queDownload(downloadFileName, chatModel);
+                        }
+                    });
+                    builder.show();
+                }
+
+            }
+        } else {
+            Snackbar.make(chatTitle, getString(R.string.waitTillSent), Snackbar.LENGTH_SHORT).show();
         }
 
     }
@@ -501,10 +500,20 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
                     if (success) {
                         mChatModelArrayList.remove(positionOfItem);
-                        RealmHelper.getInstance().removeMessage(messageId);
-                        mChatAdapter.notifyItemRemoved(positionOfItem);
-                        progressDialog.dismiss();
-                        Snackbar.make(chatTitle, getString(R.string.messageDeleted), Snackbar.LENGTH_SHORT).show();
+                        RealmHelper.getInstance().removeMessage(messageId, new GeneralCallback<Boolean>() {
+                            @Override
+                            public void onSuccess(Boolean aBoolean) {
+                                mChatAdapter.notifyItemRemoved(positionOfItem);
+                                progressDialog.dismiss();
+                                Snackbar.make(chatTitle, getString(R.string.messageDeleted), Snackbar.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onFailure(Boolean aBoolean) {
+                                progressDialog.dismiss();
+                                Snackbar.make(chatTitle, getString(R.string.messagedeleteError), Snackbar.LENGTH_SHORT).show();
+                            }
+                        });
                     } else {
                         progressDialog.dismiss();
                         Snackbar.make(chatTitle, getString(R.string.messagedeleteError), Snackbar.LENGTH_SHORT).show();
@@ -662,7 +671,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
     @OnClick(R.id.trashIcon)
     public void trashIcon() {
-        isGifChosen = false;
+        isStickerChosen = false;
         dismissStickerChooser();
         if (mWriteEditText.getText().toString().trim().isEmpty()) {
             mSendChatMessage.setEnabled(false);
@@ -715,7 +724,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
         String message = StringEscapeUtils.escapeJava(mWriteEditText.getText().toString().replaceAll(":\\)", "\u263A")
                 .replaceAll(":\\(", "\u2639").replaceAll(":D", "\uD83D\uDE00"));
         dismissStickerChooser();
-        ChatModel tempChat = new ChatModel(false, isGifChosen, lasChosenGifName, null, mCurrentUserId, mOpponentId, StringEscapeUtils.unescapeJava(message),
+        ChatModel tempChat = new ChatModel(false, isStickerChosen, lastChosenStickerName, null, mCurrentUserId, mOpponentId, StringEscapeUtils.unescapeJava(message),
                 false, Constants.STATUS_NOT_DELIVERED,
                 mUserImage, mOpponentImage, "", isAnimated);
         mChatModelArrayList.add(tempChat);
@@ -723,11 +732,12 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
         int itemLocation = mChatModelArrayList.indexOf(tempChat);
 
-        attemptToQue(message, itemLocation, mDeleteOpponentId, mDeleteUserId, isGifChosen, lasChosenGifName, isAnimated);
+        attemptToQue(message, itemLocation, mDeleteOpponentId, mDeleteUserId, isStickerChosen, lastChosenStickerName, isAnimated);
         mChatAdapter.notifyDataSetChanged();
 
 
         mWriteEditText.setText("");
+        mSendChatMessage.setEnabled(false);
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
@@ -735,7 +745,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                 scrollToBottom();
             }
         });
-        isGifChosen = false;
+        isStickerChosen = false;
 
     }
 
@@ -746,6 +756,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
             sendMessageGifViewWrapper.setVisibility(View.GONE);
             singleVideoView.setVisibility(View.GONE);
         }
+
     }
 
 
@@ -771,17 +782,26 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
     }
 
-    private void attemptToQue(String message, int itemLocation, String deleteOpponentId,
-                              String deleteUserId, final boolean hasGif, final String gifUrl, boolean isAnimated) {
+    private void attemptToQue(final String message, final int itemLocation, String deleteOpponentId,
+                              String deleteUserId, final boolean hasGif, final String gifUrl, final boolean isAnimated) {
+        lastMessageId = lastMessageId + 1;
         RealmHelper.getInstance().insertMessage(mCurrentUserId, mOpponentId,
-                message, String.valueOf(System.currentTimeMillis()), "",
+                message, String.valueOf(lastMessageId), "",
                 String.valueOf(itemLocation),
                 Constants.STATUS_NOT_DELIVERED, mUserImage,
-                mOpponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl, isAnimated);
+                mOpponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl, isAnimated, new GeneralCallback() {
+                    @Override
+                    public void onSuccess(Object o) {
+                        QueHelper queHelper = new QueHelper();
+                        queHelper.attachToQue(mOpponentId, message, itemLocation, isStickerChosen, gifUrl, Chat.this, isAnimated);
 
-        QueHelper queHelper = new QueHelper();
-        queHelper.attachToQue(mOpponentId, message, itemLocation, isGifChosen, gifUrl, Chat.this, isAnimated);
+                    }
 
+                    @Override
+                    public void onFailure(Object o) {
+                        Snackbar.make(mRecyclerView, getString(R.string.messageNotSent), Snackbar.LENGTH_SHORT).show();
+                    }
+                });
 
     }
 
@@ -858,6 +878,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                             Snackbar.make(mRecyclerView, getString(R.string.unsent_message) + message, Snackbar.LENGTH_SHORT).show();
                             attemptToQue(message, mChatModelArrayList.indexOf(mChatModel), deleteOpponentId, deleteUserId, isGifChosen, gifUrl, isAnimated);
                         }
+                        lastMessageId = Integer.valueOf(eachModel.getMessageId());
                     }
 
                     if (mChatModelArrayList.size() <= 0) {
@@ -928,7 +949,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
         public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             if (s.toString().trim().length() <= 0) {
-                if (!isGifChosen) {
+                if (!isStickerChosen) {
                     mSendChatMessage.setEnabled(false);
                 } else {
                     mSendChatMessage.setEnabled(true);
@@ -1010,7 +1031,17 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
 
                     case Constants.DELETE_MESSAGE_REQUESTED:
                         String messageId = extras.getString("messageId");
-                        RealmHelper.getInstance().removeMessage(messageId);
+                        RealmHelper.getInstance().removeMessage(messageId, new GeneralCallback<Boolean>() {
+                            @Override
+                            public void onSuccess(Boolean aBoolean) {
+
+                            }
+
+                            @Override
+                            public void onFailure(Boolean aBoolean) {
+
+                            }
+                        });
                         getMessages();
                         break;
 
@@ -1206,8 +1237,8 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                 }
             });
         }
-        lasChosenGifName = stickerUrl;
-        isGifChosen = true;
+        lastChosenStickerName = stickerUrl;
+        isStickerChosen = true;
         isAnimated = isIntentStickerAnimated;
     }
 
@@ -1238,7 +1269,7 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
             // Initiate the upload
 
             if (path != null) {
-                File file = new File(path);
+                final File file = new File(path);
                 if (!file.exists()) {
                     fileErrorDialog.show();
                     return;
@@ -1265,17 +1296,26 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                 mChatModelArrayList.add(tempChat);
                 tempChat.setClickable(false);
 
-                int itemLocation = mChatModelArrayList.indexOf(tempChat);
-
+                final int itemLocation = mChatModelArrayList.indexOf(tempChat);
+                lastMessageId = lastMessageId + 1;
                 RealmHelper.getInstance().insertMessage(mCurrentUserId, mOpponentId,
                         "userid=" + mSharedHelper.getUserId() + ":" +
                                 Constants.TYPE_MESSAGE_ATTACHMENT +
-                                file.getName(), String.valueOf(System.currentTimeMillis()), "",
+                                file.getName(), String.valueOf(lastMessageId), "",
                         String.valueOf(itemLocation),
                         Constants.STATUS_NOT_DELIVERED, mUserImage,
-                        mOpponentImage, mDeleteOpponentId, mDeleteUserId, false, "", false);
+                        mOpponentImage, mDeleteOpponentId, mDeleteUserId, false, "", false, new GeneralCallback() {
+                            @Override
+                            public void onSuccess(Object o) {
+                                sendMessageWithAttachment(file, itemLocation);
+                            }
 
-                sendMessageWithAttachment(file, itemLocation);
+                            @Override
+                            public void onFailure(Object o) {
+                                Snackbar.make(mRecyclerView, getString(R.string.messageNotSent), Snackbar.LENGTH_SHORT).show();
+                            }
+                        });
+
 
             } else {
                 fileErrorDialog.show();
@@ -1351,4 +1391,23 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     public void onFinish() {
     }
 
+    @Override
+    public void onItemClicked(int position, View view) {
+        handleChatItemClicked(position);
+    }
+
+    @Override
+    public void onItemLongClick(int position) {
+        handleChatItemLongClicked(position);
+    }
+
+    @Override
+    public void onAdditionItemClick(int position, View view) {
+
+    }
+
+    @Override
+    public void onItemClicked(Object object) {
+
+    }
 }

@@ -26,7 +26,10 @@ import com.koushikdutta.ion.Ion;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnLongClick;
 import ink.StartupApplication;
+import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.ChatModel;
 import ink.va.utils.Constants;
 import ink.va.utils.Dp;
@@ -59,14 +62,18 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
     private boolean updating = false;
     private int percentage;
     private Context mContext;
+    private RecyclerItemClickListener onItemClickListener;
+    private int position;
 
     public ChatViewHolder(View view) {
         super(view);
         ButterKnife.bind(this, view);
     }
 
-    public void initData(ChatModel chatModel, Context context, int position, int maxSize) {
+    public void initData(ChatModel chatModel, Context context, int position, int maxSize, RecyclerItemClickListener onItemClickListener) {
         mContext = context;
+        this.position = position;
+        this.onItemClickListener = onItemClickListener;
         if (sharedHelper == null) {
             sharedHelper = new SharedHelper(context);
         }
@@ -140,6 +147,17 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         }
         checkForSticker(chatModel);
 
+    }
+
+    @OnClick(R.id.chatItemRootLayout)
+    public void rootClicked() {
+        onItemClickListener.onItemClicked(position, itemView);
+    }
+
+    @OnLongClick(R.id.chatItemRootLayout)
+    public boolean longClicked() {
+        onItemClickListener.onItemLongClick(position);
+        return false;
     }
 
     private void checkForSticker(final ChatModel chatModel) {

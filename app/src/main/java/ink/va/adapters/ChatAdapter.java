@@ -10,6 +10,7 @@ import com.ink.va.R;
 
 import java.util.List;
 
+import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.ChatModel;
 import ink.va.view_holders.ChatViewHolder;
 
@@ -20,6 +21,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<ChatModel> chatModelList;
     private Context mContext;
+    private RecyclerItemClickListener onItemClickListener;
 
     public ChatAdapter(List<ChatModel> chatModelList, Context mContext) {
         this.chatModelList = chatModelList;
@@ -37,7 +39,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         ChatModel chatModel = chatModelList.get(position);
-        ((ChatViewHolder) holder).initData(chatModel, mContext, position, chatModelList.size() - 1);
+        ((ChatViewHolder) holder).initData(chatModel, mContext, position, chatModelList.size() - 1,onItemClickListener);
     }
 
 
@@ -54,5 +56,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     }
 
-
+    public void setOnItemClickListener(RecyclerItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
 }

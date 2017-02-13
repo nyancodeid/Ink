@@ -100,7 +100,7 @@ public class RealmHelper {
                               final String userImage,
                               final String opponentImage, final String deleteOpponentId,
                               final String deleteUserId,
-                              final boolean hasGif, final String gifUrl, final boolean animated) {
+                              final boolean hasGif, final String gifUrl, final boolean animated, @Nullable final GeneralCallback generalCallback) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -131,6 +131,9 @@ public class RealmHelper {
                                         messageModel.setDeleteUserId(deleteUserId);
                                         messageModel.setDeleteOpponentId(deleteOpponentId);
                                     }
+                                    if (generalCallback != null) {
+                                        generalCallback.onSuccess(true);
+                                    }
 
                                 }
                             });
@@ -138,7 +141,9 @@ public class RealmHelper {
 
                         @Override
                         public void onFailure(Object o) {
-
+                            if (generalCallback != null) {
+                                generalCallback.onFailure(false);
+                            }
                         }
                     });
                 } else {
@@ -165,7 +170,9 @@ public class RealmHelper {
                                 messageModel.setDeleteUserId(deleteUserId);
                                 messageModel.setDeleteOpponentId(deleteOpponentId);
                             }
-
+                            if (generalCallback != null) {
+                                generalCallback.onSuccess(false);
+                            }
 
                         }
                     });
@@ -300,7 +307,7 @@ public class RealmHelper {
 
     }
 
-    public void removeMessage(final String messageId) {
+    public void removeMessage(final String messageId, @Nullable final GeneralCallback<Boolean> deleteCallback) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -312,13 +319,18 @@ public class RealmHelper {
                                 @Override
                                 public void execute(Realm realm) {
                                     realm.where(MessageModel.class).equalTo("messageId", messageId).findAll().deleteAllFromRealm();
+                                    if (deleteCallback != null) {
+                                        deleteCallback.onSuccess(true);
+                                    }
                                 }
                             });
                         }
 
                         @Override
                         public void onFailure(Object o) {
-
+                            if (deleteCallback != null) {
+                                deleteCallback.onFailure(false);
+                            }
                         }
                     });
                 } else {
@@ -326,6 +338,9 @@ public class RealmHelper {
                         @Override
                         public void execute(Realm realm) {
                             realm.where(MessageModel.class).equalTo("messageId", messageId).findAll().deleteAllFromRealm();
+                            if (deleteCallback != null) {
+                                deleteCallback.onSuccess(true);
+                            }
                         }
                     });
                 }
