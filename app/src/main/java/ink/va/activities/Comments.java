@@ -536,7 +536,9 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     @Override
     public void onStickerClicked(CommentModel commentModel) {
         Intent intent = new Intent(this, FullscreenActivity.class);
-        intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + commentModel.getStickerUrl());
+        int lastIndex = Constants.MAIN_URL.lastIndexOf("/");
+        String urlWithoutSlash = Constants.MAIN_URL.substring(0, lastIndex);
+        intent.putExtra("link", urlWithoutSlash + commentModel.getStickerUrl());
         startActivity(intent);
     }
 
