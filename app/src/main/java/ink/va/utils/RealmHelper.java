@@ -194,7 +194,7 @@ public class RealmHelper {
                             mRealm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(final Realm realm) {
-
+                                    realm.deleteAll();
                                     for (MessageModel queriedMessageModel : messageModels) {
                                         RealmQuery<MessageModel> query = realm.where(MessageModel.class)
                                                 .equalTo("messageId", queriedMessageModel.getMessageId());
@@ -232,6 +232,7 @@ public class RealmHelper {
                     mRealm.executeTransactionAsync(new Realm.Transaction() {
                         @Override
                         public void execute(final Realm realm) {
+                            realm.deleteAll();
                             for (MessageModel queriedMessageModel : messageModels) {
 
                                 RealmQuery<MessageModel> query = realm.where(MessageModel.class)
@@ -364,7 +365,7 @@ public class RealmHelper {
                                 @Override
                                 public void execute(Realm realm) {
                                     RealmResults<MessageModel> resultQuery = realm.where(MessageModel.class).equalTo("opponentId", opponentId)
-                                            .equalTo("id", lastPosition).findAllSorted("date");
+                                            .equalTo("id", lastPosition).findAllSorted("id", Sort.ASCENDING);
                                     for (MessageModel messageResult : resultQuery) {
                                         messageResult.setMessageId(messageId);
                                         messageResult.setDeliveryStatus(deliveryStatus);
@@ -384,7 +385,7 @@ public class RealmHelper {
                         @Override
                         public void execute(Realm realm) {
                             RealmResults<MessageModel> resultQuery = realm.where(MessageModel.class).equalTo("opponentId", opponentId)
-                                    .equalTo("id", lastPosition).findAllSorted("date");
+                                    .equalTo("id", lastPosition).findAllSorted("id", Sort.ASCENDING);
                             for (MessageModel messageResult : resultQuery) {
                                 messageResult.setMessageId(messageId);
                                 messageResult.setDeliveryStatus(deliveryStatus);
@@ -566,6 +567,41 @@ public class RealmHelper {
             }
         });
 
+    }
+
+    public void deleteMessages() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mRealm.isClosed()) {
+                    openRealm(new GeneralCallback() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            mRealm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(final Realm realm) {
+                                    realm.deleteAll();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(Object o) {
+
+                        }
+                    });
+                } else {
+                    mRealm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(final Realm realm) {
+                            realm.deleteAll();
+
+                        }
+                    });
+                }
+
+            }
+        });
     }
 
     public interface QueryReadyListener<T> {

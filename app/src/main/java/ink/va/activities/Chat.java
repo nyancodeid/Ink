@@ -503,15 +503,27 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                         RealmHelper.getInstance().removeMessage(messageId, new GeneralCallback<Boolean>() {
                             @Override
                             public void onSuccess(Boolean aBoolean) {
-                                mChatAdapter.notifyItemRemoved(positionOfItem);
-                                progressDialog.dismiss();
-                                Snackbar.make(chatTitle, getString(R.string.messageDeleted), Snackbar.LENGTH_SHORT).show();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mChatAdapter.notifyItemRemoved(positionOfItem);
+                                        progressDialog.dismiss();
+                                        Snackbar.make(chatTitle, getString(R.string.messageDeleted), Snackbar.LENGTH_SHORT).show();
+                                    }
+                                });
+
                             }
 
                             @Override
                             public void onFailure(Boolean aBoolean) {
-                                progressDialog.dismiss();
-                                Snackbar.make(chatTitle, getString(R.string.messagedeleteError), Snackbar.LENGTH_SHORT).show();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        progressDialog.dismiss();
+                                        Snackbar.make(chatTitle, getString(R.string.messagedeleteError), Snackbar.LENGTH_SHORT).show();
+                                    }
+                                });
+
                             }
                         });
                     } else {
@@ -746,7 +758,6 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
             }
         });
         isStickerChosen = false;
-
     }
 
     private void dismissStickerChooser() {
@@ -783,13 +794,13 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
     }
 
     private void attemptToQue(final String message, final int itemLocation, String deleteOpponentId,
-                              String deleteUserId, final boolean hasGif, final String gifUrl, final boolean isAnimated) {
+                              String deleteUserId, final boolean isStickerChosen, final String gifUrl, final boolean isAnimated) {
         lastMessageId = lastMessageId + 1;
         RealmHelper.getInstance().insertMessage(mCurrentUserId, mOpponentId,
                 message, String.valueOf(lastMessageId), "",
                 String.valueOf(itemLocation),
                 Constants.STATUS_NOT_DELIVERED, mUserImage,
-                mOpponentImage, deleteOpponentId, deleteUserId, hasGif, gifUrl, isAnimated, new GeneralCallback() {
+                mOpponentImage, deleteOpponentId, deleteUserId, isStickerChosen, gifUrl, isAnimated, new GeneralCallback() {
                     @Override
                     public void onSuccess(Object o) {
                         QueHelper queHelper = new QueHelper();
@@ -819,9 +830,14 @@ public class Chat extends BaseActivity implements ProgressRequestBody.UploadCall
                 RealmHelper.getInstance().updateMessages(messageId,
                         Constants.STATUS_DELIVERED, String.valueOf(sentItemLocation),
                         mOpponentId);
-                if (mNoMessageLayout.getVisibility() == View.VISIBLE) {
-                    mNoMessageLayout.setVisibility(View.GONE);
-                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mNoMessageLayout.getVisibility() == View.VISIBLE) {
+                            mNoMessageLayout.setVisibility(View.GONE);
+                        }
+                    }
+                });
 
             }
         } catch (JSONException e) {

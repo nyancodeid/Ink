@@ -115,6 +115,8 @@ public class BackgroundTaskService extends Service {
                             messageModels.add(messageModel);
                         }
                         realmHelper.insertMessage(messageModels);
+                    }else{
+                        RealmHelper.getInstance().deleteMessages();
                     }
                     stopSelf();
 
