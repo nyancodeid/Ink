@@ -8,6 +8,68 @@
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground">
 
+
+    <!-- Stickers handling-->
+    <RelativeLayout
+        android:id="@+id/stickerVideoWrapper"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_below="@+id/commenterBody"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/grey_transparent_rectangle"
+        android:elevation="20dp"
+        android:visibility="gone">
+
+
+        <VideoView
+            android:id="@+id/stickerVideo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp" />
+
+        <ProgressBar
+            android:id="@+id/stickerVideoLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/stickerWrapper"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_below="@+id/commenterBody"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+
+        <ImageView
+            android:id="@+id/stickerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="130dp"
+            android:maxWidth="130dp" />
+
+    </LinearLayout>
+
+
     <ImageView
         android:id="@+id/commentMoreIcon"
         android:layout_width="wrap_content"
@@ -39,12 +101,12 @@
 
     <TextView
         android:id="@+id/commenterBody"
-        android:autoLink="web"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/commenterName"
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@+id/commenterImage"
+        android:autoLink="web"
         android:fontFamily="@string/appFont"
         android:text="@string/loadingText"
         android:textColor="#000000" />

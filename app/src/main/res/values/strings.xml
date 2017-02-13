@@ -833,4 +833,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
         let you proceed,be aware of that if you continue using it multiple times you will be banned. Please turn any cheat engine off or delete them and come back again.</string>
     <string name="newPost">New Post</string>
     <string name="madePost">made a new post</string>
+    <string name="stickerAttached">Sticker attached</string>
 </resources>

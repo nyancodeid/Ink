@@ -68,6 +68,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.utils.Constants.REQUEST_CODE_CHOSE_STICKER;
+import static ink.va.utils.Constants.STARTING_FOR_RESULT_BUNDLE_KEY;
+
 public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, CommentClickHandler, RecyclerItemClickListener {
 
     @BindView(R.id.commentBody)
@@ -83,6 +86,8 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     SwipeRefreshLayout mCommentRefresher;
     @BindView(R.id.commentCard)
     CardView commentCard;
+    @BindView(R.id.chosenStickerLayout)
+    public View stickerChosenLayout;
     private String mPostId;
     private String mUserImage;
     private String mPostBody;
@@ -115,6 +120,9 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     private Snackbar snackbar;
     private BroadcastReceiver broadcastReceiver;
     private boolean shouldUpdate;
+    private boolean isStickerChosen;
+    private String lastChosenStickerUrl;
+    private boolean isAnimated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -205,7 +213,11 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.toString().trim().isEmpty()) {
-                    mAaddCommentButton.setEnabled(false);
+                    if (isStickerChosen) {
+                        mAaddCommentButton.setEnabled(true);
+                    } else {
+                        mAaddCommentButton.setEnabled(false);
+                    }
                 } else {
                     mAaddCommentButton.setEnabled(true);
                 }
@@ -280,7 +292,11 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                             String lastName = eachObject.optString("commenter_last_name");
                             boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
                             boolean isIncognito = eachObject.optBoolean("isIncognito");
-                            mCommentModel = new CommentModel(isSocialAccount, isIncognito, Boolean.valueOf(isFriend), commentId,
+                            String stickerUrl = eachObject.optString("stickerUrl");
+                            boolean isAnimated = eachObject.optBoolean("isAnimated");
+                            mCommentModel = new CommentModel(stickerUrl, isAnimated,
+                                    isSocialAccount, isIncognito, Boolean.valueOf(isFriend),
+                                    commentId,
                                     commenterId, commenterImage, commentBody, postId, firstName,
                                     lastName);
                             mCommentModels.add(mCommentModel);
@@ -316,6 +332,20 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         });
     }
 
+    @OnClick(R.id.attachSticker)
+    public void attachStickerClicked() {
+        openStickerChooser();
+    }
+
+    @OnClick(R.id.removeSticker)
+    public void removeClicked() {
+        if (mCommentBody.getText().toString().trim().isEmpty()) {
+            mAaddCommentButton.setEnabled(false);
+        }
+        isStickerChosen = false;
+        stickerChosenLayout.setVisibility(View.GONE);
+    }
+
     @OnClick(R.id.addCommentButton)
     public void addCommentButton() {
         isResponseReceived = false;
@@ -324,22 +354,33 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         mCommentAdapter.notifyDataSetChanged();
 
         addCommentDialog.show();
-        addComment(mCommentBody.getText().toString().trim(), mSharedHelper.getImageLink(), mSharedHelper.getUserId(), mPostId);
+        addComment(mCommentBody.getText().toString().trim(), mSharedHelper.getImageLink(),
+                mSharedHelper.getUserId(), mPostId, lastChosenStickerUrl, isStickerChosen, isAnimated);
         mCommentBody.setText("");
+        mAaddCommentButton.setEnabled(false);
+        isStickerChosen = false;
     }
 
-    private void addComment(final String commentBody, final String userImage, final String commenterId, final String postId) {
+    private void openStickerChooser() {
+        Intent intent = new Intent(getApplicationContext(), MyCollection.class);
+        intent.putExtra(STARTING_FOR_RESULT_BUNDLE_KEY, true);
+        startActivityForResult(intent, Constants.REQUEST_CODE_CHOSE_STICKER);
+    }
+
+    private void addComment(final String commentBody, final String userImage,
+                            final String commenterId, final String postId,
+                            final String stickerUrl, final boolean isStickerChosen, final boolean isAnimated) {
         Call<ResponseBody> addCommentCall = Retrofit.getInstance().getInkService().addComment(commenterId,
-                userImage, commentBody, postId, mSharedHelper.getFirstName(), mSharedHelper.getLastName());
+                userImage, commentBody, postId, mSharedHelper.getFirstName(), mSharedHelper.getLastName(), isStickerChosen ? stickerUrl : "", isAnimated);
         addCommentCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    addComment(commentBody, userImage, commenterId, postId);
+                    addComment(commentBody, userImage, commenterId, postId, stickerUrl, isStickerChosen, isAnimated);
                     return;
                 }
                 if (response.body() == null) {
-                    addComment(commentBody, userImage, commenterId, postId);
+                    addComment(commentBody, userImage, commenterId, postId, stickerUrl, isStickerChosen, isAnimated);
                     return;
                 }
                 addCommentDialog.dismiss();
@@ -356,17 +397,24 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                                     }
                                 }).show();
                         getComments(postId, true);
+                    } else {
+                        Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
+                    Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                    addCommentDialog.dismiss();
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                    addCommentDialog.dismiss();
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                addComment(commentBody, userImage, commenterId, postId);
+                addCommentDialog.dismiss();
+                Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -480,6 +528,14 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
         Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
         String encodedFileName = Uri.encode(attachmentName);
+        intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedFileName);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onStickerClicked(CommentModel commentModel) {
+        Intent intent = new Intent(this, FullscreenActivity.class);
+        String encodedFileName = Uri.encode(commentModel.getStickerUrl());
         intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedFileName);
         startActivity(intent);
     }
@@ -787,5 +843,28 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
             LocalBroadcastManager.getInstance(Comments.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
         }
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode) {
+            case REQUEST_CODE_CHOSE_STICKER:
+                if (data != null) {
+                    isAnimated = data.getExtras().getBoolean(Constants.STICKER_IS_ANIMATED_EXTRA_KEY);
+                    lastChosenStickerUrl = data.getExtras().getString(Constants.STICKER_URL_EXTRA_KEY);
+                    isStickerChosen = true;
+                    handleStickerChosenView();
+                }
+
+                break;
+            default:
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void handleStickerChosenView() {
+        mAaddCommentButton.setEnabled(true);
+        stickerChosenLayout.setVisibility(View.VISIBLE);
     }
 }

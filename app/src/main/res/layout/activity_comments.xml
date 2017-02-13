@@ -4,9 +4,9 @@
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/commentRootLayout"
-    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@color/chat_background_color"
     tools:context="ink.va.activities.Comments">
 
@@ -44,16 +44,42 @@
         android:elevation="5dp">
 
         <RelativeLayout
+            android:id="@+id/commentLayout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true">
+
+            <RelativeLayout
+                android:id="@+id/chosenStickerLayout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@string/stickerAttached" />
+
+                <ImageView
+                    android:id="@+id/removeSticker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:padding="10dp"
+                    android:src="@drawable/trash_icon" />
+            </RelativeLayout>
 
             <EditText
                 android:id="@+id/commentBody"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/chosenStickerLayout"
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="3dp"
                 android:layout_toLeftOf="@+id/addCommentButton"
+                android:layout_toRightOf="@+id/attachSticker"
                 android:background="#ffffff"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
@@ -71,6 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_below="@+id/chosenStickerLayout"
                 android:layout_marginBottom="10dp"
                 android:layout_marginRight="10dp"
                 android:src="@drawable/add_comment_icon"
@@ -78,6 +105,15 @@
                 fab:fab_colorPressed="@color/colorPrimaryDark"
                 fab:fab_label="@string/sendMessage"
                 fab:fab_size="mini" />
+
+            <ImageView
+                android:id="@+id/attachSticker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:padding="10dp"
+                android:src="@drawable/smiley_vector" />
         </RelativeLayout>
+
     </android.support.v7.widget.CardView>
 </RelativeLayout>

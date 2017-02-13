@@ -14,14 +14,18 @@ public class CommentModel {
     private boolean isSocialAccount;
     private boolean isFriend;
     private boolean isIncognito;
+    private String stickerUrl;
+    private boolean isAnimated;
 
 
-    public CommentModel(boolean isSocialAccount, boolean isIncognito, boolean isFriend, String commentId, String commenterId,
+    public CommentModel(String stickerUrl, boolean isAnimated, boolean isSocialAccount, boolean isIncognito, boolean isFriend, String commentId, String commenterId,
                         String commenterImage,
                         String commentBody,
                         String postId, String firstName,
                         String lastName) {
         this.commentId = commentId;
+        this.stickerUrl = stickerUrl;
+        this.isAnimated = isAnimated;
         this.isIncognito = isIncognito;
         this.isFriend = isFriend;
         this.isSocialAccount = isSocialAccount;
@@ -111,5 +115,25 @@ public class CommentModel {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getStickerUrl() {
+        return stickerUrl;
+    }
+
+    public void setStickerUrl(String stickerUrl) {
+        this.stickerUrl = stickerUrl;
+    }
+
+    public boolean isAnimated() {
+        return isAnimated;
+    }
+
+    public void setAnimated(boolean animated) {
+        isAnimated = animated;
+    }
+
+    public boolean hasSticker() {
+        return !stickerUrl.isEmpty();
     }
 }

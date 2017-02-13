@@ -616,6 +616,8 @@ public class HomeActivity extends BaseActivity
     private void callToVipServer(final String type) {
         progressDialog.setTitle(getString(R.string.logging));
         progressDialog.setMessage(getString(R.string.loggingIntoVip));
+        progressDialog.setCancelable(true);
+        progressDialog.setCanceledOnTouchOutside(true);
         progressDialog.show();
 
         Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().callVipServer(mSharedHelper.getUserId(), type);
@@ -777,6 +779,8 @@ public class HomeActivity extends BaseActivity
 
     private void logoutUser() {
         progressDialog.setTitle(getString(R.string.loggingout));
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setMessage(getString(R.string.loggingoutPleaseWait));
         progressDialog.show();
         shouldOpenActivity = false;

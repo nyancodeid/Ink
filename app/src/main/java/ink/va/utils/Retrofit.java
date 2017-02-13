@@ -198,8 +198,8 @@ public class Retrofit {
         @POST(Constants.USER_COINS_UPDATE)
         @FormUrlEncoded
         Call<ResponseBody> silentCoinsUpdate(@Field("userId") String userId,
-                                              @Field("coinsAmount") String coinsAmount,
-                                              @Field("coinsToken") String coinsToken);
+                                             @Field("coinsAmount") String coinsAmount,
+                                             @Field("coinsToken") String coinsToken);
 
         @POST(Constants.SEARCH_GROUP_URL)
         @FormUrlEncoded
@@ -415,7 +415,9 @@ public class Retrofit {
                                       @Field("comment_body") String commentBody,
                                       @Field("post_id") String postId,
                                       @Field("first_name") String firstName,
-                                      @Field("last_name") String lastName);
+                                      @Field("last_name") String lastName,
+                                      @Field("stickerUrl") String stickerUrl,
+                                      @Field("isAnimated") boolean isAnimated);
 
         @POST(Constants.CHAT_MESSAGES)
         @FormUrlEncoded

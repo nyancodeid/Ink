@@ -4,6 +4,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import ink.va.models.CommentModel;
+
 /**
  * Created by USER on 2016-07-06.
  */
@@ -17,4 +19,6 @@ public interface CommentClickHandler {
     void onMoreClick(int position, View view);
 
     void onImageClicked(int position);
+
+    void onStickerClicked(CommentModel commentModel);
 }
