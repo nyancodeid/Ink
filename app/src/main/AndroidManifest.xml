@@ -226,12 +226,6 @@
             android:name="ink.va.activities.ImageEditor"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name="ink.va.activities.SendFeedback"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity
-            android:name="ink.va.activities.ContactSupport"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />

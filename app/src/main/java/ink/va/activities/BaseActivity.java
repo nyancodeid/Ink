@@ -94,13 +94,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @BindView(R.id.createGroup)
     FloatingActionButton createGroup;
 
-    @Nullable
-    @BindView(R.id.sendFeedbackButton)
-    FloatingActionButton sendFeedbackButton;
-
-    @Nullable
-    @BindView(R.id.sendIssueButton)
-    FloatingActionButton sendIssueButton;
 
     @Nullable
     @BindView(R.id.pickImageButton)
@@ -223,12 +216,6 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
             if (replyMessage != null) {
                 replyMessage.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));
-            }
-            if (sendFeedbackButton != null) {
-                sendFeedbackButton.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));
-            }
-            if (sendIssueButton != null) {
-                sendIssueButton.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));
             }
             if (pickImageButton != null) {
                 pickImageButton.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));

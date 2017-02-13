@@ -12,6 +12,8 @@ import com.adobe.creativesdk.foundation.auth.IAdobeAuthClientCredentials;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.instabug.library.Instabug;
+import com.instabug.library.invocation.InstabugInvocationEvent;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKAccessTokenTracker;
 import com.vk.sdk.VKCallback;
@@ -30,12 +32,18 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
     private SharedHelper sharedHelper;
     private Activity mActivity = null;
     private HttpProxyCacheServer proxy;
+    private Instabug instabug;
 
     @Override
     public void onCreate() {
         RealmHelper.getInstance().initRealm(getApplicationContext());
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
+
+        instabug = new Instabug.Builder(this, "23bb97d1e65426359d94f8c466b8cb17")
+                .setInvocationEvent(InstabugInvocationEvent.NONE)
+                .build();
+
         sharedHelper = new SharedHelper(this);
         AdobeCSDKFoundation.initializeCSDKFoundation(getApplicationContext());
         VKAccessTokenTracker vkAccessTokenTracker = new VKAccessTokenTracker() {
@@ -114,7 +122,6 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
     }
 
 
-
     public static HttpProxyCacheServer getProxy(Context context) {
         StartupApplication app = (StartupApplication) context.getApplicationContext();
         return app.proxy == null ? (app.proxy = app.newProxy()) : app.proxy;
@@ -125,6 +132,10 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
                 .maxCacheSize(1024 * 1024 * 1024)
                 .cacheDirectory(getCacheDir())
                 .build();
+    }
+
+    private Instabug getInstaBug() {
+        return instabug;
     }
 
 }

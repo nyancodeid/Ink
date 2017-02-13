@@ -45,6 +45,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.ink.va.R;
+import com.instabug.library.Instabug;
+import com.instabug.library.invocation.InstabugInvocationMode;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.pollfish.interfaces.PollfishClosedListener;
@@ -135,6 +137,7 @@ public class HomeActivity extends BaseActivity
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+    private boolean openInstaBug;
 
 
     @Override
@@ -216,6 +219,9 @@ public class HomeActivity extends BaseActivity
                         startActivity(new Intent(getApplicationContext(), getLastKnownClass()));
                     }
 
+                } else if (openInstaBug) {
+                    openInstaBug = false;
+                    openInstBug();
                 }
                 super.onDrawerClosed(view);
             }
@@ -298,7 +304,6 @@ public class HomeActivity extends BaseActivity
         });
     }
 
-
     private void checkIsWarned() {
         if (!mSharedHelper.isDeviceWarned()) {
             if (DeviceChecker.isHuawei()) {
@@ -331,11 +336,13 @@ public class HomeActivity extends BaseActivity
                     @Override
                     public void onClick(View view) {
                         startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
+
                     }
                 });
             }
         }
     }
+
 
     private BroadcastReceiver feedUpdateReceiver = new BroadcastReceiver() {
         @Override
@@ -354,6 +361,24 @@ public class HomeActivity extends BaseActivity
             }
         }
     };
+
+
+    private void openInstBug() {
+        Instabug.invoke(InstabugInvocationMode.NEW_FEEDBACK);
+    }
+
+
+    private void openEmail() {
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("message/rfc822");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"contact@vaentertaiment.xyz"});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Support Needed");
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            ex.printStackTrace();
+        }
+    }
 
     private void handleFeedNotification(final String postId) {
         mFeed.triggerFeedUpdate(false);
@@ -489,6 +514,7 @@ public class HomeActivity extends BaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Intent intent;
+        openInstaBug = false;
         switch (id) {
             case R.id.profile:
                 shouldOpenActivity = true;
@@ -578,13 +604,13 @@ public class HomeActivity extends BaseActivity
                 break;
 
             case R.id.sendFeedback:
-                shouldOpenActivity = true;
-                setLastClassToOpen(SendFeedback.class, false);
+                shouldOpenActivity = false;
+                openInstaBug = true;
                 break;
 
             case R.id.contactSupport:
-                shouldOpenActivity = true;
-                setLastClassToOpen(ContactSupport.class, false);
+                shouldOpenActivity = false;
+                openEmail();
                 break;
 
             case R.id.logout:
