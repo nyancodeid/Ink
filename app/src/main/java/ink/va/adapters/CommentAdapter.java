@@ -10,7 +10,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -311,7 +310,6 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         private TextView commenterName;
         private RelativeLayout commentRootLayout;
         private ImageView imageView;
-        private LinearLayout imageViewWrapper;
         private RelativeLayout chatVideoWrapper;
         private VideoView chatVideo;
         private ProgressBar videoLoadingProgress;
@@ -319,7 +317,6 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         public ItemViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.stickerView);
-            imageViewWrapper = (LinearLayout) itemView.findViewById(R.id.stickerWrapper);
             chatVideoWrapper = (RelativeLayout) itemView.findViewById(R.id.stickerVideoWrapper);
             chatVideo = (VideoView) itemView.findViewById(R.id.stickerVideo);
             videoLoadingProgress = (ProgressBar) itemView.findViewById(R.id.stickerVideoLoading);
@@ -349,7 +346,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
     }
 
     private void checkForSticker(final CommentModel commentModel, final ItemViewHolder holder) {
-        holder.imageViewWrapper.setOnClickListener(new View.OnClickListener() {
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 commentClickHandler.onStickerClicked(commentModel);
@@ -358,7 +355,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         if (commentModel.hasSticker()) {
             if (commentModel.isAnimated()) {
                 holder.imageView.setImageResource(0);
-                holder.imageViewWrapper.setVisibility(View.GONE);
+                holder.imageView.setVisibility(View.GONE);
                 holder.chatVideo.setVisibility(View.VISIBLE);
                 holder.chatVideoWrapper.setVisibility(View.VISIBLE);
 
@@ -391,7 +388,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
                 holder.chatVideo.setVisibility(View.GONE);
                 holder.chatVideoWrapper.setVisibility(View.GONE);
                 holder.imageView.setImageResource(0);
-                holder.imageViewWrapper.setVisibility(View.VISIBLE);
+                holder.imageView.setVisibility(View.VISIBLE);
 
                 Ion.with(context).load(Constants.MAIN_URL + commentModel.getStickerUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.imageView)
                         .setCallback(new FutureCallback<ImageView>() {
@@ -404,7 +401,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             holder.chatVideo.setVisibility(View.GONE);
             holder.chatVideoWrapper.setVisibility(View.GONE);
             holder.imageView.setImageResource(0);
-            holder.imageViewWrapper.setVisibility(View.GONE);
+            holder.imageView.setVisibility(View.GONE);
         }
     }
 }

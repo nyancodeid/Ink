@@ -357,6 +357,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         addComment(mCommentBody.getText().toString().trim(), mSharedHelper.getImageLink(),
                 mSharedHelper.getUserId(), mPostId, lastChosenStickerUrl, isStickerChosen, isAnimated);
         mCommentBody.setText("");
+        stickerChosenLayout.setVisibility(View.GONE);
         mAaddCommentButton.setEnabled(false);
         isStickerChosen = false;
     }
