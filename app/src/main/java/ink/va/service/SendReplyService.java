@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import ink.va.callbacks.GeneralCallback;
 import ink.va.utils.Constants;
 import ink.va.utils.QueHelper;
 import ink.va.utils.RealmHelper;
@@ -47,7 +48,17 @@ public class SendReplyService extends Service {
         RealmHelper.getInstance().insertMessage(mCurrentUserId, mOpponentId,
                 message, "0", "",
                 String.valueOf(finalId), Constants.STATUS_NOT_DELIVERED, userImage, mOpponentImage, deleteOpponentId,
-                deleteUserId, false, "", false);
+                deleteUserId, false, "", false, new GeneralCallback() {
+                    @Override
+                    public void onSuccess(Object o) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Object o) {
+
+                    }
+                });
 
         QueHelper queHelper = new QueHelper();
         queHelper.attachToQue(mOpponentId, message, finalId, false, ""

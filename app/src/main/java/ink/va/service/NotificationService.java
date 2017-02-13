@@ -45,6 +45,7 @@ import ink.va.activities.ReplyView;
 import ink.va.activities.RequestsView;
 import ink.va.activities.SplashScreen;
 import ink.va.broadcast.DismissBroadcast;
+import ink.va.callbacks.GeneralCallback;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.Notification;
@@ -117,7 +118,8 @@ public class NotificationService extends FirebaseMessagingService {
                         RealmHelper.getInstance().insertMessage(response.get("user_id"), response.get("opponent_id"),
                                 response.get("message"), response.get("message_id"), response.get("date"), response.get("message_id"),
                                 Constants.STATUS_DELIVERED, response.get("user_image"), response.get("opponent_image"),
-                                response.get("delete_opponent_id"), response.get("delete_user_id"), Boolean.valueOf(response.get("hasGif")), response.get("gifUrl"), Boolean.valueOf(response.get("isAnimated")));
+                                response.get("delete_opponent_id"), response.get("delete_user_id"), Boolean.valueOf(response.get("hasGif")),
+                                response.get("gifUrl"), Boolean.valueOf(response.get("isAnimated")), null);
                     }
                 });
 
@@ -295,7 +297,17 @@ public class NotificationService extends FirebaseMessagingService {
             case DELETE_MESSAGE_REQUESTED:
                 String messageId = response.get("messageId");
                 if (Notification.get().isSendingRemote()) {
-                    RealmHelper.getInstance().removeMessage(messageId);
+                    RealmHelper.getInstance().removeMessage(messageId, new GeneralCallback<Boolean>() {
+                        @Override
+                        public void onSuccess(Boolean aBoolean) {
+
+                        }
+
+                        @Override
+                        public void onFailure(Boolean aBoolean) {
+
+                        }
+                    });
                 } else {
                     intent = new Intent(getPackageName() + ".Chat");
                     intent.putExtra("messageId", messageId);
