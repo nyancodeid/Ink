@@ -210,8 +210,10 @@ public class Constants {
      * Bundle Constants
      */
     public static final String PACK_ID_BUNDLE_KEY = "pack_price";
+    public static final String NOTIFICATION_POST_ID_KEY = "postId";
     public static final String PACK_BACKGROUND_BUNDLE_KEY = "pack_background";
     public static final String STICKER_URL_EXTRA_KEY = "stickerUrlExtra";
+    public static final String NOTIFICATION_BUNDLE_EXTRA_KEY = "notification_bundle_key";
     public static final String STICKER_IS_ANIMATED_EXTRA_KEY = "stickerIsAnimated";
     public static final String PACK_IMAGE_BUNDLE_KEY = "pack_image";
     public static final String SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY = "SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY";

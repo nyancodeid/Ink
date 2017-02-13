@@ -90,6 +90,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.utils.Constants.NOTIFICATION_BUNDLE_EXTRA_KEY;
+import static ink.va.utils.Constants.NOTIFICATION_POST_ID_KEY;
+
 public class HomeActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AccountDeleteListener, PollfishSurveyCompletedListener, PollfishOpenedListener,
         PollfishClosedListener, PollfishSurveyReceivedListener,
@@ -176,6 +179,8 @@ public class HomeActivity extends BaseActivity
             });
             bottomSheetDialog.show();
         }
+
+        checkNotification(getIntent());
 
         PingHelper.get().startPinging(mSharedHelper.getUserId());
         User.get().setUserName(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
@@ -340,15 +345,7 @@ public class HomeActivity extends BaseActivity
                 if (intent.getExtras() != null) {
                     Bundle extras = intent.getExtras();
                     final String postId = extras.getString("postId");
-
-                    mFeed.triggerFeedUpdate(false);
-                    Snackbar.make(coinsText, getString(R.string.newComment), Snackbar.LENGTH_LONG).setAction(getString(R.string.view), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            mSharedHelper.putPostId(postId);
-                            mFeed.checkShowComment();
-                        }
-                    }).show();
+                    handleFeedNotification(postId);
                 } else {
                     //meaning just trigger the feed update
                     mFeed.triggerFeedUpdate(false);
@@ -358,6 +355,34 @@ public class HomeActivity extends BaseActivity
         }
     };
 
+    private void handleFeedNotification(final String postId) {
+        mFeed.triggerFeedUpdate(false);
+        Snackbar.make(coinsText, getString(R.string.newComment), Snackbar.LENGTH_LONG).setAction(getString(R.string.view), new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSharedHelper.putPostId(postId);
+                mFeed.checkShowComment();
+            }
+        }).show();
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        checkNotification(intent);
+    }
+
+    private void checkNotification(Intent intent) {
+        if (intent != null && intent.getExtras() != null) {
+
+            Bundle notificationBundle = intent.getBundleExtra(NOTIFICATION_BUNDLE_EXTRA_KEY);
+            if (notificationBundle != null) {
+                String postId = notificationBundle.getString(NOTIFICATION_POST_ID_KEY);
+                handleFeedNotification(postId);
+            }
+        }
+    }
 
     @OnClick(R.id.earnCoins)
     public void earnClicked() {

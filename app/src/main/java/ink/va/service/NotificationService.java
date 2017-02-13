@@ -21,6 +21,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
@@ -53,6 +54,8 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 import static ink.va.utils.Constants.DELETE_MESSAGE_REQUESTED;
 import static ink.va.utils.Constants.NOTIFICAITON_TYPE_GLOBAL_CHAT_MESSAGE;
+import static ink.va.utils.Constants.NOTIFICATION_BUNDLE_EXTRA_KEY;
+import static ink.va.utils.Constants.NOTIFICATION_POST_ID_KEY;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_CALL;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_CHAT_ROULETTE;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_COMMENT_ADDED;
@@ -125,7 +128,7 @@ public class NotificationService extends FirebaseMessagingService {
                     LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
                     localBroadcastManager.sendBroadcast(intent);
 
-                    sendNotification("New Message", response.get("user_id"),
+                    sendMessageNotification("New Message", response.get("user_id"),
                             StringEscapeUtils.unescapeJava(response.get("message")), getApplicationContext(),
                             response.get("message_id"), response.get("opponent_id"),
                             response.get("opponent_image"), response.get("opponent_image").isEmpty() ? "" : response.get("opponent_image"), response.get("name"),
@@ -144,7 +147,7 @@ public class NotificationService extends FirebaseMessagingService {
                         intent.putExtra("type", "showMessage");
                         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
                         localBroadcastManager.sendBroadcast(intent);
-                        sendNotification("New Message", response.get("user_id"),
+                        sendMessageNotification("New Message", response.get("user_id"),
                                 StringEscapeUtils.unescapeJava(response.get("message")), getApplicationContext(),
                                 response.get("message_id"), response.get("opponent_id"),
                                 response.get("opponent_image"), response.get("opponent_image").isEmpty() ? "" : response.get("opponent_image"), response.get("name"),
@@ -207,10 +210,13 @@ public class NotificationService extends FirebaseMessagingService {
                     String commentId = response.get("id");
                     String commentBody = response.get("commentBody");
 
+                    Bundle bundle = new Bundle();
+                    bundle.putString(NOTIFICATION_POST_ID_KEY, postId);
+
                     sendGeneralNotification(getApplicationContext(), commentId, firstName + " " + lastName + " " + getString(R.string.commented_post),
-                            commentBody, SplashScreen.class);
+                            commentBody, bundle);
                     Intent commentIntent = new Intent(getPackageName() + "HomeActivity");
-                    commentIntent.putExtra("postId", postId);
+                    commentIntent.putExtra(NOTIFICATION_POST_ID_KEY, postId);
                     LocalBroadcastManager.getInstance(NotificationService.this).sendBroadcast(commentIntent);
                 }
                 break;
@@ -224,7 +230,7 @@ public class NotificationService extends FirebaseMessagingService {
                     sendGeneralNotification(getApplicationContext(), id,
                             getString(R.string.group_post_title) + " " + groupName,
                             name + " " + getString(R.string.posted_text) + " " + groupName,
-                            SplashScreen.class);
+                            null);
                 }
                 LocalBroadcastManager.getInstance(NotificationService.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
 
@@ -237,7 +243,7 @@ public class NotificationService extends FirebaseMessagingService {
                     String postId = response.get("id");
                     sendGeneralNotification(getApplicationContext(), postId, getString(R.string.commentAdded),
                             firstName + " " + lastName + getString(R.string.likedPostText),
-                            SplashScreen.class);
+                            null);
 
                     sendLikeNotification(getApplicationContext(), firstName + " " + lastName, postId);
                 }
@@ -266,7 +272,7 @@ public class NotificationService extends FirebaseMessagingService {
                 break;
             case NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED:
                 sendGeneralNotification(getApplicationContext(), response.get("requesterId"), response.get("requesterName") + " " +
-                        getString(R.string.acceptedYourFriendRequest), "", HomeActivity.class);
+                        getString(R.string.acceptedYourFriendRequest), "", null);
                 break;
             case NOTIFICATION_TYPE_LOCATION_UPDATES:
                 String latitude = response.get("latitude");
@@ -284,7 +290,7 @@ public class NotificationService extends FirebaseMessagingService {
                 String firstName = response.get("firstName");
                 String lastName = response.get("lastName");
                 sendGeneralNotification(getApplicationContext(), postId, getString(R.string.newPost),
-                        firstName + " " + lastName + " " + getString(R.string.madePost), SplashScreen.class);
+                        firstName + " " + lastName + " " + getString(R.string.madePost), null);
                 break;
             case DELETE_MESSAGE_REQUESTED:
                 String messageId = response.get("messageId");
@@ -303,7 +309,7 @@ public class NotificationService extends FirebaseMessagingService {
             default:
                 sendGeneralNotification(getApplicationContext(),
                         response.get("uniqueId"), response.get("title"),
-                        response.get("content"), SplashScreen.class);
+                        response.get("content"), null);
         }
 
     }
@@ -355,12 +361,12 @@ public class NotificationService extends FirebaseMessagingService {
     }
 
 
-    public void sendNotification(String title, final String opponentId,
-                                 String messageBody, final Context context,
-                                 String messageId, String currentUserId,
-                                 String userImage, final String opponentImage,
-                                 String userName, String deleteUserId, String deleteOpponentId,
-                                 boolean isSocialAccount, String lastName, boolean hasGif) {
+    public void sendMessageNotification(String title, final String opponentId,
+                                        String messageBody, final Context context,
+                                        String messageId, String currentUserId,
+                                        String userImage, final String opponentImage,
+                                        String userName, String deleteUserId, String deleteOpponentId,
+                                        boolean isSocialAccount, String lastName, boolean hasGif) {
 
 
         if (mSharedHelper.getLastNotificationId(opponentId) != null) {
@@ -720,7 +726,7 @@ public class NotificationService extends FirebaseMessagingService {
 
     private void sendGeneralNotification(Context context, String uniqueId,
                                          String title, String contentText,
-                                         @Nullable Class<?> resultClass) {
+                                         @Nullable Bundle extra) {
 
         NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
@@ -739,7 +745,10 @@ public class NotificationService extends FirebaseMessagingService {
                 .bigText(contentText)
         );
 
-        Intent requestsViewIntent = new Intent(context, SplashScreen.class);
+        Intent requestsViewIntent = new Intent(context, mSharedHelper.isLoggedIn() ? HomeActivity.class : SplashScreen.class);
+        if (extra != null) {
+            requestsViewIntent.putExtra(NOTIFICATION_BUNDLE_EXTRA_KEY, extra);
+        }
         requestsViewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         requestsViewIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP

@@ -183,7 +183,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             mOffset = 10;
         }
         checkColor();
-        getFeeds(0, mOffset, true, false, false, true);
+        getFeeds(0, mOffset, true, false, false, false);
     }
 
     public void checkShowComment() {
