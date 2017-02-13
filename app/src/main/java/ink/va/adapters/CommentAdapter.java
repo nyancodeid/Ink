@@ -380,7 +380,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
                             holder.chatVideo.setBackground(null);
                             holder.chatVideo.start();
                         }
-                        return false;
+                        return true;
                     }
                 });
 
