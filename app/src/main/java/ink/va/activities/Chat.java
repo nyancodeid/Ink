@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -17,13 +18,16 @@ import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
+import com.google.gson.Gson;
 import com.ink.va.R;
+import com.jakewharton.rxbinding.widget.RxTextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +40,9 @@ import ink.va.utils.Constants;
 import ink.va.utils.Keyboard;
 import ink.va.utils.Notification;
 import ink.va.utils.SharedHelper;
+import ink.va.utils.Time;
+import rx.Observer;
+import rx.functions.Func1;
 
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_ERROR;
@@ -43,12 +50,15 @@ import static com.github.nkzawa.socketio.client.Socket.EVENT_DISCONNECT;
 import static ink.va.utils.Constants.EVENT_ADD_USER;
 import static ink.va.utils.Constants.EVENT_NEW_MESSAGE;
 import static ink.va.utils.Constants.EVENT_SEND_MESSAGE;
+import static ink.va.utils.Constants.EVENT_STOPPED_TYPING;
 import static ink.va.utils.Constants.EVENT_TYPING;
 import static ink.va.utils.Constants.REQUEST_CODE_CHOSE_STICKER;
 import static ink.va.utils.Constants.STARTING_FOR_RESULT_BUNDLE_KEY;
 
 
 public class Chat extends BaseActivity implements RecyclerItemClickListener {
+
+    public static final String TAG = Chat.class.getSimpleName();
 
     @BindView(R.id.sendChatMessage)
     fab.FloatingActionButton mSendChatMessage;
@@ -81,7 +91,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     private Socket mSocket;
     private boolean socketConnected;
-    private boolean isAnimated;
     private String lastChosenStickerUrl;
     private boolean isStickerChosen;
     private Animation slideIn;
@@ -89,6 +98,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     private boolean showSuccess;
     private SharedHelper sharedHelper;
     private String currentUserId;
+    private Gson chatGSON;
+    private String opponentId;
 
 
     @Override
@@ -96,6 +107,13 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
+        chatGSON = new Gson();
+        Bundle extras = getIntent().getExtras();
+
+        opponentId = extras != null ? extras.containsKey("opponentId") ? extras.getString("opponentId") : "" : "";
+
+        mSendChatMessage.setEnabled(false);
+
         sharedHelper = new SharedHelper(this);
         currentUserId = sharedHelper.getUserId();
 
@@ -109,6 +127,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chat_vector_background));
         initRecyclerView();
         initSocket();
+        initWriteField();
     }
 
 
@@ -124,16 +143,27 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                     showSuccess = true;
                     mSocket.connect();
                 }
-            });
+            }).show();
         } else {
-            JSONObject jsonObject = new JSONObject();
+            JSONObject messageJson = new JSONObject();
             try {
-                jsonObject.put("userId", 5748968);
-                jsonObject.put("currentUserId", currentUserId);
+                messageJson.put("messageId", System.currentTimeMillis());
+                messageJson.put("userId", currentUserId);
+                messageJson.put("opponentId", opponentId);
+                messageJson.put("message", mWriteEditText.getText().toString());
+                messageJson.put("date", Time.getCurrentTime());
+                messageJson.put("hasSticker", isStickerChosen);
+                messageJson.put("stickerUrl", lastChosenStickerUrl);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            mSocket.emit(EVENT_SEND_MESSAGE, jsonObject);
+
+            mWriteEditText.setText("");
+
+            ChatModel chatModel = chatGSON.fromJson(messageJson.toString(), ChatModel.class);
+            chatAdapter.insertChatModle(chatModel);
+
+            mSocket.emit(EVENT_SEND_MESSAGE, messageJson);
         }
     }
 
@@ -158,6 +188,41 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     /**
      * Methods
      */
+
+    private void initWriteField() {
+        RxTextView.textChanges(mWriteEditText)
+                .filter(new Func1<CharSequence, Boolean>() {
+                    @Override
+                    public Boolean call(CharSequence charSequence) {
+                        if (charSequence.length() <= 0 && !isStickerChosen) {
+                            mSendChatMessage.setEnabled(false);
+                        } else {
+                            mSendChatMessage.setEnabled(true);
+                        }
+                        mSocket.emit(EVENT_TYPING, null);
+                        return true;
+                    }
+                })
+                .debounce(1, TimeUnit.SECONDS)
+                .subscribe(new Observer<CharSequence>() {
+                    @Override
+                    public void onCompleted() {
+                        mSocket.emit(EVENT_STOPPED_TYPING, null);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(CharSequence charSequence) {
+
+                    }
+                });
+
+    }
+
     private void initRecyclerView() {
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);
@@ -240,6 +305,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         mSocket.off(EVENT_DISCONNECT, onSocketDisconnected);
         mSocket.off(EVENT_NEW_MESSAGE, onNewMessageReceived);
         mSocket.off(EVENT_TYPING, onUserTyping);
+        mSocket.off(EVENT_STOPPED_TYPING, onUserStoppedTyping);
         mSocket.off(EVENT_CONNECT_ERROR, onSocketConnectionError);
     }
 
@@ -249,6 +315,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         mSocket.on(EVENT_CONNECT_ERROR, onSocketConnectionError);
         mSocket.on(EVENT_DISCONNECT, onSocketDisconnected);
         mSocket.on(EVENT_NEW_MESSAGE, onNewMessageReceived);
+        mSocket.on(EVENT_STOPPED_TYPING, onUserStoppedTyping);
         mSocket.on(EVENT_TYPING, onUserTyping);
         mSocket.connect();
     }
@@ -287,15 +354,27 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
      */
     private Emitter.Listener onNewMessageReceived = new Emitter.Listener() {
         @Override
-        public void call(Object... args) {
-
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject messageJson = (JSONObject) args[0];
+                    ChatModel chatModel = chatGSON.fromJson(messageJson.toString(), ChatModel.class);
+                    chatAdapter.insertChatModle(chatModel);
+                }
+            });
         }
     };
 
     private Emitter.Listener onUserTyping = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "run: started typing");
+                }
+            });
         }
     };
 
@@ -331,6 +410,17 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         }
     };
 
+    private Emitter.Listener onUserStoppedTyping = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "run: stopped typing");
+                }
+            });
+        }
+    };
 
     /**
      * Callbacks
@@ -340,7 +430,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         switch (resultCode) {
             case REQUEST_CODE_CHOSE_STICKER:
                 if (data != null) {
-                    isAnimated = data.getExtras().getBoolean(Constants.STICKER_IS_ANIMATED_EXTRA_KEY);
                     lastChosenStickerUrl = data.getExtras().getString(Constants.STICKER_URL_EXTRA_KEY);
                     isStickerChosen = true;
                     handleStickerChosenView();
