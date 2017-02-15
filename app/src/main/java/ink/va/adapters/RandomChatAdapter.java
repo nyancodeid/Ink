@@ -4,31 +4,24 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.VideoView;
 
-import com.danikula.videocache.HttpProxyCacheServer;
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
-import ink.StartupApplication;
 import ink.va.models.ChatModel;
 import ink.va.models.RandomChatModel;
 import ink.va.utils.Constants;
@@ -62,18 +55,12 @@ public class RandomChatAdapter extends RecyclerView.Adapter<RandomChatAdapter.Vi
         private LinearLayout chatViewBubble;
         private ImageView imageView;
         private LinearLayout imageViewWrapper;
-        private RelativeLayout chatVideoWrapper;
-        private VideoView chatVideo;
-        private ProgressBar videoLoadingProgress;
 
         public ViewHolder(View view) {
             super(view);
             message = (TextView) view.findViewById(R.id.messageContainer);
             chatViewBubble = (LinearLayout) view.findViewById(R.id.chatViewBubble);
-            chatVideoWrapper = (RelativeLayout) view.findViewById(R.id.chatVideoWrapper);
-            chatVideo = (VideoView) view.findViewById(R.id.chatVideo);
             imageViewWrapper = (LinearLayout) view.findViewById(R.id.singleGifViewWrapper);
-            videoLoadingProgress = (ProgressBar) view.findViewById(R.id.video_loading_progress);
 
             deliveryStatus = (TextView) view.findViewById(R.id.deliveryStatus);
             imageView = (ImageView) view.findViewById(R.id.gifChatView);
@@ -122,7 +109,6 @@ public class RandomChatAdapter extends RecyclerView.Adapter<RandomChatAdapter.Vi
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holder.chatViewBubble.getLayoutParams();
         LinearLayout.LayoutParams deliveryStatusParams = (LinearLayout.LayoutParams) holder.deliveryStatus.getLayoutParams();
         LinearLayout.LayoutParams gifChatViewLayoutParams = (LinearLayout.LayoutParams) holder.imageViewWrapper.getLayoutParams();
-        LinearLayout.LayoutParams chatVideoLayoutParams = (LinearLayout.LayoutParams) holder.chatVideoWrapper.getLayoutParams();
 
 
         if (chatModel.isMine()) {
@@ -134,11 +120,9 @@ public class RandomChatAdapter extends RecyclerView.Adapter<RandomChatAdapter.Vi
             layoutParams.topMargin = Dp.toDps(mContext, 10);
             deliveryStatusParams.gravity = Gravity.RIGHT;
             gifChatViewLayoutParams.gravity = Gravity.RIGHT;
-            chatVideoLayoutParams.gravity = Gravity.RIGHT;
 
             holder.chatViewBubble.setLayoutParams(layoutParams);
             holder.imageView.setLayoutParams(gifChatViewLayoutParams);
-            holder.chatVideoWrapper.setLayoutParams(chatVideoLayoutParams);
 
             holder.chatViewBubble.setBackground(ContextCompat.getDrawable(mContext, R.drawable.outgoing_message_bg));
 
@@ -157,16 +141,11 @@ public class RandomChatAdapter extends RecyclerView.Adapter<RandomChatAdapter.Vi
             layoutParams.topMargin = Dp.toDps(mContext, 10);
             layoutParams.gravity = Gravity.LEFT;
             gifChatViewLayoutParams.gravity = Gravity.LEFT;
-            chatVideoLayoutParams.gravity = Gravity.LEFT;
 
             holder.chatViewBubble.setLayoutParams(layoutParams);
             holder.imageView.setLayoutParams(gifChatViewLayoutParams);
-            holder.chatVideoWrapper.setLayoutParams(chatVideoLayoutParams);
             holder.deliveryStatus.setVisibility(View.INVISIBLE);
         }
-
-        holder.chatVideo.setVisibility(View.GONE);
-        holder.chatVideoWrapper.setVisibility(View.GONE);
         holder.imageView.setImageResource(0);
         if (chatModel.getMessage().trim().isEmpty()) {
             holder.chatViewBubble.setVisibility(View.GONE);
@@ -181,40 +160,6 @@ public class RandomChatAdapter extends RecyclerView.Adapter<RandomChatAdapter.Vi
 
     private void checkForSticker(final ChatModel chatModel, final RandomChatAdapter.ViewHolder holder) {
         if (chatModel.hasSticker()) {
-            if (chatModel.isAnimated()) {
-                holder.imageView.setImageResource(0);
-                holder.imageViewWrapper.setVisibility(View.GONE);
-                holder.chatVideo.setVisibility(View.VISIBLE);
-                holder.chatVideoWrapper.setVisibility(View.VISIBLE);
-
-
-                HttpProxyCacheServer proxy = StartupApplication.getProxy(mContext);
-                String proxyUrl = proxy.getProxyUrl(Constants.MAIN_URL + chatModel.getStickerUrl());
-                holder.chatVideo.setVideoPath(proxyUrl);
-
-
-                holder.chatVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mediaPlayer) {
-                        mediaPlayer.seekTo(1000);
-                        holder.chatVideo.seekTo(1000);
-                        holder.videoLoadingProgress.setVisibility(View.GONE);
-                    }
-                });
-                holder.chatVideo.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        if (!holder.chatVideo.isPlaying()) {
-                            holder.chatVideo.setBackground(null);
-                            holder.chatVideo.start();
-                        }
-                        return false;
-                    }
-                });
-
-            } else {
-                holder.chatVideo.setVisibility(View.GONE);
-                holder.chatVideoWrapper.setVisibility(View.GONE);
                 holder.imageView.setImageResource(0);
                 holder.imageViewWrapper.setVisibility(View.VISIBLE);
 
@@ -225,7 +170,6 @@ public class RandomChatAdapter extends RecyclerView.Adapter<RandomChatAdapter.Vi
                                 holder.imageView.setTag(LOADED);
                             }
                         });
-            }
 
             if (chatModel.getMessage().trim().isEmpty()) {
                 holder.chatViewBubble.setVisibility(View.GONE);
@@ -236,8 +180,6 @@ public class RandomChatAdapter extends RecyclerView.Adapter<RandomChatAdapter.Vi
 
             if (FileUtils.isImageType(chatModel.getMessage())) {
 
-                holder.chatVideo.setVisibility(View.GONE);
-                holder.chatVideoWrapper.setVisibility(View.GONE);
                 holder.imageView.setImageResource(0);
                 holder.imageView.setBackgroundResource(R.drawable.time_loading_vector);
                 holder.imageViewWrapper.setVisibility(View.VISIBLE);
@@ -267,8 +209,6 @@ public class RandomChatAdapter extends RecyclerView.Adapter<RandomChatAdapter.Vi
 //            holder.imageViewWrapper.setVisibility(View.VISIBLE);
 
         } else {
-            holder.chatVideo.setVisibility(View.GONE);
-            holder.chatVideoWrapper.setVisibility(View.GONE);
             holder.imageView.setImageResource(0);
             if (chatModel.getMessage().trim().isEmpty()) {
                 holder.chatViewBubble.setVisibility(View.GONE);

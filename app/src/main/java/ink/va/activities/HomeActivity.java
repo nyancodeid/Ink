@@ -70,7 +70,6 @@ import ink.va.fragments.MyFriends;
 import ink.va.interfaces.AccountDeleteListener;
 import ink.va.interfaces.ColorChangeListener;
 import ink.va.models.CoinsResponse;
-import ink.va.service.BackgroundTaskService;
 import ink.va.service.SendTokenService;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
@@ -157,9 +156,6 @@ public class HomeActivity extends BaseActivity
         SETTINGS = getString(R.string.settingsString);
         mToolbar.setTitle(FEED);
         mSharedHelper = new SharedHelper(this);
-        if (!mSharedHelper.isMessagesDownloaded()) {
-            startMessageDownloadService();
-        }
 
         if (!mSharedHelper.isSecurityQuestionSet() && isAccountRecoverable()) {
             View warningView = getLayoutInflater().inflate(R.layout.app_warning_view, null);
@@ -878,9 +874,6 @@ public class HomeActivity extends BaseActivity
         startActivity(new Intent(getApplicationContext(), Messages.class));
     }
 
-    private void startMessageDownloadService() {
-        startService(new Intent(getApplicationContext(), BackgroundTaskService.class));
-    }
 
     private void startTokenService() {
         startService(new Intent(getApplicationContext(), SendTokenService.class));

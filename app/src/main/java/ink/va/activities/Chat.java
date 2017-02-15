@@ -3,6 +3,7 @@ package ink.va.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -105,7 +106,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
         slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_in);
         slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_out);
-
+        getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chat_vector_background));
         initRecyclerView();
         initSocket();
     }
@@ -302,12 +303,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         @Override
         public void call(Object... args) {
             socketConnected = true;
+            mSocket.emit(EVENT_ADD_USER, currentUserId);
             if (showSuccess) {
                 showSuccess = false;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mSocket.emit(EVENT_ADD_USER, currentUserId);
                         Snackbar.make(mRecyclerView, getString(R.string.connected), Snackbar.LENGTH_SHORT).show();
                     }
                 });
