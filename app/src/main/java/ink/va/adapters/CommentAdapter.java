@@ -1,21 +1,16 @@
 package ink.va.adapters;
 
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.VideoView;
 
-import com.danikula.videocache.HttpProxyCacheServer;
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -23,7 +18,6 @@ import com.mikhaellopez.hfrecyclerview.HFRecyclerView;
 
 import java.util.List;
 
-import ink.StartupApplication;
 import ink.va.interfaces.CommentClickHandler;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.CommentModel;
@@ -310,16 +304,10 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         private TextView commenterName;
         private RelativeLayout commentRootLayout;
         private ImageView imageView;
-        private RelativeLayout chatVideoWrapper;
-        private VideoView chatVideo;
-        private ProgressBar videoLoadingProgress;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.stickerView);
-            chatVideoWrapper = (RelativeLayout) itemView.findViewById(R.id.stickerVideoWrapper);
-            chatVideo = (VideoView) itemView.findViewById(R.id.stickerVideo);
-            videoLoadingProgress = (ProgressBar) itemView.findViewById(R.id.stickerVideoLoading);
 
             commentMoreIcon = (ImageView) itemView.findViewById(R.id.commentMoreIcon);
             commenterBody = (TextView) itemView.findViewById(R.id.commenterBody);
@@ -353,53 +341,16 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             }
         });
         if (commentModel.hasSticker()) {
-            if (commentModel.isAnimated()) {
-                holder.imageView.setImageResource(0);
-                holder.imageView.setVisibility(View.GONE);
-                holder.chatVideo.setVisibility(View.VISIBLE);
-                holder.chatVideoWrapper.setVisibility(View.VISIBLE);
+            holder.imageView.setImageResource(0);
+            holder.imageView.setVisibility(View.VISIBLE);
 
-
-                HttpProxyCacheServer proxy = StartupApplication.getProxy(context);
-                String proxyUrl = proxy.getProxyUrl(Constants.MAIN_URL + commentModel.getStickerUrl());
-                holder.chatVideo.setVideoPath(proxyUrl);
-
-
-                holder.chatVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mediaPlayer) {
-                        mediaPlayer.seekTo(1000);
-                        holder.chatVideo.seekTo(1000);
-                        holder.videoLoadingProgress.setVisibility(View.GONE);
-                    }
-                });
-                holder.chatVideo.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        if (!holder.chatVideo.isPlaying()) {
-                            holder.chatVideo.setBackground(null);
-                            holder.chatVideo.start();
+            Ion.with(context).load(Constants.MAIN_URL + commentModel.getStickerUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.imageView)
+                    .setCallback(new FutureCallback<ImageView>() {
+                        @Override
+                        public void onCompleted(Exception e, ImageView result) {
                         }
-                        return true;
-                    }
-                });
-
-            } else {
-                holder.chatVideo.setVisibility(View.GONE);
-                holder.chatVideoWrapper.setVisibility(View.GONE);
-                holder.imageView.setImageResource(0);
-                holder.imageView.setVisibility(View.VISIBLE);
-
-                Ion.with(context).load(Constants.MAIN_URL + commentModel.getStickerUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.imageView)
-                        .setCallback(new FutureCallback<ImageView>() {
-                            @Override
-                            public void onCompleted(Exception e, ImageView result) {
-                            }
-                        });
-            }
+                    });
         } else {
-            holder.chatVideo.setVisibility(View.GONE);
-            holder.chatVideoWrapper.setVisibility(View.GONE);
             holder.imageView.setImageResource(0);
             holder.imageView.setVisibility(View.GONE);
         }

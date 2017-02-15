@@ -4,22 +4,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.VideoView;
 
-import com.danikula.videocache.HttpProxyCacheServer;
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -28,7 +22,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
-import ink.StartupApplication;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.ChatModel;
 import ink.va.utils.Constants;
@@ -52,12 +45,6 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
     ImageView imageView;
     @BindView(R.id.singleGifViewWrapper)
     LinearLayout imageViewWrapper;
-    @BindView(R.id.chatVideoWrapper)
-    RelativeLayout chatVideoWrapper;
-    @BindView(R.id.chatVideo)
-    VideoView chatVideo;
-    @BindView(R.id.video_loading_progress)
-    ProgressBar videoLoadingProgress;
     private SharedHelper sharedHelper;
     private boolean updating = false;
     private int percentage;
@@ -90,7 +77,6 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) chatViewBubble.getLayoutParams();
         LinearLayout.LayoutParams deliveryStatusParams = (LinearLayout.LayoutParams) deliveryStatus.getLayoutParams();
         LinearLayout.LayoutParams gifChatViewLayoutParams = (LinearLayout.LayoutParams) imageViewWrapper.getLayoutParams();
-        LinearLayout.LayoutParams chatVideoLayoutParams = (LinearLayout.LayoutParams) chatVideoWrapper.getLayoutParams();
 
 
         if (currentUserId.equals(chatModel.getUserId())) {
@@ -101,11 +87,9 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
             layoutParams.rightMargin = Dp.toDps(context, 16);
             deliveryStatusParams.gravity = Gravity.RIGHT;
             gifChatViewLayoutParams.gravity = Gravity.RIGHT;
-            chatVideoLayoutParams.gravity = Gravity.RIGHT;
 
             chatViewBubble.setLayoutParams(layoutParams);
             imageView.setLayoutParams(gifChatViewLayoutParams);
-            chatVideoWrapper.setLayoutParams(chatVideoLayoutParams);
 
             chatViewBubble.setBackground(ContextCompat.getDrawable(context, R.drawable.outgoing_message_bg));
 
@@ -138,11 +122,9 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
             }
             layoutParams.gravity = Gravity.LEFT;
             gifChatViewLayoutParams.gravity = Gravity.LEFT;
-            chatVideoLayoutParams.gravity = Gravity.LEFT;
 
             chatViewBubble.setLayoutParams(layoutParams);
             imageView.setLayoutParams(gifChatViewLayoutParams);
-            chatVideoWrapper.setLayoutParams(chatVideoLayoutParams);
             deliveryStatus.setVisibility(View.INVISIBLE);
         }
         checkForSticker(chatModel);
@@ -162,50 +144,15 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
 
     private void checkForSticker(final ChatModel chatModel) {
         if (chatModel.hasSticker()) {
-            if (chatModel.isAnimated()) {
-                imageView.setImageResource(0);
-                imageViewWrapper.setVisibility(View.GONE);
-                chatVideo.setVisibility(View.VISIBLE);
-                chatVideoWrapper.setVisibility(View.VISIBLE);
+            imageView.setImageResource(0);
+            imageViewWrapper.setVisibility(View.VISIBLE);
 
-
-                HttpProxyCacheServer proxy = StartupApplication.getProxy(mContext);
-                String proxyUrl = proxy.getProxyUrl(Constants.MAIN_URL + chatModel.getStickerUrl());
-                chatVideo.setVideoPath(proxyUrl);
-
-
-                chatVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mediaPlayer) {
-                        mediaPlayer.seekTo(1000);
-                        chatVideo.seekTo(1000);
-                        videoLoadingProgress.setVisibility(View.GONE);
-                    }
-                });
-                chatVideo.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        if (!chatVideo.isPlaying()) {
-                            chatVideo.setBackground(null);
-                            chatVideo.start();
+            Ion.with(mContext).load(Constants.MAIN_URL + chatModel.getStickerUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(imageView)
+                    .setCallback(new FutureCallback<ImageView>() {
+                        @Override
+                        public void onCompleted(Exception e, ImageView result) {
                         }
-                        return false;
-                    }
-                });
-
-            } else {
-                chatVideo.setVisibility(View.GONE);
-                chatVideoWrapper.setVisibility(View.GONE);
-                imageView.setImageResource(0);
-                imageViewWrapper.setVisibility(View.VISIBLE);
-
-                Ion.with(mContext).load(Constants.MAIN_URL + chatModel.getStickerUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(imageView)
-                        .setCallback(new FutureCallback<ImageView>() {
-                            @Override
-                            public void onCompleted(Exception e, ImageView result) {
-                            }
-                        });
-            }
+                    });
 
             if (chatModel.getMessage().trim().isEmpty()) {
                 chatViewBubble.setVisibility(View.GONE);
@@ -215,9 +162,6 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         } else if (Regex.isAttachment(chatModel.getMessage())) {
 
             if (FileUtils.isImageType(chatModel.getMessage())) {
-
-                chatVideo.setVisibility(View.GONE);
-                chatVideoWrapper.setVisibility(View.GONE);
                 imageView.setImageResource(0);
                 imageView.setBackgroundResource(R.drawable.time_loading_vector);
                 imageViewWrapper.setVisibility(View.VISIBLE);
@@ -238,8 +182,6 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
                 });
                 imageViewWrapper.setVisibility(View.VISIBLE);
             } else {
-                chatVideo.setVisibility(View.GONE);
-                chatVideoWrapper.setVisibility(View.GONE);
                 imageView.setImageResource(0);
                 if (chatModel.getMessage().trim().isEmpty()) {
                     chatViewBubble.setVisibility(View.GONE);
@@ -250,8 +192,6 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
             }
 
         } else {
-            chatVideo.setVisibility(View.GONE);
-            chatVideoWrapper.setVisibility(View.GONE);
             imageView.setImageResource(0);
             if (chatModel.getMessage().trim().isEmpty()) {
                 chatViewBubble.setVisibility(View.GONE);

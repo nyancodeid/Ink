@@ -9,39 +9,6 @@
     android:foreground="?android:attr/selectableItemBackground"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/chatVideoWrapper"
-        android:layout_width="220dp"
-        android:layout_height="220dp"
-        android:background="@drawable/grey_transparent_rectangle"
-        android:elevation="20dp"
-        android:visibility="visible">
-
-
-        <VideoView
-            android:id="@+id/chatVideo"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp" />
-
-        <ProgressBar
-            android:id="@+id/video_loading_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
-
-
-    </RelativeLayout>
-
     <LinearLayout
         android:id="@+id/singleGifViewWrapper"
         android:layout_width="220dp"
@@ -51,7 +18,7 @@
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
 
         <ImageView
