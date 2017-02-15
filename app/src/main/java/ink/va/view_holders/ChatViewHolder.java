@@ -96,22 +96,24 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
             if (sharedHelper.getOwnBubbleColor() != null) {
                 chatViewBubble.getBackground().setColorFilter(Color.parseColor(sharedHelper.getOwnBubbleColor()), PorterDuff.Mode.SRC_ATOP);
             }
-            if (chatModel.getDeliveryStatus().equals(Constants.STATUS_DELIVERED)) {
-                if (position >= maxSize) {
-                    deliveryStatus.setVisibility(View.VISIBLE);
-                } else {
-                    deliveryStatus.setVisibility(View.INVISIBLE);
-                }
-                deliveryStatus.setText(context.getString(R.string.sentText));
-            } else if (chatModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED)) {
-                deliveryStatus.setVisibility(View.VISIBLE);
-                if (updating) {
-                    deliveryStatus.setText(context.getString(R.string.sendingNowText) + percentage + " %");
-                } else {
-                    deliveryStatus.setText(context.getString(R.string.sendingNowText));
-                }
 
-            }
+            deliveryStatus.setVisibility(View.INVISIBLE);
+//            if (chatModel.getDeliveryStatus().equals(Constants.STATUS_DELIVERED)) {
+//                if (position >= maxSize) {
+//                    deliveryStatus.setVisibility(View.VISIBLE);
+//                } else {
+//                    deliveryStatus.setVisibility(View.INVISIBLE);
+//                }
+//                deliveryStatus.setText(context.getString(R.string.sentText));
+//            } else if (chatModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED)) {
+//                deliveryStatus.setVisibility(View.VISIBLE);
+//                if (updating) {
+//                    deliveryStatus.setText(context.getString(R.string.sendingNowText) + percentage + " %");
+//                } else {
+//                    deliveryStatus.setText(context.getString(R.string.sendingNowText));
+//                }
+//
+//            }
         } else {
             chatViewBubble.setBackground(ContextCompat.getDrawable(context, R.drawable.incoming_message_bg));
             if (sharedHelper.getOpponentTextColor() != null) {
@@ -143,7 +145,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void checkForSticker(final ChatModel chatModel) {
-        if (chatModel.hasSticker()) {
+        if (chatModel.isStickerChosen()) {
             imageView.setImageResource(0);
             imageViewWrapper.setVisibility(View.VISIBLE);
 

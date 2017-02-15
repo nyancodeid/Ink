@@ -2,7 +2,6 @@ package ink.va.models;
 
 import com.google.gson.annotations.SerializedName;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +9,6 @@ import lombok.Setter;
  * Created by USER on 2016-06-24.
  */
 
-@Builder
 public class ChatModel {
     @SerializedName("messageId")
     @Setter
@@ -32,10 +30,10 @@ public class ChatModel {
     @Setter
     @Getter
     private String date;
-    @SerializedName("hasSticker")
+    @SerializedName("stickerChosen")
     @Setter
     @Getter
-    private boolean hasSticker;
+    private boolean stickerChosen;
     @SerializedName("stickerUrl")
     @Setter
     @Getter

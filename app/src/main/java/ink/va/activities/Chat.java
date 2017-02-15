@@ -152,7 +152,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                 messageJson.put("opponentId", opponentId);
                 messageJson.put("message", mWriteEditText.getText().toString());
                 messageJson.put("date", Time.getCurrentTime());
-                messageJson.put("hasSticker", isStickerChosen);
+                messageJson.put("stickerChosen", isStickerChosen);
                 messageJson.put("stickerUrl", lastChosenStickerUrl);
             } catch (JSONException e) {
                 e.printStackTrace();
