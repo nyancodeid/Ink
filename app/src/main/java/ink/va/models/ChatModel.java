@@ -18,6 +18,14 @@ public class ChatModel {
     @Setter
     @Getter
     private String userId;
+    @SerializedName("firstName")
+    @Setter
+    @Getter
+    private String firstName;
+    @SerializedName("lastName")
+    @Setter
+    @Getter
+    private String lastName;
     @SerializedName("opponentId")
     @Setter
     @Getter

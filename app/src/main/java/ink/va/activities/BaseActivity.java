@@ -1,14 +1,17 @@
 package ink.va.activities;
 
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.IBinder;
 import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionMenu;
@@ -35,6 +38,7 @@ import fab.FloatingActionButton;
 import ink.StartupApplication;
 import ink.va.interfaces.AccountDeleteListener;
 import ink.va.models.ServerInformationModel;
+import ink.va.service.MessageService;
 import ink.va.utils.Constants;
 import ink.va.utils.DimDialog;
 import ink.va.utils.ProcessManager;
@@ -112,6 +116,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     private CountDownTimer countDownTimer;
     private Dialog vipLoadingDialog;
     private int appVersionCode = 0;
+    private MessageService messageService;
+    private Intent messageIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +142,10 @@ public abstract class BaseActivity extends AppCompatActivity {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.setStatusBarColor(Color.parseColor(sharedHelper.getStatusBarColor()));
             }
+        }
+        messageIntent = new Intent(this, MessageService.class);
+        if (messageService == null) {
+            bindService(messageIntent, mConnection, BIND_AUTO_CREATE);
         }
     }
 
@@ -194,6 +204,22 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         };
     }
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            MessageService.LocalBinder binder = (MessageService.LocalBinder) service;
+            messageService = binder.getService();
+            BaseActivity.this.onServiceConnected(messageService);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+
+        }
+    };
 
     @Override
     public void setContentView(int layoutResID) {
@@ -381,5 +407,17 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void hideVipLoading() {
         vipLoadingDialog.dismiss();
+    }
+
+    public void onServiceConnected(MessageService messageService) {
+
+    }
+
+    protected void unbindService() {
+        try {
+            unbindService(mConnection);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

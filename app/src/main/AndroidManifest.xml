@@ -86,7 +86,11 @@
             android:name="ink.va.activities.HomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/feedText"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ink.va.activities.HomeActivity" />
+        </activity>
         <activity
             android:name="ink.va.activities.OpponentProfile"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -308,7 +312,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Profile" />
         <activity android:name="ink.va.activities.BlackJackHome" />
-        <activity android:name="ink.va.activities.Mafia"></activity>
+        <activity android:name="ink.va.activities.Mafia" />
+
+        <service android:name="ink.va.service.MessageService"></service>
     </application>
 
 </manifest>

@@ -60,7 +60,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void insertChatModle(ChatModel chatModel) {
+    public void insertChatModel(ChatModel chatModel) {
         this.chatModelList.add(chatModel);
         int position = chatModelList.indexOf(chatModel);
         notifyItemInserted(position);
