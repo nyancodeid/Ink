@@ -100,6 +100,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     }
 
 
+    /**
+     * Click Handlers
+     */
     @OnClick(R.id.sendChatMessage)
     public void sendMessageClicked() {
         if (!socketConnected) {
@@ -131,6 +134,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     }
 
 
+    /**
+     * Methods
+     */
     private void initRecyclerView() {
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);
@@ -193,21 +199,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         scrollDownChat.setTag(getString(R.string.visible));
         scrollDownChat.startAnimation(slideIn);
         scrollDownChat.setVisibility(View.VISIBLE);
-        slideIn.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
     }
 
 
@@ -243,6 +234,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         mRecyclerView.scrollToPosition(chatAdapter.getItemCount());
     }
 
+
+    /**
+     * Overridden Methods
+     */
     @Override
     public void onItemClicked(int position, View view) {
 
@@ -264,6 +259,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     }
 
 
+    /**
+     * Socket Listeners
+     */
     private Emitter.Listener onNewMessageReceived = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -302,6 +300,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         }
     };
 
+
+    /**
+     * Callbacks
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (resultCode) {
