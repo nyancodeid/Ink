@@ -36,6 +36,7 @@ import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_ERROR;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_DISCONNECT;
 import static ink.va.utils.Constants.EVENT_NEW_MESSAGE;
+import static ink.va.utils.Constants.EVENT_TYPING;
 import static ink.va.utils.Constants.REQUEST_CODE_CHOSE_STICKER;
 import static ink.va.utils.Constants.STARTING_FOR_RESULT_BUNDLE_KEY;
 
@@ -218,6 +219,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         mSocket.off(EVENT_CONNECT, onSocketConnected);
         mSocket.off(EVENT_DISCONNECT, onSocketDisconnected);
         mSocket.off(EVENT_NEW_MESSAGE, onNewMessageReceived);
+        mSocket.off(EVENT_TYPING, onUserTyping);
         mSocket.off(EVENT_CONNECT_ERROR, onSocketConnectionError);
     }
 
@@ -227,6 +229,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         mSocket.on(EVENT_CONNECT_ERROR, onSocketConnectionError);
         mSocket.on(EVENT_DISCONNECT, onSocketDisconnected);
         mSocket.on(EVENT_NEW_MESSAGE, onNewMessageReceived);
+        mSocket.on(EVENT_TYPING, onUserTyping);
         mSocket.connect();
     }
 
@@ -263,6 +266,13 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
      * Socket Listeners
      */
     private Emitter.Listener onNewMessageReceived = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+
+        }
+    };
+
+    private Emitter.Listener onUserTyping = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
 

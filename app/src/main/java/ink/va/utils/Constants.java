@@ -233,5 +233,6 @@ public class Constants {
      * Socket Events
      */
     public static final String EVENT_NEW_MESSAGE = "onNewMessage";
+    public static final String EVENT_TYPING = "typing";
 }
 
