@@ -7,7 +7,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -84,6 +83,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     View messageFiledDivider;
     @BindView(R.id.callIcon)
     ImageView callIcon;
+    @BindView(R.id.opponentTypingLayout)
+    View opponentTypingLayout;
 
     private ChatAdapter chatAdapter;
 
@@ -100,6 +101,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     private String currentUserId;
     private Gson chatGSON;
     private String opponentId;
+    private String opponentFirstName;
+    private String opponentLastName;
+    private JSONObject socketJson;
 
 
     @Override
@@ -111,6 +115,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         Bundle extras = getIntent().getExtras();
 
         opponentId = extras != null ? extras.containsKey("opponentId") ? extras.getString("opponentId") : "" : "";
+        opponentFirstName = extras != null ? extras.containsKey("firstName") ? extras.getString("opponentId") : "" : "";
+        opponentLastName = extras != null ? extras.containsKey("lastName") ? extras.getString("opponentId") : "" : "";
 
         mSendChatMessage.setEnabled(false);
 
@@ -145,25 +151,28 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                 }
             }).show();
         } else {
-            JSONObject messageJson = new JSONObject();
+            if (socketJson != null) {
+                socketJson = null;
+            }
+            socketJson = new JSONObject();
             try {
-                messageJson.put("messageId", System.currentTimeMillis());
-                messageJson.put("userId", currentUserId);
-                messageJson.put("opponentId", opponentId);
-                messageJson.put("message", mWriteEditText.getText().toString());
-                messageJson.put("date", Time.getCurrentTime());
-                messageJson.put("stickerChosen", isStickerChosen);
-                messageJson.put("stickerUrl", lastChosenStickerUrl);
+                socketJson.put("messageId", System.currentTimeMillis());
+                socketJson.put("userId", currentUserId);
+                socketJson.put("opponentId", opponentId);
+                socketJson.put("message", mWriteEditText.getText().toString());
+                socketJson.put("date", Time.getCurrentTime());
+                socketJson.put("stickerChosen", isStickerChosen);
+                socketJson.put("stickerUrl", lastChosenStickerUrl);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
             mWriteEditText.setText("");
 
-            ChatModel chatModel = chatGSON.fromJson(messageJson.toString(), ChatModel.class);
+            ChatModel chatModel = chatGSON.fromJson(socketJson.toString(), ChatModel.class);
             chatAdapter.insertChatModle(chatModel);
-
-            mSocket.emit(EVENT_SEND_MESSAGE, messageJson);
+            scrollToBottom();
+            mSocket.emit(EVENT_SEND_MESSAGE, socketJson);
         }
     }
 
@@ -194,20 +203,32 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                 .filter(new Func1<CharSequence, Boolean>() {
                     @Override
                     public Boolean call(CharSequence charSequence) {
-                        if (charSequence.length() <= 0 && !isStickerChosen) {
+                        if (charSequence != null && charSequence.length() <= 0 && !isStickerChosen) {
                             mSendChatMessage.setEnabled(false);
                         } else {
                             mSendChatMessage.setEnabled(true);
+
+                            if (socketJson != null) {
+                                socketJson = null;
+                            }
+                            socketJson = new JSONObject();
+                            try {
+                                socketJson.put("opponentId", opponentId);
+                                socketJson.put("opponentFirstName", opponentFirstName);
+                                socketJson.put("opponentLastName", opponentLastName);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            mSocket.emit(EVENT_TYPING, socketJson);
                         }
-                        mSocket.emit(EVENT_TYPING, null);
                         return true;
                     }
                 })
-                .debounce(1, TimeUnit.SECONDS)
+                .debounce(2, TimeUnit.SECONDS)
                 .subscribe(new Observer<CharSequence>() {
                     @Override
                     public void onCompleted() {
-                        mSocket.emit(EVENT_STOPPED_TYPING, null);
                     }
 
                     @Override
@@ -217,7 +238,18 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
                     @Override
                     public void onNext(CharSequence charSequence) {
-
+                        if (socketJson != null) {
+                            socketJson = null;
+                        }
+                        socketJson = new JSONObject();
+                        try {
+                            socketJson.put("opponentId", opponentId);
+                            socketJson.put("opponentFirstName", opponentFirstName);
+                            socketJson.put("opponentLastName", opponentLastName);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        mSocket.emit(EVENT_STOPPED_TYPING, socketJson);
                     }
                 });
 
@@ -361,6 +393,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                     JSONObject messageJson = (JSONObject) args[0];
                     ChatModel chatModel = chatGSON.fromJson(messageJson.toString(), ChatModel.class);
                     chatAdapter.insertChatModle(chatModel);
+                    scrollToBottom();
                 }
             });
         }
@@ -372,7 +405,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(TAG, "run: started typing");
+                    opponentTypingLayout.setVisibility(View.VISIBLE);
                 }
             });
         }
@@ -416,7 +449,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(TAG, "run: stopped typing");
+                    opponentTypingLayout.setVisibility(View.GONE);
                 }
             });
         }

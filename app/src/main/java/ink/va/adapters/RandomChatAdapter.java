@@ -200,13 +200,6 @@ public class RandomChatAdapter extends RecyclerView.Adapter<RandomChatAdapter.Vi
                 });
                 holder.imageViewWrapper.setVisibility(View.VISIBLE);
             }
-//
-//
-//            holder.chatVideo.setVisibility(View.GONE);
-//            holder.chatVideoWrapper.setVisibility(View.GONE);
-//            holder.imageView.setImageResource(0);
-//            holder.imageView.setBackgroundResource(R.drawable.chat_attachment_icon);
-//            holder.imageViewWrapper.setVisibility(View.VISIBLE);
 
         } else {
             holder.imageView.setImageResource(0);

@@ -9,6 +9,7 @@
     android:fitsSystemWindows="true"
     tools:context="ink.va.activities.Chat">
 
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -92,6 +93,29 @@
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
 
+        <LinearLayout
+            android:id="@+id/opponentTypingLayout"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="?attr/actionBarSize">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/opponentTyping"
+                android:textColor="@color/vk_white" />
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/opponentImageLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                app:indicator_color="@color/vk_white"></com.wang.avi.AVLoadingIndicatorView>
+        </LinearLayout>
+
 
         <include
             layout="@layout/chat_content"
@@ -142,7 +166,6 @@
                     android:text="@string/noMessageText" />
             </RelativeLayout>
         </android.support.v4.widget.NestedScrollView>
-
 
 
         <RelativeLayout
