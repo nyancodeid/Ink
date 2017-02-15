@@ -18,6 +18,9 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
 import com.ink.va.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,11 +34,14 @@ import ink.va.models.ChatModel;
 import ink.va.utils.Constants;
 import ink.va.utils.Keyboard;
 import ink.va.utils.Notification;
+import ink.va.utils.SharedHelper;
 
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_ERROR;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_DISCONNECT;
+import static ink.va.utils.Constants.EVENT_ADD_USER;
 import static ink.va.utils.Constants.EVENT_NEW_MESSAGE;
+import static ink.va.utils.Constants.EVENT_SEND_MESSAGE;
 import static ink.va.utils.Constants.EVENT_TYPING;
 import static ink.va.utils.Constants.REQUEST_CODE_CHOSE_STICKER;
 import static ink.va.utils.Constants.STARTING_FOR_RESULT_BUNDLE_KEY;
@@ -80,6 +86,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     private Animation slideIn;
     private Animation slideOut;
     private boolean showSuccess;
+    private SharedHelper sharedHelper;
+    private String currentUserId;
 
 
     @Override
@@ -87,6 +95,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
+        sharedHelper = new SharedHelper(this);
+        currentUserId = sharedHelper.getUserId();
 
         chatModels = new LinkedList<>();
         chatAdapter = new ChatAdapter();
@@ -114,6 +124,15 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                     mSocket.connect();
                 }
             });
+        } else {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("userId", 5748968);
+                jsonObject.put("currentUserId", currentUserId);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            mSocket.emit(EVENT_SEND_MESSAGE, jsonObject);
         }
     }
 
@@ -288,6 +307,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        mSocket.emit(EVENT_ADD_USER, currentUserId);
                         Snackbar.make(mRecyclerView, getString(R.string.connected), Snackbar.LENGTH_SHORT).show();
                     }
                 });

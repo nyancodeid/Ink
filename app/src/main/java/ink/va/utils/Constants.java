@@ -230,9 +230,15 @@ public class Constants {
     public static final String GAME_BLACK_JACK = "blackJack";
 
     /**
-     * Socket Events
+     * Socket Listener Events
      */
     public static final String EVENT_NEW_MESSAGE = "onNewMessage";
     public static final String EVENT_TYPING = "typing";
+
+    /**
+     * Socket Emit Events
+     */
+    public static final String EVENT_ADD_USER = "addUser";
+    public static final String EVENT_SEND_MESSAGE = "sendMessage";
 }
 
