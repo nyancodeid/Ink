@@ -1,6 +1,7 @@
 package ink.va.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -20,6 +21,7 @@ import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.ink.va.R;
 import com.jakewharton.rxbinding.widget.RxTextView;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +37,7 @@ import ink.StartupApplication;
 import ink.va.adapters.ChatAdapter;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.ChatModel;
+import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.Keyboard;
 import ink.va.utils.Notification;
@@ -87,6 +90,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     View opponentTypingLayout;
     @BindView(R.id.opponentTypingTV)
     TextView opponentTypingTV;
+    @BindView(R.id.stickerPreviewLayout)
+    View stickerPreviewLayout;
+    @BindView(R.id.stickerPreviewImageView)
+    ImageView stickerPreviewImageView;
 
     private ChatAdapter chatAdapter;
 
@@ -106,6 +113,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     private String opponentFirstName;
     private String opponentLastName;
     private JSONObject socketJson;
+    private boolean isSocialAccount;
+    private String opponentImageUrl;
 
 
     @Override
@@ -117,8 +126,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         Bundle extras = getIntent().getExtras();
 
         opponentId = extras != null ? extras.containsKey("opponentId") ? extras.getString("opponentId") : "" : "";
-        opponentFirstName = extras != null ? extras.containsKey("firstName") ? extras.getString("opponentId") : "" : "";
-        opponentLastName = extras != null ? extras.containsKey("lastName") ? extras.getString("opponentId") : "" : "";
+        opponentFirstName = extras != null ? extras.containsKey("firstName") ? extras.getString("firstName") : "" : "";
+        opponentLastName = extras != null ? extras.containsKey("lastName") ? extras.getString("lastName") : "" : "";
+        opponentImageUrl = extras != null ? extras.containsKey("opponentImage") ? extras.getString("opponentImage") : "" : "";
+        isSocialAccount = extras != null ? extras.containsKey("isSocialAccount") ? extras.getBoolean("isSocialAccount") : false : false;
+
+        initUser();
 
         mSendChatMessage.setEnabled(false);
 
@@ -195,17 +208,49 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
         hideScroller();
     }
 
+    @OnClick(R.id.stickerPreviewLayout)
+    public void stickerLayoutClicked() {
+        isStickerChosen = false;
+        stickerPreviewLayout.setVisibility(View.GONE);
+        String charSequence = mWriteEditText.getText().toString().trim();
+
+        if (charSequence.length() <= 0) {
+            mSendChatMessage.setEnabled(false);
+        } else {
+            mSendChatMessage.setEnabled(true);
+        }
+
+    }
 
     /**
      * Methods
      */
+
+    private void initUser() {
+        chatTitle.setText(opponentFirstName + " " + opponentLastName);
+        if (opponentImageUrl != null && !opponentImageUrl.isEmpty()) {
+            if (isSocialAccount) {
+                Ion.with(this).load(opponentImageUrl).withBitmap().placeholder(R.drawable.no_background_image)
+                        .intoImageView(opponentImage);
+            } else {
+                String encodedImage = Uri.encode(opponentImageUrl);
+                Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
+                        .withBitmap().placeholder(R.drawable.no_background_image).intoImageView(opponentImage);
+            }
+        } else {
+            Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
+                    .withBitmap().transform(new CircleTransform())
+                    .intoImageView(opponentImage);
+        }
+    }
 
     private void initWriteField() {
         RxTextView.textChanges(mWriteEditText)
                 .filter(new Func1<CharSequence, Boolean>() {
                     @Override
                     public Boolean call(CharSequence charSequence) {
-                        if (charSequence != null && charSequence.length() <= 0 && !isStickerChosen) {
+                        String textToCheck = charSequence.toString().trim();
+                        if (textToCheck.length() <= 0 && !isStickerChosen) {
                             mSendChatMessage.setEnabled(false);
                         } else {
                             mSendChatMessage.setEnabled(true);
@@ -331,6 +376,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     private void handleStickerChosenView() {
         mSendChatMessage.setEnabled(true);
+        Ion.with(this).load(Constants.MAIN_URL + lastChosenStickerUrl).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(stickerPreviewImageView);
+        stickerPreviewLayout.setVisibility(View.VISIBLE);
     }
 
     private void destroySocket() {
@@ -355,7 +402,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     }
 
     private void scrollToBottom() {
-        mRecyclerView.scrollToPosition(chatAdapter.getItemCount());
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.scrollToPosition(chatAdapter.getItemCount());
+            }
+        });
     }
 
 
@@ -394,8 +446,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
                 public void run() {
                     JSONObject messageJson = (JSONObject) args[0];
                     ChatModel chatModel = chatGSON.fromJson(messageJson.toString(), ChatModel.class);
-                    chatAdapter.insertChatModle(chatModel);
-                    scrollToBottom();
+                    if (chatModel.getMessage() != null) {
+                        chatAdapter.insertChatModle(chatModel);
+                        scrollToBottom();
+                    }
+
                 }
             });
         }

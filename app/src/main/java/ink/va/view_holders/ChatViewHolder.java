@@ -98,22 +98,6 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
             }
 
             deliveryStatus.setVisibility(View.INVISIBLE);
-//            if (chatModel.getDeliveryStatus().equals(Constants.STATUS_DELIVERED)) {
-//                if (position >= maxSize) {
-//                    deliveryStatus.setVisibility(View.VISIBLE);
-//                } else {
-//                    deliveryStatus.setVisibility(View.INVISIBLE);
-//                }
-//                deliveryStatus.setText(context.getString(R.string.sentText));
-//            } else if (chatModel.getDeliveryStatus().equals(Constants.STATUS_NOT_DELIVERED)) {
-//                deliveryStatus.setVisibility(View.VISIBLE);
-//                if (updating) {
-//                    deliveryStatus.setText(context.getString(R.string.sendingNowText) + percentage + " %");
-//                } else {
-//                    deliveryStatus.setText(context.getString(R.string.sendingNowText));
-//                }
-//
-//            }
         } else {
             chatViewBubble.setBackground(ContextCompat.getDrawable(context, R.drawable.incoming_message_bg));
             if (sharedHelper.getOpponentTextColor() != null) {

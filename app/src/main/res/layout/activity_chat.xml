@@ -96,10 +96,10 @@
         <LinearLayout
             android:id="@+id/opponentTypingLayout"
             android:layout_width="wrap_content"
-            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="?attr/actionBarSize">
+            android:layout_marginTop="?attr/actionBarSize"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/opponentTypingTV"
@@ -225,6 +225,28 @@
                     android:background="#ffffff">
 
                 </View>
+
+
+                <RelativeLayout
+                    android:id="@+id/stickerPreviewLayout"
+                    android:layout_width="60dp"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/messageFiledDivider"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="10dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/trash_icon" />
+
+                    <ImageView
+                        android:id="@+id/stickerPreviewImageView"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp" />
+                </RelativeLayout>
 
                 <ImageView
                     android:id="@+id/stickerIcon"
