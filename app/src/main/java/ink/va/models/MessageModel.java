@@ -137,4 +137,5 @@ public class MessageModel extends RealmObject {
     public void setGifUrl(String gifUrl) {
         this.gifUrl = gifUrl;
     }
+
 }

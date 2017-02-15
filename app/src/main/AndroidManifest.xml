@@ -117,7 +117,6 @@
             </intent-filter>
         </service>
         <service android:name="ink.va.service.LocationRequestSessionDestroyer" />
-        <service android:name="ink.va.service.BackgroundTaskService" />
         <service android:name="ink.va.service.RemoveChatRouletteService" />
         <service android:name="ink.va.service.SendTokenService" />
         <service android:name="ink.va.service.SendReplyService" />

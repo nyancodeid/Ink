@@ -12,6 +12,8 @@ import com.adobe.creativesdk.foundation.auth.IAdobeAuthClientCredentials;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 import com.instabug.library.Instabug;
 import com.instabug.library.invocation.InstabugInvocationEvent;
 import com.vk.sdk.VKAccessToken;
@@ -20,8 +22,12 @@ import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
 
+import java.net.URISyntaxException;
+
 import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
+
+import static ink.va.utils.Constants.SOCKET_URL;
 
 /**
  * Created by USER on 2016-06-26.
@@ -33,13 +39,18 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
     private Activity mActivity = null;
     private HttpProxyCacheServer proxy;
     private Instabug instabug;
+    private com.github.nkzawa.socketio.client.Socket mSocket;
 
     @Override
     public void onCreate() {
         RealmHelper.getInstance().initRealm(getApplicationContext());
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
-
+        try {
+            mSocket = IO.socket(SOCKET_URL);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
         instabug = new Instabug.Builder(this, "23bb97d1e65426359d94f8c466b8cb17")
                 .setInvocationEvent(InstabugInvocationEvent.NONE)
                 .build();
@@ -134,8 +145,7 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
                 .build();
     }
 
-    private Instabug getInstaBug() {
-        return instabug;
+    public Socket getSocket() {
+        return mSocket;
     }
-
 }

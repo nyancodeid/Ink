@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.ink.va.R;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import ink.va.interfaces.RecyclerItemClickListener;
@@ -23,13 +24,13 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
     private RecyclerItemClickListener onItemClickListener;
 
-    public ChatAdapter(List<ChatModel> chatModelList, Context mContext) {
-        this.chatModelList = chatModelList;
-        this.mContext = mContext;
+    public ChatAdapter() {
+        chatModelList = new LinkedList<>();
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        mContext = parent.getContext();
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.single_chat_item, parent, false);
         return new ChatViewHolder(itemView);
@@ -39,7 +40,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         ChatModel chatModel = chatModelList.get(position);
-        ((ChatViewHolder) holder).initData(chatModel, mContext, position, chatModelList.size() - 1,onItemClickListener);
+        ((ChatViewHolder) holder).initData(chatModel, mContext, position, chatModelList.size() - 1, onItemClickListener);
     }
 
 
@@ -48,15 +49,25 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return chatModelList.size();
     }
 
-    public void setUpdate(int percentage) {
-
-    }
-
-    public void stopUpdate() {
-
-    }
 
     public void setOnItemClickListener(RecyclerItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
+    }
+
+    public void setChatModelList(List<ChatModel> chatModelList) {
+        this.chatModelList.clear();
+        this.chatModelList.addAll(chatModelList);
+        notifyDataSetChanged();
+    }
+
+    public void insertChatModle(ChatModel chatModel) {
+        this.chatModelList.add(chatModel);
+        int position = chatModelList.indexOf(chatModel);
+        notifyItemInserted(position);
+    }
+
+    public void removeItem(int position) {
+        this.chatModelList.remove(position);
+        notifyItemRemoved(position);
     }
 }

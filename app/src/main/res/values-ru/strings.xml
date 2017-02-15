@@ -840,4 +840,6 @@
     <string name="newPost">Новый Пост</string>
     <string name="madePost">сделал(а) новый пост</string>
     <string name="stickerAttached">Стикер прикреплен </string>
+    <string name="notConnectedToServer">You'r not connected to server.Check the internet</string>
+    <string name="connected">Connected to server</string>
 </resources>

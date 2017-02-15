@@ -99,7 +99,7 @@
                     android:visibility="gone">
 
                     <ImageView
-                        android:id="@+id/attachmentIcon"
+                        android:id="@+id/stickerIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="5dp"
@@ -110,11 +110,11 @@
                         android:id="@+id/attachmentHint"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignTop="@+id/attachmentIcon"
+                        android:layout_alignTop="@+id/stickerIcon"
                         android:layout_marginLeft="2dp"
                         android:layout_marginTop="2dp"
                         android:layout_toLeftOf="@+id/removeAttachment"
-                        android:layout_toRightOf="@+id/attachmentIcon"
+                        android:layout_toRightOf="@+id/stickerIcon"
                         android:ellipsize="end"
                         android:fontFamily="@string/appFont"
                         android:maxLines="1"

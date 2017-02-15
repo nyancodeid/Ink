@@ -15,6 +15,7 @@ public class Constants {
      * App main url
      */
     public static final String MAIN_URL = "http://104.196.118.124/Ink_Base_project_1992_no_15_dp_deployed_57_olAllolclslf_8954/";
+    public static final String SOCKET_URL = "http://104.196.118.124:9090";
 
     /**
      * The appendable of main url
@@ -227,5 +228,10 @@ public class Constants {
      * Game Constants
      */
     public static final String GAME_BLACK_JACK = "blackJack";
+
+    /**
+     * Socket Events
+     */
+    public static final String EVENT_NEW_MESSAGE = "onNewMessage";
 }
 
