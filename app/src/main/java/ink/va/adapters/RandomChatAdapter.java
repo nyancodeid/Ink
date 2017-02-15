@@ -159,17 +159,17 @@ public class RandomChatAdapter extends RecyclerView.Adapter<RandomChatAdapter.Vi
 
 
     private void checkForSticker(final ChatModel chatModel, final RandomChatAdapter.ViewHolder holder) {
-        if (chatModel.hasSticker()) {
-                holder.imageView.setImageResource(0);
-                holder.imageViewWrapper.setVisibility(View.VISIBLE);
+        if (chatModel.isStickerChosen()) {
+            holder.imageView.setImageResource(0);
+            holder.imageViewWrapper.setVisibility(View.VISIBLE);
 
-                Ion.with(mContext).load(Constants.MAIN_URL + chatModel.getStickerUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.imageView)
-                        .setCallback(new FutureCallback<ImageView>() {
-                            @Override
-                            public void onCompleted(Exception e, ImageView result) {
-                                holder.imageView.setTag(LOADED);
-                            }
-                        });
+            Ion.with(mContext).load(Constants.MAIN_URL + chatModel.getStickerUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.imageView)
+                    .setCallback(new FutureCallback<ImageView>() {
+                        @Override
+                        public void onCompleted(Exception e, ImageView result) {
+                            holder.imageView.setTag(LOADED);
+                        }
+                    });
 
             if (chatModel.getMessage().trim().isEmpty()) {
                 holder.chatViewBubble.setVisibility(View.GONE);
