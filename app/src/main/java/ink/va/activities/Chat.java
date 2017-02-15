@@ -85,6 +85,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
     ImageView callIcon;
     @BindView(R.id.opponentTypingLayout)
     View opponentTypingLayout;
+    @BindView(R.id.opponentTypingTV)
+    TextView opponentTypingTV;
 
     private ChatAdapter chatAdapter;
 
@@ -328,7 +330,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
 
     private void handleStickerChosenView() {
-
+        mSendChatMessage.setEnabled(true);
     }
 
     private void destroySocket() {
@@ -401,10 +403,13 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener {
 
     private Emitter.Listener onUserTyping = new Emitter.Listener() {
         @Override
-        public void call(Object... args) {
+        public void call(final Object... args) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    JSONObject jsonObject = (JSONObject) args[0];
+                    String opponentFirstName = jsonObject.optString("opponentFirstName");
+                    opponentTypingTV.setText(getString(R.string.opponentTyping, opponentFirstName));
                     opponentTypingLayout.setVisibility(View.VISIBLE);
                 }
             });

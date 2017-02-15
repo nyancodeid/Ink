@@ -836,5 +836,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="stickerAttached">Sticker attached</string>
     <string name="notConnectedToServer">You\'r not connected to server.Check the internet</string>
     <string name="connected">Connected to server</string>
-    <string name="opponentTyping">Opponent is typing</string>
+    <string name="opponentTyping">%1$s is typing</string>
 </resources>
