@@ -32,6 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.adapters.ChatAdapter;
+import ink.va.callbacks.GeneralCallback;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.interfaces.SocketListener;
 import ink.va.models.ChatModel;
@@ -40,6 +41,7 @@ import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.Keyboard;
 import ink.va.utils.Notification;
+import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
 import rx.Observer;
@@ -91,6 +93,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     ImageView stickerPreviewImageView;
 
     private ChatAdapter chatAdapter;
+    private RealmHelper realmHelper;
 
     private List<ChatModel> chatModels;
 
@@ -118,10 +121,16 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
+
         chatGSON = new Gson();
+
         chatModels = new LinkedList<>();
         chatAdapter = new ChatAdapter();
+        chatAdapter.setOnItemClickListener(this);
+
         initRecyclerView();
+
+        realmHelper = RealmHelper.getInstance();
 
         Bundle extras = getIntent().getExtras();
 
@@ -142,29 +151,41 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
         slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_in);
         slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_out);
+
         getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chat_vector_background));
         initWriteField();
+        getMessages();
     }
 
-    private void initVariables(Object object, boolean treatAsModel) {
+    private void getMessages() {
+        realmHelper.getMessagesAsChatModel(opponentId, currentUserId, new GeneralCallback<List<ChatModel>>() {
+            @Override
+            public void onSuccess(final List<ChatModel> messageModels) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (messageModels.isEmpty()) {
+                            showNoMessages();
+                        } else {
+                            hideNoMessages();
+                            chatAdapter.setChatModelList(messageModels);
+                            mRecyclerView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    scrollToBottom();
+                                }
+                            });
+                        }
+                    }
+                });
 
-        if (treatAsModel) {
-            ChatModel chatModel = (ChatModel) object;
-            opponentId = chatModel.getUserId();
-            opponentFirstName = chatModel.getFirstName();
-            opponentLastName = chatModel.getLastName();
-            opponentImageUrl = chatModel.getOpponentImage();
-            isSocialAccount = chatModel.isSocialAccount();
-        } else {
-            Bundle extras = (Bundle) object;
-            opponentId = extras != null ? extras.containsKey("opponentId") ? extras.getString("opponentId") : "" : "";
-            opponentFirstName = extras != null ? extras.containsKey("firstName") ? extras.getString("firstName") : "" : "";
-            opponentLastName = extras != null ? extras.containsKey("lastName") ? extras.getString("lastName") : "" : "";
-            opponentImageUrl = extras != null ? extras.containsKey("opponentImage") ? extras.getString("opponentImage") : "" : "";
-            isSocialAccount = extras != null ? extras.containsKey("isSocialAccount") ? extras.getBoolean("isSocialAccount") : false : false;
-        }
+            }
 
+            @Override
+            public void onFailure(List<ChatModel> messageModels) {
 
+            }
+        });
     }
 
 
@@ -208,8 +229,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             }
 
             mWriteEditText.setText("");
-
-            ChatModel chatModel = chatGSON.fromJson(messageJson.toString(), ChatModel.class);
+            hideNoMessages();
+            final ChatModel chatModel = chatGSON.fromJson(messageJson.toString(), ChatModel.class);
             chatAdapter.insertChatModel(chatModel);
             mRecyclerView.post(new Runnable() {
                 @Override
@@ -218,7 +239,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 }
             });
             handleStickerRemoved();
-            messageService.emit(EVENT_SEND_MESSAGE, messageJson);
+            localMessageInsert(chatModel, true);
         }
     }
 
@@ -260,9 +281,62 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
     /**
      * Methods
-     *
-     * @param extras
      */
+    private void localMessageInsert(ChatModel chatModel, final boolean sendMessage) {
+        realmHelper.insertMessage(chatModel, new GeneralCallback() {
+            @Override
+            public void onSuccess(Object o) {
+                if (sendMessage) {
+                    messageService.emit(EVENT_SEND_MESSAGE, messageJson);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Object o) {
+                Snackbar.make(mRecyclerView, getString(R.string.failedToSent), Snackbar.LENGTH_LONG).setAction(getString(R.string.vk_retry), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        sendMessageClicked();
+                    }
+                }).show();
+            }
+        });
+    }
+
+    private void hideNoMessages() {
+        if (mNoMessageLayout.getVisibility() == View.VISIBLE) {
+            mNoMessageLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void showNoMessages() {
+        if (mNoMessageLayout.getVisibility() == View.GONE) {
+            mNoMessageLayout.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    private void initVariables(Object object, boolean treatAsModel) {
+
+        if (treatAsModel) {
+            ChatModel chatModel = (ChatModel) object;
+            opponentId = chatModel.getUserId();
+            opponentFirstName = chatModel.getFirstName();
+            opponentLastName = chatModel.getLastName();
+            opponentImageUrl = chatModel.getOpponentImage();
+            isSocialAccount = chatModel.isSocialAccount();
+        } else {
+            Bundle extras = (Bundle) object;
+            opponentId = extras != null ? extras.containsKey("opponentId") ? extras.getString("opponentId") : "" : "";
+            opponentFirstName = extras != null ? extras.containsKey("firstName") ? extras.getString("firstName") : "" : "";
+            opponentLastName = extras != null ? extras.containsKey("lastName") ? extras.getString("lastName") : "" : "";
+            opponentImageUrl = extras != null ? extras.containsKey("opponentImage") ? extras.getString("opponentImage") : "" : "";
+            isSocialAccount = extras != null ? extras.containsKey("isSocialAccount") ? extras.getBoolean("isSocialAccount") : false : false;
+        }
+
+
+    }
 
     private void checkNotification(Bundle extras) {
         if (extras != null) {
@@ -270,13 +344,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 String receivedMessageJson = extras.getString(NOTIFICATION_MESSAGE_BUNDLE_KEY);
                 ChatModel chatModel = chatGSON.fromJson(receivedMessageJson, ChatModel.class);
                 initVariables(chatModel, true);
-                chatAdapter.insertChatModel(chatModel);
-                mRecyclerView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollToBottom();
-                    }
-                });
             }
 
         }
@@ -286,12 +353,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         chatTitle.setText(opponentFirstName + " " + opponentLastName);
         if (opponentImageUrl != null && !opponentImageUrl.isEmpty()) {
             if (isSocialAccount) {
-                Ion.with(this).load(opponentImageUrl).withBitmap().placeholder(R.drawable.no_background_image)
+                Ion.with(this).load(opponentImageUrl).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
                         .intoImageView(opponentImage);
             } else {
                 String encodedImage = Uri.encode(opponentImageUrl);
                 Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
-                        .withBitmap().placeholder(R.drawable.no_background_image).intoImageView(opponentImage);
+                        .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(opponentImage);
             }
         } else {
             Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
@@ -555,6 +622,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             @Override
             public void run() {
                 chatAdapter.insertChatModel(chatModel);
+                localMessageInsert(chatModel, false);
                 mRecyclerView.post(new Runnable() {
                     @Override
                     public void run() {

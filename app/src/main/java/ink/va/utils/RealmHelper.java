@@ -6,9 +6,11 @@ import android.os.HandlerThread;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import ink.va.callbacks.GeneralCallback;
+import ink.va.models.ChatModel;
 import ink.va.models.MessageModel;
 import ink.va.models.NotificationModel;
 import io.realm.Realm;
@@ -100,7 +102,8 @@ public class RealmHelper {
                               final String userImage,
                               final String opponentImage, final String deleteOpponentId,
                               final String deleteUserId,
-                              final boolean hasGif, final String gifUrl, final boolean animated, @Nullable final GeneralCallback generalCallback) {
+                              final boolean hasGif, final String gifUrl,
+                              final boolean animated, @Nullable final GeneralCallback generalCallback) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -169,6 +172,89 @@ public class RealmHelper {
                                 messageModel.setGifUrl(gifUrl);
                                 messageModel.setDeleteUserId(deleteUserId);
                                 messageModel.setDeleteOpponentId(deleteOpponentId);
+                            }
+                            if (generalCallback != null) {
+                                generalCallback.onSuccess(false);
+                            }
+
+                        }
+                    });
+                }
+
+            }
+        });
+    }
+
+
+    public void insertMessage(final ChatModel chatModel, @Nullable final GeneralCallback generalCallback) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mRealm.isClosed()) {
+                    openRealm(new GeneralCallback() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            mRealm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(final Realm realm) {
+                                    RealmQuery<MessageModel> query = realm.where(MessageModel.class)
+                                            .equalTo("messageId", chatModel.getMessageId());
+                                    if (query.count() == 0) {
+                                        MessageModel messageModel = realm.createObject(MessageModel.class);
+
+                                        messageModel.setId(chatModel.getMessageId());
+                                        messageModel.setMessageId(chatModel.getMessageId());
+                                        messageModel.setMessage(chatModel.getMessage());
+                                        messageModel.setUserId(chatModel.getUserId());
+                                        messageModel.setOpponentId(chatModel.getOpponentId());
+                                        messageModel.setAnimated(false);
+                                        messageModel.setDeliveryStatus("NONE");
+                                        messageModel.setUserImage(chatModel.getOpponentImage());
+                                        messageModel.setOpponentImage(chatModel.getOpponentImage());
+                                        messageModel.setDate(chatModel.getDate());
+                                        messageModel.setHasGif(chatModel.isStickerChosen());
+                                        messageModel.setGifUrl(chatModel.getStickerUrl());
+                                        messageModel.setDeleteUserId(chatModel.getUserId());
+                                        messageModel.setDeleteOpponentId(chatModel.getOpponentId());
+                                    }
+                                    if (generalCallback != null) {
+                                        generalCallback.onSuccess(true);
+                                    }
+
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(Object o) {
+                            if (generalCallback != null) {
+                                generalCallback.onFailure(false);
+                            }
+                        }
+                    });
+                } else {
+                    mRealm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(final Realm realm) {
+                            RealmQuery<MessageModel> query = realm.where(MessageModel.class)
+                                    .equalTo("messageId", chatModel.getMessageId());
+                            if (query.count() == 0) {
+                                MessageModel messageModel = realm.createObject(MessageModel.class);
+
+                                messageModel.setId(chatModel.getMessageId());
+                                messageModel.setMessageId(chatModel.getMessageId());
+                                messageModel.setMessage(chatModel.getMessage());
+                                messageModel.setUserId(chatModel.getUserId());
+                                messageModel.setOpponentId(chatModel.getOpponentId());
+                                messageModel.setAnimated(false);
+                                messageModel.setDeliveryStatus("NONE");
+                                messageModel.setUserImage(chatModel.getOpponentImage());
+                                messageModel.setOpponentImage(chatModel.getOpponentImage());
+                                messageModel.setDate(chatModel.getDate());
+                                messageModel.setHasGif(chatModel.isStickerChosen());
+                                messageModel.setGifUrl(chatModel.getStickerUrl());
+                                messageModel.setDeleteUserId(chatModel.getUserId());
+                                messageModel.setDeleteOpponentId(chatModel.getOpponentId());
                             }
                             if (generalCallback != null) {
                                 generalCallback.onSuccess(false);
@@ -566,7 +652,72 @@ public class RealmHelper {
 
             }
         });
+    }
 
+    public void getMessagesAsChatModel(final String opponentId, final String userId, final GeneralCallback<List<ChatModel>> listGeneralCallback) {
+        final List<ChatModel> chatModels = new LinkedList<>();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mRealm.isClosed()) {
+                    openRealm(new GeneralCallback() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            mRealm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    RealmResults<MessageModel> realmResults = realm.where(MessageModel.class).equalTo("opponentId", opponentId).equalTo("userId", userId)
+                                            .or().equalTo("opponentId", userId).equalTo("userId", opponentId
+                                            ).findAll();
+                                    for (MessageModel messageModel : realmResults) {
+                                        ChatModel chatModel = new ChatModel();
+                                        chatModel.setUserId(messageModel.getUserId());
+                                        chatModel.setDate(messageModel.getDate());
+                                        chatModel.setOpponentImage(messageModel.getOpponentImage());
+                                        chatModel.setMessage(messageModel.getMessage());
+                                        chatModel.setMessageId(messageModel.getMessageId());
+                                        chatModel.setOpponentId(messageModel.getOpponentId());
+                                        chatModel.setStickerChosen(messageModel.hasGif());
+                                        chatModel.setStickerUrl(messageModel.getGifUrl());
+                                        chatModels.add(chatModel);
+                                    }
+                                    listGeneralCallback.onSuccess(chatModels);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(Object o) {
+
+                        }
+                    });
+                } else {
+                    mRealm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            RealmResults<MessageModel> realmResults = realm.where(MessageModel.class).equalTo("opponentId", opponentId).equalTo("userId", userId)
+                                    .or().equalTo("opponentId", userId).equalTo("userId", opponentId
+                                    ).findAll();
+
+                            for (MessageModel messageModel : realmResults) {
+                                ChatModel chatModel = new ChatModel();
+                                chatModel.setUserId(messageModel.getUserId());
+                                chatModel.setDate(messageModel.getDate());
+                                chatModel.setOpponentImage(messageModel.getOpponentImage());
+                                chatModel.setMessage(messageModel.getMessage());
+                                chatModel.setMessageId(messageModel.getMessageId());
+                                chatModel.setOpponentId(messageModel.getOpponentId());
+                                chatModel.setStickerChosen(messageModel.hasGif());
+                                chatModel.setStickerUrl(messageModel.getGifUrl());
+                                chatModels.add(chatModel);
+                            }
+                            listGeneralCallback.onSuccess(chatModels);
+                        }
+                    });
+                }
+
+            }
+        });
     }
 
     public void deleteMessages() {

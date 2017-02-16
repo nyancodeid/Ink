@@ -150,6 +150,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService();
+    }
+
     private void checkHacks() {
         if (ProcessManager.hasHacks(this)) {
             AlertDialog alertDialog;
@@ -218,7 +224,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            if(!unbindCalled){
+            if (!unbindCalled) {
                 bindService(messageIntent, mConnection, BIND_AUTO_CREATE);
             }
 

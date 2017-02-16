@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
+import com.google.gson.Gson;
 import com.ink.va.R;
 
 import org.json.JSONException;
@@ -21,8 +22,11 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 
 import ink.va.activities.Chat;
+import ink.va.callbacks.GeneralCallback;
 import ink.va.interfaces.SocketListener;
+import ink.va.models.ChatModel;
 import ink.va.utils.Notification;
+import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
 
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT;
@@ -39,7 +43,7 @@ import static ink.va.utils.Constants.SOCKET_URL;
 public class MessageService extends Service {
     private SharedHelper sharedHelper;
     private String currentUserId;
-    private final IBinder mBinder = new LocalBinder();
+    LocalBinder mBinder = new LocalBinder();
     private SocketListener onSocketListener;
 
     public MessageService() {
@@ -57,6 +61,7 @@ public class MessageService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         sharedHelper = new SharedHelper(this);
         currentUserId = sharedHelper.getUserId();
+
         if (mSocket == null) {
             try {
                 mSocket = IO.socket(SOCKET_URL);
@@ -86,6 +91,11 @@ public class MessageService extends Service {
         @Override
         public void call(final Object... args) {
             final JSONObject messageJson = (JSONObject) args[0];
+
+            Gson chatGSON = new Gson();
+
+            final ChatModel chatModel = chatGSON.fromJson(messageJson.toString(), ChatModel.class);
+
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("id", currentUserId);
@@ -94,12 +104,29 @@ public class MessageService extends Service {
             }
             emit(EVENT_MESSAGE_RECEIVED, jsonObject);
             jsonObject = null;
+
             if (Notification.get().isSendingRemote()) {
-                Handler handler = new Handler(Looper.getMainLooper());
-                handler.post(new Runnable() {
+                RealmHelper.getInstance().insertMessage(chatModel, new GeneralCallback() {
                     @Override
-                    public void run() {
-                        sendGeneralNotification(messageJson);
+                    public void onSuccess(Object o) {
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendGeneralNotification(messageJson);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Object o) {
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendGeneralNotification(messageJson);
+                            }
+                        });
                     }
                 });
             } else {

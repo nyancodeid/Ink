@@ -46,8 +46,6 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.singleGifViewWrapper)
     LinearLayout imageViewWrapper;
     private SharedHelper sharedHelper;
-    private boolean updating = false;
-    private int percentage;
     private Context mContext;
     private RecyclerItemClickListener onItemClickListener;
     private int position;
@@ -66,14 +64,9 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         }
         String currentUserId = sharedHelper.getUserId();
         String messageBody = chatModel.getMessage();
-        if (chatModel.getMessage().contains(":")) {
-            int index = chatModel.getMessage().indexOf(":");
-            messageBody = chatModel.getMessage().substring(index + 1, chatModel.getMessage().length());
-        }
-
 
         message.setMovementMethod(LinkMovementMethod.getInstance());
-        message.setText(messageBody.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, ""));
+        message.setText(messageBody);
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) chatViewBubble.getLayoutParams();
         LinearLayout.LayoutParams deliveryStatusParams = (LinearLayout.LayoutParams) deliveryStatus.getLayoutParams();
         LinearLayout.LayoutParams gifChatViewLayoutParams = (LinearLayout.LayoutParams) imageViewWrapper.getLayoutParams();
