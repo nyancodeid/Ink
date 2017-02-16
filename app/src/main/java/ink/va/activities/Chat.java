@@ -111,7 +111,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private boolean isSocialAccount;
     private String opponentImageUrl;
     private MessageService messageService;
-    private Bundle extras;
 
 
     @Override
@@ -127,7 +126,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         opponentLastName = extras != null ? extras.containsKey("lastName") ? extras.getString("lastName") : "" : "";
         opponentImageUrl = extras != null ? extras.containsKey("opponentImage") ? extras.getString("opponentImage") : "" : "";
         isSocialAccount = extras != null ? extras.containsKey("isSocialAccount") ? extras.getBoolean("isSocialAccount") : false : false;
-        extras = getIntent().getExtras() != null ? getIntent().getExtras() : null;
 
         initUser();
 
@@ -146,7 +144,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chat_vector_background));
         initRecyclerView();
         initWriteField();
-        checkExtra();
+        checkNotification(extras);
     }
 
 
@@ -178,7 +176,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 messageJson.put("userId", currentUserId);
                 messageJson.put("opponentId", opponentId);
                 messageJson.put("firstName", sharedHelper.getFirstName());
+                messageJson.put("opponentImage", sharedHelper.getImageLink());
                 messageJson.put("lastName", sharedHelper.getLastName());
+                messageJson.put("isSocialAccount", sharedHelper.isSocialAccount());
                 messageJson.put("message", message);
                 messageJson.put("date", Time.getCurrentTime());
                 messageJson.put("stickerChosen", isStickerChosen);
@@ -240,9 +240,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
     /**
      * Methods
+     *
+     * @param extras
      */
 
-    private void checkExtra() {
+    private void checkNotification(Bundle extras) {
         if (extras != null) {
             String receivedMessageJson = extras.getString(NOTIFICATION_MESSAGE_BUNDLE_KEY);
             ChatModel chatModel = chatGSON.fromJson(receivedMessageJson, ChatModel.class);
