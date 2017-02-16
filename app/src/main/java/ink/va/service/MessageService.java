@@ -55,13 +55,25 @@ public class MessageService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         sharedHelper = new SharedHelper(this);
         currentUserId = sharedHelper.getUserId();
-        try {
-            mSocket = IO.socket(SOCKET_URL);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+        if (mSocket == null) {
+            try {
+                mSocket = IO.socket(SOCKET_URL);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            initSocket();
+            Toast.makeText(this, "on start command", Toast.LENGTH_SHORT).show();
+        } else if (!mSocket.connected()) {
+            try {
+                mSocket = IO.socket(SOCKET_URL);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            initSocket();
+            Toast.makeText(this, "on start command", Toast.LENGTH_SHORT).show();
         }
-        initSocket();
-        Toast.makeText(this, "on start command", Toast.LENGTH_SHORT).show();
+
+
         return START_STICKY;
     }
 

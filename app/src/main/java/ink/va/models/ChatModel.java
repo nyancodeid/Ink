@@ -46,6 +46,14 @@ public class ChatModel {
     @Setter
     @Getter
     private String stickerUrl;
+    @SerializedName("isSocialAccount")
+    @Setter
+    @Getter
+    private boolean isSocialAccount;
+    @SerializedName("opponentImage")
+    @Setter
+    @Getter
+    private String opponentImage;
 
 
 }

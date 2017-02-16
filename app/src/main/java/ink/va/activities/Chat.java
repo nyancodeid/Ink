@@ -121,11 +121,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         chatGSON = new Gson();
         Bundle extras = getIntent().getExtras();
 
-        opponentId = extras != null ? extras.containsKey("opponentId") ? extras.getString("opponentId") : "" : "";
-        opponentFirstName = extras != null ? extras.containsKey("firstName") ? extras.getString("firstName") : "" : "";
-        opponentLastName = extras != null ? extras.containsKey("lastName") ? extras.getString("lastName") : "" : "";
-        opponentImageUrl = extras != null ? extras.containsKey("opponentImage") ? extras.getString("opponentImage") : "" : "";
-        isSocialAccount = extras != null ? extras.containsKey("isSocialAccount") ? extras.getBoolean("isSocialAccount") : false : false;
+        initVariables(extras, false);
+
+        checkNotification(extras);
+
 
         initUser();
 
@@ -144,7 +143,27 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chat_vector_background));
         initRecyclerView();
         initWriteField();
-        checkNotification(extras);
+    }
+
+    private void initVariables(Object object, boolean treatAsModel) {
+
+        if (treatAsModel) {
+            ChatModel chatModel = (ChatModel) object;
+            opponentId = chatModel.getOpponentId();
+            opponentFirstName = chatModel.getFirstName();
+            opponentLastName = chatModel.getLastName();
+            opponentImageUrl = chatModel.getOpponentImage();
+            isSocialAccount = chatModel.isSocialAccount();
+        } else {
+            Bundle extras = (Bundle) object;
+            opponentId = extras != null ? extras.containsKey("opponentId") ? extras.getString("opponentId") : "" : "";
+            opponentFirstName = extras != null ? extras.containsKey("firstName") ? extras.getString("firstName") : "" : "";
+            opponentLastName = extras != null ? extras.containsKey("lastName") ? extras.getString("lastName") : "" : "";
+            opponentImageUrl = extras != null ? extras.containsKey("opponentImage") ? extras.getString("opponentImage") : "" : "";
+            isSocialAccount = extras != null ? extras.containsKey("isSocialAccount") ? extras.getBoolean("isSocialAccount") : false : false;
+        }
+
+
     }
 
 
@@ -246,15 +265,19 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
     private void checkNotification(Bundle extras) {
         if (extras != null) {
-            String receivedMessageJson = extras.getString(NOTIFICATION_MESSAGE_BUNDLE_KEY);
-            ChatModel chatModel = chatGSON.fromJson(receivedMessageJson, ChatModel.class);
-            chatAdapter.insertChatModel(chatModel);
-            mRecyclerView.post(new Runnable() {
-                @Override
-                public void run() {
-                    scrollToBottom();
-                }
-            });
+            if (extras.containsKey(NOTIFICATION_MESSAGE_BUNDLE_KEY)) {
+                String receivedMessageJson = extras.getString(NOTIFICATION_MESSAGE_BUNDLE_KEY);
+                ChatModel chatModel = chatGSON.fromJson(receivedMessageJson, ChatModel.class);
+                initVariables(chatModel, true);
+                chatAdapter.insertChatModel(chatModel);
+                mRecyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollToBottom();
+                    }
+                });
+            }
+
         }
     }
 
