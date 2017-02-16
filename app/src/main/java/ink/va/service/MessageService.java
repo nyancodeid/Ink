@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
@@ -22,7 +21,6 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 
 import ink.va.activities.Chat;
-import ink.va.activities.HomeActivity;
 import ink.va.interfaces.SocketListener;
 import ink.va.utils.Notification;
 import ink.va.utils.SharedHelper;
@@ -224,18 +222,13 @@ public class MessageService extends Service {
         builder.setContentText(getString(R.string.newMessagesFrom) + firstName + " " + lastName);
         builder.setDefaults(android.app.Notification.DEFAULT_ALL);
         builder.setStyle(new NotificationCompat.BigTextStyle()
-                .setSummaryText(getString(R.string.newMessagesFrom) + firstName + " " + lastName)
-                .setBigContentTitle(getString(R.string.newMessagesFrom) + firstName + " " + lastName)
-                .bigText(message)
+                .setSummaryText(getString(R.string.newMessagesFrom) + " " + firstName + " " + lastName)
+                .setBigContentTitle(getString(R.string.newMessagesFrom) + " " + firstName + " " + lastName)
+                .bigText(message.isEmpty() ? getString(R.string.sentSticker) : message)
         );
 
         Intent requestsViewIntent = new Intent(getApplicationContext(), Chat.class);
         requestsViewIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
-
-
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(HomeActivity.class);
-        stackBuilder.addNextIntent(requestsViewIntent);
 
         PendingIntent requestsViewPending = PendingIntent.getActivity(getApplicationContext(),
                 Integer.valueOf(jsonObject.optInt("messageId")), requestsViewIntent, 0);
