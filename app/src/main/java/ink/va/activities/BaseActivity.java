@@ -118,6 +118,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private int appVersionCode = 0;
     private MessageService messageService;
     private Intent messageIntent;
+    private boolean unbindCalled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,6 +218,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
+            if(!unbindCalled){
+                bindService(messageIntent, mConnection, BIND_AUTO_CREATE);
+            }
 
         }
     };
@@ -414,6 +418,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void unbindService() {
+        unbindCalled = true;
         try {
             unbindService(mConnection);
         } catch (Exception e) {

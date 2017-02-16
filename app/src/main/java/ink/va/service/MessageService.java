@@ -15,6 +15,7 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.ink.va.R;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
@@ -28,6 +29,7 @@ import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_ERROR;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_DISCONNECT;
 import static ink.va.utils.Constants.EVENT_ADD_USER;
+import static ink.va.utils.Constants.EVENT_MESSAGE_RECEIVED;
 import static ink.va.utils.Constants.EVENT_NEW_MESSAGE;
 import static ink.va.utils.Constants.EVENT_STOPPED_TYPING;
 import static ink.va.utils.Constants.EVENT_TYPING;
@@ -62,7 +64,6 @@ public class MessageService extends Service {
                 e.printStackTrace();
             }
             initSocket();
-            Toast.makeText(this, "on start command", Toast.LENGTH_SHORT).show();
         } else if (!mSocket.connected()) {
             try {
                 mSocket = IO.socket(SOCKET_URL);
@@ -85,6 +86,14 @@ public class MessageService extends Service {
         @Override
         public void call(final Object... args) {
             final JSONObject messageJson = (JSONObject) args[0];
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("id", currentUserId);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            emit(EVENT_MESSAGE_RECEIVED, jsonObject);
+            jsonObject = null;
             if (Notification.get().isSendingRemote()) {
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {

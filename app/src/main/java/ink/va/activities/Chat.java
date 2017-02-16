@@ -119,6 +119,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         chatGSON = new Gson();
+        chatModels = new LinkedList<>();
+        chatAdapter = new ChatAdapter();
+        initRecyclerView();
+
         Bundle extras = getIntent().getExtras();
 
         initVariables(extras, false);
@@ -133,15 +137,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         sharedHelper = new SharedHelper(this);
         currentUserId = sharedHelper.getUserId();
 
-        chatModels = new LinkedList<>();
-        chatAdapter = new ChatAdapter();
 
         Notification.get().setSendingRemote(false);
 
         slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_in);
         slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_out);
         getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chat_vector_background));
-        initRecyclerView();
         initWriteField();
     }
 
@@ -149,7 +150,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
         if (treatAsModel) {
             ChatModel chatModel = (ChatModel) object;
-            opponentId = chatModel.getOpponentId();
+            opponentId = chatModel.getUserId();
             opponentFirstName = chatModel.getFirstName();
             opponentLastName = chatModel.getLastName();
             opponentImageUrl = chatModel.getOpponentImage();
