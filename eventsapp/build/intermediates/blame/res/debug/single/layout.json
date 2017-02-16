@@ -36,12 +36,12 @@
         "source": "D:\\Ink\\eventsapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\layout\\abc_action_bar_tab.xml"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_menu_layout.xml",
-        "source": "D:\\Ink\\eventsapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\layout\\abc_action_menu_layout.xml"
-    },
-    {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_decor_include.xml",
         "source": "E:\\Ink\\eventsapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\layout\\abc_action_bar_decor_include.xml"
+    },
+    {
+        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_menu_layout.xml",
+        "source": "D:\\Ink\\eventsapp\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\19.1.0\\res\\layout\\abc_action_menu_layout.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\activity_main.xml",

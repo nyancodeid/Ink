@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
@@ -21,6 +22,7 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 
 import ink.va.activities.Chat;
+import ink.va.activities.HomeActivity;
 import ink.va.interfaces.SocketListener;
 import ink.va.utils.Notification;
 import ink.va.utils.SharedHelper;
@@ -207,30 +209,34 @@ public class MessageService extends Service {
     }
 
     private void sendGeneralNotification(JSONObject jsonObject) {
+        String firstName = jsonObject.optString("firstName");
+        String lastName = jsonObject.optString("lastName");
+        String message = jsonObject.optString("message");
 
         NotificationManager notificationManagerCompat = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(getApplicationContext());
-        builder.setSmallIcon(R.drawable.ic_bell_ring_outline_white_24dp);
+        builder.setSmallIcon(R.drawable.ic_message_white_24dp);
         builder.setAutoCancel(true);
 
 
-        builder.setContentTitle("new message");
-        builder.setContentText("new message");
-        builder.setGroup("faskjflasfas");
+        builder.setContentTitle(getString(R.string.newMessageGlobal));
+        builder.setContentText(getString(R.string.newMessagesFrom) + firstName + " " + lastName);
         builder.setDefaults(android.app.Notification.DEFAULT_ALL);
         builder.setStyle(new NotificationCompat.BigTextStyle()
-                .setSummaryText("new message")
-                .setBigContentTitle("new message")
-                .bigText("new messagea")
+                .setSummaryText(getString(R.string.newMessagesFrom) + firstName + " " + lastName)
+                .setBigContentTitle(getString(R.string.newMessagesFrom) + firstName + " " + lastName)
+                .bigText(message)
         );
 
         Intent requestsViewIntent = new Intent(getApplicationContext(), Chat.class);
         requestsViewIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
-        requestsViewIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        requestsViewIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(HomeActivity.class);
+        stackBuilder.addNextIntent(requestsViewIntent);
+
         PendingIntent requestsViewPending = PendingIntent.getActivity(getApplicationContext(),
                 Integer.valueOf(jsonObject.optInt("messageId")), requestsViewIntent, 0);
         builder.setContentIntent(requestsViewPending);
