@@ -10,9 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,12 +26,13 @@ import io.realm.Sort;
 import io.realm.internal.IOException;
 
 import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
+import static ink.va.utils.Constants.REALM_DB_NAME;
 
 /**
  * Created by USER on 2016-06-26.
  */
 public class RealmHelper {
-    private static final String REALM_DB_NAME = "messages.realm";
+
     private static RealmHelper ourInstance = new RealmHelper();
     private Realm mRealm;
     private List<MessageModel> mModelArray = new ArrayList<>();
@@ -82,7 +80,7 @@ public class RealmHelper {
 
     }
 
-    public boolean clearDatabase(final Context context) {
+    public boolean clearDatabase(@Nullable final GeneralCallback onDatabaseDeleted) {
 
         handler.post(new Runnable() {
             @Override
@@ -98,6 +96,11 @@ public class RealmHelper {
                     clearDBSuccess = true;
                 } else {
                     clearDBSuccess = false;
+                    Realm.deleteRealm(mRealmConfiguration);
+                }
+                if (onDatabaseDeleted != null) {
+                    onDatabaseDeleted.onSuccess(null);
+
                 }
             }
         });
@@ -664,42 +667,36 @@ public class RealmHelper {
         });
     }
 
-    public void restore(Context context) {
+    public void restore(final Context context, final File fileToCopy, final GeneralCallback<Object> fileCopyCallback) {
         if (!PermissionsChecker.isStoragePermissionGranted(context)) {
             ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
             return;
         }
-        String restoreFilePath = Environment.getExternalStorageDirectory() + "/" + REALM_DB_NAME;
-        copyBundledRealmFile(restoreFilePath);
-    }
-
-    private String copyBundledRealmFile(String oldFilePath) {
-        try {
-            File file = new File(mRealm.getPath());
-
-            FileOutputStream outputStream = new FileOutputStream(file);
-
-            FileInputStream inputStream = new FileInputStream(new File(oldFilePath));
-
-            byte[] buf = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buf)) > 0) {
-                outputStream.write(buf, 0, bytesRead);
+        clearDatabase(new GeneralCallback() {
+            @Override
+            public void onSuccess(Object o) {
+                File file = new File(context.getFilesDir().getAbsolutePath() + "/" + REALM_DB_NAME);
+                if (file.exists()) {
+                    file.delete();
+                }
+                try {
+                    org.apache.commons.io.FileUtils.copyFileToDirectory(fileToCopy, new File(context.getFilesDir().getAbsolutePath()));
+                    fileCopyCallback.onSuccess(null);
+                } catch (java.io.IOException e) {
+                    e.printStackTrace();
+                    fileCopyCallback.onFailure(null);
+                }
             }
-            outputStream.close();
-            return file.getAbsolutePath();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+
+            @Override
+            public void onFailure(Object o) {
+
+            }
+        });
     }
 
 
-    public void backup(final Context context) {
+    public void backup(final Context context, final GeneralCallback<File> fileReadyCallback) {
         if (!PermissionsChecker.isStoragePermissionGranted(context)) {
             ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
             return;
@@ -711,7 +708,7 @@ public class RealmHelper {
                     openRealm(new GeneralCallback() {
                         @Override
                         public void onSuccess(Object o) {
-                            File exportRealmFile;
+                            File exportRealmFile = null;
 
                             File exportRealmPATH = Environment.getExternalStorageDirectory();
 
@@ -725,9 +722,10 @@ public class RealmHelper {
 
                                 // copy current realm to backup file
                                 mRealm.writeCopyTo(exportRealmFile);
-
+                                fileReadyCallback.onSuccess(exportRealmFile);
                             } catch (IOException e) {
                                 e.printStackTrace();
+                                fileReadyCallback.onFailure(null);
                             }
 
                         }
@@ -752,9 +750,10 @@ public class RealmHelper {
 
                         // copy current realm to backup file
                         mRealm.writeCopyTo(exportRealmFile);
-
+                        fileReadyCallback.onSuccess(exportRealmFile);
                     } catch (IOException e) {
                         e.printStackTrace();
+                        fileReadyCallback.onFailure(null);
                     }
 
                 }

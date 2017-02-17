@@ -54,7 +54,6 @@
     <application
         android:name="ink.StartupApplication"
         android:allowBackup="true"
-        android:backupAgent="ink.va.backup.BackUpAgent"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -62,9 +61,6 @@
         android:restoreAnyVersion="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data
-            android:name="com.google.android.backup.api_key"
-            android:value="AEdPqrEAAAAIGOhoM9WmwOyD1Tm5N2qF1LMswrCIgkgOmyfmUg" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/googleMapsApiKey" />

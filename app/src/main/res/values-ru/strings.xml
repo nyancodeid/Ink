@@ -843,4 +843,7 @@
     <string name="notConnectedToServer">Вы не подключены к серверу,Проверьте интернет</string>
     <string name="connected">Подключен к Серверу</string>
     <string name="opponentTyping">%1$s печатает</string>
+    <string name="realmFileError">Не удалось создать файл от писем</string>
+    <string name="realmRestoreError">Не удалось восстановить письма</string>
+    <string name="noRestoreAvailable">У вас нет сохраненных писем на сервере</string>
 </resources>

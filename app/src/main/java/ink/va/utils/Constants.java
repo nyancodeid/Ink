@@ -124,6 +124,8 @@ public class Constants {
     public static final String GENDER_FEMALE = "Female";
     public static final String STATUS_DELIVERED = "delivered";
     public static final String STATUS_NOT_DELIVERED = "not sent";
+    public static final String REALM_DB_NAME = "messages.realm";
+    public static final String FIREBASE_STORAGE_BUCKET = "gs://inkfcm.appspot.com";
     public static final String GROUP_OPTIONS_LEAVE = "leaveGroup";
     public static final String SERVER_AUTH_KEY = "fsahga-s447489asg-gGgashagasgfag-JKGKAJGKAS-gasgasga678sag8as-GASGJASKLG";
     public static final String NO_IMAGE_NAME = "no_image.png";
