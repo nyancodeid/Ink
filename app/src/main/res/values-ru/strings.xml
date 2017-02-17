@@ -258,7 +258,7 @@
     <string name="packs_title">Паки</string>
     <string name="trade_title">Торговля</string>
     <string name="shopTitle">Магазин</string>
-    <string name="coinsText">%1$s монет</string>
+    <string name="coinsText">%1$d монет</string>
     <string name="buyCoins">Купить монеты</string>
     <string name="coinsMenu">Монеты</string>
     <string name="caution">Внимание!</string>

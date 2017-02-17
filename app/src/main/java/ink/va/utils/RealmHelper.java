@@ -1,10 +1,21 @@
 package ink.va.utils;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +29,7 @@ import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
+import io.realm.internal.IOException;
 
 import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 
@@ -25,6 +37,7 @@ import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
  * Created by USER on 2016-06-26.
  */
 public class RealmHelper {
+    private static final String REALM_DB_NAME = "messages.realm";
     private static RealmHelper ourInstance = new RealmHelper();
     private Realm mRealm;
     private List<MessageModel> mModelArray = new ArrayList<>();
@@ -53,7 +66,7 @@ public class RealmHelper {
             public void run() {
                 Realm.init(context);
                 mRealmConfiguration = new RealmConfiguration.Builder()
-                        .name("messages.realm")
+                        .name(REALM_DB_NAME)
                         .deleteRealmIfMigrationNeeded()
                         .build();
                 mRealm = Realm.getInstance(mRealmConfiguration);
@@ -653,6 +666,138 @@ public class RealmHelper {
             }
         });
     }
+
+    public void restore(final Context context) {
+        final String currentRealmFile = Environment.getExternalStorageDirectory().getAbsolutePath();
+        final File realmPath = context.getExternalFilesDir(null);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mRealm.isClosed()) {
+                    openRealm(new GeneralCallback() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            clearDatabase(context);
+                            moveFile(currentRealmFile, REALM_DB_NAME, realmPath.getAbsolutePath());
+                        }
+
+                        @Override
+                        public void onFailure(Object o) {
+
+                        }
+                    });
+                } else {
+                    clearDatabase(context);
+                    moveFile(currentRealmFile, REALM_DB_NAME, realmPath.getAbsolutePath());
+                }
+            }
+        });
+    }
+
+
+    private void moveFile(String inputPath, String inputFile, String outputPath) {
+
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+
+            //create output directory if it doesn't exist
+            File dir = new File(outputPath);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+
+            in = new FileInputStream(inputPath + "/" + inputFile);
+            out = new FileOutputStream(outputPath + "/" + inputFile);
+
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+            in.close();
+            in = null;
+
+            // write the output file
+            out.flush();
+            out.close();
+            out = null;
+
+        } catch (FileNotFoundException fnfe1) {
+            Log.e("tag", fnfe1.getMessage());
+        } catch (Exception e) {
+            Log.e("tag", e.getMessage());
+        }
+        Log.d("tag", "moveFile: file moved to" + " " + outputPath + inputFile);
+    }
+
+
+    public void backup(final Context context) {
+        if (!PermissionsChecker.isStoragePermissionGranted(context)) {
+            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+            return;
+        }
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mRealm.isClosed()) {
+                    openRealm(new GeneralCallback() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            File exportRealmFile;
+
+                            File exportRealmPATH = Environment.getExternalStorageDirectory();
+
+
+                            try {
+                                // create a backup file
+                                exportRealmFile = new File(exportRealmPATH, REALM_DB_NAME);
+
+                                // if backup file already exists, delete it
+                                exportRealmFile.delete();
+
+                                // copy current realm to backup file
+                                mRealm.writeCopyTo(exportRealmFile);
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(Object o) {
+
+                        }
+                    });
+                } else {
+                    File exportRealmFile = null;
+
+                    File exportRealmPATH = Environment.getExternalStorageDirectory();
+
+
+                    try {
+                        // create a backup file
+                        exportRealmFile = new File(exportRealmPATH, REALM_DB_NAME);
+
+                        // if backup file already exists, delete it
+                        exportRealmFile.delete();
+
+                        // copy current realm to backup file
+                        mRealm.writeCopyTo(exportRealmFile);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        });
+
+
+    }
+
 
     public void getMessagesAsChatModel(final String opponentId, final String userId, final GeneralCallback<List<ChatModel>> listGeneralCallback) {
         final List<ChatModel> chatModels = new LinkedList<>();

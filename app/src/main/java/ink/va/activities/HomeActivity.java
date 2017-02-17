@@ -185,6 +185,9 @@ public class HomeActivity extends BaseActivity
         checkNotification(getIntent());
 
         PingHelper.get().startPinging(mSharedHelper.getUserId());
+
+        RealmHelper.getInstance().restore(this);
+
         User.get().setUserName(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
         User.get().setUserId(mSharedHelper.getUserId());
         mFab = (FloatingActionMenu) findViewById(R.id.fab);

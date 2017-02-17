@@ -256,7 +256,7 @@ You can do it by clicking on the \'Join wait room \' button which will redirect 
     <string name="packs_title">Packs</string>
     <string name="trade_title">Trade</string>
     <string name="shopTitle">Shop</string>
-    <string name="coinsText">%1$s coins</string>
+    <string name="coinsText">%1$d coins</string>
     <string name="buyCoins">Buy Coins</string>
     <string name="coinsMenu">Coins</string>
     <string name="caution">CAUTION!!!</string>
