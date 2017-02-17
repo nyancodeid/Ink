@@ -8,14 +8,11 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -667,10 +664,13 @@ public class RealmHelper {
         });
     }
 
-    public void restore() {
+    public void restore(Context context) {
+        if (!PermissionsChecker.isStoragePermissionGranted(context)) {
+            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+            return;
+        }
         String restoreFilePath = Environment.getExternalStorageDirectory() + "/" + REALM_DB_NAME;
         copyBundledRealmFile(restoreFilePath);
-        Log.d("fasfasfsa", "Data restore is done");
     }
 
     private String copyBundledRealmFile(String oldFilePath) {
@@ -696,44 +696,6 @@ public class RealmHelper {
             e.printStackTrace();
         }
         return null;
-    }
-
-
-    private void moveFile(String inputPath, String inputFile, String outputPath) {
-
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-
-            //create output directory if it doesn't exist
-            File dir = new File(outputPath);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-
-
-            in = new FileInputStream(inputPath + "/" + inputFile);
-            out = new FileOutputStream(mRealm.getPath());
-
-            byte[] buffer = new byte[1024];
-            int read;
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
-            }
-            in.close();
-            in = null;
-
-            // write the output file
-            out.flush();
-            out.close();
-            out = null;
-
-        } catch (FileNotFoundException fnfe1) {
-            Log.e("tag", fnfe1.getMessage());
-        } catch (Exception e) {
-            Log.e("tag", e.getMessage());
-        }
-        Log.d("tag", "moveFile: file moved to" + " " + mRealm.getPath());
     }
 
 
