@@ -121,7 +121,6 @@ public class Login extends BaseActivity implements View.OnClickListener {
         progressDialog.setIndeterminateDrawable(ContextCompat.getDrawable(this, R.drawable.progress_dialog_circle));
         progressDialog.setMessage(getString(R.string.loggingPleasWait));
         if (!checkPlayServices()) {
-
         }
 
         if (mSharedHelper.isLoggedIn()) {

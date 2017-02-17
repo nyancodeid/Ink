@@ -668,30 +668,37 @@ public class RealmHelper {
     }
 
     public void restore(final Context context) {
-        final String currentRealmFile = Environment.getExternalStorageDirectory().getAbsolutePath();
-        final File realmPath = context.getExternalFilesDir(null);
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mRealm.isClosed()) {
-                    openRealm(new GeneralCallback() {
-                        @Override
-                        public void onSuccess(Object o) {
-                            clearDatabase(context);
-                            moveFile(currentRealmFile, REALM_DB_NAME, realmPath.getAbsolutePath());
-                        }
+        //Restore
+        String restoreFilePath = Environment.getExternalStorageDirectory() + "/" + REALM_DB_NAME;
 
-                        @Override
-                        public void onFailure(Object o) {
 
-                        }
-                    });
-                } else {
-                    clearDatabase(context);
-                    moveFile(currentRealmFile, REALM_DB_NAME, realmPath.getAbsolutePath());
-                }
+        copyBundledRealmFile(context, restoreFilePath, REALM_DB_NAME);
+        Log.d("fasfasfsa", "Data restore is done");
+    }
+
+    private String copyBundledRealmFile(Context context, String oldFilePath, String outFileName) {
+        try {
+            File file = new File(mRealm.getPath());
+
+            FileOutputStream outputStream = new FileOutputStream(file);
+
+            FileInputStream inputStream = new FileInputStream(new File(oldFilePath));
+
+            byte[] buf = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buf)) > 0) {
+                outputStream.write(buf, 0, bytesRead);
             }
-        });
+            outputStream.close();
+            return file.getAbsolutePath();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
@@ -709,7 +716,7 @@ public class RealmHelper {
 
 
             in = new FileInputStream(inputPath + "/" + inputFile);
-            out = new FileOutputStream(outputPath + "/" + inputFile);
+            out = new FileOutputStream(mRealm.getPath());
 
             byte[] buffer = new byte[1024];
             int read;
@@ -729,7 +736,7 @@ public class RealmHelper {
         } catch (Exception e) {
             Log.e("tag", e.getMessage());
         }
-        Log.d("tag", "moveFile: file moved to" + " " + outputPath + inputFile);
+        Log.d("tag", "moveFile: file moved to" + " " + mRealm.getPath());
     }
 
 
