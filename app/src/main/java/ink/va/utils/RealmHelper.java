@@ -667,16 +667,13 @@ public class RealmHelper {
         });
     }
 
-    public void restore(final Context context) {
-        //Restore
+    public void restore() {
         String restoreFilePath = Environment.getExternalStorageDirectory() + "/" + REALM_DB_NAME;
-
-
-        copyBundledRealmFile(context, restoreFilePath, REALM_DB_NAME);
+        copyBundledRealmFile(restoreFilePath);
         Log.d("fasfasfsa", "Data restore is done");
     }
 
-    private String copyBundledRealmFile(Context context, String oldFilePath, String outFileName) {
+    private String copyBundledRealmFile(String oldFilePath) {
         try {
             File file = new File(mRealm.getPath());
 
