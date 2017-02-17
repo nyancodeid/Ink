@@ -15,6 +15,52 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context="ink.va.activities.Settings">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/settings_icon" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/linesColor"></View>
+
+        <RelativeLayout
+            android:id="@+id/backUpServiceWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:minHeight="50dp">
+
+            <TextView
+                android:id="@+id/backUpServiceTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/enterBackUp"
+                android:fontFamily="@string/condensedFont"
+                android:text="@string/backUpRestoreServices" />
+
+            <Button
+                android:id="@+id/enterBackUp"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@color/colorPrimary"
+                android:text="@string/enter"
+                android:textAllCaps="false"
+                android:textColor="@color/vk_white" />
+        </RelativeLayout>
+
+
         <RelativeLayout
             android:id="@+id/groupNotificationSwitchWrapper"
             android:layout_width="match_parent"

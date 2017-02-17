@@ -29,7 +29,7 @@ import static ink.va.utils.Constants.REALM_DB_NAME;
  * Created by PC-Comp on 2/17/2017.
  */
 
-public class BackupManager {
+public class BackUpManager {
 
     private Context context;
     private SharedHelper mSharedHelper;
@@ -38,7 +38,7 @@ public class BackupManager {
     private BackUpManagerCallback onBackUpManagerCallback;
     private FirebaseStorage storage;
 
-    public BackupManager(Context context) {
+    public BackUpManager(Context context) {
         this.context = context;
         mSharedHelper = new SharedHelper(context);
         storage = FirebaseStorage.getInstance();

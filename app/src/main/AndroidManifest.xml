@@ -315,7 +315,11 @@
         <activity android:name="ink.va.activities.BlackJackHome" />
         <activity android:name="ink.va.activities.Mafia" />
 
-        <service android:name="ink.va.service.MessageService"></service>
+        <service android:name="ink.va.service.MessageService" />
+
+        <activity
+            android:name="ink.va.activities.BackUpActivity"
+            android:label="@string/backUpRestoreServices"></activity>
     </application>
 
 </manifest>

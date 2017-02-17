@@ -840,4 +840,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="realmFileError">Could not create the file from messages</string>
     <string name="realmRestoreError">Could not restore the messages</string>
     <string name="noRestoreAvailable">You don\'t have any messages saved on the server</string>
+    <string name="backUpRestoreServices">Backup And Restore Services</string>
+    <string name="enter">Enter</string>
 </resources>

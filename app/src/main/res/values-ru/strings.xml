@@ -846,4 +846,6 @@
     <string name="realmFileError">Не удалось создать файл от писем</string>
     <string name="realmRestoreError">Не удалось восстановить письма</string>
     <string name="noRestoreAvailable">У вас нет сохраненных писем на сервере</string>
+    <string name="enter">Войти</string>
+    <string name="backUpRestoreServices">Сервисы восстановления и сохранения</string>
 </resources>

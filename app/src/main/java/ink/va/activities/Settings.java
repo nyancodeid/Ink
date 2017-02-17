@@ -1,5 +1,6 @@
 package ink.va.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
@@ -27,6 +28,7 @@ public class Settings extends BaseActivity {
 
     @BindView(R.id.snowSwitch)
     Switch snowSwitch;
+
 
     private SharedHelper sharedHelper;
 
@@ -102,5 +104,15 @@ public class Settings extends BaseActivity {
             snowSwitch.setChecked(true);
             sharedHelper.putShowSnow(true);
         }
+    }
+
+    @OnClick(R.id.backUpServiceWrapper)
+    public void backUpClicked() {
+        startActivity(new Intent(getApplicationContext(), BackUpActivity.class));
+    }
+
+    @OnClick(R.id.enterBackUp)
+    public void enterClicked() {
+        backUpClicked();
     }
 }
