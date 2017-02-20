@@ -48,7 +48,10 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
             sharedHelper = new SharedHelper(context);
         }
         this.onItemClickListener = onItemClickListener;
-        messagesUserName.setText(userMessagesModel.getFirstName() + " " + userMessagesModel.getLastName());
+        messagesUserName.setText(userMessagesModel.getFirstName() != null ?
+                userMessagesModel.getFirstName().isEmpty() ? context.getString(R.string.NA) :
+                        userMessagesModel.getFirstName() : context.getString(R.string.NA)
+                + " " + userMessagesModel.getLastName() != null ? userMessagesModel.getLastName() : context.getString(R.string.NA));
         this.userMessagesModel = userMessagesModel;
 
         String message = userMessagesModel.getMessage();
@@ -63,9 +66,15 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
 
         } else {
             if (userMessagesModel.getMessage().isEmpty()) {
-                finalMessage = userMessagesModel.getFirstName() + " " + userMessagesModel.getLastName() + " : " + context.getString(R.string.sentSticker);
+                finalMessage = userMessagesModel.getFirstName() != null ?
+                        userMessagesModel.getFirstName().isEmpty() ? context.getString(R.string.NA) :
+                                userMessagesModel.getFirstName() : context.getString(R.string.NA)
+                        + " " + userMessagesModel.getLastName() != null ? userMessagesModel.getLastName() : context.getString(R.string.NA) + " : " + context.getString(R.string.sentSticker);
             } else {
-                finalMessage = userMessagesModel.getFirstName() + " " + userMessagesModel.getLastName() + " : " + message.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, "");
+                finalMessage = userMessagesModel.getFirstName() != null ?
+                        userMessagesModel.getFirstName().isEmpty() ? context.getString(R.string.NA) :
+                                userMessagesModel.getFirstName() : context.getString(R.string.NA)
+                        + " " + userMessagesModel.getLastName() != null ? userMessagesModel.getLastName() : context.getString(R.string.NA) + " : " + message.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, "");
             }
         }
 

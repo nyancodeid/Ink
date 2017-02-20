@@ -4,6 +4,7 @@ import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -21,26 +22,17 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.ink.va.R;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.adapters.MessagesAdapter;
+import ink.va.callbacks.GeneralCallback;
 import ink.va.decorators.DividerItemDecoration;
 import ink.va.interfaces.MyMessagesItemClickListener;
-import ink.va.models.MyMessagesModel;
 import ink.va.models.UserMessagesModel;
 import ink.va.utils.RealmHelper;
-import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, MyMessagesItemClickListener {
 
@@ -97,88 +89,57 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 mMessagesSwipe.setRefreshing(true);
             }
         });
+        getUserMessages();
     }
 
     private void makeDeleteRequest(final String opponentId) {
-        Call<ResponseBody> deleteRequest = Retrofit.getInstance().getInkService().requestDelete(mSharedHelper.getUserId(), opponentId);
-        deleteRequest.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    makeDeleteRequest(opponentId);
-                    return;
-                }
-                if (response.body() == null) {
-                    makeDeleteRequest(opponentId);
-                }
-
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (success) {
-                        RealmHelper.getInstance().removeMessage(opponentId, mSharedHelper.getUserId());
-                        getUserMessages();
-                    } else {
-                        hideSnack(false);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                makeDeleteRequest(opponentId);
-            }
-        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getUserMessages();
     }
 
     private void getUserMessages() {
-
-        Call<MyMessagesModel> myMessagesCall = Retrofit.getInstance()
-                .getInkService().getMyMessages(mSharedHelper.getUserId());
-        myMessagesCall.enqueue(new Callback<MyMessagesModel>() {
+        AsyncTask.execute(new Runnable() {
             @Override
-            public void onResponse(Call<MyMessagesModel> call, Response<MyMessagesModel> response) {
+            public void run() {
+                RealmHelper.getInstance().getUserMessages(new GeneralCallback<List<UserMessagesModel>>() {
+                    @Override
+                    public void onSuccess(final List<UserMessagesModel> userMessagesModels) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mMessagesSwipe.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mMessagesSwipe.setRefreshing(false);
+                                    }
+                                });
+                                if (userMessagesModels.isEmpty()) {
+                                    mNoMessageLayout.setVisibility(View.VISIBLE);
+                                } else {
+                                    messagesAdapter.setUserMessagesModels(userMessagesModels);
+                                    mNoMessageLayout.setVisibility(View.GONE);
+                                }
+                            }
+                        });
 
-                boolean success = response.body().isSuccess();
-
-                if (success) {
-                    hideSnack(true);
-                    if (mMessagesSwipe != null && mMessagesSwipe.isRefreshing()) {
-                        mMessagesSwipe.setRefreshing(false);
                     }
 
-                    List<UserMessagesModel> userMessagesModels = response.body().getUserMessagesModels();
-                    messagesAdapter.clear();
-                    if (userMessagesModels.isEmpty()) {
-                        mNoMessageLayout.setVisibility(View.VISIBLE);
-                    } else {
-                        messagesAdapter.setUserMessagesModels(userMessagesModels);
-                        mNoMessageLayout.setVisibility(View.GONE);
+                    @Override
+                    public void onFailure(List<UserMessagesModel> userMessagesModels) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(Messages.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
-
-                } else {
-                    Toast.makeText(Messages.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-                }
-
-
-            }
-
-            @Override
-            public void onFailure(Call<MyMessagesModel> call, Throwable t) {
-                Toast.makeText(Messages.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                });
             }
         });
+
     }
 
 

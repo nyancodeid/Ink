@@ -614,6 +614,7 @@ public class HomeActivity extends BaseActivity
                 builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        stopService(new Intent(HomeActivity.this, MessageService.class));
                         logoutUser();
                     }
                 });

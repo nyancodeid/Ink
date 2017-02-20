@@ -859,4 +859,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="choseBackUpOption">Choose any option before proceeding</string>
     <string name="restoreWarning">All of you\'r local data will be erased with the remote one,proceed?</string>
     <string name="backUpWarning">You\'r remote data will be overwritten,proceed?</string>
+    <string name="NA">N/A</string>
 </resources>
