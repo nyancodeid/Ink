@@ -90,6 +90,7 @@ public class BackUpActivity extends BaseActivity implements BackUpManagerCallbac
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
             return;
         }
+        progress.setVisibility(View.VISIBLE);
         if (restoreChecked) {
             backUpManager.restoreMessages();
         } else {
@@ -119,58 +120,91 @@ public class BackUpActivity extends BaseActivity implements BackUpManagerCallbac
 
     @Override
     public void onBackUpFinished() {
-        changeButtonState(true);
-        progressHintTV.setTextColor(ContextCompat.getColor(this, R.color.darkGreen));
-        progressHintTV.setText(getString(R.string.backUpMade));
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                changeButtonState(true);
+                progressHintTV.setTextColor(ContextCompat.getColor(BackUpActivity.this, R.color.darkGreen));
+                progressHintTV.setText(getString(R.string.backUpMade));
+            }
+        });
+
     }
 
     @Override
-    public void onBackUpError(String friendlyErrorMessage) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            progress.setProgress(0, true);
-        } else {
-            progress.setProgress(0);
-        }
-        changeButtonState(true);
-        progressHintTV.setTextColor(ContextCompat.getColor(this, R.color.red));
-        progressHintTV.setText(getString(R.string.backUpError, friendlyErrorMessage));
+    public void onBackUpError(final String friendlyErrorMessage) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    progress.setProgress(0, true);
+                } else {
+                    progress.setProgress(0);
+                }
+                changeButtonState(true);
+                progressHintTV.setTextColor(ContextCompat.getColor(BackUpActivity.this, R.color.red));
+                progressHintTV.setText(getString(R.string.backUpError, friendlyErrorMessage));
+            }
+        });
+
     }
 
     @Override
     public void onRestoreFinished() {
-        changeButtonState(true);
-        progressHintTV.setTextColor(ContextCompat.getColor(this, R.color.darkGreen));
-        progressHintTV.setText(getString(R.string.restoreMade));
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                changeButtonState(true);
+                progressHintTV.setTextColor(ContextCompat.getColor(BackUpActivity.this, R.color.darkGreen));
+                progressHintTV.setText(getString(R.string.restoreMade));
+            }
+        });
+
     }
 
     @Override
-    public void onRestoreError(String friendlyErrorMessage) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            progress.setProgress(0, true);
-        } else {
-            progress.setProgress(0);
-        }
-        changeButtonState(true);
-        progressHintTV.setTextColor(ContextCompat.getColor(this, R.color.red));
-        progressHintTV.setText(getString(R.string.restoreError, friendlyErrorMessage));
+    public void onRestoreError(final String friendlyErrorMessage) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    progress.setProgress(0, true);
+                } else {
+                    progress.setProgress(0);
+                }
+                changeButtonState(true);
+                progressHintTV.setTextColor(ContextCompat.getColor(BackUpActivity.this, R.color.red));
+                progressHintTV.setText(getString(R.string.restoreError, friendlyErrorMessage));
+            }
+        });
     }
 
     @Override
-    public void onBackUpProgress(double percentCompleted) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            progress.setProgress((int) percentCompleted, true);
-        } else {
-            progress.setProgress((int) percentCompleted);
-        }
+    public void onBackUpProgress(final double percentCompleted) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    progress.setProgress((int) percentCompleted, true);
+                } else {
+                    progress.setProgress((int) percentCompleted);
+                }
+            }
+        });
     }
 
     @Override
-    public void onRestoreProgress(double percentCompleted) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            progress.setProgress((int) percentCompleted, true);
-        } else {
-            progress.setProgress((int) percentCompleted);
-        }
+    public void onRestoreProgress(final double percentCompleted) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    progress.setProgress((int) percentCompleted, true);
+                } else {
+                    progress.setProgress((int) percentCompleted);
+                }
+            }
+        });
     }
 
     @Override
