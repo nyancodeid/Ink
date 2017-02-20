@@ -26,7 +26,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -104,7 +103,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private ChatAdapter chatAdapter;
     private RealmHelper realmHelper;
 
-    private List<ChatModel> chatModels;
 
     private boolean socketConnected;
     private String lastChosenStickerUrl;
@@ -134,7 +132,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
         chatGSON = new Gson();
 
-        chatModels = new LinkedList<>();
         chatAdapter = new ChatAdapter();
         chatAdapter.setOnItemClickListener(this);
 
@@ -248,7 +245,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 messageJson.put("firstName", opponentFirstName);
                 messageJson.put("opponentImage", opponentImageUrl);
                 messageJson.put("lastName", opponentLastName);
-                messageJson.put("isSocialAccount", sharedHelper.isSocialAccount());
+                messageJson.put("isSocialAccount", isSocialAccount);
                 messageJson.put("message", message);
                 messageJson.put("date", Time.getCurrentTime());
                 messageJson.put("stickerChosen", isStickerChosen);
@@ -605,7 +602,30 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
     @Override
     public void onItemLongClick(int position) {
+        final ChatModel chatModel = chatAdapter.getChatModelList().get(position);
+        String messageId = chatModel.getMessageId();
+        RealmHelper.getInstance().deleteSingleMessage(messageId, new GeneralCallback() {
+            @Override
+            public void onSuccess(Object o) {
+                chatAdapter.removeItem(chatModel);
+                Snackbar.make(mRecyclerView, getString(R.string.messageDeleted), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
+                    }
+                }).show();
+            }
+
+            @Override
+            public void onFailure(Object o) {
+                Snackbar.make(mRecyclerView, getString(R.string.messagedeleteError), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                }).show();
+            }
+        });
     }
 
     @Override

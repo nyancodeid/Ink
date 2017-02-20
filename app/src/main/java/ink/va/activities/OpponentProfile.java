@@ -139,12 +139,15 @@ public class OpponentProfile extends BaseActivity {
                 actionBar.setTitle(mFirstName + " " + mLastName);
             }
         }
+        getSingleUser();
+    }
+
+    private void setUpFriendView() {
         if (!isFriend) {
             sendMessage.setImageResource(R.drawable.request_friend_icon);
             sendMessage.setLabelText(getString(R.string.sendFriendRequest));
             removeFriend.setVisibility(View.GONE);
         }
-        getSingleUser();
     }
 
     private void enableButton() {
@@ -181,6 +184,16 @@ public class OpponentProfile extends BaseActivity {
     @OnClick(R.id.sendMessage)
     public void WriteMessage() {
         mProfileFab.close(true);
+        if (!isDataLoaded) {
+            Snackbar.make(mTriangleView, getString(R.string.waitTillLoad), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            }).show();
+            mProfileFab.close(true);
+            return;
+        }
         if (isFriend) {
             Intent intent = new Intent(getApplicationContext(), Chat.class);
             intent.putExtra("firstName", mFirstName);
@@ -370,6 +383,8 @@ public class OpponentProfile extends BaseActivity {
                             mOpponentImage = jsonObject.optString("image_link");
                             String skype = jsonObject.optString("skype");
                             String address = jsonObject.optString("address");
+                            isFriend = jsonObject.optBoolean("isFriend");
+                            setUpFriendView();
                             String relationship = jsonObject.optString("relationship");
                             String status = jsonObject.optString("status");
                             String facebookName = jsonObject.optString("facebook_name");

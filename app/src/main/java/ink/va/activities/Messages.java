@@ -93,8 +93,23 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
         getUserMessages();
     }
 
-    private void makeDeleteRequest(final String opponentId) {
+    private void deleteMessage(final String opponentId) {
+        RealmHelper.getInstance().deleteMessageRow(sharedHelper.getUserId(), opponentId, new GeneralCallback() {
+            @Override
+            public void onSuccess(Object o) {
+                getUserMessages();
+            }
 
+            @Override
+            public void onFailure(Object o) {
+                Snackbar.make(mRecyclerView, getString(R.string.messagedeleteError), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                }).show();
+            }
+        });
     }
 
     @Override
@@ -255,7 +270,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         showSnack();
-                        makeDeleteRequest(finalOpponentId);
+                        deleteMessage(finalOpponentId);
                     }
                 });
                 yesNoDialog.show();

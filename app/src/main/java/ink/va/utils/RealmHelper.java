@@ -371,8 +371,8 @@ public class RealmHelper {
                                         messageModel.setDate(chatModel.getDate());
                                         messageModel.setHasGif(chatModel.isStickerChosen());
                                         messageModel.setGifUrl(chatModel.getStickerUrl());
-                                        messageModel.setDeleteUserId(chatModel.getUserId());
-                                        messageModel.setDeleteOpponentId(chatModel.getOpponentId());
+                                        messageModel.setDeleteUserId("0");
+                                        messageModel.setDeleteOpponentId("0");
                                     }
                                     if (generalCallback != null) {
                                         generalCallback.onSuccess(true);
@@ -413,8 +413,8 @@ public class RealmHelper {
                                 messageModel.setHasGif(chatModel.isStickerChosen());
                                 messageModel.setSocialAccount(chatModel.isSocialAccount());
                                 messageModel.setGifUrl(chatModel.getStickerUrl());
-                                messageModel.setDeleteUserId(chatModel.getUserId());
-                                messageModel.setDeleteOpponentId(chatModel.getOpponentId());
+                                messageModel.setDeleteUserId("0");
+                                messageModel.setDeleteOpponentId("0");
                             }
                             if (generalCallback != null) {
                                 generalCallback.onSuccess(false);
@@ -428,6 +428,86 @@ public class RealmHelper {
         });
     }
 
+
+    public void deleteSingleMessage(final String messageId, final GeneralCallback deleteCallback) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mRealm.isClosed()) {
+                    openRealm(new GeneralCallback() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            mRealm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    RealmResults<MessageModel> messageModels = realm.where(MessageModel.class).equalTo("messageId", messageId)
+                                            .findAll();
+                                    messageModels.deleteAllFromRealm();
+                                    deleteCallback.onSuccess(null);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(Object o) {
+                            deleteCallback.onFailure(null);
+                        }
+                    });
+                } else {
+                    mRealm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            RealmResults<MessageModel> messageModels = realm.where(MessageModel.class).equalTo("messageId", messageId)
+                                    .findAll();
+                            messageModels.deleteAllFromRealm();
+                            deleteCallback.onSuccess(null);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public void deleteMessageRow(final String currentUserId, final String opponentId,
+                                 final GeneralCallback deleteCallback) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mRealm.isClosed()) {
+                    openRealm(new GeneralCallback() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            mRealm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    RealmResults<MessageModel> messageModels = realm.where(MessageModel.class).equalTo("userId", currentUserId).
+                                            equalTo("opponentId", opponentId).or().equalTo("opponentId", currentUserId).equalTo("userId", opponentId).findAll();
+                                    messageModels.deleteAllFromRealm();
+                                    deleteCallback.onSuccess(null);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(Object o) {
+                            deleteCallback.onFailure(null);
+                        }
+                    });
+                } else {
+                    mRealm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            RealmResults<MessageModel> messageModels = realm.where(MessageModel.class).equalTo("userId", currentUserId).
+                                    equalTo("opponentId", opponentId).or().equalTo("opponentId", currentUserId).equalTo("userId", opponentId).findAll();
+                            messageModels.deleteAllFromRealm();
+                            deleteCallback.onSuccess(null);
+                        }
+                    });
+                }
+            }
+        });
+
+    }
 
     public void insertMessage(final List<MessageModel> messageModels) {
         handler.post(new Runnable() {
