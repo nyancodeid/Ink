@@ -48,6 +48,7 @@ public class BackUpActivity extends BaseActivity implements BackUpManagerCallbac
                 if (isChecked) {
                     anythingSelected = true;
                     restoreChecked = true;
+                    backUpMessages.setChecked(false);
                 }
             }
         });
@@ -55,6 +56,7 @@ public class BackUpActivity extends BaseActivity implements BackUpManagerCallbac
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    restoreMessages.setChecked(false);
                     anythingSelected = true;
                     restoreChecked = false;
                 }
