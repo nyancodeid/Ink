@@ -851,4 +851,9 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="backUpMessages">Backup Messages</string>
     <string name="restoreMessages">Restore Messages</string>
     <string name="backupCaution">Do not turn off the phone or quit the application during the process</string>
+    <string name="restoreMade">Restore was successfully made</string>
+    <string name="backUpMade">Backup was successfully made</string>
+    <string name="restoreError">Error while trying to restore. Please contact support</string>
+    <string name="backUpError">Error while trying to backup. Please contact support</string>
+    <string name="choseBackUpOption">Choose any option before proceeding</string>
 </resources>

@@ -848,4 +848,17 @@
     <string name="noRestoreAvailable">У вас нет сохраненных писем на сервере</string>
     <string name="enter">Войти</string>
     <string name="backUpRestoreServices">Сервисы восстановления и сохранения</string>
+
+    <string name="backUpHint">Сервизы сохранения дают вам возможность
+        сохронять ваши соомшения и воостанавливать в любое время, и по этому
+        вы никогда не потеряйте ни одного сообшения.Имейте ввиду что ни одно сообщение не соохраняються на
+        нашем сервере и ни одно сообщение не может быть прочтено так как в процессе сохранения все сообщения архивируются и доступны только вам.</string>
+    <string name="backUpMessages">Сохранить сообщения</string>
+    <string name="restoreMessages">Восстановить сообщения</string>
+    <string name="backupCaution">Не выключайте телефон или не выходите из за приложения во время процесса</string>
+    <string name="restoreMade">Восстановление успешно сделано</string>
+    <string name="backUpMade">Сохранение успешно сделано</string>
+    <string name="restoreError">Ошибка при восстановлении. Пожалуйста свяжитесь со службой поддержки</string>
+    <string name="backUpError">Ошибка при сохранении. Пожалуйста свяжитесь со службой поддержки</string>
+    <string name="choseBackUpOption">Выберите одну из опций прежде чем продолжить</string>
 </resources>

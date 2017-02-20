@@ -2,11 +2,14 @@ package ink.va.activities;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ink.va.R;
 
@@ -61,7 +64,20 @@ public class BackUpActivity extends BaseActivity implements BackUpManagerCallbac
 
     @OnClick(R.id.proceedBackupRestore)
     public void proceedClicked() {
+        if (!anythingSelected) {
+            Snackbar.make(progress, getString(R.string.choseBackUpOption), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
+                }
+            }).show();
+        } else {
+            if (restoreChecked) {
+                Toast.makeText(this, "restore checked", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "back up checked", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
