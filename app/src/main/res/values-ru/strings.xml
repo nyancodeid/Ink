@@ -562,7 +562,7 @@
     <string name="logoutWaring">Внимание!Если вы выйдете, то ваши настройки по данным будут удалены.\nЕсли вы сохранили данные на Облако, Вы сможете восстановить их в любое время.</string>
     <string name="optionNotAvailable">Эта версия не предусмотрена для версии ОС вашего Андроид(нужно устройство как минимум Lollipop)</string>
     <string name="saveToCloud">Сохранить на Облако</string>
-    <string name="restoreFromCloud">Удалить из Облака</string>
+    <string name="restoreFromCloud">Восстановить из Облака</string>
     <string name="resetToDefault">Заводские настройки</string>
     <string name="reseted">Настройки были сброшены</string>
     <string name="pickOwnChatTextColor">Выюерите цвет текста собственного чата</string>
@@ -573,7 +573,7 @@
     <string name="failedToRestore">Не получилось восстановить ваши данные из Облака.Пожалуйста обратитесь в службу поддержки</string>
     <string name="removeFromCloud">Удалить из Облака</string>
     <string name="removeFromCloudWarning">Ваши данные по настройкам будут удалены из вашего Облака без возврата,однако,если у вас есть какие то локальные настройки,они не будут удалены.
-        \ndo you want to proceed?</string>
+        \nПродолжить?</string>
     <string name="couldNotRemove">Не получилось удалить из Облака.Пожалуйста обратитесь в службу поддержки</string>
     <string name="overwriteWarning">Все ваши данные с сервера будут перезаписаны.Продолжить?</string>
     <string name="localOverwritingWarning">Все ваши локальные данные будут перезаписаны.Продолжить?</string>
