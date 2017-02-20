@@ -842,4 +842,13 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="noRestoreAvailable">You don\'t have any messages saved on the server</string>
     <string name="backUpRestoreServices">Backup And Restore Services</string>
     <string name="enter">Enter</string>
+    <string name="backUpHint">The backup service
+        let you save you\'r messages remotely so you can access
+        them any time and never loss any messages. Note that no messages are
+        saved on our server during you\'r chat experience and neither you\'r
+        messages saved here can be read from our end as all of the messages are encrypted strongly.
+     \n\nIt is strongly recommended to backup you'r messages regularly, as we are not storing any of you'r messages on the server.</string>
+    <string name="backUpMessages">Backup Messages</string>
+    <string name="restoreMessages">Restore Messages</string>
+    <string name="backupCaution">Do not turn off the phone or quit the application during the process</string>
 </resources>

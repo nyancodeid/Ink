@@ -3,12 +3,16 @@ package ink.va.activities;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.TextView;
 
 import com.ink.va.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ink.va.interfaces.BackUpManagerCallback;
 import ink.va.managers.BackUpManager;
 
@@ -19,6 +23,14 @@ public class BackUpActivity extends BaseActivity implements BackUpManagerCallbac
 
     @BindView(R.id.progress)
     ProgressBar progress;
+    @BindView(R.id.backUpMessages)
+    RadioButton backUpMessages;
+    @BindView(R.id.restoreMessages)
+    RadioButton restoreMessages;
+    @BindView(R.id.progressHintTV)
+    TextView progressHintTV;
+    private boolean anythingSelected;
+    private boolean restoreChecked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +39,29 @@ public class BackUpActivity extends BaseActivity implements BackUpManagerCallbac
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         backUpManager = new BackUpManager(this);
+        restoreMessages.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    anythingSelected = true;
+                    restoreChecked = true;
+                }
+            }
+        });
+        backUpMessages.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    anythingSelected = true;
+                    restoreChecked = false;
+                }
+            }
+        });
+    }
+
+    @OnClick(R.id.proceedBackupRestore)
+    public void proceedClicked() {
+
     }
 
     @Override

@@ -10,6 +10,29 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ink.va.activities.BackUpActivity">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/progressHintTV"
+        android:layout_alignParentTop="true"
+        android:fillViewport="true">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/backUpHint" />
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/progressHintTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/progress"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:text="@string/backupCaution"
+        android:textColor="@color/red" />
+
     <ProgressBar
         android:id="@+id/progress"
         style="?android:attr/progressBarStyleHorizontal"
@@ -18,5 +41,49 @@
         android:layout_centerInParent="true"
         android:max="100"
         android:progress="0" />
+
+    <RadioButton
+        android:id="@+id/backUpMessages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/progress"
+        android:layout_marginTop="25dp" />
+
+    <RadioButton
+        android:id="@+id/restoreMessages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/backUpMessages"
+        android:layout_marginTop="25dp" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/backUpMessages"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="9dp"
+        android:layout_toRightOf="@+id/backUpMessages"
+        android:text="@string/backUpMessages" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/restoreMessages"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="9dp"
+        android:layout_toRightOf="@+id/restoreMessages"
+        android:text="@string/restoreMessages" />
+
+    <Button
+        android:id="@+id/proceedBackupRestore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@color/colorPrimary"
+        android:text="@string/proceed"
+        android:textAllCaps="false"
+        android:textColor="@color/vk_white" />
 
 </RelativeLayout>
