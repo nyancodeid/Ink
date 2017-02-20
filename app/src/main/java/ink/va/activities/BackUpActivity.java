@@ -104,11 +104,11 @@ public class BackUpActivity extends BaseActivity implements BackUpManagerCallbac
 
     private void changeButtonState(boolean active) {
         if (active) {
-            proceedBackupRestore.setEnabled(false);
-            proceedBackupRestore.setAlpha((float) 0.5);
-        } else {
             proceedBackupRestore.setEnabled(true);
             proceedBackupRestore.setAlpha(1);
+        } else {
+            proceedBackupRestore.setEnabled(false);
+            proceedBackupRestore.setAlpha((float) 0.5);
         }
     }
 
