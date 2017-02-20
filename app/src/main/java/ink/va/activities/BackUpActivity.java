@@ -2,14 +2,17 @@ package ink.va.activities;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ink.va.R;
 
@@ -18,6 +21,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.interfaces.BackUpManagerCallback;
 import ink.va.managers.BackUpManager;
+import ink.va.utils.PermissionsChecker;
 
 public class BackUpActivity extends BaseActivity implements BackUpManagerCallback {
 
@@ -32,6 +36,8 @@ public class BackUpActivity extends BaseActivity implements BackUpManagerCallbac
     RadioButton restoreMessages;
     @BindView(R.id.progressHintTV)
     TextView progressHintTV;
+    @BindView(R.id.proceedBackupRestore)
+    Button proceedBackupRestore;
     private boolean anythingSelected;
     private boolean restoreChecked;
 
@@ -42,6 +48,7 @@ public class BackUpActivity extends BaseActivity implements BackUpManagerCallbac
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         backUpManager = new BackUpManager(this);
+        backUpManager.setOnBackUpManagerCallback(this);
         restoreMessages.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -74,11 +81,33 @@ public class BackUpActivity extends BaseActivity implements BackUpManagerCallbac
                 }
             }).show();
         } else {
-            if (restoreChecked) {
-                Toast.makeText(this, "restore checked", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "back up checked", Toast.LENGTH_SHORT).show();
-            }
+            proceedBackUp();
+        }
+    }
+
+    private void proceedBackUp() {
+        if (!PermissionsChecker.isStoragePermissionGranted(this)) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+            return;
+        }
+        if (restoreChecked) {
+            backUpManager.restoreMessages();
+        } else {
+            backUpManager.backUpMessages();
+        }
+        changeButtonState(false);
+        progressHintTV.setVisibility(View.VISIBLE);
+        progressHintTV.setTextColor(ContextCompat.getColor(this, R.color.red));
+        progressHintTV.setText(getString(R.string.backupCaution));
+    }
+
+    private void changeButtonState(boolean active) {
+        if (active) {
+            proceedBackupRestore.setEnabled(false);
+            proceedBackupRestore.setAlpha((float) 0.5);
+        } else {
+            proceedBackupRestore.setEnabled(true);
+            proceedBackupRestore.setAlpha(1);
         }
     }
 
@@ -90,7 +119,9 @@ public class BackUpActivity extends BaseActivity implements BackUpManagerCallbac
 
     @Override
     public void onBackUpFinished() {
-
+        changeButtonState(true);
+        progressHintTV.setTextColor(ContextCompat.getColor(this, R.color.darkGreen));
+        progressHintTV.setText(getString(R.string.backUpMade));
     }
 
     @Override
@@ -100,11 +131,16 @@ public class BackUpActivity extends BaseActivity implements BackUpManagerCallbac
         } else {
             progress.setProgress(0);
         }
+        changeButtonState(true);
+        progressHintTV.setTextColor(ContextCompat.getColor(this, R.color.red));
+        progressHintTV.setText(getString(R.string.backUpError, friendlyErrorMessage));
     }
 
     @Override
     public void onRestoreFinished() {
-
+        changeButtonState(true);
+        progressHintTV.setTextColor(ContextCompat.getColor(this, R.color.darkGreen));
+        progressHintTV.setText(getString(R.string.restoreMade));
     }
 
     @Override
@@ -114,6 +150,9 @@ public class BackUpActivity extends BaseActivity implements BackUpManagerCallbac
         } else {
             progress.setProgress(0);
         }
+        changeButtonState(true);
+        progressHintTV.setTextColor(ContextCompat.getColor(this, R.color.red));
+        progressHintTV.setText(getString(R.string.restoreError, friendlyErrorMessage));
     }
 
     @Override
@@ -133,4 +172,13 @@ public class BackUpActivity extends BaseActivity implements BackUpManagerCallbac
             progress.setProgress((int) percentCompleted);
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (PermissionsChecker.isStoragePermissionGranted(this)) {
+            proceedBackUp();
+        }
+    }
+
 }
