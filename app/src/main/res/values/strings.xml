@@ -847,7 +847,8 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
         them any time and never loss any messages. Note that no messages are
         saved on our server during you\'r chat experience and neither you\'r
         messages saved here can be read from our end as all of the messages are encrypted strongly.
-     \n\nIt is strongly recommended to backup you\'r messages regularly, as we are not storing any of you\'r messages on the server.</string>
+     \n\nIt is strongly recommended to backup you\'r messages regularly, as we are not storing any of you\'r messages on the server.
+    \n\nNote : you can always access this from settings whenever you wish to backup or restore.</string>
     <string name="backUpMessages">Backup Messages</string>
     <string name="restoreMessages">Restore Messages</string>
     <string name="backupCaution">Do not turn off the phone or quit the application during the process</string>
@@ -856,6 +857,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="restoreError">Error while trying to restore. Please contact support</string>
     <string name="backUpError">Error while trying to backup. Please contact support</string>
     <string name="choseBackUpOption">Choose any option before proceeding</string>
-    <string name="restoreWarning">All of you'r local data will be erased with the remote one,proceed?</string>
-    <string name="backUpWarning">You'r remote data will be overwritten,proceed?</string>
+    <string name="restoreWarning">All of you\'r local data will be erased with the remote one,proceed?</string>
+    <string name="backUpWarning">You\'r remote data will be overwritten,proceed?</string>
 </resources>

@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/progressHintTV"
         android:layout_alignParentTop="true"
+        android:layout_marginBottom="10dp"
         android:fillViewport="true">
 
         <TextView
@@ -33,7 +34,7 @@
         android:gravity="center"
         android:text="@string/backupCaution"
         android:textColor="@color/red"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 
     <ProgressBar
         android:id="@+id/progress"
@@ -42,7 +43,8 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:max="100"
-        android:progress="0" />
+        android:progress="0"
+        android:visibility="invisible" />
 
     <RadioButton
         android:id="@+id/backUpMessages"
