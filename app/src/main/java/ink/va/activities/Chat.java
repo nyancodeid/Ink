@@ -455,8 +455,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                         try {
                             typingJson.put("opponentId", opponentId);
                             typingJson.put("userId", sharedHelper.getUserId());
-                            typingJson.put("opponentFirstName", opponentFirstName);
-                            typingJson.put("opponentLastName", opponentLastName);
+                            typingJson.put("opponentFirstName", sharedHelper.getFirstName());
+                            typingJson.put("opponentLastName", sharedHelper.getLastName());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
