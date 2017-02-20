@@ -357,6 +357,12 @@ public class OpponentProfile extends BaseActivity {
                             String userId = jsonObject.optString("userId");
                             String firstName = jsonObject.optString("first_name");
                             String lastName = jsonObject.optString("last_name");
+
+                            mFirstName = firstName;
+                            mLastName = lastName;
+
+                            mUsername.setText(mFirstName + " " + mLastName);
+
                             String gender = jsonObject.optString("gender");
                             String badgeName = jsonObject.optString("badge_name");
                             String phoneNumber = jsonObject.optString("phone_number");

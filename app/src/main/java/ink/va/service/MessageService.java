@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -77,7 +76,6 @@ public class MessageService extends Service {
                 e.printStackTrace();
             }
             initSocket();
-            Toast.makeText(this, "on start command", Toast.LENGTH_SHORT).show();
         }
 
 

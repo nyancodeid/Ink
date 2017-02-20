@@ -25,6 +25,7 @@ import com.koushikdutta.ion.Ion;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -43,8 +44,13 @@ import ink.va.utils.Constants;
 import ink.va.utils.Keyboard;
 import ink.va.utils.Notification;
 import ink.va.utils.RealmHelper;
+import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import rx.Observer;
 import rx.functions.Func1;
 
@@ -60,6 +66,7 @@ import static ink.va.utils.Constants.STARTING_FOR_RESULT_BUNDLE_KEY;
 public class Chat extends BaseActivity implements RecyclerItemClickListener, SocketListener {
 
     public static final String TAG = Chat.class.getSimpleName();
+    public static final int UPDATE_USER_MESSAGES = 2;
 
     @BindView(R.id.sendChatMessage)
     fab.FloatingActionButton mSendChatMessage;
@@ -123,6 +130,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
+        sharedHelper = new SharedHelper(this);
 
         chatGSON = new Gson();
 
@@ -145,7 +153,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
         mSendChatMessage.setEnabled(false);
 
-        sharedHelper = new SharedHelper(this);
         currentUserId = sharedHelper.getUserId();
 
 
@@ -238,9 +245,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 messageJson.put("messageId", System.currentTimeMillis());
                 messageJson.put("userId", currentUserId);
                 messageJson.put("opponentId", opponentId);
-                messageJson.put("firstName", sharedHelper.getFirstName());
-                messageJson.put("opponentImage", sharedHelper.getImageLink());
-                messageJson.put("lastName", sharedHelper.getLastName());
+                messageJson.put("firstName", opponentFirstName);
+                messageJson.put("opponentImage", opponentImageUrl);
+                messageJson.put("lastName", opponentLastName);
                 messageJson.put("isSocialAccount", sharedHelper.isSocialAccount());
                 messageJson.put("message", message);
                 messageJson.put("date", Time.getCurrentTime());
@@ -357,7 +364,44 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             isSocialAccount = extras != null ? extras.containsKey("isSocialAccount") ? extras.getBoolean("isSocialAccount") : false : false;
         }
 
+        checkOpponentNames();
+    }
 
+    private void checkOpponentNames() {
+        if (opponentFirstName == null || opponentFirstName.equals("null") || opponentFirstName.isEmpty()) {
+            Retrofit.getInstance().getInkService().getSingleUserDetails(opponentId, sharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response == null) {
+                        checkOpponentNames();
+                        return;
+                    }
+                    if (response.body() == null) {
+                        checkOpponentNames();
+                        return;
+                    }
+                    try {
+                        String responseBody = response.body().string();
+                        JSONObject jsonObject = new JSONObject(responseBody);
+                        String firstName = jsonObject.optString("first_name");
+                        String lastName = jsonObject.optString("last_name");
+
+                        opponentFirstName = firstName;
+                        opponentLastName = lastName;
+                        initUser();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
+        }
     }
 
     private void checkNotification(Bundle extras, boolean insertMessage, @Nullable final GeneralCallback insertCallback) {
@@ -683,5 +727,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(UPDATE_USER_MESSAGES);
+        super.onBackPressed();
     }
 }

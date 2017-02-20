@@ -341,6 +341,12 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                feedRefresh.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        feedRefresh.setRefreshing(false);
+                    }
+                });
                 Toast.makeText(parentActivity, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });

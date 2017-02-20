@@ -10,8 +10,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,10 +47,8 @@ public class RealmHelper {
     private Realm mRealm;
     private List<MessageModel> mModelArray = new ArrayList<>();
     private RealmConfiguration mRealmConfiguration;
-    private boolean exists = false;
     private Handler handler;
     private boolean clearDBSuccess;
-    private boolean isMessageExist;
     private HandlerThread mHandlerThread;
 
     public static RealmHelper getInstance() {
@@ -225,7 +226,7 @@ public class RealmHelper {
         });
     }
 
-    public void getUserMessages(final GeneralCallback<List<UserMessagesModel>> messagesLoadedCallback) {
+    public void getUserMessages(final String currentUserId, final GeneralCallback<List<UserMessagesModel>> messagesLoadedCallback) {
         final List<UserMessagesModel> messageModels = new LinkedList<>();
         handler.post(new Runnable() {
             @Override
@@ -238,15 +239,29 @@ public class RealmHelper {
                                 @Override
                                 public void execute(Realm realm) {
                                     RealmResults<MessageModel> messages = realm.where(MessageModel.class).findAll();
-                                    String addedUserId = "none";
-                                    String addedOpponentId = "none";
-                                    for (MessageModel queryModel : messages) {
-                                        String userId = queryModel.getUserId();
-                                        String opponentId = queryModel.getOpponentId();
+                                    HashMap<String, String> opponentIds = new HashMap<>();
 
-                                        if (userId.equals(addedUserId) & opponentId.equals(addedOpponentId) | userId.equals(addedOpponentId) & opponentId.equals(addedUserId)) {
+                                    for (MessageModel queryModel : messages) {
+                                        String opponentId = queryModel.getOpponentId();
+                                        String userId = queryModel.getUserId();
+                                        String deleteOpponentId = queryModel.getDeleteOpponentId();
+                                        String deleteUserId = queryModel.getDeleteUserId();
+
+                                        if (opponentIds.containsKey(userId) & opponentIds.containsValue(opponentId) | opponentIds.containsKey(opponentId) & opponentIds.containsValue(userId) |
+                                                !deleteOpponentId.equals("0") | !deleteUserId.equals("0")) {
                                             continue;
                                         }
+
+                                        opponentIds.put(userId, opponentId);
+                                    }
+
+                                    for (String key : opponentIds.keySet()) {
+                                        String userId = key;
+                                        String opponentId = opponentIds.get(key);
+
+                                        MessageModel queryModel = realm.where(MessageModel.class).equalTo("userId", userId).equalTo("opponentId", opponentId)
+                                                .or().equalTo("userId", opponentId).equalTo("opponentId", userId).
+                                                        findAll().last();
 
                                         UserMessagesModel userMessagesModel = new UserMessagesModel();
                                         userMessagesModel.setFirstName(queryModel.getFirstName());
@@ -260,12 +275,9 @@ public class RealmHelper {
                                         userMessagesModel.setUserId(queryModel.getUserId());
                                         userMessagesModel.setSocialAccount(queryModel.isSocialAccount());
                                         messageModels.add(userMessagesModel);
-
-                                        addedUserId = userId;
-                                        addedOpponentId = opponentId;
-
                                     }
                                     messagesLoadedCallback.onSuccess(messageModels);
+
                                 }
                             });
                         }
@@ -280,21 +292,35 @@ public class RealmHelper {
                         @Override
                         public void execute(Realm realm) {
                             RealmResults<MessageModel> messages = realm.where(MessageModel.class).findAll();
-                            String addedUserId = "none";
-                            String addedOpponentId = "none";
-                            for (MessageModel queryModel : messages) {
-                                String userId = queryModel.getUserId();
-                                String opponentId = queryModel.getOpponentId();
+                            HashMap<String, String> opponentIds = new HashMap<>();
 
-                                if (userId.equals(addedUserId) & opponentId.equals(addedOpponentId) | userId.equals(addedOpponentId) & opponentId.equals(addedUserId)) {
+                            for (MessageModel queryModel : messages) {
+                                String opponentId = queryModel.getOpponentId();
+                                String userId = queryModel.getUserId();
+                                String deleteOpponentId = queryModel.getDeleteOpponentId();
+                                String deleteUserId = queryModel.getDeleteUserId();
+
+                                if (opponentIds.containsKey(userId) & opponentIds.containsValue(opponentId) | opponentIds.containsKey(opponentId) & opponentIds.containsValue(userId) |
+                                        !deleteOpponentId.equals("0") | !deleteUserId.equals("0")) {
                                     continue;
                                 }
+
+                                opponentIds.put(userId, opponentId);
+                            }
+
+                            for (String key : opponentIds.keySet()) {
+                                String userId = key;
+                                String opponentId = opponentIds.get(key);
+
+                                MessageModel queryModel = realm.where(MessageModel.class).equalTo("userId", userId).equalTo("opponentId", opponentId)
+                                        .or().equalTo("userId", opponentId).equalTo("opponentId", userId).
+                                                findAll().last();
 
                                 UserMessagesModel userMessagesModel = new UserMessagesModel();
                                 userMessagesModel.setFirstName(queryModel.getFirstName());
                                 userMessagesModel.setLastName(queryModel.getLastName());
                                 userMessagesModel.setDate(queryModel.getDate());
-                                userMessagesModel.setImageName(queryModel.getOpponentImage());
+                                userMessagesModel.setImageName(queryModel.getUserId().equals(currentUserId) ? queryModel.getOpponentImage() : queryModel.getUserImage());
                                 userMessagesModel.setFriend(false);
                                 userMessagesModel.setMessage(queryModel.getMessage());
                                 userMessagesModel.setMessageId(queryModel.getMessageId());
@@ -302,10 +328,10 @@ public class RealmHelper {
                                 userMessagesModel.setUserId(queryModel.getUserId());
                                 userMessagesModel.setSocialAccount(queryModel.isSocialAccount());
                                 messageModels.add(userMessagesModel);
-
-                                addedUserId = userId;
-                                addedOpponentId = opponentId;
+                                Log.d("fasjfklasfasfsa", "execute: " + userMessagesModel.getImageName());
+                                Log.d("fasjfklasfasfsa", "execute: " + userMessagesModel.getUserId());
                             }
+
                             messagesLoadedCallback.onSuccess(messageModels);
                         }
                     });
@@ -905,11 +931,12 @@ public class RealmHelper {
                                         chatModel.setUserId(messageModel.getUserId());
                                         chatModel.setDate(messageModel.getDate());
                                         chatModel.setOpponentImage(messageModel.getOpponentImage());
-                                        chatModel.setMessage(messageModel.getMessage());
+                                        chatModel.setMessage(StringEscapeUtils.unescapeJava(messageModel.getMessage()));
                                         chatModel.setMessageId(messageModel.getMessageId());
                                         chatModel.setOpponentId(messageModel.getOpponentId());
                                         chatModel.setStickerChosen(messageModel.isHasGif());
                                         chatModel.setStickerUrl(messageModel.getGifUrl());
+
                                         chatModels.add(chatModel);
                                     }
                                     listGeneralCallback.onSuccess(chatModels);
@@ -936,7 +963,7 @@ public class RealmHelper {
                                 chatModel.setDate(messageModel.getDate());
                                 chatModel.setOpponentImage(messageModel.getOpponentImage());
                                 chatModel.setMessage(messageModel.getMessage());
-                                chatModel.setMessageId(messageModel.getMessageId());
+                                chatModel.setMessage(StringEscapeUtils.unescapeJava(messageModel.getMessage()));
                                 chatModel.setOpponentId(messageModel.getOpponentId());
                                 chatModel.setStickerChosen(messageModel.isHasGif());
                                 chatModel.setStickerUrl(messageModel.getGifUrl());

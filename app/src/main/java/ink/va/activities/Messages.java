@@ -34,6 +34,8 @@ import ink.va.models.UserMessagesModel;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
 
+import static ink.va.activities.Chat.UPDATE_USER_MESSAGES;
+
 public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, MyMessagesItemClickListener {
 
     private SharedHelper mSharedHelper;
@@ -46,7 +48,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
     View mNoMessageLayout;
     @BindView(R.id.messagesRootLayout)
     RelativeLayout messagesRootLayout;
-    private UserMessagesModel userMessagesModel;
     private MessagesAdapter messagesAdapter;
     private String finalOpponentId;
     private Snackbar deleteRequestSnack;
@@ -93,6 +94,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
     }
 
     private void makeDeleteRequest(final String opponentId) {
+
     }
 
     @Override
@@ -104,7 +106,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                RealmHelper.getInstance().getUserMessages(new GeneralCallback<List<UserMessagesModel>>() {
+                RealmHelper.getInstance().getUserMessages(sharedHelper.getUserId(), new GeneralCallback<List<UserMessagesModel>>() {
                     @Override
                     public void onSuccess(final List<UserMessagesModel> userMessagesModels) {
                         runOnUiThread(new Runnable() {
@@ -200,7 +202,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
         intent.putExtra("opponentId", finalId);
         intent.putExtra("isSocialAccount", userMessagesModel.isSocialAccount());
         intent.putExtra("opponentImage", userMessagesModel.getImageName());
-        startActivity(intent);
+        startActivityForResult(intent, UPDATE_USER_MESSAGES);
     }
 
     @Override
@@ -261,5 +263,15 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
             }
         });
         builder.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case UPDATE_USER_MESSAGES:
+                getUserMessages();
+                break;
+        }
     }
 }
