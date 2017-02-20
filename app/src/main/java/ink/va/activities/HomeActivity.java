@@ -1024,21 +1024,25 @@ public class HomeActivity extends BaseActivity
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case Constants.BUY_COINS_REQUEST_CODE:
-                boolean coinsBought = data.getExtras().getBoolean(Constants.COINS_BOUGHT_KEY);
-                if (coinsBought) {
-                    updateUserCoins();
+                if (data != null && data.getAction() != null) {
+                    boolean coinsBought = data.getExtras().getBoolean(Constants.COINS_BOUGHT_KEY);
+                    if (coinsBought) {
+                        updateUserCoins();
+                    }
                 }
                 break;
             case Constants.REQUEST_CUSTOMIZE_MADE:
-                boolean anythingChanged = data.getExtras().getBoolean("anythingChanged");
-                if (anythingChanged) {
-                    triggerColorChangeListener();
-                    setHomeActivityColors();
-                } else if (data.getExtras().containsKey("reset")) {
-                    boolean reset = data.getExtras().getBoolean("reset");
-                    if (reset) {
-                        triggerReset();
-                        resetColors();
+                if (data != null && data.getExtras() != null) {
+                    boolean anythingChanged = data.getExtras().getBoolean("anythingChanged");
+                    if (anythingChanged) {
+                        triggerColorChangeListener();
+                        setHomeActivityColors();
+                    } else if (data.getExtras().containsKey("reset")) {
+                        boolean reset = data.getExtras().getBoolean("reset");
+                        if (reset) {
+                            triggerReset();
+                            resetColors();
+                        }
                     }
                 }
                 break;
