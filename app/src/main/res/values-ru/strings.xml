@@ -864,4 +864,5 @@
     <string name="choseBackUpOption">Выберите одну из опций прежде чем продолжить</string>
     <string name="restoreWarning">Все ваши локальные данные будут стерты и вместо них будут даннуе с сервера,продолжить?</string>
     <string name="backUpWarning">Вашу данные на сервере будут перезаписаны,продолжить?</string>
+    <string name="copy">Копировать</string>
 </resources>

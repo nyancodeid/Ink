@@ -1,11 +1,16 @@
 package ink.va.activities;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +21,7 @@ import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ink.va.R;
@@ -601,31 +607,59 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     }
 
     @Override
-    public void onItemLongClick(int position) {
+    public void onItemLongClick(final int position) {
         final ChatModel chatModel = chatAdapter.getChatModelList().get(position);
-        String messageId = chatModel.getMessageId();
-        RealmHelper.getInstance().deleteSingleMessage(messageId, new GeneralCallback() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
+        builder.setItems(new String[]{getString(R.string.delete), getString(R.string.copy)}, new DialogInterface.OnClickListener() {
             @Override
-            public void onSuccess(Object o) {
-                chatAdapter.removeItem(chatModel);
-                Snackbar.make(mRecyclerView, getString(R.string.messageDeleted), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        String messageId = chatModel.getMessageId();
+                        RealmHelper.getInstance().deleteSingleMessage(messageId, new GeneralCallback() {
+                            @Override
+                            public void onSuccess(Object o) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        chatAdapter.removeItem(chatModel);
+                                        Snackbar.make(mRecyclerView, getString(R.string.messageDeleted), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
 
-                    }
-                }).show();
-            }
+                                            }
+                                        }).show();
+                                    }
+                                });
+                            }
 
-            @Override
-            public void onFailure(Object o) {
-                Snackbar.make(mRecyclerView, getString(R.string.messagedeleteError), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                            @Override
+                            public void onFailure(Object o) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Snackbar.make(mRecyclerView, getString(R.string.messagedeleteError), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
 
-                    }
-                }).show();
+                                            }
+                                        }).show();
+                                    }
+                                });
+                            }
+                        });
+                        break;
+                    case 1:
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText(getString(R.string.messageText), chatModel.getMessage());
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(messageService, getString(R.string.copied), Toast.LENGTH_SHORT).show();
+                        break;
+                }
+
             }
         });
+        builder.show();
     }
 
     @Override

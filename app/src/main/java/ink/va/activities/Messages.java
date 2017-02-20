@@ -97,17 +97,23 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
         RealmHelper.getInstance().deleteMessageRow(sharedHelper.getUserId(), opponentId, new GeneralCallback() {
             @Override
             public void onSuccess(Object o) {
-                getUserMessages();
+                hideSnack(true);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        getUserMessages();
+                    }
+                });
             }
 
             @Override
             public void onFailure(Object o) {
-                Snackbar.make(mRecyclerView, getString(R.string.messagedeleteError), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void onClick(View v) {
-
+                    public void run() {
+                        hideSnack(false);
                     }
-                }).show();
+                });
             }
         });
     }
