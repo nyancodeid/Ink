@@ -77,16 +77,16 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
             if (userMessagesModel.getMessage().isEmpty()) {
                 String firstName = userMessagesModel.getFirstName() != null ? userMessagesModel.getFirstName().isEmpty() ? context.getString(R.string.NA) : userMessagesModel.getFirstName() :
                         context.getString(R.string.NA);
-                String lastName = userMessagesModel.getLastName() != null ? userMessagesModel.getLastName().isEmpty() ? context.getString(R.string.NA) : userMessagesModel.getLastName() :
-                        context.getString(R.string.NA);
+                String lastName = userMessagesModel.getLastName() != null ? userMessagesModel.getLastName().isEmpty() ? "" : userMessagesModel.getLastName() :
+                        "";
 
                 finalMessage = firstName + " " + lastName + " : " + context.getString(R.string.sentSticker);
             } else {
 
                 String firstName = userMessagesModel.getFirstName() != null ? userMessagesModel.getFirstName().isEmpty() ? context.getString(R.string.NA) : userMessagesModel.getFirstName() :
                         context.getString(R.string.NA);
-                String lastName = userMessagesModel.getLastName() != null ? userMessagesModel.getLastName().isEmpty() ? context.getString(R.string.NA) : userMessagesModel.getLastName() :
-                        context.getString(R.string.NA);
+                String lastName = userMessagesModel.getLastName() != null ? userMessagesModel.getLastName().isEmpty() ? "" : userMessagesModel.getLastName() :
+                        "";
 
                 finalMessage = firstName + " " + lastName + " : " + message.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, "");
             }
@@ -153,6 +153,9 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
                         userMessagesModel.setSocialAccount(isSocialAccount);
                         userMessagesModel.setImageName(imageUrl);
 
+                        String messageBodyText = messageBody.getText().toString().replaceAll(context.getString(R.string.NA), firstName + " " + lastName);
+                        messageBody.setText(messageBodyText);
+
                         if (imageUrl != null && !imageUrl.isEmpty()) {
                             if (isSocialAccount) {
                                 Ion.with(context).load(imageUrl)
@@ -178,7 +181,7 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                    messagesUserName.setText(context.getString(R.string.NA));
                 }
             });
         } else {
