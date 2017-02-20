@@ -43,6 +43,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-feature
         android:name="android.software.leanback"
@@ -133,6 +134,15 @@
 
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
         <receiver android:name="ink.va.broadcast.DismissBroadcast" />
+        -- Declaring broadcast receiver for BOOT_COMPLETED event. -->
+        <receiver
+            android:name="ink.va.receivers.BootReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name="ink.va.activities.ReplyView"
