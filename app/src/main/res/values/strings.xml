@@ -854,8 +854,8 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="backupCaution">Do not turn off the phone or quit the application during the process</string>
     <string name="restoreMade">Restore was successfully made</string>
     <string name="backUpMade">Backup was successfully made</string>
-    <string name="restoreError">Error while trying to restore.Error is %1$s</string>
-    <string name="backUpError">Error while trying to backup.Error is %1$s</string>
+    <string name="restoreError">Error while trying to restore.Error :  %1$s</string>
+    <string name="backUpError">Error while trying to backup.Error :  %1$s</string>
     <string name="choseBackUpOption">Choose any option before proceeding</string>
     <string name="restoreWarning">All of you\'r local data will be erased with the remote one,proceed?</string>
     <string name="backUpWarning">You\'r remote data will be overwritten,proceed?</string>
