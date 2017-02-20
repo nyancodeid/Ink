@@ -99,6 +99,7 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name="ink.va.activities.Chat"
+            android:launchMode="singleTask"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/ChatTheme" />
         <activity

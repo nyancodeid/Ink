@@ -3,6 +3,7 @@ package ink.va.service;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
@@ -113,7 +114,7 @@ public class MessageService extends Service {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                sendGeneralNotification(messageJson);
+                                sendGeneralNotification(getApplicationContext(), messageJson);
                             }
                         });
                     }
@@ -124,7 +125,7 @@ public class MessageService extends Service {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                sendGeneralNotification(messageJson);
+                                sendGeneralNotification(getApplicationContext(), messageJson);
                             }
                         });
                     }
@@ -233,31 +234,31 @@ public class MessageService extends Service {
         mSocket.off(EVENT_TYPING, onUserTyping);
     }
 
-    private void sendGeneralNotification(JSONObject jsonObject) {
+    public static void sendGeneralNotification(Context context, JSONObject jsonObject) {
         String firstName = jsonObject.optString("firstName");
         String lastName = jsonObject.optString("lastName");
         String message = jsonObject.optString("message");
 
-        NotificationManager notificationManagerCompat = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
-        android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(getApplicationContext());
+        android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
         builder.setSmallIcon(R.drawable.ic_message_white_24dp);
         builder.setAutoCancel(true);
 
 
-        builder.setContentTitle(getString(R.string.newMessageGlobal));
-        builder.setContentText(getString(R.string.newMessagesFrom) + firstName + " " + lastName);
+        builder.setContentTitle(context.getString(R.string.newMessageGlobal));
+        builder.setContentText(context.getString(R.string.newMessagesFrom) + firstName + " " + lastName);
         builder.setDefaults(android.app.Notification.DEFAULT_ALL);
         builder.setStyle(new NotificationCompat.BigTextStyle()
-                .setSummaryText(getString(R.string.newMessagesFrom) + " " + firstName + " " + lastName)
-                .setBigContentTitle(getString(R.string.newMessagesFrom) + " " + firstName + " " + lastName)
-                .bigText(message.isEmpty() ? getString(R.string.sentSticker) : message)
+                .setSummaryText(context.getString(R.string.newMessagesFrom) + " " + firstName + " " + lastName)
+                .setBigContentTitle(context.getString(R.string.newMessagesFrom) + " " + firstName + " " + lastName)
+                .bigText(message.isEmpty() ? context.getString(R.string.sentSticker) : message)
         );
 
-        Intent requestsViewIntent = new Intent(getApplicationContext(), Chat.class);
+        Intent requestsViewIntent = new Intent(context, Chat.class);
         requestsViewIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
 
-        PendingIntent requestsViewPending = PendingIntent.getActivity(getApplicationContext(),
+        PendingIntent requestsViewPending = PendingIntent.getActivity(context,
                 Integer.valueOf(jsonObject.optInt("messageId")), requestsViewIntent, 0);
         builder.setContentIntent(requestsViewPending);
 

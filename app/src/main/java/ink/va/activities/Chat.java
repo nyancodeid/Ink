@@ -157,6 +157,17 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         getMessages();
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent != null && intent.getExtras() != null) {
+            checkNotification(intent.getExtras());
+            initUser();
+            getMessages();
+        }
+
+    }
+
     private void getMessages() {
         realmHelper.getMessagesAsChatModel(opponentId, currentUserId, new GeneralCallback<List<ChatModel>>() {
             @Override
@@ -383,9 +394,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                             }
                             typingJson = new JSONObject();
                             try {
-                                typingJson.put("opponentId", opponentId);
-                                typingJson.put("opponentFirstName", opponentFirstName);
-                                typingJson.put("opponentLastName", opponentLastName);
+                                typingJson.put("opponentId", sharedHelper.getUserId());
+                                typingJson.put("opponentFirstName", sharedHelper.getFirstName());
+                                typingJson.put("opponentLastName", sharedHelper.getLastName());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -609,26 +620,33 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             @Override
             public void run() {
                 String opponentFirstName = jsonObject.optString("opponentFirstName");
-                opponentTypingTV.setText(getString(R.string.opponentTyping, opponentFirstName));
-                opponentTypingLayout.setVisibility(View.VISIBLE);
+                String opponentId = jsonObject.optString("opponentId");
+                if (opponentId.equals(Chat.this.opponentId)) {
+                    opponentTypingTV.setText(getString(R.string.opponentTyping, opponentFirstName));
+                    opponentTypingLayout.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
 
     @Override
-    public void onNewMessageReceived(JSONObject messageJson) {
+    public void onNewMessageReceived(final JSONObject messageJson) {
         final ChatModel chatModel = chatGSON.fromJson(messageJson.toString(), ChatModel.class);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                chatAdapter.insertChatModel(chatModel);
-                localMessageInsert(chatModel, false);
-                mRecyclerView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollToBottom();
-                    }
-                });
+                if (chatModel.getUserId().equals(opponentId)) {
+                    chatAdapter.insertChatModel(chatModel);
+                    localMessageInsert(chatModel, false);
+                    mRecyclerView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            scrollToBottom();
+                        }
+                    });
+                } else {
+                    MessageService.sendGeneralNotification(getApplicationContext(), messageJson);
+                }
 
             }
         });
