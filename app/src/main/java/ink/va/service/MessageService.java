@@ -181,7 +181,8 @@ public class MessageService extends Service {
         @Override
         public void call(Object... args) {
             if (onSocketListener != null) {
-                onSocketListener.onUserStoppedTyping();
+                JSONObject jsonObject = (JSONObject) args[0];
+                onSocketListener.onUserStoppedTyping(jsonObject);
             }
         }
     };

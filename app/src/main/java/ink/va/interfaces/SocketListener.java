@@ -13,7 +13,7 @@ public interface SocketListener {
 
     void onSocketConnectionError();
 
-    void onUserStoppedTyping();
+    void onUserStoppedTyping(JSONObject jsonObject);
 
     void onUserTyping(JSONObject jsonObject);
 

@@ -3,6 +3,7 @@ package ink.va.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -47,6 +48,7 @@ import ink.va.utils.Time;
 import rx.Observer;
 import rx.functions.Func1;
 
+import static ink.va.service.MessageService.sendGeneralNotification;
 import static ink.va.utils.Constants.EVENT_SEND_MESSAGE;
 import static ink.va.utils.Constants.EVENT_STOPPED_TYPING;
 import static ink.va.utils.Constants.EVENT_TYPING;
@@ -136,7 +138,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
         initVariables(extras, false);
 
-        checkNotification(extras);
+        checkNotification(extras, false, null);
 
 
         initUser();
@@ -161,9 +163,18 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (intent != null && intent.getExtras() != null) {
-            checkNotification(intent.getExtras());
+            checkNotification(intent.getExtras(), true, new GeneralCallback() {
+                @Override
+                public void onSuccess(Object o) {
+                    getMessages();
+                }
+
+                @Override
+                public void onFailure(Object o) {
+
+                }
+            });
             initUser();
-            getMessages();
         }
 
     }
@@ -349,12 +360,29 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
     }
 
-    private void checkNotification(Bundle extras) {
+    private void checkNotification(Bundle extras, boolean insertMessage, @Nullable final GeneralCallback insertCallback) {
         if (extras != null) {
             if (extras.containsKey(NOTIFICATION_MESSAGE_BUNDLE_KEY)) {
                 String receivedMessageJson = extras.getString(NOTIFICATION_MESSAGE_BUNDLE_KEY);
                 ChatModel chatModel = chatGSON.fromJson(receivedMessageJson, ChatModel.class);
                 initVariables(chatModel, true);
+                if (insertMessage) {
+                    RealmHelper.getInstance().insertMessage(chatModel, new GeneralCallback() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            if (insertCallback != null) {
+                                insertCallback.onSuccess(null);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Object o) {
+                            if (insertCallback != null) {
+                                insertCallback.onFailure(null);
+                            }
+                        }
+                    });
+                }
             }
 
         }
@@ -394,7 +422,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                             }
                             typingJson = new JSONObject();
                             try {
-                                typingJson.put("opponentId", sharedHelper.getUserId());
+                                typingJson.put("opponentId", opponentId);
+                                typingJson.put("userId", sharedHelper.getUserId());
                                 typingJson.put("opponentFirstName", sharedHelper.getFirstName());
                                 typingJson.put("opponentLastName", sharedHelper.getLastName());
                             } catch (JSONException e) {
@@ -425,6 +454,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                         typingJson = new JSONObject();
                         try {
                             typingJson.put("opponentId", opponentId);
+                            typingJson.put("userId", sharedHelper.getUserId());
                             typingJson.put("opponentFirstName", opponentFirstName);
                             typingJson.put("opponentLastName", opponentLastName);
                         } catch (JSONException e) {
@@ -605,11 +635,14 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     }
 
     @Override
-    public void onUserStoppedTyping() {
+    public void onUserStoppedTyping(final JSONObject jsonObject) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                opponentTypingLayout.setVisibility(View.GONE);
+                String opponentId = jsonObject.optString("userId");
+                if (opponentId.equals(Chat.this.opponentId)) {
+                    opponentTypingLayout.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -620,7 +653,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             @Override
             public void run() {
                 String opponentFirstName = jsonObject.optString("opponentFirstName");
-                String opponentId = jsonObject.optString("opponentId");
+                String opponentId = jsonObject.optString("userId");
                 if (opponentId.equals(Chat.this.opponentId)) {
                     opponentTypingTV.setText(getString(R.string.opponentTyping, opponentFirstName));
                     opponentTypingLayout.setVisibility(View.VISIBLE);
@@ -645,7 +678,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                         }
                     });
                 } else {
-                    MessageService.sendGeneralNotification(getApplicationContext(), messageJson);
+                    sendGeneralNotification(getApplicationContext(), messageJson);
                 }
 
             }
