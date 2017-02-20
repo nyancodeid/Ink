@@ -293,6 +293,7 @@ public class RealmHelper {
                         public void execute(Realm realm) {
                             RealmResults<MessageModel> messages = realm.where(MessageModel.class).findAll();
                             HashMap<String, String> opponentIds = new HashMap<>();
+                            List<String> ids = new LinkedList<>();
 
                             for (MessageModel queryModel : messages) {
                                 String opponentId = queryModel.getOpponentId();
@@ -305,15 +306,30 @@ public class RealmHelper {
                                     continue;
                                 }
 
-                                opponentIds.put(userId, opponentId);
+                                if (opponentIds.containsKey(userId)) {
+                                    opponentIds.put(opponentId, userId);
+                                } else if (opponentIds.containsKey(opponentId)) {
+                                    opponentIds.put(userId, opponentId);
+                                } else {
+                                    opponentIds.put(userId, opponentId);
+                                }
+                                String finalId;
+                                if (userId.equals(currentUserId)) {
+                                    finalId = opponentId;
+                                } else {
+                                    finalId = userId;
+                                }
+                                ids.add(finalId);
                             }
 
-                            for (String key : opponentIds.keySet()) {
-                                String userId = key;
-                                String opponentId = opponentIds.get(key);
+                            for (String opponentId : ids) {
+                                String userId = currentUserId;
 
-                                MessageModel queryModel = realm.where(MessageModel.class).equalTo("userId", userId).equalTo("opponentId", opponentId)
-                                        .or().equalTo("userId", opponentId).equalTo("opponentId", userId).
+                                MessageModel queryModel = realm.where(MessageModel.class)
+                                        .equalTo("userId", userId)
+                                        .equalTo("opponentId", opponentId).or()
+                                        .equalTo("userId", opponentId)
+                                        .equalTo("opponentId", userId).
                                                 findAll().last();
 
                                 UserMessagesModel userMessagesModel = new UserMessagesModel();
@@ -328,8 +344,6 @@ public class RealmHelper {
                                 userMessagesModel.setUserId(queryModel.getUserId());
                                 userMessagesModel.setSocialAccount(queryModel.isSocialAccount());
                                 messageModels.add(userMessagesModel);
-                                Log.d("fasjfklasfasfsa", "execute: " + userMessagesModel.getImageName());
-                                Log.d("fasjfklasfasfsa", "execute: " + userMessagesModel.getUserId());
                             }
 
                             messagesLoadedCallback.onSuccess(messageModels);
@@ -480,8 +494,11 @@ public class RealmHelper {
                             mRealm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
-                                    RealmResults<MessageModel> messageModels = realm.where(MessageModel.class).equalTo("userId", currentUserId).
-                                            equalTo("opponentId", opponentId).or().equalTo("opponentId", currentUserId).equalTo("userId", opponentId).findAll();
+                                    RealmResults<MessageModel> messageModels = realm.where(MessageModel.class)
+                                            .equalTo("userId", currentUserId)
+                                            .equalTo("opponentId", opponentId).or()
+                                            .equalTo("userId", opponentId)
+                                            .equalTo("opponentId", currentUserId).findAll();
                                     messageModels.deleteAllFromRealm();
                                     deleteCallback.onSuccess(null);
                                 }
@@ -497,8 +514,11 @@ public class RealmHelper {
                     mRealm.executeTransactionAsync(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
-                            RealmResults<MessageModel> messageModels = realm.where(MessageModel.class).equalTo("userId", currentUserId).
-                                    equalTo("opponentId", opponentId).or().equalTo("opponentId", currentUserId).equalTo("userId", opponentId).findAll();
+                            RealmResults<MessageModel> messageModels = realm.where(MessageModel.class)
+                                    .equalTo("userId", currentUserId)
+                                    .equalTo("opponentId", opponentId).or()
+                                    .equalTo("userId", opponentId)
+                                    .equalTo("opponentId", currentUserId).findAll();
                             messageModels.deleteAllFromRealm();
                             deleteCallback.onSuccess(null);
                         }
@@ -1042,7 +1062,7 @@ public class RealmHelper {
                                 chatModel.setUserId(messageModel.getUserId());
                                 chatModel.setDate(messageModel.getDate());
                                 chatModel.setOpponentImage(messageModel.getOpponentImage());
-                                chatModel.setMessage(messageModel.getMessage());
+                                chatModel.setMessageId(messageModel.getMessageId());
                                 chatModel.setMessage(StringEscapeUtils.unescapeJava(messageModel.getMessage()));
                                 chatModel.setOpponentId(messageModel.getOpponentId());
                                 chatModel.setStickerChosen(messageModel.isHasGif());

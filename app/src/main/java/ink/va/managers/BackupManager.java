@@ -111,6 +111,9 @@ public class BackUpManager {
                     @Override
                     public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                        if (onBackUpManagerCallback != null) {
+                            onBackUpManagerCallback.onRestoreProgress(progress);
+                        }
                     }
                 })
                 .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {

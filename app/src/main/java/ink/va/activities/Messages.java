@@ -140,6 +140,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                                     }
                                 });
                                 if (userMessagesModels.isEmpty()) {
+                                    messagesAdapter.clear();
                                     mNoMessageLayout.setVisibility(View.VISIBLE);
                                 } else {
                                     messagesAdapter.setUserMessagesModels(userMessagesModels);
@@ -178,10 +179,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
         getUserMessages();
     }
 
-    private void showSnack() {
-        deleteRequestSnack = Snackbar.make(mRecyclerView, getString(R.string.deleteingMessage), Snackbar.LENGTH_INDEFINITE);
-        deleteRequestSnack.show();
-    }
 
     private void hideSnack(boolean success) {
         if (deleteRequestSnack != null) {
@@ -275,7 +272,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 yesNoDialog.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        showSnack();
                         deleteMessage(finalOpponentId);
                     }
                 });

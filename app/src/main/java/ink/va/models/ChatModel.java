@@ -55,5 +55,16 @@ public class ChatModel {
     @Getter
     private String opponentImage;
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof ChatModel) {
+            return ((ChatModel) obj).messageId.equals(messageId);
+        }
+        return false;
+    }
 
+    @Override
+    public int hashCode() {
+        return messageId.hashCode();
+    }
 }
