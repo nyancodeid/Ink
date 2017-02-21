@@ -32,6 +32,7 @@ import ink.va.utils.FileUtils;
 import ink.va.utils.Regex;
 import ink.va.utils.SharedHelper;
 
+
 /**
  * Created by PC-Comp on 1/31/2017.
  */
@@ -143,6 +144,17 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
 
     @OnLongClick(R.id.chatViewBubble)
     public boolean chatLongClicked() {
+        longClicked();
+        return false;
+    }
+
+    @OnClick(R.id.messageContainer)
+    public void containerClicked() {
+        rootClicked();
+    }
+
+    @OnLongClick(R.id.messageContainer)
+    public boolean containerLongClicked() {
         longClicked();
         return false;
     }
