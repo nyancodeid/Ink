@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -172,9 +173,15 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     }
 
     private void removeNotificationIfNeeded() {
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.cancel(Integer.valueOf(opponentId));
-        RealmHelper.getInstance().removeNotificationCount(Integer.valueOf(opponentId));
+        final NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                notificationManager.cancel(Integer.valueOf(opponentId));
+                RealmHelper.getInstance().removeNotificationCount(Integer.valueOf(opponentId));
+            }
+        });
+
     }
 
     @Override
@@ -334,26 +341,44 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
             @Override
             public void onFailure(Object o) {
-                Snackbar.make(mRecyclerView, getString(R.string.failedToSent), Snackbar.LENGTH_LONG).setAction(getString(R.string.vk_retry), new View.OnClickListener() {
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void onClick(View v) {
-                        sendMessageClicked();
+                    public void run() {
+                        Snackbar.make(mRecyclerView, getString(R.string.failedToSent), Snackbar.LENGTH_LONG).setAction(getString(R.string.vk_retry), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                sendMessageClicked();
+                            }
+                        }).show();
                     }
-                }).show();
+                });
+
             }
         });
     }
 
     private void hideNoMessages() {
-        if (mNoMessageLayout.getVisibility() == View.VISIBLE) {
-            mNoMessageLayout.setVisibility(View.GONE);
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mNoMessageLayout.getVisibility() == View.VISIBLE) {
+                    mNoMessageLayout.setVisibility(View.GONE);
+                }
+            }
+        });
+
     }
 
     private void showNoMessages() {
-        if (mNoMessageLayout.getVisibility() == View.GONE) {
-            mNoMessageLayout.setVisibility(View.VISIBLE);
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mNoMessageLayout.getVisibility() == View.GONE) {
+                    mNoMessageLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
 
     }
 
@@ -770,6 +795,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
     @Override
     public void onNewMessageReceived(final JSONObject messageJson) {
+        hideNoMessages();
         final ChatModel chatModel = chatGSON.fromJson(messageJson.toString(), ChatModel.class);
         runOnUiThread(new Runnable() {
             @Override

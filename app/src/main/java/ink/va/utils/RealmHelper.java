@@ -795,7 +795,7 @@ public class RealmHelper {
     }
 
 
-    public void getNotificationCount(final String opponentId, @Nullable final QueryReadyListener queryReadyListener) {
+    public void getNotificationCount(final int opponentId, @Nullable final QueryReadyListener queryReadyListener) {
         handler.post(new Runnable() {
             @Override
             public void run() {

@@ -239,7 +239,7 @@ public class MessageService extends Service {
         final String message = jsonObject.optString("message");
         final String opponentId = jsonObject.optString("userId");
 
-        RealmHelper.getInstance().getNotificationCount(opponentId, new RealmHelper.QueryReadyListener() {
+        RealmHelper.getInstance().getNotificationCount(Integer.valueOf(opponentId), new RealmHelper.QueryReadyListener() {
             @Override
             public void onQueryReady(Object result) {
                 int querySize = (int) result;
