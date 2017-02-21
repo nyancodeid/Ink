@@ -58,11 +58,12 @@
     <TextView
         android:id="@+id/dateTV"
         android:layout_width="wrap_content"
+        android:background="@drawable/instabug_bg_border_dark"
         android:layout_height="wrap_content"
         android:layout_below="@+id/chatViewBubble"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="5dp"
-        android:textColor="#cccccc" />
+        android:textColor="#ffffff" />
 
     <TextView
         android:id="@+id/deliveryStatus"
