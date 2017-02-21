@@ -142,8 +142,9 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
     }
 
     @OnLongClick(R.id.chatViewBubble)
-    public void chatLongClicked() {
+    public boolean chatLongClicked() {
         longClicked();
+        return false;
     }
 
     @OnClick(R.id.chatItemRootLayout)
