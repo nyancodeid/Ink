@@ -64,6 +64,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.va.callbacks.GeneralCallback;
+import ink.va.service.MessageService;
 import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.FileUtils;
@@ -1034,6 +1035,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                     String responseBody = response.body().string();
                     if (responseBody.equals("deleted")) {
                         mSharedHelper.clean();
+                        stopService(new Intent(HomeActivity.this, MessageService.class));
                         try {
                             RealmHelper.getInstance().clearDatabase(null);
                         } catch (Exception e) {

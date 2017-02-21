@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
+import android.widget.RemoteViews;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -39,6 +40,7 @@ import static ink.va.utils.Constants.EVENT_STOPPED_TYPING;
 import static ink.va.utils.Constants.EVENT_TYPING;
 import static ink.va.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
 import static ink.va.utils.Constants.SOCKET_URL;
+
 
 public class MessageService extends Service {
     private SharedHelper sharedHelper;
@@ -233,6 +235,7 @@ public class MessageService extends Service {
         mSocket.off(EVENT_TYPING, onUserTyping);
     }
 
+
     public static void sendGeneralNotification(final Context context, final JSONObject jsonObject) {
         final String firstName = jsonObject.optString("firstName");
         final String lastName = jsonObject.optString("lastName");
@@ -257,8 +260,7 @@ public class MessageService extends Service {
                 android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
                 builder.setSmallIcon(R.drawable.ic_message_white_24dp);
                 builder.setAutoCancel(true);
-
-
+                builder.setContent(new RemoteViews(context.getPackageName(), R.layout.chat_content));
                 builder.setContentTitle(querySize != 0 ? (querySize + 1) + " " + context.getString(R.string.newMessagesFrom) : context.getString(R.string.newMessageGlobal));
                 builder.setContentText(querySize != 0 ? (querySize + 1) + " " +
                         context.getString(R.string.newMessagesFrom) + firstName + " " + lastName
