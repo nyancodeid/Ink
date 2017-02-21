@@ -72,8 +72,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void removeItem(ChatModel chatModel) {
-        this.chatModelList.remove(chatModel);
         int position = this.chatModelList.indexOf(chatModel);
+        this.chatModelList.remove(chatModel);
         notifyItemRemoved(position);
     }
 
