@@ -1,5 +1,6 @@
 package ink.va.activities;
 
+import android.app.NotificationManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -167,6 +168,13 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chat_vector_background));
         initWriteField();
         getMessages();
+        removeNotificationIfNeeded();
+    }
+
+    private void removeNotificationIfNeeded() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.cancel(Integer.valueOf(opponentId));
+        RealmHelper.getInstance().removeNotificationCount(Integer.valueOf(opponentId));
     }
 
     @Override

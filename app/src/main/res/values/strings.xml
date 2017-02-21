@@ -510,7 +510,8 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="viewImage">View Image</string>
     <string name="commentAdded">Comment added</string>
     <string name="waitingToFindOpponent">Waiting to find an opponent</string>
-    <string name="newMessagesFrom">new messages from</string>
+    <string name="newMessagesFrom">New Messages from : </string>
+    <string name="newMessages">New Messages</string>
     <string name="lastMessage">last message :</string>
     <string name="games">Games</string>
     <string name="friendSmashText">Friend Smash</string>

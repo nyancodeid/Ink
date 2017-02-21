@@ -106,8 +106,8 @@ public class NotificationService extends FirebaseMessagingService {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        RealmHelper.getInstance().putNotificationCount(Integer.valueOf(response.get("user_id")));
-                        RealmHelper.getInstance().getMessagesCount(new RealmHelper.QueryReadyListener() {
+                        RealmHelper.getInstance().putNotificationCount(Integer.valueOf(response.get("user_id")), null);
+                        RealmHelper.getInstance().getNotificationCount(new RealmHelper.QueryReadyListener() {
                             @Override
                             public void onQueryReady(Object result) {
                                 ShortcutBadger.applyCount(getApplicationContext(), (Integer) result);
@@ -243,7 +243,7 @@ public class NotificationService extends FirebaseMessagingService {
                     String firstName = response.get("firstName");
                     String lastName = response.get("lastName");
                     String postId = response.get("id");
-                    sendGeneralNotification(getApplicationContext(), postId, getString(R.string.commentAdded),
+                    sendGeneralNotification(getApplicationContext(), postId, getString(R.string.likeText),
                             firstName + " " + lastName + getString(R.string.likedPostText),
                             null);
 
@@ -742,7 +742,7 @@ public class NotificationService extends FirebaseMessagingService {
 
         NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
-        android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
+        android.support.v4.app.NotificationCompat.Builder builder = new android.support.v4.app.NotificationCompat.Builder(context);
         builder.setSmallIcon(R.drawable.ic_bell_ring_outline_white_24dp);
         builder.setAutoCancel(true);
 
@@ -752,8 +752,6 @@ public class NotificationService extends FirebaseMessagingService {
         builder.setGroup(GROUP_KEY_MESSAGES);
         builder.setDefaults(android.app.Notification.DEFAULT_ALL);
         builder.setStyle(new NotificationCompat.BigTextStyle()
-                .setSummaryText(title)
-                .setBigContentTitle(title)
                 .bigText(contentText)
         );
 

@@ -233,36 +233,64 @@ public class MessageService extends Service {
         mSocket.off(EVENT_TYPING, onUserTyping);
     }
 
-    public static void sendGeneralNotification(Context context, JSONObject jsonObject) {
-        String firstName = jsonObject.optString("firstName");
-        String lastName = jsonObject.optString("lastName");
-        String message = jsonObject.optString("message");
+    public static void sendGeneralNotification(final Context context, final JSONObject jsonObject) {
+        final String firstName = jsonObject.optString("firstName");
+        final String lastName = jsonObject.optString("lastName");
+        final String message = jsonObject.optString("message");
+        final String opponentId = jsonObject.optString("userId");
 
-        NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+        RealmHelper.getInstance().getNotificationCount(opponentId, new RealmHelper.QueryReadyListener() {
+            @Override
+            public void onQueryReady(Object result) {
+                int querySize = (int) result;
 
-        android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
-        builder.setSmallIcon(R.drawable.ic_message_white_24dp);
-        builder.setAutoCancel(true);
+
+                Intent requestsViewIntent = new Intent(context, Chat.class);
+                requestsViewIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
+
+                PendingIntent requestsViewPending = PendingIntent.getActivity(context,
+                        Integer.valueOf(jsonObject.optInt("messageId")), requestsViewIntent, 0);
 
 
-        builder.setContentTitle(context.getString(R.string.newMessageGlobal));
-        builder.setContentText(context.getString(R.string.newMessagesFrom) + firstName + " " + lastName);
-        builder.setDefaults(android.app.Notification.DEFAULT_ALL);
-        builder.setStyle(new NotificationCompat.BigTextStyle()
-                .setSummaryText(context.getString(R.string.newMessagesFrom) + " " + firstName + " " + lastName)
-                .setBigContentTitle(context.getString(R.string.newMessagesFrom) + " " + firstName + " " + lastName)
-                .bigText(message.isEmpty() ? context.getString(R.string.sentSticker) : message)
-        );
+                final NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
-        Intent requestsViewIntent = new Intent(context, Chat.class);
-        requestsViewIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
+                android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
+                builder.setSmallIcon(R.drawable.ic_message_white_24dp);
+                builder.setAutoCancel(true);
 
-        PendingIntent requestsViewPending = PendingIntent.getActivity(context,
-                Integer.valueOf(jsonObject.optInt("messageId")), requestsViewIntent, 0);
-        builder.setContentIntent(requestsViewPending);
 
-        builder.setShowWhen(true);
-        android.app.Notification notification = builder.build();
-        notificationManagerCompat.notify(Integer.valueOf(jsonObject.optInt("messageId")), notification);
+                builder.setContentTitle(querySize != 0 ? (querySize + 1) + " " + context.getString(R.string.newMessagesFrom) : context.getString(R.string.newMessageGlobal));
+                builder.setContentText(querySize != 0 ? (querySize + 1) + " " +
+                        context.getString(R.string.newMessagesFrom) + firstName + " " + lastName
+                        : context.getString(R.string.newMessagesFrom) + firstName + " " + lastName);
+                builder.setDefaults(android.app.Notification.DEFAULT_ALL);
+
+                builder.setStyle(new NotificationCompat.BigTextStyle()
+                        .setSummaryText(querySize != 0 ? (querySize + 1) + " " +
+                                context.getString(R.string.newMessagesFrom) + firstName + " " + lastName
+                                : context.getString(R.string.newMessagesFrom) + firstName + " " + lastName)
+                        .setBigContentTitle(querySize != 0 ? (querySize + 1) + " " +
+                                context.getString(R.string.newMessagesFrom) + firstName + " " + lastName
+                                : context.getString(R.string.newMessagesFrom) + firstName + " " + lastName)
+                        .bigText(querySize != 0 ? (querySize + 1) + " " + context.getString(R.string.newMessage) + "  " + context.getString(R.string.lastMessage) +
+                                (message.isEmpty() ? context.getString(R.string.sentSticker) : message)
+                                : message.isEmpty() ? context.getString(R.string.sentSticker) : message)
+                );
+
+                builder.setContentIntent(requestsViewPending);
+
+                builder.setShowWhen(true);
+                final android.app.Notification notification = builder.build();
+
+                RealmHelper.getInstance().putNotificationCount(Integer.valueOf(opponentId), new RealmHelper.QueryReadyListener() {
+                    @Override
+                    public void onQueryReady(Object result) {
+                        notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+                    }
+                });
+
+            }
+        });
+
     }
 }

@@ -263,7 +263,7 @@ public class HomeActivity extends BaseActivity
             messages.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
         }
 
-        RealmHelper.getInstance().getMessagesCount(new RealmHelper.QueryReadyListener() {
+        RealmHelper.getInstance().getNotificationCount(new RealmHelper.QueryReadyListener() {
             @Override
             public void onQueryReady(Object result) {
                 final int notificationCount = (int) result;
@@ -375,14 +375,17 @@ public class HomeActivity extends BaseActivity
     }
 
     private void handleFeedNotification(final String postId) {
-        mFeed.triggerFeedUpdate(false);
-        Snackbar.make(coinsText, getString(R.string.newComment), Snackbar.LENGTH_LONG).setAction(getString(R.string.view), new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mSharedHelper.putPostId(postId);
-                mFeed.checkShowComment();
-            }
-        }).show();
+        if (mFeed != null && coinsText != null) {
+            mFeed.triggerFeedUpdate(false);
+            Snackbar.make(coinsText, getString(R.string.newComment), Snackbar.LENGTH_LONG).setAction(getString(R.string.view), new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mSharedHelper.putPostId(postId);
+                    mFeed.checkShowComment();
+                }
+            }).show();
+        }
+
     }
 
 

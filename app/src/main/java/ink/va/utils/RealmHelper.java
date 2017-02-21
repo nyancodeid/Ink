@@ -753,7 +753,7 @@ public class RealmHelper {
         return query.count() != 0;
     }
 
-    public void getMessagesCount(@Nullable final QueryReadyListener queryReadyListener) {
+    public void getNotificationCount(@Nullable final QueryReadyListener queryReadyListener) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -794,7 +794,49 @@ public class RealmHelper {
         });
     }
 
-    public void removeMessageCount(final int opponentId) {
+
+    public void getNotificationCount(final String opponentId, @Nullable final QueryReadyListener queryReadyListener) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mRealm.isClosed()) {
+                    openRealm(new GeneralCallback() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            mRealm.executeTransaction(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    RealmResults<NotificationModel> resultQuery = realm.where(NotificationModel.class).equalTo("opponentId", opponentId).findAll();
+                                    if (queryReadyListener != null) {
+                                        queryReadyListener.onQueryReady(resultQuery.size());
+                                    }
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(Object o) {
+
+                        }
+                    });
+                } else {
+                    mRealm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            RealmResults<NotificationModel> resultQuery = realm.where(NotificationModel.class).equalTo("opponentId", opponentId).findAll();
+                            if (queryReadyListener != null) {
+                                queryReadyListener.onQueryReady(resultQuery.size());
+                            }
+                        }
+                    });
+                }
+
+
+            }
+        });
+    }
+
+    public void removeNotificationCount(final int opponentId) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -830,7 +872,7 @@ public class RealmHelper {
         });
     }
 
-    public void putNotificationCount(final int opponentId) {
+    public void putNotificationCount(final int opponentId, @Nullable final QueryReadyListener queryReadyListener) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -843,6 +885,9 @@ public class RealmHelper {
                                 public void execute(Realm realm) {
                                     NotificationModel notificationModel = realm.createObject(NotificationModel.class);
                                     notificationModel.setOpponentId(opponentId);
+                                    if (queryReadyListener != null) {
+                                        queryReadyListener.onQueryReady(null);
+                                    }
                                 }
                             });
                         }
@@ -858,6 +903,9 @@ public class RealmHelper {
                         public void execute(Realm realm) {
                             NotificationModel notificationModel = realm.createObject(NotificationModel.class);
                             notificationModel.setOpponentId(opponentId);
+                            if (queryReadyListener != null) {
+                                queryReadyListener.onQueryReady(null);
+                            }
                         }
                     });
                 }

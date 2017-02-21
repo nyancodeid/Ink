@@ -511,7 +511,8 @@
     <string name="viewImage">Посмотреть изображение</string>
     <string name="commentAdded">Комментарий добавлен</string>
     <string name="waitingToFindOpponent">Находим оппонента</string>
-    <string name="newMessagesFrom">Новое сообщение от</string>
+    <string name="newMessagesFrom">Новые сообщение от : </string>
+    <string name="newMessages">Новые сообщение </string>
     <string name="lastMessage">последнее сообщение :</string>
     <string name="games">Игры</string>
     <string name="friendSmashText">Сокрушить друга</string>
