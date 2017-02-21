@@ -786,6 +786,38 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     @Override
     public void onBackPressed() {
         setResult(UPDATE_USER_MESSAGES);
-        super.onBackPressed();
+        if (mWriteEditText.getText().toString().length() > 0 || isStickerChosen) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.discardChanges));
+            builder.setMessage(getString(R.string.discardChangesQuestion));
+            builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+
+            builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            final AlertDialog alertDialog = builder.show();
+            alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Chat.super.onBackPressed();
+                }
+            });
+        } else {
+            super.onBackPressed();
+        }
     }
 }
