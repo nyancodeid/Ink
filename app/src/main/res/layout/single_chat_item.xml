@@ -3,6 +3,7 @@
     android:id="@+id/chatItemRootLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
@@ -33,11 +34,12 @@
     <LinearLayout
         android:id="@+id/chatViewBubble"
         android:layout_width="wrap_content"
-        android:clickable="false"
-        android:focusable="false"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:background="@drawable/outgoing_message_bg">
+        android:background="@drawable/outgoing_message_bg"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
 
         <TextView
             android:id="@+id/messageContainer"
@@ -51,6 +53,15 @@
             android:textColor="#000000"
             android:textSize="16sp" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/dateTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/chatViewBubble"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:textColor="#cccccc" />
 
     <TextView
         android:id="@+id/deliveryStatus"

@@ -368,7 +368,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
     }
 
     @Override
-    public void onItemLongClick(int position) {
+    public void onItemLongClick(Object object) {
 
     }
 

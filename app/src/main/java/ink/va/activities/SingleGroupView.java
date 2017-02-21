@@ -376,7 +376,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             }
 
             @Override
-            public void onItemLongClick(int position) {
+            public void onItemLongClick(Object object) {
 
             }
 
@@ -822,7 +822,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     }
 
     @Override
-    public void onItemLongClick(int position) {
+    public void onItemLongClick(Object object) {
 
     }
 

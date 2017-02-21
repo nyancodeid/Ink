@@ -745,7 +745,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     }
 
     @Override
-    public void onItemLongClick(int position) {
+    public void onItemLongClick(Object object) {
 
     }
 

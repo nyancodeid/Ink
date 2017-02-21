@@ -18,6 +18,8 @@ import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
+import java.util.Date;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -39,6 +41,8 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
     TextView message;
     @BindView(R.id.deliveryStatus)
     TextView deliveryStatus;
+    @BindView(R.id.dateTV)
+    TextView dateTV;
     @BindView(R.id.chatViewBubble)
     LinearLayout chatViewBubble;
     @BindView(R.id.gifChatView)
@@ -49,6 +53,8 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
     private Context mContext;
     private RecyclerItemClickListener onItemClickListener;
     private int position;
+    private ChatModel chatModel;
+    private boolean isDateVisible;
 
     public ChatViewHolder(View view) {
         super(view);
@@ -57,6 +63,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
 
     public void initData(ChatModel chatModel, Context context, int position, int maxSize, RecyclerItemClickListener onItemClickListener) {
         mContext = context;
+        this.chatModel = chatModel;
         this.position = position;
         this.onItemClickListener = onItemClickListener;
         if (sharedHelper == null) {
@@ -69,6 +76,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         message.setText(messageBody);
         LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) chatViewBubble.getLayoutParams();
         LinearLayout.LayoutParams deliveryStatusParams = (LinearLayout.LayoutParams) deliveryStatus.getLayoutParams();
+        LinearLayout.LayoutParams dateTVParams = (LinearLayout.LayoutParams) dateTV.getLayoutParams();
         LinearLayout.LayoutParams gifChatViewLayoutParams = (LinearLayout.LayoutParams) imageViewWrapper.getLayoutParams();
 
 
@@ -80,9 +88,12 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
             layoutParams.rightMargin = Dp.toDps(context, 16);
             deliveryStatusParams.gravity = Gravity.RIGHT;
             gifChatViewLayoutParams.gravity = Gravity.RIGHT;
+            dateTVParams.gravity = Gravity.RIGHT;
+            dateTVParams.rightMargin = Dp.toDps(context, 15);
 
             chatViewBubble.setLayoutParams(layoutParams);
             imageView.setLayoutParams(gifChatViewLayoutParams);
+            dateTV.setLayoutParams(dateTVParams);
 
             chatViewBubble.setBackground(ContextCompat.getDrawable(context, R.drawable.outgoing_message_bg));
 
@@ -101,23 +112,55 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
             }
             layoutParams.gravity = Gravity.LEFT;
             gifChatViewLayoutParams.gravity = Gravity.LEFT;
+            dateTVParams.gravity = Gravity.LEFT;
 
             chatViewBubble.setLayoutParams(layoutParams);
+            dateTV.setLayoutParams(dateTVParams);
             imageView.setLayoutParams(gifChatViewLayoutParams);
             deliveryStatus.setVisibility(View.INVISIBLE);
         }
+        Date date = new Date();
+        String finalDate = "N/A";
+        try {
+            date.setTime(Long.valueOf(chatModel.getDate()));
+            finalDate = date.toString();
+        } catch (NumberFormatException e) {
+            finalDate = chatModel.getDate();
+        }
+
+        dateTV.setVisibility(View.GONE);
+        isDateVisible = false;
+        dateTV.setText(finalDate);
         checkForSticker(chatModel);
 
     }
 
+
+    @OnClick(R.id.chatViewBubble)
+    public void chatClicked() {
+        rootClicked();
+    }
+
+    @OnLongClick(R.id.chatViewBubble)
+    public void chatLongClicked() {
+        longClicked();
+    }
+
     @OnClick(R.id.chatItemRootLayout)
     public void rootClicked() {
+        if (isDateVisible) {
+            isDateVisible = false;
+            dateTV.setVisibility(View.GONE);
+        } else {
+            isDateVisible = true;
+            dateTV.setVisibility(View.VISIBLE);
+        }
         onItemClickListener.onItemClicked(position, itemView);
     }
 
     @OnLongClick(R.id.chatItemRootLayout)
     public boolean longClicked() {
-        onItemClickListener.onItemLongClick(position);
+        onItemClickListener.onItemLongClick(chatModel);
         return false;
     }
 

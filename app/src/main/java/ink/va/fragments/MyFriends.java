@@ -454,7 +454,7 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
     }
 
     @Override
-    public void onItemLongClick(int position) {
+    public void onItemLongClick(Object object) {
 
     }
 

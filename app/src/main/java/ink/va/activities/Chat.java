@@ -607,8 +607,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     }
 
     @Override
-    public void onItemLongClick(final int position) {
-        final ChatModel chatModel = chatAdapter.getChatModelList().get(position);
+    public void onItemLongClick(Object object) {
+        final ChatModel chatModel = (ChatModel) object;
         AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
         builder.setItems(new String[]{getString(R.string.delete), getString(R.string.copy)}, new DialogInterface.OnClickListener() {
             @Override
