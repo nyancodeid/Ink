@@ -258,12 +258,13 @@ public class NotificationService extends FirebaseMessagingService {
 
         NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
+        Intent requestsViewIntent = new Intent(context, mSharedHelper.isLoggedIn() ? HomeActivity.class : SplashScreen.class);
+        PendingIntent likeNotification = PendingIntent.getActivity(context, Integer.valueOf(requestId), requestsViewIntent, 0);
 
         android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
         builder.setSmallIcon(R.drawable.ic_account_multiple_plus_white_24dp);
         builder.setAutoCancel(true);
-
-
+        builder.setContentIntent(likeNotification);
         builder.setContentTitle(requesterName + getString(R.string.likedPostText));
         builder.setGroup(GROUP_KEY_MESSAGES);
         builder.setDefaults(android.app.Notification.DEFAULT_ALL);
