@@ -6,6 +6,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -129,7 +130,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private boolean isSocialAccount;
     private String opponentImageUrl;
     private MessageService messageService;
-
+    private MediaPlayer sendMessagePlayer;
+    private MediaPlayer receiveMessagePlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +150,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         realmHelper = RealmHelper.getInstance();
 
         Bundle extras = getIntent().getExtras();
+
+        sendMessagePlayer = MediaPlayer.create(this, R.raw.send_message_pop);
+        receiveMessagePlayer = MediaPlayer.create(this, R.raw.receive_message_pop);
 
         initVariables(extras, false);
 
@@ -257,6 +262,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             if (messageJson != null) {
                 messageJson = null;
             }
+            playSend();
             messageJson = new JSONObject();
             String message = mWriteEditText.getText().toString().trim();
             try {
@@ -329,6 +335,21 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     /**
      * Methods
      */
+
+    private void playSend() {
+        if (receiveMessagePlayer.isPlaying()) {
+            receiveMessagePlayer.stop();
+        }
+        sendMessagePlayer.start();
+    }
+
+    private void playReceive() {
+        if (sendMessagePlayer.isPlaying()) {
+            sendMessagePlayer.stop();
+        }
+        receiveMessagePlayer.start();
+    }
+
     private void localMessageInsert(ChatModel chatModel, final boolean sendMessage) {
         realmHelper.insertMessage(chatModel, new GeneralCallback() {
             @Override
@@ -803,6 +824,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 if (chatModel.getUserId().equals(opponentId)) {
                     chatAdapter.insertChatModel(chatModel);
                     localMessageInsert(chatModel, false);
+                    playReceive();
                     mRecyclerView.post(new Runnable() {
                         @Override
                         public void run() {

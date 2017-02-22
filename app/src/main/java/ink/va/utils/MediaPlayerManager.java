@@ -102,6 +102,7 @@ public class MediaPlayerManager {
         }
     }
 
+
     public boolean isSoundPlaying() {
         return mMediaPlayer.isPlaying();
     }

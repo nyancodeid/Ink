@@ -1035,7 +1035,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                     String responseBody = response.body().string();
                     if (responseBody.equals("deleted")) {
                         mSharedHelper.clean();
-                        stopService(new Intent(HomeActivity.this, MessageService.class));
+                        stopService(new Intent(MyProfile.this, MessageService.class));
                         try {
                             RealmHelper.getInstance().clearDatabase(null);
                         } catch (Exception e) {
