@@ -99,8 +99,8 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name="ink.va.activities.Chat"
-            android:launchMode="singleTask"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTask"
             android:theme="@style/ChatTheme" />
         <activity
             android:name="ink.va.activities.CustomizeLook"
@@ -134,6 +134,7 @@
             android:stopWithTask="false" />
 
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
+        <receiver android:name="ink.va.receivers.DeleteReceiver"></receiver>
         <receiver android:name="ink.va.broadcast.DismissBroadcast" />
         -- Declaring broadcast receiver for BOOT_COMPLETED event. -->
         <receiver

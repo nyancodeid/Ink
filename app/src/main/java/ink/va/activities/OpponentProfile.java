@@ -108,6 +108,7 @@ public class OpponentProfile extends BaseActivity {
     private String mOpponentImage;
     private boolean isFriend;
     private Target target;
+    private boolean disableButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,9 +127,10 @@ public class OpponentProfile extends BaseActivity {
             mLastName = extras.getString("lastName");
             isFriend = extras.getBoolean("isFriend");
             if (extras.containsKey("disableButton")) {
-                if (extras.getBoolean("disableButton") && !isFriend) {
+                disableButton = extras.getBoolean("disableButton");
+                if (disableButton && !isFriend) {
                     sendMessage.setVisibility(View.VISIBLE);
-                } else if (extras.getBoolean("disableButton")) {
+                } else if (disableButton) {
                     sendMessage.setVisibility(View.GONE);
                 }
             }
@@ -147,6 +149,11 @@ public class OpponentProfile extends BaseActivity {
             sendMessage.setImageResource(R.drawable.request_friend_icon);
             sendMessage.setLabelText(getString(R.string.sendFriendRequest));
             removeFriend.setVisibility(View.GONE);
+        }
+        if (disableButton && !isFriend) {
+            sendMessage.setVisibility(View.VISIBLE);
+        } else if (disableButton) {
+            sendMessage.setVisibility(View.GONE);
         }
     }
 

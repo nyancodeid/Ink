@@ -130,6 +130,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private MessageService messageService;
     private MediaPlayer sendMessagePlayer;
     private MediaPlayer receiveMessagePlayer;
+    private boolean isDataLoaded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -243,6 +244,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     /**
      * Click Handlers
      */
+
+    @OnClick(R.id.opponentImage)
+    public void opponentImageClicked() {
+        openOpponentProfile();
+    }
+
     @OnClick(R.id.sendChatMessage)
     public void sendMessageClicked() {
         if (!socketConnected) {
@@ -455,9 +462,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                             opponentLastName = lastName;
                             initUser();
                         }
+                        isDataLoaded = true;
                     } catch (IOException e) {
+                        isDataLoaded = true;
                         e.printStackTrace();
                     } catch (JSONException e) {
+                        isDataLoaded = true;
                         e.printStackTrace();
                     }
                 }
@@ -467,6 +477,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
                 }
             });
+        } else {
+            isDataLoaded = true;
         }
     }
 
@@ -896,11 +908,21 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     }
 
     private void openOpponentProfile() {
-        Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
-        intent.putExtra("id", opponentId);
-        intent.putExtra("firstName", opponentFirstName);
-        intent.putExtra("lastName", lastChosenStickerUrl);
-        intent.putExtra("isFriend", true);
-        startActivity(intent);
+        if (!isDataLoaded) {
+            Snackbar.make(mRecyclerView, getString(R.string.waitTillLoad), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            }).show();
+        } else {
+            Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
+            intent.putExtra("id", opponentId);
+            intent.putExtra("firstName", opponentFirstName);
+            intent.putExtra("lastName", lastChosenStickerUrl);
+            intent.putExtra("isFriend", true);
+            intent.putExtra("disableButton", true);
+            startActivity(intent);
+        }
     }
 }

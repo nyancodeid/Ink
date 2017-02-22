@@ -28,6 +28,7 @@ import ink.va.activities.ReplyView;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.interfaces.SocketListener;
 import ink.va.models.ChatModel;
+import ink.va.receivers.DeleteReceiver;
 import ink.va.utils.Notification;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
@@ -301,6 +302,9 @@ public class MessageService extends Service {
                 Intent replyIntent = new Intent(context, ReplyView.class);
                 replyIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
 
+                Intent deleteIntent = new Intent(context, DeleteReceiver.class);
+                deleteIntent.putExtra("notificationId", Integer.valueOf(opponentId));
+
                 PendingIntent requestsViewPending = PendingIntent.getActivity(context,
                         Integer.valueOf(jsonObject.optInt("messageId")), requestsViewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -308,11 +312,15 @@ public class MessageService extends Service {
                         Integer.valueOf(jsonObject.optInt("messageId")), replyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
+                PendingIntent deleteReceiver = PendingIntent.getBroadcast(context, jsonObject.optInt("messageId"), deleteIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
                 final NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
                 android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
                 builder.setSmallIcon(R.drawable.ic_message_white_24dp);
                 builder.setAutoCancel(true);
+                builder.setDeleteIntent(deleteReceiver);
                 builder.addAction(R.drawable.ic_send_white_24dp, context.getString(R.string.reply), replyPendingIntent);
                 builder.setContentTitle(querySize != 0 ? (querySize + 1) + " " + context.getString(R.string.newMessagesFrom) : context.getString(R.string.newMessageGlobal));
                 builder.setContentText(querySize != 0 ? (querySize + 1) + " " +
