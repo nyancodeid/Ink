@@ -91,7 +91,7 @@ public class PackFullScreen extends BaseActivity {
                 notifyImagesLoaded();
             }
         });
-        Ion.with(this).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packImageURL).withBitmap().placeholder(R.drawable.no_background_image).intoImageView(packImage).setCallback(new FutureCallback<ImageView>() {
+        Ion.with(this).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packImageURL).withBitmap().placeholder(R.drawable.user_image_placeholder).intoImageView(packImage).setCallback(new FutureCallback<ImageView>() {
             @Override
             public void onCompleted(Exception e, ImageView result) {
                 packImageLoaded = true;

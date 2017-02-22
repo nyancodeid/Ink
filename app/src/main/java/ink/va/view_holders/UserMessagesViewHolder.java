@@ -101,7 +101,7 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
                 url = userMessagesModel.getImageName();
             }
             Ion.with(context).load(url)
-                    .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(messagesImage);
+                    .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(messagesImage);
         } else {
             Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap()
                     .transform(new CircleTransform()).intoImageView(messagesImage);
@@ -159,13 +159,13 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
                         if (imageUrl != null && !imageUrl.isEmpty()) {
                             if (isSocialAccount) {
                                 Ion.with(context).load(imageUrl)
-                                        .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(messagesImage);
+                                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(messagesImage);
 
                             } else {
                                 String encodedImage = Uri.encode(imageUrl);
 
                                 Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
-                                        .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(messagesImage);
+                                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(messagesImage);
 
                             }
                         } else {

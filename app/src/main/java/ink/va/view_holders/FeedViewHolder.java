@@ -162,12 +162,12 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
         if (feedModel.getUserImage() != null && !feedModel.getUserImage().isEmpty()) {
             if (feedModel.isSocialAccount()) {
                 Ion.with(mContext).load(feedModel.getUserImage())
-                        .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
+                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform())
                         .intoImageView(feedUserImage);
             } else {
                 String encodedImage = Uri.encode(feedModel.getUserImage());
                 Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
-                        .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
+                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform())
                         .intoImageView(feedUserImage);
             }
 
@@ -206,12 +206,12 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
         if (feedModel.getUserImage() != null && !feedModel.getUserImage().isEmpty()) {
             if (feedModel.isSocialAccount()) {
                 Ion.with(mContext).load(feedModel.getUserImage())
-                        .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
+                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform())
                         .intoImageView(feedUserImage);
             } else {
                 String encodedImage = Uri.encode(feedModel.getUserImage());
                 Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
-                        .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
+                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform())
                         .intoImageView(feedUserImage);
             }
 

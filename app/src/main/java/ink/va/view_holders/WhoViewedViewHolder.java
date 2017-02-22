@@ -57,7 +57,7 @@ public class WhoViewedViewHolder extends RecyclerView.ViewHolder {
             }
 
             Ion.with(context).load(url)
-                    .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(whoViewedImage);
+                    .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(whoViewedImage);
         } else {
             Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
                     .withBitmap().transform(new CircleTransform()).intoImageView(whoViewedImage);

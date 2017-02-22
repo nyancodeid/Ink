@@ -65,9 +65,9 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
         if (memberModel.getMemberImage() != null && !memberModel.getMemberImage().isEmpty()) {
             String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + memberModel.getMemberImage();
             Ion.with(mContext).load(url)
-                    .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.friendImage);
+                    .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(holder.friendImage);
         } else {
-            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.no_background_image)
+            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.user_image_placeholder)
                     .transform(new CircleTransform()).intoImageView(holder.friendImage);
         }
         holder.friednsCardView.setOnClickListener(new View.OnClickListener() {

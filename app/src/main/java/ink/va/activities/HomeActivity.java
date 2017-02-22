@@ -917,7 +917,7 @@ public class HomeActivity extends BaseActivity
 
             if (!mSharedHelper.getImageLink().isEmpty()) {
                 if (isSocialAccount()) {
-                    Ion.with(getApplicationContext()).load(mSharedHelper.getImageLink()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(mProfileImage).setCallback(new FutureCallback<ImageView>() {
+                    Ion.with(getApplicationContext()).load(mSharedHelper.getImageLink()).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(mProfileImage).setCallback(new FutureCallback<ImageView>() {
                         @Override
                         public void onCompleted(Exception e, ImageView result) {
                             mSharedHelper.putShouldLoadImage(false);
@@ -926,7 +926,7 @@ public class HomeActivity extends BaseActivity
                 } else {
                     String encodedImage = Uri.encode(mSharedHelper.getImageLink());
                     Ion.with(getApplicationContext()).load(Constants.MAIN_URL +
-                            Constants.USER_IMAGES_FOLDER + encodedImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(mProfileImage)
+                            Constants.USER_IMAGES_FOLDER + encodedImage).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(mProfileImage)
                             .setCallback(new FutureCallback<ImageView>() {
                                 @Override
                                 public void onCompleted(Exception e, ImageView result) {

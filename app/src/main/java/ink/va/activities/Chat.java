@@ -493,12 +493,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         chatTitle.setText(opponentFirstName + " " + opponentLastName);
         if (opponentImageUrl != null && !opponentImageUrl.isEmpty()) {
             if (isSocialAccount) {
-                Ion.with(this).load(opponentImageUrl).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
+                Ion.with(this).load(opponentImageUrl).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform())
                         .intoImageView(opponentImage);
             } else {
                 String encodedImage = Uri.encode(opponentImageUrl);
                 Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
-                        .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(opponentImage);
+                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(opponentImage);
             }
         } else {
             Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")

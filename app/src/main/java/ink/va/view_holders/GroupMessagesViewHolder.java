@@ -73,7 +73,7 @@ public class GroupMessagesViewHolder extends RecyclerView.ViewHolder {
             String encodedImage = Uri.encode(groupMessagesModel.getSenderImage());
 
             Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                    encodedImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(messageSenderImage);
+                    encodedImage).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(messageSenderImage);
         } else {
             Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(messageSenderImage);
         }

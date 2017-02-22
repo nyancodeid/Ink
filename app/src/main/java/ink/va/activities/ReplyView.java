@@ -190,12 +190,12 @@ public class ReplyView extends BaseActivity {
     private void loadImage() {
         if (opponentImage != null && !opponentImage.isEmpty()) {
             if (isSocialAccount) {
-                Ion.with(this).load(opponentImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform())
+                Ion.with(this).load(opponentImage).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform())
                         .intoImageView(opponentIV);
             } else {
                 String encodedImage = Uri.encode(opponentImage);
                 Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
-                        .withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(opponentIV);
+                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(opponentIV);
             }
         } else {
             Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")

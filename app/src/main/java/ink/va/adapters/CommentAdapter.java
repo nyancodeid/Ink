@@ -108,11 +108,11 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         });
         if (ownerImage != null && !ownerImage.isEmpty()) {
             if (isOwnerSocialAccount) {
-                Ion.with(context).load(ownerImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
+                Ion.with(context).load(ownerImage).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
             } else {
                 String encodedImage = Uri.encode(ownerImage);
                 Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        encodedImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
+                        encodedImage).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
             }
         } else {
             Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
@@ -251,15 +251,15 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         }
         if (commentModel.getCommenterImage() != null && !commentModel.getCommenterImage().isEmpty()) {
             if (commentModel.isSocialAccount()) {
-                Ion.with(context).load(commentModel.getCommenterImage()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
+                Ion.with(context).load(commentModel.getCommenterImage()).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
             } else {
                 String encodedImage = Uri.encode(commentModel.getCommenterImage());
 
                 Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        encodedImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
+                        encodedImage).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
             }
         } else {
-            Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
+            Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
         }
         itemViewHolder.commentMoreIcon.setOnClickListener(new View.OnClickListener() {
             @Override

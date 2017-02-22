@@ -65,15 +65,15 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
 
         if (!requestsModel.getRequesterImage().isEmpty()) {
             if (requestsModel.isSocialAccount()) {
-                Ion.with(mContext).load(requestsModel.getRequesterImage()).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.requesterImage);
+                Ion.with(mContext).load(requestsModel.getRequesterImage()).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(holder.requesterImage);
             } else {
                 String encodedImage = Uri.encode(requestsModel.getRequesterImage());
 
                 Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        encodedImage).withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.requesterImage);
+                        encodedImage).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(holder.requesterImage);
             }
         } else {
-            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.no_background_image).transform(new CircleTransform()).intoImageView(holder.requesterImage);
+            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(holder.requesterImage);
         }
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
