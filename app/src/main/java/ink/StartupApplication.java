@@ -22,6 +22,7 @@ import com.vk.sdk.api.VKError;
 
 import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
+import io.smooch.core.Smooch;
 
 /**
  * Created by USER on 2016-06-26.
@@ -43,7 +44,7 @@ public class StartupApplication extends MultiDexApplication implements IAdobeAut
         instabug = new Instabug.Builder(this, "23bb97d1e65426359d94f8c466b8cb17")
                 .setInvocationEvent(InstabugInvocationEvent.NONE)
                 .build();
-
+        Smooch.init(this, "ex6cm5oblo4e6i7vq4k9e0whh");
         sharedHelper = new SharedHelper(this);
         AdobeCSDKFoundation.initializeCSDKFoundation(getApplicationContext());
         VKAccessTokenTracker vkAccessTokenTracker = new VKAccessTokenTracker() {

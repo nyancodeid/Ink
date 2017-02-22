@@ -82,6 +82,7 @@ import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.User;
+import io.smooch.ui.ConversationActivity;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -612,7 +613,7 @@ public class HomeActivity extends BaseActivity
 
             case R.id.contactSupport:
                 shouldOpenActivity = false;
-                openEmail();
+                ConversationActivity.show(this);
                 break;
 
             case R.id.logout:
