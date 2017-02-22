@@ -869,4 +869,7 @@
     <string name="replyTo">Ответить</string>
     <string name="livChat">Онлайн-чат с Онлайн-чат с поддержкой Поддержки</string>
     <string name="NA">Н/Д</string>
+    <string name="not_delivered_yet">не доставлено пока</string>
+    <string name="delivered">доставлено</string>
+    <string name="resend">Переотправить</string>
 </resources>

@@ -45,6 +45,7 @@ import static ink.va.utils.Constants.EVENT_STOPPED_TYPING;
 import static ink.va.utils.Constants.EVENT_TYPING;
 import static ink.va.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
 import static ink.va.utils.Constants.SOCKET_URL;
+import static ink.va.utils.Constants.STATUS_DELIVERED;
 
 
 public class MessageService extends Service {
@@ -53,6 +54,7 @@ public class MessageService extends Service {
     LocalBinder mBinder = new LocalBinder();
     private SocketListener onSocketListener;
     private List<Integer> socketListeners = new LinkedList<>();
+    private GeneralCallback emitListener;
 
     public MessageService() {
     }
@@ -148,13 +150,21 @@ public class MessageService extends Service {
         @Override
         public void call(Object... args) {
             JSONObject jsonObject = (JSONObject) args[0];
-            String messageId = jsonObject.optString("messageId");
             if (onSocketListener != null) {
-                onSocketListener.onMessageSent(messageId);
+                onSocketListener.onMessageSent(jsonObject);
             }
+            if (emitListener != null) {
+                emitListener.onSuccess(null);
+            }
+            String messageId = jsonObject.optString("messageId");
+            updateRealmMessage(messageId);
         }
 
     };
+
+    private void updateRealmMessage(String messageId) {
+        RealmHelper.getInstance().updateMessageDeliveryStatus(messageId, STATUS_DELIVERED, null);
+    }
 
     private Emitter.Listener onUserTyping = new Emitter.Listener() {
         @Override
@@ -246,6 +256,15 @@ public class MessageService extends Service {
 
     public void emit(String event, Object... args) {
         mSocket.emit(event, args);
+    }
+
+    public void setEmitListener(GeneralCallback emitListener) {
+        this.emitListener = null;
+        this.emitListener = emitListener;
+    }
+
+    public void destroyEmitListener() {
+        emitListener = null;
     }
 
     public void connectSocket() {

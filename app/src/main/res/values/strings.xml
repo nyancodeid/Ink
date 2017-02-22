@@ -864,4 +864,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="copy">Copy</string>
     <string name="replyTo">Reply to</string>
     <string name="livChat">Live Chat With Support Team</string>
+    <string name="not_delivered_yet">not delivered yet</string>
+    <string name="delivered">delivered</string>
+    <string name="resend">Resend</string>
 </resources>

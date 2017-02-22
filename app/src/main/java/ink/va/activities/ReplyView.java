@@ -33,6 +33,7 @@ import ink.va.utils.Time;
 
 import static ink.va.utils.Constants.EVENT_SEND_MESSAGE;
 import static ink.va.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
+import static ink.va.utils.Constants.STATUS_DELIVERED;
 
 
 public class ReplyView extends BaseActivity {
@@ -134,6 +135,8 @@ public class ReplyView extends BaseActivity {
         requestsViewIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         requestsViewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(requestsViewIntent);
+        finish();
+        overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
     }
 
 
@@ -172,6 +175,7 @@ public class ReplyView extends BaseActivity {
             chatModel.setOpponentFirstName(sharedHelper.getFirstName());
             chatModel.setOpponentLastName(sharedHelper.getLastName());
             chatModel.setStickerUrl("");
+            chatModel.setDeliveryStatus(STATUS_DELIVERED);
             chatModel.setStickerChosen(false);
             chatModel.setSocialAccount(isSocialAccount);
             chatModel.setCurrentUserSocial(sharedHelper.isSocialAccount());
@@ -212,9 +216,21 @@ public class ReplyView extends BaseActivity {
         RealmHelper.getInstance().insertMessage(chatModel, new GeneralCallback() {
             @Override
             public void onSuccess(Object o) {
+                messageService.setEmitListener(new GeneralCallback() {
+                    @Override
+                    public void onSuccess(Object o) {
+                        messageService.destroyEmitListener();
+                        finish();
+                        overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
+
+                    }
+
+                    @Override
+                    public void onFailure(Object o) {
+
+                    }
+                });
                 messageService.emit(EVENT_SEND_MESSAGE, messageJson);
-                finish();
-                overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
             }
 
             @Override

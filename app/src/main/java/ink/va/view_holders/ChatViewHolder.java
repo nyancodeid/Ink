@@ -32,6 +32,9 @@ import ink.va.utils.FileUtils;
 import ink.va.utils.Regex;
 import ink.va.utils.SharedHelper;
 
+import static ink.va.utils.Constants.STATUS_DELIVERED;
+import static ink.va.utils.Constants.STATUS_NOT_DELIVERED;
+
 
 /**
  * Created by PC-Comp on 1/31/2017.
@@ -102,7 +105,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
                 chatViewBubble.getBackground().setColorFilter(Color.parseColor(sharedHelper.getOwnBubbleColor()), PorterDuff.Mode.SRC_ATOP);
             }
 
-            deliveryStatus.setVisibility(View.INVISIBLE);
+            checkDelivery(context, maxSize);
         } else {
             chatViewBubble.setBackground(ContextCompat.getDrawable(context, R.drawable.incoming_message_bg));
             if (sharedHelper.getOpponentTextColor() != null) {
@@ -121,7 +124,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
             deliveryStatus.setVisibility(View.INVISIBLE);
         }
         Date date = new Date();
-        String finalDate = "N/A";
+        String finalDate;
         try {
             date.setTime(Long.valueOf(chatModel.getDate()));
             finalDate = date.toString();
@@ -133,7 +136,22 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         isDateVisible = false;
         dateTV.setText(finalDate);
         checkForSticker(chatModel);
+    }
 
+    private void checkDelivery(Context context, int maxSize) {
+        switch (chatModel.getDeliveryStatus()) {
+            case STATUS_DELIVERED:
+                deliveryStatus.setText(context.getString(R.string.delivered));
+                break;
+            case STATUS_NOT_DELIVERED:
+                deliveryStatus.setText(context.getString(R.string.not_delivered_yet));
+                break;
+        }
+        if (position == maxSize) {
+            deliveryStatus.setVisibility(View.VISIBLE);
+        } else {
+            deliveryStatus.setVisibility(View.INVISIBLE);
+        }
     }
 
 

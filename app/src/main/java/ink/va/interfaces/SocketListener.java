@@ -19,5 +19,5 @@ public interface SocketListener {
 
     void onNewMessageReceived(JSONObject messageJson);
 
-    void onMessageSent(String messageId);
+    void onMessageSent(JSONObject chatJson);
 }

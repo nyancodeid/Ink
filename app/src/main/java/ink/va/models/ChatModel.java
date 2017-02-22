@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.Setter;
 
+import static ink.va.utils.Constants.STATUS_NOT_DELIVERED;
+
 /**
  * Created by USER on 2016-06-24.
  */
@@ -73,6 +75,10 @@ public class ChatModel {
     @Setter
     @Getter
     private String opponentImage;
+
+    @Setter
+    @Getter
+    private String deliveryStatus = STATUS_NOT_DELIVERED;
 
     @Override
     public boolean equals(Object obj) {

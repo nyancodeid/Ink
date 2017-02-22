@@ -6,6 +6,9 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -17,6 +20,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -69,6 +73,7 @@ import static ink.va.utils.Constants.EVENT_TYPING;
 import static ink.va.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
 import static ink.va.utils.Constants.REQUEST_CODE_CHOSE_STICKER;
 import static ink.va.utils.Constants.STARTING_FOR_RESULT_BUNDLE_KEY;
+import static ink.va.utils.Constants.STATUS_DELIVERED;
 
 
 public class Chat extends BaseActivity implements RecyclerItemClickListener, SocketListener {
@@ -80,6 +85,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     fab.FloatingActionButton mSendChatMessage;
     @BindView(R.id.messageBody)
     EditText mWriteEditText;
+    @BindView(R.id.toolbarChat)
+    Toolbar chatToolbar;
     @BindView(R.id.noMessageLayout)
     View mNoMessageLayout;
     @BindView(R.id.chatRecyclerView)
@@ -91,7 +98,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     @BindView(R.id.scrollDownChat)
     ImageView scrollDownChat;
     @BindView(R.id.stickerIcon)
-    ImageView attachmentIcon;
+    ImageView stickerIcon;
     @BindView(R.id.messageFiledDivider)
     View messageFiledDivider;
     @BindView(R.id.callIcon)
@@ -131,6 +138,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private MediaPlayer sendMessagePlayer;
     private MediaPlayer receiveMessagePlayer;
     private boolean isDataLoaded;
+    private ChatModel lastSentChatModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,23 +178,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_in);
         slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_out);
 
-        getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chat_vector_background));
         initWriteField();
         getMessages();
         removeNotificationIfNeeded();
+        initColors();
     }
 
-    private void removeNotificationIfNeeded() {
-        final NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                notificationManager.cancel(Integer.valueOf(opponentId));
-                RealmHelper.getInstance().removeNotificationCount(getApplicationContext(), Integer.valueOf(opponentId));
-            }
-        });
-
-    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -206,38 +203,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             });
         }
 
-    }
-
-    private void getMessages() {
-        realmHelper.getMessagesAsChatModel(opponentId, currentUserId, new GeneralCallback<List<ChatModel>>() {
-            @Override
-            public void onSuccess(final List<ChatModel> messageModels) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadingMessages.setVisibility(View.GONE);
-                        if (messageModels.isEmpty()) {
-                            showNoMessages();
-                        } else {
-                            hideNoMessages();
-                            chatAdapter.setChatModelList(messageModels);
-                            mRecyclerView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    scrollToBottom();
-                                }
-                            });
-                        }
-                    }
-                });
-
-            }
-
-            @Override
-            public void onFailure(List<ChatModel> messageModels) {
-
-            }
-        });
     }
 
 
@@ -265,46 +230,52 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 }
             }).show();
         } else {
-            if (messageJson != null) {
-                messageJson = null;
-            }
-            playSend();
-            messageJson = new JSONObject();
             String message = mWriteEditText.getText().toString().replaceAll(":\\)", "\u263A")
                     .replaceAll(":\\(", "\u2639").replaceAll(":D", "\uD83D\uDE00").trim();
-            try {
-                messageJson.put("messageId", System.currentTimeMillis());
-                messageJson.put("userId", currentUserId);
-                messageJson.put("opponentId", opponentId);
-                messageJson.put("firstName", sharedHelper.getFirstName());
-                messageJson.put("lastName", sharedHelper.getLastName());
-                messageJson.put("opponentFirstName", opponentFirstName);
-                messageJson.put("opponentLastName", opponentLastName);
-                messageJson.put("opponentImage", opponentImageUrl);
-                messageJson.put("currentUserImage", sharedHelper.getImageLink());
-                messageJson.put("isSocialAccount", isSocialAccount);
-                messageJson.put("isCurrentUserSocial", sharedHelper.isSocialAccount());
-                messageJson.put("message", message);
-                messageJson.put("date", Time.getCurrentTime());
-                messageJson.put("stickerChosen", isStickerChosen);
-                messageJson.put("stickerUrl", lastChosenStickerUrl);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            mWriteEditText.setText("");
-            hideNoMessages();
-            final ChatModel chatModel = chatGSON.fromJson(messageJson.toString(), ChatModel.class);
-            chatAdapter.insertChatModel(chatModel);
-            mRecyclerView.post(new Runnable() {
-                @Override
-                public void run() {
-                    scrollToBottom();
-                }
-            });
-            handleStickerRemoved();
-            localMessageInsert(chatModel, true);
+            sendMessage(message);
         }
+    }
+
+    private void sendMessage(String message) {
+        if (messageJson != null) {
+            messageJson = null;
+        }
+        playSend();
+        messageJson = new JSONObject();
+        try {
+            messageJson.put("messageId", System.currentTimeMillis());
+            messageJson.put("userId", currentUserId);
+            messageJson.put("opponentId", opponentId);
+            messageJson.put("firstName", sharedHelper.getFirstName());
+            messageJson.put("lastName", sharedHelper.getLastName());
+            messageJson.put("opponentFirstName", opponentFirstName);
+            messageJson.put("opponentLastName", opponentLastName);
+            messageJson.put("opponentImage", opponentImageUrl);
+            messageJson.put("currentUserImage", sharedHelper.getImageLink());
+            messageJson.put("isSocialAccount", isSocialAccount);
+            messageJson.put("isCurrentUserSocial", sharedHelper.isSocialAccount());
+            messageJson.put("message", message);
+            messageJson.put("date", Time.getCurrentTime());
+            messageJson.put("stickerChosen", isStickerChosen);
+            messageJson.put("stickerUrl", lastChosenStickerUrl);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        mWriteEditText.setText("");
+        hideNoMessages();
+        final ChatModel chatModel = chatGSON.fromJson(messageJson.toString(), ChatModel.class);
+        chatAdapter.insertChatModel(chatModel);
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                scrollToBottom();
+            }
+        });
+        handleStickerRemoved();
+        lastSentChatModel = chatModel;
+        localMessageInsert(chatModel, true);
+
     }
 
 
@@ -346,6 +317,73 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     /**
      * Methods
      */
+
+    private void getMessages() {
+        realmHelper.getMessagesAsChatModel(opponentId, currentUserId, new GeneralCallback<List<ChatModel>>() {
+            @Override
+            public void onSuccess(final List<ChatModel> messageModels) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadingMessages.setVisibility(View.GONE);
+                        if (messageModels.isEmpty()) {
+                            showNoMessages();
+                        } else {
+                            hideNoMessages();
+                            chatAdapter.setChatModelList(messageModels);
+                            mRecyclerView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    scrollToBottom();
+                                }
+                            });
+                        }
+                    }
+                });
+
+            }
+
+            @Override
+            public void onFailure(List<ChatModel> messageModels) {
+
+            }
+        });
+    }
+
+
+    private void initColors() {
+        if (sharedHelper.getChatColor() != null) {
+            getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor(sharedHelper.getChatColor())));
+        } else {
+            getWindow().setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.chat_vector_background));
+        }
+
+        if (sharedHelper.getChatFieldTextColor() != null) {
+            mWriteEditText.setHintTextColor(Color.parseColor(sharedHelper.getChatFieldTextColor()));
+            mWriteEditText.setTextColor(Color.parseColor(sharedHelper.getChatFieldTextColor()));
+            messageFiledDivider.setBackgroundColor(Color.parseColor(sharedHelper.getChatFieldTextColor()));
+            stickerIcon.setColorFilter(Color.parseColor(sharedHelper.getChatFieldTextColor()), PorterDuff.Mode.SRC_ATOP);
+        }
+        checkForActionBar();
+    }
+
+    private void removeNotificationIfNeeded() {
+        final NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                notificationManager.cancel(Integer.valueOf(opponentId));
+                RealmHelper.getInstance().removeNotificationCount(getApplicationContext(), Integer.valueOf(opponentId));
+            }
+        });
+
+    }
+
+    private void checkForActionBar() {
+        if (sharedHelper.getActionBarColor() != null) {
+            chatToolbar.setBackgroundColor(Color.parseColor(sharedHelper.getActionBarColor()));
+        }
+    }
 
     private void playSend() {
         if (receiveMessagePlayer.isPlaying()) {
@@ -553,7 +591,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                                 e.printStackTrace();
                             }
 
-                            messageService.emit(EVENT_TYPING, typingJson);
+                            messageService.emit(EVENT_TYPING,typingJson);
                         }
                         return true;
                     }
@@ -583,7 +621,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        messageService.emit(EVENT_STOPPED_TYPING, typingJson);
+                        messageService.emit(EVENT_STOPPED_TYPING,typingJson);
                     }
                 });
 
@@ -686,7 +724,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     public void onItemLongClick(Object object) {
         final ChatModel chatModel = (ChatModel) object;
         AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
-        builder.setItems(new String[]{getString(R.string.delete), getString(R.string.copy)}, new DialogInterface.OnClickListener() {
+        builder.setItems(new String[]{getString(R.string.delete), getString(R.string.copy), getString(R.string.resend)}, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
@@ -730,6 +768,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                         ClipData clip = ClipData.newPlainText(getString(R.string.messageText), chatModel.getMessage());
                         clipboard.setPrimaryClip(clip);
                         Toast.makeText(messageService, getString(R.string.copied), Toast.LENGTH_SHORT).show();
+                        break;
+                    case 2:
+                        sendMessage(chatModel.getMessage());
                         break;
                 }
 
@@ -865,8 +906,15 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     }
 
     @Override
-    public void onMessageSent(String messageId) {
+    public void onMessageSent(final JSONObject chatJson) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
 
+                lastSentChatModel.setDeliveryStatus(STATUS_DELIVERED);
+                chatAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
