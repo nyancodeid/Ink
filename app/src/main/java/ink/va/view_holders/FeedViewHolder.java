@@ -234,7 +234,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
             }
         });
         feedContent.setMovementMethod(LinkMovementMethod.getInstance());
-        feedContent.setText(feedModel.getContent());
+        feedContent.setText(mContext.getString(R.string.quoteOpen) + feedModel.getContent() + mContext.getString(R.string.quoteClose));
         whenPosted.setText(Time.convertToLocalTime(feedModel.getDatePosted()));
         userPostedTitle.setText(feedModel.getFirstName() + " " + feedModel.getLastName());
         if (feedModel.isLiked()) {

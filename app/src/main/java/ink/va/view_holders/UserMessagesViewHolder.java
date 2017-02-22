@@ -70,7 +70,8 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
             if (userMessagesModel.getMessage().isEmpty()) {
                 finalMessage = context.getString(R.string.you) + context.getString(R.string.sentSticker);
             } else {
-                finalMessage = context.getString(R.string.you) + message.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, "");
+                finalMessage = context.getString(R.string.you) + context.getString(R.string.quoteOpen) +
+                        message.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, "") + context.getString(R.string.quoteClose);
             }
 
         } else {
@@ -80,7 +81,8 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
                 String lastName = userMessagesModel.getLastName() != null ? userMessagesModel.getLastName().isEmpty() ? "" : userMessagesModel.getLastName() :
                         "";
 
-                finalMessage = firstName + " " + lastName + " : " + context.getString(R.string.sentSticker);
+                finalMessage = firstName + " " + lastName + " : " + context.getString(R.string.quoteOpen) +
+                        context.getString(R.string.sentSticker) + context.getString(R.string.quoteClose);
             } else {
 
                 String firstName = userMessagesModel.getFirstName() != null ? userMessagesModel.getFirstName().isEmpty() ? context.getString(R.string.NA) : userMessagesModel.getFirstName() :
@@ -88,11 +90,12 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
                 String lastName = userMessagesModel.getLastName() != null ? userMessagesModel.getLastName().isEmpty() ? "" : userMessagesModel.getLastName() :
                         "";
 
-                finalMessage = firstName + " " + lastName + " : " + message.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, "");
+                finalMessage = firstName + " " + lastName + " : " + context.getString(R.string.quoteOpen) +
+                        message.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, "") + context.getString(R.string.quoteClose);
             }
         }
 
-        messageBody.setText(context.getString(R.string.quoteOpen) + StringEscapeUtils.unescapeJava(finalMessage) + context.getString(R.string.quoteClose));
+        messageBody.setText(StringEscapeUtils.unescapeJava(finalMessage));
         if (!userMessagesModel.getImageName().isEmpty()) {
             String encodedImage = Uri.encode(userMessagesModel.getImageName());
 
