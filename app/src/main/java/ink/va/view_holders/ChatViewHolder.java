@@ -200,7 +200,8 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
             imageView.setImageResource(0);
             imageViewWrapper.setVisibility(View.VISIBLE);
 
-            Ion.with(mContext).load(Constants.MAIN_URL + chatModel.getStickerUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(imageView)
+            Ion.with(mContext).load(Constants.MAIN_URL + chatModel.getStickerUrl()).withBitmap().placeholder(R.drawable.time_loading_vector)
+                    .intoImageView(imageView)
                     .setCallback(new FutureCallback<ImageView>() {
                         @Override
                         public void onCompleted(Exception e, ImageView result) {

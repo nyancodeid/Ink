@@ -3,7 +3,6 @@
     android:id="@+id/chatItemRootLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:animateLayoutChanges="true"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
@@ -12,8 +11,8 @@
 
     <LinearLayout
         android:id="@+id/singleGifViewWrapper"
-        android:layout_width="170dp"
-        android:layout_height="170dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
@@ -26,8 +25,8 @@
             android:id="@+id/gifChatView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxHeight="150dp"
-            android:maxWidth="150dp" />
+            android:minHeight="150dp"
+            android:minWidth="150dp" />
 
     </LinearLayout>
 
@@ -58,11 +57,11 @@
     <TextView
         android:id="@+id/dateTV"
         android:layout_width="wrap_content"
-        android:background="@drawable/instabug_bg_border_dark"
         android:layout_height="wrap_content"
         android:layout_below="@+id/chatViewBubble"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="5dp"
+        android:background="@drawable/instabug_bg_border_dark"
         android:textColor="#ffffff" />
 
     <TextView
