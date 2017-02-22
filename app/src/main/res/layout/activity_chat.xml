@@ -46,6 +46,12 @@
                         android:textColor="#ffffff"
                         android:textStyle="bold" />
 
+                    <ProgressBar
+                        android:id="@+id/loadingMessages"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true" />
+
                     <ImageView
                         android:id="@+id/opponentImage"
                         android:layout_width="46dp"
@@ -155,7 +161,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent">
-
 
                 <EditText
                     android:id="@+id/messageBody"

@@ -1,6 +1,7 @@
 package ink.va.activities;
 
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -32,7 +33,6 @@ import ink.va.utils.Time;
 
 import static ink.va.utils.Constants.EVENT_SEND_MESSAGE;
 import static ink.va.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
-
 
 
 public class ReplyView extends BaseActivity {
@@ -92,7 +92,7 @@ public class ReplyView extends BaseActivity {
 
                 NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 notificationManager.cancel(Integer.valueOf(mOpponentId));
-                RealmHelper.getInstance().removeNotificationCount(Integer.valueOf(mOpponentId));
+                RealmHelper.getInstance().removeNotificationCount(this, Integer.valueOf(mOpponentId));
 
                 sharedHelper.removeLastNotificationId(mOpponentId);
                 replyToUserTV.setText(getString(R.string.replyTo) + " " + mFirstName + " " + mLastName);
@@ -126,9 +126,27 @@ public class ReplyView extends BaseActivity {
         });
     }
 
+
+    @OnClick(R.id.goToIcon)
+    public void goToIconClicked() {
+        Intent requestsViewIntent = new Intent(this, Chat.class);
+        requestsViewIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, receivedMessageJson.toString());
+        requestsViewIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        requestsViewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(requestsViewIntent);
+    }
+
+
     @OnClick(R.id.backButton)
     public void backButton() {
         finish();
+        overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
     }
 
     @OnClick(R.id.replyMessage)

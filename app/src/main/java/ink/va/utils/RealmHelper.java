@@ -33,6 +33,7 @@ import io.realm.RealmResults;
 import io.realm.RealmSchema;
 import io.realm.Sort;
 import io.realm.internal.IOException;
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 import static ink.va.utils.Constants.REALM_DB_NAME;
@@ -76,6 +77,12 @@ public class RealmHelper {
                                 RealmSchema realmSchema = realm.getSchema();
                                 if (oldVersion == REALM_CURRENT_VERSION) {
                                     RealmObjectSchema messageSchema = realmSchema.get("MessageModel");
+                                    RealmObjectSchema notificationSchema = realmSchema.get("NotificationModel");
+
+                                    if (!notificationSchema.hasField("message")) {
+                                        notificationSchema.addField("message", String.class, null);
+                                    }
+
                                     if (!messageSchema.hasField("isSocialAccount")) {
                                         messageSchema.addField("isSocialAccount", boolean.class, FieldAttribute.REQUIRED);
                                     }
@@ -806,7 +813,9 @@ public class RealmHelper {
     }
 
 
-    public void getNotificationCount(final int opponentId, @Nullable final QueryReadyListener queryReadyListener) {
+    public void getNotificationCount(final int opponentId,
+                                     @Nullable final QueryReadyListener queryReadyListener) {
+        final List<String> messages = new LinkedList<>();
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -818,8 +827,11 @@ public class RealmHelper {
                                 @Override
                                 public void execute(Realm realm) {
                                     RealmResults<NotificationModel> resultQuery = realm.where(NotificationModel.class).equalTo("opponentId", opponentId).findAll();
+                                    for (NotificationModel notificationModel : resultQuery) {
+                                        messages.add(notificationModel.getMessage());
+                                    }
                                     if (queryReadyListener != null) {
-                                        queryReadyListener.onQueryReady(resultQuery.size());
+                                        queryReadyListener.onQueryReady(resultQuery.size(), messages);
                                     }
                                 }
                             });
@@ -835,8 +847,11 @@ public class RealmHelper {
                         @Override
                         public void execute(Realm realm) {
                             RealmResults<NotificationModel> resultQuery = realm.where(NotificationModel.class).equalTo("opponentId", opponentId).findAll();
+                            for (NotificationModel notificationModel : resultQuery) {
+                                messages.add(notificationModel.getMessage());
+                            }
                             if (queryReadyListener != null) {
-                                queryReadyListener.onQueryReady(resultQuery.size());
+                                queryReadyListener.onQueryReady(resultQuery.size(), messages);
                             }
                         }
                     });
@@ -847,7 +862,8 @@ public class RealmHelper {
         });
     }
 
-    public void removeNotificationCount(final int opponentId) {
+    public void removeNotificationCount(Context context, final int opponentId) {
+        ShortcutBadger.removeCount(context);
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -883,7 +899,7 @@ public class RealmHelper {
         });
     }
 
-    public void putNotificationCount(final int opponentId, @Nullable final QueryReadyListener queryReadyListener) {
+    public void putNotificationCount(final int opponentId, final String message, @Nullable final QueryReadyListener queryReadyListener) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -896,6 +912,7 @@ public class RealmHelper {
                                 public void execute(Realm realm) {
                                     NotificationModel notificationModel = realm.createObject(NotificationModel.class);
                                     notificationModel.setOpponentId(opponentId);
+                                    notificationModel.setMessage(message);
                                     if (queryReadyListener != null) {
                                         queryReadyListener.onQueryReady(null);
                                     }
@@ -914,6 +931,7 @@ public class RealmHelper {
                         public void execute(Realm realm) {
                             NotificationModel notificationModel = realm.createObject(NotificationModel.class);
                             notificationModel.setOpponentId(opponentId);
+                            notificationModel.setMessage(message);
                             if (queryReadyListener != null) {
                                 queryReadyListener.onQueryReady(null);
                             }
@@ -1173,7 +1191,7 @@ public class RealmHelper {
     }
 
     public interface QueryReadyListener<T> {
-        void onQueryReady(T result);
+        void onQueryReady(T... results);
     }
 
 }

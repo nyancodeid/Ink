@@ -270,8 +270,8 @@ public class HomeActivity extends BaseActivity
 
         RealmHelper.getInstance().getNotificationCount(new RealmHelper.QueryReadyListener() {
             @Override
-            public void onQueryReady(Object result) {
-                final int notificationCount = (int) result;
+            public void onQueryReady(Object... results) {
+                final int notificationCount = (int) results[0];
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

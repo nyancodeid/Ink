@@ -104,6 +104,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     View stickerPreviewLayout;
     @BindView(R.id.stickerPreviewImageView)
     ImageView stickerPreviewImageView;
+    @BindView(R.id.loadingMessages)
+    public View loadingMessages;
 
     private ChatAdapter chatAdapter;
     private RealmHelper realmHelper;
@@ -179,7 +181,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             @Override
             public void run() {
                 notificationManager.cancel(Integer.valueOf(opponentId));
-                RealmHelper.getInstance().removeNotificationCount(Integer.valueOf(opponentId));
+                RealmHelper.getInstance().removeNotificationCount(getApplicationContext(), Integer.valueOf(opponentId));
             }
         });
 
@@ -212,6 +214,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        loadingMessages.setVisibility(View.GONE);
                         if (messageModels.isEmpty()) {
                             showNoMessages();
                         } else {
@@ -758,7 +761,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         super.onServiceConnected(messageService);
         this.messageService = messageService;
         socketConnected = messageService.isSocketConnected();
-        messageService.setOnSocketListener(this);
+        messageService.setOnSocketListener(this, Integer.valueOf(sharedHelper.getUserId()));
     }
 
     @Override
@@ -890,5 +893,14 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void openOpponentProfile() {
+        Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
+        intent.putExtra("id", opponentId);
+        intent.putExtra("firstName", opponentFirstName);
+        intent.putExtra("lastName", lastChosenStickerUrl);
+        intent.putExtra("isFriend", true);
+        startActivity(intent);
     }
 }

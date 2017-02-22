@@ -20,6 +20,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.LinkedList;
+import java.util.List;
 
 import ink.va.activities.Chat;
 import ink.va.activities.ReplyView;
@@ -29,6 +31,7 @@ import ink.va.models.ChatModel;
 import ink.va.utils.Notification;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_ERROR;
@@ -48,6 +51,7 @@ public class MessageService extends Service {
     private String currentUserId;
     LocalBinder mBinder = new LocalBinder();
     private SocketListener onSocketListener;
+    private List<Integer> socketListeners = new LinkedList<>();
 
     public MessageService() {
     }
@@ -216,12 +220,23 @@ public class MessageService extends Service {
         }
     }
 
-    public void setOnSocketListener(SocketListener onSocketListener) {
-        this.onSocketListener = onSocketListener;
+    public void setOnSocketListener(SocketListener onSocketListener, int id) {
+        boolean addListener = true;
+
+        for (int socketId : socketListeners) {
+            if (socketId == id) {
+                addListener = false;
+                break;
+            }
+        }
+        if (addListener) {
+            this.onSocketListener = onSocketListener;
+        }
     }
 
     public void destroyListener() {
         onSocketListener = null;
+        socketListeners.clear();
     }
 
     public boolean isSocketConnected() {
@@ -261,15 +276,27 @@ public class MessageService extends Service {
         final String lastName = jsonObject.optString("lastName");
         final String message = jsonObject.optString("message");
         final String opponentId = jsonObject.optString("userId");
+        final StringBuilder stringBuilder = new StringBuilder();
 
         RealmHelper.getInstance().getNotificationCount(Integer.valueOf(opponentId), new RealmHelper.QueryReadyListener() {
             @Override
-            public void onQueryReady(Object result) {
-                int querySize = (int) result;
+            public void onQueryReady(Object... results) {
+                int querySize = (int) results[0];
+                if (querySize != 0) {
+                    ShortcutBadger.applyCount(context, (querySize + 1));
+                }
+                List<String> messages = (List<String>) results[1];
+
+                for (String message : messages) {
+                    stringBuilder.append("\n" + message);
+                }
+                stringBuilder.append(messages.isEmpty() ? message : "\n" + message);
 
 
                 Intent requestsViewIntent = new Intent(context, Chat.class);
                 requestsViewIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
+                requestsViewIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                requestsViewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 Intent replyIntent = new Intent(context, ReplyView.class);
                 replyIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
@@ -294,15 +321,9 @@ public class MessageService extends Service {
                 builder.setDefaults(android.app.Notification.DEFAULT_ALL);
 
                 builder.setStyle(new NotificationCompat.BigTextStyle()
-                        .setSummaryText(querySize != 0 ? (querySize + 1) + " " +
-                                context.getString(R.string.newMessagesFrom) + firstName + " " + lastName
-                                : context.getString(R.string.newMessagesFrom) + firstName + " " + lastName)
-                        .setBigContentTitle(querySize != 0 ? (querySize + 1) + " " +
-                                context.getString(R.string.newMessagesFrom) + firstName + " " + lastName
-                                : context.getString(R.string.newMessagesFrom) + firstName + " " + lastName)
-                        .bigText(querySize != 0 ? (querySize + 1) + " " + context.getString(R.string.newMessage) + "  " + context.getString(R.string.lastMessage) +
-                                (message.isEmpty() ? context.getString(R.string.sentSticker) : message)
-                                : message.isEmpty() ? context.getString(R.string.sentSticker) : message)
+                        .setSummaryText(context.getString(R.string.newMessage))
+                        .setBigContentTitle(context.getString(R.string.myMessages))
+                        .bigText(stringBuilder.toString())
                 );
 
                 builder.setContentIntent(requestsViewPending);
@@ -310,9 +331,9 @@ public class MessageService extends Service {
                 builder.setShowWhen(true);
                 final android.app.Notification notification = builder.build();
 
-                RealmHelper.getInstance().putNotificationCount(Integer.valueOf(opponentId), new RealmHelper.QueryReadyListener() {
+                RealmHelper.getInstance().putNotificationCount(Integer.valueOf(opponentId), message, new RealmHelper.QueryReadyListener() {
                     @Override
-                    public void onQueryReady(Object result) {
+                    public void onQueryReady(Object... results) {
                         notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
                     }
                 });

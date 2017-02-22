@@ -146,6 +146,12 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                mMessagesSwipe.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mMessagesSwipe.setRefreshing(false);
+                                    }
+                                });
                                 Toast.makeText(Messages.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -181,7 +187,7 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
             finalId = userMessagesModel.getUserId();
         }
 
-        RealmHelper.getInstance().removeNotificationCount(Integer.valueOf(finalId));
+        RealmHelper.getInstance().removeNotificationCount(this, Integer.valueOf(finalId));
 
         Intent intent = new Intent(getApplicationContext(), Chat.class);
         intent.putExtra("firstName", userMessagesModel.getFirstName());
