@@ -15,7 +15,6 @@ import com.google.gson.Gson;
 import com.ink.va.R;
 import com.koushikdutta.ion.Ion;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -85,7 +84,7 @@ public class ReplyView extends BaseActivity {
                 String message = receivedMessageJson.optString("message").isEmpty() ? mFirstName + " " + mLastName + " " +
                         getString(R.string.sentSticker) : receivedMessageJson.optString("message");
 
-                userMessageTV.setText(StringEscapeUtils.unescapeJava(getString(R.string.lastMessage) + " " + getString(R.string.quoteOpen) + message + getString(R.string.quoteClose)));
+                userMessageTV.setText(getString(R.string.lastMessage) + " " + getString(R.string.quoteOpen) + message + getString(R.string.quoteClose));
 
                 loadImage();
 
