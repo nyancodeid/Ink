@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -43,6 +42,7 @@ import static ink.va.utils.Constants.REALM_DB_NAME;
  */
 public class RealmHelper {
 
+    private static final long REALM_CURRENT_VERSION = 0;
     private static RealmHelper ourInstance = new RealmHelper();
     private Realm mRealm;
     private List<MessageModel> mModelArray = new ArrayList<>();
@@ -74,8 +74,7 @@ public class RealmHelper {
                             @Override
                             public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
                                 RealmSchema realmSchema = realm.getSchema();
-                                Log.d("oldVersion", "migrate: " + oldVersion);
-                                if (oldVersion == 0) {
+                                if (oldVersion == REALM_CURRENT_VERSION) {
                                     RealmObjectSchema messageSchema = realmSchema.get("MessageModel");
                                     if (!messageSchema.hasField("isSocialAccount")) {
                                         messageSchema.addField("isSocialAccount", boolean.class, FieldAttribute.REQUIRED);
@@ -87,6 +86,18 @@ public class RealmHelper {
                                     if (!messageSchema.hasField("lastName")) {
                                         messageSchema.addField("lastName", String.class, null);
                                     }
+                                    if (!messageSchema.hasField("opponentFirstName")) {
+                                        messageSchema.addField("opponentFirstName", String.class, null);
+                                    }
+
+                                    if (!messageSchema.hasField("opponentLastName")) {
+                                        messageSchema.addField("opponentLastName", String.class, null);
+                                    }
+
+                                    if (!messageSchema.hasField("currentUserSocial")) {
+                                        messageSchema.addField("currentUserSocial", boolean.class, FieldAttribute.REQUIRED);
+                                    }
+
                                     oldVersion++;
                                 }
                             }
@@ -267,7 +278,7 @@ public class RealmHelper {
                                         userMessagesModel.setFirstName(queryModel.getFirstName());
                                         userMessagesModel.setLastName(queryModel.getLastName());
                                         userMessagesModel.setDate(queryModel.getDate());
-                                        userMessagesModel.setImageName(queryModel.getOpponentImage());
+                                        userMessagesModel.setImageName(queryModel.getUserImage());
                                         userMessagesModel.setFriend(false);
                                         userMessagesModel.setMessage(queryModel.getMessage());
                                         userMessagesModel.setMessageId(queryModel.getMessageId());
@@ -379,7 +390,7 @@ public class RealmHelper {
                                         messageModel.setOpponentId(chatModel.getOpponentId());
                                         messageModel.setAnimated(false);
                                         messageModel.setDeliveryStatus("NONE");
-                                        messageModel.setUserImage(chatModel.getOpponentImage());
+                                        messageModel.setUserImage(chatModel.getCurrentUserImage());
                                         messageModel.setSocialAccount(chatModel.isSocialAccount());
                                         messageModel.setOpponentImage(chatModel.getOpponentImage());
                                         messageModel.setDate(chatModel.getDate());
@@ -421,7 +432,7 @@ public class RealmHelper {
                                 messageModel.setOpponentId(chatModel.getOpponentId());
                                 messageModel.setAnimated(false);
                                 messageModel.setDeliveryStatus("NONE");
-                                messageModel.setUserImage(chatModel.getOpponentImage());
+                                messageModel.setUserImage(chatModel.getCurrentUserImage());
                                 messageModel.setOpponentImage(chatModel.getOpponentImage());
                                 messageModel.setDate(chatModel.getDate());
                                 messageModel.setHasGif(chatModel.isStickerChosen());

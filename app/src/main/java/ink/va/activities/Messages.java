@@ -1,12 +1,10 @@
 package ink.va.activities;
 
-import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -50,7 +48,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
     RelativeLayout messagesRootLayout;
     private MessagesAdapter messagesAdapter;
     private String finalOpponentId;
-    private Snackbar deleteRequestSnack;
     private SharedHelper sharedHelper;
     private Gson gson;
 
@@ -97,7 +94,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
         RealmHelper.getInstance().deleteMessageRow(sharedHelper.getUserId(), opponentId, new GeneralCallback() {
             @Override
             public void onSuccess(Object o) {
-                hideSnack(true);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -108,12 +104,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
             @Override
             public void onFailure(Object o) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        hideSnack(false);
-                    }
-                });
             }
         });
     }
@@ -179,27 +169,6 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
         getUserMessages();
     }
 
-
-    private void hideSnack(boolean success) {
-        if (deleteRequestSnack != null) {
-            if (deleteRequestSnack.isShown()) {
-                if (success) {
-                    deleteRequestSnack.setText(getString(R.string.messageDeleted));
-                    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    notificationManager.cancel(Integer.valueOf(finalOpponentId));
-                    mSharedHelper.removeLastNotificationId(finalOpponentId);
-                } else {
-                    deleteRequestSnack.setText(getString(R.string.somethingWentWrong));
-                }
-                deleteRequestSnack.setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        deleteRequestSnack.dismiss();
-                    }
-                });
-            }
-        }
-    }
 
     @Override
     public void onItemClick(Object clickedItem) {

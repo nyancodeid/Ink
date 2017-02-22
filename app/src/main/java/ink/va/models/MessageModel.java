@@ -56,9 +56,20 @@ public class MessageModel extends RealmObject {
     @Setter
     @Getter
     String lastName;
+
+    @Setter
+    @Getter
+    String opponentFirstName;
+    @Setter
+    @Getter
+    String opponentLastName;
+
     @Setter
     @Getter
     boolean isSocialAccount;
 
+    @Setter
+    @Getter
+    boolean currentUserSocial;
 
 }

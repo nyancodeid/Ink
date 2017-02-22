@@ -26,6 +26,14 @@ public class ChatModel {
     @Setter
     @Getter
     private String lastName;
+    @SerializedName("opponentFirstName")
+    @Setter
+    @Getter
+    private String opponentFirstName;
+    @SerializedName("opponentLastName")
+    @Setter
+    @Getter
+    private String opponentLastName;
     @SerializedName("opponentId")
     @Setter
     @Getter
@@ -50,6 +58,17 @@ public class ChatModel {
     @Setter
     @Getter
     private boolean isSocialAccount;
+
+    @SerializedName("isCurrentUserSocial")
+    @Setter
+    @Getter
+    private boolean isCurrentUserSocial;
+
+    @SerializedName("currentUserImage")
+    @Setter
+    @Getter
+    private String currentUserImage;
+
     @SerializedName("opponentImage")
     @Setter
     @Getter

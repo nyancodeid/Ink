@@ -57,6 +57,8 @@ public class ReplyView extends BaseActivity {
     private boolean isSocialAccount;
     private MessageService messageService;
     private Gson chatGSON;
+    private String jsonExtra;
+    private JSONObject receivedMessageJson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,17 +69,17 @@ public class ReplyView extends BaseActivity {
         sharedHelper = new SharedHelper(this);
         chatGSON = new Gson();
         if (extras != null) {
-            String jsonExtra = extras.getString(NOTIFICATION_MESSAGE_BUNDLE_KEY);
+            jsonExtra = extras.getString(NOTIFICATION_MESSAGE_BUNDLE_KEY);
 
             try {
-                JSONObject jsonObject = new JSONObject(jsonExtra);
+                receivedMessageJson = new JSONObject(jsonExtra);
 
-                mOpponentId = jsonObject.optString("opponentId");
-                mCurrentUserId = jsonObject.optString("userId");
-                isSocialAccount = jsonObject.optBoolean("isSocialAccount");
-                opponentImage = jsonObject.optString("opponentImage");
-                mFirstName = jsonObject.optString("firstName");
-                mLastName = jsonObject.optString("lastName");
+                mOpponentId = receivedMessageJson.optString("userId");
+                mCurrentUserId = receivedMessageJson.optString("opponentId");
+                isSocialAccount = receivedMessageJson.optBoolean("isCurrentUserSocial");
+                opponentImage = receivedMessageJson.optString("currentUserImage");
+                mFirstName = receivedMessageJson.optString("firstName");
+                mLastName = receivedMessageJson.optString("lastName");
 
                 loadImage();
 
@@ -131,31 +133,28 @@ public class ReplyView extends BaseActivity {
         } else {
             replyMessage.setVisibility(View.GONE);
             sendProgress.setVisibility(View.VISIBLE);
-            try {
-                JSONObject messageJson = buildJson(messageToSend);
-                messageService.connectSocket();
-                final ChatModel chatModel = chatGSON.fromJson(messageJson.toString(), ChatModel.class);
-                localMessageInsert(chatModel, messageJson);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
-    public JSONObject buildJson(String message) throws JSONException {
-        JSONObject messageJson = new JSONObject();
-        messageJson.put("messageId", System.currentTimeMillis());
-        messageJson.put("userId", mCurrentUserId);
-        messageJson.put("opponentId", mOpponentId);
-        messageJson.put("firstName", mFirstName);
-        messageJson.put("opponentImage", opponentImage);
-        messageJson.put("lastName", mLastName);
-        messageJson.put("isSocialAccount", isSocialAccount);
-        messageJson.put("message", message);
-        messageJson.put("date", Time.getCurrentTime());
-        messageJson.put("stickerChosen", false);
-        messageJson.put("stickerUrl", "");
-        return messageJson;
+            messageService.connectSocket();
+
+            final ChatModel chatModel = chatGSON.fromJson(receivedMessageJson.toString(), ChatModel.class);
+            chatModel.setDate(Time.getCurrentTime());
+            chatModel.setMessageId(String.valueOf(System.currentTimeMillis()));
+            chatModel.setMessage(messageToSend);
+            chatModel.setUserId(mCurrentUserId);
+            chatModel.setOpponentId(mOpponentId);
+            chatModel.setFirstName(sharedHelper.getFirstName());
+            chatModel.setLastName(sharedHelper.getLastName());
+            chatModel.setOpponentFirstName(mFirstName);
+            chatModel.setOpponentLastName(mLastName);
+            chatModel.setStickerUrl("");
+            chatModel.setStickerChosen(false);
+            chatModel.setSocialAccount(isSocialAccount);
+            chatModel.setCurrentUserSocial(sharedHelper.isSocialAccount());
+            chatModel.setCurrentUserImage(sharedHelper.getImageLink());
+            chatModel.setOpponentImage(opponentImage);
+
+            localMessageInsert(chatModel, receivedMessageJson);
+        }
     }
 
     @Override

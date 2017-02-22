@@ -197,6 +197,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 @Override
                 public void onSuccess(Object o) {
                     getMessages();
+                    initUser();
                 }
 
                 @Override
@@ -204,7 +205,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
                 }
             });
-            initUser();
         }
 
     }
@@ -269,10 +269,14 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 messageJson.put("messageId", System.currentTimeMillis());
                 messageJson.put("userId", currentUserId);
                 messageJson.put("opponentId", opponentId);
-                messageJson.put("firstName", opponentFirstName);
+                messageJson.put("firstName", sharedHelper.getFirstName());
+                messageJson.put("lastName", sharedHelper.getLastName());
+                messageJson.put("opponentFirstName", opponentFirstName);
+                messageJson.put("opponentLastName", opponentLastName);
                 messageJson.put("opponentImage", opponentImageUrl);
-                messageJson.put("lastName", opponentLastName);
+                messageJson.put("currentUserImage", sharedHelper.getImageLink());
                 messageJson.put("isSocialAccount", isSocialAccount);
+                messageJson.put("isCurrentUserSocial", sharedHelper.isSocialAccount());
                 messageJson.put("message", message);
                 messageJson.put("date", Time.getCurrentTime());
                 messageJson.put("stickerChosen", isStickerChosen);
@@ -351,6 +355,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     }
 
     private void localMessageInsert(ChatModel chatModel, final boolean sendMessage) {
+        chatModel.setFirstName(opponentFirstName);
+        chatModel.setLastName(opponentLastName);
+        chatModel.setOpponentFirstName(sharedHelper.getFirstName());
+        chatModel.setOpponentLastName(sharedHelper.getLastName());
         realmHelper.insertMessage(chatModel, new GeneralCallback() {
             @Override
             public void onSuccess(Object o) {
@@ -410,7 +418,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             opponentId = chatModel.getUserId();
             opponentFirstName = chatModel.getFirstName();
             opponentLastName = chatModel.getLastName();
-            opponentImageUrl = chatModel.getOpponentImage();
+            opponentImageUrl = chatModel.getCurrentUserImage();
             isSocialAccount = chatModel.isSocialAccount();
         } else {
             Bundle extras = (Bundle) object;
@@ -442,10 +450,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                         JSONObject jsonObject = new JSONObject(responseBody);
                         String firstName = jsonObject.optString("first_name");
                         String lastName = jsonObject.optString("last_name");
-
-                        opponentFirstName = firstName;
-                        opponentLastName = lastName;
-                        initUser();
+                        if (opponentFirstName == null || opponentFirstName.equals("null") || opponentFirstName.isEmpty()) {
+                            opponentFirstName = firstName;
+                            opponentLastName = lastName;
+                            initUser();
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (JSONException e) {
@@ -467,6 +476,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 String receivedMessageJson = extras.getString(NOTIFICATION_MESSAGE_BUNDLE_KEY);
                 ChatModel chatModel = chatGSON.fromJson(receivedMessageJson, ChatModel.class);
                 initVariables(chatModel, true);
+                initUser();
                 if (insertMessage) {
                     RealmHelper.getInstance().insertMessage(chatModel, new GeneralCallback() {
                         @Override

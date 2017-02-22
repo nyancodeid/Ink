@@ -257,7 +257,7 @@ public class MessageService extends Service {
 
 
     public static void sendMessageNotification(final Context context, final JSONObject jsonObject) {
-        final String firstName = jsonObject.optString("firstName");
+        final String firstName = jsonObject.optString("lastName");
         final String lastName = jsonObject.optString("lastName");
         final String message = jsonObject.optString("message");
         final String opponentId = jsonObject.optString("userId");
