@@ -1,9 +1,6 @@
 package ink.va.activities;
 
 import android.app.NotificationManager;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -28,7 +25,6 @@ import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ink.va.R;
@@ -52,6 +48,7 @@ import ink.va.interfaces.SocketListener;
 import ink.va.models.ChatModel;
 import ink.va.service.MessageService;
 import ink.va.utils.CircleTransform;
+import ink.va.utils.ClipManager;
 import ink.va.utils.Constants;
 import ink.va.utils.Keyboard;
 import ink.va.utils.Notification;
@@ -764,14 +761,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                         });
                         break;
                     case 1:
-                        if (chatModel.getMessage().isEmpty()) {
-                            Toast.makeText(Chat.this, getString(R.string.nothingToCopy), Toast.LENGTH_SHORT).show();
-                        } else {
-                            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                            ClipData clip = ClipData.newPlainText(getString(R.string.messageText), chatModel.getMessage());
-                            clipboard.setPrimaryClip(clip);
-                            Toast.makeText(messageService, getString(R.string.copied), Toast.LENGTH_SHORT).show();
-                        }
+                        ClipManager.copy(Chat.this, chatModel.getMessage());
                         break;
                     case 2:
                         sendMessage(chatModel.getMessage());

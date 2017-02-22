@@ -1,7 +1,5 @@
 package ink.va.adapters;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
@@ -25,6 +22,7 @@ import ink.va.interfaces.CommentClickHandler;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.CommentModel;
 import ink.va.utils.CircleTransform;
+import ink.va.utils.ClipManager;
 import ink.va.utils.Constants;
 import ink.va.utils.FileUtils;
 import ink.va.utils.SharedHelper;
@@ -276,14 +274,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             itemViewHolder.commentMoreIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (commentModel.getCommentBody().isEmpty()) {
-                        Toast.makeText(context, context.getString(R.string.nothingToCopy), Toast.LENGTH_SHORT).show();
-                    } else {
-                        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                        ClipData clip = ClipData.newPlainText(context.getString(R.string.messageText), commentModel.getCommentBody());
-                        clipboard.setPrimaryClip(clip);
-                        Toast.makeText(context, context.getString(R.string.copied), Toast.LENGTH_SHORT).show();
-                    }
+                    ClipManager.copy(context, commentModel.getCommentBody());
                 }
             });
         }

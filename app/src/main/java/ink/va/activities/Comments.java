@@ -57,6 +57,7 @@ import ink.va.interfaces.ItemClickListener;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.CommentModel;
 import ink.va.utils.Animations;
+import ink.va.utils.ClipManager;
 import ink.va.utils.Constants;
 import ink.va.utils.InputField;
 import ink.va.utils.Keyboard;
@@ -826,9 +827,12 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                             snackbar.show();
                             callCommentServer(Constants.COMMENT_TYPE_DELETE, commentModel.getCommentId(), "");
                             break;
+                        case 2:
+                            ClipManager.copy(Comments.this, commentModel.getCommentBody());
+                            break;
                     }
                 }
-            }, getString(R.string.editComment), getString(R.string.deleteComment));
+            }, getString(R.string.editComment), getString(R.string.deleteComment), getString(R.string.copy));
 
         } catch (ArrayIndexOutOfBoundsException e) {
 
