@@ -79,7 +79,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     @BindView(R.id.commentsLoading)
     ProgressBar mCommentsLoading;
     @BindView(R.id.addCommentButton)
-    FloatingActionButton mAaddCommentButton;
+    FloatingActionButton mAddCommentButton;
     @BindView(R.id.commentRecycler)
     RecyclerView mCommentRecycler;
     @BindView(R.id.commentRefresher)
@@ -202,7 +202,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         };
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter(getPackageName() + "Comments"));
 
-        mAaddCommentButton.setEnabled(false);
+        mAddCommentButton.setEnabled(false);
         getComments(mPostId, false);
         mCommentBody.addTextChangedListener(new TextWatcher() {
             @Override
@@ -214,12 +214,12 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (charSequence.toString().trim().isEmpty()) {
                     if (isStickerChosen) {
-                        mAaddCommentButton.setEnabled(true);
+                        mAddCommentButton.setEnabled(true);
                     } else {
-                        mAaddCommentButton.setEnabled(false);
+                        mAddCommentButton.setEnabled(false);
                     }
                 } else {
-                    mAaddCommentButton.setEnabled(true);
+                    mAddCommentButton.setEnabled(true);
                 }
             }
 
@@ -340,7 +340,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     @OnClick(R.id.removeSticker)
     public void removeClicked() {
         if (mCommentBody.getText().toString().trim().isEmpty()) {
-            mAaddCommentButton.setEnabled(false);
+            mAddCommentButton.setEnabled(false);
         }
         isStickerChosen = false;
         stickerChosenLayout.setVisibility(View.GONE);
@@ -358,7 +358,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 mSharedHelper.getUserId(), mPostId, lastChosenStickerUrl, isStickerChosen, isAnimated);
         mCommentBody.setText("");
         stickerChosenLayout.setVisibility(View.GONE);
-        mAaddCommentButton.setEnabled(false);
+        mAddCommentButton.setEnabled(false);
         isStickerChosen = false;
     }
 
@@ -867,7 +867,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     }
 
     private void handleStickerChosenView() {
-        mAaddCommentButton.setEnabled(true);
+        mAddCommentButton.setEnabled(true);
         stickerChosenLayout.setVisibility(View.VISIBLE);
     }
 }
