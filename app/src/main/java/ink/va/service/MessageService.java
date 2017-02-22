@@ -272,7 +272,7 @@ public class MessageService extends Service {
                 requestsViewIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
 
                 Intent replyIntent = new Intent(context, ReplyView.class);
-                requestsViewIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
+                replyIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
 
                 PendingIntent requestsViewPending = PendingIntent.getActivity(context,
                         Integer.valueOf(jsonObject.optInt("messageId")), requestsViewIntent, 0);

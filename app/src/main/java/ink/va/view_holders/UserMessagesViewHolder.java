@@ -92,7 +92,7 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
             }
         }
 
-        messageBody.setText(StringEscapeUtils.unescapeJava(finalMessage));
+        messageBody.setText(context.getString(R.string.quoteOpen) + StringEscapeUtils.unescapeJava(finalMessage) + context.getString(R.string.quoteClose));
         if (!userMessagesModel.getImageName().isEmpty()) {
             String encodedImage = Uri.encode(userMessagesModel.getImageName());
 

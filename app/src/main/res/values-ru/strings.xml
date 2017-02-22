@@ -26,8 +26,8 @@
     <string name="emptyPasswordError">Поле пароля не может быть пустым</string>
     <string name="emptyLoginError">Поле Логина не может быть пустым</string>
     <string name="title_activity_home">Новости</string>
-    <string name="quoteOpen">❝</string>
-    <string name="quoteClose">❞</string>
+    <string name="quoteOpen">❝ </string>
+    <string name="quoteClose"> ❞</string>
     <string name="navigation_drawer_open">Открыть панель навигации</string>
     <string name="navigation_drawer_close">Закрыть панель навигации</string>
 

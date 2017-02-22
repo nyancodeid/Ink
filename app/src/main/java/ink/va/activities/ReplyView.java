@@ -46,6 +46,8 @@ public class ReplyView extends BaseActivity {
     View sendProgress;
     @BindView(R.id.opponentImage)
     ImageView opponentIV;
+    @BindView(R.id.userMessage)
+    TextView userMessageTV;
 
     private String mOpponentId;
     private String mCurrentUserId;
@@ -80,6 +82,10 @@ public class ReplyView extends BaseActivity {
                 opponentImage = receivedMessageJson.optString("currentUserImage");
                 mFirstName = receivedMessageJson.optString("firstName");
                 mLastName = receivedMessageJson.optString("lastName");
+                String message = receivedMessageJson.optString("message").isEmpty() ? mFirstName + " " + mLastName + " " +
+                        getString(R.string.sentSticker) : receivedMessageJson.optString("message");
+
+                userMessageTV.setText(StringEscapeUtils.unescapeJava(getString(R.string.lastMessage) + " " + getString(R.string.quoteOpen) + message + getString(R.string.quoteClose)));
 
                 loadImage();
 
@@ -142,16 +148,36 @@ public class ReplyView extends BaseActivity {
             chatModel.setMessage(messageToSend);
             chatModel.setUserId(mCurrentUserId);
             chatModel.setOpponentId(mOpponentId);
-            chatModel.setFirstName(sharedHelper.getFirstName());
-            chatModel.setLastName(sharedHelper.getLastName());
-            chatModel.setOpponentFirstName(mFirstName);
-            chatModel.setOpponentLastName(mLastName);
+            chatModel.setFirstName(mFirstName);
+            chatModel.setLastName(mLastName);
+            chatModel.setOpponentFirstName(sharedHelper.getFirstName());
+            chatModel.setOpponentLastName(sharedHelper.getLastName());
             chatModel.setStickerUrl("");
             chatModel.setStickerChosen(false);
             chatModel.setSocialAccount(isSocialAccount);
             chatModel.setCurrentUserSocial(sharedHelper.isSocialAccount());
             chatModel.setCurrentUserImage(sharedHelper.getImageLink());
             chatModel.setOpponentImage(opponentImage);
+
+            try {
+                receivedMessageJson.put("messageId", chatModel.getMessageId());
+                receivedMessageJson.put("userId", chatModel.getUserId());
+                receivedMessageJson.put("opponentId", chatModel.getOpponentId());
+                receivedMessageJson.put("firstName", chatModel.getFirstName());
+                receivedMessageJson.put("lastName", chatModel.getLastName());
+                receivedMessageJson.put("opponentFirstName", chatModel.getOpponentFirstName());
+                receivedMessageJson.put("opponentLastName", chatModel.getOpponentLastName());
+                receivedMessageJson.put("opponentImage", chatModel.getOpponentImage());
+                receivedMessageJson.put("currentUserImage", chatModel.getCurrentUserImage());
+                receivedMessageJson.put("isSocialAccount", chatModel.isSocialAccount());
+                receivedMessageJson.put("isCurrentUserSocial", chatModel.isCurrentUserSocial());
+                receivedMessageJson.put("message", chatModel.getMessage());
+                receivedMessageJson.put("date", chatModel.getDate());
+                receivedMessageJson.put("stickerChosen", false);
+                receivedMessageJson.put("stickerUrl", "");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
             localMessageInsert(chatModel, receivedMessageJson);
         }

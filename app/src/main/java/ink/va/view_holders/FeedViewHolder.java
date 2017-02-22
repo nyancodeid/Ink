@@ -123,7 +123,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
         userPostedTitle.setText(feedModel.getFirstName() + " " + feedModel.getLastName() + " > " + feedModel.getGroupName());
 
         feedContent.setMovementMethod(LinkMovementMethod.getInstance());
-        feedContent.setText(feedModel.getContent());
+        feedContent.setText(mContext.getString(R.string.quoteOpen) + feedModel.getContent() + mContext.getString(R.string.quoteClose));
 
         if (feedModel.getGroupMessageFileName().isEmpty()) {
             imageHolder.setVisibility(View.GONE);
