@@ -128,6 +128,9 @@ public class HomeActivity extends BaseActivity
     private RelativeLayout panelHeader;
     private TextView messagesCountTV;
     private PollFish pollFish;
+    public String currentScreen;
+    public static final String SCREEN_FEED = "feed";
+    public static final String SCREEN_FRIENDS = "friends";
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -240,6 +243,7 @@ public class HomeActivity extends BaseActivity
         View headerView = navigationView.getHeaderView(0);
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getSupportFragmentManager().beginTransaction().replace(R.id.container, mFeed).commit();
+        currentScreen = SCREEN_FEED;
 
 
         mProfileImage = (ImageView) headerView.findViewById(R.id.profileImage);
@@ -465,7 +469,11 @@ public class HomeActivity extends BaseActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (currentScreen.equals(SCREEN_FRIENDS)) {
+                openFeeds();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -535,11 +543,7 @@ public class HomeActivity extends BaseActivity
                 break;
             case R.id.feeds:
                 shouldOpenActivity = false;
-                if (!mToolbar.getTitle().equals(FEED)) {
-                    mToolbar.setTitle(getString(R.string.feedText));
-                    getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    getSupportFragmentManager().beginTransaction().replace(R.id.container, mFeed).commit();
-                }
+                openFeeds();
                 break;
 
             case R.id.messages:
@@ -563,6 +567,7 @@ public class HomeActivity extends BaseActivity
                     mToolbar.setTitle(getString(R.string.friendsText));
                     getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     getSupportFragmentManager().beginTransaction().replace(R.id.container, MyFriends.newInstance()).commit();
+                    currentScreen = SCREEN_FRIENDS;
                 }
                 break;
 
@@ -634,6 +639,15 @@ public class HomeActivity extends BaseActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void openFeeds() {
+        if (!mToolbar.getTitle().equals(FEED)) {
+            mToolbar.setTitle(getString(R.string.feedText));
+            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, mFeed).commit();
+            currentScreen = SCREEN_FEED;
+        }
     }
 
 

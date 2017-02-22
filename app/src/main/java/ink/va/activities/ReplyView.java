@@ -33,6 +33,8 @@ import ink.va.utils.Time;
 import static ink.va.utils.Constants.EVENT_SEND_MESSAGE;
 import static ink.va.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
 
+
+
 public class ReplyView extends BaseActivity {
 
     @BindView(R.id.replyToUserTV)
