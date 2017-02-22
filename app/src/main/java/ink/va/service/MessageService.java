@@ -257,7 +257,7 @@ public class MessageService extends Service {
 
 
     public static void sendMessageNotification(final Context context, final JSONObject jsonObject) {
-        final String firstName = jsonObject.optString("lastName");
+        final String firstName = jsonObject.optString("firstName");
         final String lastName = jsonObject.optString("lastName");
         final String message = jsonObject.optString("message");
         final String opponentId = jsonObject.optString("userId");
@@ -275,10 +275,10 @@ public class MessageService extends Service {
                 replyIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
 
                 PendingIntent requestsViewPending = PendingIntent.getActivity(context,
-                        Integer.valueOf(jsonObject.optInt("messageId")), requestsViewIntent, 0);
+                        Integer.valueOf(jsonObject.optInt("messageId")), requestsViewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 PendingIntent replyPendingIntent = PendingIntent.getActivity(context,
-                        Integer.valueOf(jsonObject.optInt("messageId")), replyIntent, 0);
+                        Integer.valueOf(jsonObject.optInt("messageId")), replyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
                 final NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);

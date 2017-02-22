@@ -159,19 +159,19 @@ public class ReplyView extends BaseActivity {
             chatModel.setOpponentImage(opponentImage);
 
             try {
-                receivedMessageJson.put("messageId", chatModel.getMessageId());
-                receivedMessageJson.put("userId", chatModel.getUserId());
-                receivedMessageJson.put("opponentId", chatModel.getOpponentId());
-                receivedMessageJson.put("firstName", chatModel.getFirstName());
-                receivedMessageJson.put("lastName", chatModel.getLastName());
-                receivedMessageJson.put("opponentFirstName", chatModel.getOpponentFirstName());
-                receivedMessageJson.put("opponentLastName", chatModel.getOpponentLastName());
-                receivedMessageJson.put("opponentImage", chatModel.getOpponentImage());
-                receivedMessageJson.put("currentUserImage", chatModel.getCurrentUserImage());
-                receivedMessageJson.put("isSocialAccount", chatModel.isSocialAccount());
-                receivedMessageJson.put("isCurrentUserSocial", chatModel.isCurrentUserSocial());
-                receivedMessageJson.put("message", chatModel.getMessage());
-                receivedMessageJson.put("date", chatModel.getDate());
+                receivedMessageJson.put("messageId", System.currentTimeMillis());
+                receivedMessageJson.put("userId", sharedHelper.getUserId());
+                receivedMessageJson.put("opponentId", mOpponentId);
+                receivedMessageJson.put("firstName", sharedHelper.getFirstName());
+                receivedMessageJson.put("lastName", sharedHelper.getLastName());
+                receivedMessageJson.put("opponentFirstName", mFirstName);
+                receivedMessageJson.put("opponentLastName", mLastName);
+                receivedMessageJson.put("opponentImage", opponentImage);
+                receivedMessageJson.put("currentUserImage", sharedHelper.getImageLink());
+                receivedMessageJson.put("isSocialAccount", isSocialAccount);
+                receivedMessageJson.put("isCurrentUserSocial", sharedHelper.isSocialAccount());
+                receivedMessageJson.put("message", messageToSend);
+                receivedMessageJson.put("date", Time.getCurrentTime());
                 receivedMessageJson.put("stickerChosen", false);
                 receivedMessageJson.put("stickerUrl", "");
             } catch (JSONException e) {
