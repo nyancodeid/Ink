@@ -65,6 +65,8 @@ import rx.Observer;
 import rx.functions.Func1;
 
 import static ink.va.service.MessageService.sendMessageNotification;
+import static ink.va.utils.Constants.EVENT_ONLINE_STATUS;
+import static ink.va.utils.Constants.EVENT_PING;
 import static ink.va.utils.Constants.EVENT_SEND_MESSAGE;
 import static ink.va.utils.Constants.EVENT_STOPPED_TYPING;
 import static ink.va.utils.Constants.EVENT_TYPING;
@@ -200,7 +202,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 @Override
                 public void onSuccess(Object o) {
                     getMessages();
-                    initUser();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            initUser();
+                        }
+                    });
                 }
 
                 @Override
@@ -219,7 +226,21 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
     @OnClick(R.id.opponentImage)
     public void opponentImageClicked() {
-        openOpponentProfile();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("currentUserId", sharedHelper.getUserId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JSONObject jsonObject1 = new JSONObject();
+        try {
+            jsonObject1.put("opponentId", opponentId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        messageService.emit(EVENT_PING, jsonObject);
+        messageService.emit(EVENT_ONLINE_STATUS, jsonObject);
+//        openOpponentProfile();
     }
 
     @OnClick(R.id.sendChatMessage)

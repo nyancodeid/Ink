@@ -246,5 +246,7 @@ public class Constants {
     public static final String EVENT_ADD_USER = "addUser";
     public static final String EVENT_SEND_MESSAGE = "sendMessage";
     public static final String EVENT_MESSAGE_RECEIVED = "onClientMessageReceived";
+    public static final String EVENT_ONLINE_STATUS = "onlineStatus";
+    public static final String EVENT_PING = "ping";
 }
 

@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -41,6 +42,7 @@ import static ink.va.utils.Constants.EVENT_ADD_USER;
 import static ink.va.utils.Constants.EVENT_MESSAGE_RECEIVED;
 import static ink.va.utils.Constants.EVENT_MESSAGE_SENT;
 import static ink.va.utils.Constants.EVENT_NEW_MESSAGE;
+import static ink.va.utils.Constants.EVENT_ONLINE_STATUS;
 import static ink.va.utils.Constants.EVENT_STOPPED_TYPING;
 import static ink.va.utils.Constants.EVENT_TYPING;
 import static ink.va.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
@@ -49,6 +51,7 @@ import static ink.va.utils.Constants.STATUS_DELIVERED;
 
 
 public class MessageService extends Service {
+    private static final String TAG = MessageService.class.getSimpleName();
     private SharedHelper sharedHelper;
     private String currentUserId;
     LocalBinder mBinder = new LocalBinder();
@@ -96,6 +99,16 @@ public class MessageService extends Service {
     /**
      * Socket Listeners
      */
+
+    private Emitter.Listener onOnlineStatusReceived = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject jsonObject = (JSONObject) args[0];
+            String timeDifference = jsonObject.optString("minutesDifference");
+            Log.d(TAG, "call: " + timeDifference);
+        }
+    };
+
     private Emitter.Listener onNewMessageReceived = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
@@ -222,6 +235,7 @@ public class MessageService extends Service {
         mSocket.on(EVENT_STOPPED_TYPING, onUserStoppedTyping);
         mSocket.on(EVENT_TYPING, onUserTyping);
         mSocket.on(EVENT_MESSAGE_SENT, onMessageSent);
+        mSocket.on(EVENT_ONLINE_STATUS, onOnlineStatusReceived);
         mSocket.connect();
     }
 
