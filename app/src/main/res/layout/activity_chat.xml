@@ -38,9 +38,8 @@
                         android:id="@+id/chatTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignLeft="@+id/opponentStatus"
-                        android:layout_alignStart="@+id/opponentStatus"
                         android:layout_alignTop="@+id/opponentImage"
+                        android:layout_marginLeft="20dp"
                         android:layout_toRightOf="@+id/opponentImage"
                         android:fontFamily="@string/appFont"
                         android:text="@string/loadingText"
@@ -52,32 +51,6 @@
                         android:layout_width="46dp"
                         android:layout_height="46dp"
                         android:layout_centerVertical="true" />
-
-                    <TextView
-                        android:id="@+id/opponentStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/opponentImage"
-                        android:layout_marginBottom="2dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_toRightOf="@+id/statusColor"
-                        android:ellipsize="end"
-                        android:fontFamily="@string/appFont"
-                        android:maxLines="2"
-                        android:text="@string/loadingText"
-                        android:textColor="#ffffff"
-                        android:textSize="11sp" />
-
-                    <ImageView
-                        android:id="@+id/statusColor"
-                        android:layout_width="5dp"
-                        android:layout_height="5dp"
-                        android:layout_alignTop="@+id/opponentStatus"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_toRightOf="@+id/opponentImage"
-                        android:background="@drawable/circle_green"
-                        android:visibility="gone" />
 
                     <ImageView
                         android:id="@+id/callIcon"
@@ -230,11 +203,11 @@
                 <RelativeLayout
                     android:id="@+id/stickerPreviewLayout"
                     android:layout_width="60dp"
-                    android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/messageFiledDivider"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="10dp">
+                    android:layout_marginLeft="10dp"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="wrap_content"

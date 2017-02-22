@@ -88,10 +88,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     TextView chatTitle;
     @BindView(R.id.opponentImage)
     ImageView opponentImage;
-    @BindView(R.id.opponentStatus)
-    TextView opponentStatus;
-    @BindView(R.id.statusColor)
-    ImageView statusColor;
     @BindView(R.id.scrollDownChat)
     ImageView scrollDownChat;
     @BindView(R.id.stickerIcon)
