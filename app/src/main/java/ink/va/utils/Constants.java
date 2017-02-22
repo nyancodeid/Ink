@@ -238,6 +238,7 @@ public class Constants {
     public static final String EVENT_NEW_MESSAGE = "onNewMessage";
     public static final String EVENT_TYPING = "typing";
     public static final String EVENT_STOPPED_TYPING = "stoppedTyping";
+    public static final String EVENT_MESSAGE_SENT = "messageSent";
 
     /**
      * Socket Emit Events

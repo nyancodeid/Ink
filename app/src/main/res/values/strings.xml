@@ -862,4 +862,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="backUpWarning">You\'r remote data will be overwritten,proceed?</string>
     <string name="NA">N/A</string>
     <string name="copy">Copy</string>
+    <string name="replyTo">Reply to</string>
 </resources>

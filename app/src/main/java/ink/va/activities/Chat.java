@@ -62,7 +62,7 @@ import retrofit2.Response;
 import rx.Observer;
 import rx.functions.Func1;
 
-import static ink.va.service.MessageService.sendGeneralNotification;
+import static ink.va.service.MessageService.sendMessageNotification;
 import static ink.va.utils.Constants.EVENT_SEND_MESSAGE;
 import static ink.va.utils.Constants.EVENT_STOPPED_TYPING;
 import static ink.va.utils.Constants.EVENT_TYPING;
@@ -758,6 +758,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     protected void onDestroy() {
         super.onDestroy();
         Notification.get().setSendingRemote(true);
+        if (messageService != null) {
+            messageService.destroyListener();
+        }
         unbindService();
     }
 
@@ -832,11 +835,16 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                         }
                     });
                 } else {
-                    sendGeneralNotification(getApplicationContext(), messageJson);
+                    sendMessageNotification(getApplicationContext(), messageJson);
                 }
 
             }
         });
+    }
+
+    @Override
+    public void onMessageSent(String messageId) {
+
     }
 
     @Override

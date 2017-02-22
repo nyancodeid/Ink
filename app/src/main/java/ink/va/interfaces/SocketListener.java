@@ -18,4 +18,6 @@ public interface SocketListener {
     void onUserTyping(JSONObject jsonObject);
 
     void onNewMessageReceived(JSONObject messageJson);
+
+    void onMessageSent(String messageId);
 }

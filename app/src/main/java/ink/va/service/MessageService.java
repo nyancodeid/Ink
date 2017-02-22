@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 
 import ink.va.activities.Chat;
+import ink.va.activities.ReplyView;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.interfaces.SocketListener;
 import ink.va.models.ChatModel;
@@ -35,6 +36,7 @@ import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_ERROR;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_DISCONNECT;
 import static ink.va.utils.Constants.EVENT_ADD_USER;
 import static ink.va.utils.Constants.EVENT_MESSAGE_RECEIVED;
+import static ink.va.utils.Constants.EVENT_MESSAGE_SENT;
 import static ink.va.utils.Constants.EVENT_NEW_MESSAGE;
 import static ink.va.utils.Constants.EVENT_STOPPED_TYPING;
 import static ink.va.utils.Constants.EVENT_TYPING;
@@ -114,7 +116,7 @@ public class MessageService extends Service {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                sendGeneralNotification(getApplicationContext(), messageJson);
+                                sendMessageNotification(getApplicationContext(), messageJson);
                             }
                         });
                     }
@@ -125,7 +127,7 @@ public class MessageService extends Service {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                sendGeneralNotification(getApplicationContext(), messageJson);
+                                sendMessageNotification(getApplicationContext(), messageJson);
                             }
                         });
                     }
@@ -138,6 +140,17 @@ public class MessageService extends Service {
         }
     };
 
+    private Emitter.Listener onMessageSent = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject jsonObject = (JSONObject) args[0];
+            String messageId = jsonObject.optString("messageId");
+            if (onSocketListener != null) {
+                onSocketListener.onMessageSent(messageId);
+            }
+        }
+
+    };
 
     private Emitter.Listener onUserTyping = new Emitter.Listener() {
         @Override
@@ -194,6 +207,7 @@ public class MessageService extends Service {
         mSocket.on(EVENT_NEW_MESSAGE, onNewMessageReceived);
         mSocket.on(EVENT_STOPPED_TYPING, onUserStoppedTyping);
         mSocket.on(EVENT_TYPING, onUserTyping);
+        mSocket.on(EVENT_MESSAGE_SENT, onMessageSent);
         mSocket.connect();
     }
 
@@ -207,6 +221,10 @@ public class MessageService extends Service {
         this.onSocketListener = onSocketListener;
     }
 
+    public void destroyListener() {
+        onSocketListener = null;
+    }
+
     public boolean isSocketConnected() {
         return mSocket.connected();
     }
@@ -216,7 +234,9 @@ public class MessageService extends Service {
     }
 
     public void connectSocket() {
-        mSocket.connect();
+        if (!mSocket.connected()) {
+            mSocket.connect();
+        }
     }
 
     @Override
@@ -233,10 +253,11 @@ public class MessageService extends Service {
         mSocket.off(EVENT_NEW_MESSAGE, onNewMessageReceived);
         mSocket.off(EVENT_STOPPED_TYPING, onUserStoppedTyping);
         mSocket.off(EVENT_TYPING, onUserTyping);
+        mSocket.off(EVENT_MESSAGE_SENT, onMessageSent);
     }
 
 
-    public static void sendGeneralNotification(final Context context, final JSONObject jsonObject) {
+    public static void sendMessageNotification(final Context context, final JSONObject jsonObject) {
         final String firstName = jsonObject.optString("firstName");
         final String lastName = jsonObject.optString("lastName");
         final String message = jsonObject.optString("message");
@@ -251,8 +272,14 @@ public class MessageService extends Service {
                 Intent requestsViewIntent = new Intent(context, Chat.class);
                 requestsViewIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
 
+                Intent replyIntent = new Intent(context, ReplyView.class);
+                requestsViewIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
+
                 PendingIntent requestsViewPending = PendingIntent.getActivity(context,
                         Integer.valueOf(jsonObject.optInt("messageId")), requestsViewIntent, 0);
+
+                PendingIntent replyPendingIntent = PendingIntent.getActivity(context,
+                        Integer.valueOf(jsonObject.optInt("messageId")), replyIntent, 0);
 
 
                 final NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
@@ -260,6 +287,7 @@ public class MessageService extends Service {
                 android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
                 builder.setSmallIcon(R.drawable.ic_message_white_24dp);
                 builder.setAutoCancel(true);
+                builder.addAction(R.drawable.ic_send_white_24dp, context.getString(R.string.reply), replyPendingIntent);
                 builder.setContent(new RemoteViews(context.getPackageName(), R.layout.chat_content));
                 builder.setContentTitle(querySize != 0 ? (querySize + 1) + " " + context.getString(R.string.newMessagesFrom) : context.getString(R.string.newMessageGlobal));
                 builder.setContentText(querySize != 0 ? (querySize + 1) + " " +
