@@ -1,5 +1,7 @@
 package ink.va.adapters;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
@@ -218,7 +221,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
 
     private void handleComments(final int position, RecyclerView.ViewHolder holder) {
         final ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-        CommentModel commentModel = getItem(position);
+        final CommentModel commentModel = getItem(position);
         checkForSticker(commentModel, itemViewHolder);
 
         itemViewHolder.commenterBody.setText(commentModel.getCommentBody());
@@ -243,9 +246,9 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         });
 
         if (sharedHelper.getUserId().equals(commentModel.getCommenterId())) {
-            itemViewHolder.commentMoreIcon.setVisibility(View.VISIBLE);
+            itemViewHolder.commentMoreIcon.setImageResource(R.drawable.more_icon);
         } else {
-            itemViewHolder.commentMoreIcon.setVisibility(View.GONE);
+            itemViewHolder.commentMoreIcon.setImageResource(R.drawable.copy_icon);
         }
         if (commentModel.getCommenterImage() != null && !commentModel.getCommenterImage().isEmpty()) {
             if (commentModel.isSocialAccount()) {
@@ -259,14 +262,32 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         } else {
             Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
         }
-        itemViewHolder.commentMoreIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (onItemClickListener != null) {
-                    onItemClickListener.onAdditionItemClick(position, itemViewHolder.commentMoreIcon);
+
+        if (sharedHelper.getUserId().equals(commentModel.getCommenterId())) {
+            itemViewHolder.commentMoreIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onAdditionItemClick(position, itemViewHolder.commentMoreIcon);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            itemViewHolder.commentMoreIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (commentModel.getCommentBody().isEmpty()) {
+                        Toast.makeText(context, context.getString(R.string.nothingToCopy), Toast.LENGTH_SHORT).show();
+                    } else {
+                        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText(context.getString(R.string.messageText), commentModel.getCommentBody());
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(context, context.getString(R.string.copied), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+
     }
 
     class HeaderViewHolder extends RecyclerView.ViewHolder {

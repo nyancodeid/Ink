@@ -591,7 +591,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                                 e.printStackTrace();
                             }
 
-                            messageService.emit(EVENT_TYPING,typingJson);
+                            messageService.emit(EVENT_TYPING, typingJson);
                         }
                         return true;
                     }
@@ -621,7 +621,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        messageService.emit(EVENT_STOPPED_TYPING,typingJson);
+                        messageService.emit(EVENT_STOPPED_TYPING, typingJson);
                     }
                 });
 
@@ -764,10 +764,14 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                         });
                         break;
                     case 1:
-                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                        ClipData clip = ClipData.newPlainText(getString(R.string.messageText), chatModel.getMessage());
-                        clipboard.setPrimaryClip(clip);
-                        Toast.makeText(messageService, getString(R.string.copied), Toast.LENGTH_SHORT).show();
+                        if (chatModel.getMessage().isEmpty()) {
+                            Toast.makeText(Chat.this, getString(R.string.nothingToCopy), Toast.LENGTH_SHORT).show();
+                        } else {
+                            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                            ClipData clip = ClipData.newPlainText(getString(R.string.messageText), chatModel.getMessage());
+                            clipboard.setPrimaryClip(clip);
+                            Toast.makeText(messageService, getString(R.string.copied), Toast.LENGTH_SHORT).show();
+                        }
                         break;
                     case 2:
                         sendMessage(chatModel.getMessage());
