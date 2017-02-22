@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
-import android.widget.RemoteViews;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -288,7 +287,6 @@ public class MessageService extends Service {
                 builder.setSmallIcon(R.drawable.ic_message_white_24dp);
                 builder.setAutoCancel(true);
                 builder.addAction(R.drawable.ic_send_white_24dp, context.getString(R.string.reply), replyPendingIntent);
-                builder.setContent(new RemoteViews(context.getPackageName(), R.layout.chat_content));
                 builder.setContentTitle(querySize != 0 ? (querySize + 1) + " " + context.getString(R.string.newMessagesFrom) : context.getString(R.string.newMessageGlobal));
                 builder.setContentText(querySize != 0 ? (querySize + 1) + " " +
                         context.getString(R.string.newMessagesFrom) + firstName + " " + lastName
