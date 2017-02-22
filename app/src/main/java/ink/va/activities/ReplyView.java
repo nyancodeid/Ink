@@ -36,8 +36,8 @@ import static ink.va.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
 
 public class ReplyView extends BaseActivity {
 
-    @BindView(R.id.messageReceived)
-    TextView mMessageReceived;
+    @BindView(R.id.replyToUserTV)
+    TextView replyToUserTV;
     @BindView(R.id.replyBody)
     EditText mReplyBody;
     @BindView(R.id.replyMessage)
@@ -86,7 +86,7 @@ public class ReplyView extends BaseActivity {
                 RealmHelper.getInstance().removeNotificationCount(Integer.valueOf(mOpponentId));
 
                 sharedHelper.removeLastNotificationId(mOpponentId);
-                mMessageReceived.setText(getString(R.string.replyTo) + " " + mFirstName + " " + mLastName);
+                replyToUserTV.setText(getString(R.string.replyTo) + " " + mFirstName + " " + mLastName);
                 mReplyBody.requestFocus();
                 mReplyMessage.setEnabled(false);
 
