@@ -118,9 +118,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
         }
         headerViewHolder.postBody.setMovementMethod(LinkMovementMethod.getInstance());
-        headerViewHolder.postBody.setText(ownerPostBody);
-
-        headerViewHolder.postBody.setText(ownerPostBody);
+        headerViewHolder.postBody.setText(context.getString(R.string.quoteOpen) + ownerPostBody + context.getString(R.string.quoteClose));
 
         headerViewHolder.postDate.setText(date);
 

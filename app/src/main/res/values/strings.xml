@@ -26,8 +26,8 @@
     <string name="emptyPasswordError">Password can not be empty</string>
     <string name="emptyLoginError">Login can not be empty</string>
     <string name="title_activity_home">Feeds</string>
-    <string name="quoteOpen">❝ </string>
-    <string name="quoteClose"> ❞</string>
+    <string name="quoteOpen">❝ \u0020</string>
+    <string name="quoteClose">\u0020 ❞</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
