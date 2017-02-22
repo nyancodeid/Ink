@@ -132,8 +132,8 @@ public class ReplyView extends BaseActivity {
 
     @OnClick(R.id.replyMessage)
     public void replyMessage() {
-        String messageToSend = StringEscapeUtils.escapeJava(mReplyBody.getText().toString().replaceAll(":\\)", "\u263A")
-                .replaceAll(":\\(", "\u2639").replaceAll(":D", "\uD83D\uDE00"));
+        String messageToSend = mReplyBody.getText().toString().replaceAll(":\\)", "\u263A")
+                .replaceAll(":\\(", "\u2639").replaceAll(":D", "\uD83D\uDE00").trim();
         if (messageService == null) {
             Toast.makeText(messageService, getString(R.string.feather_try_again), Toast.LENGTH_SHORT).show();
         } else {

@@ -264,7 +264,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             }
             playSend();
             messageJson = new JSONObject();
-            String message = mWriteEditText.getText().toString().trim();
+            String message = mWriteEditText.getText().toString().replaceAll(":\\)", "\u263A")
+                    .replaceAll(":\\(", "\u2639").replaceAll(":D", "\uD83D\uDE00").trim();
             try {
                 messageJson.put("messageId", System.currentTimeMillis());
                 messageJson.put("userId", currentUserId);
