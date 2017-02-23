@@ -874,4 +874,6 @@
     <string name="resend">Переотправить</string>
     <string name="nothingToCopy">Нечего копировать</string>
     <string name="dateNotAvailable">Статус недоступен</string>
+    <string name="pickOpponentProfile">PВыберите цвет фона профили оппонента</string>
+    <string name="opponentProfileColor">Цвет фона профили оппонента</string>
 </resources>

@@ -71,7 +71,6 @@ import static ink.va.utils.Constants.EVENT_TYPING;
 import static ink.va.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
 import static ink.va.utils.Constants.REQUEST_CODE_CHOSE_STICKER;
 import static ink.va.utils.Constants.STARTING_FOR_RESULT_BUNDLE_KEY;
-import static ink.va.utils.Constants.STATUS_DELIVERED;
 
 
 public class Chat extends BaseActivity implements RecyclerItemClickListener, SocketListener {
@@ -284,6 +283,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         mWriteEditText.setText("");
         hideNoMessages();
         final ChatModel chatModel = chatGSON.fromJson(messageJson.toString(), ChatModel.class);
+        lastSentChatModel = chatModel;
         chatAdapter.insertChatModel(chatModel);
         mRecyclerView.post(new Runnable() {
             @Override
@@ -292,7 +292,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             }
         });
         handleStickerRemoved();
-        lastSentChatModel = chatModel;
         localMessageInsert(chatModel, true);
 
     }
@@ -937,9 +936,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (lastSentChatModel != null) {
-                    lastSentChatModel.setDeliveryStatus(STATUS_DELIVERED);
-                    chatAdapter.notifyDataSetChanged();
+                if (chatAdapter != null) {
+                    chatAdapter.setAllDelivered();
                 }
             }
         });

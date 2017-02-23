@@ -15,6 +15,8 @@ import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.ChatModel;
 import ink.va.view_holders.ChatViewHolder;
 
+import static ink.va.utils.Constants.STATUS_DELIVERED;
+
 /**
  * Created by USER on 2016-06-24.
  */
@@ -78,5 +80,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public List<ChatModel> getChatModelList() {
         return chatModelList;
+    }
+
+    public void setAllDelivered() {
+        for (ChatModel chatModel : chatModelList) {
+            chatModel.setDeliveryStatus(STATUS_DELIVERED);
+            notifyDataSetChanged();
+        }
     }
 }
