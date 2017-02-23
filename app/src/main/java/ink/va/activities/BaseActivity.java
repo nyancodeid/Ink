@@ -470,8 +470,9 @@ public abstract class BaseActivity extends AppCompatActivity {
                     }, 0, 30, TimeUnit.SECONDS);
         }
     }
-    public void destroyScheduler(){
-        if(scheduler!=null){
+
+    public void destroyScheduler() {
+        if (scheduler != null) {
             scheduler.shutdown();
         }
     }
