@@ -36,6 +36,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -141,6 +143,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private MediaPlayer receiveMessagePlayer;
     private boolean isDataLoaded;
     private ChatModel lastSentChatModel;
+    private ScheduledExecutorService scheduler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -335,6 +338,26 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     /**
      * Methods
      */
+
+    public void destroyScheduler() {
+        if (scheduler != null) {
+            scheduler.shutdown();
+        }
+    }
+
+    private void scheduleTask() {
+        if (scheduler == null || !scheduler.isTerminated() & !scheduler.isShutdown()) {
+            scheduler =
+                    Executors.newSingleThreadScheduledExecutor();
+
+            scheduler.scheduleAtFixedRate
+                    (new Runnable() {
+                        public void run() {
+                            getOpponentStatus();
+                        }
+                    }, 0, 30, TimeUnit.SECONDS);
+        }
+    }
 
     private void getOpponentStatus() {
         JSONObject onlineStatusJson = new JSONObject();
@@ -840,6 +863,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         socketConnected = messageService.isSocketConnected();
         messageService.setOnSocketListener(this, Integer.valueOf(sharedHelper.getUserId()));
         getOpponentStatus();
+        scheduleTask();
     }
 
     @Override
@@ -850,8 +874,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             messageService.destroyListener();
         }
         unbindService();
+        destroyScheduler();
 
     }
+
 
     @Override
     public void onSocketConnected() {

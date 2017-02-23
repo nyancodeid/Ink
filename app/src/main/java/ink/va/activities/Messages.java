@@ -1,11 +1,15 @@
 package ink.va.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -88,6 +92,8 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
             }
         });
         getUserMessages();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageUpdateReceiver, new IntentFilter(getPackageName() + "Messages"));
     }
 
     private void deleteMessage(final String opponentId) {
@@ -169,6 +175,15 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(messageUpdateReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void onRefresh() {
@@ -266,4 +281,11 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 break;
         }
     }
+
+    private BroadcastReceiver messageUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            getUserMessages();
+        }
+    };
 }

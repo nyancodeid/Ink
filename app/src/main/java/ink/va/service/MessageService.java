@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -398,6 +399,9 @@ public class MessageService extends Service {
                 RealmHelper.getInstance().putNotificationCount(Integer.valueOf(opponentId), message, new RealmHelper.QueryReadyListener() {
                     @Override
                     public void onQueryReady(Object... results) {
+                        Intent intent = new Intent(context.getPackageName() + "Messages");
+                        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
+                        localBroadcastManager.sendBroadcast(intent);
                         notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
                     }
                 });
