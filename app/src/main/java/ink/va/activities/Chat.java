@@ -4,7 +4,6 @@ import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -392,7 +391,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             mWriteEditText.setHintTextColor(Color.parseColor(sharedHelper.getChatFieldTextColor()));
             mWriteEditText.setTextColor(Color.parseColor(sharedHelper.getChatFieldTextColor()));
             messageFiledDivider.setBackgroundColor(Color.parseColor(sharedHelper.getChatFieldTextColor()));
-            stickerIcon.setColorFilter(Color.parseColor(sharedHelper.getChatFieldTextColor()), PorterDuff.Mode.SRC_ATOP);
         }
         checkForActionBar();
     }
