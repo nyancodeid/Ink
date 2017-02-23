@@ -939,9 +939,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
-                lastSentChatModel.setDeliveryStatus(STATUS_DELIVERED);
-                chatAdapter.notifyDataSetChanged();
+                if (lastSentChatModel != null) {
+                    lastSentChatModel.setDeliveryStatus(STATUS_DELIVERED);
+                    chatAdapter.notifyDataSetChanged();
+                }
             }
         });
     }

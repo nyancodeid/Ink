@@ -114,9 +114,9 @@ public class MessageService extends Service {
                 if (daysDifference != 0) {
                     dateString = daysDifference + " " + getString(R.string.days);
                 } else if (hoursDifference != 0) {
-                    dateString = hoursDifference + " " + getString(R.string.days);
+                    dateString = hoursDifference + " " + getString(R.string.hours);
                 } else if (minutesDifference != 0) {
-                    dateString = minutesDifference + " " + getString(R.string.days);
+                    dateString = minutesDifference + " " + getString(R.string.minutes);
                 }
 
                 finalString = getString(R.string.lastSeen, dateString);
