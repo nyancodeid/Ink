@@ -238,6 +238,7 @@ public class MessageService extends Service {
             if (onSocketListener != null) {
                 onSocketListener.onSocketConnectionError();
             }
+            mSocket.connect();
         }
     };
 
