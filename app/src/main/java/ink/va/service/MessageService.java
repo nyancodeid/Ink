@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -104,8 +103,32 @@ public class MessageService extends Service {
         @Override
         public void call(Object... args) {
             JSONObject jsonObject = (JSONObject) args[0];
-            String timeDifference = jsonObject.optString("minutesDifference");
-            Log.d(TAG, "call: " + timeDifference);
+            int minutesDifference = jsonObject.optInt("minutesDifference");
+            int hoursDifference = jsonObject.optInt("hoursDifference");
+            int daysDifference = jsonObject.optInt("daysDifference");
+            boolean dateAvailable = jsonObject.optBoolean("dateAvailable");
+            String finalString;
+            String dateString = "";
+            boolean isOnline;
+            if (dateAvailable) {
+                if (daysDifference != 0) {
+                    dateString = daysDifference + " " + getString(R.string.days);
+                } else if (hoursDifference != 0) {
+                    dateString = hoursDifference + " " + getString(R.string.days);
+                } else if (minutesDifference != 0) {
+                    dateString = minutesDifference + " " + getString(R.string.days);
+                }
+
+                finalString = getString(R.string.lastSeen, dateString);
+                isOnline = minutesDifference < 1 ? true : false;
+            } else {
+                isOnline = false;
+                finalString = getString(R.string.dateNotAvailable);
+            }
+
+            if (onSocketListener != null) {
+                onSocketListener.onOnlineStatusReceived(isOnline, finalString);
+            }
         }
     };
 

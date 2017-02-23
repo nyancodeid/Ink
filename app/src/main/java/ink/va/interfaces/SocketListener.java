@@ -20,4 +20,6 @@ public interface SocketListener {
     void onNewMessageReceived(JSONObject messageJson);
 
     void onMessageSent(JSONObject chatJson);
+
+    void onOnlineStatusReceived(boolean isOnline, String friendlyMessage);
 }

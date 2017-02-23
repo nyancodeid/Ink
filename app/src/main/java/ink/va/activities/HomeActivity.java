@@ -76,7 +76,6 @@ import ink.va.utils.ErrorCause;
 import ink.va.utils.FileUtils;
 import ink.va.utils.IonCache;
 import ink.va.utils.Keyboard;
-import ink.va.utils.PingHelper;
 import ink.va.utils.PollFish;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
@@ -182,8 +181,6 @@ public class HomeActivity extends BaseActivity
         }
 
         checkNotification(getIntent());
-
-        PingHelper.get().startPinging(mSharedHelper.getUserId());
 
         User.get().setUserName(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
         User.get().setUserId(mSharedHelper.getUserId());
@@ -979,7 +976,6 @@ public class HomeActivity extends BaseActivity
 
     @Override
     protected void onDestroy() {
-        PingHelper.get().destroyPinging();
         super.onDestroy();
     }
 

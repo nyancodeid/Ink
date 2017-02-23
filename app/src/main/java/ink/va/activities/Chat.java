@@ -66,7 +66,6 @@ import rx.functions.Func1;
 
 import static ink.va.service.MessageService.sendMessageNotification;
 import static ink.va.utils.Constants.EVENT_ONLINE_STATUS;
-import static ink.va.utils.Constants.EVENT_PING;
 import static ink.va.utils.Constants.EVENT_SEND_MESSAGE;
 import static ink.va.utils.Constants.EVENT_STOPPED_TYPING;
 import static ink.va.utils.Constants.EVENT_TYPING;
@@ -113,6 +112,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     ImageView stickerPreviewImageView;
     @BindView(R.id.loadingMessages)
     public View loadingMessages;
+    @BindView(R.id.opponentStatus)
+    TextView opponentStatus;
+    @BindView(R.id.statusColor)
+    ImageView statusColor;
 
     private ChatAdapter chatAdapter;
     private RealmHelper realmHelper;
@@ -128,6 +131,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private String currentUserId;
     private Gson chatGSON;
     private String opponentId;
+    private Animation fadeAnimation;
     private String opponentFirstName;
     private String opponentLastName;
     private JSONObject messageJson;
@@ -146,6 +150,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         sharedHelper = new SharedHelper(this);
+
+        fadeAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_scale);
 
         chatGSON = new Gson();
 
@@ -226,21 +232,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
     @OnClick(R.id.opponentImage)
     public void opponentImageClicked() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("currentUserId", sharedHelper.getUserId());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JSONObject jsonObject1 = new JSONObject();
-        try {
-            jsonObject1.put("opponentId", opponentId);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        messageService.emit(EVENT_PING, jsonObject);
-        messageService.emit(EVENT_ONLINE_STATUS, jsonObject);
-//        openOpponentProfile();
+        openOpponentProfile();
     }
 
     @OnClick(R.id.sendChatMessage)
@@ -345,6 +337,16 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     /**
      * Methods
      */
+
+    private void getOpponentStatus() {
+        JSONObject onlineStatusJson = new JSONObject();
+        try {
+            onlineStatusJson.put("opponentId", opponentId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        messageService.emit(EVENT_ONLINE_STATUS, onlineStatusJson);
+    }
 
     private void getMessages() {
         realmHelper.getMessagesAsChatModel(opponentId, currentUserId, new GeneralCallback<List<ChatModel>>() {
@@ -840,6 +842,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         this.messageService = messageService;
         socketConnected = messageService.isSocketConnected();
         messageService.setOnSocketListener(this, Integer.valueOf(sharedHelper.getUserId()));
+        getOpponentStatus();
     }
 
     @Override
@@ -850,6 +853,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             messageService.destroyListener();
         }
         unbindService();
+        destroyScheduler();
     }
 
     @Override
@@ -943,6 +947,25 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     }
 
     @Override
+    public void onOnlineStatusReceived(final boolean isOnline, final String friendlyMessage) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (isOnline) {
+                    statusColor.setVisibility(View.VISIBLE);
+                    statusColor.startAnimation(fadeAnimation);
+                    opponentStatus.setText(getString(R.string.onlineStatus));
+                } else {
+                    statusColor.setVisibility(View.GONE);
+                    statusColor.clearAnimation();
+                    opponentStatus.setText(friendlyMessage);
+                }
+            }
+        });
+
+    }
+
+    @Override
     public void onBackPressed() {
         setResult(UPDATE_USER_MESSAGES);
         if (mWriteEditText.getText().toString().length() > 0 || isStickerChosen) {
@@ -979,6 +1002,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             super.onBackPressed();
         }
     }
+
 
     private void openOpponentProfile() {
         if (!isDataLoaded) {

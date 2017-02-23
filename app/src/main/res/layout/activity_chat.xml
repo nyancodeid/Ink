@@ -44,7 +44,35 @@
                         android:fontFamily="@string/appFont"
                         android:text="@string/loadingText"
                         android:textColor="#ffffff"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/opponentStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/opponentImage"
+                        android:layout_alignLeft="@+id/chatTitle"
+                        android:layout_alignStart="@+id/chatTitle"
+                        android:layout_marginBottom="2dp"
+                        android:ellipsize="end"
+                        android:fontFamily="@string/appFont"
+                        android:maxLines="2"
+                        android:text="@string/loadingText"
+                        android:textColor="#ffffff"
+                        android:textSize="11sp" />
+
+                    <ImageView
+                        android:id="@+id/statusColor"
+                        android:layout_width="5dp"
+                        android:layout_height="5dp"
+                        android:layout_alignTop="@+id/opponentStatus"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_toRightOf="@+id/opponentStatus"
+                        android:background="@drawable/circle_green"
+                        android:visibility="gone" />
+
 
                     <ProgressBar
                         android:id="@+id/loadingMessages"

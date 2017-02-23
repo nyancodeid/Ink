@@ -868,4 +868,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="delivered">delivered</string>
     <string name="resend">Resend</string>
     <string name="nothingToCopy">Nothing to copy</string>
+    <string name="dateNotAvailable">Status Not Available</string>
 </resources>

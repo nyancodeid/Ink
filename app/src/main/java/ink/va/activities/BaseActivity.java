@@ -20,6 +20,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -30,7 +31,13 @@ import android.widget.ImageView;
 
 import com.ink.va.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,6 +56,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.utils.Constants.EVENT_PING;
 import static ink.va.utils.Constants.KILL_APP_BUNDLE_KEY;
 import static ink.va.utils.Constants.SERVER_NOTIFICATION_SHARED_KEY;
 import static ink.va.utils.Constants.WARNING_TEXT_BUNDLE_KEY;
@@ -119,11 +127,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     private MessageService messageService;
     private Intent messageIntent;
     private boolean unbindCalled;
+    private ScheduledExecutorService scheduler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedHelper = new SharedHelper(this);
+        if (sharedHelper == null) {
+            sharedHelper = new SharedHelper(this);
+        }
         initCountDownTimer();
         checkBan();
         checkHacks();
@@ -148,6 +159,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (messageService == null) {
             bindService(messageIntent, mConnection, BIND_AUTO_CREATE);
         }
+        scheduleTask();
     }
 
     @Override
@@ -429,6 +441,38 @@ public abstract class BaseActivity extends AppCompatActivity {
             unbindService(mConnection);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void ping() {
+        JSONObject pingJson = new JSONObject();
+        try {
+            pingJson.put("currentUserId", sharedHelper.getUserId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (messageService != null) {
+            messageService.emit(EVENT_PING, pingJson);
+            Log.d("MessageService", "ping: pinging");
+        }
+    }
+
+    private void scheduleTask() {
+        if (scheduler == null || !scheduler.isTerminated() & !scheduler.isShutdown()) {
+            scheduler =
+                    Executors.newSingleThreadScheduledExecutor();
+
+            scheduler.scheduleAtFixedRate
+                    (new Runnable() {
+                        public void run() {
+                            ping();
+                        }
+                    }, 0, 30, TimeUnit.SECONDS);
+        }
+    }
+    public void destroyScheduler(){
+        if(scheduler!=null){
+            scheduler.shutdown();
         }
     }
 }

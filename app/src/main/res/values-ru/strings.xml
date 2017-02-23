@@ -873,4 +873,5 @@
     <string name="delivered">доставлено</string>
     <string name="resend">Переотправить</string>
     <string name="nothingToCopy">Нечего копировать</string>
+    <string name="dateNotAvailable">Статус недоступен</string>
 </resources>
