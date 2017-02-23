@@ -166,6 +166,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbindService();
+        destroyScheduler();
     }
 
     private void checkHacks() {

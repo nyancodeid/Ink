@@ -853,7 +853,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             messageService.destroyListener();
         }
         unbindService();
-        destroyScheduler();
+
     }
 
     @Override
