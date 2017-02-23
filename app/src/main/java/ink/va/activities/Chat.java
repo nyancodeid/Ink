@@ -1039,7 +1039,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             Intent intent = new Intent(getApplicationContext(), OpponentProfile.class);
             intent.putExtra("id", opponentId);
             intent.putExtra("firstName", opponentFirstName);
-            intent.putExtra("lastName", lastChosenStickerUrl);
+            intent.putExtra("lastName", opponentLastName);
             intent.putExtra("isFriend", true);
             intent.putExtra("disableButton", true);
             startActivity(intent);
