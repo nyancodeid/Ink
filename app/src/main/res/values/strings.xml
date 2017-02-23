@@ -869,4 +869,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="resend">Resend</string>
     <string name="nothingToCopy">Nothing to copy</string>
     <string name="dateNotAvailable">Status Not Available</string>
+    <string name="pickOpponentProfile">Pick opponent profile view background</string>
+    <string name="opponentProfileColor">OpponentProfileColor</string>
 </resources>

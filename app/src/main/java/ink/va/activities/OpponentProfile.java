@@ -3,6 +3,7 @@ package ink.va.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -105,6 +106,8 @@ public class OpponentProfile extends BaseActivity {
     ImageView callUserPhone;
     @BindView(R.id.singleUserBadge)
     ImageView singleUserBadge;
+    @BindView(R.id.opponentProfileRoot)
+    public View opponentProfileRoot;
     private String mOpponentImage;
     private boolean isFriend;
     private Target target;
@@ -142,6 +145,15 @@ public class OpponentProfile extends BaseActivity {
             }
         }
         getSingleUser();
+        initColors();
+    }
+
+    private void initColors() {
+        if (sharedHelper.getOpponentProfileColor() != null) {
+            opponentProfileRoot.setBackgroundColor(Color.parseColor(sharedHelper.getOpponentProfileColor()));
+        } else {
+            opponentProfileRoot.setBackground(ContextCompat.getDrawable(this, R.drawable.opponent_profile_background));
+        }
     }
 
     private void setUpFriendView() {

@@ -39,6 +39,9 @@ public class ColorModel {
     @SerializedName("friends_background")
     public String friendsBackground;
 
+    @SerializedName("opponent_color")
+    public String opponentColor;
+
     @SerializedName("messages_background")
     public String messagesBackground;
 

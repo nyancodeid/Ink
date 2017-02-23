@@ -318,7 +318,8 @@ public class Retrofit {
                                              @Field("opponentText") String opponentText,
                                              @Field("ownText") String ownText,
                                              @Field("chatField") String chatField,
-                                             @Field("trendColor") String trendColor);
+                                             @Field("trendColor") String trendColor,
+                                             @Field("opponentProfileColor") String opponentProfile);
 
         @POST(Constants.CUSTOMIZATION_URL)
         @FormUrlEncoded

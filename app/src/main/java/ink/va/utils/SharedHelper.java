@@ -541,6 +541,9 @@ public class SharedHelper {
     public String getTrendColor() {
         return mSharedPreferences.getString("trendColor", null);
     }
+    public String getOpponentProfileColor() {
+        return mSharedPreferences.getString("putOpponentColor", null);
+    }
 
     public String getMyRequestColor() {
         return mSharedPreferences.getString("myRequestColor", null);
@@ -716,6 +719,17 @@ public class SharedHelper {
         }
     }
 
+    public void putOpponentColor(String value) {
+        if (value == null || value.isEmpty()) {
+            mEditor.remove("putOpponentColor");
+            mEditor.commit();
+        } else {
+            mEditor.putString("putOpponentColor", value);
+            mEditor.commit();
+        }
+    }
+
+
 
     public void putOwnTextColor(String value) {
         if (value == null || value.isEmpty()) {
@@ -769,6 +783,7 @@ public class SharedHelper {
         mEditor.remove("opponentTextColor");
         mEditor.remove("ownTextColor");
         mEditor.remove("trendColor");
+        mEditor.remove("putOpponentColor");
         mEditor.commit();
 
     }
