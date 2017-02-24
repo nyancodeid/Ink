@@ -156,7 +156,7 @@ public class HomeActivity extends BaseActivity
         mToolbar.setTitle(FEED);
         mSharedHelper = new SharedHelper(this);
 
-        startService(new Intent(getApplicationContext(), MessageService.class));
+        initService();
 
         if (!mSharedHelper.isSecurityQuestionSet() && isAccountRecoverable()) {
             View warningView = getLayoutInflater().inflate(R.layout.app_warning_view, null);
@@ -254,6 +254,10 @@ public class HomeActivity extends BaseActivity
         LocalBroadcastManager.getInstance(this).registerReceiver(feedUpdateReceiver, new IntentFilter(getPackageName() + "HomeActivity"));
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
+    }
+
+    private void initService() {
+        startService(new Intent(getApplicationContext(), MessageService.class));
     }
 
 

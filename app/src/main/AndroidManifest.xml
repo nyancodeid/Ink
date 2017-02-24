@@ -135,6 +135,10 @@
 
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
         <receiver android:name="ink.va.receivers.DeleteReceiver"></receiver>
+        <receiver
+            android:name="ink.va.receivers.AlarmReceiver"
+            android:process=":remote" >
+        </receiver>
         <receiver android:name="ink.va.broadcast.DismissBroadcast" />
         -- Declaring broadcast receiver for BOOT_COMPLETED event. -->
         <receiver

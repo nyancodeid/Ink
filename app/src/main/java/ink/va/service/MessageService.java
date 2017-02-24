@@ -29,7 +29,9 @@ import ink.va.activities.ReplyView;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.interfaces.SocketListener;
 import ink.va.models.ChatModel;
+import ink.va.receivers.AlarmReceiver;
 import ink.va.receivers.DeleteReceiver;
+import ink.va.utils.AlarmUtils;
 import ink.va.utils.Notification;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
@@ -37,6 +39,7 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_ERROR;
+import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_TIMEOUT;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_DISCONNECT;
 import static ink.va.utils.Constants.EVENT_ADD_USER;
 import static ink.va.utils.Constants.EVENT_MESSAGE_RECEIVED;
@@ -72,9 +75,13 @@ public class MessageService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        initSocketFully();
+        return START_STICKY;
+    }
+
+    private void initSocketFully() {
         sharedHelper = new SharedHelper(this);
         currentUserId = sharedHelper.getUserId();
-
         if (mSocket == null) {
             try {
                 mSocket = IO.socket(SOCKET_URL);
@@ -91,8 +98,6 @@ public class MessageService extends Service {
             initSocket();
         }
 
-
-        return START_STICKY;
     }
 
 
@@ -223,6 +228,13 @@ public class MessageService extends Service {
         }
     };
 
+    private Emitter.Listener onSocketTimeOut = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            mSocket.connect();
+        }
+    };
+
     private Emitter.Listener onSocketDisconnected = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -253,6 +265,16 @@ public class MessageService extends Service {
     };
 
     private void initSocket() {
+        mSocket.listeners(EVENT_CONNECT).clear();
+        mSocket.listeners(EVENT_CONNECT_ERROR).clear();
+        mSocket.listeners(EVENT_DISCONNECT).clear();
+        mSocket.listeners(EVENT_NEW_MESSAGE).clear();
+        mSocket.listeners(EVENT_STOPPED_TYPING).clear();
+        mSocket.listeners(EVENT_TYPING).clear();
+        mSocket.listeners(EVENT_MESSAGE_SENT).clear();
+        mSocket.listeners(EVENT_CONNECT_TIMEOUT).clear();
+        mSocket.listeners(EVENT_ONLINE_STATUS).clear();
+
         mSocket.on(EVENT_CONNECT, onSocketConnected);
         mSocket.on(EVENT_CONNECT_ERROR, onSocketConnectionError);
         mSocket.on(EVENT_DISCONNECT, onSocketDisconnected);
@@ -260,6 +282,7 @@ public class MessageService extends Service {
         mSocket.on(EVENT_STOPPED_TYPING, onUserStoppedTyping);
         mSocket.on(EVENT_TYPING, onUserTyping);
         mSocket.on(EVENT_MESSAGE_SENT, onMessageSent);
+        mSocket.on(EVENT_CONNECT_TIMEOUT, onSocketTimeOut);
         mSocket.on(EVENT_ONLINE_STATUS, onOnlineStatusReceived);
         mSocket.connect();
     }
@@ -315,18 +338,40 @@ public class MessageService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        AlarmUtils.scheduleAlarmWithMinutes(this, AlarmReceiver.class, 1);
         destroySocket();
     }
 
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        AlarmUtils.scheduleAlarmWithMinutes(getApplicationContext(), AlarmReceiver.class, 1);
+        destroySocket();
+        super.onTaskRemoved(rootIntent);
+    }
+
     private void destroySocket() {
-        mSocket.disconnect();
-        mSocket.off(EVENT_CONNECT, onSocketConnected);
-        mSocket.off(EVENT_CONNECT_ERROR, onSocketConnectionError);
-        mSocket.off(EVENT_DISCONNECT, onSocketDisconnected);
-        mSocket.off(EVENT_NEW_MESSAGE, onNewMessageReceived);
-        mSocket.off(EVENT_STOPPED_TYPING, onUserStoppedTyping);
-        mSocket.off(EVENT_TYPING, onUserTyping);
-        mSocket.off(EVENT_MESSAGE_SENT, onMessageSent);
+        if (mSocket != null) {
+            mSocket.disconnect();
+            mSocket.off(EVENT_CONNECT, onSocketConnected);
+            mSocket.off(EVENT_CONNECT_ERROR, onSocketConnectionError);
+            mSocket.off(EVENT_DISCONNECT, onSocketDisconnected);
+            mSocket.off(EVENT_NEW_MESSAGE, onNewMessageReceived);
+            mSocket.off(EVENT_STOPPED_TYPING, onUserStoppedTyping);
+            mSocket.off(EVENT_TYPING, onUserTyping);
+            mSocket.off(EVENT_MESSAGE_SENT, onMessageSent);
+            mSocket.off(EVENT_CONNECT_TIMEOUT, onSocketTimeOut);
+            mSocket.off(EVENT_ONLINE_STATUS, onOnlineStatusReceived);
+
+            mSocket.listeners(EVENT_CONNECT).clear();
+            mSocket.listeners(EVENT_CONNECT_ERROR).clear();
+            mSocket.listeners(EVENT_DISCONNECT).clear();
+            mSocket.listeners(EVENT_NEW_MESSAGE).clear();
+            mSocket.listeners(EVENT_STOPPED_TYPING).clear();
+            mSocket.listeners(EVENT_TYPING).clear();
+            mSocket.listeners(EVENT_MESSAGE_SENT).clear();
+            mSocket.listeners(EVENT_CONNECT_TIMEOUT).clear();
+            mSocket.listeners(EVENT_ONLINE_STATUS).clear();
+        }
     }
 
 
