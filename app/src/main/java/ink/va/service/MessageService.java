@@ -82,21 +82,13 @@ public class MessageService extends Service {
     private void initSocketFully() {
         sharedHelper = new SharedHelper(this);
         currentUserId = sharedHelper.getUserId();
-        if (mSocket == null) {
-            try {
-                mSocket = IO.socket(SOCKET_URL);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            initSocket();
-        } else if (!mSocket.connected()) {
-            try {
-                mSocket = IO.socket(SOCKET_URL);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            initSocket();
+        destroySocket();
+        try {
+            mSocket = IO.socket(SOCKET_URL);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
         }
+        initSocket();
 
     }
 
@@ -265,16 +257,6 @@ public class MessageService extends Service {
     };
 
     private void initSocket() {
-        mSocket.listeners(EVENT_CONNECT).clear();
-        mSocket.listeners(EVENT_CONNECT_ERROR).clear();
-        mSocket.listeners(EVENT_DISCONNECT).clear();
-        mSocket.listeners(EVENT_NEW_MESSAGE).clear();
-        mSocket.listeners(EVENT_STOPPED_TYPING).clear();
-        mSocket.listeners(EVENT_TYPING).clear();
-        mSocket.listeners(EVENT_MESSAGE_SENT).clear();
-        mSocket.listeners(EVENT_CONNECT_TIMEOUT).clear();
-        mSocket.listeners(EVENT_ONLINE_STATUS).clear();
-
         mSocket.on(EVENT_CONNECT, onSocketConnected);
         mSocket.on(EVENT_CONNECT_ERROR, onSocketConnectionError);
         mSocket.on(EVENT_DISCONNECT, onSocketDisconnected);
@@ -338,13 +320,13 @@ public class MessageService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        AlarmUtils.scheduleAlarmWithMinutes(this, AlarmReceiver.class, 1);
+        AlarmUtils.scheduleAlarmWithMinutes(this, AlarmReceiver.class, 10);
         destroySocket();
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        AlarmUtils.scheduleAlarmWithMinutes(getApplicationContext(), AlarmReceiver.class, 1);
+        AlarmUtils.scheduleAlarmWithMinutes(getApplicationContext(), AlarmReceiver.class, 10);
         destroySocket();
         super.onTaskRemoved(rootIntent);
     }
@@ -361,16 +343,6 @@ public class MessageService extends Service {
             mSocket.off(EVENT_MESSAGE_SENT, onMessageSent);
             mSocket.off(EVENT_CONNECT_TIMEOUT, onSocketTimeOut);
             mSocket.off(EVENT_ONLINE_STATUS, onOnlineStatusReceived);
-
-            mSocket.listeners(EVENT_CONNECT).clear();
-            mSocket.listeners(EVENT_CONNECT_ERROR).clear();
-            mSocket.listeners(EVENT_DISCONNECT).clear();
-            mSocket.listeners(EVENT_NEW_MESSAGE).clear();
-            mSocket.listeners(EVENT_STOPPED_TYPING).clear();
-            mSocket.listeners(EVENT_TYPING).clear();
-            mSocket.listeners(EVENT_MESSAGE_SENT).clear();
-            mSocket.listeners(EVENT_CONNECT_TIMEOUT).clear();
-            mSocket.listeners(EVENT_ONLINE_STATUS).clear();
         }
     }
 
@@ -392,7 +364,7 @@ public class MessageService extends Service {
                 List<String> messages = (List<String>) results[1];
 
                 for (String message : messages) {
-                    stringBuilder.append("\n" + message);
+                    stringBuilder.append("\n" + (message.isEmpty() ? context.getString(R.string.sentSticker) : message));
                 }
                 stringBuilder.append(messages.isEmpty() ? message : "\n" + message);
 
