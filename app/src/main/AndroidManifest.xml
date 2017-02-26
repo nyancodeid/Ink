@@ -123,15 +123,9 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="ink.va.service.LocationRequestSessionDestroyer" />
         <service android:name="ink.va.service.RemoveChatRouletteService" />
         <service android:name="ink.va.service.SendTokenService" />
-        <service android:name="ink.va.service.SendReplyService" />
         <service android:name="ink.va.service.SendMessageService" />
-        <service
-            android:name="ink.va.service.TaskRemoveService"
-            android:enabled="true"
-            android:stopWithTask="false" />
 
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
         <receiver android:name="ink.va.receivers.DeleteReceiver"></receiver>

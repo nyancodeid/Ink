@@ -1151,7 +1151,7 @@ public class RealmHelper {
                                 public void execute(Realm realm) {
                                     RealmResults<MessageModel> realmResults = realm.where(MessageModel.class).equalTo("opponentId", opponentId).equalTo("userId", userId)
                                             .or().equalTo("opponentId", userId).equalTo("userId", opponentId
-                                            ).findAll();
+                                            ).findAllSorted("messageId",Sort.ASCENDING);
                                     for (MessageModel messageModel : realmResults) {
                                         ChatModel chatModel = new ChatModel();
                                         chatModel.setUserId(messageModel.getUserId());
