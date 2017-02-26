@@ -18,6 +18,8 @@ import java.util.TimeZone;
  * Created by USER on 2016-06-26.
  */
 public class Time {
+    public static final String DATE_FORMAT = "dd/MM/yyyy hh:mm:ss.SSS";
+
     public static String getCurrentTime() {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -133,5 +135,23 @@ public class Time {
 
     public static String getTimeZone() {
         return TimeZone.getDefault().getID();
+    }
+
+    /**
+     * Return date in specified format.
+     *
+     * @param milliSeconds Date in milliseconds
+     * @return String representing date in specified format
+     */
+    public static Date convertMillistToDate(long milliSeconds) throws ParseException {
+        // Create a DateFormatter object for displaying date in specified format.
+        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        String parsedDate = formatter.format(calendar.getTime());
+        Date dateObject = formatter.parse(parsedDate);
+        return dateObject;
     }
 }

@@ -13,6 +13,9 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -194,7 +197,7 @@ public class RealmHelper {
                             for (MessageModel messageModel : messageModels) {
                                 messageModel.setDeliveryStatus(deliveryStatus);
                             }
-                            if(querySuccess!=null){
+                            if (querySuccess != null) {
                                 querySuccess.onSuccess(null);
                             }
                         }
@@ -1151,7 +1154,7 @@ public class RealmHelper {
                                 public void execute(Realm realm) {
                                     RealmResults<MessageModel> realmResults = realm.where(MessageModel.class).equalTo("opponentId", opponentId).equalTo("userId", userId)
                                             .or().equalTo("opponentId", userId).equalTo("userId", opponentId
-                                            ).findAllSorted("messageId",Sort.ASCENDING);
+                                            ).findAll();
                                     for (MessageModel messageModel : realmResults) {
                                         ChatModel chatModel = new ChatModel();
                                         chatModel.setUserId(messageModel.getUserId());
@@ -1166,6 +1169,21 @@ public class RealmHelper {
 
                                         chatModels.add(chatModel);
                                     }
+                                    Collections.sort(chatModels, new Comparator<ChatModel>() {
+                                        @Override
+                                        public int compare(ChatModel o1, ChatModel o2) {
+                                            try {
+                                                long firstMillis = Long.valueOf(o1.getMessageId());
+                                                long secondMillis = Long.valueOf(o2.getMessageId());
+                                                Date firstDate = Time.convertMillistToDate(firstMillis);
+                                                Date secondDate = Time.convertMillistToDate(secondMillis);
+                                                return firstDate.compareTo(secondDate);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                                return 0;
+                                            }
+                                        }
+                                    });
                                     listGeneralCallback.onSuccess(chatModels);
                                 }
                             });
@@ -1197,6 +1215,7 @@ public class RealmHelper {
                                 chatModel.setStickerUrl(messageModel.getGifUrl());
                                 chatModels.add(chatModel);
                             }
+                            Collections.sort(chatModels);
                             listGeneralCallback.onSuccess(chatModels);
                         }
                     });

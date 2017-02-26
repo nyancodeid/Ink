@@ -2,6 +2,9 @@ package ink.va.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
+import ink.va.utils.Time;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +14,7 @@ import static ink.va.utils.Constants.STATUS_NOT_DELIVERED;
  * Created by USER on 2016-06-24.
  */
 
-public class ChatModel {
+public class ChatModel implements Comparable<ChatModel> {
     @SerializedName("messageId")
     @Setter
     @Getter
@@ -81,15 +84,30 @@ public class ChatModel {
     private String deliveryStatus = STATUS_NOT_DELIVERED;
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj != null && obj instanceof ChatModel) {
-            return ((ChatModel) obj).messageId.equals(messageId);
+    public int compareTo(ChatModel o) {
+        try {
+            long firstMillis = Long.valueOf(getMessageId());
+            long secondMillis = Long.valueOf(o.getMessageId());
+            Date firstDate = Time.convertMillistToDate(firstMillis);
+            Date secondDate = Time.convertMillistToDate(secondMillis);
+            return firstDate.compareTo(secondDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
         }
-        return false;
     }
 
-    @Override
-    public int hashCode() {
-        return messageId.hashCode();
-    }
+
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (obj != null && obj instanceof ChatModel) {
+//            return ((ChatModel) obj).messageId.equals(messageId);
+//        }
+//        return false;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return messageId.hashCode();
+//    }
 }

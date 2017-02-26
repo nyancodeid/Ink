@@ -366,7 +366,9 @@ public class MessageService extends Service {
                 for (String message : messages) {
                     stringBuilder.append("\n" + (message.isEmpty() ? context.getString(R.string.sentSticker) : message));
                 }
-                stringBuilder.append(messages.isEmpty() ? message : "\n" + message);
+                stringBuilder.append(messages.isEmpty() ? message.isEmpty() ?
+                        context.getString(R.string.sentSticker) : message
+                        : "\n" + (message.isEmpty() ? context.getString(R.string.sentSticker) : message));
 
 
                 Intent requestsViewIntent = new Intent(context, Chat.class);
