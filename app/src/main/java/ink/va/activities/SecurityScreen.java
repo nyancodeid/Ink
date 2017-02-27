@@ -16,6 +16,7 @@ import com.ink.va.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ink.va.interfaces.FingerprintCallback;
 import ink.va.utils.FingerPrintManager;
 import ink.va.utils.SharedHelper;
@@ -49,13 +50,14 @@ public class SecurityScreen extends BaseActivity implements FingerprintCallback 
         }
         if (mSharedHelper.hasPinAttached()) {
             pinLayout.setVisibility(View.VISIBLE);
-            if (passwordED.getText().toString().isEmpty()) {
-                passwordInputLayout.setError(getString(R.string.emptyPasswordError));
-            } else if (!passwordED.getText().toString().trim().equals(mSharedHelper.getPin())) {
-                passwordInputLayout.setError(getString(R.string.passwordWrong));
-            } else if (passwordED.getText().toString().trim().equals(mSharedHelper.getPin())) {
-                proceedUnlocking();
-            }
+            passwordED.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        passwordInputLayout.setError(null);
+                    }
+                }
+            });
         } else {
             fingerPrintLayout.setVisibility(View.VISIBLE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -69,6 +71,17 @@ public class SecurityScreen extends BaseActivity implements FingerprintCallback 
     private void proceedUnlocking() {
         finish();
         overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
+    }
+
+    @OnClick(R.id.unlockPasswordButton)
+    public void unlockPasswordClicked() {
+        if (passwordED.getText().toString().isEmpty()) {
+            passwordInputLayout.setError(getString(R.string.emptyPasswordError));
+        } else if (!passwordED.getText().toString().trim().equals(mSharedHelper.getPin())) {
+            passwordInputLayout.setError(getString(R.string.passwordWrong));
+        } else if (passwordED.getText().toString().trim().equals(mSharedHelper.getPin())) {
+            proceedUnlocking();
+        }
     }
 
     @Override

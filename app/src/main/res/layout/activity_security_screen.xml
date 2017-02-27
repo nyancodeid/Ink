@@ -53,6 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/protectionHint"
+        android:layout_marginTop="20dp"
         android:visibility="gone">
 
         <android.support.design.widget.TextInputLayout
@@ -68,6 +69,8 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@string/appFont"
                 android:hint="@string/passwordText"
+                android:inputType="numberPassword"
+                android:maxLines="1"
                 android:textColor="#ffffff"
                 android:textColorHint="#95ffffff" />
 
@@ -83,7 +86,7 @@
         </android.support.design.widget.TextInputLayout>
 
         <Button
-            android:id="@+id/signInButton"
+            android:id="@+id/unlockPasswordButton"
             style="?attr/selectableItemBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -94,7 +97,7 @@
             android:background="@drawable/login_button_background"
             android:elevation="5dp"
             android:fontFamily="@string/appFont"
-            android:text="@string/action_sign_in"
+            android:text="@string/proceed"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary"
             android:textStyle="bold" />
