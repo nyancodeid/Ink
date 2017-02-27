@@ -261,7 +261,7 @@ public class HomeActivity extends BaseActivity
     private void checkLock() {
         if (mSharedHelper.hasPinAttached() || mSharedHelper.hasFingerprintAttached()) {
             startActivity(new Intent(this, SecurityScreen.class));
-            overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
+            overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
         }
     }
 

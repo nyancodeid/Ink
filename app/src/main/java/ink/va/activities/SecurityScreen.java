@@ -68,7 +68,7 @@ public class SecurityScreen extends BaseActivity implements FingerprintCallback 
 
     private void proceedUnlocking() {
         finish();
-        overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
+        overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
     }
 
     @Override
