@@ -329,7 +329,8 @@
         <activity
             android:name="ink.va.activities.BackUpActivity"
             android:label="@string/backUpRestoreServices" />
-        <activity android:name="ink.va.activities.SecurityActivity"></activity>
+        <activity android:name="ink.va.activities.SecurityActivity" />
+        <activity android:name="ink.va.activities.SecurityScreen"></activity>
     </application>
 
 </manifest>

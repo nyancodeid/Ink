@@ -890,4 +890,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="remove">Remove</string>
     <string name="removePinFirst">Remove pin security first</string>
     <string name="removeFingerprint">Remove fingerprint first</string>
+    <string name="protectionHint">This application is protected</string>
+    <string name="scanToUnlock">Touch Sensor to unlock</string>
 </resources>
