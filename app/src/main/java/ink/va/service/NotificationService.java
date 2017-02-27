@@ -224,7 +224,7 @@ public class NotificationService extends FirebaseMessagingService {
                 break;
             case DELETE_MESSAGE_REQUESTED:
                 String messageId = response.get("messageId");
-                if (Notification.get().isSendingLocal()) {
+                if (Notification.get().isSendingRemote()) {
                     RealmHelper.getInstance().removeMessage(messageId, new GeneralCallback<Boolean>() {
                         @Override
                         public void onSuccess(Boolean aBoolean) {

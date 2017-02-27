@@ -25,6 +25,7 @@ import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ink.va.R;
@@ -180,7 +181,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         currentUserId = sharedHelper.getUserId();
 
 
-        Notification.get().isSendingLocal(true);
+        Notification.get().isSendingRemote(false);
 
         slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_in);
         slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_out);
@@ -355,7 +356,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                         public void run() {
                             getOpponentStatus();
                         }
-                    }, 0, 30, TimeUnit.SECONDS);
+                    }, 0, 15, TimeUnit.SECONDS);
         }
     }
 
@@ -869,7 +870,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Notification.get().isSendingLocal(false);
+        Notification.get().isSendingRemote(true);
         if (messageService != null) {
             messageService.destroyListener();
         }
@@ -1044,5 +1045,17 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             intent.putExtra("disableButton", true);
             startActivity(intent);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Toast.makeText(messageService, "stopped", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Toast.makeText(messageService, "started", Toast.LENGTH_SHORT).show();
     }
 }

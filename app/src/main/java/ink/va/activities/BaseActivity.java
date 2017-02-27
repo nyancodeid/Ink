@@ -445,7 +445,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    private void ping() {
+    protected void ping() {
         JSONObject pingJson = new JSONObject();
         try {
             pingJson.put("currentUserId", sharedHelper.getUserId());

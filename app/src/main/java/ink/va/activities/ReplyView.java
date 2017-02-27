@@ -72,6 +72,9 @@ public class ReplyView extends BaseActivity {
         Bundle extras = getIntent().getExtras();
         sharedHelper = new SharedHelper(this);
         chatGSON = new Gson();
+
+        ping();
+
         if (extras != null) {
             jsonExtra = extras.getString(NOTIFICATION_MESSAGE_BUNDLE_KEY);
 

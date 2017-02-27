@@ -148,7 +148,7 @@ public class MessageService extends Service {
             emit(EVENT_MESSAGE_RECEIVED, jsonObject);
             jsonObject = null;
 
-            if (!Notification.get().isSendingLocal()) {
+            if (Notification.get().isSendingRemote()) {
                 RealmHelper.getInstance().insertMessage(chatModel, new GeneralCallback() {
                     @Override
                     public void onSuccess(Object o) {
@@ -326,6 +326,7 @@ public class MessageService extends Service {
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
+        Notification.get().isSendingRemote(true);
         AlarmUtils.scheduleAlarmWithMinutes(getApplicationContext(), AlarmReceiver.class, 10);
         destroySocket();
         super.onTaskRemoved(rootIntent);
