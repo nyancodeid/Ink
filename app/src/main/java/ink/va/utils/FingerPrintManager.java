@@ -200,4 +200,14 @@ public class FingerPrintManager extends FingerprintManager.AuthenticationCallbac
             onFingerprintCallback.onAuthenticationSucceeded(result);
         }
     }
+
+    public boolean supportsFingerprint() {
+        try {
+            return fingerprintManager.isHardwareDetected();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
 }

@@ -11,18 +11,36 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ink.va.activities.BackUpActivity">
 
+    <ImageView
+        android:id="@+id/backUpIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/backup_icon" />
+
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/backUpIcon"
+        android:layout_marginTop="10dp"
+        android:background="@color/linesColor"></View>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/progressHintTV"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/divider"
         android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
         android:fillViewport="true">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/backUpHint" />
+            android:text="@string/backUpHint"
+            android:textStyle="bold" />
     </ScrollView>
 
     <TextView

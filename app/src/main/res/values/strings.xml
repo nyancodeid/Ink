@@ -872,4 +872,12 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="pickOpponentProfile">Pick opponent profile view background</string>
     <string name="opponentProfileColor">Opponent Profile View Color</string>
     <string name="security">Security</string>
+
+    <string name="attachFingerprint">Attach Fingerprint</string>
+    <string name="attachPin">Attach Pin</string>
+    <string name="securityHint">Use you\'r application securely .
+        Attach fingerprint (if available) or use the Pin Code to protect you\'r application from unauthorized uses</string>
+    <string name="touchSensor">Touch Sensor To Attach</string>
+    <string name="enter_desired_password">Enter desired password</string>
+    <string name="reenter_password">Reenter password</string>
 </resources>

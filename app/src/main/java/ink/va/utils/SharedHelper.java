@@ -541,6 +541,7 @@ public class SharedHelper {
     public String getTrendColor() {
         return mSharedPreferences.getString("trendColor", null);
     }
+
     public String getOpponentProfileColor() {
         return mSharedPreferences.getString("putOpponentColor", null);
     }
@@ -730,7 +731,6 @@ public class SharedHelper {
     }
 
 
-
     public void putOwnTextColor(String value) {
         if (value == null || value.isEmpty()) {
             mEditor.remove("ownTextColor");
@@ -828,4 +828,17 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public boolean hasAnySecurityAttached() {
+        return mSharedPreferences.getBoolean("fingerprintAttached", false) || mSharedPreferences.getBoolean("pinAttached", false);
+    }
+
+    public void putFingerPrintAttached(boolean value) {
+        mEditor.putBoolean("fingerprintAttached", value);
+        mEditor.commit();
+    }
+
+    public void putPinAttached(boolean value) {
+        mEditor.putBoolean("pinAttached", value);
+        mEditor.commit();
+    }
 }
