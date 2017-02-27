@@ -70,8 +70,8 @@ public class ServerNotification extends BaseActivity {
             homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(homeIntent);
+            finishAffinity();
             finish();
-            System.exit(0);
         } else {
             finish();
             overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
@@ -87,8 +87,8 @@ public class ServerNotification extends BaseActivity {
             homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(homeIntent);
+            finishAffinity();
             finish();
-            System.exit(0);
         }
     }
 }
