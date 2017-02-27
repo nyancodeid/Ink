@@ -17,6 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:fontFamily="@string/appFont"
         android:text="@string/protectionHint"
         android:textColor="@color/vk_white"
         android:textSize="24sp"
@@ -39,6 +40,7 @@
 
         <TextView
             android:layout_width="wrap_content"
+            android:fontFamily="@string/appFont"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
@@ -53,14 +55,47 @@
         android:layout_below="@+id/protectionHint">
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/passwordInputLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:fontFamily="@string/appFont"
+            android:layout_height="wrap_content"
+            android:textColorHint="#95ffffff">
 
             <EditText
+                android:id="@+id/passwordED"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@string/appFont"
                 android:hint="@string/passwordText"
+                android:textColor="#ffffff"
+                android:textColorHint="#95ffffff" />
+
+            <TextView
+                android:id="@+id/enterToUnlockTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/enterPasswordToUnlock"
                 android:textColor="@color/vk_white" />
         </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/signInButton"
+            style="?attr/selectableItemBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/passwordInputLayout"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/login_button_background"
+            android:elevation="5dp"
+            android:fontFamily="@string/appFont"
+            android:text="@string/action_sign_in"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold" />
     </RelativeLayout>
 </RelativeLayout>

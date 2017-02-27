@@ -36,12 +36,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:fontFamily="@string/appFont"
             android:text="@string/securityHint"
             android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
         <RelativeLayout
             android:id="@+id/fingerprintWrapper"
@@ -68,6 +66,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:layout_toRightOf="@+id/attachFingerprintIcon"
+                android:fontFamily="@string/appFont"
                 android:text="@string/attachFingerprint" />
 
             <TextView
@@ -79,6 +78,7 @@
                 android:clickable="true"
                 android:ellipsize="end"
                 android:focusable="true"
+                android:fontFamily="@string/appFont"
                 android:foreground="?attr/selectableItemBackground"
                 android:maxLines="1"
                 android:padding="5dp"
@@ -112,6 +112,7 @@
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="20dp"
                 android:layout_toRightOf="@+id/attachPinIcon"
+                android:fontFamily="@string/appFont"
                 android:text="@string/attachPin" />
 
             <TextView
@@ -123,6 +124,7 @@
                 android:clickable="true"
                 android:ellipsize="end"
                 android:focusable="true"
+                android:fontFamily="@string/appFont"
                 android:foreground="?attr/selectableItemBackground"
                 android:maxLines="1"
                 android:padding="5dp"

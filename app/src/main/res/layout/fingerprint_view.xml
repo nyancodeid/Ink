@@ -16,6 +16,7 @@
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
+        android:fontFamily="@string/appFont"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
@@ -26,6 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:fontFamily="@string/appFont"
         android:layout_marginTop="20dp"
         android:alpha="0.5"
         android:background="@color/colorPrimary"

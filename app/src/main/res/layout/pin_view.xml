@@ -8,14 +8,16 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:layout_height="wrap_content">
+        android:fontFamily="@string/appFont">
 
         <EditText
             android:id="@+id/attachPasswordED"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="@string/appFont"
             android:hint="@string/enter_desired_password"
             android:inputType="numberPassword" />
     </android.support.design.widget.TextInputLayout>
@@ -24,13 +26,15 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        android:fontFamily="@string/appFont">
 
         <EditText
             android:id="@+id/confirmPasswordED"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="@string/appFont"
             android:hint="@string/reenter_password"
             android:inputType="numberPassword" />
     </android.support.design.widget.TextInputLayout>
@@ -43,6 +47,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:background="@color/colorPrimary"
+        android:fontFamily="@string/appFont"
         android:text="@string/attach"
         android:textAllCaps="false"
         android:textColor="@color/vk_white" />

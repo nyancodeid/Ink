@@ -2,7 +2,9 @@ package ink.va.activities;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.view.View;
+import android.widget.EditText;
 
 import com.ink.va.R;
 
@@ -16,6 +18,10 @@ public class SecurityScreen extends BaseActivity {
     View securityScreenRoot;
     @BindView(R.id.fingerPrintLayout)
     View fingerPrintLayout;
+    @BindView(R.id.passwordInputLayout)
+    TextInputLayout passwordInputLayout;
+    @BindView(R.id.passwordED)
+    EditText passwordED;
     private SharedHelper mSharedHelper;
 
     @Override

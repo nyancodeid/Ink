@@ -39,6 +39,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@string/appFont"
             android:text="@string/backUpHint"
             android:textStyle="bold" />
     </ScrollView>
@@ -49,6 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/progress"
         android:layout_marginBottom="5dp"
+        android:fontFamily="@string/appFont"
         android:gravity="center"
         android:text="@string/backupCaution"
         android:textColor="@color/red"
@@ -86,6 +88,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="9dp"
         android:layout_toRightOf="@+id/backUpMessages"
+        android:fontFamily="@string/appFont"
         android:text="@string/backUpMessages" />
 
     <TextView
@@ -95,6 +98,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="9dp"
         android:layout_toRightOf="@+id/restoreMessages"
+        android:fontFamily="@string/appFont"
         android:text="@string/restoreMessages" />
 
     <Button
@@ -104,6 +108,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:background="@color/colorPrimary"
+        android:fontFamily="@string/appFont"
         android:text="@string/proceed"
         android:textAllCaps="false"
         android:textColor="@color/vk_white" />
