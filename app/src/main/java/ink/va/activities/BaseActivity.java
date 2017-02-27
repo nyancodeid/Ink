@@ -20,7 +20,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -454,7 +453,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         if (messageService != null) {
             messageService.emit(EVENT_PING, pingJson);
-            Log.d("MessageService", "ping: pinging");
         }
     }
 
