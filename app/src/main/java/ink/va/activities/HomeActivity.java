@@ -156,6 +156,8 @@ public class HomeActivity extends BaseActivity
         mToolbar.setTitle(FEED);
         mSharedHelper = new SharedHelper(this);
 
+        checkLock();
+
         initService();
 
         if (!mSharedHelper.isSecurityQuestionSet() && isAccountRecoverable()) {
@@ -254,6 +256,13 @@ public class HomeActivity extends BaseActivity
         LocalBroadcastManager.getInstance(this).registerReceiver(feedUpdateReceiver, new IntentFilter(getPackageName() + "HomeActivity"));
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
+    }
+
+    private void checkLock() {
+        if (mSharedHelper.hasPinAttached() || mSharedHelper.hasFingerprintAttached()) {
+            startActivity(new Intent(this, SecurityScreen.class));
+            overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
+        }
     }
 
     private void initService() {

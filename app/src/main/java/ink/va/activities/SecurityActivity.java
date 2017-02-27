@@ -33,7 +33,7 @@ public class SecurityActivity extends BaseActivity implements FingerprintCallbac
     @BindView(R.id.removePin)
     View removePin;
 
-    private static final int FINGERPRINT_REQUEST_CODE = 5;
+    public static final int FINGERPRINT_REQUEST_CODE = 5;
     private FingerPrintManager fingerPrintManager;
     private Button attachFingerPrintButton;
     private Button attachPinButton;

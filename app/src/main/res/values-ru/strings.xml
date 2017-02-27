@@ -895,4 +895,7 @@
     <string name="noSecurityOnLockScreen">Нету защиты в настройках. Добавьте одну</string>
     <string name="removePinFirst">Удалите защиту пин-кода сперва</string>
     <string name="removeFingerprint">Удалите Отпечаток Пальца сперва</string>
+    <string name="protectionHint">Это приложение заблокированно</string>
+    <string name="scanToUnlock">Коснитесь сенсора чтобы разблокировать</string>
+    <string name="enterPasswordToUnlock">Введите пароль чтобы разблокировать</string>
 </resources>
