@@ -143,4 +143,10 @@ public class SecurityScreen extends BaseActivity implements FingerprintCallback 
     public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
         proceedUnlocking();
     }
+
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+        super.onBackPressed();
+    }
 }

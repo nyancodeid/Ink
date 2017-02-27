@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/protectionHint"
         android:layout_marginTop="20dp"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/passwordInputLayout"
@@ -74,23 +74,27 @@
                 android:textColor="#ffffff"
                 android:textColorHint="#95ffffff" />
 
-            <TextView
-                android:id="@+id/enterToUnlockTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@string/appFont"
-                android:text="@string/enterPasswordToUnlock"
-                android:textColor="@color/vk_white" />
         </android.support.design.widget.TextInputLayout>
+
+
+        <TextView
+            android:id="@+id/enterToUnlockTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/passwordInputLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@string/appFont"
+            android:text="@string/enterPasswordToUnlock"
+            android:textColor="@color/vk_white" />
 
         <Button
             android:id="@+id/unlockPasswordButton"
             style="?attr/selectableItemBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/passwordInputLayout"
+            android:layout_below="@+id/enterToUnlockTV"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
