@@ -898,4 +898,6 @@
     <string name="protectionHint">Это приложение заблокированно</string>
     <string name="scanToUnlock">Коснитесь сенсора чтобы разблокировать</string>
     <string name="enterPasswordToUnlock">Введите пароль чтобы разблокировать</string>
+    <string name="touchSensor">Коснитесь Сенсора чтобы прикрепить</string>
+    <string name="remove">Удалить</string>
 </resources>
