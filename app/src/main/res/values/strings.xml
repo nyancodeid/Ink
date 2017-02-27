@@ -880,4 +880,14 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="touchSensor">Touch Sensor To Attach</string>
     <string name="enter_desired_password">Enter desired password</string>
     <string name="reenter_password">Reenter password</string>
+    <string name="fingerprint_not_supported">Fingerprint not supported</string>
+    <string name="attachFingerprintHint">No fingerprints are attached in the settings. Attach one please</string>
+    <string name="authenticationFailed">Authentication failed...</string>
+    <string name="authenticationSucceeded">Authentication succeeded. Now click 'attach'</string>
+    <string name="fingerprint_permission_needed">Fingerprint permission is needed to attach</string>
+    <string name="grant">Grant</string>
+    <string name="noSecurityOnLockScreen">No security on the lock screen. Please attach</string>
+    <string name="remove">Remove</string>
+    <string name="removePinFirst">Remove pin security first</string>
+    <string name="removeFingerprint">Remove fingerprint first</string>
 </resources>

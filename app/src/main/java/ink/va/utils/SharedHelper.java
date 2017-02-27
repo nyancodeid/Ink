@@ -828,8 +828,12 @@ public class SharedHelper {
         mEditor.commit();
     }
 
-    public boolean hasAnySecurityAttached() {
-        return mSharedPreferences.getBoolean("fingerprintAttached", false) || mSharedPreferences.getBoolean("pinAttached", false);
+    public boolean hasFingerprintAttached() {
+        return mSharedPreferences.getBoolean("fingerprintAttached", false);
+    }
+
+    public boolean hasPinAttached() {
+        return mSharedPreferences.getBoolean("pinAttached", false);
     }
 
     public void putFingerPrintAttached(boolean value) {
@@ -840,5 +844,14 @@ public class SharedHelper {
     public void putPinAttached(boolean value) {
         mEditor.putBoolean("pinAttached", value);
         mEditor.commit();
+    }
+
+    public void putPin(String value) {
+        mEditor.putString("pin", value);
+        mEditor.commit();
+    }
+
+    public String getPin() {
+        return mSharedPreferences.getString("pin", "");
     }
 }

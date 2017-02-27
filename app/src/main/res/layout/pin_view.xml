@@ -9,10 +9,12 @@
         android:layout_height="wrap_content">
 
         <EditText
+            android:id="@+id/attachPasswordED"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:hint="@string/enter_desired_password" />
+            android:hint="@string/enter_desired_password"
+            android:inputType="numberPassword" />
     </android.support.design.widget.TextInputLayout>
 
 
@@ -22,10 +24,12 @@
         android:layout_marginTop="20dp">
 
         <EditText
+            android:id="@+id/confirmPasswordED"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:hint="@string/reenter_password" />
+            android:hint="@string/reenter_password"
+            android:inputType="numberPassword" />
     </android.support.design.widget.TextInputLayout>
 
 
