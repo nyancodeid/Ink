@@ -16,11 +16,11 @@ public class Notification {
     private Notification() {
     }
 
-    public boolean isSendingRemote() {
+    public boolean isSendingLocal() {
         return sendingRemote;
     }
 
-    public void setSendingRemote(boolean sendingRemote) {
+    public void isSendingLocal(boolean sendingRemote) {
         this.sendingRemote = sendingRemote;
     }
 

@@ -148,7 +148,7 @@ public class MessageService extends Service {
             emit(EVENT_MESSAGE_RECEIVED, jsonObject);
             jsonObject = null;
 
-            if (Notification.get().isSendingRemote()) {
+            if (!Notification.get().isSendingLocal()) {
                 RealmHelper.getInstance().insertMessage(chatModel, new GeneralCallback() {
                     @Override
                     public void onSuccess(Object o) {

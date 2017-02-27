@@ -180,7 +180,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         currentUserId = sharedHelper.getUserId();
 
 
-        Notification.get().setSendingRemote(false);
+        Notification.get().isSendingLocal(true);
 
         slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_in);
         slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_out);
@@ -869,7 +869,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Notification.get().setSendingRemote(true);
+        Notification.get().isSendingLocal(false);
         if (messageService != null) {
             messageService.destroyListener();
         }
