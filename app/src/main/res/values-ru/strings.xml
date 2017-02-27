@@ -889,7 +889,7 @@
     <string name="fingerprint_not_supported">Отпечаток Пальца не поддерживаеться</string>
     <string name="attachFingerprintHint">Ни один Отпечаток Пальца не добавлен в настройках. Пожалуйста добавтье одну</string>
     <string name="authenticationFailed">Аутентификация провалена...</string>
-    <string name="authenticationSucceeded">Аутентификация Пройдена. Теперь нажмитье 'прикрепить'</string>
+    <string name="authenticationSucceeded">Аутентификация Пройдена. Теперь нажмитье \'прикрепить\'</string>
     <string name="fingerprint_permission_needed">Для прикрипления нужны разрешения</string>
     <string name="grant">Дать разрешение</string>
     <string name="noSecurityOnLockScreen">Нету защиты в настройках. Добавьте одну</string>
