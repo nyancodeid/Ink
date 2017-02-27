@@ -21,11 +21,6 @@
             android:layout_gravity="center_horizontal"
             android:src="@drawable/settings_icon" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/linesColor"></View>
 
         <RelativeLayout
             android:id="@+id/backUpServiceWrapper"
@@ -61,6 +56,53 @@
         </RelativeLayout>
 
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/linesColor"></View>
+
+
+        <RelativeLayout
+            android:id="@+id/securityWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:minHeight="50dp">
+
+            <TextView
+                android:id="@+id/securityTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/enterSecurity"
+                android:fontFamily="@string/condensedFont"
+                android:text="@string/security" />
+
+            <Button
+                android:id="@+id/enterSecurity"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@color/colorPrimary"
+                android:text="@string/enter"
+                android:textAllCaps="false"
+                android:textColor="@color/vk_white" />
+        </RelativeLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/linesColor"></View>
+
         <RelativeLayout
             android:id="@+id/groupNotificationSwitchWrapper"
             android:layout_width="match_parent"
@@ -92,6 +134,11 @@
 
         </RelativeLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/linesColor"></View>
 
         <RelativeLayout
             android:id="@+id/commentNotificationSwitchWrapper"
@@ -124,6 +171,11 @@
 
         </RelativeLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/linesColor"></View>
 
         <RelativeLayout
             android:id="@+id/likeNotificationSwitchWrapper"
@@ -156,6 +208,11 @@
 
         </RelativeLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/linesColor"></View>
 
         <RelativeLayout
             android:id="@+id/snowWrapper"
@@ -188,5 +245,10 @@
 
         </RelativeLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/linesColor"></View>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

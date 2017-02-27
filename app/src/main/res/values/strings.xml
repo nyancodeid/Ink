@@ -871,4 +871,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="dateNotAvailable">Status Not Available</string>
     <string name="pickOpponentProfile">Pick opponent profile view background</string>
     <string name="opponentProfileColor">Opponent Profile View Color</string>
+    <string name="security">Security</string>
 </resources>

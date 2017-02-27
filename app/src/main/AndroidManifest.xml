@@ -23,6 +23,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -128,11 +129,10 @@
         <service android:name="ink.va.service.SendMessageService" />
 
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
-        <receiver android:name="ink.va.receivers.DeleteReceiver"></receiver>
+        <receiver android:name="ink.va.receivers.DeleteReceiver" />
         <receiver
             android:name="ink.va.receivers.AlarmReceiver"
-            android:process=":remote" >
-        </receiver>
+            android:process=":remote" />
         <receiver android:name="ink.va.broadcast.DismissBroadcast" />
         -- Declaring broadcast receiver for BOOT_COMPLETED event. -->
         <receiver
@@ -329,7 +329,8 @@
 
         <activity
             android:name="ink.va.activities.BackUpActivity"
-            android:label="@string/backUpRestoreServices"></activity>
+            android:label="@string/backUpRestoreServices" />
+        <activity android:name="ink.va.activities.SecurityActivity"></activity>
     </application>
 
 </manifest>

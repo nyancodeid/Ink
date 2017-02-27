@@ -111,6 +111,16 @@ public class Settings extends BaseActivity {
         startActivity(new Intent(getApplicationContext(), BackUpActivity.class));
     }
 
+    @OnClick(R.id.securityWrapper)
+    public void securityClicked() {
+        startActivity(new Intent(getApplicationContext(), SecurityActivity.class));
+    }
+
+    @OnClick(R.id.enterSecurity)
+    public void enterSecurityClicked() {
+        securityClicked();
+    }
+
     @OnClick(R.id.enterBackUp)
     public void enterClicked() {
         backUpClicked();

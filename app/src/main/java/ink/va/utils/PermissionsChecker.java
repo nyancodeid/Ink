@@ -63,4 +63,15 @@ public class PermissionsChecker {
             return true;
         }
     }
+
+    public static boolean isFingerprintPermissionGranted(Context context) {
+        if (ActivityCompat.checkSelfPermission(context,
+                Manifest.permission.USE_FINGERPRINT) !=
+                PackageManager.PERMISSION_GRANTED) {
+
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
