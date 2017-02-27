@@ -25,7 +25,6 @@ import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ink.va.R;
@@ -1047,15 +1046,4 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Toast.makeText(messageService, "stopped", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Toast.makeText(messageService, "started", Toast.LENGTH_SHORT).show();
-    }
 }
