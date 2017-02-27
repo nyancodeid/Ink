@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,6 +46,8 @@ public class SecurityActivity extends BaseActivity implements FingerprintCallbac
         setContentView(R.layout.activity_finger_print);
         ButterKnife.bind(this);
         sharedHelper = new SharedHelper(this);
+        getSupportActionBar().setTitle(getString(R.string.security));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         removeFingerPrint.setVisibility(sharedHelper.hasFingerprintAttached() ? View.VISIBLE : View.GONE);
         removePin.setVisibility(sharedHelper.hasPinAttached() ? View.VISIBLE : View.GONE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -52,6 +55,13 @@ public class SecurityActivity extends BaseActivity implements FingerprintCallbac
             fingerPrintManager.setOnFingerprintCallback(this);
         }
 
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -160,7 +170,7 @@ public class SecurityActivity extends BaseActivity implements FingerprintCallbac
     }
 
     private void showPinDialog() {
-        Dialog dialog = new Dialog(this);
+        final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.pin_view);
         attachPinButton = (Button) dialog.findViewById(R.id.attachPinButton);
         final EditText attachPasswordED = (EditText) dialog.findViewById(R.id.attachPasswordED);
@@ -175,7 +185,7 @@ public class SecurityActivity extends BaseActivity implements FingerprintCallbac
                     Snackbar.make(attachPasswordED, getString(R.string.not_equals_error), Snackbar.LENGTH_SHORT).show();
                 } else {
                     if (attachPasswordED.getText().toString().trim().equals(confirmPasswordED.getText().toString().trim())) {
-                        proceedPinAttachment(attachPasswordED.getText().toString().trim());
+                        proceedPinAttachment(attachPasswordED.getText().toString().trim(), dialog);
                     }
                 }
             }
@@ -195,26 +205,28 @@ public class SecurityActivity extends BaseActivity implements FingerprintCallbac
         dialog.show();
     }
 
-    private void proceedPinAttachment(String password) {
+    private void proceedPinAttachment(String password, Dialog dialog) {
         sharedHelper.putPinAttached(true);
         sharedHelper.putPin(password);
         removePin.setVisibility(View.VISIBLE);
+        dialog.dismiss();
     }
 
-    private void proceedFingerprintAttachment() {
+    private void proceedFingerprintAttachment(Dialog dialog) {
         sharedHelper.putFingerPrintAttached(true);
         removeFingerPrint.setVisibility(View.VISIBLE);
+        dialog.dismiss();
     }
 
     private void showFingerprintDialog() {
-        Dialog dialog = new Dialog(this);
+        final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.fingerprint_view);
         attachFingerPrintButton = (Button) dialog.findViewById(R.id.attachFingerPrintButton);
         attachFingerPrintButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isFingerPrintSucceed) {
-                    proceedFingerprintAttachment();
+                    proceedFingerprintAttachment(dialog);
                 }
             }
         });
