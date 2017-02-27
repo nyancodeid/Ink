@@ -51,6 +51,7 @@ public class SecurityScreen extends BaseActivity implements FingerprintCallback 
             securityScreenRoot.setBackgroundColor(Color.parseColor(mSharedHelper.getFeedColor()));
         }
         if (mSharedHelper.hasPinAttached()) {
+            fingerPrintLayout.setVisibility(View.GONE);
             pinLayout.setVisibility(View.VISIBLE);
             passwordED.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -79,6 +80,7 @@ public class SecurityScreen extends BaseActivity implements FingerprintCallback 
                 }
             });
         } else {
+            pinLayout.setVisibility(View.GONE);
             fingerPrintLayout.setVisibility(View.VISIBLE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 fingerPrintManager = new FingerPrintManager(this);

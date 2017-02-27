@@ -219,6 +219,7 @@ public class SecurityActivity extends BaseActivity implements FingerprintCallbac
     }
 
     private void showFingerprintDialog() {
+        isFingerPrintSucceed = false;
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.fingerprint_view);
         attachFingerPrintButton = (Button) dialog.findViewById(R.id.attachFingerPrintButton);
