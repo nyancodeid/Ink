@@ -126,7 +126,6 @@
         </service>
         <service android:name="ink.va.service.RemoveChatRouletteService" />
         <service android:name="ink.va.service.SendTokenService" />
-        <service android:name="ink.va.service.SendMessageService" />
 
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
         <receiver android:name="ink.va.receivers.DeleteReceiver" />
