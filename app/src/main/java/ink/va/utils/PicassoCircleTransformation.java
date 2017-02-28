@@ -5,12 +5,13 @@ import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-import com.koushikdutta.ion.bitmap.Transform;
+import it.sephiroth.android.library.picasso.Transformation;
 
 /**
- * Created by USER on 2016-06-21.
+ * Created by PC-Comp on 2/28/2017.
  */
-public class CircleTransform implements Transform {
+
+public class PicassoCircleTransformation implements Transformation {
     @Override
     public Bitmap transform(Bitmap source) {
         int size = Math.min(source.getWidth(), source.getHeight());

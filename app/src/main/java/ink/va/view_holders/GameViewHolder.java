@@ -8,13 +8,12 @@ import android.widget.TextView;
 
 import com.ink.va.R;
 
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.interfaces.ItemClickListener;
 import ink.va.models.GameModel;
-import ink.va.utils.CircleTransform;
+import ink.va.utils.PicassoCircleTransformation;
 import it.sephiroth.android.library.picasso.Picasso;
 
 /**
@@ -39,7 +38,7 @@ public class GameViewHolder extends RecyclerView.ViewHolder {
     public void initData(GameModel gameModel, Context context, ItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
         this.gameModel = gameModel;
-        Picasso.with(context).load(gameModel.getResourceDrawable()).transform(new CircleTransform()).into(gameImage);
+        Picasso.with(context).load(gameModel.getResourceDrawable()).transform(new PicassoCircleTransformation()).into(gameImage);
         gameTitle.setText(gameModel.getGameTitle());
         gameDescription.setText(gameModel.getGameDescription());
 
