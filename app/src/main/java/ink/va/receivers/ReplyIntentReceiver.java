@@ -85,9 +85,9 @@ public class ReplyIntentReceiver extends BroadcastReceiver {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        final String finalMessageToSend = messageToSend;
 
         if (messageService == null) {
-            final String finalMessageToSend = messageToSend;
             setOnBindCallback(new OnBindCallback() {
                 @Override
                 public void onBind() {
@@ -95,9 +95,14 @@ public class ReplyIntentReceiver extends BroadcastReceiver {
                 }
             });
             Intent messageIntent = new Intent(context, MessageService.class);
-            context.bindService(messageIntent, mConnection, context.BIND_AUTO_CREATE);
+            messageService = MessageService.get();
+            if (messageService == null) {
+                context.startService(messageIntent);
+                messageService = MessageService.get();
+            }
+            sendMessage(finalMessageToSend);
         } else {
-
+            sendMessage(finalMessageToSend);
         }
 
     }

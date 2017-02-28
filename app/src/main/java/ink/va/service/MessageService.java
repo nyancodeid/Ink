@@ -66,8 +66,10 @@ public class MessageService extends Service {
     private SocketListener onSocketListener;
     private List<Integer> socketListeners = new LinkedList<>();
     private GeneralCallback emitListener;
+    public static MessageService messageService;
 
     public MessageService() {
+        messageService = this;
     }
 
     private com.github.nkzawa.socketio.client.Socket mSocket;
@@ -82,6 +84,10 @@ public class MessageService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         initSocketFully();
         return START_STICKY;
+    }
+
+    public static MessageService get() {
+        return messageService;
     }
 
     private void initSocketFully() {
@@ -464,6 +470,10 @@ public class MessageService extends Service {
 
             }
         });
+    }
 
+
+    public interface ServiceListener {
+        void onServiceStarted();
     }
 }
