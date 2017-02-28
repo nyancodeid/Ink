@@ -52,7 +52,10 @@ public class SecurityActivity extends BaseActivity implements FingerprintCallbac
         removePin.setVisibility(sharedHelper.hasPinAttached() ? View.VISIBLE : View.GONE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             fingerPrintManager = new FingerPrintManager(this);
-            fingerPrintManager.setOnFingerprintCallback(this);
+            if(fingerPrintManager.supportsFingerprint()){
+                fingerPrintManager.init();
+                fingerPrintManager.setOnFingerprintCallback(this);
+            }
         }
 
     }

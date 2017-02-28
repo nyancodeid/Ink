@@ -47,6 +47,7 @@ import ink.va.models.ServerInformationModel;
 import ink.va.service.MessageService;
 import ink.va.utils.Constants;
 import ink.va.utils.DimDialog;
+import ink.va.utils.Notification;
 import ink.va.utils.ProcessManager;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -134,6 +135,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (sharedHelper == null) {
             sharedHelper = new SharedHelper(this);
         }
+        Notification.get().setAppAlive(true);
         initCountDownTimer();
         checkBan();
         checkHacks();

@@ -1,6 +1,7 @@
 package ink.va.activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
@@ -21,9 +22,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.interfaces.FingerprintCallback;
 import ink.va.utils.FingerPrintManager;
+import ink.va.utils.Notification;
 import ink.va.utils.SharedHelper;
 
 import static ink.va.activities.SecurityActivity.FINGERPRINT_REQUEST_CODE;
+import static ink.va.activities.SplashScreen.LOCK_SCREEN_REQUEST_CODE;
 
 public class SecurityScreen extends BaseActivity implements FingerprintCallback {
 
@@ -91,6 +94,9 @@ public class SecurityScreen extends BaseActivity implements FingerprintCallback 
     }
 
     private void proceedUnlocking() {
+        Intent intent = new Intent();
+        intent.putExtra("hasUnlocked", true);
+        setResult(LOCK_SCREEN_REQUEST_CODE, intent);
         finish();
         overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
     }
@@ -148,6 +154,7 @@ public class SecurityScreen extends BaseActivity implements FingerprintCallback 
 
     @Override
     public void onBackPressed() {
+        Notification.get().setAppAlive(false);
         finishAffinity();
         super.onBackPressed();
     }

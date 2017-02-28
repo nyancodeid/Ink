@@ -56,11 +56,14 @@ public class FingerPrintManager extends FingerprintManager.AuthenticationCallbac
     @RequiresApi(api = Build.VERSION_CODES.M)
     public FingerPrintManager(Context context) {
         this.context = context;
-
         keyguardManager =
                 (KeyguardManager) context.getSystemService(KEYGUARD_SERVICE);
         fingerprintManager =
                 (FingerprintManager) context.getSystemService(FINGERPRINT_SERVICE);
+    }
+
+
+    public void init() {
 
         if (!keyguardManager.isKeyguardSecure()) {
             if (onFingerprintCallback != null) {
@@ -87,9 +90,7 @@ public class FingerPrintManager extends FingerprintManager.AuthenticationCallbac
         }
 
         generateKey();
-
     }
-
 
     private void generateKey() {
         try {
@@ -203,7 +204,7 @@ public class FingerPrintManager extends FingerprintManager.AuthenticationCallbac
 
     public boolean supportsFingerprint() {
         try {
-            return fingerprintManager.isHardwareDetected();
+            return fingerprintManager.isHardwareDetected() && fingerprintManager.hasEnrolledFingerprints();
         } catch (SecurityException e) {
             e.printStackTrace();
             return false;

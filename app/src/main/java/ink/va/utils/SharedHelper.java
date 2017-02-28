@@ -7,6 +7,8 @@ import com.ink.va.R;
 
 import java.util.Map;
 
+import lombok.Getter;
+
 import static ink.va.utils.Constants.SERVER_NOTIFICATION_SHARED_KEY;
 import static ink.va.utils.Constants.SHOW_SERVER_NEWS_START_UP_KEY;
 
@@ -24,6 +26,7 @@ public class SharedHelper {
 
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
+    @Getter
     private Context context;
     private static SharedHelper instance;
 

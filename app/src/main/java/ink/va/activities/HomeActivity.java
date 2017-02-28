@@ -76,6 +76,7 @@ import ink.va.utils.ErrorCause;
 import ink.va.utils.FileUtils;
 import ink.va.utils.IonCache;
 import ink.va.utils.Keyboard;
+import ink.va.utils.Notification;
 import ink.va.utils.PollFish;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
@@ -88,7 +89,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.utils.Constants.NOTIFICATION_AUTO_REDIRECT_BUNDLE_KEY;
 import static ink.va.utils.Constants.NOTIFICATION_BUNDLE_EXTRA_KEY;
+import static ink.va.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
 import static ink.va.utils.Constants.NOTIFICATION_POST_ID_KEY;
 
 public class HomeActivity extends BaseActivity
@@ -156,7 +159,6 @@ public class HomeActivity extends BaseActivity
         mToolbar.setTitle(FEED);
         mSharedHelper = new SharedHelper(this);
 
-        checkLock();
 
         initService();
 
@@ -258,12 +260,6 @@ public class HomeActivity extends BaseActivity
         // See https://g.co/AppIndexing/AndroidStudio for more information.
     }
 
-    private void checkLock() {
-        if (mSharedHelper.hasPinAttached() || mSharedHelper.hasFingerprintAttached()) {
-            startActivity(new Intent(this, SecurityScreen.class));
-            overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
-        }
-    }
 
     private void initService() {
         startService(new Intent(getApplicationContext(), MessageService.class));
@@ -417,6 +413,16 @@ public class HomeActivity extends BaseActivity
             if (notificationBundle != null) {
                 String postId = notificationBundle.getString(NOTIFICATION_POST_ID_KEY);
                 handleFeedNotification(postId);
+            }else{
+                String jsonObject = intent.getExtras().getString(NOTIFICATION_MESSAGE_BUNDLE_KEY);
+                boolean autoRedirect = intent.getExtras().getBoolean(NOTIFICATION_AUTO_REDIRECT_BUNDLE_KEY);
+                if(autoRedirect){
+                    Intent chatIntent = new Intent(this, Chat.class);
+                    chatIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
+                    chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    chatIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(chatIntent);
+                }
             }
         }
     }
@@ -990,6 +996,7 @@ public class HomeActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Notification.get().setAppAlive(false);
     }
 
     private void getMyRequests() {

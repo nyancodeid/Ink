@@ -14,6 +14,7 @@ import ink.va.utils.SharedHelper;
 
 
 public class SplashScreen extends AppCompatActivity {
+    public static final int LOCK_SCREEN_REQUEST_CODE = 14;
     private boolean isAppOriginal;
     private String debugKeyHas = "GXEMUTFFeZejMCClv1bXr7Zbid8=";
     private String releaseKeyHash = "JeFV2v/aHMVmxkndxmzynZNlMC8=";
@@ -80,10 +81,33 @@ public class SplashScreen extends AppCompatActivity {
                 }
             });
         } else {
+            checkLock();
+        }
+
+    }
+
+    private void checkLock() {
+        if (sharedHelper.hasPinAttached() || sharedHelper.hasFingerprintAttached()) {
+            startActivityForResult(new Intent(this, SecurityScreen.class), LOCK_SCREEN_REQUEST_CODE);
+        } else {
             Intent intent = new Intent(this, Intro.class);
             startActivity(intent);
             finish();
         }
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case LOCK_SCREEN_REQUEST_CODE:
+                boolean hasUnlocked = data.getExtras() != null ? data.getExtras().getBoolean("hasUnlocked") : false;
+                if (hasUnlocked) {
+                    Intent intent = new Intent(this, Intro.class);
+                    startActivity(intent);
+                    finish();
+                }
+                break;
+        }
     }
 }

@@ -65,6 +65,7 @@ import retrofit2.Response;
 import rx.Observer;
 import rx.functions.Func1;
 
+import static ink.va.activities.SplashScreen.LOCK_SCREEN_REQUEST_CODE;
 import static ink.va.service.MessageService.sendMessageNotification;
 import static ink.va.utils.Constants.EVENT_ONLINE_STATUS;
 import static ink.va.utils.Constants.EVENT_SEND_MESSAGE;
@@ -152,6 +153,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         ButterKnife.bind(this);
         sharedHelper = new SharedHelper(this);
 
+
         fadeAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_scale);
 
         chatGSON = new Gson();
@@ -180,7 +182,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         currentUserId = sharedHelper.getUserId();
 
 
-        Notification.get().isSendingRemote(false);
+        Notification.get().setSendingRemote(false);
 
         slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_in);
         slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_out);
@@ -192,12 +194,55 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
         setSupportActionBar(chatToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        checkLock();
+    }
+
+    private void checkLock() {
+        if (Notification.get().isCheckLock()) {
+            Notification.get().setCheckLock(false);
+            if (sharedHelper.hasFingerprintAttached() || sharedHelper.hasPinAttached()) {
+                startActivityForResult(new Intent(this, SecurityScreen.class), LOCK_SCREEN_REQUEST_CODE);
+            }
+        }
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        finish();
+        if (mWriteEditText.getText().toString().length() > 0 || isStickerChosen) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.discardChanges));
+            builder.setMessage(getString(R.string.discardChangesQuestion));
+            builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+
+            builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            final AlertDialog alertDialog = builder.show();
+            alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Chat.super.onBackPressed();
+                }
+            });
+        }else{
+            finish();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -850,6 +895,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                     handleStickerChosenView();
                 }
                 break;
+            case LOCK_SCREEN_REQUEST_CODE:
+                boolean hasUnlocked = data.getExtras() != null ? data.getExtras().getBoolean("hasUnlocked") : false;
+                if (hasUnlocked) {
+
+                }
+                break;
             default:
         }
 
@@ -869,7 +920,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Notification.get().isSendingRemote(true);
+        Notification.get().setSendingRemote(true);
         if (messageService != null) {
             messageService.destroyListener();
         }
@@ -1045,5 +1096,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             startActivity(intent);
         }
     }
+
 
 }

@@ -31,6 +31,7 @@ import ink.va.interfaces.SocketListener;
 import ink.va.models.ChatModel;
 import ink.va.receivers.AlarmReceiver;
 import ink.va.receivers.DeleteReceiver;
+import ink.va.receivers.NotificationBroadcast;
 import ink.va.utils.AlarmUtils;
 import ink.va.utils.Notification;
 import ink.va.utils.RealmHelper;
@@ -326,7 +327,7 @@ public class MessageService extends Service {
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        Notification.get().isSendingRemote(true);
+        Notification.get().setSendingRemote(true);
         AlarmUtils.scheduleAlarmWithMinutes(getApplicationContext(), AlarmReceiver.class, 10);
         destroySocket();
         super.onTaskRemoved(rootIntent);
@@ -354,6 +355,7 @@ public class MessageService extends Service {
         final String message = jsonObject.optString("message");
         final String opponentId = jsonObject.optString("userId");
         final StringBuilder stringBuilder = new StringBuilder();
+
 
         RealmHelper.getInstance().getNotificationCount(Integer.valueOf(opponentId), new RealmHelper.QueryReadyListener() {
             @Override
@@ -386,6 +388,13 @@ public class MessageService extends Service {
                 PendingIntent requestsViewPending = PendingIntent.getActivity(context,
                         Integer.valueOf(jsonObject.optInt("messageId")), requestsViewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+
+                Intent broadcastIntent = new Intent(context, NotificationBroadcast.class);
+                broadcastIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
+
+                PendingIntent broadcastPendingIntent = PendingIntent.getBroadcast(context, jsonObject.optInt("messageId"),
+                        broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
                 PendingIntent replyPendingIntent = PendingIntent.getActivity(context,
                         Integer.valueOf(jsonObject.optInt("messageId")), replyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -412,7 +421,7 @@ public class MessageService extends Service {
                         .bigText(stringBuilder.toString())
                 );
 
-                builder.setContentIntent(requestsViewPending);
+                builder.setContentIntent(broadcastPendingIntent);
 
                 builder.setShowWhen(true);
                 final android.app.Notification notification = builder.build();
