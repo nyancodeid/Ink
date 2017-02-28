@@ -903,4 +903,6 @@
     <string name="mafiaTitle">Мафия</string>
     <string name="mafiaDescription">Сможете ли вы управлять вселенной?</string>
     <string name="mafiaUndead">Мафия Бессмертна</string>
+    <string name="rooms">Комнаты</string>
+    <string name="addRoom">Добавить Комнату</string>
 </resources>

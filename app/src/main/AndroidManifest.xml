@@ -335,7 +335,8 @@
             android:label="@string/backUpRestoreServices" />
         <activity android:name="ink.va.activities.SecurityActivity" />
         <activity android:name="ink.va.activities.SecurityScreen" />
-        <activity android:name="ink.va.activities.MafiaRoomActivity"></activity>
+        <activity android:name="ink.va.activities.MafiaRoomActivity" />
+        <activity android:name="ink.va.activities.MafiaAddRoomActivity"></activity>
     </application>
 
 </manifest>
