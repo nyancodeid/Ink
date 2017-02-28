@@ -899,4 +899,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="title_activity_main">MainActivity</string>
     <string name="rooms">Rooms</string>
     <string name="addRoom">Add Room</string>
+    <string name="gameInBet">Game in beta development yet</string>
 </resources>

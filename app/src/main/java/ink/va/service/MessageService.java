@@ -6,10 +6,12 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.RemoteInput;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.github.nkzawa.emitter.Emitter;
@@ -32,6 +34,7 @@ import ink.va.models.ChatModel;
 import ink.va.receivers.AlarmReceiver;
 import ink.va.receivers.DeleteReceiver;
 import ink.va.receivers.NotificationBroadcast;
+import ink.va.receivers.ReplyIntentReceiver;
 import ink.va.utils.AlarmUtils;
 import ink.va.utils.Notification;
 import ink.va.utils.RealmHelper;
@@ -56,6 +59,7 @@ import static ink.va.utils.Constants.STATUS_DELIVERED;
 
 public class MessageService extends Service {
     private static final String TAG = MessageService.class.getSimpleName();
+    public static final String NOTIFICATION_REPLY = "notificationReply";
     private SharedHelper sharedHelper;
     private String currentUserId;
     LocalBinder mBinder = new LocalBinder();
@@ -234,6 +238,9 @@ public class MessageService extends Service {
             if (onSocketListener != null) {
                 onSocketListener.onSocketDisconnected();
             }
+            if (mSocket != null) {
+                mSocket.connect();
+            }
         }
     };
 
@@ -385,8 +392,9 @@ public class MessageService extends Service {
                 Intent deleteIntent = new Intent(context, DeleteReceiver.class);
                 deleteIntent.putExtra("notificationId", Integer.valueOf(opponentId));
 
-                PendingIntent requestsViewPending = PendingIntent.getActivity(context,
-                        Integer.valueOf(jsonObject.optInt("messageId")), requestsViewIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                Intent nReplyIntent = new Intent(context, ReplyIntentReceiver.class);
+                nReplyIntent.putExtra("notificationId", Integer.valueOf(opponentId));
+                nReplyIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
 
 
                 Intent broadcastIntent = new Intent(context, NotificationBroadcast.class);
@@ -404,11 +412,29 @@ public class MessageService extends Service {
 
                 final NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
+
+                RemoteInput remoteInput = new RemoteInput.Builder(NOTIFICATION_REPLY)
+                        .setLabel(context.getString(R.string.reply))
+                        .build();
+
+                PendingIntent nReplyPendingIntent = PendingIntent.getBroadcast(context, 0, nReplyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                NotificationCompat.Action nReplyAction =
+                        new NotificationCompat.Action.Builder(R.drawable.ic_send_white_24dp,
+                                context.getString(R.string.reply), nReplyPendingIntent)
+                                .addRemoteInput(remoteInput)
+                                .build();
+
                 android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(context);
                 builder.setSmallIcon(R.drawable.ic_message_white_24dp);
                 builder.setAutoCancel(true);
                 builder.setDeleteIntent(deleteReceiver);
-                builder.addAction(R.drawable.ic_send_white_24dp, context.getString(R.string.reply), replyPendingIntent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    builder.addAction(nReplyAction);
+                } else {
+                    builder.addAction(R.drawable.ic_send_white_24dp, context.getString(R.string.reply), replyPendingIntent);
+                }
+
                 builder.setContentTitle(querySize != 0 ? (querySize + 1) + " " + context.getString(R.string.newMessagesFrom) : context.getString(R.string.newMessageGlobal));
                 builder.setContentText(querySize != 0 ? (querySize + 1) + " " +
                         context.getString(R.string.newMessagesFrom) + firstName + " " + lastName

@@ -20,13 +20,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.interfaces.BackUpManagerCallback;
-import ink.va.managers.BackUpManager;
+import ink.va.managers.BackupManager;
 import ink.va.utils.PermissionsChecker;
 
 public class BackUpActivity extends BaseActivity implements BackUpManagerCallback {
 
 
-    private BackUpManager backUpManager;
+    private BackupManager backUpManager;
 
     @BindView(R.id.progress)
     ProgressBar progress;
@@ -47,7 +47,7 @@ public class BackUpActivity extends BaseActivity implements BackUpManagerCallbac
         setContentView(R.layout.activity_back_up);
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        backUpManager = new BackUpManager(this);
+        backUpManager = new BackupManager(this);
         backUpManager.setOnBackUpManagerCallback(this);
         restoreMessages.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

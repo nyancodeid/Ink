@@ -133,6 +133,8 @@
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
         <receiver android:name="ink.va.receivers.DeleteReceiver" />
         <receiver android:name="ink.va.receivers.NotificationBroadcast" />
+        <receiver android:name="ink.va.receivers.ReplyIntentReceiver">
+        </receiver>
         <receiver
             android:name="ink.va.receivers.AlarmReceiver"
             android:process=":remote" />

@@ -905,4 +905,5 @@
     <string name="mafiaUndead">Мафия Бессмертна</string>
     <string name="rooms">Комнаты</string>
     <string name="addRoom">Добавить Комнату</string>
+    <string name="gameInBet">Игра в стадии бета разработки</string>
 </resources>
