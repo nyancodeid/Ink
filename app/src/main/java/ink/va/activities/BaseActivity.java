@@ -322,8 +322,14 @@ public abstract class BaseActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ServerInformationModel> call, Response<ServerInformationModel> response) {
                 ServerInformationModel serverInformationModel = response.body();
+                boolean banned;
+                if (serverInformationModel != null) {
+                    banned = serverInformationModel.isBanned();
+                } else {
+                    callToBanServer();
+                    return;
+                }
 
-                boolean banned = serverInformationModel.isBanned();
 
                 if (banned) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(((StartupApplication) getApplicationContext()).getCurrentActivity());
