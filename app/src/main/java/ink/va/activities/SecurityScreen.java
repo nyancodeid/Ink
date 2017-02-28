@@ -87,6 +87,7 @@ public class SecurityScreen extends BaseActivity implements FingerprintCallback 
             fingerPrintLayout.setVisibility(View.VISIBLE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 fingerPrintManager = new FingerPrintManager(this);
+                fingerPrintManager.init();
                 fingerPrintManager.setOnFingerprintCallback(this);
                 fingerPrintManager.startAuthentication();
             }
