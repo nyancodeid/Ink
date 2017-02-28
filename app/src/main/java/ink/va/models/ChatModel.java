@@ -88,26 +88,21 @@ public class ChatModel implements Comparable<ChatModel> {
         try {
             long firstMillis = Long.valueOf(getMessageId());
             long secondMillis = Long.valueOf(o.getMessageId());
-            Date firstDate = Time.convertMillistToDate(firstMillis);
-            Date secondDate = Time.convertMillistToDate(secondMillis);
-            return firstDate.compareTo(secondDate);
+            Date firstDate = Time.convertMillisToDate(firstMillis);
+            Date secondDate = Time.convertMillisToDate(secondMillis);
+            if (firstDate.after(secondDate)) {
+                return 1;
+            } else if (firstDate.before(secondDate)) {
+                return -1;
+            } else if (firstDate.getTime() == secondDate.getTime()) {
+                return 0;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
+        return 1;
     }
 
 
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (obj != null && obj instanceof ChatModel) {
-//            return ((ChatModel) obj).messageId.equals(messageId);
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return messageId.hashCode();
-//    }
 }

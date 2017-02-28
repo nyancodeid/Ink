@@ -18,7 +18,7 @@ import java.util.TimeZone;
  * Created by USER on 2016-06-26.
  */
 public class Time {
-    public static final String DATE_FORMAT = "dd/MM/yyyy hh:mm:ss.SSS";
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     public static String getCurrentTime() {
         Calendar calendar = Calendar.getInstance();
@@ -143,7 +143,7 @@ public class Time {
      * @param milliSeconds Date in milliseconds
      * @return String representing date in specified format
      */
-    public static Date convertMillistToDate(long milliSeconds) throws ParseException {
+    public static Date convertMillisToDate(long milliSeconds) throws ParseException {
         // Create a DateFormatter object for displaying date in specified format.
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
 

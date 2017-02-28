@@ -1175,8 +1175,8 @@ public class RealmHelper {
                                             try {
                                                 long firstMillis = Long.valueOf(o1.getMessageId());
                                                 long secondMillis = Long.valueOf(o2.getMessageId());
-                                                Date firstDate = Time.convertMillistToDate(firstMillis);
-                                                Date secondDate = Time.convertMillistToDate(secondMillis);
+                                                Date firstDate = Time.convertMillisToDate(firstMillis);
+                                                Date secondDate = Time.convertMillisToDate(secondMillis);
                                                 return firstDate.compareTo(secondDate);
                                             } catch (Exception e) {
                                                 e.printStackTrace();

@@ -7,10 +7,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.crashlytics.android.Crashlytics;
 import com.ink.va.R;
 
 import ink.va.utils.ProcessManager;
 import ink.va.utils.SharedHelper;
+import io.fabric.sdk.android.Fabric;
 
 
 public class SplashScreen extends AppCompatActivity {
@@ -26,6 +28,7 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_splash_screen);
         splashRootView = findViewById(R.id.splashRootView);
         String currentKeyHash = ink.va.utils.Debug.getKeyHash(this);
