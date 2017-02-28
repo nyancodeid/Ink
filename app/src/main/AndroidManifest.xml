@@ -25,9 +25,9 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
-    <uses-feature android:name="android.hardware.touchscreen"
+    <uses-feature
+        android:name="android.hardware.touchscreen"
         android:required="false" />
-
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -132,7 +132,7 @@
 
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
         <receiver android:name="ink.va.receivers.DeleteReceiver" />
-        <receiver android:name="ink.va.receivers.NotificationBroadcast"></receiver>
+        <receiver android:name="ink.va.receivers.NotificationBroadcast" />
         <receiver
             android:name="ink.va.receivers.AlarmReceiver"
             android:process=":remote" />
@@ -334,7 +334,8 @@
             android:name="ink.va.activities.BackUpActivity"
             android:label="@string/backUpRestoreServices" />
         <activity android:name="ink.va.activities.SecurityActivity" />
-        <activity android:name="ink.va.activities.SecurityScreen"></activity>
+        <activity android:name="ink.va.activities.SecurityScreen" />
+        <activity android:name="ink.va.activities.MafiaRoomActivity"></activity>
     </application>
 
 </manifest>

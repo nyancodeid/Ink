@@ -893,4 +893,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="protectionHint">This application is protected</string>
     <string name="scanToUnlock">Touch Sensor to unlock</string>
     <string name="enterPasswordToUnlock">Enter password to unlock</string>
+    <string name="mafiaTitle">Mafia</string>
+    <string name="mafiaDescription">Do you have what it takes to rule the world?</string>
+    <string name="mafiaUndead">Mafia Undead</string>
 </resources>

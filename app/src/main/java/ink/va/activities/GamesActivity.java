@@ -16,6 +16,7 @@ import ink.va.models.GameModel;
 import ink.va.utils.GameList;
 
 import static ink.va.utils.Constants.GAME_BLACK_JACK;
+import static ink.va.utils.Constants.GAME_MAFIA;
 
 public class GamesActivity extends BaseActivity implements ItemClickListener {
 
@@ -54,6 +55,9 @@ public class GamesActivity extends BaseActivity implements ItemClickListener {
         switch (gameModel.getGameType()) {
             case GAME_BLACK_JACK:
                 startActivity(new Intent(this, BlackJackHome.class));
+                break;
+            case GAME_MAFIA:
+                startActivity(new Intent(this, Mafia.class));
                 break;
         }
     }

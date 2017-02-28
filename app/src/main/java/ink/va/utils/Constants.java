@@ -232,6 +232,7 @@ public class Constants {
      * Game Constants
      */
     public static final String GAME_BLACK_JACK = "blackJack";
+    public static final String GAME_MAFIA = "mafia";
 
     /**
      * Socket Listener Events

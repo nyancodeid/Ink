@@ -900,4 +900,6 @@
     <string name="enterPasswordToUnlock">Введите пароль чтобы разблокировать</string>
     <string name="touchSensor">Коснитесь Сенсора чтобы прикрепить</string>
     <string name="remove">Удалить</string>
+    <string name="mafiaTitle">Мафия</string>
+    <string name="mafiaDescription">Сможете ли вы управлять вселенной?</string>
 </resources>
