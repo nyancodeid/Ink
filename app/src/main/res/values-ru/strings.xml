@@ -930,4 +930,6 @@
     <string name="leave">Уйти</string>
     <string name="join">Присоединиться</string>
     <string name="failedToDelete">Не удалось удалить. Пожалуйста попробуйте еще раз</string>
+    <string name="creating">Создаем...</string>
+    <string name="creatingRoom">Создаем вашу комнату,пожалуйста подождите...</string>
 </resources>

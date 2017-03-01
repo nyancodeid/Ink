@@ -60,12 +60,21 @@ public class MafiaAddRoomActivity extends BaseActivity {
     private String chosenMorningTimeUnit;
     private boolean hasTimeError;
     private SharedHelper sharedHelper;
+    private android.app.ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mafia_add_room);
         ButterKnife.bind(this);
+
+        progressDialog = new android.app.ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setTitle(getString(R.string.creating));
+        progressDialog.setMessage(getString(R.string.creatingRoom));
+
+
         sharedHelper = new SharedHelper(this);
         getSupportActionBar().setTitle(getString(R.string.addRoom));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -227,6 +236,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
     }
 
     private void addRoom() {
+        progressDialog.show();
         Call<ResponseBody> addRoomCall = Retrofit.getInstance().getInkService().addMafiaRoom(roomNameTV.getText().toString().trim(),
                 chosenLanguage, chosenGameType, durationMorningED.getText().toString(), chosenMorningTimeUnit,
                 String.valueOf(estimatedNightDuration), chosenMorningTimeUnit,
@@ -242,6 +252,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
                     addRoom();
                     return;
                 }
+                progressDialog.dismiss();
                 try {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
@@ -261,6 +272,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressDialog.dismiss();
                 Toast.makeText(MafiaAddRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });

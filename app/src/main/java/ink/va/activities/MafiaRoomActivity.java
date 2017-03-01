@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
@@ -58,6 +59,9 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
         sharedHelper = new SharedHelper(this);
 
         mafiaRoomAdapter = new MafiaRoomAdapter();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        roomRecycler.setLayoutManager(linearLayoutManager);
+        roomRecycler.setAdapter(mafiaRoomAdapter);
         mafiaRoomAdapter.setOnMafiaItemClickListener(this);
 
         if (sharedHelper.getMenuButtonColor() != null) {
@@ -171,7 +175,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
         Parcelable parcelable = Parcels.wrap(mafiaRoomsModel);
 
         Intent intent = new Intent(this, MafiaGameView.class);
-        intent.putExtra("mafiaRoomsModel",parcelable);
+        intent.putExtra("mafiaRoomsModel", parcelable);
         startActivity(intent);
     }
 

@@ -924,4 +924,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="leave">Leave</string>
     <string name="join">Join</string>
     <string name="failedToDelete">Failed to delete,please try again</string>
+    <string name="creating">Creating...</string>
+    <string name="creatingRoom">Creating you\'r room,please wait...</string>
 </resources>

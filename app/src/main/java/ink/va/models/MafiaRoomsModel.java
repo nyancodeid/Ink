@@ -62,6 +62,11 @@ public class MafiaRoomsModel {
     @Getter
     public String creatorId;
 
+    @SerializedName("gameStarted")
+    @Setter
+    @Getter
+    public boolean gameStarted;
+
     @SerializedName("joinedUsers")
     @Setter
     @Getter
