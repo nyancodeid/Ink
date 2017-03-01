@@ -2,6 +2,8 @@ package ink.va.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+
 import java.util.List;
 
 import lombok.Getter;
@@ -10,59 +12,59 @@ import lombok.Setter;
 /**
  * Created by PC-Comp on 3/1/2017.
  */
-
+@Parcel
 public class MafiaRoomsModel {
     @SerializedName("id")
     @Setter
     @Getter
-    private int id;
+    public int id;
 
     @SerializedName("roomName")
     @Setter
     @Getter
-    private String roomName;
+    public String roomName;
 
     @SerializedName("roomLanguage")
     @Setter
     @Getter
-    private String roomLanguage;
+    public String roomLanguage;
 
     @SerializedName("gameType")
     @Setter
     @Getter
-    private String gameType;
+    public String gameType;
 
     @SerializedName("morningDuration")
     @Setter
     @Getter
-    private String morningDuration;
+    public String morningDuration;
 
 
     @SerializedName("morningDurationUnit")
     @Setter
     @Getter
-    private String morningDurationUnit;
+    public String morningDurationUnit;
 
 
     @SerializedName("nightDuration")
     @Setter
     @Getter
-    private String nightDuration;
+    public String nightDuration;
 
 
     @SerializedName("nightDurationUnit")
     @Setter
     @Getter
-    private String nightDurationUnit;
+    public String nightDurationUnit;
 
     @SerializedName("creator_id")
     @Setter
     @Getter
-    private String creatorId;
+    public String creatorId;
 
     @SerializedName("joinedUsers")
     @Setter
     @Getter
-    private List<String> joinedUserIds;
+    public List<String> joinedUserIds;
 
 }

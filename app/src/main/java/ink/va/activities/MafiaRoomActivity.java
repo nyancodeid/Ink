@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import com.ink.va.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.io.IOException;
 import java.util.List;
@@ -166,7 +168,10 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     @Override
     public void onItemClicked(MafiaRoomsModel mafiaRoomsModel) {
+        Parcelable parcelable = Parcels.wrap(mafiaRoomsModel);
+
         Intent intent = new Intent(this, MafiaGameView.class);
+        intent.putExtra("mafiaRoomsModel",parcelable);
         startActivity(intent);
     }
 
