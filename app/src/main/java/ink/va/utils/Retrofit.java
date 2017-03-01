@@ -158,16 +158,6 @@ public class Retrofit {
                                          @Field("requestedUserId") String requestedUserId,
                                          @Field("requesterName") String requesterFullName);
 
-
-        @POST(Constants.REQUEST_LOCATION_URL)
-        @FormUrlEncoded
-        Call<ResponseBody> requestFriendLocation(@Field("requesterId") String requesterId,
-                                                 @Field("requestedUserId") String requestedUserId,
-                                                 @Field("requesterName") String requesterFullName,
-                                                 @Field("requestedUserName") String requestedUserName,
-                                                 @Field("requestType") String requestType,
-                                                 @Field("requesterImage") String requester_image);
-
         @POST(Constants.ADD_MAFIA_ROOM_URL)
         @FormUrlEncoded
         Call<ResponseBody> addMafiaRoom(@Field("roomName") String roomName,
@@ -178,10 +168,6 @@ public class Retrofit {
                                         @Field("nightDuration") String nightDuration,
                                         @Field("nightDurationUnit") String nightDurationUnit,
                                         @Field("creatorId") String creatorId);
-
-        @POST(Constants.MESSAGES_URL)
-        @FormUrlEncoded
-        Call<ResponseBody> getMessages(@Field("user_id") String userId, @Field("opponent_id") String opponentId);
 
         @POST(Constants.GET_MAFIA_ROOMS_URL)
         Call<List<MafiaRoomsModel>> getMafiaRooms();
@@ -255,14 +241,6 @@ public class Retrofit {
         @POST(Constants.SHOP_PACKS_URL)
         Call<ResponseBody> getPacks();
 
-        @POST(Constants.PING_TIME_URL)
-        @FormUrlEncoded
-        Call<ResponseBody> pingTime(@Field("userId") String userId);
-
-        @POST(Constants.GET_USER_STATUS)
-        @FormUrlEncoded
-        Call<ResponseBody> getUserStatus(@Field("userId") String userId);
-
         @POST(Constants.JOIN_GROUP_URL)
         @FormUrlEncoded
         Call<ResponseBody> requestJoin(@Field("ownerId") String ownerId,
@@ -295,29 +273,16 @@ public class Retrofit {
                                             @Field("action") String action,
                                             @Field("opponentId") String opponentId);
 
-        @POST(Constants.SEND_CHAT_ROULETTE_MESSAGE)
-        @FormUrlEncoded
-        Call<ResponseBody> sendChatRouletteMessage(@Field("userId") String userId,
-                                                   @Field("opponentId") String opponentId,
-                                                   @Field("message") String message);
 
         @POST(Constants.DISCONNECT_URL)
         @FormUrlEncoded
         Call<ResponseBody> sendDisconnectNotification(@Field("opponentId") String opponentId);
 
-        @POST(Constants.NOTIFY_OPPONENT)
-        @FormUrlEncoded
-        Call<ResponseBody> notifyOpponent(@Field("opponentId") String opponentId,
-                                          @Field("userId") String userId);
 
         @POST(Constants.DELETE_MAFIA_ROOM)
         @FormUrlEncoded
         Call<ResponseBody> deleteMafiaRoom(@Field("roomId") int roomId,
-                                           @Field("userid") String userid);
-
-        @POST(Constants.GET_WAITERS)
-        @FormUrlEncoded
-        Call<ResponseBody> getWaiters(@Field("user_id") String userId);
+                                           @Field("userId") String userId);
 
 
         @POST(Constants.CUSTOMIZATION_URL)
@@ -401,18 +366,10 @@ public class Retrofit {
         Call<ResponseBody> removeFriend(@Field("ownerId") String ownerId,
                                         @Field("friendId") String friendId);
 
-        @POST(Constants.CHECK_IS_FRIEND_URL)
-        @FormUrlEncoded
-        Call<ResponseBody> isFriendCheck(@Field("userId") String userId,
-                                         @Field("friendId") String friendId);
 
         @POST(Constants.USER_COINS_URL)
         @FormUrlEncoded
         Call<ResponseBody> getCoins(@Field("user_id") String userId);
-
-        @POST(Constants.MY_GROUPS_URL)
-        @FormUrlEncoded
-        Call<ResponseBody> getMyGroups(@Field("user_id") String userId);
 
         @POST(Constants.ADD_GROUP_URL)
         @FormUrlEncoded
@@ -469,9 +426,6 @@ public class Retrofit {
         Call<ResponseBody> getsSinglePack(@Field("packId") String packId,
                                           @Field("authKey") String authKey);
 
-        @POST(Constants.USER_GIFS_URL)
-        @FormUrlEncoded
-        Call<ResponseBody> getUserStickerByPack(@Field("packId") String packId);
 
         @POST(Constants.GET_USER_COLLECTIONS)
         @FormUrlEncoded
@@ -552,15 +506,6 @@ public class Retrofit {
                                     @Part("shouldDelete") String shouldDelete);
 
 
-        @Multipart
-        @POST(Constants.SEND_MESSAGE_URL)
-        Call<ResponseBody> sendMessageWithAttachment(@PartMap Map<String, ProgressRequestBody> map,
-                                                     @Part("user_id") String userId,
-                                                     @Part("opponent_id") String opponentId,
-                                                     @Part("message") String message,
-                                                     @Part("timezone") String timezone,
-                                                     @Part("hasGif") boolean hasGif,
-                                                     @Part("gifUrl") String gifUrl);
 
         @POST(Constants.MAKE_POST_URL)
         @FormUrlEncoded
