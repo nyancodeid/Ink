@@ -133,7 +133,7 @@
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
         <receiver android:name="ink.va.receivers.DeleteReceiver" />
         <receiver android:name="ink.va.receivers.NotificationBroadcast" />
-        <receiver android:name="ink.va.receivers.ReplyIntentReceiver"></receiver>
+        <receiver android:name="ink.va.receivers.ReplyIntentReceiver" />
         <receiver
             android:name="ink.va.receivers.AlarmReceiver"
             android:process=":remote" />
@@ -343,7 +343,8 @@
         <activity
             android:name="ink.va.activities.MafiaAddRoomActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateAlwaysHidden|stateHidden"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
+        <activity android:name="ink.va.activities.MafiaGameView"></activity>
     </application>
 
 </manifest>
