@@ -926,4 +926,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="failedToDelete">Failed to delete,please try again</string>
     <string name="creating">Creating...</string>
     <string name="creatingRoom">Creating you\'r room,please wait...</string>
+    <string name="mafiaPlayersText">%1$s player(s)</string>
 </resources>

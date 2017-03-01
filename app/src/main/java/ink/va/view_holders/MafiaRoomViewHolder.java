@@ -33,6 +33,9 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
     TextView nightDurationTV;
     @BindView(R.id.languageTV)
     TextView languageTV;
+    @BindView(R.id.playersHeader)
+    TextView playersHeader;
+
     private Context context;
     private SharedHelper sharedHelper;
     private MafiaRoomsModel mafiaRoomsModel;
@@ -74,6 +77,8 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
 
         languageTV.setText(mafiaRoomsModel.getRoomLanguage().equals(context.getString(R.string.english)) ?
                 context.getString(R.string.english) : context.getString(R.string.russian));
+        String playersCount = String.valueOf(mafiaRoomsModel.getJoinedUserIds().size());
+        playersHeader.setText(context.getString(R.string.mafiaPlayersText, playersCount));
     }
 
     @OnClick(R.id.mafiaRoomMoreIcon)

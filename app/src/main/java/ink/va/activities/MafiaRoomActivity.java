@@ -181,7 +181,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     private void deleteRoom(final int roomId) {
         showSwipe();
-        Call<ResponseBody> deleteCall = Retrofit.getInstance().getInkService().deleteMafiRoom(roomId);
+        Call<ResponseBody> deleteCall = Retrofit.getInstance().getInkService().deleteMafiaRoom(roomId, sharedHelper.getUserId());
         deleteCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

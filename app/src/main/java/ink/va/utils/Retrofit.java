@@ -308,7 +308,8 @@ public class Retrofit {
 
         @POST(Constants.DELETE_MAFIA_ROOM)
         @FormUrlEncoded
-        Call<ResponseBody> deleteMafiRoom(@Field("roomId") int roomId);
+        Call<ResponseBody> deleteMafiaRoom(@Field("roomId") int roomId,
+                                           @Field("userid") String userid);
 
         @POST(Constants.GET_WAITERS)
         @FormUrlEncoded
