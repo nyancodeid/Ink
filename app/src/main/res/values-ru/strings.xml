@@ -937,4 +937,5 @@
     <string name="gameStarted">Игра в процессе</string>
     <string name="myRooms">Мои комнаты</string>
     <string name="globalRooms">Глобальные комнаты</string>
+    <string name="alreadyInRoom">Вы уже находитесь в другой комнате,либо выйдите из комнаты,либо удалите ее</string>
 </resources>

@@ -42,7 +42,8 @@ public class MafiaRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((MafiaRoomViewHolder) holder).initData(context, mafiaRoomsModels.get(position), onMafiaItemClickListener);
+        ((MafiaRoomViewHolder) holder).initData(context, mafiaRoomsModels.get(position), onMafiaItemClickListener,
+                mafiaRoomsModels.size() - 1, position);
     }
 
     @Override

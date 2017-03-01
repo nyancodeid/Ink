@@ -241,4 +241,11 @@
         android:layout_below="@+id/languageTV"
         android:layout_marginTop="20dp"
         android:background="@color/linesColor"></View>
+
+    <android.support.v4.widget.Space
+        android:id="@+id/mafiaRoomBottomSpacing"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/mafiaRoomDivider"
+        android:visibility="gone" />
 </RelativeLayout>

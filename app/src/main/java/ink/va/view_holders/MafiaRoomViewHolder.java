@@ -38,6 +38,8 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
     TextView playersHeader;
     @BindView(R.id.gameStatus)
     TextView gameStatus;
+    @BindView(R.id.mafiaRoomBottomSpacing)
+    View mafiaRoomBottomSpacing;
 
     private Context context;
     private SharedHelper sharedHelper;
@@ -48,7 +50,8 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void initData(Context context, MafiaRoomsModel mafiaRoomsModel, @Nullable MafiaItemClickListener mafiaItemClickListener) {
+    public void initData(Context context, MafiaRoomsModel mafiaRoomsModel,
+                         @Nullable MafiaItemClickListener mafiaItemClickListener, int maxSize, int position) {
         this.mafiaRoomsModel = mafiaRoomsModel;
         if (sharedHelper == null) {
             sharedHelper = new SharedHelper(context);
@@ -88,6 +91,11 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
         } else {
             gameStatus.setTextColor(ContextCompat.getColor(context, R.color.darkGreen));
             gameStatus.setText(context.getString(R.string.gameStarted));
+        }
+        if (position == maxSize) {
+            mafiaRoomBottomSpacing.setVisibility(View.VISIBLE);
+        } else {
+            mafiaRoomBottomSpacing.setVisibility(View.GONE);
         }
     }
 

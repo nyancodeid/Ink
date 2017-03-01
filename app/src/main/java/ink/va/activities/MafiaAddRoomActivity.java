@@ -1,9 +1,11 @@
 package ink.va.activities;
 
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSpinner;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -34,6 +36,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static ink.va.utils.ErrorCause.ALREADY_IN_ROOM;
 
 
 public class MafiaAddRoomActivity extends BaseActivity {
@@ -271,7 +275,21 @@ public class MafiaAddRoomActivity extends BaseActivity {
                         setResult(RESULT_OK);
                         finish();
                     } else {
-                        Toast.makeText(MafiaAddRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                        String cause = jsonObject.optString("cause");
+                        if (cause.equals(ALREADY_IN_ROOM)) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MafiaAddRoomActivity.this);
+                            builder.setTitle(getString(R.string.error));
+                            builder.setMessage(getString(R.string.alreadyInRoom));
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            builder.show();
+                        } else {
+                            Toast.makeText(MafiaAddRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
