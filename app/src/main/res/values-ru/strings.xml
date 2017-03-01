@@ -906,4 +906,12 @@
     <string name="rooms">Комнаты</string>
     <string name="addRoom">Добавить Комнату</string>
     <string name="gameInBet">Игра в стадии бета разработки</string>
+    <string name="roomName">Имя комнаты</string>
+    <string name="enterRoomName">Назовите комнату по вкусу</string>
+    <string name="fieldsMandatory">* Все поля обязательны для заполнения</string>
+    <string name="pickLanguage">Язык комнаты</string>
+    <string name="gameType">Тип игры</string>
+    <string name="morningDuration">Длительность Утра</string>
+    <string name="nightDuration">Длительность ночи</string>
+    <string name="enterDuration">Введите Длительность</string>
 </resources>

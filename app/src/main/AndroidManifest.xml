@@ -133,8 +133,7 @@
         <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
         <receiver android:name="ink.va.receivers.DeleteReceiver" />
         <receiver android:name="ink.va.receivers.NotificationBroadcast" />
-        <receiver android:name="ink.va.receivers.ReplyIntentReceiver">
-        </receiver>
+        <receiver android:name="ink.va.receivers.ReplyIntentReceiver"></receiver>
         <receiver
             android:name="ink.va.receivers.AlarmReceiver"
             android:process=":remote" />
@@ -328,7 +327,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Profile" />
         <activity android:name="ink.va.activities.BlackJackHome" />
-        <activity android:name="ink.va.activities.Mafia" />
+        <activity
+            android:name="ink.va.activities.Mafia"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
 
         <service android:name="ink.va.service.MessageService" />
 
@@ -338,7 +340,10 @@
         <activity android:name="ink.va.activities.SecurityActivity" />
         <activity android:name="ink.va.activities.SecurityScreen" />
         <activity android:name="ink.va.activities.MafiaRoomActivity" />
-        <activity android:name="ink.va.activities.MafiaAddRoomActivity"></activity>
+        <activity
+            android:name="ink.va.activities.MafiaAddRoomActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden|stateHidden"></activity>
     </application>
 
 </manifest>

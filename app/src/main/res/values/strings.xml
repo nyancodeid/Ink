@@ -899,4 +899,12 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="rooms">Rooms</string>
     <string name="addRoom">Add Room</string>
     <string name="gameInBet">Game in beta development yet</string>
+    <string name="roomName">Room name</string>
+    <string name="enterRoomName">Pick desired room name</string>
+    <string name="fieldsMandatory">* All fields are mandatory</string>
+    <string name="pickLanguage">Room language</string>
+    <string name="gameType">Game type</string>
+    <string name="morningDuration">Morning duration</string>
+    <string name="nightDuration">Night duration</string>
+    <string name="enterDuration">Enter duration</string>
 </resources>

@@ -440,7 +440,6 @@ public class MessageService extends Service {
                 } else {
                     builder.addAction(R.drawable.ic_send_white_24dp, context.getString(R.string.reply), replyPendingIntent);
                 }
-
                 builder.setContentTitle(querySize != 0 ? (querySize + 1) + " " + context.getString(R.string.newMessagesFrom) : context.getString(R.string.newMessageGlobal));
                 builder.setContentText(querySize != 0 ? (querySize + 1) + " " +
                         context.getString(R.string.newMessagesFrom) + firstName + " " + lastName
@@ -472,8 +471,4 @@ public class MessageService extends Service {
         });
     }
 
-
-    public interface ServiceListener {
-        void onServiceStarted();
-    }
 }

@@ -21,7 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.interfaces.FingerprintCallback;
-import ink.va.utils.FingerPrintManager;
+import ink.va.managers.FingerPrintManager;
 import ink.va.utils.Notification;
 import ink.va.utils.SharedHelper;
 
