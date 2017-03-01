@@ -16,7 +16,7 @@
         android:layout_alignParentRight="true"
         android:background="?attr/selectableItemBackground"
         android:foreground="?attr/selectableItemBackground"
-        android:padding="10dp"
+        android:padding="7dp"
         android:src="@drawable/more_icon" />
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -84,9 +84,10 @@
         android:id="@+id/gameTypeTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/gameTypeHeader"
+        android:layout_alignStart="@+id/gameTypeHeader"
         android:layout_below="@+id/gameTypeHeader"
         android:layout_marginTop="10dp"
-        android:layout_toLeftOf="@+id/mafiaRoomMoreIcon"
         android:clickable="false"
         android:ellipsize="end"
         android:focusable="false"
@@ -94,7 +95,6 @@
         android:fontFamily="@string/appFont"
         android:gravity="right"
         android:maxLines="1"
-        android:paddingRight="16dp"
         android:text="@string/loadingText"
         android:textColor="@color/vk_black"
         android:textSize="16sp" />
