@@ -1,6 +1,9 @@
 package ink.va.activities;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionMenu;
 import android.support.v7.widget.AppCompatSpinner;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -51,6 +54,9 @@ public class MafiaAddRoomActivity extends BaseActivity {
     @BindView(R.id.addRoomScroll)
     ScrollView addRoomScroll;
 
+    @BindView(R.id.saveAddRoom)
+    FloatingActionMenu saveAddRoom;
+
     private List<String> languages;
     private List<String> gameTypes;
     private List<String> timeUnits;
@@ -97,6 +103,10 @@ public class MafiaAddRoomActivity extends BaseActivity {
         chosenLanguage = getString(R.string.english);
         chosenGameType = getString(R.string.classic);
         chosenMorningTimeUnit = getString(R.string.minutesUnit);
+
+        if (sharedHelper.getMenuButtonColor() != null) {
+            saveAddRoom.setBackgroundTintList((ColorStateList.valueOf(Color.parseColor(sharedHelper.getMenuButtonColor()))));
+        }
     }
 
     private void initEditTexts() {
