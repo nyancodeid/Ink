@@ -933,4 +933,6 @@
     <string name="creating">Создаем...</string>
     <string name="creatingRoom">Создаем вашу комнату,пожалуйста подождите...</string>
     <string name="mafiaPlayersText">%1$s Игрок(ов)</string>
+    <string name="gameNotStarted">Игра пока не начата</string>
+    <string name="gameStarted">Игра в процессе</string>
 </resources>

@@ -927,4 +927,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="creating">Creating...</string>
     <string name="creatingRoom">Creating you\'r room,please wait...</string>
     <string name="mafiaPlayersText">%1$s player(s)</string>
+    <string name="gameNotStarted">Game not started yet</string>
+    <string name="gameStarted">Game in progress</string>
 </resources>

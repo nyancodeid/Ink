@@ -219,6 +219,21 @@
         android:fontFamily="@string/appFont"
         android:text="@string/loadingText" />
 
+
+    <TextView
+        android:id="@+id/gameStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/mafiaRoomDivider"
+        android:layout_centerHorizontal="true"
+        android:layout_marginRight="10dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:fontFamily="@string/appFont"
+        android:text="@string/loadingText"
+        android:textColor="@color/red" />
+
     <View
         android:id="@+id/mafiaRoomDivider"
         android:layout_width="match_parent"

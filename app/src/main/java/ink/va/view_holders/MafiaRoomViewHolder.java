@@ -2,6 +2,7 @@ package ink.va.view_holders;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -35,6 +36,8 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
     TextView languageTV;
     @BindView(R.id.playersHeader)
     TextView playersHeader;
+    @BindView(R.id.gameStatus)
+    TextView gameStatus;
 
     private Context context;
     private SharedHelper sharedHelper;
@@ -79,6 +82,13 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
                 context.getString(R.string.english) : context.getString(R.string.russian));
         String playersCount = String.valueOf(mafiaRoomsModel.getJoinedUserIds().size());
         playersHeader.setText(context.getString(R.string.mafiaPlayersText, playersCount));
+        if (mafiaRoomsModel.isGameStarted()) {
+            gameStatus.setTextColor(ContextCompat.getColor(context, R.color.red));
+            gameStatus.setText(context.getString(R.string.gameNotStarted));
+        } else {
+            gameStatus.setTextColor(ContextCompat.getColor(context, R.color.darkGreen));
+            gameStatus.setText(context.getString(R.string.gameStarted));
+        }
     }
 
     @OnClick(R.id.mafiaRoomMoreIcon)
