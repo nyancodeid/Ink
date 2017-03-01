@@ -39,7 +39,6 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
     public static final int ADD_ROOM_REQUEST_CODE = 8;
     @BindView(R.id.roomRecycler)
     RecyclerView roomRecycler;
-    private SharedHelper sharedHelper;
     @BindView(R.id.addRoomButton)
     FloatingActionButton addRoomButton;
     @BindView(R.id.mafiaRoomsSwipe)
@@ -47,6 +46,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
     @BindView(R.id.noMafiaRoomView)
     View noMafiaRoomView;
     private MafiaRoomAdapter mafiaRoomAdapter;
+    private SharedHelper sharedHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
