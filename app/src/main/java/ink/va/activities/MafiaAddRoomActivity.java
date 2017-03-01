@@ -218,13 +218,13 @@ public class MafiaAddRoomActivity extends BaseActivity {
             Toast.makeText(this, getString(R.string.fixTimeErros), Toast.LENGTH_SHORT).show();
         } else if (roomNameTV.getText().toString().trim().isEmpty()) {
             scroll(ScrollView.FOCUS_UP);
-            roomNameTV.setText(getString(R.string.emptyField));
+            roomNameTV.setError(getString(R.string.emptyField));
         } else if (durationMorningED.getText().toString().isEmpty()) {
             scroll(ScrollView.FOCUS_DOWN);
-            durationMorningED.setText(getString(R.string.emptyField));
+            durationMorningED.setError(getString(R.string.emptyField));
         } else if (nightDurationED.getText().toString().isEmpty()) {
             scroll(ScrollView.FOCUS_DOWN);
-            nightDurationED.setText(getString(R.string.emptyField));
+            nightDurationED.setError(getString(R.string.emptyField));
         } else {
             addRoom();
         }
