@@ -920,5 +920,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="fixTimeErros">Fix time errors</string>
     <string name="noMafiaRooms">No mafia game rooms yet. Create one now!</string>
     <string name="chooseMorningFirst">Choose the morning duration first to see the estimated night duration</string>
-    <string name="chosenNightDuration">Chosen night duration is :  %1$s </string>
+    <string name="estimatedNightDuration">Estimated night duration is :  %1$s </string>
+    <string name="leave">Leave</string>
+    <string name="join">Join</string>
 </resources>

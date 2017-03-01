@@ -1,5 +1,6 @@
 package ink.va.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ public class MafiaRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     List<MafiaRoomsModel> mafiaRoomsModels;
     @Setter
     MafiaItemClickListener onMafiaItemClickListener;
+    private Context context;
 
     public MafiaRoomAdapter() {
         mafiaRoomsModels = new LinkedList<>();
@@ -33,13 +35,14 @@ public class MafiaRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        this.context = parent.getContext();
         View mafiaSingleView = LayoutInflater.from(parent.getContext()).inflate(R.layout.mafia_room_single_item, parent, false);
         return new MafiaRoomViewHolder(mafiaSingleView);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((MafiaRoomViewHolder) holder).initData(mafiaRoomsModels.get(position), onMafiaItemClickListener);
+        ((MafiaRoomViewHolder) holder).initData(context,mafiaRoomsModels.get(position), onMafiaItemClickListener);
     }
 
     @Override
