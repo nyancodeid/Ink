@@ -150,6 +150,25 @@ public class MafiaAddRoomActivity extends BaseActivity {
                     if (chosenNumber < 5) {
                         hasTimeError = true;
                         durationMorningED.setError(getString(R.string.minimumFiveMinutes));
+                    } else if (chosenNumber > 14400) {
+                        hasTimeError = true;
+                        durationMorningED.setError(getString(R.string.maximumDaysAllowed));
+                    } else {
+                        hasTimeError = false;
+                        durationMorningED.setError(null);
+                    }
+                } else if (chosenMorningTimeUnit.equals(getString(R.string.hoursUnit))) {
+                    if (chosenNumber > 240) {
+                        hasTimeError = true;
+                        durationMorningED.setError(getString(R.string.maximumDaysAllowed));
+                    } else {
+                        hasTimeError = false;
+                        durationMorningED.setError(null);
+                    }
+                } else if (chosenMorningTimeUnit.equals(getString(R.string.daysUnit))) {
+                    if (chosenNumber > 10) {
+                        hasTimeError = true;
+                        durationMorningED.setError(getString(R.string.maximumDaysAllowed));
                     } else {
                         hasTimeError = false;
                         durationMorningED.setError(null);
