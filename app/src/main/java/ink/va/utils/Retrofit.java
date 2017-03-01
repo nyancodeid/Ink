@@ -176,7 +176,8 @@ public class Retrofit {
                                         @Field("morningDuration") String morningDuration,
                                         @Field("morningDurationUnit") String morningDurationUnit,
                                         @Field("nightDuration") String nightDuration,
-                                        @Field("nightDurationUnit") String nightDurationUnit);
+                                        @Field("nightDurationUnit") String nightDurationUnit,
+                                        @Field("creatorId") String creatorId);
 
         @POST(Constants.MESSAGES_URL)
         @FormUrlEncoded

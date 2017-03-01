@@ -240,7 +240,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                     Chat.super.onBackPressed();
                 }
             });
-        }else{
+        } else {
             finish();
         }
         return super.onOptionsItemSelected(item);
@@ -421,7 +421,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        loadingMessages.setVisibility(View.GONE);
                         if (messageModels.isEmpty()) {
                             showNoMessages();
                         } else {
@@ -434,6 +433,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                                 }
                             });
                         }
+                        loadingMessages.setVisibility(View.GONE);
                     }
                 });
 

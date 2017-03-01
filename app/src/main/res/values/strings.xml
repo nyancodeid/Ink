@@ -917,4 +917,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="daysUnit">Days</string>
     <string name="onlyNumbersAllowed">Only numbers are allowed</string>
     <string name="minimumSxiteenSeconds">Minimum is 60 seconds</string>
+    <string name="fixTimeErros">Fix time errors</string>
+    <string name="noMafiaRooms">No mafia game rooms yet. Create one now!</string>
 </resources>

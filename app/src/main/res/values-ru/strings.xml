@@ -925,4 +925,5 @@
     <string name="daysUnit">Дней</string>
     <string name="onlyNumbersAllowed">Только цифры разрешены</string>
     <string name="minimumSxiteenSeconds">Минимальное значение 60 секунд</string>
+    <string name="noMafiaRooms">Нету комнат игры пока что. Создайте одну прямо сейчас!</string>
 </resources>

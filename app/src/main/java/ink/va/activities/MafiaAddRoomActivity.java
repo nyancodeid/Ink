@@ -7,15 +7,27 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.ink.va.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.utils.Retrofit;
+import ink.va.utils.SharedHelper;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class MafiaAddRoomActivity extends BaseActivity {
@@ -35,6 +47,9 @@ public class MafiaAddRoomActivity extends BaseActivity {
     @BindView(R.id.gameNightDurationSpinner)
     AppCompatSpinner gameNightDurationSpinner;
 
+    @BindView(R.id.addRoomScroll)
+    ScrollView addRoomScroll;
+
     private List<String> languages;
     private List<String> gameTypes;
     private List<String> timeUnits;
@@ -43,12 +58,14 @@ public class MafiaAddRoomActivity extends BaseActivity {
     private String chosenMorningTimeUnit;
     private String chosenNightTimeUnit;
     private boolean hasTimeError;
+    private SharedHelper sharedHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mafia_add_room);
         ButterKnife.bind(this);
+        sharedHelper = new SharedHelper(this);
         getSupportActionBar().setTitle(getString(R.string.addRoom));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         languages = new ArrayList<>();
@@ -68,6 +85,10 @@ public class MafiaAddRoomActivity extends BaseActivity {
         initAdapters();
         initEditTexts();
 
+        chosenLanguage = getString(R.string.english);
+        chosenGameType = getString(R.string.classic);
+        chosenMorningTimeUnit = getString(R.string.secondsUnit);
+        chosenNightTimeUnit = getString(R.string.secondsUnit);
     }
 
     private void initEditTexts() {
@@ -193,6 +214,62 @@ public class MafiaAddRoomActivity extends BaseActivity {
     }
 
     private void proceedChecking() {
+        if (hasTimeError) {
+            Toast.makeText(this, getString(R.string.fixTimeErros), Toast.LENGTH_SHORT).show();
+        } else if (roomNameTV.getText().toString().trim().isEmpty()) {
+            scroll(ScrollView.FOCUS_UP);
+            roomNameTV.setText(getString(R.string.emptyField));
+        } else if (durationMorningED.getText().toString().isEmpty()) {
+            scroll(ScrollView.FOCUS_DOWN);
+            durationMorningED.setText(getString(R.string.emptyField));
+        } else if (nightDurationED.getText().toString().isEmpty()) {
+            scroll(ScrollView.FOCUS_DOWN);
+            nightDurationED.setText(getString(R.string.emptyField));
+        } else {
+            addRoom();
+        }
+    }
 
+    private void addRoom() {
+        Call<ResponseBody> addRoomCall = Retrofit.getInstance().getInkService().addMafiaRoom(roomNameTV.getText().toString().trim(),
+                chosenLanguage, chosenGameType, durationMorningED.getText().toString(), chosenMorningTimeUnit, nightDurationED.getText().toString(), chosenNightTimeUnit,
+                sharedHelper.getUserId());
+        addRoomCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    addRoom();
+                    return;
+                }
+                if (response.body() == null) {
+                    addRoom();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        setResult(RESULT_OK);
+                        finish();
+                    } else {
+                        Toast.makeText(MafiaAddRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(MafiaAddRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void scroll(int direction) {
+        addRoomScroll.fullScroll(direction);
     }
 }

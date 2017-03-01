@@ -7,12 +7,43 @@
     android:layout_height="match_parent"
     tools:context="ink.va.activities.MafiaRoomActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/roomRecycler"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/mafiaRoomsSwipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/roomRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/noMafiaRoomView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="16dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/noMafiaRoomTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/noMafiaRooms" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:src="@drawable/waitroom_icon" />
+    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addRoomButton"

@@ -23,7 +23,7 @@ public class GameList {
         gameModels.add(new GameModel(context.getString(R.string.blackJackTitle), context.getString(R.string.blackJackDescription),
                 GAME_BLACK_JACK, R.drawable.black_jack_background));
         gameModels.add(new GameModel(context.getString(R.string.mafiaTitle), context.getString(R.string.mafiaDescription),
-                GAME_MAFIA, R.drawable.mafia_background));
+                GAME_MAFIA, R.drawable.mafia_small_icon));
         return gameModels;
     }
 }
