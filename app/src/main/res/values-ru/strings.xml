@@ -929,4 +929,5 @@
     <string name="estimatedNightDuration">Выбранная длительность ночи :  %1$s </string>
     <string name="leave">Уйти</string>
     <string name="join">Присоединиться</string>
+    <string name="failedToDelete">Не удалось удалить. Пожалуйста попробуйте еще раз</string>
 </resources>

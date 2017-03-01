@@ -306,6 +306,10 @@ public class Retrofit {
         Call<ResponseBody> notifyOpponent(@Field("opponentId") String opponentId,
                                           @Field("userId") String userId);
 
+        @POST(Constants.DELETE_MAFIA_ROOM)
+        @FormUrlEncoded
+        Call<ResponseBody> deleteMafiRoom(@Field("roomId") int roomId);
+
         @POST(Constants.GET_WAITERS)
         @FormUrlEncoded
         Call<ResponseBody> getWaiters(@Field("user_id") String userId);

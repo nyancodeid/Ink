@@ -42,7 +42,7 @@ public class MafiaRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((MafiaRoomViewHolder) holder).initData(context,mafiaRoomsModels.get(position), onMafiaItemClickListener);
+        ((MafiaRoomViewHolder) holder).initData(context, mafiaRoomsModels.get(position), onMafiaItemClickListener);
     }
 
     @Override
@@ -57,7 +57,8 @@ public class MafiaRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     public void setMafiaRoomsModels(List<MafiaRoomsModel> mafiaRoomsModels) {
-        mafiaRoomsModels.addAll(mafiaRoomsModels);
+        this.mafiaRoomsModels.clear();
+        this.mafiaRoomsModels.addAll(mafiaRoomsModels);
         notifyDataSetChanged();
     }
 }

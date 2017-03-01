@@ -49,6 +49,31 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
         }
         this.context = context;
         this.mafiaItemClickListener = mafiaItemClickListener;
+        roomNameTV.setText(mafiaRoomsModel.getRoomName());
+        gameTypeTV.setText(mafiaRoomsModel.getGameType().equals(context.getString(R.string.classic)) ?
+                context.getString(R.string.classic) : context.getString(R.string.yakudza));
+        String finalMorningDurationName = context.getString(R.string.minutesUnit);
+
+        if (mafiaRoomsModel.getMorningDurationUnit().equals(context.getString(R.string.hoursUnit))) {
+            finalMorningDurationName = context.getString(R.string.hoursUnit);
+        } else if (mafiaRoomsModel.getMorningDurationUnit().equals(context.getString(R.string.daysUnit))) {
+            finalMorningDurationName = context.getString(R.string.daysUnit);
+        }
+
+        String finalNightDurationName = context.getString(R.string.minutesUnit);
+
+        if (mafiaRoomsModel.getNightDurationUnit().equals(context.getString(R.string.hoursUnit))) {
+            finalNightDurationName = context.getString(R.string.hoursUnit);
+        } else if (mafiaRoomsModel.getNightDurationUnit().equals(context.getString(R.string.daysUnit))) {
+            finalNightDurationName = context.getString(R.string.daysUnit);
+        }
+
+        morningDurationTV.setText(mafiaRoomsModel.getMorningDuration() + " " + finalMorningDurationName);
+
+        nightDurationTV.setText(mafiaRoomsModel.getNightDuration() + " " + finalNightDurationName);
+
+        languageTV.setText(mafiaRoomsModel.getRoomLanguage().equals(context.getString(R.string.english)) ?
+                context.getString(R.string.english) : context.getString(R.string.russian));
     }
 
     @OnClick(R.id.mafiaRoomMoreIcon)
@@ -91,5 +116,12 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
             }
         });
         popupMenu.show();
+    }
+
+    @OnClick(R.id.mafiaRoomRoot)
+    public void rootClicked() {
+        if (mafiaItemClickListener != null) {
+            mafiaItemClickListener.onItemClicked(mafiaRoomsModel);
+        }
     }
 }

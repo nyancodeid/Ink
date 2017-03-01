@@ -12,6 +12,10 @@ import android.widget.Toast;
 
 import com.ink.va.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
@@ -22,6 +26,7 @@ import ink.va.interfaces.MafiaItemClickListener;
 import ink.va.models.MafiaRoomsModel;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,12 +63,6 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
         }
 
         mafiaRoomsSwipe.setOnRefreshListener(this);
-        mafiaRoomsSwipe.post(new Runnable() {
-            @Override
-            public void run() {
-                mafiaRoomsSwipe.setRefreshing(true);
-            }
-        });
 
         getRooms();
     }
@@ -85,6 +84,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
     }
 
     private void getRooms() {
+        showSwipe();
         Call<List<MafiaRoomsModel>> mafiaRooms = Retrofit.getInstance().getInkService().getMafiaRooms();
         mafiaRooms.enqueue(new Callback<List<MafiaRoomsModel>>() {
             @Override
@@ -96,6 +96,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                     showNoRooms();
                 } else {
                     hideNoRooms();
+                    mafiaRoomAdapter.setMafiaRoomsModels(mafiaRoomsModels);
                 }
             }
 
@@ -130,6 +131,17 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
         }
     }
 
+    private void showSwipe() {
+        if (!mafiaRoomsSwipe.isRefreshing()) {
+            mafiaRoomsSwipe.post(new Runnable() {
+                @Override
+                public void run() {
+                    mafiaRoomsSwipe.setRefreshing(true);
+                }
+            });
+        }
+    }
+
     @Override
     public void onRefresh() {
         getRooms();
@@ -142,8 +154,10 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     @Override
     public void onDeleteClicked(MafiaRoomsModel mafiaRoomsModel) {
-
+        int roomId = mafiaRoomsModel.getId();
+        deleteRoom(roomId);
     }
+
 
     @Override
     public void onLeaveClicked(MafiaRoomsModel mafiaRoomsModel) {
@@ -153,5 +167,45 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
     @Override
     public void onItemClicked(MafiaRoomsModel mafiaRoomsModel) {
 
+    }
+
+    private void deleteRoom(final int roomId) {
+        showSwipe();
+        Call<ResponseBody> deleteCall = Retrofit.getInstance().getInkService().deleteMafiRoom(roomId);
+        deleteCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    deleteRoom(roomId);
+                    return;
+                }
+                if (response.body() == null) {
+                    deleteRoom(roomId);
+                    return;
+                }
+                dismissSwipe();
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        mafiaRoomAdapter.clear();
+                        getRooms();
+                    } else {
+                        Toast.makeText(MafiaRoomActivity.this, getString(R.string.failedToDelete), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                dismissSwipe();
+                Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

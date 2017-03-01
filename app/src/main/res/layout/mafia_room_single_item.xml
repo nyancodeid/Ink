@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:id="@+id/mafiaRoomRoot"
     android:layout_height="match_parent"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
@@ -25,6 +26,9 @@
         android:layout_height="96dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="10dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:src="@drawable/mafia_room_image" />
 
     <TextView
@@ -34,6 +38,9 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:layout_toRightOf="@+id/mafiaRoomImage"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:fontFamily="@string/appFont"
         android:text="@string/roomName" />
 
@@ -47,7 +54,10 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:layout_toLeftOf="@+id/gameTypeTV"
+        android:clickable="false"
         android:ellipsize="end"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:fontFamily="@string/appFont"
         android:maxLines="1"
         android:text="@string/loadingText"
@@ -62,6 +72,9 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="16dp"
         android:layout_toLeftOf="@+id/mafiaRoomMoreIcon"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
 
         android:fontFamily="@string/appFont"
         android:gravity="right"
@@ -75,7 +88,10 @@
         android:layout_below="@+id/gameTypeHeader"
         android:layout_marginTop="10dp"
         android:layout_toLeftOf="@+id/mafiaRoomMoreIcon"
+        android:clickable="false"
         android:ellipsize="end"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:fontFamily="@string/appFont"
         android:gravity="right"
         android:maxLines="1"
@@ -92,6 +108,9 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@+id/mafiaRoomImage"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:fontFamily="@string/appFont"
         android:text="@string/morningDuration" />
 
@@ -105,7 +124,10 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:layout_toLeftOf="@+id/nightDurationTV"
+        android:clickable="false"
         android:ellipsize="end"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:fontFamily="@string/appFont"
         android:maxLines="1"
         android:text="@string/loadingText"
@@ -120,6 +142,9 @@
         android:layout_alignTop="@+id/morningDurationHeader"
         android:layout_marginLeft="10dp"
         android:layout_toLeftOf="@+id/mafiaRoomMoreIcon"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:fontFamily="@string/appFont"
         android:text="@string/nightDuration" />
 
@@ -131,7 +156,10 @@
         android:layout_alignStart="@+id/nightDurationHeader"
         android:layout_below="@+id/nightDurationHeader"
         android:layout_marginTop="10dp"
+        android:clickable="false"
         android:ellipsize="end"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:fontFamily="@string/appFont"
         android:gravity="right"
         android:maxLines="1"
@@ -151,6 +179,9 @@
         android:layout_alignStart="@+id/mafiaRoomImage"
         android:layout_below="@+id/mafiaRoomImage"
         android:layout_marginTop="10dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:fontFamily="@string/appFont"
         android:gravity="center"
         android:text="@string/pickLanguage" />
@@ -165,7 +196,10 @@
         android:layout_alignStart="@+id/languageHeader"
         android:layout_below="@+id/languageHeader"
         android:layout_marginTop="10dp"
+        android:clickable="false"
         android:ellipsize="end"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:fontFamily="@string/appFont"
         android:gravity="center"
         android:text="@string/loadingText"
