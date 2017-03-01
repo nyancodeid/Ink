@@ -1,6 +1,7 @@
 package ink.va.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -272,7 +273,9 @@ public class MafiaAddRoomActivity extends BaseActivity {
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
-                        setResult(RESULT_OK);
+                        Intent intent = new Intent();
+                        intent.putExtra("hasAdded", true);
+                        setResult(RESULT_OK, intent);
                         finish();
                     } else {
                         String cause = jsonObject.optString("cause");

@@ -134,7 +134,10 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case ADD_ROOM_REQUEST_CODE:
-                getRooms();
+                boolean hasRoomAdded = data.getExtras().getBoolean("hasAdded");
+                if (hasRoomAdded) {
+                    getRooms();
+                }
                 break;
         }
     }
