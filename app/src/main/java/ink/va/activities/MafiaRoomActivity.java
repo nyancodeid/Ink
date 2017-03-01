@@ -166,7 +166,8 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     @Override
     public void onItemClicked(MafiaRoomsModel mafiaRoomsModel) {
-
+        Intent intent = new Intent(this, MafiaGameView.class);
+        startActivity(intent);
     }
 
     private void deleteRoom(final int roomId) {
