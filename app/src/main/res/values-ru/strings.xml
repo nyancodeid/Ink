@@ -914,4 +914,15 @@
     <string name="morningDuration">Длительность Утра</string>
     <string name="nightDuration">Длительность ночи</string>
     <string name="enterDuration">Введите Длительность</string>
+
+    <string name="russian">Русский</string>
+    <string name="english">Англиский</string>
+    <string name="classic">Классический</string>
+    <string name="yakudza">Якудза</string>
+    <string name="secondsUnit">Секунд</string>
+    <string name="minutesUnit">Минут</string>
+    <string name="hoursUnit">Часов</string>
+    <string name="daysUnit">Дней</string>
+    <string name="onlyNumbersAllowed">Только цифры разрешены</string>
+    <string name="minimumSxiteenSeconds">Минимальное значение 60 секунд</string>
 </resources>

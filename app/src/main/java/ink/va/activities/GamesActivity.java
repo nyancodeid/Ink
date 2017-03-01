@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.ink.va.R;
 
@@ -58,8 +57,8 @@ public class GamesActivity extends BaseActivity implements ItemClickListener {
                 startActivity(new Intent(this, BlackJackHome.class));
                 break;
             case GAME_MAFIA:
-                Toast.makeText(this, getString(R.string.gameInBet), Toast.LENGTH_SHORT).show();
-//                startActivity(new Intent(this, Mafia.class));
+//                Toast.makeText(this, getString(R.string.gameInBet), Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, Mafia.class));
                 break;
         }
     }

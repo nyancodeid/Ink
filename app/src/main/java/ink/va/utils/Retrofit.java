@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import ink.va.models.BadgeResponseModel;
+import ink.va.models.MafiaRoomsModel;
 import ink.va.models.MyCollectionResponseModel;
 import ink.va.models.MyMessagesModel;
 import ink.va.models.ServerInformationModel;
@@ -167,9 +168,22 @@ public class Retrofit {
                                                  @Field("requestType") String requestType,
                                                  @Field("requesterImage") String requester_image);
 
+        @POST(Constants.ADD_MAFIA_ROOM_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> addMafiaRoom(@Field("roomName") String roomName,
+                                        @Field("roomLanguage") String roomLanguage,
+                                        @Field("gameType") String gameType,
+                                        @Field("morningDuration") String morningDuration,
+                                        @Field("morningDurationUnit") String morningDurationUnit,
+                                        @Field("nightDuration") String nightDuration,
+                                        @Field("nightDurationUnit") String nightDurationUnit);
+
         @POST(Constants.MESSAGES_URL)
         @FormUrlEncoded
         Call<ResponseBody> getMessages(@Field("user_id") String userId, @Field("opponent_id") String opponentId);
+
+        @POST(Constants.GET_MAFIA_ROOMS_URL)
+        Call<List<MafiaRoomsModel>> getMafiaRooms();
 
 
         @POST(Constants.GET_USER_PASSWORD)

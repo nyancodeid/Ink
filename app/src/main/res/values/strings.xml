@@ -907,4 +907,14 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="morningDuration">Morning duration</string>
     <string name="nightDuration">Night duration</string>
     <string name="enterDuration">Enter duration</string>
+    <string name="russian">Russian</string>
+    <string name="english">English</string>
+    <string name="classic">Classic</string>
+    <string name="yakudza">Yakudza</string>
+    <string name="secondsUnit">Seconds</string>
+    <string name="minutesUnit">Minutes</string>
+    <string name="hoursUnit">Hours</string>
+    <string name="daysUnit">Days</string>
+    <string name="onlyNumbersAllowed">Only numbers are allowed</string>
+    <string name="minimumSxiteenSeconds">Minimum is 60 seconds</string>
 </resources>
