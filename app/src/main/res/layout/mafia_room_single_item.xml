@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/roomNameHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@string/appFont"
+        android:text="@string/roomName" />
+
+    <TextView
+        android:id="@+id/roomNameTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/roomNameHeader"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@string/appFont"
+        android:text="hello nigger"
+        android:textColor="@color/vk_black"
+        android:textSize="16sp" />
 
 </RelativeLayout>
