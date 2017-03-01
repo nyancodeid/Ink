@@ -3,7 +3,7 @@ package ink.va.activities;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionMenu;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.AppCompatSpinner;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -55,7 +55,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
     ScrollView addRoomScroll;
 
     @BindView(R.id.saveAddRoom)
-    FloatingActionMenu saveAddRoom;
+    FloatingActionButton saveAddRoom;
 
     private List<String> languages;
     private List<String> gameTypes;

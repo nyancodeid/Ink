@@ -186,6 +186,10 @@ public class Retrofit {
         @POST(Constants.GET_MAFIA_ROOMS_URL)
         Call<List<MafiaRoomsModel>> getMafiaRooms();
 
+        @POST(Constants.GET_MAFIA_OWN_ROOMS)
+        @FormUrlEncoded
+        Call<List<MafiaRoomsModel>> getMyMafiaRooms(@Field("userId") String userId);
+
 
         @POST(Constants.GET_USER_PASSWORD)
         @FormUrlEncoded

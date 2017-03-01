@@ -79,6 +79,7 @@ public class Constants {
     public static final String GET_USER_PASSWORD = "GetPassword.php";
     public static final String REQUEST_LOCATION_URL = "RequestLocation.php";
     public static final String MESSAGES_URL = "Messages.php";
+    public static final String GET_MAFIA_OWN_ROOMS = "GetOwnRooms.php";
     public static final String UPLOADED_FILES_DIR = "UserUploads/";
     public static final String POLICY_URL = "Policy.php";
     public static final String SEND_MESSAGE_URL = "SendMessage.php";

@@ -935,4 +935,6 @@
     <string name="mafiaPlayersText">%1$s Игрок(ов)</string>
     <string name="gameNotStarted">Игра пока не начата</string>
     <string name="gameStarted">Игра в процессе</string>
+    <string name="myRooms">Мои комнаты</string>
+    <string name="globalRooms">Глобальные комнаты</string>
 </resources>

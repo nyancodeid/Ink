@@ -929,4 +929,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="mafiaPlayersText">%1$s player(s)</string>
     <string name="gameNotStarted">Game not started yet</string>
     <string name="gameStarted">Game in progress</string>
+    <string name="myRooms">My rooms</string>
+    <string name="globalRooms">Global rooms</string>
 </resources>

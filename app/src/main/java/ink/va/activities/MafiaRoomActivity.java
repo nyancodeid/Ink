@@ -9,6 +9,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -47,6 +49,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
     View noMafiaRoomView;
     private MafiaRoomAdapter mafiaRoomAdapter;
     private SharedHelper sharedHelper;
+    private boolean myRoomSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +74,53 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
         mafiaRoomsSwipe.setOnRefreshListener(this);
 
         getRooms();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mafia_rooms_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (myRoomSelected) {
+            myRoomSelected = false;
+            item.setTitle(getString(R.string.myRooms));
+            mafiaRoomAdapter.clear();
+            getRooms();
+        } else {
+            item.setTitle(getString(R.string.globalRooms));
+            myRoomSelected = true;
+            mafiaRoomAdapter.clear();
+            getMyRooms();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void getMyRooms() {
+        showSwipe();
+        Call<List<MafiaRoomsModel>> mafiaRooms = Retrofit.getInstance().getInkService().getMyMafiaRooms(sharedHelper.getUserId());
+        mafiaRooms.enqueue(new Callback<List<MafiaRoomsModel>>() {
+            @Override
+            public void onResponse(Call<List<MafiaRoomsModel>> call, Response<List<MafiaRoomsModel>> response) {
+                dismissSwipe();
+                List<MafiaRoomsModel> mafiaRoomsModels = response.body();
+                if (mafiaRoomsModels.isEmpty()) {
+                    mafiaRoomAdapter.clear();
+                    showNoRooms();
+                } else {
+                    hideNoRooms();
+                    mafiaRoomAdapter.setMafiaRoomsModels(mafiaRoomsModels);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MafiaRoomsModel>> call, Throwable t) {
+                dismissSwipe();
+                Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @OnClick(R.id.addRoomButton)
@@ -150,7 +200,11 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     @Override
     public void onRefresh() {
-        getRooms();
+        if (myRoomSelected) {
+            getMyRooms();
+        } else {
+            getRooms();
+        }
     }
 
     @Override
