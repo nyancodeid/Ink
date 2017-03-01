@@ -2,12 +2,15 @@ package ink.va.activities;
 
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ink.va.R;
@@ -35,8 +38,8 @@ public class MafiaAddRoomActivity extends BaseActivity {
     EditText roomNameTV;
     @BindView(R.id.durationMorningED)
     EditText durationMorningED;
-    @BindView(R.id.nightDurationED)
-    EditText nightDurationED;
+    @BindView(R.id.nightDurationTV)
+    TextView nightDurationTv;
 
     @BindView(R.id.languageSpinner)
     AppCompatSpinner languageSpinner;
@@ -44,8 +47,6 @@ public class MafiaAddRoomActivity extends BaseActivity {
     AppCompatSpinner gameTypeSpinner;
     @BindView(R.id.gameMorningDurationSpinner)
     AppCompatSpinner gameMorningDurationSpinner;
-    @BindView(R.id.gameNightDurationSpinner)
-    AppCompatSpinner gameNightDurationSpinner;
 
     @BindView(R.id.addRoomScroll)
     ScrollView addRoomScroll;
@@ -54,9 +55,9 @@ public class MafiaAddRoomActivity extends BaseActivity {
     private List<String> gameTypes;
     private List<String> timeUnits;
     private String chosenLanguage;
+    private int estimatedNightDuration;
     private String chosenGameType;
     private String chosenMorningTimeUnit;
-    private String chosenNightTimeUnit;
     private boolean hasTimeError;
     private SharedHelper sharedHelper;
 
@@ -77,7 +78,6 @@ public class MafiaAddRoomActivity extends BaseActivity {
         gameTypes.add(getString(R.string.yakudza));
 
         timeUnits = new ArrayList<>();
-        timeUnits.add(getString(R.string.secondsUnit));
         timeUnits.add(getString(R.string.minutesUnit));
         timeUnits.add(getString(R.string.hoursUnit));
         timeUnits.add(getString(R.string.daysUnit));
@@ -87,60 +87,65 @@ public class MafiaAddRoomActivity extends BaseActivity {
 
         chosenLanguage = getString(R.string.english);
         chosenGameType = getString(R.string.classic);
-        chosenMorningTimeUnit = getString(R.string.secondsUnit);
-        chosenNightTimeUnit = getString(R.string.secondsUnit);
+        chosenMorningTimeUnit = getString(R.string.minutes);
     }
 
     private void initEditTexts() {
+        durationMorningED.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                checkEditText();
+            }
+        });
         durationMorningED.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (!durationMorningED.getText().toString().trim().isEmpty()) {
-                        try {
-                            int chosenNumber = Integer.valueOf(durationMorningED.getText().toString());
-                            if (chosenMorningTimeUnit.equals(getString(R.string.secondsUnit))) {
-                                if (chosenNumber < 60) {
-                                    hasTimeError = true;
-                                    durationMorningED.setError(getString(R.string.minimumSxiteenSeconds));
-                                } else {
-                                    hasTimeError = false;
-                                }
-                            }
-                        } catch (NumberFormatException e) {
-                            durationMorningED.setError(getString(R.string.onlyNumbersAllowed));
-                            e.printStackTrace();
-                        }
-                    }
+                    checkEditText();
                 }
             }
         });
 
-        nightDurationED.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    if (!nightDurationED.getText().toString().trim().isEmpty()) {
-                        try {
-                            int chosenNumber = Integer.valueOf(nightDurationED.getText().toString());
-
-                            if (chosenNightTimeUnit.equals(getString(R.string.secondsUnit))) {
-                                if (chosenNumber < 60) {
-                                    hasTimeError = true;
-                                    nightDurationED.setError(getString(R.string.minimumSxiteenSeconds));
-                                } else {
-                                    hasTimeError = false;
-                                }
-                            }
-                        } catch (NumberFormatException e) {
-                            nightDurationED.setError(getString(R.string.onlyNumbersAllowed));
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        });
     }
+
+    private void checkEditText() {
+        if (!durationMorningED.getText().toString().trim().isEmpty()) {
+            try {
+                int chosenNumber = Integer.valueOf(durationMorningED.getText().toString());
+                if (chosenMorningTimeUnit.equals(getString(R.string.minutes))) {
+                    if (chosenNumber < 5) {
+                        hasTimeError = true;
+                        durationMorningED.setError(getString(R.string.minimumFiveMinutes));
+                    } else {
+                        hasTimeError = false;
+                        durationMorningED.setError(null);
+                    }
+                    initChosenNightDuration();
+                }
+            } catch (NumberFormatException e) {
+                durationMorningED.setError(getString(R.string.onlyNumbersAllowed));
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void initChosenNightDuration() {
+        if (!hasTimeError) {
+            nightDurationTv.setText(getString(R.string.chosenNightDuration, durationMorningED.getText().toString() + " " +
+                    chosenMorningTimeUnit));
+        }
+    }
+
 
     private void initAdapters() {
         ArrayAdapter<String> languageAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, languages);
@@ -150,7 +155,6 @@ public class MafiaAddRoomActivity extends BaseActivity {
         languageSpinner.setAdapter(languageAdapter);
         gameTypeSpinner.setAdapter(gameTypeAdapter);
         gameMorningDurationSpinner.setAdapter(timeUnitAdapter);
-        gameNightDurationSpinner.setAdapter(timeUnitAdapter);
 
         languageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -188,18 +192,6 @@ public class MafiaAddRoomActivity extends BaseActivity {
             }
         });
 
-        gameNightDurationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                chosenNightTimeUnit = timeUnits.get(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
     }
 
     @Override
@@ -222,17 +214,16 @@ public class MafiaAddRoomActivity extends BaseActivity {
         } else if (durationMorningED.getText().toString().isEmpty()) {
             scroll(ScrollView.FOCUS_DOWN);
             durationMorningED.setError(getString(R.string.emptyField));
-        } else if (nightDurationED.getText().toString().isEmpty()) {
-            scroll(ScrollView.FOCUS_DOWN);
-            nightDurationED.setError(getString(R.string.emptyField));
         } else {
+            estimatedNightDuration = Integer.valueOf(durationMorningED.getText().toString()) / 2;
             addRoom();
         }
     }
 
     private void addRoom() {
         Call<ResponseBody> addRoomCall = Retrofit.getInstance().getInkService().addMafiaRoom(roomNameTV.getText().toString().trim(),
-                chosenLanguage, chosenGameType, durationMorningED.getText().toString(), chosenMorningTimeUnit, nightDurationED.getText().toString(), chosenNightTimeUnit,
+                chosenLanguage, chosenGameType, durationMorningED.getText().toString(), chosenMorningTimeUnit,
+                String.valueOf(estimatedNightDuration), chosenMorningTimeUnit,
                 sharedHelper.getUserId());
         addRoomCall.enqueue(new Callback<ResponseBody>() {
             @Override

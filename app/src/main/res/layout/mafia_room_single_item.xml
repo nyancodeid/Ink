@@ -24,4 +24,5 @@
         android:textColor="@color/vk_black"
         android:textSize="16sp" />
 
+
 </RelativeLayout>

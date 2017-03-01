@@ -914,7 +914,6 @@
     <string name="morningDuration">Длительность Утра</string>
     <string name="nightDuration">Длительность ночи</string>
     <string name="enterDuration">Введите Длительность</string>
-
     <string name="russian">Русский</string>
     <string name="english">Англиский</string>
     <string name="classic">Классический</string>
@@ -924,6 +923,8 @@
     <string name="hoursUnit">Часов</string>
     <string name="daysUnit">Дней</string>
     <string name="onlyNumbersAllowed">Только цифры разрешены</string>
-    <string name="minimumSxiteenSeconds">Минимальное значение 60 секунд</string>
+    <string name="minimumFiveMinutes">Минимальное значение 5 минут</string>
     <string name="noMafiaRooms">Нету комнат игры пока что. Создайте одну прямо сейчас!</string>
+    <string name="chooseMorningFirst">Сначала выберите длительность утра чтобы увидеть длительность ночи</string>
+    <string name="chosenNightDuration">Выбранная длительность ночи :  %1$s </string>
 </resources>

@@ -2,9 +2,9 @@
 
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/addRoomScroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/addRoomScroll"
     android:fillViewport="true">
 
     <LinearLayout
@@ -142,40 +142,15 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <View
-                android:id="@+id/nightDurationCenter"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_centerInParent="true">
-
-            </View>
-
-            <EditText
-                android:id="@+id/nightDurationED"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/nightDurationTV"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@+id/nightDurationCenter"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="15dp"
                 android:fontFamily="@string/condensedFont"
-                android:hint="@string/enterDuration"
-                android:inputType="number" />
-
-            <android.support.v7.widget.AppCompatSpinner
-                android:id="@+id/gameNightDurationSpinner"
-                style="@style/Widget.AppCompat.Spinner.Underlined"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/nightDurationED"
-                android:layout_alignTop="@+id/nightDurationED"
-                android:layout_below="@+id/topDivider"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/nightDurationCenter"
-                android:fontFamily="@string/condensedFont">
-
-            </android.support.v7.widget.AppCompatSpinner>
-
+                android:text="@string/chooseMorningFirst"
+                android:textColor="@color/vk_black" />
         </RelativeLayout>
 
         <android.support.design.widget.FloatingActionButton
