@@ -912,7 +912,9 @@
     <string name="pickLanguage">Язык комнаты</string>
     <string name="gameType">Тип игры</string>
     <string name="morningDuration">Длительность одного утра</string>
+    <string name="morningDurationShort">Длительность утра</string>
     <string name="nightDuration">Длительность одной ночи</string>
+    <string name="nightDurationShort">Длительность ночи</string>
     <string name="enterDuration">Введите Длительность</string>
     <string name="russian">Русский</string>
     <string name="english">Англиский</string>

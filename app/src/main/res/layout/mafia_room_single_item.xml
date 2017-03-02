@@ -147,9 +147,9 @@
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:fontFamily="@string/appFont"
-                android:gravity="center"
+                android:gravity="center|left"
                 android:maxLines="1"
-                android:text="@string/morningDuration" />
+                android:text="@string/morningDurationShort" />
 
             <TextView
                 android:id="@+id/morningDurationTV"
@@ -188,7 +188,7 @@
                 android:fontFamily="@string/appFont"
                 android:gravity="center"
                 android:maxLines="1"
-                android:text="@string/nightDuration" />
+                android:text="@string/nightDurationShort" />
 
             <TextView
                 android:id="@+id/nightDurationTV"

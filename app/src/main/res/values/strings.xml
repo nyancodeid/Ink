@@ -905,7 +905,9 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="pickLanguage">Room language</string>
     <string name="gameType">Game type</string>
     <string name="morningDuration">Single Morning duration</string>
+    <string name="morningDurationShort">Morning duration</string>
     <string name="nightDuration">Single Night duration</string>
+    <string name="nightDurationShort">Night duration</string>
     <string name="enterDuration">Enter duration</string>
     <string name="russian">Russian</string>
     <string name="english">English</string>
