@@ -911,8 +911,8 @@
     <string name="fieldsMandatory">* Все поля обязательны для заполнения</string>
     <string name="pickLanguage">Язык комнаты</string>
     <string name="gameType">Тип игры</string>
-    <string name="morningDuration">Длительность Утра</string>
-    <string name="nightDuration">Длительность ночи</string>
+    <string name="morningDuration">Длительность одного утра</string>
+    <string name="nightDuration">Длительность одной ночи</string>
     <string name="enterDuration">Введите Длительность</string>
     <string name="russian">Русский</string>
     <string name="english">Англиский</string>
@@ -926,7 +926,7 @@
     <string name="minimumFiveMinutes">Минимальное значение 5 минут</string>
     <string name="noMafiaRooms">Нету комнат игры пока что. Создайте одну прямо сейчас!</string>
     <string name="chooseMorningFirst">Сначала выберите длительность утра чтобы увидеть длительность ночи</string>
-    <string name="estimatedNightDuration">Выбранная длительность ночи :  %1$s </string>
+    <string name="estimatedNightDuration">Приблизительная длительность одной ночи :  %1$s </string>
     <string name="leave">Уйти</string>
     <string name="join">Присоединиться</string>
     <string name="failedToDelete">Не удалось удалить. Пожалуйста попробуйте еще раз</string>
@@ -938,7 +938,7 @@
     <string name="myRooms">Мои комнаты</string>
     <string name="globalRooms">Глобальные комнаты</string>
     <string name="alreadyInRoom">Вы уже находитесь в другой комнате,либо выйдите из комнаты,либо удалите ее</string>
-    <string name="maximumDaysAllowed">Разрешено максимально 10 дней</string>
+    <string name="maximumDaysAllowed">Разрешено максимально 1 день</string>
     <string name="gameInProgressWarning">Игра в процессе и не может быть удалена</string>
     <string name="leaveTitle">Выйти ?</string>
     <string name="leaveContent">Вы уверены что хотите выйти из за комнаты ? Вы будете удалены из нее безвозвратно</string>

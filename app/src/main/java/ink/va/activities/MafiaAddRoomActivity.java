@@ -160,7 +160,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
                     if (chosenNumber < 5) {
                         hasTimeError = true;
                         durationMorningED.setError(getString(R.string.minimumFiveMinutes));
-                    } else if (chosenNumber > 14400) {
+                    } else if (chosenNumber > 1440) {
                         hasTimeError = true;
                         durationMorningED.setError(getString(R.string.maximumDaysAllowed));
                     } else {
@@ -168,7 +168,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
                         durationMorningED.setError(null);
                     }
                 } else if (chosenMorningTimeUnit.equals(getString(R.string.hoursUnit))) {
-                    if (chosenNumber > 240) {
+                    if (chosenNumber > 24) {
                         hasTimeError = true;
                         durationMorningED.setError(getString(R.string.maximumDaysAllowed));
                     } else {
@@ -176,7 +176,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
                         durationMorningED.setError(null);
                     }
                 } else if (chosenMorningTimeUnit.equals(getString(R.string.daysUnit))) {
-                    if (chosenNumber > 10) {
+                    if (chosenNumber > 1) {
                         hasTimeError = true;
                         durationMorningED.setError(getString(R.string.maximumDaysAllowed));
                     } else {

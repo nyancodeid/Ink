@@ -904,8 +904,8 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="fieldsMandatory">* All fields are mandatory</string>
     <string name="pickLanguage">Room language</string>
     <string name="gameType">Game type</string>
-    <string name="morningDuration">Morning duration</string>
-    <string name="nightDuration">Night duration</string>
+    <string name="morningDuration">Single Morning duration</string>
+    <string name="nightDuration">Single Night duration</string>
     <string name="enterDuration">Enter duration</string>
     <string name="russian">Russian</string>
     <string name="english">English</string>
@@ -920,7 +920,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="fixTimeErros">Fix time errors</string>
     <string name="noMafiaRooms">No mafia game rooms yet. Create one now!</string>
     <string name="chooseMorningFirst">Choose the morning duration first to see the estimated night duration</string>
-    <string name="estimatedNightDuration">Estimated night duration is :  %1$s </string>
+    <string name="estimatedNightDuration">Estimated single night duration is :  %1$s </string>
     <string name="leave">Leave</string>
     <string name="join">Join</string>
     <string name="failedToDelete">Failed to delete,please try again</string>
@@ -932,7 +932,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="myRooms">My rooms</string>
     <string name="globalRooms">Global rooms</string>
     <string name="alreadyInRoom">You are already in another room. Either leave or delete the room to create a new one</string>
-    <string name="maximumDaysAllowed">Maximum 10 days are allowed</string>
+    <string name="maximumDaysAllowed">Maximum 1 day are allowed</string>
     <string name="gameInProgressWarning">Game in progress and can not be deleted</string>
     <string name="maxPlayers">Max players : %1$d</string>
     <string name="leaveTitle">Leave ?</string>
