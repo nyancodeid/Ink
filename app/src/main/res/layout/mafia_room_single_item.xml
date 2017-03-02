@@ -35,10 +35,25 @@
                 android:padding="7dp"
                 android:src="@drawable/more_icon" />
 
+            <TextView
+                android:id="@+id/gameStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginRight="10dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:fontFamily="@string/appFont"
+                android:text="@string/loadingText"
+                android:textColor="@color/red" />
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/mafiaRoomImage"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
+                android:layout_below="@+id/gameStatus"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="10dp"
                 android:clickable="false"
@@ -50,6 +65,7 @@
                 android:id="@+id/roomNameHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/gameStatus"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_toRightOf="@+id/mafiaRoomImage"
@@ -84,13 +100,13 @@
                 android:id="@+id/gameTypeHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/gameStatus"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="16dp"
                 android:layout_toLeftOf="@+id/mafiaRoomMoreIcon"
                 android:clickable="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-
                 android:fontFamily="@string/appFont"
                 android:gravity="right"
                 android:paddingRight="20dp"
@@ -227,28 +243,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/gameStatus"
+                android:layout_alignTop="@+id/languageTV"
                 android:layout_marginRight="10dp"
                 android:clickable="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:fontFamily="@string/appFont"
                 android:text="@string/loadingText" />
-
-
-            <TextView
-                android:id="@+id/gameStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/languageTV"
-                android:layout_centerHorizontal="true"
-                android:layout_marginRight="10dp"
-                android:clickable="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:fontFamily="@string/appFont"
-                android:text="@string/loadingText"
-                android:textColor="@color/red" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
