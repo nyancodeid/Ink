@@ -934,4 +934,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="alreadyInRoom">You are already in another room. Either leave or delete the room to create a new one</string>
     <string name="maximumDaysAllowed">Maximum 10 days are allowed</string>
     <string name="gameInProgressWarning">Game in progress and can not be deleted</string>
+    <string name="maxPlayers">Max players : %1$d</string>
 </resources>

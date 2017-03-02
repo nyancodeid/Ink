@@ -82,6 +82,16 @@
         </android.support.v7.widget.AppCompatSpinner>
 
         <TextView
+            android:id="@+id/maxPlayersTV"
+            android:textColor="@color/vk_black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@string/condensedFont"
+            android:text="@string/maxPlayers" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"

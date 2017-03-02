@@ -50,6 +50,8 @@ public class MafiaAddRoomActivity extends BaseActivity {
     EditText durationMorningED;
     @BindView(R.id.nightDurationTV)
     TextView nightDurationTv;
+    @BindView(R.id.maxPlayersTV)
+    TextView maxPlayersTV;
 
     @BindView(R.id.languageSpinner)
     AppCompatSpinner languageSpinner;
@@ -114,10 +116,13 @@ public class MafiaAddRoomActivity extends BaseActivity {
         chosenMorningTimeUnit = getString(R.string.minutesUnit);
         maxPlayers = 10;
 
+        initMaxPlayers();
+
         if (sharedHelper.getMenuButtonColor() != null) {
             saveAddRoom.setBackgroundTintList((ColorStateList.valueOf(Color.parseColor(sharedHelper.getMenuButtonColor()))));
         }
     }
+
 
     private void initEditTexts() {
         durationMorningED.addTextChangedListener(new TextWatcher() {
@@ -242,6 +247,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
                 } else if (chosenGameType.equals(getString(R.string.yakudza))) {
                     maxPlayers = 20;
                 }
+                initMaxPlayers();
             }
 
             @Override
@@ -354,5 +360,9 @@ public class MafiaAddRoomActivity extends BaseActivity {
 
     private void scroll(int direction) {
         addRoomScroll.fullScroll(direction);
+    }
+
+    private void initMaxPlayers() {
+        maxPlayersTV.setText(getString(R.string.maxPlayers, maxPlayers));
     }
 }
