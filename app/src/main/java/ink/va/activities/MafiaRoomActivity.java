@@ -418,7 +418,6 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
-                        mafiaRoomAdapter.clear();
                         getRoomsAccordingly();
                     } else {
                         Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();

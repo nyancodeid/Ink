@@ -13,7 +13,7 @@ import lombok.Setter;
  * Created by PC-Comp on 3/1/2017.
  */
 @Parcel
-public class MafiaRoomsModel {
+public class MafiaRoomsModel{
     @SerializedName("id")
     @Setter
     @Getter
@@ -76,5 +76,4 @@ public class MafiaRoomsModel {
     @Setter
     @Getter
     public int maxPlayers;
-
 }
