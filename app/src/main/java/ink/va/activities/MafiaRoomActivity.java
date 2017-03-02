@@ -412,6 +412,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                     leaveRoom(id);
                     return;
                 }
+                dismissSwipe();
                 try {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
