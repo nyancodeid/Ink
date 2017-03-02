@@ -93,11 +93,16 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
             gameStatus.setTextColor(ContextCompat.getColor(context, R.color.darkGreen));
             gameStatus.setText(context.getString(R.string.gameStarted));
         }
-        if (position == maxSize) {
-            mafiaRoomBottomSpacing.setVisibility(View.VISIBLE);
+        if (position > 2) {
+            if (position == maxSize) {
+                mafiaRoomBottomSpacing.setVisibility(View.VISIBLE);
+            } else {
+                mafiaRoomBottomSpacing.setVisibility(View.GONE);
+            }
         } else {
             mafiaRoomBottomSpacing.setVisibility(View.GONE);
         }
+
     }
 
     @OnClick(R.id.mafiaRoomMoreIcon)
@@ -147,5 +152,10 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
         if (mafiaItemClickListener != null) {
             mafiaItemClickListener.onItemClicked(mafiaRoomsModel);
         }
+    }
+
+    @OnClick(R.id.mafiaRoomSingleVIewCard)
+    public void cardClicked() {
+        rootClicked();
     }
 }
