@@ -366,7 +366,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                         } else if (cause.equals(ROOM_DELETED)) {
                             Toast.makeText(MafiaRoomActivity.this, getString(R.string.cantJoinRoomDeleted), Toast.LENGTH_LONG).show();
                             getRoomsAccordingly();
-                        } else if (call.equals(ALREADY_IN_ROOM)) {
+                        } else if (cause.equals(ALREADY_IN_ROOM)) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(MafiaRoomActivity.this);
                             builder.setTitle(getString(R.string.error));
                             builder.setMessage(getString(R.string.alreadyInRoom));
