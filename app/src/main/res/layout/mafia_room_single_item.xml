@@ -135,14 +135,20 @@
                 android:id="@+id/morningDurationHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/gameStatus"
+                android:layout_alignRight="@+id/gameStatus"
                 android:layout_below="@+id/roomNameTV"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="10dp"
                 android:layout_toRightOf="@+id/mafiaRoomImage"
                 android:clickable="false"
+                android:drawableLeft="@drawable/sun_icon"
+                android:ellipsize="end"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:fontFamily="@string/appFont"
+                android:gravity="center"
+                android:maxLines="1"
                 android:text="@string/morningDuration" />
 
             <TextView
@@ -170,13 +176,18 @@
                 android:id="@+id/nightDurationHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/gameTypeTV"
+                android:layout_alignStart="@+id/gameTypeTV"
                 android:layout_alignTop="@+id/morningDurationHeader"
-                android:layout_marginLeft="10dp"
-                android:layout_toLeftOf="@+id/mafiaRoomMoreIcon"
                 android:clickable="false"
+                android:drawableLeft="@drawable/moon_icon"
+                android:drawablePadding="4dp"
+                android:ellipsize="end"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:fontFamily="@string/appFont"
+                android:gravity="center"
+                android:maxLines="1"
                 android:text="@string/nightDuration" />
 
             <TextView
