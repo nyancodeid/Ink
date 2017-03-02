@@ -1,5 +1,6 @@
 package ink.va.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -37,6 +39,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.utils.ErrorCause.ALREADY_IN_ROOM;
 import static ink.va.utils.ErrorCause.GAME_ALREADY_IN_PROGRESS;
 import static ink.va.utils.ErrorCause.GAME_IN_PROGRESS;
 import static ink.va.utils.ErrorCause.MAXIMUM_PLAYERS_REACHED;
@@ -362,6 +365,17 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                         } else if (cause.equals(ROOM_DELETED)) {
                             Toast.makeText(MafiaRoomActivity.this, getString(R.string.cantJoinRoomDeleted), Toast.LENGTH_LONG).show();
                             getRoomsAccordingly();
+                        } else if (call.equals(ALREADY_IN_ROOM)) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MafiaRoomActivity.this);
+                            builder.setTitle(getString(R.string.error));
+                            builder.setMessage(getString(R.string.alreadyInRoom));
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            builder.show();
                         } else {
                             Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_LONG).show();
                         }

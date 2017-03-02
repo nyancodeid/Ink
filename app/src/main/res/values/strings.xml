@@ -942,4 +942,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="cantJoinGameInProgress">Can\'t Join : Game already in progress</string>
     <string name="cantJoinMaximumPlayers">Can\'t join : Maximum players reached</string>
     <string name="cantJoinRoomDeleted">Can\'t join :  Room was deleted</string>
+    <string name="alreadyInRoomParticipating">You are already in another room. Either leave or delete the room to join a new one</string>
 </resources>

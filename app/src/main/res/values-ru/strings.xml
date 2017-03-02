@@ -948,4 +948,6 @@
     <string name="cantJoinGameInProgress">Невозможно присоединиться : Игра уже начата</string>
     <string name="cantJoinMaximumPlayers">Невозможно присоединиться : Достигнут лимит максимум игроков</string>
     <string name="cantJoinRoomDeleted">Невозможно присоединиться : Комната была удалена</string>
+
+    <string name="alreadyInRoomParticipating">Вы уже находитесь в другой комнате,либо выйдите из комнаты,либо удалите ее</string>
 </resources>
