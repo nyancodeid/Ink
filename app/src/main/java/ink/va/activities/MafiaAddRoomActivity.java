@@ -188,6 +188,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
     }
 
     private void initNightDuration() {
+        chosenNightTimeUnit = chosenMorningTimeUnit;
         if (!hasTimeError && !durationMorningED.getText().toString().trim().isEmpty()) {
             int chosenMorningDuration = Integer.valueOf(durationMorningED.getText().toString());
             estimatedNightDuration = chosenMorningDuration / 2;
@@ -201,7 +202,6 @@ public class MafiaAddRoomActivity extends BaseActivity {
                     estimatedNightDuration = (int) (TimeUnit.DAYS.toHours(chosenMorningDuration) / 2);
                 }
             }
-            chosenNightTimeUnit = chosenMorningTimeUnit;
             nightDurationTv.setText(getString(R.string.estimatedNightDuration, estimatedNightDuration + " " +
                     chosenNightTimeUnit));
         } else {
