@@ -926,11 +926,12 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="failedToDelete">Failed to delete,please try again</string>
     <string name="creating">Creating...</string>
     <string name="creatingRoom">Creating you\'r room,please wait...</string>
-    <string name="mafiaPlayersText">%1$s player(s)</string>
+    <string name="mafiaPlayersText">%1$s player(s) out of %2$d</string>
     <string name="gameNotStarted">Game not started yet</string>
     <string name="gameStarted">Game in progress</string>
     <string name="myRooms">My rooms</string>
     <string name="globalRooms">Global rooms</string>
     <string name="alreadyInRoom">You are already in another room. Either leave or delete the room to create a new one</string>
     <string name="maximumDaysAllowed">Maximum 10 days are allowed</string>
+    <string name="gameInProgressWarning">Game in progress and can not be deleted</string>
 </resources>

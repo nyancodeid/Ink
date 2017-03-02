@@ -72,4 +72,9 @@ public class MafiaRoomsModel {
     @Getter
     public List<String> joinedUserIds;
 
+    @SerializedName("maxPlayers")
+    @Setter
+    @Getter
+    public int maxPlayers;
+
 }

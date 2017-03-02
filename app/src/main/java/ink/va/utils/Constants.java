@@ -60,6 +60,8 @@ public class Constants {
     public static final String GROUP_MESSAGES_OPTIONS_URL = "GroupMessagesOptions.php";
     public static final String NOTIFY_OPPONENT = "NotifyOpponent.php";
     public static final String DELETE_MAFIA_ROOM = "DeleteMafiaRoom.php";
+    public static final String LEAVE_MAFIA_ROOM = "LeaveMafiaRoom.php";
+    public static final String JOIN_MAFIA_ROOM = "JoinMafiaRoom.php";
     public static final String RESPOND_TO_REQUEST_URL = "RespondToRequest.php";
     public static final String REMOVE_FRIEND_URL = "RemoveFriend.php";
     public static final String RESPOND_TYPE_ACCEPT_FRIEND_REQUEST = "acceptFriendRequest";

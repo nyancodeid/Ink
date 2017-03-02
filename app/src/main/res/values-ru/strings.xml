@@ -932,11 +932,12 @@
     <string name="failedToDelete">Не удалось удалить. Пожалуйста попробуйте еще раз</string>
     <string name="creating">Создаем...</string>
     <string name="creatingRoom">Создаем вашу комнату,пожалуйста подождите...</string>
-    <string name="mafiaPlayersText">%1$s Игрок(ов)</string>
+    <string name="mafiaPlayersText">%1$s Игрок(ов) из %2$d</string>
     <string name="gameNotStarted">Игра пока не начата</string>
     <string name="gameStarted">Игра в процессе</string>
     <string name="myRooms">Мои комнаты</string>
     <string name="globalRooms">Глобальные комнаты</string>
     <string name="alreadyInRoom">Вы уже находитесь в другой комнате,либо выйдите из комнаты,либо удалите ее</string>
     <string name="maximumDaysAllowed">Разрешено максимально 10 дней</string>
+    <string name="gameInProgressWarning">Игра в процессе и не может быть удалена</string>
 </resources>

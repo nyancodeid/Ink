@@ -17,5 +17,8 @@ public class ErrorCause {
     public static final String NOT_ENOUGH_COINS = "notEnoughCoins";
     public static final String ALREADY_BOUGHT = "alreadyBought";
     public static final String ALREADY_IN_ROOM = "alreadyInRoom";
+    public static final String GAME_IN_PROGRESS = "gameInProgress";
+    public static final String MAXIMUM_PLAYERS_REACHED = "maximumPlayersReached";
+    public static final String GAME_ALREADY_IN_PROGRESS = "gameAlreadyInProgress";
 
 }

@@ -75,6 +75,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
     private boolean hasTimeError;
     private SharedHelper sharedHelper;
     private android.app.ProgressDialog progressDialog;
+    private int maxPlayers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +112,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
         chosenLanguage = getString(R.string.english);
         chosenGameType = getString(R.string.classic);
         chosenMorningTimeUnit = getString(R.string.minutesUnit);
+        maxPlayers = 10;
 
         if (sharedHelper.getMenuButtonColor() != null) {
             saveAddRoom.setBackgroundTintList((ColorStateList.valueOf(Color.parseColor(sharedHelper.getMenuButtonColor()))));
@@ -235,6 +237,11 @@ public class MafiaAddRoomActivity extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 chosenGameType = gameTypes.get(position);
+                if (chosenGameType.equals(getString(R.string.classic))) {
+                    maxPlayers = 10;
+                } else if (chosenGameType.equals(getString(R.string.yakudza))) {
+                    maxPlayers = 20;
+                }
             }
 
             @Override
@@ -291,7 +298,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
         Call<ResponseBody> addRoomCall = Retrofit.getInstance().getInkService().addMafiaRoom(roomNameTV.getText().toString().trim(),
                 chosenLanguage, chosenGameType, durationMorningED.getText().toString(), chosenMorningTimeUnit,
                 String.valueOf(estimatedNightDuration), chosenNightTimeUnit,
-                sharedHelper.getUserId());
+                sharedHelper.getUserId(), maxPlayers);
         addRoomCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

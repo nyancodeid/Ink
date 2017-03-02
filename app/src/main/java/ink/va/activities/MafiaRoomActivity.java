@@ -36,6 +36,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.utils.ErrorCause.GAME_ALREADY_IN_PROGRESS;
+import static ink.va.utils.ErrorCause.GAME_IN_PROGRESS;
+import static ink.va.utils.ErrorCause.MAXIMUM_PLAYERS_REACHED;
+
 public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, MafiaItemClickListener {
 
     public static final int ADD_ROOM_REQUEST_CODE = 8;
@@ -215,8 +219,9 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     @Override
     public void onJoinClicked(MafiaRoomsModel mafiaRoomsModel) {
-
+        joinRoom(mafiaRoomsModel.getId());
     }
+
 
     @Override
     public void onDeleteClicked(MafiaRoomsModel mafiaRoomsModel) {
@@ -227,7 +232,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     @Override
     public void onLeaveClicked(MafiaRoomsModel mafiaRoomsModel) {
-
+        leaveRoom(mafiaRoomsModel.getId());
     }
 
     @Override
@@ -262,7 +267,12 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                         mafiaRoomAdapter.clear();
                         getRooms();
                     } else {
-                        Toast.makeText(MafiaRoomActivity.this, getString(R.string.failedToDelete), Toast.LENGTH_SHORT).show();
+                        String cause = jsonObject.optString("cause");
+                        if (cause.equals(GAME_IN_PROGRESS)) {
+                            Toast.makeText(MafiaRoomActivity.this, getString(R.string.gameInProgressWarning), Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(MafiaRoomActivity.this, getString(R.string.failedToDelete), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -278,4 +288,93 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
             }
         });
     }
+
+
+    private void joinRoom(final int id) {
+        showSwipe();
+        Call<ResponseBody> joinRoomCall = Retrofit.getInstance().getInkService().joinRoom(id, sharedHelper.getUserId());
+        joinRoomCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    joinRoom(id);
+                    return;
+                }
+                if (response.body() == null) {
+                    joinRoom(id);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+
+                    } else {
+                        String cause = jsonObject.optString("cause");
+                        if (cause.equals(GAME_ALREADY_IN_PROGRESS)) {
+
+                        } else if (cause.equals(MAXIMUM_PLAYERS_REACHED)) {
+
+                        } else {
+                            Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                dismissSwipe();
+                Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void leaveRoom(final int id) {
+        showSwipe();
+        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().leaveRoom(id, sharedHelper.getUserId());
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    leaveRoom(id);
+                    return;
+                }
+                if (response.body() == null) {
+                    leaveRoom(id);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        mafiaRoomAdapter.clear();
+                        getRooms();
+                    } else {
+                        Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                dismissSwipe();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                dismissSwipe();
+                Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }
