@@ -938,4 +938,8 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="leaveTitle">Leave ?</string>
     <string name="leaveContent">Are you sure you want to leave the room ? You will be removed from it completely</string>
     <string name="actionCannotUndone">This action can not be undone, proceed?</string>
+    <string name="joined">Joined</string>
+    <string name="cantJoinGameInProgress">Can\'t Join : Game already in progress</string>
+    <string name="cantJoinMaximumPlayers">Can\'t join : Maximum players reached</string>
+    <string name="cantJoinRoomDeleted">Can\'t join :  Room was deleted</string>
 </resources>

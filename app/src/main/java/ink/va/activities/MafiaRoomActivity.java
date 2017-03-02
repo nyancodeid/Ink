@@ -40,6 +40,7 @@ import retrofit2.Response;
 import static ink.va.utils.ErrorCause.GAME_ALREADY_IN_PROGRESS;
 import static ink.va.utils.ErrorCause.GAME_IN_PROGRESS;
 import static ink.va.utils.ErrorCause.MAXIMUM_PLAYERS_REACHED;
+import static ink.va.utils.ErrorCause.ROOM_DELETED;
 
 public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, MafiaItemClickListener {
 
@@ -348,15 +349,21 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
-
+                        Toast.makeText(MafiaRoomActivity.this, getString(R.string.joined), Toast.LENGTH_SHORT).show();
+                        getRoomsAccordingly();
                     } else {
                         String cause = jsonObject.optString("cause");
                         if (cause.equals(GAME_ALREADY_IN_PROGRESS)) {
-
+                            Toast.makeText(MafiaRoomActivity.this, getString(R.string.cantJoinGameInProgress), Toast.LENGTH_LONG).show();
+                            getRoomsAccordingly();
                         } else if (cause.equals(MAXIMUM_PLAYERS_REACHED)) {
-
+                            Toast.makeText(MafiaRoomActivity.this, getString(R.string.cantJoinMaximumPlayers), Toast.LENGTH_LONG).show();
+                            getRoomsAccordingly();
+                        } else if (cause.equals(ROOM_DELETED)) {
+                            Toast.makeText(MafiaRoomActivity.this, getString(R.string.cantJoinRoomDeleted), Toast.LENGTH_LONG).show();
+                            getRoomsAccordingly();
                         } else {
-                            Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_LONG).show();
                         }
                     }
 
