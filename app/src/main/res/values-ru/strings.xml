@@ -940,4 +940,6 @@
     <string name="alreadyInRoom">Вы уже находитесь в другой комнате,либо выйдите из комнаты,либо удалите ее</string>
     <string name="maximumDaysAllowed">Разрешено максимально 10 дней</string>
     <string name="gameInProgressWarning">Игра в процессе и не может быть удалена</string>
+    <string name="leaveTitle">Выйти ?</string>
+    <string name="leaveContent">Вы уверены что хотите выйти из за комнаты ? Вы будете удалены из нее безвозвратно</string>
 </resources>

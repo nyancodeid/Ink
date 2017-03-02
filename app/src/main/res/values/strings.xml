@@ -935,4 +935,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="maximumDaysAllowed">Maximum 10 days are allowed</string>
     <string name="gameInProgressWarning">Game in progress and can not be deleted</string>
     <string name="maxPlayers">Max players : %1$d</string>
+    <string name="leaveTitle">Leave ?</string>
+    <string name="leaveContent">Are you sure you want to leave the room ? You will be removed from it completely</string>
 </resources>

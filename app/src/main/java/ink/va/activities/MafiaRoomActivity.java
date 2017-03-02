@@ -29,6 +29,7 @@ import butterknife.OnClick;
 import ink.va.adapters.MafiaRoomAdapter;
 import ink.va.interfaces.MafiaItemClickListener;
 import ink.va.models.MafiaRoomsModel;
+import ink.va.utils.DialogUtils;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -239,8 +240,23 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
 
     @Override
-    public void onLeaveClicked(MafiaRoomsModel mafiaRoomsModel) {
-        leaveRoom(mafiaRoomsModel.getId());
+    public void onLeaveClicked(final MafiaRoomsModel mafiaRoomsModel) {
+        DialogUtils.showDialog(this, getString(R.string.leaveTitle), getString(R.string.leaveContent), true, new DialogUtils.DialogListener() {
+            @Override
+            public void onNegativeClicked() {
+
+            }
+
+            @Override
+            public void onDialogDismissed() {
+
+            }
+
+            @Override
+            public void onPositiveClicked() {
+                leaveRoom(mafiaRoomsModel.getId());
+            }
+        }, true, getString(R.string.no));
     }
 
     @Override
