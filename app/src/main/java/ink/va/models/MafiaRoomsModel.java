@@ -6,6 +6,7 @@ import org.parceler.Parcel;
 
 import java.util.List;
 
+import ink.va.utils.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +14,8 @@ import lombok.Setter;
  * Created by PC-Comp on 3/1/2017.
  */
 @Parcel
-public class MafiaRoomsModel{
+public class MafiaRoomsModel implements Comparable<MafiaRoomsModel> {
+
     @SerializedName("id")
     @Setter
     @Getter
@@ -76,4 +78,21 @@ public class MafiaRoomsModel{
     @Setter
     @Getter
     public int maxPlayers;
+
+    @Override
+    public int compareTo(MafiaRoomsModel o) {
+        boolean isParticipant = false;
+        String currentUserId = User.get().getUserId();
+        for (String eachUserId : getJoinedUserIds()) {
+            if (eachUserId.equals(currentUserId)) {
+                isParticipant = true;
+                break;
+            }
+        }
+
+        if (isParticipant) {
+            return -1;
+        }
+        return 0;
+    }
 }

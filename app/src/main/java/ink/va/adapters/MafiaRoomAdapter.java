@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.ink.va.R;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -59,6 +60,7 @@ public class MafiaRoomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public void setMafiaRoomsModels(List<MafiaRoomsModel> mafiaRoomsModels) {
         this.mafiaRoomsModels.clear();
+        Collections.sort(mafiaRoomsModels);
         this.mafiaRoomsModels.addAll(mafiaRoomsModels);
         notifyDataSetChanged();
     }
