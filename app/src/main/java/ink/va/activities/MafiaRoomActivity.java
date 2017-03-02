@@ -143,9 +143,17 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                     hasRoomAdded = data.getExtras().getBoolean("hasAdded");
                 }
                 if (hasRoomAdded) {
-                    getRooms();
+                    getRoomsAccordingly();
                 }
                 break;
+        }
+    }
+
+    private void getRoomsAccordingly() {
+        if (myRoomSelected) {
+            getMyRooms();
+        } else {
+            getRooms();
         }
     }
 
@@ -265,7 +273,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
                         mafiaRoomAdapter.clear();
-                        getRooms();
+                        getRoomsAccordingly();
                     } else {
                         String cause = jsonObject.optString("cause");
                         if (cause.equals(GAME_IN_PROGRESS)) {
@@ -357,7 +365,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
                         mafiaRoomAdapter.clear();
-                        getRooms();
+                        getRoomsAccordingly();
                     } else {
                         Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                     }
