@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.utils.Keyboard;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -285,6 +286,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
     }
 
     private void addRoom() {
+        Keyboard.hideKeyboard(this);
         progressDialog.show();
         Call<ResponseBody> addRoomCall = Retrofit.getInstance().getInkService().addMafiaRoom(roomNameTV.getText().toString().trim(),
                 chosenLanguage, chosenGameType, durationMorningED.getText().toString(), chosenMorningTimeUnit,
