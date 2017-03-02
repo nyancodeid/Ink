@@ -234,8 +234,23 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     @Override
     public void onDeleteClicked(MafiaRoomsModel mafiaRoomsModel) {
-        int roomId = mafiaRoomsModel.getId();
-        deleteRoom(roomId);
+        final int roomId = mafiaRoomsModel.getId();
+        DialogUtils.showDialog(this, getString(R.string.delete), getString(R.string.actionCannotUndone), true, new DialogUtils.DialogListener() {
+            @Override
+            public void onNegativeClicked() {
+
+            }
+
+            @Override
+            public void onDialogDismissed() {
+
+            }
+
+            @Override
+            public void onPositiveClicked() {
+                deleteRoom(roomId);
+            }
+        }, true, getString(R.string.cancel));
     }
 
 
@@ -256,7 +271,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
             public void onPositiveClicked() {
                 leaveRoom(mafiaRoomsModel.getId());
             }
-        }, true, getString(R.string.no));
+        }, true, getString(R.string.cancel));
     }
 
     @Override

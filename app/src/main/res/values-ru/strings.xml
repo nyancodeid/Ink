@@ -942,4 +942,5 @@
     <string name="gameInProgressWarning">Игра в процессе и не может быть удалена</string>
     <string name="leaveTitle">Выйти ?</string>
     <string name="leaveContent">Вы уверены что хотите выйти из за комнаты ? Вы будете удалены из нее безвозвратно</string>
+    <string name="actionCannotUndone">Это действие невозможно будет обратить,продолжить?</string>
 </resources>

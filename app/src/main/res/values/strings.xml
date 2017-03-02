@@ -937,4 +937,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="maxPlayers">Max players : %1$d</string>
     <string name="leaveTitle">Leave ?</string>
     <string name="leaveContent">Are you sure you want to leave the room ? You will be removed from it completely</string>
+    <string name="actionCannotUndone">This action can not be undone, proceed?</string>
 </resources>
