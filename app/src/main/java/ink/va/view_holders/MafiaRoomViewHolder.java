@@ -180,7 +180,8 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
         morningDurationTV.setTextColor(ContextCompat.getColor(context, R.color.vk_white));
         nightDurationTV.setTextColor(ContextCompat.getColor(context, R.color.vk_white));
         playersCountTV.setTextColor(ContextCompat.getColor(context, R.color.vk_white));
-        languageTV.setBackgroundResource(R.drawable.more_icon_white);
+        languageTV.setTextColor(ContextCompat.getColor(context, R.color.vk_white));
+        mafiaRoomMoreIcon.setBackgroundResource(R.drawable.more_icon_white);
     }
 
     private void initViewerView() {
@@ -190,7 +191,8 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
         morningDurationTV.setTextColor(ContextCompat.getColor(context, R.color.vk_black));
         nightDurationTV.setTextColor(ContextCompat.getColor(context, R.color.vk_black));
         playersCountTV.setTextColor(ContextCompat.getColor(context, R.color.vk_black));
-        languageTV.setBackgroundResource(R.drawable.more_icon);
+        languageTV.setTextColor(ContextCompat.getColor(context, R.color.vk_black));
+        mafiaRoomMoreIcon.setBackgroundResource(R.drawable.more_icon);
     }
 
 }
