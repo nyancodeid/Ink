@@ -3,10 +3,12 @@ package ink.va.view_holders;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.va.R;
@@ -34,12 +36,16 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
     TextView nightDurationTV;
     @BindView(R.id.languageTV)
     TextView languageTV;
-    @BindView(R.id.playersHeader)
-    TextView playersHeader;
+    @BindView(R.id.playersCountTV)
+    TextView playersCountTV;
     @BindView(R.id.gameStatus)
     TextView gameStatus;
     @BindView(R.id.mafiaRoomBottomSpacing)
     View mafiaRoomBottomSpacing;
+    @BindView(R.id.mafiaRoomSingleVIewCard)
+    CardView mafiaRoomSingleVIewCard;
+    @BindView(R.id.mafiaRoomMoreIcon)
+    ImageView mafiaRoomMoreIcon;
 
     private Context context;
     private SharedHelper sharedHelper;
@@ -84,7 +90,7 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
         languageTV.setText(mafiaRoomsModel.getRoomLanguage().equals(context.getString(R.string.english)) ?
                 context.getString(R.string.english) : context.getString(R.string.russian));
         String playersCount = String.valueOf(mafiaRoomsModel.getJoinedUserIds().size());
-        playersHeader.setText(context.getString(R.string.mafiaPlayersText, playersCount, mafiaRoomsModel.getMaxPlayers()));
+        playersCountTV.setText(context.getString(R.string.mafiaPlayersText, playersCount, mafiaRoomsModel.getMaxPlayers()));
 
         if (!mafiaRoomsModel.isGameStarted()) {
             gameStatus.setTextColor(ContextCompat.getColor(context, R.color.red));
@@ -102,7 +108,11 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
         } else {
             mafiaRoomBottomSpacing.setVisibility(View.GONE);
         }
-
+        if (isParticipant()) {
+            initParticipantView();
+        } else {
+            initViewerView();
+        }
     }
 
     @OnClick(R.id.mafiaRoomMoreIcon)
@@ -112,15 +122,8 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
         if (sharedHelper.getUserId().equals(mafiaRoomsModel.getCreatorId())) {
             popupMenu.getMenu().add(0, 0, 0, context.getString(R.string.delete));
         }
-        boolean isParticipant = false;
-        for (String eachUserId : mafiaRoomsModel.getJoinedUserIds()) {
-            if (sharedHelper.getUserId().equals(eachUserId)) {
-                isParticipant = true;
-                break;
-            }
-        }
 
-        if (isParticipant) {
+        if (isParticipant()) {
             popupMenu.getMenu().add(0, 1, 1, context.getString(R.string.leave));
         } else {
             popupMenu.getMenu().add(0, 1, 1, context.getString(R.string.join));
@@ -147,6 +150,17 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
         popupMenu.show();
     }
 
+    private boolean isParticipant() {
+        boolean isParticipant = false;
+        for (String eachUserId : mafiaRoomsModel.getJoinedUserIds()) {
+            if (sharedHelper.getUserId().equals(eachUserId)) {
+                isParticipant = true;
+                break;
+            }
+        }
+        return isParticipant;
+    }
+
     @OnClick(R.id.mafiaRoomRoot)
     public void rootClicked() {
         if (mafiaItemClickListener != null) {
@@ -158,4 +172,25 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
     public void cardClicked() {
         rootClicked();
     }
+
+    private void initParticipantView() {
+        mafiaRoomSingleVIewCard.setCardBackgroundColor(ContextCompat.getColor(context, R.color.activeBlack));
+        roomNameTV.setTextColor(ContextCompat.getColor(context, R.color.vk_white));
+        gameTypeTV.setTextColor(ContextCompat.getColor(context, R.color.vk_white));
+        morningDurationTV.setTextColor(ContextCompat.getColor(context, R.color.vk_white));
+        nightDurationTV.setTextColor(ContextCompat.getColor(context, R.color.vk_white));
+        playersCountTV.setTextColor(ContextCompat.getColor(context, R.color.vk_white));
+        languageTV.setBackgroundResource(R.drawable.more_icon_white);
+    }
+
+    private void initViewerView() {
+        mafiaRoomSingleVIewCard.setCardBackgroundColor(ContextCompat.getColor(context, R.color.vk_white));
+        roomNameTV.setTextColor(ContextCompat.getColor(context, R.color.vk_black));
+        gameTypeTV.setTextColor(ContextCompat.getColor(context, R.color.vk_black));
+        morningDurationTV.setTextColor(ContextCompat.getColor(context, R.color.vk_black));
+        nightDurationTV.setTextColor(ContextCompat.getColor(context, R.color.vk_black));
+        playersCountTV.setTextColor(ContextCompat.getColor(context, R.color.vk_black));
+        languageTV.setBackgroundResource(R.drawable.more_icon);
+    }
+
 }
