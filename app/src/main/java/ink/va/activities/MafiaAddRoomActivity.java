@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,6 +70,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
     private int estimatedNightDuration;
     private String chosenGameType;
     private String chosenMorningTimeUnit;
+    private String chosenNightTimeUnit;
     private boolean hasTimeError;
     private SharedHelper sharedHelper;
     private android.app.ProgressDialog progressDialog;
@@ -174,21 +176,33 @@ public class MafiaAddRoomActivity extends BaseActivity {
                         durationMorningED.setError(null);
                     }
                 }
-                initChosenNightDuration();
+                initNightDuration();
             } catch (NumberFormatException e) {
                 durationMorningED.setError(getString(R.string.onlyNumbersAllowed));
                 e.printStackTrace();
             }
         } else {
-            initChosenNightDuration();
+            initNightDuration();
         }
     }
 
-    private void initChosenNightDuration() {
+    private void initNightDuration() {
         if (!hasTimeError && !durationMorningED.getText().toString().trim().isEmpty()) {
-            estimatedNightDuration = Integer.valueOf(durationMorningED.getText().toString()) / 2;
+            int chosenMorningDuration = Integer.valueOf(durationMorningED.getText().toString());
+            estimatedNightDuration = chosenMorningDuration / 2;
+            if (estimatedNightDuration == 0) {
+                if (chosenMorningTimeUnit.equals(getString(R.string.hoursUnit))) {
+                    chosenNightTimeUnit = getString(R.string.minutesUnit);
+                    estimatedNightDuration = (int) (java.util.concurrent.TimeUnit.HOURS.toMinutes(chosenMorningDuration) / 2);
+
+                } else if (chosenMorningTimeUnit.equals(getString(R.string.daysUnit))) {
+                    chosenNightTimeUnit = getString(R.string.hoursUnit);
+                    estimatedNightDuration = (int) (TimeUnit.DAYS.toHours(chosenMorningDuration) / 2);
+                }
+            }
+            chosenNightTimeUnit = chosenMorningTimeUnit;
             nightDurationTv.setText(getString(R.string.estimatedNightDuration, estimatedNightDuration + " " +
-                    chosenMorningTimeUnit));
+                    chosenNightTimeUnit));
         } else {
             nightDurationTv.setText(getString(R.string.chooseMorningFirst));
         }
@@ -232,7 +246,8 @@ public class MafiaAddRoomActivity extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 chosenMorningTimeUnit = timeUnits.get(position);
-                initChosenNightDuration();
+                checkEditText();
+                initNightDuration();
             }
 
             @Override
@@ -273,7 +288,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
         progressDialog.show();
         Call<ResponseBody> addRoomCall = Retrofit.getInstance().getInkService().addMafiaRoom(roomNameTV.getText().toString().trim(),
                 chosenLanguage, chosenGameType, durationMorningED.getText().toString(), chosenMorningTimeUnit,
-                String.valueOf(estimatedNightDuration), chosenMorningTimeUnit,
+                String.valueOf(estimatedNightDuration), chosenNightTimeUnit,
                 sharedHelper.getUserId());
         addRoomCall.enqueue(new Callback<ResponseBody>() {
             @Override
