@@ -271,6 +271,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
     }
 
     private void proceedChecking() {
+        Keyboard.hideKeyboard(this);
         if (hasTimeError) {
             Toast.makeText(this, getString(R.string.fixTimeErros), Toast.LENGTH_SHORT).show();
         } else if (roomNameTV.getText().toString().trim().isEmpty()) {
@@ -286,7 +287,6 @@ public class MafiaAddRoomActivity extends BaseActivity {
     }
 
     private void addRoom() {
-        Keyboard.hideKeyboard(this);
         progressDialog.show();
         Call<ResponseBody> addRoomCall = Retrofit.getInstance().getInkService().addMafiaRoom(roomNameTV.getText().toString().trim(),
                 chosenLanguage, chosenGameType, durationMorningED.getText().toString(), chosenMorningTimeUnit,
