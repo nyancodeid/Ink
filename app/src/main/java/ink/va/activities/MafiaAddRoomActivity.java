@@ -281,7 +281,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
             scroll(ScrollView.FOCUS_DOWN);
             durationMorningED.setError(getString(R.string.emptyField));
         } else {
-            estimatedNightDuration = Integer.valueOf(durationMorningED.getText().toString()) / 2;
+            initNightDuration();
             addRoom();
         }
     }
