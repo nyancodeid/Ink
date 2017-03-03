@@ -98,8 +98,7 @@ public class MafiaGameView extends BaseActivity {
         closeRoleView.setEnabled(enabled);
     }
 
-    private void openRoleView(int roleResourceId) {
-        mafiaRoleHolder.setImageDrawable(ContextCompat.getDrawable(this, roleResourceId));
+    private void openRoleView(final int roleResourceId) {
         mafiaRoleView.setVisibility(View.VISIBLE);
         slideInWithFade.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -110,6 +109,7 @@ public class MafiaGameView extends BaseActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 setButtonState(true);
+                mafiaRoleHolder.setImageDrawable(ContextCompat.getDrawable(MafiaGameView.this, roleResourceId));
             }
 
             @Override
@@ -121,7 +121,6 @@ public class MafiaGameView extends BaseActivity {
     }
 
     private void closeRoleView() {
-        mafiaRoleHolder.setImageDrawable(null);
         setButtonState(false);
         slideOutWithFade.setAnimationListener(new Animation.AnimationListener() {
             @Override
