@@ -27,7 +27,6 @@ public class MafiaGameView extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mafia_game_view);
-        getWindow().setDimAmount((float) 0.5);
         ButterKnife.bind(this);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
