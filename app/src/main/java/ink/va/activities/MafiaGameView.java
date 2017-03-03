@@ -3,6 +3,7 @@ package ink.va.activities;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.ink.va.R;
@@ -19,11 +20,14 @@ public class MafiaGameView extends BaseActivity {
     ProgressBar playersLoading;
     @BindView(R.id.playersRecycler)
     RecyclerView playersRecycler;
+    @BindView(R.id.replyToRoomED)
+    EditText replyToRoomED;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mafia_game_view);
+        getWindow().setDimAmount((float) 0.5);
         ButterKnife.bind(this);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -40,7 +44,4 @@ public class MafiaGameView extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setNightTheme() {
-        setTheme(android.R.style.ThemeOverlay_Material_Dark);
-    }
 }

@@ -35,10 +35,11 @@
     </android.support.v7.widget.RecyclerView>
 
     <EditText
+        android:id="@+id/replyToRoomED"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:drawableRight="@drawable/send_vector"
+        android:drawableRight="@drawable/send_vector_golden"
         android:hint="@string/replyToRoom"
         android:textColor="@color/vk_black" />
 </RelativeLayout>
