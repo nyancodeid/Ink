@@ -69,6 +69,7 @@ public class MafiaGameView extends BaseActivity {
     private Animation slideOutWithFade;
     private Animation slideInWithFade;
     private SharedHelper sharedHelper;
+    private boolean isMenuAdded;
 
 
     @Override
@@ -95,13 +96,16 @@ public class MafiaGameView extends BaseActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (isParticipant()) {
-            menu.add(0, ITEM_LEAVE_ID, 0, getString(R.string.leave));
-        } else {
-            menu.add(0, ITEM_JOIN_ID, 0, getString(R.string.join));
-        }
-        if (isOwner()) {
-            menu.add(0, ITEM_DELETE_ID, 1, getString(R.string.delete));
+        if (!isMenuAdded) {
+            if (isParticipant()) {
+                menu.add(0, ITEM_LEAVE_ID, 0, getString(R.string.leave));
+            } else {
+                menu.add(0, ITEM_JOIN_ID, 0, getString(R.string.join));
+            }
+            if (isOwner()) {
+                menu.add(0, ITEM_DELETE_ID, 1, getString(R.string.delete));
+            }
+            isMenuAdded = true;
         }
         return super.onPrepareOptionsMenu(menu);
     }
