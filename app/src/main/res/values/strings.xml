@@ -946,4 +946,8 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="cantJoinRoomDeleted">Can\'t join :  Room was deleted</string>
     <string name="alreadyInRoomParticipating">You are already in another room. Either leave or delete the room to join a new one</string>
     <string name="replyToRoom">Reply to room</string>
+    <string name="players">Players</string>
+    <string name="gameChat">Game chat</string>
+    <string name="cantReply">You can\'t reply to this chat</string>
+    <string name="youAre">You are the \'%1$s\'</string>
 </resources>

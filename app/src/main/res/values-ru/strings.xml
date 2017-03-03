@@ -945,11 +945,14 @@
     <string name="leaveTitle">Выйти ?</string>
     <string name="leaveContent">Вы уверены что хотите выйти из за комнаты ? Вы будете удалены из нее безвозвратно</string>
     <string name="actionCannotUndone">Это действие невозможно будет обратить,продолжить?</string>
-
     <string name="joined">Присоединен</string>
     <string name="cantJoinGameInProgress">Невозможно присоединиться : Игра уже начата</string>
     <string name="cantJoinMaximumPlayers">Невозможно присоединиться : Достигнут лимит максимум игроков</string>
     <string name="cantJoinRoomDeleted">Невозможно присоединиться : Комната была удалена</string>
-
     <string name="alreadyInRoomParticipating">Вы уже находитесь в другой комнате,либо выйдите из комнаты,либо удалите ее</string>
+    <string name="players">Игроки</string>
+    <string name="gameChat">Чат игры</string>
+    <string name="replyToRoom">Написать в комнате</string>
+    <string name="cantReply">Вы не можете писать в этой комнате</string>
+    <string name="youAre">Ваша роль \'%1$s\'</string>
 </resources>

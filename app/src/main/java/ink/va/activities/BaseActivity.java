@@ -257,30 +257,38 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (sharedHelper.getSendButtonColor() != null) {
             if (sendChatMessage != null) {
                 sendChatMessage.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));
+                sendChatMessage.setColorPressed(Color.parseColor(sharedHelper.getSendButtonColor()));
             }
             if (chatRouletteSendMessage != null) {
                 chatRouletteSendMessage.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));
+                chatRouletteSendMessage.setColorPressed(Color.parseColor(sharedHelper.getSendButtonColor()));
             }
             if (sendGroupMessage != null) {
-                sendChatMessage.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));
+                sendGroupMessage.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));
+                sendGroupMessage.setColorPressed(Color.parseColor(sharedHelper.getSendButtonColor()));
             }
             if (replyMessage != null) {
                 replyMessage.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));
             }
             if (pickImageButton != null) {
                 pickImageButton.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));
+                pickImageButton.setColorPressed(Color.parseColor(sharedHelper.getSendButtonColor()));
             }
         }
         if (sharedHelper.getMenuButtonColor() != null) {
             if (profileFab != null) {
                 profileFab.setMenuButtonColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
+                profileFab.setMenuButtonColorPressed(Color.parseColor(sharedHelper.getMenuButtonColor()));
             }
             if (editImageNameFab != null) {
                 editImageNameFab.setColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
+                editImageNameFab.setColorPressed(Color.parseColor(sharedHelper.getMenuButtonColor()));
                 saveProfileEdits.setColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
+                saveProfileEdits.setColorPressed(Color.parseColor(sharedHelper.getMenuButtonColor()));
             }
             if (createGroup != null) {
                 createGroup.setColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
+                createGroup.setColorPressed(Color.parseColor(sharedHelper.getMenuButtonColor()));
             }
             if (connectDisconnectButton != null) {
                 connectDisconnectButton.setTextColor(Color.parseColor(sharedHelper.getMenuButtonColor()));

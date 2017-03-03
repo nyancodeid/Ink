@@ -1,17 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ink.va.utils.TransparentPanel xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_mafia_game_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ink.va.activities.MafiaGameView">
 
+
+    <ImageView
+        android:id="@+id/nightDayIV"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/sun_icon" />
+
+    <TextView
+        android:id="@+id/playersTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@string/condensedFont"
+        android:text="@string/players"
+        android:textColor="@color/darkGreen" />
+
     <RelativeLayout
         android:id="@+id/playersRecyclerWrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_margin="10dp">
+        android:layout_below="@+id/playersTV"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp">
 
         <ProgressBar
             android:id="@+id/playersLoading"
@@ -22,25 +45,95 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/playersRecycler"
             android:layout_width="150dp"
-            android:layout_height="200dp">
+            android:layout_height="200dp"
+            android:overScrollMode="never">
 
         </android.support.v7.widget.RecyclerView>
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <TextView
+        android:id="@+id/gameChatTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/playersRecyclerWrapper"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:fontFamily="@string/condensedFont"
+        android:text="@string/gameChat"
+        android:textColor="@color/darkGreen" />
+
+    <RelativeLayout
+        android:id="@+id/mafiaChatRecyclerWrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/playersRecyclerWrapper">
+        android:layout_above="@+id/replyToRoomED"
+        android:layout_below="@+id/gameChatTV"
+        android:background="@drawable/grey_transparent_rectangle"
+        android:padding="10dp">
 
-    </android.support.v7.widget.RecyclerView>
+        <ProgressBar
+            android:id="@+id/chatLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/mafiaChatRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never">
+
+        </android.support.v7.widget.RecyclerView>
+    </RelativeLayout>
 
     <EditText
-        android:maxHeight="100dp"
         android:id="@+id/replyToRoomED"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:drawableRight="@drawable/send_vector_golden"
         android:hint="@string/replyToRoom"
+        android:maxHeight="100dp"
+        android:paddingRight="55dp"
         android:textColor="@color/vk_black" />
+
+    <ImageView
+        android:id="@+id/replyToRoomIV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:padding="5dp"
+        android:src="@drawable/reply_room_icon_states" />
+
+    <RelativeLayout
+        android:id="@+id/mafiaRoleView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.89"
+        android:background="#000000"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/mafiaRoleExplanationTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@string/condensedFont"
+            android:gravity="center"
+            android:text="@string/youAre"
+            android:textColor="@color/vk_white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/mafiaRoleHolder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mafiaRoleExplanationTV" />
+    </RelativeLayout>
+
 </ink.va.utils.TransparentPanel>

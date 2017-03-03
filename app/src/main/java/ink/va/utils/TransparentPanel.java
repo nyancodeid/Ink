@@ -28,10 +28,12 @@ public class TransparentPanel extends RelativeLayout {
 
     public void setArgbDim() {
         innerPaint.setARGB(180, 75, 75, 75);
+        invalidate();
     }
 
     public void setArgbWhite() {
         innerPaint.setARGB(255, 255, 255, 255);
+        invalidate();
     }
 
 
