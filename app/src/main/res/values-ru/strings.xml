@@ -955,4 +955,9 @@
     <string name="replyToRoom">Написать в комнате</string>
     <string name="cantReply">Вы не можете писать в этой комнате</string>
     <string name="youAre">Ваша роль \'%1$s\'</string>
+    <string name="gameInfo">Инфо игры</string>
+    <string name="gameTypeText">%1$s тип игры</string>
+    <string name="oneMorningDuration">%1$s %2$s для длительности одного утра</string>
+    <string name="oneNightDuration">%1$s %2$s для длительности одной ночи</string>
+    <string name="roomLanguageText">%1$s язик комнаты</string>
 </resources>

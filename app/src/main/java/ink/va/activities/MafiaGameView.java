@@ -5,6 +5,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -23,6 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.models.MafiaRoomsModel;
+import ink.va.utils.Keyboard;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.TransparentPanel;
 
@@ -50,6 +52,17 @@ public class MafiaGameView extends BaseActivity {
     ImageView mafiaRoleHolder;
     @BindView(R.id.closeRoleView)
     Button closeRoleView;
+    @BindView(R.id.gameStartedTV)
+    TextView gameStartedTV;
+    @BindView(R.id.gameTypeTV)
+    TextView gameTypeTV;
+    @BindView(R.id.singleMorningDurationTV)
+    TextView singleMorningDurationTV;
+    @BindView(R.id.singleNightDurationTV)
+    TextView singleNightDurationTV;
+    @BindView(R.id.roomLanguageTV)
+    TextView roomLanguageTV;
+
     private Animation slideOutWithFade;
     private Animation slideInWithFade;
     private SharedHelper sharedHelper;
@@ -73,11 +86,23 @@ public class MafiaGameView extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         initEditText(isParticipant());
+        initGameInfo();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mafia_game_view_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        finish();
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -100,6 +125,7 @@ public class MafiaGameView extends BaseActivity {
     }
 
     private void openRoleView(final int roleResourceId) {
+        Keyboard.hideKeyboard(this);
         mafiaRoleView.setVisibility(View.VISIBLE);
         slideInWithFade.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -187,5 +213,43 @@ public class MafiaGameView extends BaseActivity {
             }
         }
         return isParticipant;
+    }
+
+    private void initGameInfo() {
+        if (mafiaRoomsModel.gameStarted) {
+            gameStartedTV.setTextColor(ContextCompat.getColor(this, R.color.darkGreen));
+            gameStartedTV.setText(getString(R.string.gameStarted));
+        } else {
+            gameStartedTV.setTextColor(ContextCompat.getColor(this, R.color.red));
+            gameStartedTV.setText(getString(R.string.gameNotStarted));
+        }
+        String gameType = getString(R.string.classic);
+        if (mafiaRoomsModel.gameType.equals(getString(R.string.yakudza))) {
+            gameType = getString(R.string.yakudza);
+        }
+        gameTypeTV.setText(getString(R.string.gameTypeText, gameType));
+
+        String unit = getString(R.string.minutesUnit);
+        if (mafiaRoomsModel.getMorningDurationUnit().equals(getString(R.string.hoursUnit))) {
+            unit = getString(R.string.hoursUnit);
+        } else if (mafiaRoomsModel.getMorningDurationUnit().equals(getString(R.string.daysUnit))) {
+            unit = getString(R.string.daysUnit);
+        }
+
+        singleMorningDurationTV.setText(getString(R.string.oneMorningDuration, mafiaRoomsModel.getMorningDuration(), unit));
+
+        String nightDuration = getString(R.string.minutesUnit);
+        if (mafiaRoomsModel.getNightDuration().equals(getString(R.string.hoursUnit))) {
+            nightDuration = getString(R.string.hoursUnit);
+        } else if (mafiaRoomsModel.getNightDuration().equals(getString(R.string.daysUnit))) {
+            nightDuration = getString(R.string.daysUnit);
+        }
+
+        singleNightDurationTV.setText(getString(R.string.oneNightDuration, mafiaRoomsModel.getNightDuration(), nightDuration));
+        String language = getString(R.string.english);
+        if (mafiaRoomsModel.getRoomLanguage().equals(getString(R.string.russian))) {
+            language = getString(R.string.russian);
+        }
+        roomLanguageTV.setText(getString(R.string.roomLanguageText, language));
     }
 }

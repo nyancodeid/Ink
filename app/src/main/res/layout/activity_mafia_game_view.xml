@@ -7,13 +7,104 @@
     android:layout_height="match_parent"
     tools:context="ink.va.activities.MafiaGameView">
 
-
     <ImageView
         android:id="@+id/nightDayIV"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_margin="10dp"
         android:src="@drawable/sun_icon" />
+
+    <TextView
+        android:id="@+id/timeLeftTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/roomInfoScroll"
+        android:layout_alignTop="@+id/nightDayIV"
+        android:layout_margin="10dp"
+        android:layout_toLeftOf="@+id/playersRecyclerWrapper"
+        android:layout_toRightOf="@+id/nightDayIV"
+        android:fontFamily="@string/condensedFont"
+        android:text="Time left for the morning : " />
+
+
+    <TextView
+        android:id="@+id/gameInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/nightDayIV"
+        android:layout_alignStart="@+id/nightDayIV"
+        android:layout_below="@+id/nightDayIV"
+        android:fontFamily="@string/condensedFont"
+        android:text="@string/gameInfo"
+        android:textColor="@color/darkGreen" />
+
+    <ScrollView
+        android:id="@+id/roomInfoScroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/gameChatTV"
+        android:layout_below="@+id/gameInfo"
+        android:layout_margin="5dp"
+        android:layout_toLeftOf="@+id/playersRecyclerWrapper"
+        android:background="@drawable/grey_transparent_rectangle"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/gameStartedTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@string/condensedFont"
+                android:maxLines="1"
+                android:textColor="@color/vk_black" />
+
+            <TextView
+                android:id="@+id/gameTypeTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:ellipsize="end"
+                android:fontFamily="@string/condensedFont"
+                android:maxLines="1"
+                android:textColor="@color/vk_black" />
+
+            <TextView
+                android:id="@+id/singleMorningDurationTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:ellipsize="end"
+                android:fontFamily="@string/condensedFont"
+                android:maxLines="1"
+                android:textColor="@color/vk_black" />
+
+            <TextView
+                android:id="@+id/singleNightDurationTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:ellipsize="end"
+                android:fontFamily="@string/condensedFont"
+                android:maxLines="1"
+                android:textColor="@color/vk_black" />
+
+            <TextView
+                android:id="@+id/roomLanguageTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:ellipsize="end"
+                android:fontFamily="@string/condensedFont"
+                android:maxLines="1"
+                android:textColor="@color/vk_black" />
+
+        </LinearLayout>
+    </ScrollView>
 
     <TextView
         android:id="@+id/playersTV"

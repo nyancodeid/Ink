@@ -950,4 +950,9 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="gameChat">Game chat</string>
     <string name="cantReply">You can\'t reply to this chat</string>
     <string name="youAre">You are the \'%1$s\'</string>
+    <string name="gameInfo">Game info</string>
+    <string name="gameTypeText">%1$s game type</string>
+    <string name="oneMorningDuration">%1$s %2$s for one morning duration</string>
+    <string name="oneNightDuration">%1$s %2$s for one night duration</string>
+    <string name="roomLanguageText">%1$s is the room  language</string>
 </resources>
