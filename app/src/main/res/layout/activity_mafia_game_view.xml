@@ -111,7 +111,7 @@
         android:layout_height="match_parent"
         android:alpha="0.89"
         android:background="#000000"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/mafiaRoleExplanationTV"
@@ -130,6 +130,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/mafiaRoleExplanationTV" />
+
+        <Button
+            android:id="@+id/closeRoleView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/grey_transparent_rectangle"
+            android:fontFamily="@string/condensedFont"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="@string/close"
+            android:textAllCaps="false"
+            android:textColor="@color/vk_white" />
     </RelativeLayout>
 
 </ink.va.utils.TransparentPanel>
