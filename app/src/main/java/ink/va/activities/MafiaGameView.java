@@ -3,6 +3,8 @@ package ink.va.activities;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -47,7 +49,7 @@ public class MafiaGameView extends BaseActivity {
     ImageView mafiaRoleHolder;
     @BindView(R.id.closeRoleView)
     Button closeRoleView;
-    private Animation slideUpAniation;
+    private Animation slideUpAnimation;
     private Animation slideDownAnimation;
 
 
@@ -57,7 +59,7 @@ public class MafiaGameView extends BaseActivity {
         setContentView(R.layout.activity_mafia_game_view);
         ButterKnife.bind(this);
 
-        slideUpAniation = AnimationUtils.loadAnimation(this, R.anim.slide_up_slow);
+        slideUpAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_up_slow);
         slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_down_slow);
 
         Bundle extras = getIntent().getExtras();
@@ -66,8 +68,9 @@ public class MafiaGameView extends BaseActivity {
             getSupportActionBar().setTitle(mafiaRoomsModel.getRoomName());
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
 
+        initEditText();
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -96,7 +99,22 @@ public class MafiaGameView extends BaseActivity {
     private void openRoleView(int roleResourceId) {
         mafiaRoleHolder.setImageDrawable(ContextCompat.getDrawable(this, roleResourceId));
         mafiaRoleView.setVisibility(View.VISIBLE);
-        setButtonState(true);
+        slideDownAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                setButtonState(true);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
         mafiaRoleView.startAnimation(slideDownAnimation);
     }
 
@@ -104,7 +122,7 @@ public class MafiaGameView extends BaseActivity {
         clearImage();
         mafiaRoleHolder.setImageDrawable(null);
         setButtonState(false);
-        slideUpAniation.setAnimationListener(new Animation.AnimationListener() {
+        slideUpAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
 
@@ -120,6 +138,30 @@ public class MafiaGameView extends BaseActivity {
 
             }
         });
-        mafiaRoleView.startAnimation(slideUpAniation);
+        mafiaRoleView.startAnimation(slideUpAnimation);
+    }
+
+    private void initEditText() {
+        replyToRoomED.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String text = s.toString().toString();
+                if(text.isEmpty()){
+                    replyToRoom.setEnabled(false);
+                }else{
+                    replyToRoom.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 }

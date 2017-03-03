@@ -138,6 +138,7 @@
             android:layout_alignParentBottom="true"
             android:layout_margin="10dp"
             android:background="@drawable/grey_transparent_rectangle"
+            android:enabled="false"
             android:fontFamily="@string/condensedFont"
             android:foreground="?attr/selectableItemBackground"
             android:text="@string/close"
