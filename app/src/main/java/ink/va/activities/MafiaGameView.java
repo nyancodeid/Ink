@@ -23,6 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.models.MafiaRoomsModel;
+import ink.va.utils.SharedHelper;
 import ink.va.utils.TransparentPanel;
 
 public class MafiaGameView extends BaseActivity {
@@ -51,6 +52,7 @@ public class MafiaGameView extends BaseActivity {
     Button closeRoleView;
     private Animation slideUpAnimation;
     private Animation slideDownAnimation;
+    private SharedHelper sharedHelper;
 
 
     @Override
@@ -58,7 +60,7 @@ public class MafiaGameView extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mafia_game_view);
         ButterKnife.bind(this);
-
+        sharedHelper = new SharedHelper(this);
         slideUpAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_up_slow);
         slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_down_slow);
 
@@ -69,7 +71,7 @@ public class MafiaGameView extends BaseActivity {
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        initEditText();
+        initEditText(isParticipant());
     }
 
     @Override
@@ -141,27 +143,49 @@ public class MafiaGameView extends BaseActivity {
         mafiaRoleView.startAnimation(slideUpAnimation);
     }
 
-    private void initEditText() {
-        replyToRoomED.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    private void initEditText(boolean enabled) {
+        if (enabled) {
+            replyToRoomED.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String text = s.toString().toString();
-                if(text.isEmpty()){
-                    replyToRoom.setEnabled(false);
-                }else{
-                    replyToRoom.setEnabled(true);
                 }
-            }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    String text = s.toString().toString();
+                    if (text.isEmpty()) {
+                        replyToRoom.setEnabled(false);
+                    } else {
+                        replyToRoom.setEnabled(true);
+                    }
+                }
 
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+        } else {
+            replyToRoomED.setEnabled(false);
+            replyToRoomED.setClickable(false);
+            replyToRoomED.setFocusable(false);
+            replyToRoomED.setFocusableInTouchMode(false);
+            replyToRoomED.setHint(getString(R.string.cantReply));
+            replyToRoom.setEnabled(false);
+        }
+
+    }
+
+    private boolean isParticipant() {
+        boolean isParticipant = false;
+        String currentUserId = sharedHelper.getUserId();
+        for (String eachId : mafiaRoomsModel.getJoinedUserIds()) {
+            if (eachId.equals(currentUserId)) {
+                isParticipant = true;
+                break;
             }
-        });
+        }
+        return isParticipant;
     }
 }
