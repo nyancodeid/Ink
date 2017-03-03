@@ -111,7 +111,7 @@
         android:layout_height="match_parent"
         android:alpha="0.89"
         android:background="#000000"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/mafiaRoleExplanationTV"

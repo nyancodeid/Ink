@@ -50,8 +50,8 @@ public class MafiaGameView extends BaseActivity {
     ImageView mafiaRoleHolder;
     @BindView(R.id.closeRoleView)
     Button closeRoleView;
-    private Animation slideUpAnimation;
-    private Animation slideDownAnimation;
+    private Animation slideOutWithFade;
+    private Animation slideInWithFade;
     private SharedHelper sharedHelper;
 
 
@@ -61,8 +61,8 @@ public class MafiaGameView extends BaseActivity {
         setContentView(R.layout.activity_mafia_game_view);
         ButterKnife.bind(this);
         sharedHelper = new SharedHelper(this);
-        slideUpAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_up_slow);
-        slideDownAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_down_slow);
+        slideOutWithFade = AnimationUtils.loadAnimation(this, R.anim.slide_out_with_fade);
+        slideInWithFade = AnimationUtils.loadAnimation(this, R.anim.slide_in_with_fade);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -101,7 +101,7 @@ public class MafiaGameView extends BaseActivity {
     private void openRoleView(int roleResourceId) {
         mafiaRoleHolder.setImageDrawable(ContextCompat.getDrawable(this, roleResourceId));
         mafiaRoleView.setVisibility(View.VISIBLE);
-        slideDownAnimation.setAnimationListener(new Animation.AnimationListener() {
+        slideInWithFade.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
 
@@ -117,14 +117,13 @@ public class MafiaGameView extends BaseActivity {
 
             }
         });
-        mafiaRoleView.startAnimation(slideDownAnimation);
+        mafiaRoleView.startAnimation(slideInWithFade);
     }
 
     private void closeRoleView() {
-        clearImage();
         mafiaRoleHolder.setImageDrawable(null);
         setButtonState(false);
-        slideUpAnimation.setAnimationListener(new Animation.AnimationListener() {
+        slideOutWithFade.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
 
@@ -133,6 +132,7 @@ public class MafiaGameView extends BaseActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 mafiaRoleView.setVisibility(View.GONE);
+                clearImage();
             }
 
             @Override
@@ -140,7 +140,7 @@ public class MafiaGameView extends BaseActivity {
 
             }
         });
-        mafiaRoleView.startAnimation(slideUpAnimation);
+        mafiaRoleView.startAnimation(slideOutWithFade);
     }
 
     private void initEditText(boolean enabled) {
