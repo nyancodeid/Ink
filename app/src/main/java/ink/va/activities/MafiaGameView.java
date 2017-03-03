@@ -29,6 +29,9 @@ import ink.va.utils.SharedHelper;
 import ink.va.utils.TransparentPanel;
 
 public class MafiaGameView extends BaseActivity {
+    private static final int ITEM_LEAVE_ID = 1;
+    private static final int ITEM_JOIN_ID = 2;
+    private static final int ITEM_DELETE_ID = 3;
     private MafiaRoomsModel mafiaRoomsModel;
     @BindView(R.id.playersLoading)
     ProgressBar playersLoading;
@@ -91,6 +94,19 @@ public class MafiaGameView extends BaseActivity {
 
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (isParticipant()) {
+            menu.add(0, ITEM_LEAVE_ID, 0, getString(R.string.leave));
+        } else {
+            menu.add(0, ITEM_JOIN_ID, 0, getString(R.string.join));
+        }
+        if (isOwner()) {
+            menu.add(0, ITEM_DELETE_ID, 1, getString(R.string.delete));
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.mafia_game_view_menu, menu);
         return super.onCreateOptionsMenu(menu);
@@ -101,6 +117,12 @@ public class MafiaGameView extends BaseActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                break;
+            case ITEM_LEAVE_ID:
+                break;
+            case ITEM_JOIN_ID:
+                break;
+            case ITEM_DELETE_ID:
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -213,6 +235,10 @@ public class MafiaGameView extends BaseActivity {
             }
         }
         return isParticipant;
+    }
+
+    private boolean isOwner() {
+        return mafiaRoomsModel.getCreatorId().equals(sharedHelper.getUserId());
     }
 
     private void initGameInfo() {
