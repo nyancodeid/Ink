@@ -37,7 +37,7 @@ public class MafiaGameView extends BaseActivity {
     @BindView(R.id.activity_mafia_game_view)
     TransparentPanel transparentPanel;
     @BindView(R.id.replyToRoomIV)
-    ImageView replyToRoom;
+    ImageView replyToRoomIV;
     @BindView(R.id.chatLoading)
     ProgressBar chatLoading;
     @BindView(R.id.nightDayIV)
@@ -63,6 +63,7 @@ public class MafiaGameView extends BaseActivity {
         sharedHelper = new SharedHelper(this);
         slideOutWithFade = AnimationUtils.loadAnimation(this, R.anim.slide_out_with_fade);
         slideInWithFade = AnimationUtils.loadAnimation(this, R.anim.slide_in_with_fade);
+        replyToRoomIV.setEnabled(false);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -154,9 +155,9 @@ public class MafiaGameView extends BaseActivity {
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     String text = s.toString().toString();
                     if (text.isEmpty()) {
-                        replyToRoom.setEnabled(false);
+                        replyToRoomIV.setEnabled(false);
                     } else {
-                        replyToRoom.setEnabled(true);
+                        replyToRoomIV.setEnabled(true);
                     }
                 }
 
@@ -171,7 +172,7 @@ public class MafiaGameView extends BaseActivity {
             replyToRoomED.setFocusable(false);
             replyToRoomED.setFocusableInTouchMode(false);
             replyToRoomED.setHint(getString(R.string.cantReply));
-            replyToRoom.setEnabled(false);
+            replyToRoomIV.setEnabled(false);
         }
 
     }
