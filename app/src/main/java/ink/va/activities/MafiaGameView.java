@@ -65,7 +65,7 @@ public class MafiaGameView extends BaseActivity {
 
     @OnClick(R.id.replyToRoomIV)
     public void replyToRoomIVClicked() {
-        mafiaRoleHolder.setVisibility(View.VISIBLE);
+        mafiaRoleView.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.nightDayIV)
