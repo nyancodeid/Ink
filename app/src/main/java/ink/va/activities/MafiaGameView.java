@@ -28,6 +28,7 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.ink.va.R;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
@@ -41,6 +42,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.adapters.MafiaChatAdapter;
 import ink.va.adapters.MafiaPlayersAdapter;
+import ink.va.models.MafiaMessageModel;
 import ink.va.models.MafiaRoomsModel;
 import ink.va.models.UserModel;
 import ink.va.utils.Constants;
@@ -83,6 +85,8 @@ public class MafiaGameView extends BaseActivity {
     ImageView replyToRoomIV;
     @BindView(R.id.chatLoading)
     ProgressBar chatLoading;
+    @BindView(R.id.noMessagesTV)
+    TextView noMessagesTV;
     @BindView(R.id.nightDayIV)
     ImageView nightDayIV;
     @BindView(R.id.mafiaRoleView)
@@ -151,6 +155,38 @@ public class MafiaGameView extends BaseActivity {
         mafiaChatRecycler.setAdapter(mafiaChatAdapter);
         playersRecycler.setAdapter(mafiaPlayersAdapter);
         getMafiaRoomParticipants();
+        getMafiaRoomMessages();
+    }
+
+    private void getMafiaRoomMessages() {
+        Retrofit.getInstance().getInkService().getMafiaChat(mafiaRoomsModel.getId()).enqueue(new Callback<List<MafiaMessageModel>>() {
+            @Override
+            public void onResponse(Call<List<MafiaMessageModel>> call, Response<List<MafiaMessageModel>> response) {
+                List<MafiaMessageModel> mafiaMessageModels = response.body();
+                if (mafiaMessageModels.isEmpty()) {
+                    showNoMessages();
+                } else {
+                    hideNoMessages();
+                    mafiaChatAdapter.setMafiaMessageModels(mafiaMessageModels);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MafiaMessageModel>> call, Throwable t) {
+                hideNoMessages();
+                Toast.makeText(MafiaGameView.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void hideNoMessages() {
+        chatLoading.setVisibility(View.GONE);
+        noMessagesTV.setVisibility(View.GONE);
+    }
+
+    private void showNoMessages() {
+        noMessagesTV.setVisibility(View.VISIBLE);
+        chatLoading.setVisibility(View.GONE);
     }
 
 
@@ -449,7 +485,40 @@ public class MafiaGameView extends BaseActivity {
 
     @OnClick(R.id.replyToRoomIV)
     public void replyToRoomIVClicked() {
-        openRoleView(R.drawable.mafia_sniper_role);
+        silentMessageServerInsert(StringEscapeUtils.escapeJava(replyToRoomED.getText().toString().trim()));
+    }
+
+    private void silentMessageServerInsert(final String message) {
+        Retrofit.getInstance().getInkService().silentMafiMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    silentMessageServerInsert(message);
+                    return;
+                }
+                if (response.body() == null) {
+                    silentMessageServerInsert(message);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (!success) {
+                        Toast.makeText(MafiaGameView.this, getString(R.string.messageNotSent), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(MafiaGameView.this, getString(R.string.messageNotSent), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @OnClick(R.id.closeRoleView)

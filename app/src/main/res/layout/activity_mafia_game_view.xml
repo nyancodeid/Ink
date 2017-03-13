@@ -125,9 +125,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/playersTV"
-        android:background="@drawable/circle_transparent_background"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="5dp"
+        android:background="@drawable/circle_transparent_background">
 
         <ProgressBar
             android:id="@+id/playersLoading"
@@ -172,6 +172,15 @@
         android:layout_below="@+id/gameChatTV"
         android:background="@drawable/grey_transparent_rectangle"
         android:padding="10dp">
+
+        <TextView
+            android:id="@+id/noMessagesTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@string/condensedFont"
+            android:text="@string/noMessagesText"
+            android:visibility="gone" />
 
         <ProgressBar
             android:id="@+id/chatLoading"

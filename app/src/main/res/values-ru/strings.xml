@@ -963,4 +963,5 @@
     <string name="roomLanguageText">%1$s язик комнаты</string>
     <string name="joining">Присоединяемся...</string>
     <string name="roomOwner">Владелец Комнаты</string>
+    <string name="noMessagesText">Пока что сообщений нет</string>
 </resources>

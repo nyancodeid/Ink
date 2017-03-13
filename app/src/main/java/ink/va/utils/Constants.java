@@ -73,6 +73,8 @@ public class Constants {
     public static final String LOGIN_URL = "Login.php";
     public static final String OPEN_PACK_URL = "OpenPack.php";
     public static final String POLLFISH_URL = "PollFishReward.php";
+    public static final String MAFIA_CHAT_URL = "GetMafiaChat.php";
+    public static final String INSERT_MAFIA_CHAT_URL = "InsertMafiaChat.php";
     public static final String FRIENDS_URL = "UserFriends.php";
     public static final String SINGLE_USER_URL = "SingleUser.php";
     public static final String SEND_FRIEND_REQUEST_URL = "SendFriendRequest.php";
@@ -249,7 +251,7 @@ public class Constants {
     public static final String EVENT_TYPING = "typing";
     public static final String EVENT_STOPPED_TYPING = "stoppedTyping";
     public static final String EVENT_MESSAGE_SENT = "messageSent";
-    public static final String EVENT_MAFIA_GLOBAL_MESSAGE ="onMafiaGlobalMessage";
+    public static final String EVENT_MAFIA_GLOBAL_MESSAGE = "onMafiaGlobalMessage";
 
     /**
      * Socket Emit Events

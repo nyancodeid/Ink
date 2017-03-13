@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import ink.va.models.BadgeResponseModel;
+import ink.va.models.MafiaMessageModel;
 import ink.va.models.MafiaRoomsModel;
 import ink.va.models.MyCollectionResponseModel;
 import ink.va.models.MyMessagesModel;
@@ -188,9 +189,19 @@ public class Retrofit {
                                              @Field("coinsAmount") String coinsAmount,
                                              @Field("coinsToken") String coinsToken);
 
+        @POST(Constants.INSERT_MAFIA_CHAT_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> silentMafiMessageInsert(@Field("userId") int roomId,
+                                                   @Field("message") String message,
+                                                   @Field("senderId") String senderId);
+
         @POST(Constants.MAFIA_ROOM_PARTICIPANTS)
         @FormUrlEncoded
         Call<List<UserModel>> getMafiaRoomParticipants(@Field("roomId") int roomId);
+
+        @POST(Constants.MAFIA_CHAT_URL)
+        @FormUrlEncoded
+        Call<List<MafiaMessageModel>> getMafiaChat(@Field("roomId") int roomId);
 
         @POST(Constants.SEARCH_GROUP_URL)
         @FormUrlEncoded
