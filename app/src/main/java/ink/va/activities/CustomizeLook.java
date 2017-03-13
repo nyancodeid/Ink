@@ -243,8 +243,11 @@ public class CustomizeLook extends BaseActivity {
         sharedHelper = new SharedHelper(this);
         customizeToolbar = (Toolbar) findViewById(R.id.customizeToolbar);
         setSupportActionBar(customizeToolbar);
-        progressDialog = ink.va.utils.ProgressDialog.get().buildProgressDialog(this, getString(R.string.pleaseWait),
-                getString(R.string.savingToServer), false);
+        progressDialog = ink.va.utils.ProgressDialog.get().buildProgressDialog(this, false);
+        progressDialog.setCancelable(false);
+        progressDialog.setTitle(getString(R.string.pleaseWait));
+        progressDialog.setMessage(getString(R.string.savingToServer));
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

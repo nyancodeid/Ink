@@ -1,12 +1,16 @@
 package ink.va.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -81,7 +85,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
         }
 
         mafiaRoomsSwipe.setOnRefreshListener(this);
-
+        LocalBroadcastManager.getInstance(this).registerReceiver(updateReceiver, new IntentFilter(getPackageName() + "update"));
         getRooms();
     }
 
@@ -287,6 +291,14 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
         startActivity(intent);
     }
 
+    private BroadcastReceiver updateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            showSwipe();
+            onRefresh();
+        }
+    };
+
     private void deleteRoom(final int roomId) {
         showSwipe();
         Call<ResponseBody> deleteCall = Retrofit.getInstance().getInkService().deleteMafiaRoom(roomId, sharedHelper.getUserId());
@@ -438,4 +450,13 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(updateReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

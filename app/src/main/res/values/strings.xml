@@ -453,6 +453,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="leaveGroup">Leave Group</string>
     <string name="leaveGroupMessage">You are about to leave this group.Are you sure?</string>
     <string name="leaving">Leaving the group,please wait...</string>
+    <string name="leavingText">Leaving...</string>
     <string name="friendRequestDenied">Friend request denied</string>
     <string name="friendRequestAccepted">Friend request accepted</string>
     <string name="accepting">Accepting</string>
@@ -955,4 +956,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="oneMorningDuration">%1$s %2$s for one morning duration</string>
     <string name="oneNightDuration">%1$s %2$s for one night duration</string>
     <string name="roomLanguageText">%1$s is the room  language</string>
+    <string name="joining">Joining...</string>
 </resources>

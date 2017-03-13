@@ -14,17 +14,15 @@ public class ProgressDialog {
     private static ProgressDialog progressDialog = new ProgressDialog();
     private android.app.ProgressDialog progressDialogBuilder;
 
-    public ProgressDialog buildProgressDialog(Context context, String title,
-                                              String message, boolean cancelable) {
+    public ProgressDialog buildProgressDialog(Context context, boolean defaultProgress) {
         progressDialogBuilder = new android.app.ProgressDialog(context);
-        progressDialogBuilder.setTitle(title);
-        progressDialogBuilder.setMessage(message);
-        progressDialogBuilder.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_dialog_circle));
-        progressDialogBuilder.setProgressStyle(android.app.ProgressDialog.STYLE_SPINNER);
-        progressDialogBuilder.setCancelable(cancelable);
-        progressDialogBuilder.setCanceledOnTouchOutside(cancelable);
-        progressDialogBuilder.setIndeterminate(true);
-        progressDialogBuilder.setIndeterminateDrawable(ContextCompat.getDrawable(context, R.drawable.progress_dialog_circle));
+        if (!defaultProgress) {
+            progressDialogBuilder.setProgressDrawable(ContextCompat.getDrawable(context, R.drawable.progress_dialog_circle));
+            progressDialogBuilder.setProgressStyle(android.app.ProgressDialog.STYLE_SPINNER);
+            progressDialogBuilder.setIndeterminate(true);
+            progressDialogBuilder.setIndeterminateDrawable(ContextCompat.getDrawable(context, R.drawable.progress_dialog_circle));
+        }
+
         return this;
     }
 
@@ -53,6 +51,12 @@ public class ProgressDialog {
     public void setMessage(String message) {
         if (progressDialogBuilder != null) {
             progressDialogBuilder.setMessage(message);
+        }
+    }
+
+    public void setCancelable(boolean cancelable) {
+        if (progressDialogBuilder != null) {
+            progressDialog.setCancelable(cancelable);
         }
     }
 }
