@@ -16,7 +16,6 @@ import butterknife.ButterKnife;
 import ink.va.models.UserModel;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
-import ink.va.utils.User;
 
 /**
  * Created by PC-Comp on 3/13/2017.
@@ -39,7 +38,7 @@ public class MafiaParticipantViewHolder extends RecyclerView.ViewHolder {
     public void initData(Context context, UserModel user, String ownerId) {
         participantName.setText(user.getFirstName() + " " + user.getLastName());
 
-        if (ownerId.equals(User.get().getUserId())) {
+        if (ownerId.equals(user.getUserId())) {
             roomOwnerTV.setVisibility(View.VISIBLE);
         } else {
             roomOwnerTV.setVisibility(View.GONE);
