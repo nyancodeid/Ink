@@ -11,6 +11,7 @@
 
 
     <RelativeLayout
+        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -280,7 +281,6 @@
             android:layout_centerHorizontal="true"
             android:layout_margin="5dp"
             android:background="@color/defaultGroupColor"
-            android:tag="@string/notVisible"
             android:visibility="gone"
             app:cardCornerRadius="10dp"
             app:cardElevation="10dp">

@@ -291,7 +291,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             @Override
             public void run() {
                 mRecyclerView.stopScroll();
-                mRecyclerView.smoothScrollToPosition(pagingStart);
+                mRecyclerView.smoothScrollToPosition(pagingStart + (pagingEnd - 1));
             }
         });
     }
@@ -785,9 +785,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (moreMessagesHint.getVisibility() == View.VISIBLE) {
-                    moreMessagesHint.setVisibility(View.GONE);
-                }
                 if (((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0) {
                     recyclerView.post(new Runnable() {
                         @Override
@@ -805,6 +802,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                     Keyboard.hideKeyboard(Chat.this);
+                    if (moreMessagesHint.getVisibility() == View.VISIBLE) {
+                        moreMessagesHint.setVisibility(View.GONE);
+                    }
                 }
 
                 LinearLayoutManager layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
