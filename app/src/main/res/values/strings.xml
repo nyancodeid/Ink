@@ -957,4 +957,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="oneNightDuration">%1$s %2$s for one night duration</string>
     <string name="roomLanguageText">%1$s is the room  language</string>
     <string name="joining">Joining...</string>
+    <string name="moreMessages">more messages available</string>
 </resources>

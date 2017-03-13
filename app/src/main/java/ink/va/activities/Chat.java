@@ -35,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -118,6 +119,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     TextView opponentStatus;
     @BindView(R.id.statusColor)
     ImageView statusColor;
+    @BindView(R.id.moreMessagesHint)
+    View moreMessagesHint;
 
     private ChatAdapter chatAdapter;
     private RealmHelper realmHelper;
@@ -148,7 +151,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private ScheduledExecutorService scheduler;
     private List<ChatModel> messages;
     private int pagingStart;
-    private int pagingEnd = 10;
+    private int pagingEnd = 50;
+    private LinearLayoutManager linearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -279,6 +283,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     /**
      * Click Handlers
      */
+
+    @OnClick(R.id.moreMessagesHint)
+    public void moreMessagesHintClicked() {
+        moreMessagesHint.setVisibility(View.GONE);
+    }
 
     @OnClick(R.id.opponentImage)
     public void opponentImageClicked() {
@@ -431,7 +440,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                             showNoMessages();
                         } else {
                             hideNoMessages();
-                            doMessagesPaging(pagingStart, pagingEnd);
+                            pagingStart = messages.size() - 1;
+                            pagingEnd = pagingStart - 50;
+                            doMessagesPaging(pagingStart, pagingEnd, true);
                         }
                         loadingMessages.setVisibility(View.GONE);
                     }
@@ -446,23 +457,35 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         });
     }
 
-    private void doMessagesPaging(int start, int end) {
+    private void doMessagesPaging(final int start, int end, boolean firstPaging) {
         List<ChatModel> chatModels = new LinkedList<>();
-        for (int i = start; i < end; i++) {
-
+        for (int i = start; i >= end; i--) {
             try {
-                ChatModel chatModel = messages.get(start);
-                chatAdapter.addChatModel(chatModel);
-            } catch (ArrayIndexOutOfBoundsException e) {
+                ChatModel chatModel = messages.get(i);
+                chatModels.add(chatModel);
+            } catch (IndexOutOfBoundsException e) {
                 e.printStackTrace();
+                break;
             }
         }
-        mRecyclerView.post(new Runnable() {
-            @Override
-            public void run() {
-                scrollToBottom();
+        if (!chatModels.isEmpty()) {
+            if (firstPaging) {
+                Collections.reverse(chatModels);
             }
-        });
+            for (ChatModel chatModel : chatModels) {
+                chatAdapter.insertChatModelWithItemNotify(chatModel, firstPaging);
+            }
+            mRecyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+//                    mRecyclerView.smoothScrollToPosition(start);
+                }
+            });
+            if (!firstPaging) {
+                moreMessagesHint.setVisibility(View.VISIBLE);
+            }
+        }
+        chatModels = null;
     }
 
 
@@ -745,13 +768,31 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);
         itemAnimator.setRemoveDuration(500);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(itemAnimator);
         mRecyclerView.setAdapter(chatAdapter);
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (moreMessagesHint.getVisibility() == View.VISIBLE) {
+                    moreMessagesHint.setVisibility(View.GONE);
+                }
+                if (((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0) {
+                    recyclerView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            pagingStart = (pagingEnd - 1);
+                            pagingEnd = pagingStart - 50;
+                            doMessagesPaging(pagingStart, pagingEnd, false);
+                        }
+                    });
+                }
+            }
+
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
