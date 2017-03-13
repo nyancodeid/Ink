@@ -443,7 +443,7 @@ public class RealmHelper {
                                         messageModel.setId(chatModel.getMessageId());
                                         messageModel.setFirstName(chatModel.getFirstName());
                                         messageModel.setLastName(chatModel.getLastName());
-                                        messageModel.setMessageId(chatModel.getMessageId());
+                                        messageModel.setMessageId(String.valueOf(System.currentTimeMillis()));
                                         messageModel.setMessage(chatModel.getMessage());
                                         messageModel.setUserId(chatModel.getUserId());
                                         messageModel.setOpponentId(chatModel.getOpponentId());
@@ -483,7 +483,7 @@ public class RealmHelper {
                                 MessageModel messageModel = realm.createObject(MessageModel.class);
 
                                 messageModel.setId(chatModel.getMessageId());
-                                messageModel.setMessageId(chatModel.getMessageId());
+                                messageModel.setMessageId(String.valueOf(System.currentTimeMillis()));
                                 messageModel.setMessage(chatModel.getMessage());
                                 messageModel.setFirstName(chatModel.getFirstName());
                                 messageModel.setLastName(chatModel.getLastName());

@@ -146,7 +146,6 @@ public class Time {
     public static Date convertMillisToDate(long milliSeconds) throws ParseException {
         // Create a DateFormatter object for displaying date in specified format.
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-
         // Create a calendar object that will convert the date and time value in milliseconds to date.
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliSeconds);
