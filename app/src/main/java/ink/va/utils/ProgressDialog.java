@@ -56,7 +56,7 @@ public class ProgressDialog {
 
     public void setCancelable(boolean cancelable) {
         if (progressDialogBuilder != null) {
-            progressDialog.setCancelable(cancelable);
+            progressDialogBuilder.setCancelable(cancelable);
         }
     }
 }
