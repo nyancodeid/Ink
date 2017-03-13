@@ -32,6 +32,8 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.mafiaMessageContainer)
     TextView mafiaMessageContainer;
     private SharedHelper sharedHelper;
+    @BindView(R.id.messageWrapper)
+    LinearLayout messageWrapper;
 
     public MafiaChatViewHolder(View itemView) {
         super(itemView);
@@ -48,20 +50,14 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
         mafiaMessageContainer.setText(StringEscapeUtils.unescapeJava(mafiaMessageModel.getMessage()));
 
         if (mafiaMessageModel.getSenderId().equals(sharedHelper.getUserId())) {
-            LinearLayout.LayoutParams messageUsernameParams = (LinearLayout.LayoutParams) messageUsername.getLayoutParams();
-            LinearLayout.LayoutParams mafiaMessageContainerParams = (LinearLayout.LayoutParams) mafiaMessageContainer.getLayoutParams();
+            LinearLayout.LayoutParams messageUsernameParams = (LinearLayout.LayoutParams) messageWrapper.getLayoutParams();
             messageUsernameParams.gravity = Gravity.RIGHT;
-            mafiaMessageContainerParams.gravity = Gravity.RIGHT;
-            messageUsername.setLayoutParams(messageUsernameParams);
-            mafiaMessageContainer.setLayoutParams(mafiaMessageContainerParams);
+            messageWrapper.setLayoutParams(messageUsernameParams);
             mafiaMessageWrapper.setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
         } else {
-            LinearLayout.LayoutParams messageUsernameParams = (LinearLayout.LayoutParams) messageUsername.getLayoutParams();
-            LinearLayout.LayoutParams mafiaMessageContainerParams = (LinearLayout.LayoutParams) mafiaMessageContainer.getLayoutParams();
+            LinearLayout.LayoutParams messageUsernameParams = (LinearLayout.LayoutParams) messageWrapper.getLayoutParams();
             messageUsernameParams.gravity = Gravity.LEFT;
-            mafiaMessageContainerParams.gravity = Gravity.LEFT;
-            messageUsername.setLayoutParams(messageUsernameParams);
-            mafiaMessageContainer.setLayoutParams(mafiaMessageContainerParams);
+            messageWrapper.setLayoutParams(messageUsernameParams);
             mafiaMessageWrapper.setCardBackgroundColor(ContextCompat.getColor(context, R.color.defaultGroupColor));
         }
     }

@@ -5,34 +5,43 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/messageUsername"
+    <LinearLayout
+        android:id="@+id/messageWrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="10dp"
-        android:ellipsize="end"
-        android:fontFamily="@string/condensedFont"
-        android:maxLines="1"
-        android:text="@string/loadingText"
-        android:textColor="@color/defaultGroupColor" />
+        android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/mafiaMessageWrapper"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:elevation="5dp"
-        app:cardBackgroundColor="@color/defaultGroupColor"
-        app:cardCornerRadius="10dp">
 
         <TextView
-            android:id="@+id/mafiaMessageContainer"
+            android:id="@+id/messageUsername"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:ellipsize="end"
             android:fontFamily="@string/condensedFont"
-            android:text="hello guys"
-            android:textColor="@color/vk_white" />
-    </android.support.v7.widget.CardView>
+            android:maxLines="1"
+            android:text="@string/loadingText"
+            android:textColor="@color/defaultGroupColor" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/mafiaMessageWrapper"
+            android:layout_width="wrap_content"
+            android:layout_gravity="right"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:elevation="5dp"
+            app:cardBackgroundColor="@color/defaultGroupColor"
+            app:cardCornerRadius="10dp">
+
+            <TextView
+                android:id="@+id/mafiaMessageContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:fontFamily="@string/condensedFont"
+                android:text="hello guys"
+                android:textColor="@color/vk_white" />
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
 </LinearLayout>
