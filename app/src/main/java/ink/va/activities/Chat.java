@@ -151,6 +151,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private int pagingStart;
     private int pagingEnd = 50;
     private LinearLayoutManager linearLayoutManager;
+    private int lastVisiblePosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -281,13 +282,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     @OnClick(R.id.moreMessagesHint)
     public void moreMessagesHintClicked() {
         moreMessagesHint.setVisibility(View.GONE);
-        mRecyclerView.post(new Runnable() {
-            @Override
-            public void run() {
-                mRecyclerView.stopScroll();
-                mRecyclerView.smoothScrollToPosition(pagingStart + (pagingEnd - 1));
-            }
-        });
     }
 
     @OnClick(R.id.opponentImage)
@@ -459,6 +453,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     }
 
     private void doMessagesPaging(final int start, int end, boolean firstPaging) {
+        lastVisiblePosition = chatAdapter.getItemCount();
         List<ChatModel> chatModels = new LinkedList<>();
         for (int i = start; i >= end; i--) {
             try {
