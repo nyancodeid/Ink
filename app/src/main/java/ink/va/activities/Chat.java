@@ -287,6 +287,13 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     @OnClick(R.id.moreMessagesHint)
     public void moreMessagesHintClicked() {
         moreMessagesHint.setVisibility(View.GONE);
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.stopScroll();
+                mRecyclerView.smoothScrollToPosition(pagingStart);
+            }
+        });
     }
 
     @OnClick(R.id.opponentImage)
