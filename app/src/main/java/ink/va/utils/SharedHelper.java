@@ -183,7 +183,7 @@ public class SharedHelper {
     }
 
     public boolean showSnow() {
-        return mSharedPreferences.getBoolean("showSnow", true);
+        return mSharedPreferences.getBoolean("showSnow", false);
     }
 
     public String getUserId() {

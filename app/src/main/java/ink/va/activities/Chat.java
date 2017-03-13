@@ -35,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -145,6 +146,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private boolean isDataLoaded;
     private ChatModel lastSentChatModel;
     private ScheduledExecutorService scheduler;
+    private List<ChatModel> messages;
+    private int pagingStart;
+    private int pagingEnd = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,7 +156,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         sharedHelper = new SharedHelper(this);
-
+        messages = new LinkedList<>();
 
         fadeAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_scale);
 
@@ -418,6 +422,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         realmHelper.getMessagesAsChatModel(opponentId, currentUserId, new GeneralCallback<List<ChatModel>>() {
             @Override
             public void onSuccess(final List<ChatModel> messageModels) {
+                messages.clear();
+                messages.addAll(messageModels);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -425,13 +431,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                             showNoMessages();
                         } else {
                             hideNoMessages();
-                            chatAdapter.setChatModelList(messageModels);
-                            mRecyclerView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    scrollToBottom();
-                                }
-                            });
+                            doMessagesPaging(pagingStart, pagingEnd);
                         }
                         loadingMessages.setVisibility(View.GONE);
                     }
@@ -442,6 +442,25 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             @Override
             public void onFailure(List<ChatModel> messageModels) {
 
+            }
+        });
+    }
+
+    private void doMessagesPaging(int start, int end) {
+        List<ChatModel> chatModels = new LinkedList<>();
+        for (int i = start; i < end; i++) {
+
+            try {
+                ChatModel chatModel = messages.get(start);
+                chatAdapter.addChatModel(chatModel);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
+        }
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                scrollToBottom();
             }
         });
     }
