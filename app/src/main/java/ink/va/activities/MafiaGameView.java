@@ -22,6 +22,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 import com.ink.va.R;
 
 import org.json.JSONException;
@@ -29,12 +32,14 @@ import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.models.MafiaRoomsModel;
+import ink.va.utils.Constants;
 import ink.va.utils.Keyboard;
 import ink.va.utils.ProgressDialog;
 import ink.va.utils.Retrofit;
@@ -45,6 +50,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.utils.Constants.EVENT_MAFIA_GLOBAL_MESSAGE;
 import static ink.va.utils.ErrorCause.ALREADY_IN_ROOM;
 import static ink.va.utils.ErrorCause.GAME_ALREADY_IN_PROGRESS;
 import static ink.va.utils.ErrorCause.GAME_IN_PROGRESS;
@@ -94,6 +100,7 @@ public class MafiaGameView extends BaseActivity {
     private SharedHelper sharedHelper;
     private boolean isMenuAdded;
     private ProgressDialog progressDialog;
+    private Socket socket;
 
 
     @Override
@@ -108,6 +115,8 @@ public class MafiaGameView extends BaseActivity {
         slideInWithFade = AnimationUtils.loadAnimation(this, R.anim.slide_in_with_fade);
         replyToRoomIV.setEnabled(false);
 
+        initSocket();
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mafiaRoomsModel = Parcels.unwrap(extras.getParcelable("mafiaRoomsModel"));
@@ -118,6 +127,17 @@ public class MafiaGameView extends BaseActivity {
         initEditText(isParticipant());
         initGameInfo();
     }
+
+
+    /**
+     * Emitters
+     */
+    private Emitter.Listener onGlobalMessageReceived = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+
+        }
+    };
 
 
     @Override
@@ -206,6 +226,16 @@ public class MafiaGameView extends BaseActivity {
         });
     }
 
+    private void initSocket() {
+        try {
+            socket = IO.socket(Constants.MAFIA_SOCKET_URL);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        socket.on(EVENT_MAFIA_GLOBAL_MESSAGE, onGlobalMessageReceived);
+    }
+
     private void joinRoom() {
         showDialog(getString(R.string.pleaseWait), getString(R.string.joining));
         Call<ResponseBody> joinRoomCall = Retrofit.getInstance().getInkService().joinRoom(mafiaRoomsModel.getId(), sharedHelper.getUserId());
@@ -244,12 +274,12 @@ public class MafiaGameView extends BaseActivity {
                             mafiaRoomsModel.setGameStarted(true);
 
                             relaunchActivity(parcelable);
-
                         } else if (cause.equals(MAXIMUM_PLAYERS_REACHED)) {
                             Toast.makeText(MafiaGameView.this, getString(R.string.cantJoinMaximumPlayers), Toast.LENGTH_LONG).show();
                         } else if (cause.equals(ROOM_DELETED)) {
                             Toast.makeText(MafiaGameView.this, getString(R.string.cantJoinRoomDeleted), Toast.LENGTH_LONG).show();
                             finish();
+                            LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
                         } else if (cause.equals(ALREADY_IN_ROOM)) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(MafiaGameView.this);
                             builder.setTitle(getString(R.string.error));
@@ -490,5 +520,16 @@ public class MafiaGameView extends BaseActivity {
             language = getString(R.string.russian);
         }
         roomLanguageTV.setText(getString(R.string.roomLanguageText, language));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        destroySocket();
+    }
+
+    private void destroySocket() {
+        socket.disconnect();
+        socket.off(EVENT_MAFIA_GLOBAL_MESSAGE, onGlobalMessageReceived);
     }
 }
