@@ -129,8 +129,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private boolean socketConnected;
     private String lastChosenStickerUrl;
     private boolean isStickerChosen;
-    private Animation slideIn;
-    private Animation slideOut;
     private boolean showSuccess;
     private SharedHelper sharedHelper;
     private String currentUserId;
@@ -191,10 +189,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
 
         Notification.get().setSendingRemote(false);
-
-        slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_in);
-        slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_out);
-
         initWriteField();
         getMessages();
         removeNotificationIfNeeded();
@@ -827,29 +821,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private void hideScroller() {
         scrollDownChat.setTag(getString(R.string.notVisible));
         scrollDownChat.setEnabled(false);
-        scrollDownChat.startAnimation(slideOut);
-        slideOut.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                scrollDownChat.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
+        scrollDownChat.setVisibility(View.GONE);
     }
 
     private void showScroller() {
         scrollDownChat.setEnabled(true);
         scrollDownChat.setTag(getString(R.string.visible));
-        scrollDownChat.startAnimation(slideIn);
         scrollDownChat.setVisibility(View.VISIBLE);
     }
 
