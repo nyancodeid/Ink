@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.ink.va.R;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import ink.va.models.MafiaMessageModel;
@@ -21,6 +22,10 @@ public class MafiaChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private List<MafiaMessageModel> mafiaMessageModels;
     private Context context;
 
+    public MafiaChatAdapter() {
+        mafiaMessageModels = new LinkedList<>();
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
@@ -30,7 +35,7 @@ public class MafiaChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((MafiaChatViewHolder) holder).initData(mafiaMessageModels.get(position),context);
+        ((MafiaChatViewHolder) holder).initData(mafiaMessageModels.get(position), context);
     }
 
     @Override
