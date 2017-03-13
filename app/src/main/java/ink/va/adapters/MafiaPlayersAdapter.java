@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.ink.va.R;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import ink.va.models.UserModel;
@@ -20,6 +21,10 @@ import ink.va.view_holders.MafiaParticipantViewHolder;
 public class MafiaPlayersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<UserModel> users;
     private Context context;
+
+    public MafiaPlayersAdapter() {
+        users = new LinkedList<>();
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

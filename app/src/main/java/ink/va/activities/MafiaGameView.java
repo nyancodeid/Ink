@@ -127,8 +127,6 @@ public class MafiaGameView extends BaseActivity {
 
         initSocket();
 
-        initRecyclers();
-
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mafiaRoomsModel = Parcels.unwrap(extras.getParcelable("mafiaRoomsModel"));
@@ -138,6 +136,7 @@ public class MafiaGameView extends BaseActivity {
 
         initEditText(isParticipant());
         initGameInfo();
+        initRecyclers();
     }
 
     private void initRecyclers() {
@@ -258,6 +257,7 @@ public class MafiaGameView extends BaseActivity {
         }
 
         socket.on(EVENT_MAFIA_GLOBAL_MESSAGE, onGlobalMessageReceived);
+        socket.connect();
     }
 
     private void getMafiaRoomParticipants() {
