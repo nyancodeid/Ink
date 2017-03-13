@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -38,7 +39,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.adapters.MafiaChatAdapter;
+import ink.va.adapters.MafiaPlayersAdapter;
 import ink.va.models.MafiaRoomsModel;
+import ink.va.models.UserModel;
 import ink.va.utils.Constants;
 import ink.va.utils.Keyboard;
 import ink.va.utils.ProgressDialog;
@@ -64,8 +68,12 @@ public class MafiaGameView extends BaseActivity {
     private MafiaRoomsModel mafiaRoomsModel;
     @BindView(R.id.playersLoading)
     ProgressBar playersLoading;
+    @BindView(R.id.noPlayersTV)
+    TextView noPlayersTV;
     @BindView(R.id.playersRecycler)
     RecyclerView playersRecycler;
+    @BindView(R.id.mafiaChatRecycler)
+    RecyclerView mafiaChatRecycler;
     @BindView(R.id.replyToRoomED)
     EditText replyToRoomED;
     @BindView(R.id.activity_mafia_game_view)
@@ -101,6 +109,8 @@ public class MafiaGameView extends BaseActivity {
     private boolean isMenuAdded;
     private ProgressDialog progressDialog;
     private Socket socket;
+    private MafiaPlayersAdapter mafiaPlayersAdapter;
+    private MafiaChatAdapter mafiaChatAdapter;
 
 
     @Override
@@ -117,6 +127,8 @@ public class MafiaGameView extends BaseActivity {
 
         initSocket();
 
+        initRecyclers();
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mafiaRoomsModel = Parcels.unwrap(extras.getParcelable("mafiaRoomsModel"));
@@ -126,6 +138,17 @@ public class MafiaGameView extends BaseActivity {
 
         initEditText(isParticipant());
         initGameInfo();
+    }
+
+    private void initRecyclers() {
+        mafiaPlayersAdapter = new MafiaPlayersAdapter();
+        mafiaChatAdapter = new MafiaChatAdapter();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        playersRecycler.setLayoutManager(linearLayoutManager);
+        mafiaChatRecycler.setLayoutManager(linearLayoutManager);
+        mafiaChatRecycler.setAdapter(mafiaChatAdapter);
+        playersRecycler.setAdapter(mafiaPlayersAdapter);
+        getMafiaRoomParticipants();
     }
 
 
@@ -234,6 +257,37 @@ public class MafiaGameView extends BaseActivity {
         }
 
         socket.on(EVENT_MAFIA_GLOBAL_MESSAGE, onGlobalMessageReceived);
+    }
+
+    private void getMafiaRoomParticipants() {
+        Retrofit.getInstance().getInkService().getMafiaRoomParticipants(mafiaRoomsModel.getId()).enqueue(new Callback<List<UserModel>>() {
+            @Override
+            public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
+                List<UserModel> participants = response.body();
+                if (participants.isEmpty()) {
+                    showNoParticipants();
+                } else {
+                    hideNoParticipants();
+                    mafiaPlayersAdapter.setUsers(participants);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<UserModel>> call, Throwable t) {
+                Toast.makeText(MafiaGameView.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                hideNoParticipants();
+            }
+        });
+    }
+
+    private void hideNoParticipants() {
+        playersLoading.setVisibility(View.GONE);
+        noPlayersTV.setVisibility(View.GONE);
+    }
+
+    private void showNoParticipants() {
+        playersLoading.setVisibility(View.GONE);
+        noPlayersTV.setVisibility(View.VISIBLE);
     }
 
     private void joinRoom() {

@@ -188,6 +188,10 @@ public class Retrofit {
                                              @Field("coinsAmount") String coinsAmount,
                                              @Field("coinsToken") String coinsToken);
 
+        @POST(Constants.MAFIA_ROOM_PARTICIPANTS)
+        @FormUrlEncoded
+        Call<List<UserModel>> getMafiaRoomParticipants(@Field("roomId") int roomId);
+
         @POST(Constants.SEARCH_GROUP_URL)
         @FormUrlEncoded
         Call<ResponseBody> searchGroups(@Field("userId") String userId,

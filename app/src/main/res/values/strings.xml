@@ -958,4 +958,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="roomLanguageText">%1$s is the room  language</string>
     <string name="joining">Joining...</string>
     <string name="moreMessages">more messages available</string>
+    <string name="noPlayersYet">No players yet</string>
 </resources>

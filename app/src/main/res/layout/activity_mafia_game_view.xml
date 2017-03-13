@@ -45,9 +45,9 @@
         android:layout_above="@+id/gameChatTV"
         android:layout_below="@+id/gameInfo"
         android:layout_margin="5dp"
-        android:fadeScrollbars="false"
         android:layout_toLeftOf="@+id/playersRecyclerWrapper"
         android:background="@drawable/grey_transparent_rectangle"
+        android:fadeScrollbars="false"
         android:fillViewport="true">
 
         <LinearLayout
@@ -133,6 +133,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/noPlayersTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@string/condensedFont"
+            android:text="@string/noPlayersYet"
+            android:visibility="gone" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/playersRecycler"
