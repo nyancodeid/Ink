@@ -148,7 +148,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 mRecyclerView.post(new Runnable() {
                     @Override
                     public void run() {
-                        mRecyclerView.smoothScrollToPosition(0);
+                        mRecyclerView.scrollToPosition(0);
                     }
                 });
                 hideScroller();
