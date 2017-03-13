@@ -44,6 +44,7 @@ import ink.va.adapters.MafiaPlayersAdapter;
 import ink.va.models.MafiaRoomsModel;
 import ink.va.models.UserModel;
 import ink.va.utils.Constants;
+import ink.va.utils.DialogUtils;
 import ink.va.utils.Keyboard;
 import ink.va.utils.ProgressDialog;
 import ink.va.utils.Retrofit;
@@ -193,13 +194,43 @@ public class MafiaGameView extends BaseActivity {
                 finish();
                 break;
             case ITEM_LEAVE_ID:
-                leaveRoom();
+                DialogUtils.showDialog(this, getString(R.string.leaveTitle), getString(R.string.leaveContent), true, new DialogUtils.DialogListener() {
+                    @Override
+                    public void onNegativeClicked() {
+
+                    }
+
+                    @Override
+                    public void onDialogDismissed() {
+
+                    }
+
+                    @Override
+                    public void onPositiveClicked() {
+                        leaveRoom();
+                    }
+                }, true, getString(R.string.cancel));
                 break;
             case ITEM_JOIN_ID:
                 joinRoom();
                 break;
             case ITEM_DELETE_ID:
-                deleteRoom();
+                DialogUtils.showDialog(this, getString(R.string.delete), getString(R.string.actionCannotUndone), true, new DialogUtils.DialogListener() {
+                    @Override
+                    public void onNegativeClicked() {
+
+                    }
+
+                    @Override
+                    public void onDialogDismissed() {
+
+                    }
+
+                    @Override
+                    public void onPositiveClicked() {
+                        deleteRoom();
+                    }
+                }, true, getString(R.string.cancel));
                 break;
         }
         return super.onOptionsItemSelected(item);
