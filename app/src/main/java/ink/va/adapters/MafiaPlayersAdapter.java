@@ -13,6 +13,7 @@ import java.util.List;
 
 import ink.va.models.UserModel;
 import ink.va.view_holders.MafiaParticipantViewHolder;
+import lombok.Setter;
 
 /**
  * Created by PC-Comp on 3/13/2017.
@@ -21,6 +22,8 @@ import ink.va.view_holders.MafiaParticipantViewHolder;
 public class MafiaPlayersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<UserModel> users;
     private Context context;
+    @Setter
+    private String ownerId;
 
     public MafiaPlayersAdapter() {
         users = new LinkedList<>();
@@ -35,7 +38,7 @@ public class MafiaPlayersAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((MafiaParticipantViewHolder) holder).initData(context, users.get(position));
+        ((MafiaParticipantViewHolder) holder).initData(context, users.get(position),ownerId);
     }
 
     @Override

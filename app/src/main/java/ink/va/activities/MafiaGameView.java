@@ -142,6 +142,7 @@ public class MafiaGameView extends BaseActivity {
     private void initRecyclers() {
         mafiaPlayersAdapter = new MafiaPlayersAdapter();
         mafiaChatAdapter = new MafiaChatAdapter();
+        mafiaPlayersAdapter.setOwnerId(mafiaRoomsModel.getCreatorId());
         LinearLayoutManager playersLayout = new LinearLayoutManager(this);
         LinearLayoutManager chatLayout = new LinearLayoutManager(this);
         playersRecycler.setLayoutManager(playersLayout);

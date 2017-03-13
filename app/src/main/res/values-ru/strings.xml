@@ -962,4 +962,5 @@
     <string name="oneNightDuration">%1$s %2$s для длительности одной ночи</string>
     <string name="roomLanguageText">%1$s язик комнаты</string>
     <string name="joining">Присоединяемся...</string>
+    <string name="roomOwner">Владелец Комнаты</string>
 </resources>

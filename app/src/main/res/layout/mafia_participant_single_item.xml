@@ -23,4 +23,15 @@
         android:text="@string/loadingText"
         android:textColor="@color/defaultGroupColor"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/roomOwnerTV"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/participantName"
+        android:layout_alignStart="@+id/participantName"
+        android:layout_below="@+id/participantName"
+        android:fontFamily="@string/condensedFont"
+        android:text="@string/roomOwner" />
 </RelativeLayout>
