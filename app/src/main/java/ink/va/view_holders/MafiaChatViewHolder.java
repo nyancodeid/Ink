@@ -55,7 +55,14 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
         UserModel user = mafiaMessageModel.getUser();
 
         messageUsername.setText(user.getFirstName() + " " + user.getLastName());
-        mafiaMessageContainer.setText(StringEscapeUtils.unescapeJava(mafiaMessageModel.getMessage()));
+        String finalMessage;
+        if (mafiaMessageModel.getMessage().contains(Constants.TYPE_NEW_OWNER)) {
+            String messageWithoutOwner = mafiaMessageModel.getMessage().replaceAll(Constants.TYPE_NEW_OWNER, "");
+            finalMessage = context.getString(R.string.newOwnerText) + " " + messageWithoutOwner;
+        } else {
+            finalMessage = StringEscapeUtils.unescapeJava(mafiaMessageModel.getMessage());
+        }
+        mafiaMessageContainer.setText(finalMessage);
 
         if (mafiaMessageModel.isSystemMessage()) {
             messageUsername.setText(context.getString(R.string.system));

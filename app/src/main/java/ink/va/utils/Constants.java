@@ -162,6 +162,7 @@ public class Constants {
     public static final String TYPE_MESSAGE_ATTACHMENT = "TYPE_MESSAGE_ATTACHMENT";
     public static final String BADGE_TYPE_VIEW = "view";
     public static final String BADGE_TYPE_BUY = "buy";
+    public static final String TYPE_NEW_OWNER = "newOwner";
     public static final String TYPE_ENTER_VIP = "enterVip";
     public static final String TYPE_BUY_VIP = "buyVip";
     public static final String REQUEST_RESPONSE_TYPE_GROUP = "group";

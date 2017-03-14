@@ -965,4 +965,5 @@
     <string name="roomOwner">Владелец Комнаты</string>
     <string name="noMessagesText">Пока что сообщений нет</string>
     <string name="system">Система</string>
+    <string name="newOwnerText">Новый владелец комнаты теперь</string>
 </resources>
