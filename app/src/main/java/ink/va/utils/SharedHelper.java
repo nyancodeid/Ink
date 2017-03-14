@@ -858,4 +858,12 @@ public class SharedHelper {
         return mSharedPreferences.getString("pin", "");
     }
 
+    public boolean hasAnyMafiaParticipation() {
+        return mSharedPreferences.getBoolean("hasAnyMafiaParticipation", false);
+    }
+
+    public void putMafiaParticipation(boolean participating) {
+        mEditor.putBoolean("hasAnyMafiaParticipation", participating);
+        mEditor.commit();
+    }
 }

@@ -111,6 +111,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <service android:name="ink.va.service.MafiaGameService"></service>
         <service
             android:name="ink.va.service.NotificationService"
             android:enabled="true"
