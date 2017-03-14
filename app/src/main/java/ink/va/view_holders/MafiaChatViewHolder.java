@@ -1,15 +1,19 @@
 package ink.va.view_holders;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -17,6 +21,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.models.MafiaMessageModel;
 import ink.va.models.UserModel;
+import ink.va.utils.CircleTransform;
+import ink.va.utils.Constants;
 import ink.va.utils.SharedHelper;
 
 /**
@@ -34,6 +40,8 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
     private SharedHelper sharedHelper;
     @BindView(R.id.messageWrapper)
     LinearLayout messageWrapper;
+    @BindView(R.id.mafiaChatUserImage)
+    ImageView mafiaChatUserImage;
 
     public MafiaChatViewHolder(View itemView) {
         super(itemView);
@@ -59,6 +67,32 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
             messageUsernameParams.gravity = Gravity.LEFT;
             messageWrapper.setLayoutParams(messageUsernameParams);
             mafiaMessageWrapper.setCardBackgroundColor(ContextCompat.getColor(context, R.color.defaultGroupColor));
+        }
+
+
+        if (!user.getImageUrl().isEmpty()) {
+
+            final String url;
+            if (user.isSocialAccount()) {
+                url = user.getImageUrl();
+            } else {
+                String encodedImage = Uri.encode(user.getImageUrl());
+                url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage;
+            }
+
+            Ion.with(context).load(url)
+                    .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).
+                    intoImageView(mafiaChatUserImage).setCallback(new FutureCallback<ImageView>() {
+                @Override
+                public void onCompleted(Exception e, ImageView result) {
+                    if (e != null) {
+                        mafiaChatUserImage.setImageResource(R.drawable.no_image);
+                    }
+                }
+            });
+        } else {
+            Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
+                    .withBitmap().transform(new CircleTransform()).intoImageView(mafiaChatUserImage);
         }
     }
 }
