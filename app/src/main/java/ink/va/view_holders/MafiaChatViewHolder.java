@@ -33,8 +33,8 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.messageUsername)
     TextView messageUsername;
-    @BindView(R.id.mafiaMessageWrapper)
-    CardView mafiaMessageWrapper;
+    @BindView(R.id.mafiaMessageCardView)
+    CardView mafiaMessageCardView;
     @BindView(R.id.mafiaMessageContainer)
     TextView mafiaMessageContainer;
     private SharedHelper sharedHelper;
@@ -61,22 +61,50 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
             messageUsername.setText(context.getString(R.string.system));
             mafiaChatUserImage.setImageResource(R.drawable.robot_vector);
 
-            LinearLayout.LayoutParams messageUsernameParams = (LinearLayout.LayoutParams) messageWrapper.getLayoutParams();
+            LinearLayout.LayoutParams messageUsernameParams = (LinearLayout.LayoutParams) messageUsername.getLayoutParams();
+            LinearLayout.LayoutParams mafiaMessageCardViewParams = (LinearLayout.LayoutParams) mafiaMessageCardView.getLayoutParams();
+            LinearLayout.LayoutParams mafiaChatUserImageParams = (LinearLayout.LayoutParams) mafiaChatUserImage.getLayoutParams();
+
+            mafiaMessageCardViewParams.gravity = Gravity.CENTER;
             messageUsernameParams.gravity = Gravity.CENTER;
-            messageWrapper.setLayoutParams(messageUsernameParams);
-            mafiaMessageWrapper.setCardBackgroundColor(ContextCompat.getColor(context, R.color.red));
+            mafiaChatUserImageParams.gravity = Gravity.CENTER;
+
+            messageUsername.setLayoutParams(messageUsernameParams);
+            mafiaMessageCardView.setLayoutParams(mafiaMessageCardViewParams);
+            mafiaChatUserImage.setLayoutParams(mafiaMessageCardViewParams);
+
+            mafiaMessageCardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.red));
+
         } else {
 
             if (mafiaMessageModel.getSenderId().equals(sharedHelper.getUserId())) {
-                LinearLayout.LayoutParams messageUsernameParams = (LinearLayout.LayoutParams) messageWrapper.getLayoutParams();
+                LinearLayout.LayoutParams messageUsernameParams = (LinearLayout.LayoutParams) messageUsername.getLayoutParams();
+                LinearLayout.LayoutParams mafiaChatUserImageParams = (LinearLayout.LayoutParams) mafiaChatUserImage.getLayoutParams();
+                LinearLayout.LayoutParams mafiaMessageCardViewParams = (LinearLayout.LayoutParams) mafiaMessageCardView.getLayoutParams();
+
                 messageUsernameParams.gravity = Gravity.RIGHT;
-                messageWrapper.setLayoutParams(messageUsernameParams);
-                mafiaMessageWrapper.setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
+                mafiaChatUserImageParams.gravity = Gravity.RIGHT;
+                mafiaMessageCardViewParams.gravity = Gravity.RIGHT;
+
+                messageUsername.setLayoutParams(messageUsernameParams);
+                mafiaChatUserImage.setLayoutParams(mafiaChatUserImageParams);
+                mafiaMessageCardView.setLayoutParams(mafiaMessageCardViewParams);
+
+                mafiaMessageCardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
             } else {
-                LinearLayout.LayoutParams messageUsernameParams = (LinearLayout.LayoutParams) messageWrapper.getLayoutParams();
+                LinearLayout.LayoutParams messageUsernameParams = (LinearLayout.LayoutParams) messageUsername.getLayoutParams();
+                LinearLayout.LayoutParams mafiaChatUserImageParams = (LinearLayout.LayoutParams) mafiaChatUserImage.getLayoutParams();
+                LinearLayout.LayoutParams mafiaMessageCardViewParams = (LinearLayout.LayoutParams) mafiaMessageCardView.getLayoutParams();
+
                 messageUsernameParams.gravity = Gravity.LEFT;
-                messageWrapper.setLayoutParams(messageUsernameParams);
-                mafiaMessageWrapper.setCardBackgroundColor(ContextCompat.getColor(context, R.color.defaultGroupColor));
+                mafiaChatUserImageParams.gravity = Gravity.LEFT;
+                mafiaMessageCardViewParams.gravity = Gravity.LEFT;
+
+                messageUsername.setLayoutParams(messageUsernameParams);
+                mafiaChatUserImage.setLayoutParams(mafiaChatUserImageParams);
+                mafiaMessageCardView.setLayoutParams(mafiaMessageCardViewParams);
+
+                mafiaMessageCardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.defaultGroupColor));
             }
 
 
@@ -95,7 +123,7 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
                     @Override
                     public void onCompleted(Exception e, ImageView result) {
                         if (e != null) {
-                            mafiaChatUserImage.setImageResource(R.drawable.no_image);
+                            mafiaChatUserImage.setImageResource(R.drawable.user_image_placeholder);
                         }
                     }
                 });
