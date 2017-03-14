@@ -85,7 +85,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="checkCorrectness">Please check for correctness</string>
-<string name="correctnessDetailViewText">
+    <string name="correctnessDetailViewText">
 \nStatus : %1$s
 \n\nFirst Name : %2$s
 \n\nLast Name : %3$s
@@ -220,11 +220,11 @@
     <string name="noMembers">No participants</string>
     <string name="membersTitle">Participants</string>
     <string name="close">Close</string>
-<string name="chatRouletteText">  Chat Roulette -
+    <string name="chatRouletteText">  Chat Roulette -
 \nNew way to communicate</string>
     <string name="joinWaitRoom">Join wait room</string>
     <string name="welcomeHintText">Welcome to Chat Roulette</string>
-<string name="clickJoinButtonText">First let\'s start some Walkthrough of the section so you will know the basics.Here you can start random chatting to any person worldwide so  in order to start the random chat you need to join to a room first.
+    <string name="clickJoinButtonText">First let\'s start some Walkthrough of the section so you will know the basics.Here you can start random chatting to any person worldwide so  in order to start the random chat you need to join to a room first.
 You can do it by clicking on the \'Join wait room \' button which will redirect you to the wait room.</string>
     <string name="waitRoom">Wait Room</string>
     <string name="statusText">Status : </string>
@@ -251,7 +251,7 @@ You can do it by clicking on the \'Join wait room \' button which will redirect 
     <string name="opponentFound">Opponent found!</string>
     <string name="messageNotSent">Could not sent the message,try again...</string>
     <string name="userDisconnected">Opponent disconnected</string>
-<string name="opponentDisconnectedText">We\'re sorry but your opponent was disconnected from the chat.
+    <string name="opponentDisconnectedText">We\'re sorry but your opponent was disconnected from the chat.
 \nYou can find new opponent by clicking top right button to search again.</string>
     <string name="packs_title">Packs</string>
     <string name="trade_title">Trade</string>
@@ -260,7 +260,7 @@ You can do it by clicking on the \'Join wait room \' button which will redirect 
     <string name="buyCoins">Buy Coins</string>
     <string name="coinsMenu">Coins</string>
     <string name="caution">CAUTION!!!</string>
-<string name="huaweiWarning">Dear user,We have detected that your device belongs to HUAWEI manufacturer.Due to HUAWEI phones being deeply changed inside the OS,there is one thing you should do for the application to work properly.
+    <string name="huaweiWarning">Dear user,We have detected that your device belongs to HUAWEI manufacturer.Due to HUAWEI phones being deeply changed inside the OS,there is one thing you should do for the application to work properly.
 The issue considers to the notifications and background task not being received and started in the HUAWEI device.For the fix please follow the steps below:
 \n\n1)Ensure that  device is not in the \'ULTRA-BATTER\' mode.
 \n\n2)Add the application to protected apps of the device.
@@ -292,7 +292,7 @@ The issue considers to the notifications and background task not being received 
     <string name="noMusicSelected">No music selected</string>
     <string name="waitingForMusic">Waiting for music selection</string>
     <string name="noImageChosen">Here you will see your edited image result</string>
-<string name="imageEditorHint">To use the editor,first you need to pick up an image.
+    <string name="imageEditorHint">To use the editor,first you need to pick up an image.
 You can do it by clicking the  button located at the bottom (the arrow is pointing right now to the button) and you will be able to access your
 phone\'s pictures directories in multiple way as you will be prompted to choose the one which best suits you.
 </string>
@@ -351,7 +351,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="loggingout">Logging out</string>
     <string name="loggingoutPleaseWait">Logging you out,please wait...</string>
     <string name="deleteAccount">Delete account</string>
-<string name="deleteWarning">You are about to delete your account.
+    <string name="deleteWarning">You are about to delete your account.
 \nAll your private messages,posts,comments and rest will be completely removed without recovery option.
 \nAre you sure you want to delete your account?</string>
     <string name="deletingAccount">Deleting account</string>
@@ -436,7 +436,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="deletingGroup">Deleting group,please wait...</string>
     <string name="refreshMessages">Refresh messages</string>
     <string name="editMessage">Edit message</string>
-<string name="privacyPolicy">By using any of above social network sign in,you are agree to terms and conditions within privacy and policy of the current application.
+    <string name="privacyPolicy">By using any of above social network sign in,you are agree to terms and conditions within privacy and policy of the current application.
 \n to see the privacy and policy within terms and conditions,click here.</string>
     <string name="privacyPolicyShort">I accept the privacy and policy \nas well as terms and conditions</string>
     <string name="youMustAccept">You must accept privacy and policy as well as terms and conditions to proceed</string>
@@ -573,7 +573,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="failedToSaveCloud">Failed to save data to cloud.Please contact support</string>
     <string name="failedToRestore">Failed to restore your data from Cloud.Please contact support</string>
     <string name="removeFromCloud">Remove from Cloud</string>
-<string name="removeFromCloudWarning">This will remove your cloud customization data without any recovery option,though,if you have any local customizations,they will not be removed.
+    <string name="removeFromCloudWarning">This will remove your cloud customization data without any recovery option,though,if you have any local customizations,they will not be removed.
 \ndo you want to proceed?</string>
     <string name="couldNotRemove">Could not remove from Cloud.Please contact support</string>
     <string name="overwriteWarning">This will overwrite your server data.Proceed?</string>
@@ -678,7 +678,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="pickTrendAndNewsColor">Pick trend and news icon color</string>
     <string name="trendColor">Trend And News Color</string>
     <string name="thisWontWork">This won\'t work</string>
-<string name="applicationModified">The application was modified!This will not work as we do not let any outsource and modified apk to be working as they are potentially hacked.
+    <string name="applicationModified">The application was modified!This will not work as we do not let any outsource and modified apk to be working as they are potentially hacked.
 \nPlease remove this application and install from original source from google play.
 \nThe further functions will not work.</string>
     <string name="recentTracks">Recent tracks</string>
@@ -963,4 +963,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="noMessagesText">No messages yet</string>
     <string name="system">System</string>
     <string name="newOwnerText">New owner of the room is</string>
+    <string name="startGame">Start Game</string>
+    <string name="cantStart">Can\'t start the game</string>
+    <string name="needMorePlayersText">You need %1$d more player(s) to start the game</string>
 </resources>

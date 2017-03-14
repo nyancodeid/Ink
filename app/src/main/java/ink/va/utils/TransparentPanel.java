@@ -17,21 +17,21 @@ public class TransparentPanel extends RelativeLayout {
     public TransparentPanel(Context context, AttributeSet attrs) {
         super(context, attrs);
         innerPaint = new Paint();
-        setArgbWhite();
+        setDay();
     }
 
     public TransparentPanel(Context context) {
         super(context);
         innerPaint = new Paint();
-        setArgbWhite();
+        setDay();
     }
 
-    public void setArgbDim() {
+    public void setNight() {
         innerPaint.setARGB(180, 75, 75, 75);
         invalidate();
     }
 
-    public void setArgbWhite() {
+    public void setDay() {
         innerPaint.setARGB(255, 255, 255, 255);
         invalidate();
     }

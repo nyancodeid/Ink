@@ -720,7 +720,7 @@
     <string name="englishRoom">Английская Комната</string>
     <string name="russianRoom">Русская Комната</string>
 
-     <string name="ink_share_text">Получить приложение
+    <string name="ink_share_text">Получить приложение
         \nhttps://play.google.com/store/apps/details?id=com.ink.va</string>
     <string name="locatedAt">Находится в : </string>
     <string name="signInWithLinkedIn">Войти с помощю аккаунта google LinkedIn</string>
@@ -744,7 +744,7 @@
         видимость профиля безо всякой оплаты если уже оплачено.</string>
     <string name="hidden_profile_const_message">Стоимость %1$d монет</string>
 
-     <string name="incognito_message">Вы собираетесь перейти в режим Инкогнито.Вас не будет видно ни в
+    <string name="incognito_message">Вы собираетесь перейти в режим Инкогнито.Вас не будет видно ни в
          каких действиях кроме запроса друзей.Покупка одноразовая,а именно,покупаете один раз и можете включить
          или выключить функцию \'Инкогнито\' сколько захотите.</string>
     <string name="incognito_cost_message">Стоимость %1$d монет</string>
@@ -787,7 +787,7 @@
     <string name="newMessageGlobal">Новое сообщение</string>
     <string name="versionName">Версия v%1$s</string>
     <string name="aboutTitle">О Приложении</string>
-     <string name="aboutContent">Инк является оффициальной торговой маркой Компании V.A. Entertainment.Логотипы,идеи и персонажи либо собственнось Компании,либо использованны под лицензией о свободном распространении.
+    <string name="aboutContent">Инк является оффициальной торговой маркой Компании V.A. Entertainment.Логотипы,идеи и персонажи либо собственнось Компании,либо использованны под лицензией о свободном распространении.
 \nДля любых ворпосов или для помощи,вы можете связатся с одним из членом нашей команди прямо из приложения.
 \n\nИНК-Мир Красок.</string>
     <string name="enterAmount">Внесите Сумму</string>
@@ -830,7 +830,7 @@
     <string name="openCards">Открыть карты</string>
     <string name="you_won">Вы выграли %1$d монет!</string>
     <string name="draw">Ничья : Возврат монет</string>
-        <string name="blackjack_home_text">Добро пожаловать в BlackJack,насладитесь
+    <string name="blackjack_home_text">Добро пожаловать в BlackJack,насладитесь
             игрой,играйте и зарабатывайте монеты которые можно будте потратиь в Инке. Кон можно выбрать на ваш вкус.</string>
 
     <string name="low_pot">Кон 1 монета</string>
@@ -966,4 +966,7 @@
     <string name="noMessagesText">Пока что сообщений нет</string>
     <string name="system">Система</string>
     <string name="newOwnerText">Новый владелец комнаты теперь</string>
+    <string name="startGame">Начать Игру</string>
+    <string name="cantStart">Невозможно начать игру</string>
+    <string name="needMorePlayersText">Вам нужно еще %1$d игроков чтобы начать игру</string>
 </resources>

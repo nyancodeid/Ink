@@ -97,18 +97,29 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (myRoomSelected) {
-            myRoomSelected = false;
-            item.setTitle(getString(R.string.myRooms));
-            mafiaRoomAdapter.clear();
-            getRooms();
-        } else {
-            item.setTitle(getString(R.string.globalRooms));
-            myRoomSelected = true;
-            mafiaRoomAdapter.clear();
-            getMyRooms();
+        switch (item.getItemId()) {
+            case R.id.roomsSwitch:
+                if (myRoomSelected) {
+                    myRoomSelected = false;
+                    item.setTitle(getString(R.string.myRooms));
+                    mafiaRoomAdapter.clear();
+                    getRooms();
+                } else {
+                    item.setTitle(getString(R.string.globalRooms));
+                    myRoomSelected = true;
+                    mafiaRoomAdapter.clear();
+                    getMyRooms();
+                }
+                break;
+            case R.id.mafiaInfo:
+                openMafiaInfo();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openMafiaInfo() {
+        startActivity(new Intent(this,MafiaInfoActivity.class));
     }
 
     private void getMyRooms() {

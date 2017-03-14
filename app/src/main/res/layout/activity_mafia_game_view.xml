@@ -12,7 +12,8 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_margin="10dp"
-        android:src="@drawable/sun_icon" />
+        android:src="@drawable/sun_icon"
+        android:visibility="invisible" />
 
     <TextView
         android:id="@+id/timeLeftTV"
@@ -24,7 +25,8 @@
         android:layout_toLeftOf="@+id/playersRecyclerWrapper"
         android:layout_toRightOf="@+id/nightDayIV"
         android:fontFamily="@string/condensedFont"
-        android:text="Time left for the morning : " />
+        android:text="Time left for the morning : "
+        android:visibility="invisible" />
 
 
     <TextView

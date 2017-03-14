@@ -28,7 +28,6 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.ink.va.R;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
@@ -69,6 +68,7 @@ public class MafiaGameView extends BaseActivity {
     private static final int ITEM_LEAVE_ID = 1;
     private static final int ITEM_JOIN_ID = 2;
     private static final int ITEM_DELETE_ID = 3;
+    private static final int ITEM_START_GAME = 4;
     private MafiaRoomsModel mafiaRoomsModel;
     @BindView(R.id.playersLoading)
     ProgressBar playersLoading;
@@ -90,6 +90,8 @@ public class MafiaGameView extends BaseActivity {
     TextView noMessagesTV;
     @BindView(R.id.nightDayIV)
     ImageView nightDayIV;
+    @BindView(R.id.timeLeftTV)
+    TextView timeLeftTV;
     @BindView(R.id.mafiaRoleView)
     View mafiaRoleView;
     @BindView(R.id.mafiaRoleExplanationTV)
@@ -117,6 +119,8 @@ public class MafiaGameView extends BaseActivity {
     private Socket socket;
     private MafiaPlayersAdapter mafiaPlayersAdapter;
     private MafiaChatAdapter mafiaChatAdapter;
+    private int minimumClassicPlayers = 9;
+    private int minimumYakudzaPlayers = 13;
 
 
     @Override
@@ -193,13 +197,24 @@ public class MafiaGameView extends BaseActivity {
     }
 
     private void hideNoMessages() {
-        chatLoading.setVisibility(View.GONE);
-        noMessagesTV.setVisibility(View.GONE);
+        if (noMessagesTV.getVisibility() == View.VISIBLE) {
+            noMessagesTV.setVisibility(View.GONE);
+        }
+        if (chatLoading.getVisibility() == View.VISIBLE) {
+            chatLoading.setVisibility(View.GONE);
+        }
+
+
     }
 
     private void showNoMessages() {
-        noMessagesTV.setVisibility(View.VISIBLE);
-        chatLoading.setVisibility(View.GONE);
+        if (noMessagesTV.getVisibility() == View.GONE) {
+            noMessagesTV.setVisibility(View.VISIBLE);
+        }
+
+        if (chatLoading.getVisibility() == View.VISIBLE) {
+            chatLoading.setVisibility(View.GONE);
+        }
     }
 
 
@@ -217,13 +232,15 @@ public class MafiaGameView extends BaseActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (!isMenuAdded) {
+            if (isOwner()) {
+                menu.add(0, ITEM_START_GAME, 0, getString(R.string.startGame));
+                menu.add(0, ITEM_DELETE_ID, 1, getString(R.string.delete));
+            }
+
             if (isParticipant()) {
                 menu.add(0, ITEM_LEAVE_ID, 0, getString(R.string.leave));
             } else {
                 menu.add(0, ITEM_JOIN_ID, 0, getString(R.string.join));
-            }
-            if (isOwner()) {
-                menu.add(0, ITEM_DELETE_ID, 1, getString(R.string.delete));
             }
             isMenuAdded = true;
         }
@@ -263,6 +280,9 @@ public class MafiaGameView extends BaseActivity {
             case ITEM_JOIN_ID:
                 joinRoom();
                 break;
+            case ITEM_START_GAME:
+                startGame();
+                break;
             case ITEM_DELETE_ID:
                 DialogUtils.showDialog(this, getString(R.string.delete), getString(R.string.actionCannotUndone), true, new DialogUtils.DialogListener() {
                     @Override
@@ -283,6 +303,26 @@ public class MafiaGameView extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startGame() {
+        if (mafiaRoomsModel.gameType.equals(getString(R.string.yakudza))) {
+            int currentPlayers = mafiaRoomsModel.getJoinedUserIds().size();
+            if (currentPlayers < minimumYakudzaPlayers) {
+                int playersNeeded = minimumYakudzaPlayers - currentPlayers;
+                DialogUtils.showDialog(this, getString(R.string.cantStart), getString(R.string.needMorePlayersText,playersNeeded), true, null, false, null);
+            } else {
+
+            }
+        } else if (mafiaRoomsModel.gameType.equals(getString(R.string.classic))) {
+            int currentPlayers = mafiaRoomsModel.getJoinedUserIds().size();
+            if (currentPlayers < minimumClassicPlayers) {
+                int playersNeeded = minimumClassicPlayers - currentPlayers;
+                DialogUtils.showDialog(this, getString(R.string.cantStart), getString(R.string.needMorePlayersText,playersNeeded), true, null, false, null);
+            } else {
+
+            }
+        }
     }
 
     private void deleteRoom() {
@@ -499,7 +539,7 @@ public class MafiaGameView extends BaseActivity {
     @OnClick(R.id.replyToRoomIV)
     public void replyToRoomIVClicked() {
         String unescapedMessage = replyToRoomED.getText().toString().trim();
-        silentMessageServerInsert(StringEscapeUtils.escapeJava(unescapedMessage));
+        silentMessageServerInsert(unescapedMessage);
         replyToRoomED.setText("");
         replyToRoomIV.setEnabled(false);
         Keyboard.hideKeyboard(this);
@@ -543,6 +583,7 @@ public class MafiaGameView extends BaseActivity {
         mafiaMessageModel.setSenderId(sharedHelper.getUserId());
         mafiaMessageModel.setUser(User.get().buildUser(sharedHelper));
         mafiaChatAdapter.insertMessage(mafiaMessageModel);
+        hideNoMessages();
 
     }
 

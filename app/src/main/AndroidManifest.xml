@@ -344,8 +344,8 @@
             android:name="ink.va.activities.MafiaAddRoomActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
-        <activity
-            android:name="ink.va.activities.MafiaGameView"></activity>
+        <activity android:name="ink.va.activities.MafiaGameView" />
+        <activity android:name="ink.va.activities.MafiaInfoActivity"></activity>
     </application>
 
 </manifest>
