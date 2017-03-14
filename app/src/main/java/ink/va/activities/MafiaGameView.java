@@ -502,6 +502,7 @@ public class MafiaGameView extends BaseActivity {
         silentMessageServerInsert(StringEscapeUtils.escapeJava(unescapedMessage));
         replyToRoomED.setText("");
         replyToRoomIV.setEnabled(false);
+        Keyboard.hideKeyboard(this);
     }
 
     private void silentMessageServerInsert(final String message) {
