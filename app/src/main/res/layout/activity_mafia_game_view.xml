@@ -170,8 +170,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/replyToRoomED"
         android:layout_below="@+id/gameChatTV"
-        android:background="@drawable/grey_transparent_rectangle"
-        android:padding="10dp">
+        android:background="@drawable/grey_transparent_rectangle">
 
         <TextView
             android:id="@+id/noMessagesTV"
