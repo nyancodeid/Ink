@@ -170,6 +170,9 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/replyToRoomED"
         android:layout_below="@+id/gameChatTV"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
         android:background="@drawable/grey_transparent_rectangle">
 
         <TextView
