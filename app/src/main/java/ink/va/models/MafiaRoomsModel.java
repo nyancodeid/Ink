@@ -79,6 +79,19 @@ public class MafiaRoomsModel implements Comparable<MafiaRoomsModel> {
     @Getter
     public int maxPlayers;
 
+    @SerializedName("gameStartDate")
+    @Setter
+    @Getter
+    private String gameStartDate;
+    @SerializedName("currentDayType")
+    @Setter
+    @Getter
+    private String currentDayType;
+    @SerializedName("willSelfDestruct")
+    @Setter
+    @Getter
+    private boolean willSelfDestruct;
+
     @Override
     public int compareTo(MafiaRoomsModel o) {
         boolean isParticipant = false;

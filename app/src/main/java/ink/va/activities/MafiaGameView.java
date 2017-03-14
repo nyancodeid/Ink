@@ -147,6 +147,7 @@ public class MafiaGameView extends BaseActivity {
         initEditText(isParticipant());
         initGameInfo();
         initRecyclers();
+
     }
 
     private void initRecyclers() {
