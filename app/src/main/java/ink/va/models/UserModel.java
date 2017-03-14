@@ -22,8 +22,8 @@ public class UserModel {
     private String lastName;
     @SerializedName("gender")
     private String gender;
-    @SerializedName("phone_number")
-    private String phone_number;
+    @SerializedName("phoneNumber")
+    private String phoneNumber;
     @SerializedName("facebook_profile")
     private String facebookProfile;
     @SerializedName("image_link")
@@ -109,12 +109,12 @@ public class UserModel {
         this.gender = gender;
     }
 
-    public String getPhone_number() {
-        return phone_number;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getFacebookProfile() {

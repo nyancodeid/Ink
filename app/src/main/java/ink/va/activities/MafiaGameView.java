@@ -52,6 +52,7 @@ import ink.va.utils.ProgressDialog;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.TransparentPanel;
+import ink.va.utils.User;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -150,6 +151,7 @@ public class MafiaGameView extends BaseActivity {
         mafiaPlayersAdapter.setOwnerId(mafiaRoomsModel.getCreatorId());
         LinearLayoutManager playersLayout = new LinearLayoutManager(this);
         LinearLayoutManager chatLayout = new LinearLayoutManager(this);
+        chatLayout.setStackFromEnd(true);
         playersRecycler.setLayoutManager(playersLayout);
         mafiaChatRecycler.setLayoutManager(chatLayout);
         mafiaChatRecycler.setAdapter(mafiaChatAdapter);
@@ -168,6 +170,7 @@ public class MafiaGameView extends BaseActivity {
                 } else {
                     hideNoMessages();
                     mafiaChatAdapter.setMafiaMessageModels(mafiaMessageModels);
+                    scrollToBottom();
                 }
             }
 
@@ -175,6 +178,16 @@ public class MafiaGameView extends BaseActivity {
             public void onFailure(Call<List<MafiaMessageModel>> call, Throwable t) {
                 hideNoMessages();
                 Toast.makeText(MafiaGameView.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void scrollToBottom() {
+        mafiaChatRecycler.post(new Runnable() {
+            @Override
+            public void run() {
+                mafiaChatRecycler.stopScroll();
+                mafiaChatRecycler.scrollToPosition(mafiaChatAdapter.getItemCount() - 1);
             }
         });
     }
@@ -485,11 +498,14 @@ public class MafiaGameView extends BaseActivity {
 
     @OnClick(R.id.replyToRoomIV)
     public void replyToRoomIVClicked() {
-        silentMessageServerInsert(StringEscapeUtils.escapeJava(replyToRoomED.getText().toString().trim()));
+        String unescapedMessage = replyToRoomED.getText().toString().trim();
+        silentMessageServerInsert(StringEscapeUtils.escapeJava(unescapedMessage));
+        replyToRoomED.setText("");
+        replyToRoomIV.setEnabled(false);
     }
 
     private void silentMessageServerInsert(final String message) {
-        Retrofit.getInstance().getInkService().silentMafiMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
+        Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
@@ -519,6 +535,14 @@ public class MafiaGameView extends BaseActivity {
                 Toast.makeText(MafiaGameView.this, getString(R.string.messageNotSent), Toast.LENGTH_SHORT).show();
             }
         });
+        MafiaMessageModel mafiaMessageModel = new MafiaMessageModel();
+        mafiaMessageModel.setId(String.valueOf(System.currentTimeMillis()));
+        mafiaMessageModel.setMessage(message);
+        mafiaMessageModel.setRoomId(mafiaRoomsModel.getId());
+        mafiaMessageModel.setSenderId(sharedHelper.getUserId());
+        mafiaMessageModel.setUser(User.get().buildUser(sharedHelper));
+        mafiaChatAdapter.insertMessage(mafiaMessageModel);
+
     }
 
     @OnClick(R.id.closeRoleView)

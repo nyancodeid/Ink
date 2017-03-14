@@ -191,9 +191,9 @@ public class Retrofit {
 
         @POST(Constants.INSERT_MAFIA_CHAT_URL)
         @FormUrlEncoded
-        Call<ResponseBody> silentMafiMessageInsert(@Field("userId") int roomId,
-                                                   @Field("message") String message,
-                                                   @Field("senderId") String senderId);
+        Call<ResponseBody> silentMafiaMessageInsert(@Field("roomId") int roomId,
+                                                    @Field("message") String message,
+                                                    @Field("senderId") String senderId);
 
         @POST(Constants.MAFIA_ROOM_PARTICIPANTS)
         @FormUrlEncoded

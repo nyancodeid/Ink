@@ -48,4 +48,10 @@ public class MafiaChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.mafiaMessageModels.addAll(mafiaMessageModels);
         notifyDataSetChanged();
     }
+
+    public void insertMessage(MafiaMessageModel mafiaMessageModel) {
+        mafiaMessageModels.add(mafiaMessageModel);
+        int index = mafiaMessageModels.indexOf(mafiaMessageModel);
+        notifyItemInserted(index);
+    }
 }

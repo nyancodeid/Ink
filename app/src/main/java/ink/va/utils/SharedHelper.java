@@ -857,4 +857,5 @@ public class SharedHelper {
     public String getPin() {
         return mSharedPreferences.getString("pin", "");
     }
+
 }

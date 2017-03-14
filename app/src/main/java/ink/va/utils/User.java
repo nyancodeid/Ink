@@ -1,5 +1,7 @@
 package ink.va.utils;
 
+import ink.va.models.UserModel;
+
 /**
  * Created by USER on 2016-07-20.
  */
@@ -65,4 +67,25 @@ public class User {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    public UserModel buildUser(SharedHelper sharedHelper) {
+        UserModel userModel = new UserModel();
+        userModel.setUserId(sharedHelper.getUserId());
+        userModel.setAddress(sharedHelper.getUserAddress());
+        userModel.setFacebookName(sharedHelper.getUserFacebookName());
+        userModel.setFacebookProfile(sharedHelper.getUserFacebookLink());
+        userModel.setFirstName(sharedHelper.getFirstName());
+        userModel.setLastName(sharedHelper.getLastName());
+        userModel.setGender(sharedHelper.getUserGender());
+        userModel.setStatus(sharedHelper.getUserStatus());
+        userModel.setSocialAccount(sharedHelper.isSocialAccount());
+        userModel.setImageUrl(sharedHelper.getImageLink());
+        userModel.setPhoneNumber(sharedHelper.getUserPhoneNumber());
+        userModel.setRelationship(sharedHelper.getUserRelationship());
+        userModel.setSkype(sharedHelper.getUserSkype());
+        userModel.setLogin(sharedHelper.getLogin());
+        return userModel;
+    }
+
+
 }

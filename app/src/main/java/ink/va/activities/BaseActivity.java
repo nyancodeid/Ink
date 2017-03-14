@@ -33,6 +33,7 @@ import com.ink.va.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -52,6 +53,7 @@ import ink.va.utils.ProcessManager;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Version;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -491,4 +493,80 @@ public abstract class BaseActivity extends AppCompatActivity {
             scheduler.shutdown();
         }
     }
+
+
+    private void cacheUserData() {
+        final Call<ResponseBody> myDataResponse = Retrofit.getInstance()
+                .getInkService().getSingleUserDetails(sharedHelper.getUserId(), "");
+        myDataResponse.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    cacheUserData();
+                    return;
+                }
+                if (response.body() == null) {
+                    cacheUserData();
+                    return;
+                }
+                fetchData(response);
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+    private void fetchData(Response<ResponseBody> response) {
+        try {
+            String responseString = response.body().string();
+            try {
+                JSONObject jsonObject = new JSONObject(responseString);
+                boolean success = jsonObject.optBoolean("success");
+                if (success) {
+                    String userId = jsonObject.optString("userId");
+                    String mFirstNameToSend = jsonObject.optString("first_name");
+                    String mLastNameToSend = jsonObject.optString("last_name");
+                    String mGenderToSend = jsonObject.optString("gender");
+                    String mBadgeName = jsonObject.optString("badge_name");
+                    String mPhoneNumberToSend = jsonObject.optString("phone_number");
+                    String mFacebookProfileToSend = jsonObject.optString("facebook_profile");
+                    String mFacebookName = jsonObject.optString("facebook_name");
+                    String mImageLinkToSend = jsonObject.optString("image_link");
+                    String mSkypeToSend = jsonObject.optString("skype");
+                    String mAddressToSend = jsonObject.optString("address");
+                    String mRelationshipToSend = jsonObject.optString("relationship");
+                    String mStatusToSend = jsonObject.optString("status");
+                    boolean isIncognito = jsonObject.optBoolean("isIncognito");
+                    boolean isIncognitoBought = jsonObject.optBoolean("isIncognitoBought");
+                    boolean isHidden = jsonObject.optBoolean("isHidden");
+                    boolean isHiddenBought = jsonObject.optBoolean("isHiddenBought");
+                    int incognitoCost = jsonObject.optInt("incognitoCost");
+                    int hiddenProfileCost = jsonObject.optInt("hiddenProfileCost");
+                    int userCoins = jsonObject.optInt("userCoins");
+
+                    sharedHelper.putFirstName(mFirstNameToSend);
+                    sharedHelper.putLastName(mLastNameToSend);
+                    sharedHelper.putUserGender(mGenderToSend);
+                    sharedHelper.putUserPhoneNumber(mPhoneNumberToSend);
+                    sharedHelper.putUserFacebookLink(mFacebookProfileToSend);
+                    sharedHelper.putUserFacebookName(mFacebookName);
+                    sharedHelper.putUserSkype(mSkypeToSend);
+                    sharedHelper.putUserAddress(mAddressToSend);
+                    sharedHelper.putUserRelationship(mRelationshipToSend);
+                    sharedHelper.putUserStatus(mStatusToSend);
+                    sharedHelper.putShouldLoadImage(true);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
