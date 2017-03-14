@@ -961,4 +961,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="noPlayersYet">No players yet</string>
     <string name="roomOwner">Room Owner</string>
     <string name="noMessagesText">No messages yet</string>
+    <string name="system">System</string>
 </resources>

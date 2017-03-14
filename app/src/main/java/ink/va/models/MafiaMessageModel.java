@@ -30,4 +30,8 @@ public class MafiaMessageModel {
     @Setter
     @Getter
     private UserModel user;
+    @Setter
+    @Getter
+    @SerializedName("isSystemMessage")
+    private boolean isSystemMessage;
 }

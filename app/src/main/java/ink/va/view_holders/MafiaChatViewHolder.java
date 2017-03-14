@@ -57,42 +57,52 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
         messageUsername.setText(user.getFirstName() + " " + user.getLastName());
         mafiaMessageContainer.setText(StringEscapeUtils.unescapeJava(mafiaMessageModel.getMessage()));
 
-        if (mafiaMessageModel.getSenderId().equals(sharedHelper.getUserId())) {
+        if (mafiaMessageModel.isSystemMessage()) {
+            messageUsername.setText(context.getString(R.string.system));
+            mafiaChatUserImage.setImageResource(R.drawable.robot_vector);
+
             LinearLayout.LayoutParams messageUsernameParams = (LinearLayout.LayoutParams) messageWrapper.getLayoutParams();
-            messageUsernameParams.gravity = Gravity.RIGHT;
+            messageUsernameParams.gravity = Gravity.CENTER;
             messageWrapper.setLayoutParams(messageUsernameParams);
-            mafiaMessageWrapper.setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
+            mafiaMessageWrapper.setCardBackgroundColor(ContextCompat.getColor(context, R.color.red));
         } else {
-            LinearLayout.LayoutParams messageUsernameParams = (LinearLayout.LayoutParams) messageWrapper.getLayoutParams();
-            messageUsernameParams.gravity = Gravity.LEFT;
-            messageWrapper.setLayoutParams(messageUsernameParams);
-            mafiaMessageWrapper.setCardBackgroundColor(ContextCompat.getColor(context, R.color.defaultGroupColor));
-        }
 
-
-        if (!user.getImageUrl().isEmpty()) {
-
-            final String url;
-            if (user.isSocialAccount()) {
-                url = user.getImageUrl();
+            if (mafiaMessageModel.getSenderId().equals(sharedHelper.getUserId())) {
+                LinearLayout.LayoutParams messageUsernameParams = (LinearLayout.LayoutParams) messageWrapper.getLayoutParams();
+                messageUsernameParams.gravity = Gravity.RIGHT;
+                messageWrapper.setLayoutParams(messageUsernameParams);
+                mafiaMessageWrapper.setCardBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
             } else {
-                String encodedImage = Uri.encode(user.getImageUrl());
-                url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage;
+                LinearLayout.LayoutParams messageUsernameParams = (LinearLayout.LayoutParams) messageWrapper.getLayoutParams();
+                messageUsernameParams.gravity = Gravity.LEFT;
+                messageWrapper.setLayoutParams(messageUsernameParams);
+                mafiaMessageWrapper.setCardBackgroundColor(ContextCompat.getColor(context, R.color.defaultGroupColor));
             }
 
-            Ion.with(context).load(url)
-                    .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).
-                    intoImageView(mafiaChatUserImage).setCallback(new FutureCallback<ImageView>() {
-                @Override
-                public void onCompleted(Exception e, ImageView result) {
-                    if (e != null) {
-                        mafiaChatUserImage.setImageResource(R.drawable.no_image);
-                    }
+
+            if (!user.getImageUrl().isEmpty()) {
+                final String url;
+                if (user.isSocialAccount()) {
+                    url = user.getImageUrl();
+                } else {
+                    String encodedImage = Uri.encode(user.getImageUrl());
+                    url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage;
                 }
-            });
-        } else {
-            Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
-                    .withBitmap().transform(new CircleTransform()).intoImageView(mafiaChatUserImage);
+
+                Ion.with(context).load(url)
+                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).
+                        intoImageView(mafiaChatUserImage).setCallback(new FutureCallback<ImageView>() {
+                    @Override
+                    public void onCompleted(Exception e, ImageView result) {
+                        if (e != null) {
+                            mafiaChatUserImage.setImageResource(R.drawable.no_image);
+                        }
+                    }
+                });
+            } else {
+                Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
+                        .withBitmap().transform(new CircleTransform()).intoImageView(mafiaChatUserImage);
+            }
         }
     }
 }
