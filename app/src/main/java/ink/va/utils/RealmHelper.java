@@ -40,6 +40,7 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 import static ink.va.utils.Constants.REALM_DB_NAME;
+import static ink.va.utils.Constants.STATUS_DELIVERED;
 
 /**
  * Created by USER on 2016-06-26.
@@ -448,7 +449,7 @@ public class RealmHelper {
                                         messageModel.setUserId(chatModel.getUserId());
                                         messageModel.setOpponentId(chatModel.getOpponentId());
                                         messageModel.setAnimated(false);
-                                        messageModel.setDeliveryStatus(chatModel.getDeliveryStatus());
+                                        messageModel.setDeliveryStatus(STATUS_DELIVERED);
                                         messageModel.setUserImage(chatModel.getCurrentUserImage());
                                         messageModel.setSocialAccount(chatModel.isSocialAccount());
                                         messageModel.setOpponentImage(chatModel.getOpponentImage());
@@ -490,7 +491,7 @@ public class RealmHelper {
                                 messageModel.setUserId(chatModel.getUserId());
                                 messageModel.setOpponentId(chatModel.getOpponentId());
                                 messageModel.setAnimated(false);
-                                messageModel.setDeliveryStatus(chatModel.getDeliveryStatus());
+                                messageModel.setDeliveryStatus(STATUS_DELIVERED);
                                 messageModel.setUserImage(chatModel.getCurrentUserImage());
                                 messageModel.setOpponentImage(chatModel.getOpponentImage());
                                 messageModel.setDate(chatModel.getDate());

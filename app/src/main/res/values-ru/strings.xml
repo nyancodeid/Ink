@@ -969,4 +969,5 @@
     <string name="startGame">Начать Игру</string>
     <string name="cantStart">Невозможно начать игру</string>
     <string name="needMorePlayersText">Вам нужно еще %1$d игроков чтобы начать игру</string>
+    <string name="scrollForMore">прокрутите для больше сообщений</string>
 </resources>

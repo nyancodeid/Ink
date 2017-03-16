@@ -966,4 +966,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="startGame">Start Game</string>
     <string name="cantStart">Can\'t start the game</string>
     <string name="needMorePlayersText">You need %1$d more player(s) to start the game</string>
+    <string name="scrollForMore">scroll for more messages</string>
 </resources>

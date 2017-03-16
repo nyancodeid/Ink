@@ -13,6 +13,7 @@ import java.util.List;
 
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.ChatModel;
+import ink.va.view_holders.ChatHeaderView;
 import ink.va.view_holders.ChatViewHolder;
 
 import static ink.va.utils.Constants.STATUS_DELIVERED;
@@ -22,9 +23,11 @@ import static ink.va.utils.Constants.STATUS_DELIVERED;
  */
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private static final int HEADER_VIEW_TYPE = 2;
     private List<ChatModel> chatModelList;
     private Context mContext;
     private RecyclerItemClickListener onItemClickListener;
+    private View headerView;
 
     public ChatAdapter() {
         chatModelList = new LinkedList<>();
@@ -33,6 +36,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mContext = parent.getContext();
+        if (viewType == HEADER_VIEW_TYPE) {
+            headerView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.chat_header_view, parent, false);
+            return new ChatHeaderView(headerView);
+        }
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.single_chat_item, parent, false);
         return new ChatViewHolder(itemView);
@@ -41,16 +49,36 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        ChatModel chatModel = chatModelList.get(position);
-        ((ChatViewHolder) holder).initData(chatModel, mContext, position, chatModelList.size() - 1, onItemClickListener);
+        if (position != 0) {
+            ChatModel chatModel = chatModelList.get(position - 1);
+            ((ChatViewHolder) holder).initData(chatModel, mContext, position - 1, chatModelList.size() - 1, onItemClickListener);
+        }
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return HEADER_VIEW_TYPE;
+        }
+        return super.getItemViewType(position);
+    }
 
     @Override
     public int getItemCount() {
-        return chatModelList.size();
+        if (chatModelList == null) {
+            return 0;
+        }
+        if (chatModelList.size() == 0) {
+            return 1;
+        }
+
+        return chatModelList.size() + 1;
     }
 
+    public View getHeaderView() {
+        View view = headerView.findViewById(R.id.chatHeaderView);
+        return view;
+    }
 
     public void setOnItemClickListener(RecyclerItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
@@ -75,7 +103,16 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             notifyItemInserted(currentIndex);
         } else {
             this.chatModelList.add(0, chatModel);
-            notifyItemInserted(0);
+        }
+    }
+
+    public void insertChatModelWithItemNotify(List<ChatModel> chatModel, boolean firstPaging) {
+        if (firstPaging) {
+            this.chatModelList.addAll(chatModel);
+            notifyDataSetChanged();
+        } else {
+            this.chatModelList.addAll(0, chatModel);
+            notifyItemRangeInserted(0, chatModel.size());
         }
     }
 

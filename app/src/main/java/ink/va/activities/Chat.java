@@ -60,6 +60,7 @@ import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
+import lombok.Setter;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -152,6 +153,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private int pagingEnd = 50;
     private LinearLayoutManager linearLayoutManager;
     private int lastVisiblePosition;
+    private View chatHeaderView;
+    private MessagePagingTask messagePagingTask;
+    private boolean furtherLoad = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +164,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         ButterKnife.bind(this);
         sharedHelper = new SharedHelper(this);
         messages = new LinkedList<>();
+
 
         fadeAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_scale);
 
@@ -282,6 +287,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     @OnClick(R.id.moreMessagesHint)
     public void moreMessagesHintClicked() {
         moreMessagesHint.setVisibility(View.GONE);
+
     }
 
     @OnClick(R.id.opponentImage)
@@ -440,6 +446,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                             doMessagesPaging(pagingStart, pagingEnd, true);
                         }
                         loadingMessages.setVisibility(View.GONE);
+                        chatHeaderView = chatAdapter.getHeaderView();
                     }
                 });
 
@@ -453,35 +460,16 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     }
 
     private void doMessagesPaging(final int start, int end, boolean firstPaging) {
-        lastVisiblePosition = chatAdapter.getItemCount();
-        List<ChatModel> chatModels = new LinkedList<>();
-        for (int i = start; i >= end; i--) {
-            try {
-                ChatModel chatModel = messages.get(i);
-                chatModels.add(chatModel);
-            } catch (IndexOutOfBoundsException e) {
-                e.printStackTrace();
-                break;
+        if (furtherLoad) {
+            if (messagePagingTask != null) {
+                messagePagingTask = null;
             }
+            messagePagingTask = new MessagePagingTask();
+
+            lastVisiblePosition = chatAdapter.getItemCount();
+            messagePagingTask.setFirstPaging(firstPaging);
+            messagePagingTask.execute(start, end);
         }
-        if (!chatModels.isEmpty()) {
-            if (firstPaging) {
-                Collections.reverse(chatModels);
-            }
-            for (ChatModel chatModel : chatModels) {
-                chatAdapter.insertChatModelWithItemNotify(chatModel, firstPaging);
-            }
-            mRecyclerView.post(new Runnable() {
-                @Override
-                public void run() {
-//                    mRecyclerView.smoothScrollToPosition(start);
-                }
-            });
-            if (!firstPaging) {
-                moreMessagesHint.setVisibility(View.VISIBLE);
-            }
-        }
-        chatModels = null;
     }
 
 
@@ -775,7 +763,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (chatAdapter.getItemCount() >= 50) {
-                    if (((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 4) {
+                    if (((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0) {
                         recyclerView.post(new Runnable() {
                             @Override
                             public void run() {
@@ -1138,5 +1126,57 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         }
     }
 
+    private class MessagePagingTask extends AsyncTask<Integer, String, List<ChatModel>> {
+        @Setter
+        private boolean firstPaging;
 
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (!firstPaging && chatHeaderView != null && chatHeaderView.getVisibility() != View.VISIBLE) {
+                chatHeaderView.setVisibility(View.VISIBLE);
+            }
+        }
+
+        @Override
+        protected List<ChatModel> doInBackground(Integer... params) {
+            List<ChatModel> chatModels = new LinkedList<>();
+            for (int i = params[0]; i >= params[1]; i--) {
+                try {
+                    ChatModel chatModel = messages.get(i);
+                    chatModels.add(chatModel);
+                } catch (IndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+            return chatModels;
+        }
+
+        @Override
+        protected void onPostExecute(List<ChatModel> chatModels) {
+            super.onPostExecute(chatModels);
+
+            if (!chatModels.isEmpty()) {
+                furtherLoad = true;
+                if (firstPaging) {
+                    Collections.reverse(chatModels);
+                }
+                chatAdapter.insertChatModelWithItemNotify(chatModels, firstPaging);
+                if (!firstPaging) {
+                    moreMessagesHint.setVisibility(View.VISIBLE);
+                }
+            } else {
+                furtherLoad = false;
+            }
+            chatModels = null;
+            if (chatHeaderView != null && chatHeaderView.getVisibility() == View.VISIBLE) {
+                chatHeaderView.setVisibility(View.GONE);
+            }
+            if(firstPaging){
+                scrollToBottom();
+            }
+        }
+    }
 }
