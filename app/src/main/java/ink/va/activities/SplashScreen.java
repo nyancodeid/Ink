@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.ink.va.R;
 
+import ink.va.service.MafiaGameService;
 import ink.va.utils.ProcessManager;
 import ink.va.utils.SharedHelper;
 
@@ -90,6 +91,9 @@ public class SplashScreen extends AppCompatActivity {
         if (sharedHelper.hasPinAttached() || sharedHelper.hasFingerprintAttached()) {
             startActivityForResult(new Intent(this, SecurityScreen.class), LOCK_SCREEN_REQUEST_CODE);
         } else {
+            if (sharedHelper.hasAnyMafiaParticipation()) {
+                stopService(new Intent(this, MafiaGameService.class));
+            }
             Intent intent = new Intent(this, Intro.class);
             startActivity(intent);
             finish();
@@ -103,6 +107,9 @@ public class SplashScreen extends AppCompatActivity {
             case LOCK_SCREEN_REQUEST_CODE:
                 boolean hasUnlocked = data.getExtras() != null ? data.getExtras().getBoolean("hasUnlocked") : false;
                 if (hasUnlocked) {
+                    if (sharedHelper.hasAnyMafiaParticipation()) {
+                        stopService(new Intent(this, MafiaGameService.class));
+                    }
                     Intent intent = new Intent(this, Intro.class);
                     startActivity(intent);
                     finish();

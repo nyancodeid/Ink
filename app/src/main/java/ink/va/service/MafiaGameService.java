@@ -10,6 +10,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import ink.va.models.MafiaRoomsModel;
+import ink.va.utils.Retrofit;
+import ink.va.utils.SharedHelper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Created by PC-Comp on 3/14/2017.
  */
@@ -17,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class MafiaGameService extends Service {
     private ScheduledExecutorService scheduler;
     private LocalBinder mBinder = new LocalBinder();
+    private SharedHelper sharedHelper;
 
     @Nullable
     @Override
@@ -34,6 +42,9 @@ public class MafiaGameService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         scheduleTask();
+        if (sharedHelper == null) {
+            sharedHelper = new SharedHelper(this);
+        }
         return START_STICKY;
     }
 
@@ -52,7 +63,20 @@ public class MafiaGameService extends Service {
     }
 
     private void checkMafiaGame() {
+        Retrofit.getInstance().getInkService().checkMafiaRoom(sharedHelper.getMafiaRoomId(), sharedHelper.getUserId()).enqueue(new Callback<MafiaRoomsModel>() {
+            @Override
+            public void onResponse(Call<MafiaRoomsModel> call, Response<MafiaRoomsModel> response) {
+                MafiaRoomsModel mafiaRoomsModel = response.body();
+                if (mafiaRoomsModel.isGameEnded()) {
 
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MafiaRoomsModel> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override

@@ -774,15 +774,17 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0) {
-                    recyclerView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            pagingStart = (pagingEnd - 1);
-                            pagingEnd = pagingStart - 50;
-                            doMessagesPaging(pagingStart, pagingEnd, false);
-                        }
-                    });
+                if (chatAdapter.getItemCount() >= 50) {
+                    if (((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 4) {
+                        recyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                pagingStart = (pagingEnd - 1);
+                                pagingEnd = pagingStart - 50;
+                                doMessagesPaging(pagingStart, pagingEnd, false);
+                            }
+                        });
+                    }
                 }
             }
 

@@ -866,4 +866,13 @@ public class SharedHelper {
         mEditor.putBoolean("hasAnyMafiaParticipation", participating);
         mEditor.commit();
     }
+
+    public void putMafiaLastRoomId(int roomId) {
+        mEditor.putInt("mafiaRoomId", roomId);
+        mEditor.commit();
+    }
+
+    public int getMafiaRoomId() {
+        return mSharedPreferences.getInt("mafiaRoomId", 0);
+    }
 }

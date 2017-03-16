@@ -77,6 +77,7 @@ public class Constants {
     public static final String INSERT_MAFIA_CHAT_URL = "InsertMafiaChat.php";
     public static final String FRIENDS_URL = "UserFriends.php";
     public static final String SINGLE_USER_URL = "SingleUser.php";
+    public static final String MAFIA_ROOM_CHECK_URL = "MafiaRoomCheck.php";
     public static final String SEND_FRIEND_REQUEST_URL = "SendFriendRequest.php";
     public static final String NEWS_BASE_URL = "http://api.breakingnews.com";
     public static final String NEWS_PRIMARY_URL = "/api/v1/item/?format=json";

@@ -203,6 +203,11 @@ public class Retrofit {
         @FormUrlEncoded
         Call<List<MafiaMessageModel>> getMafiaChat(@Field("roomId") int roomId);
 
+        @POST(Constants.MAFIA_CHAT_URL)
+        @FormUrlEncoded
+        Call<MafiaRoomsModel> checkMafiaRoom(@Field("roomId") int roomId,
+                                               @Field("userId") String userId);
+
         @POST(Constants.SEARCH_GROUP_URL)
         @FormUrlEncoded
         Call<ResponseBody> searchGroups(@Field("userId") String userId,

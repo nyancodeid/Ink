@@ -44,6 +44,7 @@ import ink.va.adapters.MafiaPlayersAdapter;
 import ink.va.models.MafiaMessageModel;
 import ink.va.models.MafiaRoomsModel;
 import ink.va.models.UserModel;
+import ink.va.service.MafiaGameService;
 import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.Keyboard;
@@ -311,7 +312,7 @@ public class MafiaGameView extends BaseActivity {
             int currentPlayers = mafiaRoomsModel.getJoinedUserIds().size();
             if (currentPlayers < minimumYakudzaPlayers) {
                 int playersNeeded = minimumYakudzaPlayers - currentPlayers;
-                DialogUtils.showDialog(this, getString(R.string.cantStart), getString(R.string.needMorePlayersText,playersNeeded), true, null, false, null);
+                DialogUtils.showDialog(this, getString(R.string.cantStart), getString(R.string.needMorePlayersText, playersNeeded), true, null, false, null);
             } else {
 
             }
@@ -319,7 +320,7 @@ public class MafiaGameView extends BaseActivity {
             int currentPlayers = mafiaRoomsModel.getJoinedUserIds().size();
             if (currentPlayers < minimumClassicPlayers) {
                 int playersNeeded = minimumClassicPlayers - currentPlayers;
-                DialogUtils.showDialog(this, getString(R.string.cantStart), getString(R.string.needMorePlayersText,playersNeeded), true, null, false, null);
+                DialogUtils.showDialog(this, getString(R.string.cantStart), getString(R.string.needMorePlayersText, playersNeeded), true, null, false, null);
             } else {
 
             }
@@ -346,6 +347,8 @@ public class MafiaGameView extends BaseActivity {
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        stopService(new Intent(MafiaGameView.this, MafiaGameService.class));
+                        sharedHelper.putMafiaParticipation(false);
                         finish();
                         LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
                     } else {
@@ -433,20 +436,20 @@ public class MafiaGameView extends BaseActivity {
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        sharedHelper.putMafiaParticipation(true);
+                        sharedHelper.putMafiaLastRoomId(mafiaRoomsModel.getId());
+                        startService(new Intent(MafiaGameView.this, MafiaGameService.class));
                         Toast.makeText(MafiaGameView.this, getString(R.string.joined), Toast.LENGTH_SHORT).show();
-
                         Parcelable parcelable = Parcels.wrap(mafiaRoomsModel);
                         List<String> joinedUsers = mafiaRoomsModel.getJoinedUserIds();
                         joinedUsers.add(sharedHelper.getUserId());
                         mafiaRoomsModel.setJoinedUserIds(joinedUsers);
-
                         relaunchActivity(parcelable);
 
                     } else {
                         String cause = jsonObject.optString("cause");
                         if (cause.equals(GAME_ALREADY_IN_PROGRESS)) {
                             Toast.makeText(MafiaGameView.this, getString(R.string.cantJoinGameInProgress), Toast.LENGTH_LONG).show();
-
                             Parcelable parcelable = Parcels.wrap(mafiaRoomsModel);
                             mafiaRoomsModel.setGameStarted(true);
 
@@ -515,6 +518,8 @@ public class MafiaGameView extends BaseActivity {
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        sharedHelper.putMafiaParticipation(false);
+                        stopService(new Intent(MafiaGameView.this, MafiaGameService.class));
                         finish();
                         LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
                     } else {

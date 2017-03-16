@@ -35,6 +35,7 @@ import butterknife.OnClick;
 import ink.va.adapters.MafiaRoomAdapter;
 import ink.va.interfaces.MafiaItemClickListener;
 import ink.va.models.MafiaRoomsModel;
+import ink.va.service.MafiaGameService;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -119,7 +120,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
     }
 
     private void openMafiaInfo() {
-        startActivity(new Intent(this,MafiaInfoActivity.class));
+        startActivity(new Intent(this, MafiaInfoActivity.class));
     }
 
     private void getMyRooms() {
@@ -330,6 +331,8 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        stopService(new Intent(MafiaRoomActivity.this, MafiaGameService.class));
+                        sharedHelper.putMafiaParticipation(false);
                         mafiaRoomAdapter.clear();
                         getRoomsAccordingly();
                     } else {
@@ -376,6 +379,9 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        sharedHelper.putMafiaParticipation(true);
+                        sharedHelper.putMafiaLastRoomId(id);
+                        startService(new Intent(MafiaRoomActivity.this, MafiaGameService.class));
                         Toast.makeText(MafiaRoomActivity.this, getString(R.string.joined), Toast.LENGTH_SHORT).show();
                         getRoomsAccordingly();
                     } else {
@@ -441,6 +447,8 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        stopService(new Intent(MafiaRoomActivity.this, MafiaGameService.class));
+                        sharedHelper.putMafiaParticipation(false);
                         getRoomsAccordingly();
                     } else {
                         Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
