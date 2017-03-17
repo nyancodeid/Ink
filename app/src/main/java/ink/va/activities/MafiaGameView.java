@@ -3,6 +3,7 @@ package ink.va.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -11,7 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,8 +38,10 @@ import org.parceler.Parcels;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -70,12 +72,18 @@ import static ink.va.utils.ErrorCause.GAME_ALREADY_IN_PROGRESS;
 import static ink.va.utils.ErrorCause.GAME_IN_PROGRESS;
 import static ink.va.utils.ErrorCause.MAXIMUM_PLAYERS_REACHED;
 import static ink.va.utils.ErrorCause.ROOM_DELETED;
+import static ink.va.utils.Time.UNIT_DAY;
+import static ink.va.utils.Time.UNIT_HOUR;
+import static ink.va.utils.Time.UNIT_MINUTE;
+import static ink.va.utils.Time.convertToMillis;
 
 public class MafiaGameView extends BaseActivity {
     private static final int ITEM_LEAVE_ID = 1;
     private static final int ITEM_JOIN_ID = 2;
     private static final int ITEM_DELETE_ID = 3;
     private static final int ITEM_START_GAME = 4;
+
+
     private MafiaRoomsModel mafiaRoomsModel;
     @BindView(R.id.playersLoading)
     ProgressBar playersLoading;
@@ -128,6 +136,7 @@ public class MafiaGameView extends BaseActivity {
     private MafiaChatAdapter mafiaChatAdapter;
     private int minimumClassicPlayers = 9;
     private int minimumYakudzaPlayers = 13;
+    private CountDownTimer countDownTimer;
 
 
     @Override
@@ -158,27 +167,94 @@ public class MafiaGameView extends BaseActivity {
     }
 
     private void initDayTypeAndTime() {
-        nightDayIV.setVisibility(View.VISIBLE);
-        switch (mafiaRoomsModel.getCurrentDayType()) {
-            case Constants.DAY_TYPE_DAYLIGHT:
-                nightDayIV.setImageResource(R.drawable.sun_icon);
-                break;
-            case Constants.DAY_TYPE_NIGHT:
-                nightDayIV.setImageResource(R.drawable.moon_icon);
-                break;
-        }
-        String currentServerDate = mafiaRoomsModel.getCurrentServerDate();
-        String gameStartDate = mafiaRoomsModel.getGameStartDate();
+        Retrofit.getInstance().getInkService().getSingleMafiaRoom(mafiaRoomsModel.getId()).enqueue(new Callback<MafiaRoomsModel>() {
+            @Override
+            public void onResponse(Call<MafiaRoomsModel> call, Response<MafiaRoomsModel> response) {
+                mafiaRoomsModel = response.body();
+                boolean isMorning = true;
 
-        Date firstDate = Time.parseDate(currentServerDate);
-        Date secondDate = Time.parseDate(gameStartDate);
+                nightDayIV.setVisibility(View.VISIBLE);
 
-        DateTime start = new DateTime(firstDate);
-        DateTime end = new DateTime(secondDate);
-        Period period = new Period(start, end, PeriodType.millis());
-        int millis = Math.abs(period.getMillis());
+                switch (mafiaRoomsModel.getCurrentDayType()) {
+                    case Constants.DAY_TYPE_DAYLIGHT:
+                        isMorning = true;
+                        nightDayIV.setImageResource(R.drawable.sun_icon);
+                        transparentPanel.setDay();
+                        break;
+                    case Constants.DAY_TYPE_NIGHT:
+                        isMorning = false;
+                        transparentPanel.setNight();
+                        nightDayIV.setImageResource(R.drawable.moon_icon);
+                        break;
+                }
 
-        Log.d("fkalsjflasfa", "initDayTypeAndTime: the millis are nigga " + period.getMillis());
+                String currentServerDate = mafiaRoomsModel.getCurrentServerDate();
+                String gameStartDate = mafiaRoomsModel.getGameStartDate();
+
+                Date firstDate = Time.parseDate(currentServerDate);
+                Date secondDate = Time.parseDate(gameStartDate);
+
+                DateTime start = new DateTime(firstDate);
+                DateTime end = new DateTime(secondDate);
+                Period period = new Period(start, end, PeriodType.millis());
+
+                final long serverMillis = Math.abs(period.getMillis());
+                long gameDurationMillis = 0;
+
+                if (isMorning) {
+                    if (mafiaRoomsModel.getMorningDurationUnit().equals(getString(R.string.minutesUnit))) {
+                        gameDurationMillis = convertToMillis(UNIT_MINUTE, Long.valueOf(mafiaRoomsModel.getMorningDuration()));
+                    } else if (mafiaRoomsModel.getMorningDurationUnit().equals(getString(R.string.hoursUnit))) {
+                        gameDurationMillis = convertToMillis(UNIT_HOUR, Long.valueOf(mafiaRoomsModel.getMorningDuration()));
+                    } else if (mafiaRoomsModel.getMorningDurationUnit().equals(getString(R.string.daysUnit))) {
+                        gameDurationMillis = convertToMillis(UNIT_DAY, Long.valueOf(mafiaRoomsModel.getMorningDuration()));
+                    }
+                } else {
+                    if (mafiaRoomsModel.getNightDurationUnit().equals(getString(R.string.minutesUnit))) {
+                        gameDurationMillis = convertToMillis(UNIT_MINUTE, Long.valueOf(mafiaRoomsModel.getNightDuration()));
+                    } else if (mafiaRoomsModel.getNightDurationUnit().equals(getString(R.string.hoursUnit))) {
+                        gameDurationMillis = convertToMillis(UNIT_HOUR, Long.valueOf(mafiaRoomsModel.getNightDuration()));
+                    } else if (mafiaRoomsModel.getNightDurationUnit().equals(getString(R.string.daysUnit))) {
+                        gameDurationMillis = convertToMillis(UNIT_DAY, Long.valueOf(mafiaRoomsModel.getNightDuration()));
+                    }
+                }
+
+
+                final Date date = new Date();
+
+                long finalCountDownMillis = gameDurationMillis - serverMillis;
+
+                countDownTimer = new CountDownTimer(finalCountDownMillis, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        Calendar calendar = Calendar.getInstance();
+                        date.setTime(millisUntilFinished);
+                        calendar.setTime(date);
+
+                        long seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished);
+
+                        String text = String.format("%02d:%02d:%02d", seconds / 3600,
+                                (seconds % 3600) / 60, (seconds % 60));
+
+
+                        timeLeftTV.setText(mafiaRoomsModel.getCurrentDayType().equals(Constants.DAY_TYPE_DAYLIGHT) ?
+                                getString(R.string.timeLeftForNight, text) :
+                                getString(R.string.timeLeftForMorning, text));
+                    }
+
+                    @Override
+                    public void onFinish() {
+
+                    }
+                };
+                countDownTimer.start();
+            }
+
+            @Override
+            public void onFailure(Call<MafiaRoomsModel> call, Throwable t) {
+                initDayTypeAndTime();
+            }
+        });
     }
 
     private void initRecyclers() {
@@ -195,6 +271,7 @@ public class MafiaGameView extends BaseActivity {
         getMafiaRoomParticipants();
         getMafiaRoomMessages();
     }
+
 
     private void getMafiaRoomMessages() {
         Retrofit.getInstance().getInkService().getMafiaChat(mafiaRoomsModel.getId()).enqueue(new Callback<List<MafiaMessageModel>>() {
@@ -788,6 +865,9 @@ public class MafiaGameView extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
         destroySocket();
     }
 

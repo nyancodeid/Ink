@@ -1,6 +1,7 @@
 package ink.va.utils;
 
 import android.content.Context;
+import android.support.annotation.IntDef;
 
 import com.ink.va.R;
 
@@ -13,12 +14,17 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by USER on 2016-06-26.
  */
 public class Time {
     public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final int UNIT_MINUTE = 0;
+    public static final int UNIT_HOUR = 1;
+    public static final int UNIT_DAY = 2;
+    public static final int UNIT_SECOND = 3;
 
     public static String getCurrentTime() {
         Calendar calendar = Calendar.getInstance();
@@ -175,5 +181,30 @@ public class Time {
             e.printStackTrace();
         }
         return date;
+    }
+
+    public static long convertToMillis(@TimeUnits int unitType, long chosenDuration) {
+        long finalResult = 0;
+        switch (unitType) {
+            case UNIT_MINUTE:
+                finalResult = java.util.concurrent.TimeUnit.MINUTES.toMillis(chosenDuration);
+                break;
+            case UNIT_HOUR:
+                finalResult = java.util.concurrent.TimeUnit.HOURS.toMillis(chosenDuration);
+                break;
+            case UNIT_DAY:
+                finalResult = java.util.concurrent.TimeUnit.DAYS.toMillis(chosenDuration);
+                break;
+
+            case UNIT_SECOND:
+                finalResult = TimeUnit.SECONDS.toMillis(chosenDuration);
+                break;
+        }
+        return finalResult;
+    }
+
+    @IntDef({UNIT_DAY, UNIT_HOUR, UNIT_SECOND, UNIT_MINUTE})
+    public @interface TimeUnits {
+
     }
 }
