@@ -100,20 +100,25 @@ public class MafiaRoomsModel implements Comparable<MafiaRoomsModel> {
     @Setter
     private boolean gameEnded;
 
-    @SerializedName("daysLeft")
+    @SerializedName("daysPast")
     @Getter
     @Setter
     private int daysLeft;
 
-    @SerializedName("hoursLeft")
+    @SerializedName("hoursPast")
     @Getter
     @Setter
     private int hoursLeft;
 
-    @SerializedName("minutesLeft")
+    @SerializedName("minutesPast")
     @Getter
     @Setter
     private int minutesLeft;
+
+    @SerializedName("currentServerDate")
+    @Getter
+    @Setter
+    private String currentServerDate;
 
     @Override
     public int compareTo(MafiaRoomsModel o) {
