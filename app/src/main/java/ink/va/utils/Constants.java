@@ -35,6 +35,7 @@ public class Constants {
     public static final String VIP_GLOBAL_CHAT_URL = "VipGlobalChat.php";
     public static final String USER_GIFS_URL = "GetUserGifs.php";
     public static final String GET_USER_COLLECTIONS = "GetUserCollection.php";
+    public static final String GET_SINGLE_MAFIA_ROOM = "GetSingleMafiaRoom.php";
     public static final String GET_SINGLE_STICKER_PACK = "GetSingleStickerPack.php";
     public static final String PROFILE_VISIBILITY_URL = "ProfileVisibility.php";
     public static final String DELETE_USER_PACK = "DeleteUserPack.php";

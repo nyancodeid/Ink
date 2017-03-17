@@ -967,4 +967,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="cantStart">Can\'t start the game</string>
     <string name="needMorePlayersText">You need %1$d more player(s) to start the game</string>
     <string name="scrollForMore">scroll for more messages</string>
+    <string name="timeLeftForMorning">Time left for the morning - %1$d%2$d : %3$d%4$d : %5$d%6$d : %7$d%8$d</string>
+    <string name="timeLeftForNight">Time left for the night - %1$d%2$d : %3$d%4$d : %5$d%6$d : %7$d%8$d</string>
 </resources>

@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,12 +29,16 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.ink.va.R;
 
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -51,6 +56,7 @@ import ink.va.utils.Keyboard;
 import ink.va.utils.ProgressDialog;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
+import ink.va.utils.Time;
 import ink.va.utils.TransparentPanel;
 import ink.va.utils.User;
 import okhttp3.ResponseBody;
@@ -148,10 +154,10 @@ public class MafiaGameView extends BaseActivity {
         initEditText(isParticipant());
         initGameInfo();
         initRecyclers();
-        initDayType();
+        initDayTypeAndTime();
     }
 
-    private void initDayType() {
+    private void initDayTypeAndTime() {
         nightDayIV.setVisibility(View.VISIBLE);
         switch (mafiaRoomsModel.getCurrentDayType()) {
             case Constants.DAY_TYPE_DAYLIGHT:
@@ -161,6 +167,18 @@ public class MafiaGameView extends BaseActivity {
                 nightDayIV.setImageResource(R.drawable.moon_icon);
                 break;
         }
+        String currentServerDate = mafiaRoomsModel.getCurrentServerDate();
+        String gameStartDate = mafiaRoomsModel.getGameStartDate();
+
+        Date firstDate = Time.parseDate(currentServerDate);
+        Date secondDate = Time.parseDate(gameStartDate);
+
+        DateTime start = new DateTime(firstDate);
+        DateTime end = new DateTime(secondDate);
+        Period period = new Period(start, end, PeriodType.millis());
+        int millis = Math.abs(period.getMillis());
+
+        Log.d("fkalsjflasfa", "initDayTypeAndTime: the millis are nigga " + period.getMillis());
     }
 
     private void initRecyclers() {

@@ -153,4 +153,27 @@ public class Time {
         Date dateObject = formatter.parse(parsedDate);
         return dateObject;
     }
+
+
+    public static Date parseDate(String dateInput) {
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
+        try {
+            date = simpleDateFormat.parse(dateInput);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public static Date parseDate(String dateInput, String dateFormat) {
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+        try {
+            date = simpleDateFormat.parse(dateInput);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
 }

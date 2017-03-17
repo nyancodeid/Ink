@@ -200,6 +200,10 @@ public class Retrofit {
         @FormUrlEncoded
         Call<List<ParticipantModel>> getMafiaRoomParticipants(@Field("roomId") int roomId);
 
+        @POST(Constants.GET_SINGLE_MAFIA_ROOM)
+        @FormUrlEncoded
+        Call<MafiaRoomsModel> getSingleMafiaRoom(@Field("roomId") int roomId);
+
         @POST(Constants.MAFIA_CHAT_URL)
         @FormUrlEncoded
         Call<List<MafiaMessageModel>> getMafiaChat(@Field("roomId") int roomId);
@@ -207,7 +211,7 @@ public class Retrofit {
         @POST(Constants.MAFIA_ROOM_CHECK_URL)
         @FormUrlEncoded
         Call<MafiaRoomsModel> checkMafiaRoom(@Field("roomId") int roomId,
-                                               @Field("userId") String userId);
+                                             @Field("userId") String userId);
 
         @POST(Constants.SEARCH_GROUP_URL)
         @FormUrlEncoded
