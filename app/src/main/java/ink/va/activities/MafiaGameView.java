@@ -148,7 +148,19 @@ public class MafiaGameView extends BaseActivity {
         initEditText(isParticipant());
         initGameInfo();
         initRecyclers();
+        initDayType();
+    }
 
+    private void initDayType() {
+        nightDayIV.setVisibility(View.VISIBLE);
+        switch (mafiaRoomsModel.getCurrentDayType()) {
+            case Constants.DAY_TYPE_DAYLIGHT:
+                nightDayIV.setImageResource(R.drawable.sun_icon);
+                break;
+            case Constants.DAY_TYPE_NIGHT:
+                nightDayIV.setImageResource(R.drawable.moon_icon);
+                break;
+        }
     }
 
     private void initRecyclers() {
