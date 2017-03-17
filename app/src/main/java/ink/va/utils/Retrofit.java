@@ -538,7 +538,8 @@ public class Retrofit {
                                     @Part("timezone") String timezone,
                                     @Part("type") String type,
                                     @Part("postId") String postId,
-                                    @Part("shouldDelete") String shouldDelete);
+                                    @Part("shouldDelete") String shouldDelete,
+                                    @Part("postType") String postType);
 
 
         @POST(Constants.MAKE_POST_URL)
@@ -553,7 +554,8 @@ public class Retrofit {
                                     @Field("type") String type,
                                     @Field("editedFileName") String editedFileName,
                                     @Field("postId") String postId,
-                                    @Field("shouldDelete") String shouldDelete);
+                                    @Field("shouldDelete") String shouldDelete,
+                                    @Field("postType") String postType);
 
 
         @POST(Constants.COMMENT_OPTIONS_URL)

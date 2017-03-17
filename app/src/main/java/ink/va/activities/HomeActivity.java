@@ -352,6 +352,7 @@ public class HomeActivity extends BaseActivity
     private BroadcastReceiver feedUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            getCoins();
             if (mFeed != null) {
                 //meaning new comment triggered the broadcast
                 if (intent.getExtras() != null) {

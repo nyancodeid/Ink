@@ -163,6 +163,8 @@ public class Constants {
      */
     public static final String TYPE_MESSAGE_ATTACHMENT = "TYPE_MESSAGE_ATTACHMENT";
     public static final String BADGE_TYPE_VIEW = "view";
+    public static final String POST_TYPE_LOCAL = "local";
+    public static final String POST_TYPE_GLOBAL = "global";
     public static final String BADGE_TYPE_BUY = "buy";
     public static final String DAY_TYPE_DAYLIGHT = "daylight";
     public static final String DAY_TYPE_NIGHT = "night";

@@ -973,4 +973,8 @@
 
     <string name="timeLeftForMorning">Время до утра -  %1$s</string>
     <string name="timeLeftForNight">Время до ночи - %1$s</string>
+
+    <string name="localPostHint">Примечание : Ваш пост видим только друзьям. Измените видимость нажимая на иконку</string>
+    <string name="globalPostHint">Пост видим всем пользователем Инк-а. С вас будет снята %1$d монет за пост.</string>
+    <string name="visibilityDisabled">Вы не можете редактировать видимость</string>
 </resources>

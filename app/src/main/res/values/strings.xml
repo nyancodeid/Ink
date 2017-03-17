@@ -969,4 +969,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="scrollForMore">scroll for more messages</string>
     <string name="timeLeftForMorning">Time left for the morning - %1$s</string>
     <string name="timeLeftForNight">Time left for the night - %1$s</string>
+    <string name="localPostHint">Note : you\'r post is visible only to you\'r friends. Change by clicking the icon</string>
+    <string name="globalPostHint">The post is visible to all Ink users. You will be charged %1$d coins</string>
+    <string name="visibilityDisabled">You can\'t edit visibility</string>
 </resources>

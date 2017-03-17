@@ -25,11 +25,13 @@ import android.text.util.Linkify;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.ink.va.R;
 
 import org.json.JSONException;
@@ -48,6 +50,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.models.CoinsResponse;
 import ink.va.utils.Constants;
 import ink.va.utils.FileUtils;
 import ink.va.utils.PermissionsChecker;
@@ -59,6 +62,8 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static ink.va.utils.ErrorCause.NOT_ENOUGH_COINS;
 
 public class MakePost extends BaseActivity implements ProgressRequestBody.UploadCallbacks {
     private static final int PICK_FILE_REQUEST_CODE = 5584;
@@ -80,6 +85,10 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     TextView mAddressHint;
     @BindView(R.id.attachmentHint)
     TextView mAttachmentHint;
+    @BindView(R.id.postVisibilityHint)
+    TextView postVisibilityHint;
+    @BindView(R.id.postVisibilityIV)
+    ImageView postVisibilityIV;
     private boolean canProceed;
     private BroadcastReceiver mBroadcastReceiver;
     private SharedHelper mSharedHelper;
@@ -94,6 +103,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     private String attachmentName = "";
     private String addressName;
     private String shouldDelete = "false";
+    private String postType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +111,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
         setContentView(R.layout.activity_make_post);
         ButterKnife.bind(this);
         mSharedHelper = new SharedHelper(this);
+        postType = Constants.POST_TYPE_LOCAL;
         Toolbar makePostToolbar = (Toolbar) findViewById(R.id.makePostToolbar);
         setSupportActionBar(makePostToolbar);
         Linkify.addLinks(mPostBody, Linkify.WEB_URLS);
@@ -111,11 +122,13 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
         progressDialog.setCancelable(false);
 
 
-
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             if (extras.containsKey("isEditing")) {
                 isEditing = extras.getBoolean("isEditing");
+                if (isEditing) {
+                    disableVisibilityControls();
+                }
                 hasAttachment = extras.getBoolean("hasAttachment");
                 hasAddress = extras.getBoolean("hasAddress");
                 postId = extras.getString("postId");
@@ -195,6 +208,12 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
         });
     }
 
+    private void disableVisibilityControls() {
+        postVisibilityIV.setEnabled(false);
+        postVisibilityIV.setImageResource(R.drawable.local_icon_greyed_out);
+        postVisibilityHint.setText(getString(R.string.visibilityDisabled));
+    }
+
     private void handleSendText(Intent intent) {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (sharedText != null) {
@@ -229,6 +248,22 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                 STORAGE_PERMISSION_REQUEST);
     }
 
+    @OnClick(R.id.postVisibilityIV)
+    public void postVisibilityIVClicked() {
+        switch (postType) {
+            case Constants.POST_TYPE_GLOBAL:
+                postType = Constants.POST_TYPE_LOCAL;
+                postVisibilityHint.setText(getString(R.string.localPostHint));
+                postVisibilityIV.setImageResource(R.drawable.local_icon);
+                break;
+            case Constants.POST_TYPE_LOCAL:
+                postVisibilityIV.setImageResource(R.drawable.global_icon);
+                postType = Constants.POST_TYPE_GLOBAL;
+                postVisibilityHint.setText(getString(R.string.loadingText));
+                getCoinsToCharge();
+                break;
+        }
+    }
 
     @OnClick(R.id.checkWrapper)
     public void checkWrapper() {
@@ -487,7 +522,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                 finalType,
                 attachmentName,
                 postId,
-                shouldDelete);
+                shouldDelete, postType);
 
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -505,13 +540,19 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                         finish();
                         overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
                     } else {
-                        showFailureDialog();
+                        String cause = jsonObject.optString("cause");
+                        if (cause.equals(NOT_ENOUGH_COINS)) {
+                            showFailureDialog(true);
+                        } else {
+                            showFailureDialog(false);
+                        }
+
                     }
                 } catch (IOException e) {
-                    showFailureDialog();
+                    showFailureDialog(false);
                     e.printStackTrace();
                 } catch (JSONException e) {
-                    showFailureDialog();
+                    showFailureDialog(false);
                     e.printStackTrace();
                 }
             }
@@ -540,7 +581,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                 mSharedHelper.getLastName(),
                 Time.getTimeZone(),
                 finalType, postId,
-                shouldDelete);
+                shouldDelete, postType);
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -549,6 +590,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        progressDialog.dismiss();
                         LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "Comments"));
                         LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
                         Toast.makeText(MakePost.this, getString(R.string.post_shared), Toast.LENGTH_SHORT).show();
@@ -556,13 +598,18 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                         finish();
                         overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
                     } else {
-                        showFailureDialog();
+                        String cause = jsonObject.optString("cause");
+                        if (cause.equals(NOT_ENOUGH_COINS)) {
+                            showFailureDialog(true);
+                        } else {
+                            showFailureDialog(false);
+                        }
                     }
                 } catch (IOException e) {
-                    showFailureDialog();
+                    showFailureDialog(false);
                     e.printStackTrace();
                 } catch (JSONException e) {
-                    showFailureDialog();
+                    showFailureDialog(false);
                     e.printStackTrace();
                 }
             }
@@ -575,13 +622,20 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     }
 
 
-    private void showFailureDialog() {
+    private void showFailureDialog(boolean coinsFailure) {
         if (progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(MakePost.this);
-        builder.setTitle(getString(R.string.somethingWentWrong));
-        builder.setMessage(getString(R.string.notPosted));
+
+        if (coinsFailure) {
+            builder.setTitle(getString(R.string.error));
+            builder.setMessage(getString(R.string.not_enough_coins));
+        } else {
+            builder.setTitle(getString(R.string.somethingWentWrong));
+            builder.setMessage(getString(R.string.notPosted));
+        }
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -644,5 +698,39 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                 progressDialog.dismiss();
             }
         }
+    }
+
+    private void getCoinsToCharge() {
+        Call<ResponseBody> coinsCall = Retrofit.getInstance().getInkService().getCoins(mSharedHelper.getUserId());
+        coinsCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    getCoinsToCharge();
+                    return;
+                }
+                if (response.body() == null) {
+                    getCoinsToCharge();
+                    return;
+                }
+                Gson gson = new Gson();
+                try {
+                    CoinsResponse coinsResponse = gson.fromJson(response.body().string(), CoinsResponse.class);
+                    if (coinsResponse.success) {
+                        postVisibilityHint.setText(getString(R.string.globalPostHint, coinsResponse.coinsDeducateForGlobal));
+                    } else {
+                        Toast.makeText(MakePost.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                getCoinsToCharge();
+            }
+        });
     }
 }

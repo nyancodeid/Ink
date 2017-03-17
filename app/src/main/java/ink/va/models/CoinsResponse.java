@@ -11,4 +11,6 @@ public class CoinsResponse {
     public boolean success;
     @SerializedName("coins")
     public int coins;
+    @SerializedName("coinsDeducateForGlobal")
+    public int coinsDeducateForGlobal;
 }

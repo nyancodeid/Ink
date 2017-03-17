@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:animateLayoutChanges="true"
+    android:fitsSystemWindows="true"
     tools:context="ink.va.activities.MakePost">
 
     <RelativeLayout
@@ -195,11 +195,37 @@
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/postVisibilityHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/addedAttachmentLayout"
+                android:layout_marginTop="5dp"
+                android:layout_toLeftOf="@+id/postVisibilityIV"
+                android:alpha="0.7"
+                android:gravity="left"
+                android:text="@string/localPostHint"
+                android:textColor="@color/vk_white"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/postVisibilityIV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/addedAttachmentLayout"
+                android:paddingBottom="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:src="@drawable/local_icon" />
+
             <EditText
                 android:id="@+id/postBody"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/addedAttachmentLayout"
+                android:layout_below="@+id/postVisibilityHint"
                 android:layout_margin="5dp"
                 android:autoLink="web"
                 android:background="@android:color/transparent"
