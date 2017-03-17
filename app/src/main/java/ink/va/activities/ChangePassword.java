@@ -44,7 +44,10 @@ public class ChangePassword extends BaseActivity {
         setContentView(R.layout.activity_change_password);
         ButterKnife.bind(this);
         sharedHelper = new SharedHelper(this);
-        progressDialog = ink.va.utils.ProgressDialog.get().buildProgressDialog(this, getString(R.string.connecting), getString(R.string.connectingToServer), false);
+        progressDialog = ink.va.utils.ProgressDialog.get().buildProgressDialog(this, false);
+        progressDialog.setTitle(getString(R.string.connecting));
+        progressDialog.setMessage(getString(R.string.connectingToServer));
+        progressDialog.setCancelable(false);
         ButterKnife.bind(this);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -63,14 +66,14 @@ public class ChangePassword extends BaseActivity {
         } else if (!newPassword.getText().toString().equals(repeatPassword.getText().toString())) {
             repeatPassword.setError(getString(R.string.doesnotMatch));
             newPassword.setError(getString(R.string.doesnotMatch));
-        } else if(currentPassword.getText().toString().equals(repeatPassword.getText().toString())) {
-           Snackbar.make(repeatPassword,getString(R.string.passwordDifferentError),Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
-               @Override
-               public void onClick(View view) {
+        } else if (currentPassword.getText().toString().equals(repeatPassword.getText().toString())) {
+            Snackbar.make(repeatPassword, getString(R.string.passwordDifferentError), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-               }
-           }).show();
-        }else{
+                }
+            }).show();
+        } else {
             progressDialog.show();
             newPasswordString = newPassword.getText().toString();
             doPasswordCheckRequest(currentPassword.getText().toString());

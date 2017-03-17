@@ -183,7 +183,7 @@ public class SharedHelper {
     }
 
     public boolean showSnow() {
-        return mSharedPreferences.getBoolean("showSnow", true);
+        return mSharedPreferences.getBoolean("showSnow", false);
     }
 
     public String getUserId() {
@@ -856,5 +856,23 @@ public class SharedHelper {
 
     public String getPin() {
         return mSharedPreferences.getString("pin", "");
+    }
+
+    public boolean hasAnyMafiaParticipation() {
+        return mSharedPreferences.getBoolean("hasAnyMafiaParticipation", false);
+    }
+
+    public void putMafiaParticipation(boolean participating) {
+        mEditor.putBoolean("hasAnyMafiaParticipation", participating);
+        mEditor.commit();
+    }
+
+    public void putMafiaLastRoomId(int roomId) {
+        mEditor.putInt("mafiaRoomId", roomId);
+        mEditor.commit();
+    }
+
+    public int getMafiaRoomId() {
+        return mSharedPreferences.getInt("mafiaRoomId", 0);
     }
 }

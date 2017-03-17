@@ -35,6 +35,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -58,6 +60,7 @@ import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
+import lombok.Setter;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -117,6 +120,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     TextView opponentStatus;
     @BindView(R.id.statusColor)
     ImageView statusColor;
+    @BindView(R.id.moreMessagesHint)
+    View moreMessagesHint;
 
     private ChatAdapter chatAdapter;
     private RealmHelper realmHelper;
@@ -125,8 +130,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private boolean socketConnected;
     private String lastChosenStickerUrl;
     private boolean isStickerChosen;
-    private Animation slideIn;
-    private Animation slideOut;
     private boolean showSuccess;
     private SharedHelper sharedHelper;
     private String currentUserId;
@@ -145,6 +148,14 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private boolean isDataLoaded;
     private ChatModel lastSentChatModel;
     private ScheduledExecutorService scheduler;
+    private List<ChatModel> messages;
+    private int pagingStart;
+    private int pagingEnd = 50;
+    private LinearLayoutManager linearLayoutManager;
+    private int lastVisiblePosition;
+    private View chatHeaderView;
+    private MessagePagingTask messagePagingTask;
+    private boolean furtherLoad = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +163,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         sharedHelper = new SharedHelper(this);
+        messages = new LinkedList<>();
 
 
         fadeAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_scale);
@@ -183,10 +195,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
 
         Notification.get().setSendingRemote(false);
-
-        slideIn = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_in);
-        slideOut = AnimationUtils.loadAnimation(this, R.anim.slide_and_rotate_out);
-
         initWriteField();
         getMessages();
         removeNotificationIfNeeded();
@@ -275,6 +283,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     /**
      * Click Handlers
      */
+
+    @OnClick(R.id.moreMessagesHint)
+    public void moreMessagesHintClicked() {
+        moreMessagesHint.setVisibility(View.GONE);
+
+    }
 
     @OnClick(R.id.opponentImage)
     public void opponentImageClicked() {
@@ -418,6 +432,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         realmHelper.getMessagesAsChatModel(opponentId, currentUserId, new GeneralCallback<List<ChatModel>>() {
             @Override
             public void onSuccess(final List<ChatModel> messageModels) {
+                messages.clear();
+                messages.addAll(messageModels);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -425,15 +441,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                             showNoMessages();
                         } else {
                             hideNoMessages();
-                            chatAdapter.setChatModelList(messageModels);
-                            mRecyclerView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    scrollToBottom();
-                                }
-                            });
+                            pagingStart = messages.size() - 1;
+                            pagingEnd = pagingStart - 50;
+                            doMessagesPaging(pagingStart, pagingEnd, true);
                         }
                         loadingMessages.setVisibility(View.GONE);
+                        chatHeaderView = chatAdapter.getHeaderView();
                     }
                 });
 
@@ -444,6 +457,19 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
             }
         });
+    }
+
+    private void doMessagesPaging(final int start, int end, boolean firstPaging) {
+        if (furtherLoad) {
+            if (messagePagingTask != null) {
+                messagePagingTask = null;
+            }
+            messagePagingTask = new MessagePagingTask();
+
+            lastVisiblePosition = chatAdapter.getItemCount();
+            messagePagingTask.setFirstPaging(firstPaging);
+            messagePagingTask.execute(start, end);
+        }
     }
 
 
@@ -726,7 +752,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);
         itemAnimator.setRemoveDuration(500);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(itemAnimator);
@@ -734,10 +760,30 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (chatAdapter.getItemCount() >= 50) {
+                    if (((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0) {
+                        recyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                pagingStart = (pagingEnd - 1);
+                                pagingEnd = pagingStart - 50;
+                                doMessagesPaging(pagingStart, pagingEnd, false);
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                     Keyboard.hideKeyboard(Chat.this);
+                    if (moreMessagesHint.getVisibility() == View.VISIBLE) {
+                        moreMessagesHint.setVisibility(View.GONE);
+                    }
                 }
 
                 LinearLayoutManager layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
@@ -760,29 +806,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private void hideScroller() {
         scrollDownChat.setTag(getString(R.string.notVisible));
         scrollDownChat.setEnabled(false);
-        scrollDownChat.startAnimation(slideOut);
-        slideOut.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                scrollDownChat.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
+        scrollDownChat.setVisibility(View.GONE);
     }
 
     private void showScroller() {
         scrollDownChat.setEnabled(true);
         scrollDownChat.setTag(getString(R.string.visible));
-        scrollDownChat.startAnimation(slideIn);
         scrollDownChat.setVisibility(View.VISIBLE);
     }
 
@@ -1097,5 +1126,57 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         }
     }
 
+    private class MessagePagingTask extends AsyncTask<Integer, String, List<ChatModel>> {
+        @Setter
+        private boolean firstPaging;
 
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (!firstPaging && chatHeaderView != null && chatHeaderView.getVisibility() != View.VISIBLE) {
+                chatHeaderView.setVisibility(View.VISIBLE);
+            }
+        }
+
+        @Override
+        protected List<ChatModel> doInBackground(Integer... params) {
+            List<ChatModel> chatModels = new LinkedList<>();
+            for (int i = params[0]; i >= params[1]; i--) {
+                try {
+                    ChatModel chatModel = messages.get(i);
+                    chatModels.add(chatModel);
+                } catch (IndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+            return chatModels;
+        }
+
+        @Override
+        protected void onPostExecute(List<ChatModel> chatModels) {
+            super.onPostExecute(chatModels);
+
+            if (!chatModels.isEmpty()) {
+                furtherLoad = true;
+                if (firstPaging) {
+                    Collections.reverse(chatModels);
+                }
+                chatAdapter.insertChatModelWithItemNotify(chatModels, firstPaging);
+                if (!firstPaging) {
+                    moreMessagesHint.setVisibility(View.VISIBLE);
+                }
+            } else {
+                furtherLoad = false;
+            }
+            chatModels = null;
+            if (chatHeaderView != null && chatHeaderView.getVisibility() == View.VISIBLE) {
+                chatHeaderView.setVisibility(View.GONE);
+            }
+            if(firstPaging){
+                scrollToBottom();
+            }
+        }
+    }
 }

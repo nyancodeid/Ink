@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/participantImage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="5dp" />
+
+    <TextView
+        android:id="@+id/participantName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/participantImage"
+        android:layout_margin="10dp"
+        android:layout_toRightOf="@+id/participantImage"
+        android:ellipsize="end"
+        android:fontFamily="@string/condensedFont"
+        android:maxLines="1"
+        android:text="@string/loadingText"
+        android:textColor="@color/defaultGroupColor"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/roomOwnerTV"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/participantName"
+        android:layout_alignStart="@+id/participantName"
+        android:layout_below="@+id/participantName"
+        android:fontFamily="@string/condensedFont"
+        android:text="@string/roomOwner" />
+</RelativeLayout>

@@ -60,7 +60,10 @@ public class SecurityQuestion extends BaseActivity {
         sharedHelper = new SharedHelper(this);
         scaleOut = AnimationUtils.loadAnimation(this, R.anim.scale_out);
         scaleIn = AnimationUtils.loadAnimation(this, R.anim.scale_in);
-        progressDialog = ProgressDialog.get().buildProgressDialog(this, getString(R.string.connecting), getString(R.string.connectingToServer), false);
+        progressDialog = ProgressDialog.get().buildProgressDialog(this, false);
+        progressDialog.setCancelable(false);
+        progressDialog.setTitle(getString(R.string.connecting));
+        progressDialog.setMessage(getString(R.string.connectingToServer));
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

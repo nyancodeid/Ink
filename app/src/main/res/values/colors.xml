@@ -21,6 +21,7 @@
     <color name="dimColor">#80323232</color>
     <color name="darkGoldColor">#996600</color>
     <color name="orangeColor">#ff6633</color>
+    <color name="activeBlack">#50000000</color>
 
     <integer-array name="rainbow">
         <item>@color/rainbow_red</item>

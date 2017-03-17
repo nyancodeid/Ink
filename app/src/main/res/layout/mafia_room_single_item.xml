@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mafiaRoomRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,244 +9,266 @@
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground">
 
-
-    <ImageView
-        android:id="@+id/mafiaRoomMoreIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:background="?attr/selectableItemBackground"
-        android:foreground="?attr/selectableItemBackground"
-        android:padding="7dp"
-        android:src="@drawable/more_icon" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/mafiaRoomImage"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="10dp"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:src="@drawable/mafia_room_image" />
-
-    <TextView
-        android:id="@+id/roomNameHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_toRightOf="@+id/mafiaRoomImage"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:fontFamily="@string/appFont"
-        android:text="@string/roomName" />
-
-    <TextView
-        android:id="@+id/roomNameTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/roomNameHeader"
-        android:layout_alignStart="@+id/roomNameHeader"
-        android:layout_below="@+id/roomNameHeader"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_toLeftOf="@+id/gameTypeTV"
-        android:clickable="false"
-        android:ellipsize="end"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:fontFamily="@string/appFont"
-        android:maxLines="1"
-        android:text="@string/loadingText"
-        android:textColor="@color/vk_black"
-        android:textSize="16sp" />
-
-
-    <TextView
-        android:id="@+id/gameTypeHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="16dp"
-        android:layout_toLeftOf="@+id/mafiaRoomMoreIcon"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-
-        android:fontFamily="@string/appFont"
-        android:gravity="right"
-        android:paddingRight="20dp"
-        android:text="@string/gameType" />
-
-    <TextView
-        android:id="@+id/gameTypeTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/gameTypeHeader"
-        android:layout_alignStart="@+id/gameTypeHeader"
-        android:layout_below="@+id/gameTypeHeader"
-        android:layout_marginTop="10dp"
-        android:clickable="false"
-        android:ellipsize="end"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:fontFamily="@string/appFont"
-        android:gravity="right"
-        android:maxLines="1"
-        android:text="@string/loadingText"
-        android:textColor="@color/vk_black"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/morningDurationHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/roomNameTV"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="10dp"
-        android:layout_toRightOf="@+id/mafiaRoomImage"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:fontFamily="@string/appFont"
-        android:text="@string/morningDuration" />
-
-    <TextView
-        android:id="@+id/morningDurationTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/morningDurationHeader"
-        android:layout_alignStart="@+id/morningDurationHeader"
-        android:layout_below="@+id/morningDurationHeader"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_toLeftOf="@+id/nightDurationTV"
-        android:clickable="false"
-        android:ellipsize="end"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:fontFamily="@string/appFont"
-        android:maxLines="1"
-        android:text="@string/loadingText"
-        android:textColor="@color/vk_black"
-        android:textSize="16sp" />
-
-
-    <TextView
-        android:id="@+id/nightDurationHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/morningDurationHeader"
-        android:layout_marginLeft="10dp"
-        android:layout_toLeftOf="@+id/mafiaRoomMoreIcon"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:fontFamily="@string/appFont"
-        android:text="@string/nightDuration" />
-
-    <TextView
-        android:id="@+id/nightDurationTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/nightDurationHeader"
-        android:layout_alignStart="@+id/nightDurationHeader"
-        android:layout_below="@+id/nightDurationHeader"
-        android:layout_marginTop="10dp"
-        android:clickable="false"
-        android:ellipsize="end"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:fontFamily="@string/appFont"
-        android:gravity="right"
-        android:maxLines="1"
-        android:paddingRight="16dp"
-        android:text="@string/loadingText"
-        android:textColor="@color/vk_black"
-        android:textSize="16sp" />
-
-
-    <TextView
-        android:id="@+id/languageHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/mafiaRoomImage"
-        android:layout_alignLeft="@+id/mafiaRoomImage"
-        android:layout_alignRight="@+id/mafiaRoomImage"
-        android:layout_alignStart="@+id/mafiaRoomImage"
-        android:layout_below="@+id/mafiaRoomImage"
-        android:layout_marginTop="10dp"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:fontFamily="@string/appFont"
-        android:gravity="center"
-        android:text="@string/pickLanguage" />
-
-    <TextView
-        android:id="@+id/languageTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/languageHeader"
-        android:layout_alignLeft="@+id/languageHeader"
-        android:layout_alignRight="@+id/languageHeader"
-        android:layout_alignStart="@+id/languageHeader"
-        android:layout_below="@+id/languageHeader"
-        android:layout_marginTop="10dp"
-        android:clickable="false"
-        android:ellipsize="end"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:fontFamily="@string/appFont"
-        android:gravity="center"
-        android:text="@string/loadingText"
-        android:textColor="@color/vk_black"
-        android:textSize="16sp" />
-
-
-    <TextView
-        android:id="@+id/playersHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/mafiaRoomDivider"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:fontFamily="@string/appFont"
-        android:text="@string/loadingText" />
-
-
-    <TextView
-        android:id="@+id/gameStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/mafiaRoomDivider"
-        android:layout_centerHorizontal="true"
-        android:layout_marginRight="10dp"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:fontFamily="@string/appFont"
-        android:text="@string/loadingText"
-        android:textColor="@color/red" />
-
-    <View
-        android:id="@+id/mafiaRoomDivider"
+    <android.support.v7.widget.CardView
+        android:id="@+id/mafiaRoomSingleVIewCard"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/languageTV"
-        android:layout_marginTop="20dp"
-        android:background="@color/linesColor"></View>
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardCornerRadius="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp">
+
+            <ImageView
+                android:id="@+id/mafiaRoomMoreIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="?attr/selectableItemBackground"
+                android:foreground="?attr/selectableItemBackground"
+                android:padding="7dp"
+                android:src="@drawable/more_icon" />
+
+            <TextView
+                android:id="@+id/gameStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginRight="10dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:fontFamily="@string/appFont"
+                android:text="@string/loadingText"
+                android:textColor="@color/red" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/mafiaRoomImage"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_below="@+id/gameStatus"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="10dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:src="@drawable/mafia_room_image" />
+
+            <TextView
+                android:id="@+id/roomNameHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/gameStatus"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_toRightOf="@+id/mafiaRoomImage"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:fontFamily="@string/appFont"
+                android:text="@string/roomName" />
+
+            <TextView
+                android:id="@+id/roomNameTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/roomNameHeader"
+                android:layout_alignStart="@+id/roomNameHeader"
+                android:layout_below="@+id/roomNameHeader"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toLeftOf="@+id/gameTypeTV"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:fontFamily="@string/appFont"
+                android:maxLines="1"
+                android:text="@string/loadingText"
+                android:textColor="@color/vk_black"
+                android:textSize="16sp" />
+
+
+            <TextView
+                android:id="@+id/gameTypeHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/gameStatus"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="16dp"
+                android:layout_toLeftOf="@+id/mafiaRoomMoreIcon"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:fontFamily="@string/appFont"
+                android:gravity="right"
+                android:paddingRight="20dp"
+                android:text="@string/gameType" />
+
+            <TextView
+                android:id="@+id/gameTypeTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/gameTypeHeader"
+                android:layout_alignStart="@+id/gameTypeHeader"
+                android:layout_below="@+id/gameTypeHeader"
+                android:layout_marginTop="10dp"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:fontFamily="@string/appFont"
+                android:gravity="right"
+                android:maxLines="1"
+                android:text="@string/loadingText"
+                android:textColor="@color/vk_black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/morningDurationHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/roomNameTV"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toLeftOf="@+id/nightDurationTV"
+                android:layout_toRightOf="@+id/mafiaRoomImage"
+                android:clickable="false"
+                android:drawableLeft="@drawable/sun_icon"
+                android:ellipsize="end"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:fontFamily="@string/appFont"
+                android:gravity="center|left"
+                android:maxLines="1"
+                android:text="@string/morningDurationShort" />
+
+            <TextView
+                android:id="@+id/morningDurationTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/morningDurationHeader"
+                android:layout_alignStart="@+id/morningDurationHeader"
+                android:layout_below="@+id/morningDurationHeader"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_toLeftOf="@+id/nightDurationTV"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:fontFamily="@string/appFont"
+                android:maxLines="1"
+                android:text="@string/loadingText"
+                android:textColor="@color/vk_black"
+                android:textSize="16sp" />
+
+
+            <TextView
+                android:id="@+id/nightDurationHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/gameTypeTV"
+                android:layout_alignStart="@+id/gameTypeTV"
+                android:layout_alignTop="@+id/morningDurationHeader"
+                android:clickable="false"
+                android:drawableLeft="@drawable/moon_icon"
+                android:drawablePadding="4dp"
+                android:ellipsize="end"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:fontFamily="@string/appFont"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/nightDurationShort" />
+
+            <TextView
+                android:id="@+id/nightDurationTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/nightDurationHeader"
+                android:layout_alignStart="@+id/nightDurationHeader"
+                android:layout_below="@+id/nightDurationHeader"
+                android:layout_marginTop="10dp"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:fontFamily="@string/appFont"
+                android:gravity="right"
+                android:maxLines="1"
+                android:paddingRight="16dp"
+                android:text="@string/loadingText"
+                android:textColor="@color/vk_black"
+                android:textSize="16sp" />
+
+
+            <TextView
+                android:id="@+id/languageHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/mafiaRoomImage"
+                android:layout_alignLeft="@+id/mafiaRoomImage"
+                android:layout_alignRight="@+id/mafiaRoomImage"
+                android:layout_alignStart="@+id/mafiaRoomImage"
+                android:layout_below="@+id/mafiaRoomImage"
+                android:layout_marginTop="10dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:fontFamily="@string/appFont"
+                android:gravity="center"
+                android:text="@string/pickLanguage" />
+
+            <TextView
+                android:id="@+id/languageTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/languageHeader"
+                android:layout_alignLeft="@+id/languageHeader"
+                android:layout_alignRight="@+id/languageHeader"
+                android:layout_alignStart="@+id/languageHeader"
+                android:layout_below="@+id/languageHeader"
+                android:layout_marginTop="10dp"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:fontFamily="@string/appFont"
+                android:gravity="center"
+                android:text="@string/loadingText"
+                android:textColor="@color/vk_black"
+                android:textSize="16sp" />
+
+
+            <TextView
+                android:id="@+id/playersCountTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/languageTV"
+                android:layout_marginRight="10dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:fontFamily="@string/appFont"
+                android:text="@string/loadingText" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
 
     <android.support.v4.widget.Space
         android:id="@+id/mafiaRoomBottomSpacing"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@+id/mafiaRoomDivider"
+        android:layout_below="@+id/mafiaRoomSingleVIewCard"
         android:visibility="gone" />
 </RelativeLayout>

@@ -40,6 +40,7 @@ import me.leolin.shortcutbadger.ShortcutBadger;
 
 import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 import static ink.va.utils.Constants.REALM_DB_NAME;
+import static ink.va.utils.Constants.STATUS_DELIVERED;
 
 /**
  * Created by USER on 2016-06-26.
@@ -443,12 +444,12 @@ public class RealmHelper {
                                         messageModel.setId(chatModel.getMessageId());
                                         messageModel.setFirstName(chatModel.getFirstName());
                                         messageModel.setLastName(chatModel.getLastName());
-                                        messageModel.setMessageId(chatModel.getMessageId());
+                                        messageModel.setMessageId(String.valueOf(System.currentTimeMillis()));
                                         messageModel.setMessage(chatModel.getMessage());
                                         messageModel.setUserId(chatModel.getUserId());
                                         messageModel.setOpponentId(chatModel.getOpponentId());
                                         messageModel.setAnimated(false);
-                                        messageModel.setDeliveryStatus(chatModel.getDeliveryStatus());
+                                        messageModel.setDeliveryStatus(STATUS_DELIVERED);
                                         messageModel.setUserImage(chatModel.getCurrentUserImage());
                                         messageModel.setSocialAccount(chatModel.isSocialAccount());
                                         messageModel.setOpponentImage(chatModel.getOpponentImage());
@@ -483,14 +484,14 @@ public class RealmHelper {
                                 MessageModel messageModel = realm.createObject(MessageModel.class);
 
                                 messageModel.setId(chatModel.getMessageId());
-                                messageModel.setMessageId(chatModel.getMessageId());
+                                messageModel.setMessageId(String.valueOf(System.currentTimeMillis()));
                                 messageModel.setMessage(chatModel.getMessage());
                                 messageModel.setFirstName(chatModel.getFirstName());
                                 messageModel.setLastName(chatModel.getLastName());
                                 messageModel.setUserId(chatModel.getUserId());
                                 messageModel.setOpponentId(chatModel.getOpponentId());
                                 messageModel.setAnimated(false);
-                                messageModel.setDeliveryStatus(chatModel.getDeliveryStatus());
+                                messageModel.setDeliveryStatus(STATUS_DELIVERED);
                                 messageModel.setUserImage(chatModel.getCurrentUserImage());
                                 messageModel.setOpponentImage(chatModel.getOpponentImage());
                                 messageModel.setDate(chatModel.getDate());

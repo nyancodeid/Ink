@@ -813,7 +813,6 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                                     Keyboard.hideKeyboard(Comments.this);
                                     callCommentServer(Constants.COMMENT_TYPE_EDIT, commentModel.getCommentId(), String.valueOf(result[0]));
 
-
                                 }
 
                                 @Override

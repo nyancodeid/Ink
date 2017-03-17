@@ -16,6 +16,7 @@ public class Constants {
      */
     public static final String MAIN_URL = "http://104.196.118.124/Ink_Base_project_1992_no_15_dp_deployed_57_olAllolclslf_8954/";
     public static final String SOCKET_URL = "http://104.196.118.124:9090";
+    public static final String MAFIA_SOCKET_URL = "http://104.196.118.124:8080";
 
     /**
      * The appendable of main url
@@ -34,6 +35,7 @@ public class Constants {
     public static final String VIP_GLOBAL_CHAT_URL = "VipGlobalChat.php";
     public static final String USER_GIFS_URL = "GetUserGifs.php";
     public static final String GET_USER_COLLECTIONS = "GetUserCollection.php";
+    public static final String GET_SINGLE_MAFIA_ROOM = "GetSingleMafiaRoom.php";
     public static final String GET_SINGLE_STICKER_PACK = "GetSingleStickerPack.php";
     public static final String PROFILE_VISIBILITY_URL = "ProfileVisibility.php";
     public static final String DELETE_USER_PACK = "DeleteUserPack.php";
@@ -60,6 +62,9 @@ public class Constants {
     public static final String GROUP_MESSAGES_OPTIONS_URL = "GroupMessagesOptions.php";
     public static final String NOTIFY_OPPONENT = "NotifyOpponent.php";
     public static final String DELETE_MAFIA_ROOM = "DeleteMafiaRoom.php";
+    public static final String LEAVE_MAFIA_ROOM = "LeaveMafiaRoom.php";
+    public static final String MAFIA_ROOM_PARTICIPANTS = "GetMafiaRoomParticipants.php";
+    public static final String JOIN_MAFIA_ROOM = "JoinMafiaRoom.php";
     public static final String RESPOND_TO_REQUEST_URL = "RespondToRequest.php";
     public static final String REMOVE_FRIEND_URL = "RemoveFriend.php";
     public static final String RESPOND_TYPE_ACCEPT_FRIEND_REQUEST = "acceptFriendRequest";
@@ -69,8 +74,11 @@ public class Constants {
     public static final String LOGIN_URL = "Login.php";
     public static final String OPEN_PACK_URL = "OpenPack.php";
     public static final String POLLFISH_URL = "PollFishReward.php";
+    public static final String MAFIA_CHAT_URL = "GetMafiaChat.php";
+    public static final String INSERT_MAFIA_CHAT_URL = "InsertMafiaChat.php";
     public static final String FRIENDS_URL = "UserFriends.php";
     public static final String SINGLE_USER_URL = "SingleUser.php";
+    public static final String MAFIA_ROOM_CHECK_URL = "MafiaRoomCheck.php";
     public static final String SEND_FRIEND_REQUEST_URL = "SendFriendRequest.php";
     public static final String NEWS_BASE_URL = "http://api.breakingnews.com";
     public static final String NEWS_PRIMARY_URL = "/api/v1/item/?format=json";
@@ -156,6 +164,9 @@ public class Constants {
     public static final String TYPE_MESSAGE_ATTACHMENT = "TYPE_MESSAGE_ATTACHMENT";
     public static final String BADGE_TYPE_VIEW = "view";
     public static final String BADGE_TYPE_BUY = "buy";
+    public static final String DAY_TYPE_DAYLIGHT = "daylight";
+    public static final String DAY_TYPE_NIGHT = "night";
+    public static final String TYPE_NEW_OWNER = "newOwner";
     public static final String TYPE_ENTER_VIP = "enterVip";
     public static final String TYPE_BUY_VIP = "buyVip";
     public static final String REQUEST_RESPONSE_TYPE_GROUP = "group";
@@ -245,6 +256,7 @@ public class Constants {
     public static final String EVENT_TYPING = "typing";
     public static final String EVENT_STOPPED_TYPING = "stoppedTyping";
     public static final String EVENT_MESSAGE_SENT = "messageSent";
+    public static final String EVENT_MAFIA_GLOBAL_MESSAGE = "onMafiaGlobalMessage";
 
     /**
      * Socket Emit Events

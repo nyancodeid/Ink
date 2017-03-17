@@ -24,8 +24,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -46,6 +44,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ink.va.activities.Comments;
 import ink.va.activities.FullscreenActivity;
 import ink.va.activities.HomeActivity;
@@ -94,9 +95,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private String shareFileName;
     private File shareOutPutDir;
     private StringBuilder content;
-    private View scrollUpFeed;
-    private Animation slideIn;
-    private Animation slideOut;
+    @BindView(R.id.scrollUpFeed)
+    View scrollUpFeed;
 
     public static Feed newInstance() {
         Feed feed = new Feed();
@@ -107,7 +107,9 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.feed_layout, container, false);
+        View view = inflater.inflate(R.layout.feed_layout, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
 
@@ -120,15 +122,12 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         newFeedsLayout = (RelativeLayout) view.findViewById(R.id.newFeedsLayout);
         feedRefresh = (SwipeRefreshLayout) view.findViewById(R.id.feedRefresh);
         feedRootLayout = (RelativeLayout) view.findViewById(R.id.feedRootLayout);
-        scrollUpFeed = view.findViewById(R.id.scrollUpFeed);
         feedRefresh.setColorSchemeColors(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.colorPrimary));
         noPostsWrapper = (RelativeLayout) view.findViewById(R.id.noPostsWrapper);
         deleteDialog = new ProgressDialog(getActivity());
         deleteDialog.setTitle(getString(R.string.deleting));
         deleteDialog.setMessage(getString(R.string.deletingPost));
         deleteDialog.setCancelable(false);
-        slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_and_rotate_in);
-        slideOut = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_and_rotate_out);
 
         feedRefresh.setOnRefreshListener(this);
         mAdapter = new FeedAdapter(mFeedModelArrayList, getActivity());
@@ -140,21 +139,6 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         mRecyclerView.setItemAnimator(itemAnimator);
         mAdapter.setOnFeedClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
-
-        scrollUpFeed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mRecyclerView.stopScroll();
-                mRecyclerView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mRecyclerView.smoothScrollToPosition(0);
-                    }
-                });
-                hideScroller();
-            }
-        });
-
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -209,6 +193,18 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     }
 
+
+    @OnClick(R.id.scrollUpFeed)
+    public void scrollerClicked() {
+        mRecyclerView.stopScroll();
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.scrollToPosition(0);
+            }
+        });
+        hideScroller();
+    }
 
     @Override
     public void onRefresh() {
@@ -368,46 +364,12 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     private void hideScroller() {
         scrollUpFeed.setTag(getString(R.string.notVisible));
-        scrollUpFeed.setEnabled(false);
-        scrollUpFeed.startAnimation(slideOut);
-        slideOut.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                scrollUpFeed.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
+        scrollUpFeed.setVisibility(View.GONE);
     }
 
     private void showScroller() {
-        scrollUpFeed.setEnabled(true);
         scrollUpFeed.setTag(getString(R.string.visible));
-        scrollUpFeed.startAnimation(slideIn);
         scrollUpFeed.setVisibility(View.VISIBLE);
-        slideIn.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
     }
 
 

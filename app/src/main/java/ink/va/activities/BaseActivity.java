@@ -33,6 +33,7 @@ import com.ink.va.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -52,6 +53,7 @@ import ink.va.utils.ProcessManager;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Version;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -257,30 +259,38 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (sharedHelper.getSendButtonColor() != null) {
             if (sendChatMessage != null) {
                 sendChatMessage.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));
+                sendChatMessage.setColorPressed(Color.parseColor(sharedHelper.getSendButtonColor()));
             }
             if (chatRouletteSendMessage != null) {
                 chatRouletteSendMessage.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));
+                chatRouletteSendMessage.setColorPressed(Color.parseColor(sharedHelper.getSendButtonColor()));
             }
             if (sendGroupMessage != null) {
-                sendChatMessage.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));
+                sendGroupMessage.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));
+                sendGroupMessage.setColorPressed(Color.parseColor(sharedHelper.getSendButtonColor()));
             }
             if (replyMessage != null) {
                 replyMessage.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));
             }
             if (pickImageButton != null) {
                 pickImageButton.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));
+                pickImageButton.setColorPressed(Color.parseColor(sharedHelper.getSendButtonColor()));
             }
         }
         if (sharedHelper.getMenuButtonColor() != null) {
             if (profileFab != null) {
                 profileFab.setMenuButtonColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
+                profileFab.setMenuButtonColorPressed(Color.parseColor(sharedHelper.getMenuButtonColor()));
             }
             if (editImageNameFab != null) {
                 editImageNameFab.setColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
+                editImageNameFab.setColorPressed(Color.parseColor(sharedHelper.getMenuButtonColor()));
                 saveProfileEdits.setColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
+                saveProfileEdits.setColorPressed(Color.parseColor(sharedHelper.getMenuButtonColor()));
             }
             if (createGroup != null) {
                 createGroup.setColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
+                createGroup.setColorPressed(Color.parseColor(sharedHelper.getMenuButtonColor()));
             }
             if (connectDisconnectButton != null) {
                 connectDisconnectButton.setTextColor(Color.parseColor(sharedHelper.getMenuButtonColor()));
@@ -483,4 +493,79 @@ public abstract class BaseActivity extends AppCompatActivity {
             scheduler.shutdown();
         }
     }
+
+
+    private void cacheUserData() {
+        final Call<ResponseBody> myDataResponse = Retrofit.getInstance()
+                .getInkService().getSingleUserDetails(sharedHelper.getUserId(), "");
+        myDataResponse.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    cacheUserData();
+                    return;
+                }
+                if (response.body() == null) {
+                    cacheUserData();
+                    return;
+                }
+                fetchData(response);
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+    private void fetchData(Response<ResponseBody> response) {
+        try {
+            String responseString = response.body().string();
+            try {
+                JSONObject jsonObject = new JSONObject(responseString);
+                boolean success = jsonObject.optBoolean("success");
+                if (success) {
+                    String userId = jsonObject.optString("userId");
+                    String mFirstNameToSend = jsonObject.optString("first_name");
+                    String mLastNameToSend = jsonObject.optString("last_name");
+                    String mGenderToSend = jsonObject.optString("gender");
+                    String mBadgeName = jsonObject.optString("badge_name");
+                    String mPhoneNumberToSend = jsonObject.optString("phone_number");
+                    String mFacebookProfileToSend = jsonObject.optString("facebook_profile");
+                    String mFacebookName = jsonObject.optString("facebook_name");
+                    String mImageLinkToSend = jsonObject.optString("image_link");
+                    String mSkypeToSend = jsonObject.optString("skype");
+                    String mAddressToSend = jsonObject.optString("address");
+                    String mRelationshipToSend = jsonObject.optString("relationship");
+                    String mStatusToSend = jsonObject.optString("status");
+                    boolean isIncognito = jsonObject.optBoolean("isIncognito");
+                    boolean isIncognitoBought = jsonObject.optBoolean("isIncognitoBought");
+                    boolean isHidden = jsonObject.optBoolean("isHidden");
+                    boolean isHiddenBought = jsonObject.optBoolean("isHiddenBought");
+                    int incognitoCost = jsonObject.optInt("incognitoCost");
+                    int hiddenProfileCost = jsonObject.optInt("hiddenProfileCost");
+                    int userCoins = jsonObject.optInt("userCoins");
+
+                    sharedHelper.putFirstName(mFirstNameToSend);
+                    sharedHelper.putLastName(mLastNameToSend);
+                    sharedHelper.putUserGender(mGenderToSend);
+                    sharedHelper.putUserPhoneNumber(mPhoneNumberToSend);
+                    sharedHelper.putUserFacebookLink(mFacebookProfileToSend);
+                    sharedHelper.putUserFacebookName(mFacebookName);
+                    sharedHelper.putUserSkype(mSkypeToSend);
+                    sharedHelper.putUserAddress(mAddressToSend);
+                    sharedHelper.putUserRelationship(mRelationshipToSend);
+                    sharedHelper.putUserStatus(mStatusToSend);
+                    sharedHelper.putShouldLoadImage(true);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import ink.va.models.BadgeResponseModel;
+import ink.va.models.MafiaMessageModel;
 import ink.va.models.MafiaRoomsModel;
 import ink.va.models.MyCollectionResponseModel;
 import ink.va.models.MyMessagesModel;
+import ink.va.models.ParticipantModel;
 import ink.va.models.ServerInformationModel;
 import ink.va.models.UserModel;
 import ink.va.models.VipGlobalChatResponseModel;
@@ -158,24 +160,6 @@ public class Retrofit {
                                          @Field("requestedUserId") String requestedUserId,
                                          @Field("requesterName") String requesterFullName);
 
-        @POST(Constants.ADD_MAFIA_ROOM_URL)
-        @FormUrlEncoded
-        Call<ResponseBody> addMafiaRoom(@Field("roomName") String roomName,
-                                        @Field("roomLanguage") String roomLanguage,
-                                        @Field("gameType") String gameType,
-                                        @Field("morningDuration") String morningDuration,
-                                        @Field("morningDurationUnit") String morningDurationUnit,
-                                        @Field("nightDuration") String nightDuration,
-                                        @Field("nightDurationUnit") String nightDurationUnit,
-                                        @Field("creatorId") String creatorId);
-
-        @POST(Constants.GET_MAFIA_ROOMS_URL)
-        Call<List<MafiaRoomsModel>> getMafiaRooms();
-
-        @POST(Constants.GET_MAFIA_OWN_ROOMS)
-        @FormUrlEncoded
-        Call<List<MafiaRoomsModel>> getMyMafiaRooms(@Field("userId") String userId);
-
 
         @POST(Constants.GET_USER_PASSWORD)
         @FormUrlEncoded
@@ -205,6 +189,29 @@ public class Retrofit {
         Call<ResponseBody> silentCoinsUpdate(@Field("userId") String userId,
                                              @Field("coinsAmount") String coinsAmount,
                                              @Field("coinsToken") String coinsToken);
+
+        @POST(Constants.INSERT_MAFIA_CHAT_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> silentMafiaMessageInsert(@Field("roomId") int roomId,
+                                                    @Field("message") String message,
+                                                    @Field("senderId") String senderId);
+
+        @POST(Constants.MAFIA_ROOM_PARTICIPANTS)
+        @FormUrlEncoded
+        Call<List<ParticipantModel>> getMafiaRoomParticipants(@Field("roomId") int roomId);
+
+        @POST(Constants.GET_SINGLE_MAFIA_ROOM)
+        @FormUrlEncoded
+        Call<MafiaRoomsModel> getSingleMafiaRoom(@Field("roomId") int roomId);
+
+        @POST(Constants.MAFIA_CHAT_URL)
+        @FormUrlEncoded
+        Call<List<MafiaMessageModel>> getMafiaChat(@Field("roomId") int roomId);
+
+        @POST(Constants.MAFIA_ROOM_CHECK_URL)
+        @FormUrlEncoded
+        Call<MafiaRoomsModel> checkMafiaRoom(@Field("roomId") int roomId,
+                                             @Field("userId") String userId);
 
         @POST(Constants.SEARCH_GROUP_URL)
         @FormUrlEncoded
@@ -278,11 +285,39 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> sendDisconnectNotification(@Field("opponentId") String opponentId);
 
+        @POST(Constants.ADD_MAFIA_ROOM_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> addMafiaRoom(@Field("roomName") String roomName,
+                                        @Field("roomLanguage") String roomLanguage,
+                                        @Field("gameType") String gameType,
+                                        @Field("morningDuration") String morningDuration,
+                                        @Field("morningDurationUnit") String morningDurationUnit,
+                                        @Field("nightDuration") String nightDuration,
+                                        @Field("nightDurationUnit") String nightDurationUnit,
+                                        @Field("creatorId") String creatorId,
+                                        @Field("maxPlayers") int maxPlayers);
+
+        @POST(Constants.GET_MAFIA_ROOMS_URL)
+        Call<List<MafiaRoomsModel>> getMafiaRooms();
+
+        @POST(Constants.GET_MAFIA_OWN_ROOMS)
+        @FormUrlEncoded
+        Call<List<MafiaRoomsModel>> getMyMafiaRooms(@Field("userId") String userId);
 
         @POST(Constants.DELETE_MAFIA_ROOM)
         @FormUrlEncoded
         Call<ResponseBody> deleteMafiaRoom(@Field("roomId") int roomId,
                                            @Field("userId") String userId);
+
+        @POST(Constants.LEAVE_MAFIA_ROOM)
+        @FormUrlEncoded
+        Call<ResponseBody> leaveRoom(@Field("roomId") int roomId,
+                                     @Field("userId") String userId);
+
+        @POST(Constants.JOIN_MAFIA_ROOM)
+        @FormUrlEncoded
+        Call<ResponseBody> joinRoom(@Field("roomId") int roomId,
+                                    @Field("userId") String userId);
 
 
         @POST(Constants.CUSTOMIZATION_URL)
@@ -504,7 +539,6 @@ public class Retrofit {
                                     @Part("type") String type,
                                     @Part("postId") String postId,
                                     @Part("shouldDelete") String shouldDelete);
-
 
 
         @POST(Constants.MAKE_POST_URL)
