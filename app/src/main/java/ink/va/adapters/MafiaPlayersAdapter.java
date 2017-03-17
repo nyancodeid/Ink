@@ -11,7 +11,7 @@ import com.ink.va.R;
 import java.util.LinkedList;
 import java.util.List;
 
-import ink.va.models.UserModel;
+import ink.va.models.ParticipantModel;
 import ink.va.view_holders.MafiaParticipantViewHolder;
 import lombok.Setter;
 
@@ -20,7 +20,7 @@ import lombok.Setter;
  */
 
 public class MafiaPlayersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<UserModel> users;
+    private List<ParticipantModel> users;
     private Context context;
     @Setter
     private String ownerId;
@@ -46,7 +46,7 @@ public class MafiaPlayersAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return users.size();
     }
 
-    public void setUsers(List<UserModel> users) {
+    public void setUsers(List<ParticipantModel> users) {
         this.users.clear();
         this.users.addAll(users);
         notifyDataSetChanged();

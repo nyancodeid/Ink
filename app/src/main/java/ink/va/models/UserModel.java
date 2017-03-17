@@ -2,258 +2,117 @@ package ink.va.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Created by PC-Comp on 12/27/2016.
  */
 
+@Parcel
 public class UserModel {
 
     @SerializedName("coins")
+    @Setter
+    @Getter
     private int coins;
     @SerializedName("user_id")
+    @Setter
+    @Getter
     private String userId;
+    @Setter
+    @Getter
     @SerializedName("isSocialAccount")
     private boolean isSocialAccount;
+    @Setter
+    @Getter
     @SerializedName("login")
     private String login;
+    @Setter
+    @Getter
     @SerializedName("first_name")
     private String firstName;
+    @Setter
+    @Getter
     @SerializedName("last_name")
     private String lastName;
+    @Setter
+    @Getter
     @SerializedName("gender")
     private String gender;
+    @Setter
+    @Getter
     @SerializedName("phoneNumber")
     private String phoneNumber;
+    @Setter
+    @Getter
     @SerializedName("facebook_profile")
     private String facebookProfile;
+    @Setter
+    @Getter
     @SerializedName("image_link")
     private String imageUrl;
+    @Setter
+    @Getter
     @SerializedName("skype")
     private String skype;
+    @Setter
+    @Getter
     @SerializedName("address")
     private String address;
+    @Setter
+    @Getter
     @SerializedName("relationship")
     private String relationship;
     @SerializedName("status")
+    @Setter
+    @Getter
     private String status;
+    @Setter
+    @Getter
     @SerializedName("facebook_name")
     private String facebookName;
+    @Setter
+    @Getter
     @SerializedName("last_visited")
     private String lastVisited;
+    @Setter
+    @Getter
     @SerializedName("banned")
     private boolean banned;
+    @Setter
+    @Getter
     @SerializedName("isHidden")
     private boolean isHidden;
+    @Setter
+    @Getter
     @SerializedName("isIncognito")
     private boolean isIncognito;
+    @Setter
+    @Getter
     @SerializedName("isIncognitoBought")
     private boolean isIncognitoBought;
     @SerializedName("isHiddenBought")
+    @Setter
+    @Getter
     private boolean isHiddenBought;
+    @Setter
+    @Getter
     @SerializedName("isVip")
     private boolean isVip;
+    @Setter
+    @Getter
     @SerializedName("isFirstVipLogin")
     private boolean isFirstVipLogin;
+    @Setter
+    @Getter
     @SerializedName("vipMembershipType")
     private String vipMembershipType;
+    @Setter
+    @Getter
     @SerializedName("'badge_name'")
     private String badgeName;
 
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public boolean isSocialAccount() {
-        return isSocialAccount;
-    }
-
-
-    public void setSocialAccount(boolean socialAccount) {
-        isSocialAccount = socialAccount;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getFacebookProfile() {
-        return facebookProfile;
-    }
-
-    public void setFacebookProfile(String facebookProfile) {
-        this.facebookProfile = facebookProfile;
-    }
-
-    public String getBadgeName() {
-        return badgeName;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getSkype() {
-        return skype;
-    }
-
-    public void setSkype(String skype) {
-        this.skype = skype;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getRelationship() {
-        return relationship;
-    }
-
-    public void setRelationship(String relationship) {
-        this.relationship = relationship;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getFacebookName() {
-        return facebookName;
-    }
-
-    public void setFacebookName(String facebookName) {
-        this.facebookName = facebookName;
-    }
-
-    public String getLastVisited() {
-        return lastVisited;
-    }
-
-    public void setLastVisited(String lastVisited) {
-        this.lastVisited = lastVisited;
-    }
-
-    public boolean isBanned() {
-        return banned;
-    }
-
-    public void setBanned(boolean banned) {
-        this.banned = banned;
-    }
-
-    public boolean isHidden() {
-        return isHidden;
-    }
-
-    public void setHidden(boolean hidden) {
-        isHidden = hidden;
-    }
-
-    public boolean isIncognito() {
-        return isIncognito;
-    }
-
-    public void setIncognito(boolean incognito) {
-        isIncognito = incognito;
-    }
-
-    public boolean isIncognitoBought() {
-        return isIncognitoBought;
-    }
-
-    public void setIncognitoBought(boolean incognitoBought) {
-        isIncognitoBought = incognitoBought;
-    }
-
-    public boolean isHiddenBought() {
-        return isHiddenBought;
-    }
-
-    public void setHiddenBought(boolean hiddenBought) {
-        isHiddenBought = hiddenBought;
-    }
-
-    public boolean isVip() {
-        return isVip;
-    }
-
-    public void setVip(boolean vip) {
-        isVip = vip;
-    }
-
-    public boolean isFirstVipLogin() {
-        return isFirstVipLogin;
-    }
-
-    public void setFirstVipLogin(boolean firstVipLogin) {
-        isFirstVipLogin = firstVipLogin;
-    }
-
-    public String getVipMembershipType() {
-        return vipMembershipType;
-    }
-
-    public void setVipMembershipType(String vipMembershipType) {
-        this.vipMembershipType = vipMembershipType;
-    }
-
-    public int getCoins() {
-        return coins;
-    }
-
-    public void setCoins(int coins) {
-        this.coins = coins;
-    }
 }

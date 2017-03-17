@@ -11,6 +11,7 @@ import ink.va.models.MafiaMessageModel;
 import ink.va.models.MafiaRoomsModel;
 import ink.va.models.MyCollectionResponseModel;
 import ink.va.models.MyMessagesModel;
+import ink.va.models.ParticipantModel;
 import ink.va.models.ServerInformationModel;
 import ink.va.models.UserModel;
 import ink.va.models.VipGlobalChatResponseModel;
@@ -197,13 +198,13 @@ public class Retrofit {
 
         @POST(Constants.MAFIA_ROOM_PARTICIPANTS)
         @FormUrlEncoded
-        Call<List<UserModel>> getMafiaRoomParticipants(@Field("roomId") int roomId);
+        Call<List<ParticipantModel>> getMafiaRoomParticipants(@Field("roomId") int roomId);
 
         @POST(Constants.MAFIA_CHAT_URL)
         @FormUrlEncoded
         Call<List<MafiaMessageModel>> getMafiaChat(@Field("roomId") int roomId);
 
-        @POST(Constants.MAFIA_CHAT_URL)
+        @POST(Constants.MAFIA_ROOM_CHECK_URL)
         @FormUrlEncoded
         Call<MafiaRoomsModel> checkMafiaRoom(@Field("roomId") int roomId,
                                                @Field("userId") String userId);

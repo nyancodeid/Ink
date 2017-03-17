@@ -13,6 +13,7 @@ import com.koushikdutta.ion.Ion;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ink.va.models.ParticipantModel;
 import ink.va.models.UserModel;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
@@ -35,7 +36,8 @@ public class MafiaParticipantViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void initData(Context context, UserModel user, String ownerId) {
+    public void initData(Context context, ParticipantModel participantModel, String ownerId) {
+        UserModel user = participantModel.getUser();
         participantName.setText(user.getFirstName() + " " + user.getLastName());
 
         if (ownerId.equals(user.getUserId())) {

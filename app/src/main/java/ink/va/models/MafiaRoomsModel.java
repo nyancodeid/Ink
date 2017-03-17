@@ -13,71 +13,72 @@ import lombok.Setter;
 /**
  * Created by PC-Comp on 3/1/2017.
  */
+
 @Parcel
 public class MafiaRoomsModel implements Comparable<MafiaRoomsModel> {
 
     @SerializedName("id")
     @Setter
     @Getter
-    public int id;
+    private int id;
 
     @SerializedName("roomName")
     @Setter
     @Getter
-    public String roomName;
+    private String roomName;
 
     @SerializedName("roomLanguage")
     @Setter
     @Getter
-    public String roomLanguage;
+    private String roomLanguage;
 
     @SerializedName("gameType")
     @Setter
     @Getter
-    public String gameType;
+    private String gameType;
 
     @SerializedName("morningDuration")
     @Setter
     @Getter
-    public String morningDuration;
+    private String morningDuration;
 
 
     @SerializedName("morningDurationUnit")
     @Setter
     @Getter
-    public String morningDurationUnit;
+    private String morningDurationUnit;
 
 
     @SerializedName("nightDuration")
     @Setter
     @Getter
-    public String nightDuration;
+    private String nightDuration;
 
 
     @SerializedName("nightDurationUnit")
     @Setter
     @Getter
-    public String nightDurationUnit;
+    private String nightDurationUnit;
 
     @SerializedName("creator_id")
     @Setter
     @Getter
-    public String creatorId;
+    private String creatorId;
 
     @SerializedName("gameStarted")
     @Setter
     @Getter
-    public boolean gameStarted;
+    private boolean gameStarted;
 
     @SerializedName("joinedUsers")
     @Setter
     @Getter
-    public List<String> joinedUserIds;
+    private List<ParticipantModel> joinedUsers;
 
     @SerializedName("maxPlayers")
     @Setter
     @Getter
-    public int maxPlayers;
+    private int maxPlayers;
 
     @SerializedName("gameStartDate")
     @Setter
@@ -118,8 +119,8 @@ public class MafiaRoomsModel implements Comparable<MafiaRoomsModel> {
     public int compareTo(MafiaRoomsModel o) {
         boolean isParticipant = false;
         String currentUserId = User.get().getUserId();
-        for (String eachUserId : getJoinedUserIds()) {
-            if (eachUserId.equals(currentUserId)) {
+        for (ParticipantModel eachUserId : getJoinedUsers()) {
+            if (eachUserId.getUser().getUserId().equals(currentUserId)) {
                 isParticipant = true;
                 break;
             }
@@ -130,4 +131,5 @@ public class MafiaRoomsModel implements Comparable<MafiaRoomsModel> {
         }
         return 0;
     }
+
 }

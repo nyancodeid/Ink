@@ -43,7 +43,7 @@ import ink.va.adapters.MafiaChatAdapter;
 import ink.va.adapters.MafiaPlayersAdapter;
 import ink.va.models.MafiaMessageModel;
 import ink.va.models.MafiaRoomsModel;
-import ink.va.models.UserModel;
+import ink.va.models.ParticipantModel;
 import ink.va.service.MafiaGameService;
 import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
@@ -308,16 +308,16 @@ public class MafiaGameView extends BaseActivity {
     }
 
     private void startGame() {
-        if (mafiaRoomsModel.gameType.equals(getString(R.string.yakudza))) {
-            int currentPlayers = mafiaRoomsModel.getJoinedUserIds().size();
+        if (mafiaRoomsModel.getGameType().equals(getString(R.string.yakudza))) {
+            int currentPlayers = mafiaRoomsModel.getJoinedUsers().size();
             if (currentPlayers < minimumYakudzaPlayers) {
                 int playersNeeded = minimumYakudzaPlayers - currentPlayers;
                 DialogUtils.showDialog(this, getString(R.string.cantStart), getString(R.string.needMorePlayersText, playersNeeded), true, null, false, null);
             } else {
 
             }
-        } else if (mafiaRoomsModel.gameType.equals(getString(R.string.classic))) {
-            int currentPlayers = mafiaRoomsModel.getJoinedUserIds().size();
+        } else if (mafiaRoomsModel.getGameType().equals(getString(R.string.classic))) {
+            int currentPlayers = mafiaRoomsModel.getJoinedUsers().size();
             if (currentPlayers < minimumClassicPlayers) {
                 int playersNeeded = minimumClassicPlayers - currentPlayers;
                 DialogUtils.showDialog(this, getString(R.string.cantStart), getString(R.string.needMorePlayersText, playersNeeded), true, null, false, null);
@@ -386,10 +386,10 @@ public class MafiaGameView extends BaseActivity {
     }
 
     private void getMafiaRoomParticipants() {
-        Retrofit.getInstance().getInkService().getMafiaRoomParticipants(mafiaRoomsModel.getId()).enqueue(new Callback<List<UserModel>>() {
+        Retrofit.getInstance().getInkService().getMafiaRoomParticipants(mafiaRoomsModel.getId()).enqueue(new Callback<List<ParticipantModel>>() {
             @Override
-            public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
-                List<UserModel> participants = response.body();
+            public void onResponse(Call<List<ParticipantModel>> call, Response<List<ParticipantModel>> response) {
+                List<ParticipantModel> participants = response.body();
                 if (participants.isEmpty()) {
                     showNoParticipants();
                 } else {
@@ -399,7 +399,7 @@ public class MafiaGameView extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<List<UserModel>> call, Throwable t) {
+            public void onFailure(Call<List<ParticipantModel>> call, Throwable t) {
                 Toast.makeText(MafiaGameView.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                 hideNoParticipants();
             }
@@ -441,9 +441,14 @@ public class MafiaGameView extends BaseActivity {
                         startService(new Intent(MafiaGameView.this, MafiaGameService.class));
                         Toast.makeText(MafiaGameView.this, getString(R.string.joined), Toast.LENGTH_SHORT).show();
                         Parcelable parcelable = Parcels.wrap(mafiaRoomsModel);
-                        List<String> joinedUsers = mafiaRoomsModel.getJoinedUserIds();
-                        joinedUsers.add(sharedHelper.getUserId());
-                        mafiaRoomsModel.setJoinedUserIds(joinedUsers);
+                        List<ParticipantModel> joinedUsers = mafiaRoomsModel.getJoinedUsers();
+
+                        ParticipantModel participantModel = new ParticipantModel();
+                        participantModel.setEliminated(false);
+                        participantModel.setRole("");
+                        participantModel.setUser(User.get().buildUser(sharedHelper));
+                        joinedUsers.add(participantModel);
+                        mafiaRoomsModel.setJoinedUsers(joinedUsers);
                         relaunchActivity(parcelable);
 
                     } else {
@@ -688,8 +693,8 @@ public class MafiaGameView extends BaseActivity {
     private boolean isParticipant() {
         boolean isParticipant = false;
         String currentUserId = sharedHelper.getUserId();
-        for (String eachId : mafiaRoomsModel.getJoinedUserIds()) {
-            if (eachId.equals(currentUserId)) {
+        for (ParticipantModel eachId : mafiaRoomsModel.getJoinedUsers()) {
+            if (eachId.getUser().getUserId().equals(currentUserId)) {
                 isParticipant = true;
                 break;
             }
@@ -713,7 +718,7 @@ public class MafiaGameView extends BaseActivity {
 
 
     private void initGameInfo() {
-        if (mafiaRoomsModel.gameStarted) {
+        if (mafiaRoomsModel.isGameStarted()) {
             gameStartedTV.setTextColor(ContextCompat.getColor(this, R.color.darkGreen));
             gameStartedTV.setText(getString(R.string.gameStarted));
         } else {
@@ -721,7 +726,7 @@ public class MafiaGameView extends BaseActivity {
             gameStartedTV.setText(getString(R.string.gameNotStarted));
         }
         String gameType = getString(R.string.classic);
-        if (mafiaRoomsModel.gameType.equals(getString(R.string.yakudza))) {
+        if (mafiaRoomsModel.getGameType().equals(getString(R.string.yakudza))) {
             gameType = getString(R.string.yakudza);
         }
         gameTypeTV.setText(getString(R.string.gameTypeText, gameType));

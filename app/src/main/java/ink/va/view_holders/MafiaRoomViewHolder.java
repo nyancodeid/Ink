@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.interfaces.MafiaItemClickListener;
 import ink.va.models.MafiaRoomsModel;
+import ink.va.models.ParticipantModel;
 import ink.va.utils.SharedHelper;
 
 /**
@@ -89,7 +90,7 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
 
         languageTV.setText(mafiaRoomsModel.getRoomLanguage().equals(context.getString(R.string.english)) ?
                 context.getString(R.string.english) : context.getString(R.string.russian));
-        String playersCount = String.valueOf(mafiaRoomsModel.getJoinedUserIds().size());
+        String playersCount = String.valueOf(mafiaRoomsModel.getJoinedUsers().size());
         playersCountTV.setText(context.getString(R.string.mafiaPlayersText, playersCount, mafiaRoomsModel.getMaxPlayers()));
 
         if (!mafiaRoomsModel.isGameStarted()) {
@@ -152,8 +153,8 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
 
     private boolean isParticipant() {
         boolean isParticipant = false;
-        for (String eachUserId : mafiaRoomsModel.getJoinedUserIds()) {
-            if (sharedHelper.getUserId().equals(eachUserId)) {
+        for (ParticipantModel eachUserId : mafiaRoomsModel.getJoinedUsers()) {
+            if (sharedHelper.getUserId().equals(eachUserId.getUser().getUserId())) {
                 isParticipant = true;
                 break;
             }
