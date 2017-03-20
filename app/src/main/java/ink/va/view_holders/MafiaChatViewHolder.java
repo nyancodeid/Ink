@@ -78,7 +78,7 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
 
             messageUsername.setLayoutParams(messageUsernameParams);
             mafiaMessageCardView.setLayoutParams(mafiaMessageCardViewParams);
-            mafiaChatUserImage.setLayoutParams(mafiaMessageCardViewParams);
+            mafiaChatUserImage.setLayoutParams(mafiaChatUserImageParams);
 
             mafiaMessageCardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.red));
 
