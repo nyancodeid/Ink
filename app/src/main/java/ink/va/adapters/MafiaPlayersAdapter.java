@@ -38,7 +38,7 @@ public class MafiaPlayersAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((MafiaParticipantViewHolder) holder).initData(context, users.get(position),ownerId);
+        ((MafiaParticipantViewHolder) holder).initData(context, users.get(position), ownerId);
     }
 
     @Override
@@ -49,6 +49,17 @@ public class MafiaPlayersAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void setUsers(List<ParticipantModel> users) {
         this.users.clear();
         this.users.addAll(users);
+        notifyDataSetChanged();
+    }
+
+    public void addUser(ParticipantModel participantModel) {
+        users.add(participantModel);
+        int index = users.indexOf(participantModel);
+        notifyItemInserted(index);
+    }
+
+    public void removeUser(ParticipantModel participantModel) {
+        users.remove(participantModel);
         notifyDataSetChanged();
     }
 }

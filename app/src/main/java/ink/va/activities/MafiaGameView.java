@@ -392,21 +392,34 @@ public class MafiaGameView extends BaseActivity {
     private Emitter.Listener onGlobalMessageReceived = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-
+            JSONObject jsonObject = (JSONObject) args[0];
+            MafiaMessageModel mafiaMessageModel = gson.fromJson(jsonObject.toString(), MafiaMessageModel.class);
+            mafiaChatAdapter.insertMessage(mafiaMessageModel);
+            scrollToBottom();
         }
     };
 
     private Emitter.Listener onUserLeftRoom = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-
+            JSONObject jsonObject = (JSONObject) args[0];
+            int roomId = jsonObject.optInt("roomId");
+            if (roomId == mafiaRoomsModel.getId()) {
+                ParticipantModel participantModel = gson.fromJson(jsonObject.optString("participantModel"), ParticipantModel.class);
+                mafiaPlayersAdapter.removeUser(participantModel);
+            }
         }
     };
 
     private Emitter.Listener onUserJoinedRoom = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-
+            JSONObject jsonObject = (JSONObject) args[0];
+            int roomId = jsonObject.optInt("roomId");
+            if (roomId == mafiaRoomsModel.getId()) {
+                ParticipantModel participantModel = gson.fromJson(jsonObject.optString("participantModel"), ParticipantModel.class);
+                mafiaPlayersAdapter.addUser(participantModel);
+            }
         }
     };
 
@@ -706,7 +719,7 @@ public class MafiaGameView extends BaseActivity {
                         String participantJson = gson.toJson(participantModel);
 
                         socketJson.put("roomId", mafiaRoomsModel.getId());
-                        socketJson.put("user", participantJson);
+                        socketJson.put("participantModel", participantJson);
 
                         socket.emit(EVENT_ON_USER_JOINED_MAFIA_ROOM, socketJson);
 
@@ -788,11 +801,16 @@ public class MafiaGameView extends BaseActivity {
                         if (socketJson != null) {
                             socketJson = null;
                         }
-                        String userJson = gson.toJson(User.get().buildUser(sharedHelper));
+                        ParticipantModel participantModel = new ParticipantModel();
+                        participantModel.setUser(User.get().buildUser(sharedHelper));
+                        participantModel.setEliminated(true);
+                        participantModel.setRole("none");
+
+                        String userJson = gson.toJson(participantModel);
 
                         socketJson = new JSONObject();
                         socketJson.put("roomId", mafiaRoomsModel.getId());
-                        socketJson.put("user", userJson);
+                        socketJson.put("participantModel", userJson);
                         socket.emit(EVENT_ON_USER_LEFT_MAFIA_ROOM, socketJson);
 
 
