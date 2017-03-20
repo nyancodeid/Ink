@@ -62,6 +62,7 @@ public class MafiaParticipantViewHolder extends RecyclerView.ViewHolder {
                 @Override
                 public void onCompleted(Exception e, ImageView result) {
                     if (e != null) {
+                        e.printStackTrace();
                         participantImage.setImageResource(R.drawable.no_image);
                     }
                 }

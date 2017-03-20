@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -47,7 +45,6 @@ public class MafiaGameService extends Service {
         if (sharedHelper == null) {
             sharedHelper = new SharedHelper(this);
         }
-        Toast.makeText(this, "service staered", Toast.LENGTH_SHORT).show();
         return START_STICKY;
     }
 
@@ -66,7 +63,6 @@ public class MafiaGameService extends Service {
     }
 
     private void checkMafiaGame() {
-        Log.d("Faskjfklasjfklasfa", "checkMafiaGame: pinging");
         Retrofit.getInstance().getInkService().checkMafiaRoom(sharedHelper.getMafiaRoomId(), sharedHelper.getUserId()).enqueue(new Callback<MafiaRoomsModel>() {
             @Override
             public void onResponse(Call<MafiaRoomsModel> call, Response<MafiaRoomsModel> response) {

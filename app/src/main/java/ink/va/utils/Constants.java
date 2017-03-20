@@ -16,7 +16,7 @@ public class Constants {
      */
     public static final String MAIN_URL = "http://104.196.118.124/Ink_Base_project_1992_no_15_dp_deployed_57_olAllolclslf_8954/";
     public static final String SOCKET_URL = "http://104.196.118.124:9090";
-    public static final String MAFIA_SOCKET_URL = "http://104.196.118.124:8080";
+    public static final String MAFIA_SOCKET_URL = "http://104.196.118.124:3000";
 
     /**
      * The appendable of main url

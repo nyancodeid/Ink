@@ -69,6 +69,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT;
+import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_ERROR;
+import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_TIMEOUT;
 import static ink.va.utils.Constants.EVENT_MAFIA_GLOBAL_MESSAGE;
 import static ink.va.utils.Constants.EVENT_ON_MAFIA_GAME_STARTED;
 import static ink.va.utils.Constants.EVENT_ON_ROLE_RECEIVED;
@@ -399,6 +402,24 @@ public class MafiaGameView extends BaseActivity {
         }
     };
 
+    private Emitter.Listener onConnectionError = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+        }
+    };
+
+    private Emitter.Listener onConnectionTimeOut = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+        }
+    };
+
+    private Emitter.Listener onSocketConnected = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+        }
+    };
+
     private Emitter.Listener onUserLeftRoom = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -640,6 +661,9 @@ public class MafiaGameView extends BaseActivity {
         }
 
         socket.on(EVENT_MAFIA_GLOBAL_MESSAGE, onGlobalMessageReceived);
+        socket.on(EVENT_CONNECT_ERROR, onConnectionError);
+        socket.on(EVENT_CONNECT_TIMEOUT, onConnectionTimeOut);
+        socket.on(EVENT_CONNECT, onSocketConnected);
         socket.on(EVENT_ON_USER_LEFT_MAFIA_ROOM, onUserLeftRoom);
         socket.on(EVENT_ON_USER_JOINED_MAFIA_ROOM, onUserJoinedRoom);
         socket.on(EVENT_ON_MAFIA_GAME_STARTED, onGameStarted);
@@ -1079,7 +1103,10 @@ public class MafiaGameView extends BaseActivity {
     private void destroySocket() {
         socket.disconnect();
         socket.off(EVENT_MAFIA_GLOBAL_MESSAGE, onGlobalMessageReceived);
+        socket.off(EVENT_CONNECT_ERROR, onConnectionError);
+        socket.off(EVENT_CONNECT_TIMEOUT, onConnectionTimeOut);
         socket.off(EVENT_ON_USER_LEFT_MAFIA_ROOM, onUserLeftRoom);
+        socket.off(EVENT_CONNECT, onSocketConnected);
         socket.off(EVENT_ON_USER_JOINED_MAFIA_ROOM, onUserJoinedRoom);
         socket.off(EVENT_ON_MAFIA_GAME_STARTED, onGameStarted);
         socket.off(EVENT_ON_ROLE_RECEIVED, onRoleReceived);
