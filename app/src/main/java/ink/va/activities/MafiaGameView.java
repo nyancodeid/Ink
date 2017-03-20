@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Parcelable;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -82,6 +84,8 @@ public class MafiaGameView extends BaseActivity {
     private static final int ITEM_JOIN_ID = 2;
     private static final int ITEM_DELETE_ID = 3;
     private static final int ITEM_START_GAME = 4;
+    private static final String NIGHT_COME_SYSTEM_MESSAGE = "The night has come to the city wrapping the danger around the civilians. Be careful!";
+    private static final String DAY_COME_SYSTEM_MESSAGE = "The Day has come to the city with the significant pleasure of secure and warm feeling.";
 
 
     private MafiaRoomsModel mafiaRoomsModel;
@@ -163,96 +167,140 @@ public class MafiaGameView extends BaseActivity {
         initEditText(isParticipant());
         initGameInfo();
         initRecyclers();
-        initDayTypeAndTime();
+        initDayTypeAndTime(null, false);
+        if (!mafiaRoomsModel.isGameStarted()) {
+            nightDayIV.setVisibility(View.INVISIBLE);
+            timeLeftTV.setVisibility(View.INVISIBLE);
+        }
     }
 
-    private void initDayTypeAndTime() {
+    private void initDayTypeAndTime(final String messageToInsert, final boolean isSystemMessage) {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        countDownTimer = null;
+
+        if (messageToInsert != null) {
+            silentMessageServerInsert(messageToInsert, isSystemMessage);
+            replyToRoomIV.setEnabled(false);
+            replyToRoomIV.setEnabled(false);
+            replyToRoomIV.setClickable(false);
+        }
+
+        stopService(new Intent(MafiaGameView.this, MafiaGameService.class));
+
         Retrofit.getInstance().getInkService().getSingleMafiaRoom(mafiaRoomsModel.getId()).enqueue(new Callback<MafiaRoomsModel>() {
             @Override
             public void onResponse(Call<MafiaRoomsModel> call, Response<MafiaRoomsModel> response) {
                 mafiaRoomsModel = response.body();
-                boolean isMorning = true;
 
-                nightDayIV.setVisibility(View.VISIBLE);
+                if (mafiaRoomsModel.isGameStarted()) {
+                    nightDayIV.setVisibility(View.VISIBLE);
+                    timeLeftTV.setVisibility(View.VISIBLE);
 
-                switch (mafiaRoomsModel.getCurrentDayType()) {
-                    case Constants.DAY_TYPE_DAYLIGHT:
-                        isMorning = true;
-                        nightDayIV.setImageResource(R.drawable.sun_icon);
-                        transparentPanel.setDay();
-                        break;
-                    case Constants.DAY_TYPE_NIGHT:
-                        isMorning = false;
-                        transparentPanel.setNight();
-                        nightDayIV.setImageResource(R.drawable.moon_icon);
-                        break;
+                    boolean isMorning = true;
+
+                    nightDayIV.setVisibility(View.VISIBLE);
+
+                    switch (mafiaRoomsModel.getCurrentDayType()) {
+                        case Constants.DAY_TYPE_DAYLIGHT:
+                            isMorning = true;
+                            nightDayIV.setImageResource(R.drawable.sun_icon);
+                            transparentPanel.setDay();
+                            break;
+                        case Constants.DAY_TYPE_NIGHT:
+                            isMorning = false;
+                            transparentPanel.setNight();
+                            nightDayIV.setImageResource(R.drawable.moon_icon);
+                            break;
+                    }
+
+                    String currentServerDate = mafiaRoomsModel.getCurrentServerDate();
+                    String gameStartDate = mafiaRoomsModel.getGameStartDate();
+
+                    Date firstDate = Time.parseDate(currentServerDate);
+                    Date secondDate = Time.parseDate(gameStartDate);
+
+                    DateTime start = new DateTime(firstDate);
+                    DateTime end = new DateTime(secondDate);
+                    Period period = new Period(start, end, PeriodType.millis());
+
+                    final long serverMillis = Math.abs(period.getMillis());
+                    long gameDurationMillis = 0;
+
+                    if (isMorning) {
+                        if (mafiaRoomsModel.getMorningDurationUnit().equals(getString(R.string.minutesUnit))) {
+                            gameDurationMillis = convertToMillis(UNIT_MINUTE, Long.valueOf(mafiaRoomsModel.getMorningDuration()));
+                        } else if (mafiaRoomsModel.getMorningDurationUnit().equals(getString(R.string.hoursUnit))) {
+                            gameDurationMillis = convertToMillis(UNIT_HOUR, Long.valueOf(mafiaRoomsModel.getMorningDuration()));
+                        } else if (mafiaRoomsModel.getMorningDurationUnit().equals(getString(R.string.daysUnit))) {
+                            gameDurationMillis = convertToMillis(UNIT_DAY, Long.valueOf(mafiaRoomsModel.getMorningDuration()));
+                        }
+                    } else {
+                        if (mafiaRoomsModel.getNightDurationUnit().equals(getString(R.string.minutesUnit))) {
+                            gameDurationMillis = convertToMillis(UNIT_MINUTE, Long.valueOf(mafiaRoomsModel.getNightDuration()));
+                        } else if (mafiaRoomsModel.getNightDurationUnit().equals(getString(R.string.hoursUnit))) {
+                            gameDurationMillis = convertToMillis(UNIT_HOUR, Long.valueOf(mafiaRoomsModel.getNightDuration()));
+                        } else if (mafiaRoomsModel.getNightDurationUnit().equals(getString(R.string.daysUnit))) {
+                            gameDurationMillis = convertToMillis(UNIT_DAY, Long.valueOf(mafiaRoomsModel.getNightDuration()));
+                        }
+                    }
+
+
+                    final Date date = new Date();
+
+                    long finalCountDownMillis = Math.abs(gameDurationMillis - serverMillis);
+
+                    countDownTimer = new CountDownTimer(finalCountDownMillis, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            Calendar calendar = Calendar.getInstance();
+                            date.setTime(millisUntilFinished);
+                            calendar.setTime(date);
+
+                            long seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished);
+
+                            String text = String.format("%02d:%02d:%02d", seconds / 3600,
+                                    (seconds % 3600) / 60, (seconds % 60));
+
+
+                            timeLeftTV.setText(mafiaRoomsModel.getCurrentDayType().equals(Constants.DAY_TYPE_DAYLIGHT) ?
+                                    getString(R.string.timeLeftForNight, text) :
+                                    getString(R.string.timeLeftForMorning, text));
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            nightDayIV.setVisibility(View.INVISIBLE);
+                            timeLeftTV.setText(getString(R.string.loadingText));
+
+                            switch (mafiaRoomsModel.getCurrentDayType()) {
+                                case Constants.DAY_TYPE_DAYLIGHT:
+                                    //insert as night has come
+                                    initDayTypeAndTime(NIGHT_COME_SYSTEM_MESSAGE, true);
+                                    break;
+                                case Constants.DAY_TYPE_NIGHT:
+                                    //insert as day has come
+                                    initDayTypeAndTime(DAY_COME_SYSTEM_MESSAGE, true);
+                                    break;
+                            }
+                        }
+                    };
+                    countDownTimer.start();
                 }
 
-                String currentServerDate = mafiaRoomsModel.getCurrentServerDate();
-                String gameStartDate = mafiaRoomsModel.getGameStartDate();
 
-                Date firstDate = Time.parseDate(currentServerDate);
-                Date secondDate = Time.parseDate(gameStartDate);
-
-                DateTime start = new DateTime(firstDate);
-                DateTime end = new DateTime(secondDate);
-                Period period = new Period(start, end, PeriodType.millis());
-
-                final long serverMillis = Math.abs(period.getMillis());
-                long gameDurationMillis = 0;
-
-                if (isMorning) {
-                    if (mafiaRoomsModel.getMorningDurationUnit().equals(getString(R.string.minutesUnit))) {
-                        gameDurationMillis = convertToMillis(UNIT_MINUTE, Long.valueOf(mafiaRoomsModel.getMorningDuration()));
-                    } else if (mafiaRoomsModel.getMorningDurationUnit().equals(getString(R.string.hoursUnit))) {
-                        gameDurationMillis = convertToMillis(UNIT_HOUR, Long.valueOf(mafiaRoomsModel.getMorningDuration()));
-                    } else if (mafiaRoomsModel.getMorningDurationUnit().equals(getString(R.string.daysUnit))) {
-                        gameDurationMillis = convertToMillis(UNIT_DAY, Long.valueOf(mafiaRoomsModel.getMorningDuration()));
-                    }
-                } else {
-                    if (mafiaRoomsModel.getNightDurationUnit().equals(getString(R.string.minutesUnit))) {
-                        gameDurationMillis = convertToMillis(UNIT_MINUTE, Long.valueOf(mafiaRoomsModel.getNightDuration()));
-                    } else if (mafiaRoomsModel.getNightDurationUnit().equals(getString(R.string.hoursUnit))) {
-                        gameDurationMillis = convertToMillis(UNIT_HOUR, Long.valueOf(mafiaRoomsModel.getNightDuration()));
-                    } else if (mafiaRoomsModel.getNightDurationUnit().equals(getString(R.string.daysUnit))) {
-                        gameDurationMillis = convertToMillis(UNIT_DAY, Long.valueOf(mafiaRoomsModel.getNightDuration()));
-                    }
-                }
-
-
-                final Date date = new Date();
-
-                long finalCountDownMillis = gameDurationMillis - serverMillis;
-
-                countDownTimer = new CountDownTimer(finalCountDownMillis, 1000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        Calendar calendar = Calendar.getInstance();
-                        date.setTime(millisUntilFinished);
-                        calendar.setTime(date);
-
-                        long seconds = TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished);
-
-                        String text = String.format("%02d:%02d:%02d", seconds / 3600,
-                                (seconds % 3600) / 60, (seconds % 60));
-
-
-                        timeLeftTV.setText(mafiaRoomsModel.getCurrentDayType().equals(Constants.DAY_TYPE_DAYLIGHT) ?
-                                getString(R.string.timeLeftForNight, text) :
-                                getString(R.string.timeLeftForMorning, text));
-                    }
-
-                    @Override
-                    public void onFinish() {
-
-                    }
-                };
-                countDownTimer.start();
             }
 
             @Override
             public void onFailure(Call<MafiaRoomsModel> call, Throwable t) {
-                initDayTypeAndTime();
+                Snackbar.make(mafiaRoleView, getString(R.string.serverErrorText), BaseTransientBottomBar.LENGTH_LONG).setAction(getString(R.string.vk_retry), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        initDayTypeAndTime(messageToInsert, isSystemMessage);
+                    }
+                }).show();
+                Toast.makeText(MafiaGameView.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -657,22 +705,22 @@ public class MafiaGameView extends BaseActivity {
     @OnClick(R.id.replyToRoomIV)
     public void replyToRoomIVClicked() {
         String unescapedMessage = replyToRoomED.getText().toString().trim();
-        silentMessageServerInsert(unescapedMessage);
+        silentMessageServerInsert(unescapedMessage, false);
         replyToRoomED.setText("");
         replyToRoomIV.setEnabled(false);
         Keyboard.hideKeyboard(this);
     }
 
-    private void silentMessageServerInsert(final String message) {
-        Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
+    private void silentMessageServerInsert(final String message, final boolean isSystemMessage) {
+        Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId(), isSystemMessage).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    silentMessageServerInsert(message);
+                    silentMessageServerInsert(message, isSystemMessage);
                     return;
                 }
                 if (response.body() == null) {
-                    silentMessageServerInsert(message);
+                    silentMessageServerInsert(message, isSystemMessage);
                     return;
                 }
                 try {
@@ -699,9 +747,11 @@ public class MafiaGameView extends BaseActivity {
         mafiaMessageModel.setMessage(message);
         mafiaMessageModel.setRoomId(mafiaRoomsModel.getId());
         mafiaMessageModel.setSenderId(sharedHelper.getUserId());
+        mafiaMessageModel.setSystemMessage(isSystemMessage);
         mafiaMessageModel.setUser(User.get().buildUser(sharedHelper));
         mafiaChatAdapter.insertMessage(mafiaMessageModel);
         hideNoMessages();
+        scrollToBottom();
 
     }
 

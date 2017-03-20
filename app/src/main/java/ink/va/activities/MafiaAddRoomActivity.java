@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.service.MafiaGameService;
 import ink.va.utils.Keyboard;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -322,6 +323,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        startService(new Intent(MafiaAddRoomActivity.this, MafiaGameService.class));
                         Intent intent = new Intent();
                         intent.putExtra("hasAdded", true);
                         setResult(RESULT_OK, intent);

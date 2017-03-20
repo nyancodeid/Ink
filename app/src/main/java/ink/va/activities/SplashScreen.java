@@ -108,7 +108,7 @@ public class SplashScreen extends AppCompatActivity {
                 boolean hasUnlocked = data.getExtras() != null ? data.getExtras().getBoolean("hasUnlocked") : false;
                 if (hasUnlocked) {
                     if (sharedHelper.hasAnyMafiaParticipation()) {
-                        stopService(new Intent(this, MafiaGameService.class));
+                        startService(new Intent(this, MafiaGameService.class));
                     }
                     Intent intent = new Intent(this, Intro.class);
                     startActivity(intent);

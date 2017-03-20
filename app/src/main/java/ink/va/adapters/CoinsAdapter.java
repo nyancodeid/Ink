@@ -29,16 +29,16 @@ public class CoinsAdapter extends RecyclerView.Adapter<CoinsAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private Button coisnDollarCoint;
+        private Button coinsDollarCount;
         private TextView coinsGivenCount;
-        private TextView coinsReducedCoint;
+        private TextView coinsReducedCount;
         private ImageView coinsIcon;
 
         public ViewHolder(View view) {
             super(view);
-            coisnDollarCoint = (Button) view.findViewById(R.id.coins_dollar_count);
+            coinsDollarCount = (Button) view.findViewById(R.id.coins_dollar_count);
             coinsGivenCount = (TextView) view.findViewById(R.id.coins_given_count);
-            coinsReducedCoint = (TextView) view.findViewById(R.id.coins_reduced_count);
+            coinsReducedCount = (TextView) view.findViewById(R.id.coins_reduced_count);
             coinsIcon = (ImageView) view.findViewById(R.id.coins_icon);
         }
     }
@@ -59,11 +59,11 @@ public class CoinsAdapter extends RecyclerView.Adapter<CoinsAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(final CoinsAdapter.ViewHolder holder, final int position) {
         CoinsModel coinsModel = coinsModels.get(position);
-        holder.coisnDollarCoint.setText(coinsModel.coinsPrice);
+        holder.coinsDollarCount.setText(coinsModel.coinsPrice);
         holder.coinsGivenCount.setText(coinsModel.coinsCount);
-        holder.coinsReducedCoint.setText(coinsModel.coinsReduced);
+        holder.coinsReducedCount.setText(coinsModel.coinsReduced);
         Ion.with(mContext).load(Constants.MAIN_URL + Constants.COIN_ICON_FOLDER + coinsModel.coinsIcon).intoImageView(holder.coinsIcon);
-        holder.coisnDollarCoint.setOnClickListener(new View.OnClickListener() {
+        holder.coinsDollarCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (itemClickListener != null) {
