@@ -979,4 +979,5 @@
     <string name="visibilityDisabled">Вы не можете редактировать видимость</string>
     <string name="startingGame">Начинаем игру, пожалуйста подождите...</string>
     <string name="couldNotStartGame">Не удалось начать игру...</string>
+    <string name="roomDeleted">Комната была удалена</string>
 </resources>

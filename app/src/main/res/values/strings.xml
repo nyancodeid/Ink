@@ -974,4 +974,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="visibilityDisabled">You can\'t edit visibility</string>
     <string name="startingGame">Starting the game, please wait...</string>
     <string name="couldNotStartGame">Could not start the game...</string>
+    <string name="roomDeleted">Room was deleted</string>
 </resources>

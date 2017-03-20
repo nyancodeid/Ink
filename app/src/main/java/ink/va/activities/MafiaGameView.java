@@ -75,6 +75,7 @@ import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_TIMEOUT;
 import static ink.va.utils.Constants.EVENT_MAFIA_GLOBAL_MESSAGE;
 import static ink.va.utils.Constants.EVENT_ON_MAFIA_GAME_STARTED;
 import static ink.va.utils.Constants.EVENT_ON_ROLE_RECEIVED;
+import static ink.va.utils.Constants.EVENT_ON_SOCKET_MESSAGE_RECEIVED;
 import static ink.va.utils.Constants.EVENT_ON_USER_JOINED_MAFIA_ROOM;
 import static ink.va.utils.Constants.EVENT_ON_USER_LEFT_MAFIA_ROOM;
 import static ink.va.utils.ErrorCause.ALREADY_IN_ROOM;
@@ -153,6 +154,7 @@ public class MafiaGameView extends BaseActivity {
     private Menu menu;
     private JSONObject socketJson;
     private Gson gson;
+    private Runnable lastMethodToRun;
 
 
     @Override
@@ -396,9 +398,17 @@ public class MafiaGameView extends BaseActivity {
         @Override
         public void call(Object... args) {
             JSONObject jsonObject = (JSONObject) args[0];
-            MafiaMessageModel mafiaMessageModel = gson.fromJson(jsonObject.toString(), MafiaMessageModel.class);
-            mafiaChatAdapter.insertMessage(mafiaMessageModel);
-            scrollToBottom();
+            final MafiaMessageModel mafiaMessageModel = gson.fromJson(jsonObject.toString(), MafiaMessageModel.class);
+            if (mafiaMessageModel.getRoomId() == mafiaMessageModel.getRoomId()) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mafiaChatAdapter.insertMessage(mafiaMessageModel);
+                        scrollToBottom();
+                    }
+                });
+
+            }
         }
     };
 
@@ -420,14 +430,33 @@ public class MafiaGameView extends BaseActivity {
         }
     };
 
+    private Emitter.Listener onSocketMessageReceived = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            proceedRunnable();
+        }
+    };
+
+    private void proceedRunnable() {
+        if (lastMethodToRun != null) {
+            lastMethodToRun.run();
+            lastMethodToRun = null;
+        }
+    }
+
     private Emitter.Listener onUserLeftRoom = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             JSONObject jsonObject = (JSONObject) args[0];
             int roomId = jsonObject.optInt("roomId");
             if (roomId == mafiaRoomsModel.getId()) {
-                ParticipantModel participantModel = gson.fromJson(jsonObject.optString("participantModel"), ParticipantModel.class);
-                mafiaPlayersAdapter.removeUser(participantModel);
+                final ParticipantModel participantModel = gson.fromJson(jsonObject.optString("participantModel"), ParticipantModel.class);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mafiaPlayersAdapter.removeUser(participantModel);
+                    }
+                });
             }
         }
     };
@@ -438,8 +467,13 @@ public class MafiaGameView extends BaseActivity {
             JSONObject jsonObject = (JSONObject) args[0];
             int roomId = jsonObject.optInt("roomId");
             if (roomId == mafiaRoomsModel.getId()) {
-                ParticipantModel participantModel = gson.fromJson(jsonObject.optString("participantModel"), ParticipantModel.class);
-                mafiaPlayersAdapter.addUser(participantModel);
+                final ParticipantModel participantModel = gson.fromJson(jsonObject.optString("participantModel"), ParticipantModel.class);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mafiaPlayersAdapter.addUser(participantModel);
+                    }
+                });
             }
         }
     };
@@ -447,14 +481,24 @@ public class MafiaGameView extends BaseActivity {
     private Emitter.Listener onGameStarted = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
 
+                }
+            });
         }
     };
 
     private Emitter.Listener onRoleReceived = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
 
+                }
+            });
         }
     };
 
@@ -668,6 +712,7 @@ public class MafiaGameView extends BaseActivity {
         socket.on(EVENT_ON_USER_JOINED_MAFIA_ROOM, onUserJoinedRoom);
         socket.on(EVENT_ON_MAFIA_GAME_STARTED, onGameStarted);
         socket.on(EVENT_ON_ROLE_RECEIVED, onRoleReceived);
+        socket.on(EVENT_ON_SOCKET_MESSAGE_RECEIVED, onSocketMessageReceived);
         socket.connect();
     }
 
@@ -835,13 +880,18 @@ public class MafiaGameView extends BaseActivity {
                         socketJson = new JSONObject();
                         socketJson.put("roomId", mafiaRoomsModel.getId());
                         socketJson.put("participantModel", userJson);
-                        socket.emit(EVENT_ON_USER_LEFT_MAFIA_ROOM, socketJson);
 
+                        lastMethodToRun = new Runnable() {
+                            @Override
+                            public void run() {
+                                finish();
+                                LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
+                            }
+                        };
 
                         sharedHelper.putMafiaParticipation(false);
                         stopService(new Intent(MafiaGameView.this, MafiaGameService.class));
-                        finish();
-                        LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
+                        socket.emit(EVENT_ON_USER_LEFT_MAFIA_ROOM, socketJson);
                     } else {
                         Toast.makeText(MafiaGameView.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                     }
@@ -906,8 +956,15 @@ public class MafiaGameView extends BaseActivity {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
+                    String cause = jsonObject.optString("cause");
                     if (!success) {
-                        Toast.makeText(MafiaGameView.this, getString(R.string.messageNotSent), Toast.LENGTH_SHORT).show();
+                        if (cause.equals(ROOM_DELETED)) {
+                            finish();
+                            LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
+                            Toast.makeText(MafiaGameView.this, getString(R.string.roomDeleted), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MafiaGameView.this, getString(R.string.messageNotSent), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -1104,6 +1161,7 @@ public class MafiaGameView extends BaseActivity {
         socket.disconnect();
         socket.off(EVENT_MAFIA_GLOBAL_MESSAGE, onGlobalMessageReceived);
         socket.off(EVENT_CONNECT_ERROR, onConnectionError);
+        socket.off(EVENT_ON_SOCKET_MESSAGE_RECEIVED, onSocketMessageReceived);
         socket.off(EVENT_CONNECT_TIMEOUT, onConnectionTimeOut);
         socket.off(EVENT_ON_USER_LEFT_MAFIA_ROOM, onUserLeftRoom);
         socket.off(EVENT_CONNECT, onSocketConnected);

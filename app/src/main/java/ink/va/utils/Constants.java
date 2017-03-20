@@ -265,6 +265,7 @@ public class Constants {
     public static final String EVENT_ON_USER_JOINED_MAFIA_ROOM = "onUserJoinedRoom";
     public static final String EVENT_ON_MAFIA_GAME_STARTED = "onMafiaGameStarted";
     public static final String EVENT_ON_ROLE_RECEIVED ="onRoleReceived";
+    public static final String EVENT_ON_SOCKET_MESSAGE_RECEIVED = "socketMessageReceived";
 
     /**
      * Socket Emit Events
