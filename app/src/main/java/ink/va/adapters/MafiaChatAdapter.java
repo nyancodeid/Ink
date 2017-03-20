@@ -54,4 +54,9 @@ public class MafiaChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         int index = mafiaMessageModels.indexOf(mafiaMessageModel);
         notifyItemInserted(index);
     }
+
+    public void clear(){
+        mafiaMessageModels.clear();
+        notifyDataSetChanged();
+    }
 }

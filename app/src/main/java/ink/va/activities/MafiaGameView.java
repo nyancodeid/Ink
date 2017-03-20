@@ -536,10 +536,21 @@ public class MafiaGameView extends BaseActivity {
 
     private Emitter.Listener onGameStarted = new Emitter.Listener() {
         @Override
-        public void call(Object... args) {
+        public void call(final Object... args) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    JSONObject jsonObject = (JSONObject) args[0];
+                    long id = jsonObject.optLong("roomId");
+                    if (id == mafiaRoomsModel.getId()) {
+                        mafiaChatAdapter.clear();
+                        mafiaRoomsModel.setGameStarted(true);
+                        getMafiaRoomParticipants();
+                        getMafiaRoomMessages();
+                        initGameInfo();
+                        initDayTypeAndTime(null, false);
+                        LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
+                    }
 
                 }
             });
@@ -688,8 +699,15 @@ public class MafiaGameView extends BaseActivity {
                         String roomJson = gson.toJson(mafiaRoomsModel);
                         socketJson.put("roomModel", roomJson);
                         socket.emit(EVENT_ON_MAFIA_GAME_STARTED, socketJson);
-
-                        initDayTypeAndTime(GAME_STARTED_SYSTEM_MESSAGE, true);
+                        initDayTypeAndTime(null, false);
+                        silentMessageServerInsert(GAME_STARTED_SYSTEM_MESSAGE, true);
+                        if (socketJson != null) {
+                            socketJson = null;
+                        }
+                        socketJson = new JSONObject();
+                        socketJson.put("roomId", mafiaRoomsModel.getId());
+                        socketJson.put("message", GAME_STARTED_SYSTEM_MESSAGE);
+                        socket.emit(EVENT_ON_MAFIA_GAME_STARTED, socketJson);
                     } else {
                         Toast.makeText(MafiaGameView.this, getString(R.string.couldNotStartGame), Toast.LENGTH_SHORT).show();
                     }
