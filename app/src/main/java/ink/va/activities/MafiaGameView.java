@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Parcelable;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -532,7 +531,9 @@ public class MafiaGameView extends BaseActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         this.menu = menu;
+
         if (!isMenuAdded) {
+            menu.clear();
             if (isOwner() && !mafiaRoomsModel.isGameStarted()) {
                 menu.add(0, ITEM_START_GAME, 0, getString(R.string.startGame));
                 menu.add(0, ITEM_DELETE_ID, 1, getString(R.string.delete));
@@ -750,6 +751,7 @@ public class MafiaGameView extends BaseActivity {
             @Override
             public void onResponse(Call<List<ParticipantModel>> call, Response<List<ParticipantModel>> response) {
                 List<ParticipantModel> participants = response.body();
+                mafiaRoomsModel.setJoinedUsers(participants);
                 if (participants.isEmpty()) {
                     showNoParticipants();
                 } else {
@@ -804,7 +806,6 @@ public class MafiaGameView extends BaseActivity {
                         sharedHelper.putMafiaLastRoomId(mafiaRoomsModel.getId());
                         startService(new Intent(MafiaGameView.this, MafiaGameService.class));
                         Toast.makeText(MafiaGameView.this, getString(R.string.joined), Toast.LENGTH_SHORT).show();
-                        Parcelable parcelable = Parcels.wrap(mafiaRoomsModel);
                         List<ParticipantModel> joinedUsers = mafiaRoomsModel.getJoinedUsers();
 
                         ParticipantModel participantModel = new ParticipantModel();
@@ -822,16 +823,15 @@ public class MafiaGameView extends BaseActivity {
                         socket.emit(EVENT_ON_USER_JOINED_MAFIA_ROOM, socketJson);
 
                         mafiaRoomsModel.setJoinedUsers(joinedUsers);
-                        relaunchActivity(parcelable);
+                        reorderItems();
 
                     } else {
                         String cause = jsonObject.optString("cause");
                         if (cause.equals(GAME_ALREADY_IN_PROGRESS)) {
                             Toast.makeText(MafiaGameView.this, getString(R.string.cantJoinGameInProgress), Toast.LENGTH_LONG).show();
-                            Parcelable parcelable = Parcels.wrap(mafiaRoomsModel);
                             mafiaRoomsModel.setGameStarted(true);
+                            reorderItems();
 
-                            relaunchActivity(parcelable);
                         } else if (cause.equals(MAXIMUM_PLAYERS_REACHED)) {
                             Toast.makeText(MafiaGameView.this, getString(R.string.cantJoinMaximumPlayers), Toast.LENGTH_LONG).show();
                         } else if (cause.equals(ROOM_DELETED)) {
@@ -869,12 +869,19 @@ public class MafiaGameView extends BaseActivity {
         });
     }
 
-    private void relaunchActivity(Parcelable parcelable) {
-        Intent intent = new Intent(this, MafiaGameView.class);
-        intent.putExtra("mafiaRoomsModel", parcelable);
-        finish();
-        startActivity(intent);
+    private void reorderItems() {
+        LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
+        isMenuAdded = false;
+        initEditText(isParticipant());
+        initGameInfo();
+        initRecyclers();
+        initDayTypeAndTime(null, false);
+        if (!mafiaRoomsModel.isGameStarted()) {
+            nightDayIV.setVisibility(View.INVISIBLE);
+            timeLeftTV.setVisibility(View.INVISIBLE);
+        }
     }
+
 
     private void leaveRoom() {
         showDialog(getString(R.string.pleaseWait), getString(R.string.leavingText));
@@ -910,6 +917,10 @@ public class MafiaGameView extends BaseActivity {
                         socketJson.put("roomId", mafiaRoomsModel.getId());
                         socketJson.put("participantModel", userJson);
 
+
+                        sharedHelper.putMafiaParticipation(false);
+                        stopService(new Intent(MafiaGameView.this, MafiaGameService.class));
+
                         lastMethodToRun = new Runnable() {
                             @Override
                             public void run() {
@@ -918,8 +929,6 @@ public class MafiaGameView extends BaseActivity {
                             }
                         };
 
-                        sharedHelper.putMafiaParticipation(false);
-                        stopService(new Intent(MafiaGameView.this, MafiaGameService.class));
                         socket.emit(EVENT_ON_USER_LEFT_MAFIA_ROOM, socketJson);
                     } else {
                         Toast.makeText(MafiaGameView.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
@@ -1080,27 +1089,14 @@ public class MafiaGameView extends BaseActivity {
 
     private void initEditText(boolean enabled) {
         if (enabled) {
-            replyToRoomED.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    String text = s.toString().toString();
-                    if (text.isEmpty()) {
-                        replyToRoomIV.setEnabled(false);
-                    } else {
-                        replyToRoomIV.setEnabled(true);
-                    }
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-
-                }
-            });
+            replyToRoomED.setHint(getString(R.string.replyToRoom));
+            replyToRoomED.setEnabled(true);
+            replyToRoomED.setClickable(true);
+            replyToRoomED.setFocusable(true);
+            replyToRoomED.setFocusableInTouchMode(true);
+            replyToRoomIV.setEnabled(true);
+            replyToRoomED.removeTextChangedListener(editTextWatcher);
+            replyToRoomED.addTextChangedListener(editTextWatcher);
         } else {
             replyToRoomED.setEnabled(false);
             replyToRoomED.setClickable(false);
@@ -1138,6 +1134,27 @@ public class MafiaGameView extends BaseActivity {
         progressDialog.show();
     }
 
+    private TextWatcher editTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String text = s.toString().toString();
+            if (text.isEmpty()) {
+                replyToRoomIV.setEnabled(false);
+            } else {
+                replyToRoomIV.setEnabled(true);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     private void initGameInfo() {
         if (mafiaRoomsModel.isGameStarted()) {
