@@ -315,7 +315,7 @@ public class MafiaGameView extends BaseActivity {
                 Snackbar.make(mafiaRoleView, getString(R.string.serverErrorText), BaseTransientBottomBar.LENGTH_LONG).setAction(getString(R.string.vk_retry), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        initDayTypeAndTime(messageToInsert, isSystemMessage);
+                        reorderItems();
                     }
                 }).show();
                 Toast.makeText(MafiaGameView.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
@@ -479,18 +479,16 @@ public class MafiaGameView extends BaseActivity {
 
                 String systemMessage = jsonObject.optString("systemMessage");
                 long newOwnerId = jsonObject.optLong("newOwnerId");
-                final boolean isNewOwnerChosen = jsonObject.optBoolean("isNewOwnerChosen");
                 final MafiaMessageModel mafiaMessageModel = new MafiaMessageModel();
-                if (isNewOwnerChosen) {
-                    mafiaRoomsModel.setCreatorId(String.valueOf(newOwnerId));
-                    mafiaMessageModel.setUser(User.get().buildUser(sharedHelper));
-                    mafiaMessageModel.setSystemMessage(true);
-                    mafiaMessageModel.setSenderId("0");
-                    mafiaMessageModel.setId(String.valueOf(System.currentTimeMillis()));
-                    mafiaMessageModel.setRoomId(MafiaGameView.this.mafiaRoomsModel.getId());
-                    mafiaMessageModel.setMessage(systemMessage);
 
-                }
+                mafiaRoomsModel.setCreatorId(String.valueOf(newOwnerId));
+                mafiaPlayersAdapter.setOwnerId(mafiaRoomsModel.getCreatorId());
+                mafiaMessageModel.setUser(User.get().buildUser(sharedHelper));
+                mafiaMessageModel.setSystemMessage(true);
+                mafiaMessageModel.setSenderId("0");
+                mafiaMessageModel.setId(String.valueOf(System.currentTimeMillis()));
+                mafiaMessageModel.setRoomId(MafiaGameView.this.mafiaRoomsModel.getId());
+                mafiaMessageModel.setMessage(systemMessage);
 
                 final ParticipantModel participantModel = gson.fromJson(jsonObject.optString("participantModel"), ParticipantModel.class);
                 runOnUiThread(new Runnable() {
@@ -498,11 +496,10 @@ public class MafiaGameView extends BaseActivity {
                     public void run() {
                         LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
                         mafiaPlayersAdapter.removeUser(participantModel);
-                        if (isNewOwnerChosen) {
-                            mafiaChatAdapter.insertMessage(mafiaMessageModel);
-                            scrollToBottom();
-                            getMafiaRoomParticipants();
-                        }
+                        mafiaChatAdapter.insertMessage(mafiaMessageModel);
+                        hideNoMessages();
+                        scrollToBottom();
+                        getMafiaRoomParticipants();
                     }
                 });
             }
@@ -529,6 +526,7 @@ public class MafiaGameView extends BaseActivity {
                         mafiaMessageModel.setUser(User.get().buildUser(sharedHelper));
                         mafiaPlayersAdapter.addUser(participantModel);
                         mafiaChatAdapter.insertMessage(mafiaMessageModel);
+                        hideNoMessages();
                         scrollToBottom();
                     }
                 });
