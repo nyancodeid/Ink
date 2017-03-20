@@ -28,4 +28,23 @@ public class ParticipantModel {
     @Setter
     @Getter
     private UserModel user;
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof ParticipantModel) {
+            if (((ParticipantModel) obj).getUser().getUserId().equals(user.getUserId())) {
+                return true;
+            }
+        }
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return user.getUserId().hashCode();
+    }
 }

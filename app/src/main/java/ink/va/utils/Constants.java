@@ -26,6 +26,7 @@ public class Constants {
     public static final String GROUP_IMAGES_FOLDER = "GroupImages/";
     public static final String ADD_GROUP_URL = "AddGroup.php";
     public static final String CHANGE_VIP_MEMBERSHIP = "ChangeVipMembership.php";
+    public static final String START_MAFIA_GAME_URL = "StartGame.php";
     public static final String CHECK_BAN_URL = "CheckBan.php";
     public static final String WHO_VIEWED_URL = "WhoViewed.php";
     public static final String USER_COINS_UPDATE = "CoinsUpdate.php";
@@ -245,6 +246,7 @@ public class Constants {
     public static final String KILL_APP_BUNDLE_KEY = "kill_app_key";
     public static final String WARNING_TEXT_BUNDLE_KEY = "warning_text_key";
 
+
     /**
      * Game Constants
      */
@@ -259,6 +261,10 @@ public class Constants {
     public static final String EVENT_STOPPED_TYPING = "stoppedTyping";
     public static final String EVENT_MESSAGE_SENT = "messageSent";
     public static final String EVENT_MAFIA_GLOBAL_MESSAGE = "onMafiaGlobalMessage";
+    public static final String EVENT_ON_USER_LEFT_MAFIA_ROOM = "onRoomLeft";
+    public static final String EVENT_ON_USER_JOINED_MAFIA_ROOM = "onUserJoinedRoom";
+    public static final String EVENT_ON_MAFIA_GAME_STARTED = "onMafiaGameStarted";
+    public static final String EVENT_ON_ROLE_RECEIVED ="onRoleReceived";
 
     /**
      * Socket Emit Events

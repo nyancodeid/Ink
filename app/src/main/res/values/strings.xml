@@ -972,4 +972,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="localPostHint">Note : you\'r post is visible only to you\'r friends. Change by clicking the icon</string>
     <string name="globalPostHint">The post is visible to all Ink users. You will be charged %1$d coins</string>
     <string name="visibilityDisabled">You can\'t edit visibility</string>
+    <string name="startingGame">Starting the game, please wait...</string>
+    <string name="couldNotStartGame">Could not start the game...</string>
 </resources>

@@ -14,6 +14,7 @@ public class MafiaMessageModel {
     @Setter
     @Getter
     private String id;
+
     @SerializedName("room_id")
     @Setter
     @Getter

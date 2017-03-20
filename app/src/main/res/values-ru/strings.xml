@@ -977,4 +977,6 @@
     <string name="localPostHint">Примечание : Ваш пост видим только друзьям. Измените видимость нажимая на иконку</string>
     <string name="globalPostHint">Пост видим всем пользователем Инк-а. С вас будет снята %1$d монет за пост.</string>
     <string name="visibilityDisabled">Вы не можете редактировать видимость</string>
+    <string name="startingGame">Начинаем игру, пожалуйста подождите...</string>
+    <string name="couldNotStartGame">Не удалось начать игру...</string>
 </resources>

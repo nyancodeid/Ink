@@ -198,6 +198,10 @@ public class Retrofit {
                                                     @Field("senderId") String senderId,
                                                     @Field("isSystemMessage") boolean isSystemMessage);
 
+        @POST(Constants.START_MAFIA_GAME_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> startMafiaGame(@Field("roomId") int roomId);
+
         @POST(Constants.MAFIA_ROOM_PARTICIPANTS)
         @FormUrlEncoded
         Call<List<ParticipantModel>> getMafiaRoomParticipants(@Field("roomId") int roomId);
