@@ -4,23 +4,25 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import ink.va.models.FeedModel;
+
 /**
  * Created by USER on 2016-07-04.
  */
 public interface FeedItemClick {
-    void onCardViewClick(int position, String type);
+    void onCardViewClick(FeedModel feedModel, String type);
 
-    void onAddressClick(int position);
+    void onAddressClick(FeedModel feedModel);
 
-    void onAttachmentClick(int position);
+    void onAttachmentClick(FeedModel feedModel);
 
-    void onCardLongClick(int position);
+    void onCardLongClick(FeedModel feedModel);
 
-    void onLikeClick(int position, ImageView likeView, TextView likeCountTV, View likeWrapper);
+    void onLikeClick(FeedModel feedModel, ImageView likeView, TextView likeCountTV, View likeWrapper);
 
-    void onCommentClicked(int position, View commentView);
+    void onCommentClicked(FeedModel feedModel, View commentView);
 
-    void onMoreClicked(int position, View view);
+    void onMoreClicked(FeedModel feedModel, View view);
 
-    void onImageClicked(int position);
+    void onImageClicked(FeedModel feedModel);
 }

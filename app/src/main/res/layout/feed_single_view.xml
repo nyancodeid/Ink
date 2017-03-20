@@ -1,295 +1,304 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/feedRootLayout"
-        android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/feedRootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <RelativeLayout
+        android:id="@+id/feedSpaceWrapper"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
+        <android.support.v7.widget.CardView
+            android:id="@+id/feedItemCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="45dp"
+            android:background="@drawable/com_facebook_tooltip_black_background"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="10dp">
 
-        <RelativeLayout
-            android:id="@+id/feedSpaceWrapper"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/feedItemCard"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="45dp"
-                android:background="@drawable/com_facebook_tooltip_black_background"
-                android:foreground="?android:attr/selectableItemBackground"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="10dp">
+                android:clickable="false">
 
-                <RelativeLayout
+                <ImageView
+                    android:id="@+id/feedMoreIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:padding="5dp"
+                    android:src="@drawable/more_icon"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:id="@+id/postVisibilityIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="4.5dp"
+                    android:layout_toLeftOf="@+id/feedMoreIcon"
+                    android:src="@drawable/local_icon_greyed_out" />
+
+
+                <TextView
+                    android:id="@+id/userPostedTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="50dp"
+                    android:fontFamily="@string/condensedFont"
+                    android:text="@string/personPosted"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/feedContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clickable="false">
+                    android:layout_below="@+id/userPostedTitle"
+                    android:layout_margin="10dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="10dp"
+                    android:autoLink="web"
+                    android:fontFamily="@string/appFont"
+                    android:paddingLeft="10dp"
+                    android:textColor="#000000" />
+
+                <ImageView
+                    android:id="@+id/imageHolder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/feedAttachmentLayout"
+                    android:layout_centerHorizontal="true"
+                    android:adjustViewBounds="true"
+                    android:minHeight="170dp"
+                    android:scaleType="fitXY"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/whenPosted"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/imageHolder"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@string/appFont"
+                    android:text="@string/postedAt"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
+                <View
+                    android:id="@+id/actionDivider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@+id/whenPosted"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/linesColor"
+                    android:visibility="gone">
+
+                </View>
+
+                <TextView
+                    android:id="@+id/likesCountTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/actionDivider"
+                    android:layout_alignStart="@+id/actionDivider"
+                    android:layout_below="@+id/actionDivider"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@string/appFont"
+                    android:text="@string/likesText"
+                    android:textSize="12sp"
+                    android:visibility="invisible" />
+
+                <RelativeLayout
+                    android:id="@+id/likeWrapper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/actionDivider"
+                    android:layout_alignStart="@+id/actionDivider"
+                    android:layout_below="@+id/likesCountTV"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:visibility="gone">
 
                     <ImageView
-                        android:id="@+id/feedMoreIcon"
+                        android:id="@+id/likeIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        android:padding="5dp"
-                        android:src="@drawable/more_icon"
-                        android:visibility="gone" />
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/like_inactive" />
 
-
-                    <TextView
-                        android:id="@+id/userPostedTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="50dp"
-                        android:fontFamily="@string/condensedFont"
-                        android:text="@string/personPosted"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="24sp" />
-
-                    <TextView
-                        android:id="@+id/feedContent"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/userPostedTitle"
-                        android:layout_margin="10dp"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginTop="10dp"
-                        android:autoLink="web"
-                        android:fontFamily="@string/appFont"
-                        android:paddingLeft="10dp"
-                        android:textColor="#000000" />
-
-                    <ImageView
-                        android:id="@+id/imageHolder"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/feedAttachmentLayout"
-                        android:layout_centerHorizontal="true"
-                        android:adjustViewBounds="true"
-                        android:minHeight="170dp"
-                        android:scaleType="fitXY"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/whenPosted"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_below="@+id/imageHolder"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="5dp"
-                        android:fontFamily="@string/appFont"
-                        android:text="@string/postedAt"
-                        android:textSize="12sp"
-                        android:visibility="gone" />
-
-                    <View
-                        android:id="@+id/actionDivider"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_below="@+id/whenPosted"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="10dp"
-                        android:background="@color/linesColor"
-                        android:visibility="gone">
-
-                    </View>
-
-                    <TextView
-                        android:id="@+id/likesCountTV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignLeft="@+id/actionDivider"
-                        android:layout_alignStart="@+id/actionDivider"
-                        android:layout_below="@+id/actionDivider"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:fontFamily="@string/appFont"
-                        android:text="@string/likesText"
-                        android:textSize="12sp"
-                        android:visibility="invisible" />
-
-                    <RelativeLayout
-                        android:id="@+id/likeWrapper"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignLeft="@+id/actionDivider"
-                        android:layout_alignStart="@+id/actionDivider"
-                        android:layout_below="@+id/likesCountTV"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="5dp"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:visibility="gone">
-
-                        <ImageView
-                            android:id="@+id/likeIcon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="30dp"
-                            android:layout_marginRight="30dp"
-                            android:layout_marginTop="20dp"
-                            android:background="@drawable/like_inactive" />
-
-
-                    </RelativeLayout>
-
-                    <TextView
-                        android:id="@+id/commentCountTV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignTop="@+id/likesCountTV"
-                        android:layout_below="@+id/actionDivider"
-                        android:layout_marginLeft="10dp"
-                        android:layout_toRightOf="@+id/likeWrapper"
-                        android:fontFamily="@string/appFont"
-                        android:text="@string/comments_count_text"
-                        android:textSize="12sp"
-                        android:visibility="invisible" />
-
-
-                    <RelativeLayout
-                        android:id="@+id/commentWrapper"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/likesCountTV"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="5dp"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:visibility="gone">
-
-                        <ImageView
-                            android:id="@+id/commentIcon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="30dp"
-                            android:layout_marginRight="30dp"
-                            android:layout_marginTop="20dp"
-                            android:background="@drawable/comment_icon" />
-
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/feedAddressLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/feedContent"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginTop="5dp"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:padding="10dp"
-                        android:visibility="gone">
-
-                        <ImageView
-                            android:id="@+id/locationVector"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/location_vector" />
-
-                        <TextView
-                            android:id="@+id/feedAddress"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="10dp"
-                            android:layout_toRightOf="@+id/locationVector"
-                            android:fontFamily="@string/appFont"
-                            android:gravity="start"
-                            android:text="@string/loadingText"
-                            android:textStyle="italic" />
-                    </RelativeLayout>
-
-
-                    <RelativeLayout
-                        android:id="@+id/feedAttachmentLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/feedAddressLayout"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="5dp"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:padding="10dp"
-                        android:visibility="gone">
-
-                        <ImageView
-                            android:id="@+id/attachVector"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/attach_vector" />
-
-                        <TextView
-                            android:id="@+id/feedAttachmentName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="10dp"
-                            android:layout_toLeftOf="@+id/downloadIcon"
-                            android:layout_toRightOf="@+id/attachVector"
-                            android:fontFamily="@string/appFont"
-                            android:gravity="start"
-                            android:text="@string/loadingText"
-                            android:textStyle="italic" />
-
-                        <ImageView
-                            android:id="@+id/downloadIcon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/download_icon" />
-                    </RelativeLayout>
 
                 </RelativeLayout>
-            </android.support.v7.widget.CardView>
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/commentCountTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/likesCountTV"
+                    android:layout_below="@+id/actionDivider"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/likeWrapper"
+                    android:fontFamily="@string/appFont"
+                    android:text="@string/comments_count_text"
+                    android:textSize="12sp"
+                    android:visibility="invisible" />
 
-        <android.support.v4.widget.Space
-            android:id="@+id/spacing"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_below="@+id/feedSpaceWrapper"
-            android:visibility="visible" />
+
+                <RelativeLayout
+                    android:id="@+id/commentWrapper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/likesCountTV"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/commentIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/comment_icon" />
 
 
-        <ImageView
-            android:id="@+id/feedUserImage"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="10dp"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/feedAddressLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/feedContent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="5dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:padding="10dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/locationVector"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/location_vector" />
+
+                    <TextView
+                        android:id="@+id/feedAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@+id/locationVector"
+                        android:fontFamily="@string/appFont"
+                        android:gravity="start"
+                        android:text="@string/loadingText"
+                        android:textStyle="italic" />
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/feedAttachmentLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/feedAddressLayout"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:padding="10dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/attachVector"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/attach_vector" />
+
+                    <TextView
+                        android:id="@+id/feedAttachmentName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toLeftOf="@+id/downloadIcon"
+                        android:layout_toRightOf="@+id/attachVector"
+                        android:fontFamily="@string/appFont"
+                        android:gravity="start"
+                        android:text="@string/loadingText"
+                        android:textStyle="italic" />
+
+                    <ImageView
+                        android:id="@+id/downloadIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/download_icon" />
+                </RelativeLayout>
+
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
 
     </RelativeLayout>
+
+    <android.support.v4.widget.Space
+        android:id="@+id/spacing"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_below="@+id/feedSpaceWrapper"
+        android:visibility="visible" />
+
+
+    <ImageView
+        android:id="@+id/feedUserImage"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:background="?attr/selectableItemBackgroundBorderless" />
+
+</RelativeLayout>

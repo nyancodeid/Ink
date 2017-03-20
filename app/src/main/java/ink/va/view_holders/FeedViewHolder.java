@@ -15,6 +15,8 @@ import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ink.va.interfaces.FeedItemClick;
 import ink.va.models.FeedModel;
 import ink.va.utils.CircleTransform;
@@ -29,44 +31,63 @@ import ink.va.utils.Time;
 
 public class FeedViewHolder extends RecyclerView.ViewHolder {
     private static final int SHIMMER_MOVE_DURATION = 3000;
-    public TextView feedContent, userPostedTitle,
-            whenPosted, feedAddress, feedAttachmentName, likesCountTV;
-    private ImageView feedUserImage, likeIcon, commentIcon;
-    private CardView feedItemCard;
-    private RelativeLayout feedAddressLayout, feedAttachmentLayout, likeWrapper, commentWrapper;
-    private ImageView feedMoreIcon;
-    private ImageView imageHolder;
-    public View actionDivider;
-    private TextView commentCountTV;
-    private Context mContext;
-    private FeedModel feedModel;
-    private SharedHelper sharedHelper;
-    private FeedItemClick mOnClickListener;
-    private View feedRootLayout;
-    private View spacing;
+
+    @BindView(R.id.feedContent)
+    TextView feedContent;
+    @BindView(R.id.userPostedTitle)
+    TextView userPostedTitle;
+    @BindView(R.id.whenPosted)
+    TextView whenPosted;
+    @BindView(R.id.feedAddress)
+    TextView feedAddress;
+    @BindView(R.id.feedAttachmentName)
+    TextView feedAttachmentName;
+    @BindView(R.id.likesCountTV)
+    TextView likesCountTV;
+    @BindView(R.id.commentCountTV)
+    TextView commentCountTV;
+
+    @BindView(R.id.feedUserImage)
+    ImageView feedUserImage;
+    @BindView(R.id.likeIcon)
+    ImageView likeIcon;
+    @BindView(R.id.commentIcon)
+    ImageView commentIcon;
+    @BindView(R.id.feedMoreIcon)
+    ImageView feedMoreIcon;
+    @BindView(R.id.imageHolder)
+    ImageView imageHolder;
+    @BindView(R.id.postVisibilityIcon)
+    ImageView postVisibilityIcon;
+
+    @BindView(R.id.feedItemCard)
+    CardView feedItemCard;
+
+    @BindView(R.id.feedAddressLayout)
+    RelativeLayout feedAddressLayout;
+    @BindView(R.id.feedAttachmentLayout)
+    RelativeLayout feedAttachmentLayout;
+    @BindView(R.id.likeWrapper)
+    RelativeLayout likeWrapper;
+    @BindView(R.id.commentWrapper)
+    RelativeLayout commentWrapper;
+
+
+    Context mContext;
+    FeedModel feedModel;
+    SharedHelper sharedHelper;
+    FeedItemClick mOnClickListener;
+
+    @BindView(R.id.feedRootLayout)
+    View feedRootLayout;
+    @BindView(R.id.spacing)
+    View spacing;
+    @BindView(R.id.actionDivider)
+    View actionDivider;
 
     public FeedViewHolder(View view) {
         super(view);
-        userPostedTitle = (TextView) view.findViewById(R.id.userPostedTitle);
-        spacing = view.findViewById(R.id.spacing);
-        feedRootLayout = view.findViewById(R.id.feedRootLayout);
-        commentCountTV = (TextView) view.findViewById(R.id.commentCountTV);
-        actionDivider = view.findViewById(R.id.actionDivider);
-        whenPosted = (TextView) view.findViewById(R.id.whenPosted);
-        feedAddress = (TextView) view.findViewById(R.id.feedAddress);
-        likesCountTV = (TextView) view.findViewById(R.id.likesCountTV);
-        feedAttachmentName = (TextView) view.findViewById(R.id.feedAttachmentName);
-        feedContent = (TextView) view.findViewById(R.id.feedContent);
-        feedUserImage = (ImageView) view.findViewById(R.id.feedUserImage);
-        commentIcon = (ImageView) view.findViewById(R.id.commentIcon);
-        likeIcon = (ImageView) view.findViewById(R.id.likeIcon);
-        feedMoreIcon = (ImageView) view.findViewById(R.id.feedMoreIcon);
-        imageHolder = (ImageView) view.findViewById(R.id.imageHolder);
-        feedAddressLayout = (RelativeLayout) view.findViewById(R.id.feedAddressLayout);
-        likeWrapper = (RelativeLayout) view.findViewById(R.id.likeWrapper);
-        commentWrapper = (RelativeLayout) view.findViewById(R.id.commentWrapper);
-        feedAttachmentLayout = (RelativeLayout) view.findViewById(R.id.feedAttachmentLayout);
-        feedItemCard = (CardView) view.findViewById(R.id.feedItemCard);
+        ButterKnife.bind(this, view);
     }
 
     public void initData(Context context, FeedModel feedModel, int position,
@@ -79,15 +100,17 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
             spacing.setVisibility(View.GONE);
         }
 
+        postVisibilityIcon.setImageResource(feedModel.isGlobalPost() ? R.drawable.global_icon_greyed_out : R.drawable.local_icon_greyed_out);
+
         mOnClickListener = feedItemClick;
         mContext = context;
         this.feedModel = feedModel;
         switch (feedModel.getType()) {
             case Constants.WALL_TYPE_POST:
-                handlePosts(position);
+                handlePosts();
                 break;
             case Constants.WALL_TYPE_GROUP_MESSAGE:
-                handleGroupMessages(position);
+                handleGroupMessages();
                 break;
             default:
                 hideActions();
@@ -98,7 +121,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
     private void hideActions() {
         commentWrapper.setVisibility(View.GONE);
         likeWrapper.setVisibility(View.GONE);
-        feedMoreIcon.setVisibility(View.GONE);
+        feedMoreIcon.setVisibility(View.INVISIBLE);
         actionDivider.setVisibility(View.GONE);
         whenPosted.setVisibility(View.GONE);
         feedAddressLayout.setVisibility(View.GONE);
@@ -108,10 +131,10 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
         likesCountTV.setVisibility(View.INVISIBLE);
     }
 
-    private void handleGroupMessages(final int position) {
+    private void handleGroupMessages() {
         commentWrapper.setVisibility(View.GONE);
         likeWrapper.setVisibility(View.GONE);
-        feedMoreIcon.setVisibility(View.GONE);
+        feedMoreIcon.setVisibility(View.INVISIBLE);
         actionDivider.setVisibility(View.GONE);
         whenPosted.setVisibility(View.GONE);
         feedAddressLayout.setVisibility(View.GONE);
@@ -147,7 +170,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 if (mOnClickListener != null) {
-                    mOnClickListener.onCardViewClick(position, feedModel.getType());
+                    mOnClickListener.onCardViewClick(feedModel, feedModel.getType());
                 }
             }
         });
@@ -155,7 +178,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 if (mOnClickListener != null) {
-                    mOnClickListener.onCardViewClick(position, feedModel.getType());
+                    mOnClickListener.onCardViewClick(feedModel, feedModel.getType());
                 }
             }
         });
@@ -179,7 +202,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    private void handlePosts(final int position) {
+    private void handlePosts() {
         commentWrapper.setVisibility(View.VISIBLE);
         likeWrapper.setVisibility(View.VISIBLE);
         actionDivider.setVisibility(View.VISIBLE);
@@ -229,7 +252,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 if (mOnClickListener != null) {
-                    mOnClickListener.onMoreClicked(position, feedMoreIcon);
+                    mOnClickListener.onMoreClicked(feedModel, feedMoreIcon);
                 }
             }
         });
@@ -244,7 +267,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (feedModel.getFileName() != null && !feedModel.getFileName().isEmpty()) {
-            feedModel.setHasAttachment(true);
+            feedModel.setAttachmentPresent(true);
             feedAttachmentLayout.setVisibility(View.VISIBLE);
             String fileName = feedModel.getFileName();
             int index = fileName.indexOf(":");
@@ -269,7 +292,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
             }
         } else {
             imageHolder.setVisibility(View.GONE);
-            feedModel.setHasAttachment(false);
+            feedModel.setAttachmentPresent(false);
             feedAttachmentLayout.setVisibility(View.GONE);
         }
 
@@ -277,16 +300,16 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 if (mOnClickListener != null) {
-                    mOnClickListener.onCardViewClick(position, feedModel.getType());
+                    mOnClickListener.onCardViewClick(feedModel, feedModel.getType());
                 }
             }
         });
         if (feedModel.getAddress() != null && !feedModel.getAddress().isEmpty()) {
-            feedModel.setHasAddress(true);
+            feedModel.setAddressPresent(true);
             feedAddressLayout.setVisibility(View.VISIBLE);
             feedAddress.setText(feedModel.getAddress());
         } else {
-            feedModel.setHasAddress(false);
+            feedModel.setAddressPresent(false);
             feedAddressLayout.setVisibility(View.GONE);
         }
         if (!feedModel.getLikesCount().equals("0")) {
@@ -304,7 +327,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 if (mOnClickListener != null) {
-                    mOnClickListener.onCardViewClick(position, feedModel.getType());
+                    mOnClickListener.onCardViewClick(feedModel, feedModel.getType());
                 }
             }
         });
@@ -312,7 +335,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 if (mOnClickListener != null) {
-                    mOnClickListener.onAttachmentClick(position);
+                    mOnClickListener.onAttachmentClick(feedModel);
                 }
             }
         });
@@ -320,7 +343,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 if (mOnClickListener != null) {
-                    mOnClickListener.onAddressClick(position);
+                    mOnClickListener.onAddressClick(feedModel);
                 }
             }
         });
@@ -328,7 +351,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
             @Override
             public boolean onLongClick(View view) {
                 if (mOnClickListener != null) {
-                    mOnClickListener.onCardLongClick(position);
+                    mOnClickListener.onCardLongClick(feedModel);
                 }
                 return true;
             }
@@ -337,7 +360,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 if (mOnClickListener != null) {
-                    mOnClickListener.onLikeClick(position, likeIcon, likesCountTV, likeWrapper);
+                    mOnClickListener.onLikeClick(feedModel, likeIcon, likesCountTV, likeWrapper);
                 }
             }
         });
@@ -345,7 +368,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 if (mOnClickListener != null) {
-                    mOnClickListener.onCommentClicked(position, commentIcon);
+                    mOnClickListener.onCommentClicked(feedModel, commentIcon);
                 }
             }
         });
@@ -353,7 +376,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 if (mOnClickListener != null) {
-                    mOnClickListener.onImageClicked(position);
+                    mOnClickListener.onImageClicked(feedModel);
                 }
             }
         });

@@ -33,7 +33,6 @@ import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,7 +40,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -79,10 +77,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private static final String TAG = Feed.class.getSimpleName();
     private static final int SHARE_INTENT_RESULT = 5;
     private static final int STORAGE_PERMISSION_REQUEST = 115;
-    private List<FeedModel> mFeedModelArrayList = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private FeedAdapter mAdapter;
-    private FeedModel mFeedModel;
     private SwipeRefreshLayout feedRefresh;
     private SharedHelper mSharedHelper;
     private RelativeLayout noPostsWrapper;
@@ -130,7 +126,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         deleteDialog.setCancelable(false);
 
         feedRefresh.setOnRefreshListener(this);
-        mAdapter = new FeedAdapter(mFeedModelArrayList, getActivity());
+        mAdapter = new FeedAdapter(getActivity());
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(500);
         itemAnimator.setRemoveDuration(500);
@@ -173,16 +169,16 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     public void checkShowComment() {
         if (mSharedHelper.showComments()) {
             int id = Integer.valueOf(mSharedHelper.getPostId());
-            for (FeedModel feedModel : mFeedModelArrayList) {
+            for (final FeedModel feedModel : mAdapter.getFeedList()) {
                 int eachId = Integer.valueOf(feedModel.getId());
                 if (eachId == id) {
-                    final int positionOfItem = mFeedModelArrayList.indexOf(feedModel);
+                    final int positionOfItem = mAdapter.getFeedList().indexOf(feedModel);
                     mRecyclerView.post(new Runnable() {
                         @Override
                         public void run() {
                             mRecyclerView.scrollToPosition(positionOfItem);
                             mSharedHelper.putPostId("");
-                            onCommentClicked(positionOfItem, null);
+                            onCommentClicked(feedModel, null);
                         }
                     });
 
@@ -227,116 +223,50 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             }
 
         }
-        Call<ResponseBody> feedCal = Retrofit.getInstance().getInkService().getPosts(mSharedHelper.getUserId(), String.valueOf(offset), String.valueOf(count));
-        feedCal.enqueue(new Callback<ResponseBody>() {
+        Call<List<FeedModel>> feedCal = Retrofit.getInstance().getInkService().getPosts(mSharedHelper.getUserId(), String.valueOf(offset), String.valueOf(count));
+        feedCal.enqueue(new Callback<List<FeedModel>>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getFeeds(offset, count, clearItems, newDataLoading, showNewFeed, checkCommentAutomatic);
-                    return;
+            public void onResponse(Call<List<FeedModel>> call, Response<List<FeedModel>> response) {
+                List<FeedModel> feedModels = response.body();
+
+                if (feedModels.isEmpty()) {
+                    noPostsWrapper.setVisibility(View.VISIBLE);
+                } else {
+                    noPostsWrapper.setVisibility(View.GONE);
                 }
-                if (response.body() == null) {
-                    getFeeds(offset, count, clearItems, newDataLoading, showNewFeed, checkCommentAutomatic);
-                    return;
+
+                mAdapter.setFeedList(feedModels);
+                feedRefresh.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        feedRefresh.setRefreshing(false);
+                    }
+                });
+
+
+                if (!clearItems) {
+                    parentActivity.getToolbar().setTitle(HomeActivity.FEED);
                 }
-
-                try {
-                    String responseBody = response.body().string();
-                    JSONArray jsonArray = new JSONArray(responseBody);
-
-                    if (clearItems) {
-                        if (mFeedModelArrayList != null) {
-                            mFeedModelArrayList.clear();
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject eachObject = jsonArray.optJSONObject(i);
-                        String id = eachObject.optString("id");
-                        String imageLink = eachObject.optString("image_link");
-                        String fileName = eachObject.optString("file_name");
-                        String postBody = eachObject.optString("post_body");
-                        String posterId = eachObject.optString("poster_id");
-                        String address = eachObject.optString("address");
-                        String datePosted = eachObject.optString("date_posted");
-                        String firstName = eachObject.optString("first_name");
-                        String lastName = eachObject.optString("last_name");
-                        boolean isLiked = eachObject.optBoolean("is_liked");
-                        String likesCount = eachObject.optString("likes_count");
-                        String type = eachObject.optString("type");
-                        String groupName = eachObject.optString("group_name");
-                        boolean isSocialAccount = eachObject.optBoolean("isSocialAccount");
-                        boolean isFriend = eachObject.optBoolean("isFriend");
-                        String groupColor = eachObject.optString("groupColor");
-                        String groupImage = eachObject.optString("groupImage");
-                        String groupDescription = eachObject.optString("groupDescription");
-                        String groupOwnerId = eachObject.optString("groupOwnerId");
-                        String ownerImage = eachObject.optString("ownerImage");
-                        String groupOwnerName = eachObject.optString("groupOwnerName");
-                        String commentsCount = eachObject.optString("commentsCount");
-                        String count = eachObject.optString("count");
-                        String groupMessageFileName = eachObject.optString("group_message_file_name");
-                        boolean isMember = eachObject.optBoolean("isMember");
-                        mFeedModel = new FeedModel(isFriend, isSocialAccount, id, imageLink, fileName, postBody,
-                                posterId, address, datePosted, firstName, lastName, isLiked, likesCount, type, groupName, count, ownerImage, groupOwnerId,
-                                groupDescription, groupImage, groupColor, groupOwnerName, commentsCount, groupMessageFileName);
-                        mFeedModelArrayList.add(mFeedModel);
-                        mAdapter.notifyDataSetChanged();
-                    }
-                    mAdapter.notifyDataSetChanged();
-                    feedRefresh.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            feedRefresh.setRefreshing(false);
-                        }
-                    });
-
-                    if (mFeedModelArrayList.size() == 0) {
-                        noPostsWrapper.setVisibility(View.VISIBLE);
+                if (showNewFeed) {
+                    if (!feedModels.isEmpty()) {
+                        newFeedsLayout.setVisibility(View.VISIBLE);
                     } else {
-                        noPostsWrapper.setVisibility(View.GONE);
+                        newFeedsLayout.setVisibility(View.GONE);
                     }
-                    if (!clearItems) {
-                        parentActivity.getToolbar().setTitle(HomeActivity.FEED);
-                    }
-                    if (showNewFeed) {
-                        if (jsonArray.length() > 0) {
-                            newFeedsLayout.setVisibility(View.VISIBLE);
-                        } else {
-                            newFeedsLayout.setVisibility(View.GONE);
-                        }
-                    }
-                    if (newDataLoading) {
-                        mOffset += 10;
-                    }
-                    if (checkCommentAutomatic) {
-                        checkShowComment();
-                    } else {
-                        mSharedHelper.putPostId("");
-                    }
-                } catch (IOException e) {
-                    feedRefresh.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            feedRefresh.setRefreshing(false);
-                        }
-                    });
-
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    feedRefresh.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            feedRefresh.setRefreshing(false);
-                        }
-                    });
-                    e.printStackTrace();
-                    Toast.makeText(parentActivity, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                 }
+                if (newDataLoading) {
+                    mOffset += 10;
+                }
+                if (checkCommentAutomatic) {
+                    checkShowComment();
+                } else {
+                    mSharedHelper.putPostId("");
+                }
+
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<List<FeedModel>> call, Throwable t) {
                 feedRefresh.post(new Runnable() {
                     @Override
                     public void run() {
@@ -349,13 +279,13 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     }
 
     @Override
-    public void onCardViewClick(int position, String type) {
+    public void onCardViewClick(FeedModel feedModel, String type) {
         switch (type) {
             case Constants.WALL_TYPE_GROUP_MESSAGE:
-                startGroupActivity(position);
+                startGroupActivity(feedModel);
                 break;
             case Constants.WALL_TYPE_POST:
-                startCommentActivity(position);
+                startCommentActivity(feedModel);
                 break;
         }
 
@@ -373,64 +303,64 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     }
 
 
-    private void startGroupActivity(int position) {
+    private void startGroupActivity(FeedModel feedModel) {
 
         Intent intent = new Intent(getActivity(), SingleGroupView.class);
-        intent.putExtra("groupName", mFeedModelArrayList.get(position).getGroupName());
-        intent.putExtra("groupId", mFeedModelArrayList.get(position).getId());
-        intent.putExtra("groupColor", mFeedModelArrayList.get(position).getGroupColor());
-        intent.putExtra("groupImage", mFeedModelArrayList.get(position).getGroupImage());
-        intent.putExtra("groupDescription", mFeedModelArrayList.get(position).getGroupDescription());
-        intent.putExtra("groupOwnerId", mFeedModelArrayList.get(position).getGroupOwnerId());
-        intent.putExtra("groupOwnerName", mFeedModelArrayList.get(position).getGroupOwnerName());
-        intent.putExtra("count", mFeedModelArrayList.get(position).getCount());
-        intent.putExtra("ownerImage", mFeedModelArrayList.get(position).getOwnerImage());
-        intent.putExtra("isSocialAccount", mFeedModelArrayList.get(position).isSocialAccount());
+        intent.putExtra("groupName", feedModel.getGroupName());
+        intent.putExtra("groupId", feedModel.getId());
+        intent.putExtra("groupColor", feedModel.getGroupColor());
+        intent.putExtra("groupImage", feedModel.getGroupImage());
+        intent.putExtra("groupDescription", feedModel.getGroupDescription());
+        intent.putExtra("groupOwnerId", feedModel.getGroupOwnerId());
+        intent.putExtra("groupOwnerName", feedModel.getGroupOwnerName());
+        intent.putExtra("count", feedModel.getCount());
+        intent.putExtra("ownerImage", feedModel.getOwnerImage());
+        intent.putExtra("isSocialAccount", feedModel.isSocialAccount());
         intent.putExtra("isMember", true);
-        intent.putExtra("isFriend", mFeedModelArrayList.get(position).isFriend());
+        intent.putExtra("isFriend", feedModel.isFriend());
         startActivity(intent);
     }
 
 
-    private void startCommentActivity(int position) {
-        FeedModel clickedModel = mFeedModelArrayList.get(position);
+    private void startCommentActivity(FeedModel feedModel) {
+
         Intent intent = new Intent(getActivity(), Comments.class);
-        intent.putExtra("postId", clickedModel.getId());
-        intent.putExtra("userImage", clickedModel.getUserImage());
-        intent.putExtra("postBody", clickedModel.getContent());
-        intent.putExtra("attachment", clickedModel.getFileName());
-        intent.putExtra("location", clickedModel.getAddress());
-        intent.putExtra("name", clickedModel.getFirstName() + " " + clickedModel.getLastName());
-        intent.putExtra("date", clickedModel.getDatePosted());
-        intent.putExtra("likesCount", clickedModel.getLikesCount());
-        intent.putExtra("isLiked", clickedModel.isLiked());
-        intent.putExtra("isSocialAccount", clickedModel.isSocialAccount());
-        intent.putExtra("ownerId", clickedModel.getPosterId());
+        intent.putExtra("postId", feedModel.getId());
+        intent.putExtra("userImage", feedModel.getUserImage());
+        intent.putExtra("postBody", feedModel.getContent());
+        intent.putExtra("attachment", feedModel.getFileName());
+        intent.putExtra("location", feedModel.getAddress());
+        intent.putExtra("name", feedModel.getFirstName() + " " + feedModel.getLastName());
+        intent.putExtra("date", feedModel.getDatePosted());
+        intent.putExtra("likesCount", feedModel.getLikesCount());
+        intent.putExtra("isLiked", feedModel.isLiked());
+        intent.putExtra("isSocialAccount", feedModel.isSocialAccount());
+        intent.putExtra("ownerId", feedModel.getPosterId());
 
-        intent.putExtra("hasAttachment", clickedModel.hasAttachment());
-        intent.putExtra("hasAddress", clickedModel.hasAddress());
-        intent.putExtra("attachmentName", clickedModel.getFileName());
-        intent.putExtra("addressName", clickedModel.getAddress());
-        intent.putExtra("postId", clickedModel.getId());
-        intent.putExtra("postBody", clickedModel.getContent());
+        intent.putExtra("attachmentPresent", feedModel.isAttachmentPresent());
+        intent.putExtra("addressPresent", feedModel.isAddressPresent());
+        intent.putExtra("attachmentName", feedModel.getFileName());
+        intent.putExtra("addressName", feedModel.getAddress());
+        intent.putExtra("postId", feedModel.getId());
+        intent.putExtra("postBody", feedModel.getContent());
 
-        intent.putExtra("isPostOwner", clickedModel.isPostOwner());
-        intent.putExtra("isFriend", clickedModel.isFriend());
+        intent.putExtra("isPostOwner", feedModel.isPostOwner());
+        intent.putExtra("isFriend", feedModel.isFriend());
 
 
         startActivity(intent);
     }
 
     @Override
-    public void onAddressClick(int position) {
-        String address = mFeedModelArrayList.get(position).getAddress();
+    public void onAddressClick(FeedModel feedModel) {
+        String address = feedModel.getAddress();
         openGoogleMaps(address);
     }
 
     @Override
-    public void onAttachmentClick(int position) {
-        String fileName = mFeedModelArrayList.get(position).getFileName();
-        String userId = mFeedModelArrayList.get(position).getPosterId();
+    public void onAttachmentClick(FeedModel feedModel) {
+        String fileName = feedModel.getFileName();
+        String userId = feedModel.getPosterId();
         showPromptDialog(fileName);
     }
 
@@ -471,41 +401,40 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     }
 
     @Override
-    public void onCardLongClick(int position) {
+    public void onCardLongClick(FeedModel feedModel) {
 
     }
 
     @Override
-    public void onLikeClick(int position, ImageView likeView, TextView likeCountTV, View likeWrapper) {
+    public void onLikeClick(FeedModel feedModel, ImageView likeView, TextView likeCountTV, View likeWrapper) {
         Animations.animateCircular(likeView);
-        boolean isLiked = mFeedModelArrayList.get(position).isLiked();
+        boolean isLiked = feedModel.isLiked();
         likeWrapper.setEnabled(false);
         if (isLiked) {
             //must dislike
-            like(mFeedModelArrayList.get(position).getId(), 1, likeCountTV, position, likeWrapper);
+            like(feedModel.getId(), 1, likeCountTV, feedModel, likeWrapper);
             likeView.setBackgroundResource(R.drawable.like_inactive);
-            mFeedModelArrayList.get(position).setLiked(false);
+            feedModel.setLiked(false);
         } else {
             //must like
-            like(mFeedModelArrayList.get(position).getId(), 0, likeCountTV, position, likeWrapper);
+            like(feedModel.getId(), 0, likeCountTV, feedModel, likeWrapper);
             likeView.setBackgroundResource(R.drawable.like_active);
-            mFeedModelArrayList.get(position).setLiked(true);
+            feedModel.setLiked(true);
         }
     }
 
     @Override
-    public void onCommentClicked(int position, View commentView) {
+    public void onCommentClicked(FeedModel feedModel, View commentView) {
         if (commentView != null) {
             Animations.animateCircular(commentView);
         }
 
-        startCommentActivity(position);
+        startCommentActivity(feedModel);
     }
 
     @Override
-    public void onMoreClicked(final int position, View view) {
-        final FeedModel singleModel = mFeedModelArrayList.get(position);
-        if (singleModel.isPostOwner()) {
+    public void onMoreClicked(final FeedModel feedModel, View view) {
+        if (feedModel.isPostOwner()) {
             DialogUtils.showPopUp(getActivity(), view, new ItemClickListener<MenuItem>() {
                 @Override
                 public void onItemClick(MenuItem clickedItem) {
@@ -513,12 +442,12 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         case 0:
                             Intent intent = new Intent(getActivity(), MakePost.class);
                             intent.putExtra("isEditing", true);
-                            intent.putExtra("hasAttachment", singleModel.hasAttachment());
-                            intent.putExtra("hasAddress", singleModel.hasAddress());
-                            intent.putExtra("attachmentName", singleModel.getFileName());
-                            intent.putExtra("addressName", singleModel.getAddress());
-                            intent.putExtra("postId", singleModel.getId());
-                            intent.putExtra("postBody", singleModel.getContent());
+                            intent.putExtra("attachmentPresent", feedModel.isAttachmentPresent());
+                            intent.putExtra("addressPresent", feedModel.isAddressPresent());
+                            intent.putExtra("attachmentName", feedModel.getFileName());
+                            intent.putExtra("addressName", feedModel.getAddress());
+                            intent.putExtra("postId", feedModel.getId());
+                            intent.putExtra("postBody", feedModel.getContent());
                             startActivity(intent);
 
                             break;
@@ -531,7 +460,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     dialogInterface.dismiss();
                                     deleteDialog.show();
-                                    deletePost(mFeedModelArrayList.get(position).getId(), mFeedModelArrayList.get(position).getFileName());
+                                    deletePost(feedModel.getId(), feedModel.getFileName());
                                 }
                             });
                             builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -543,7 +472,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                             builder.show();
                             break;
                         case 2:
-                            openShareView(singleModel);
+                            openShareView(feedModel);
                             break;
                     }
                 }
@@ -555,14 +484,14 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                     switch (clickedItem.getItemId()) {
                         case 0:
                             Intent intent = new Intent(getActivity(), OpponentProfile.class);
-                            intent.putExtra("id", singleModel.getPosterId());
-                            intent.putExtra("firstName", singleModel.getFirstName());
-                            intent.putExtra("lastName", singleModel.getLastName());
-                            intent.putExtra("isFriend", singleModel.isFriend());
+                            intent.putExtra("id", feedModel.getPosterId());
+                            intent.putExtra("firstName", feedModel.getFirstName());
+                            intent.putExtra("lastName", feedModel.getLastName());
+                            intent.putExtra("isFriend", feedModel.isFriend());
                             startActivity(intent);
                             break;
                         case 1:
-                            openShareView(singleModel);
+                            openShareView(feedModel);
                             break;
                     }
 
@@ -576,18 +505,18 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         content = new StringBuilder();
         content.append(singleModel.getContent());
 
-        if (singleModel.hasAttachment()) {
+        if (singleModel.isAttachmentPresent()) {
             Ion.with(getActivity()).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + Uri.encode(singleModel.getFileName())).asBitmap().setCallback(new FutureCallback<Bitmap>() {
                 @Override
                 public void onCompleted(Exception e, Bitmap result) {
                     if (e != null) {
-                        if (singleModel.hasAddress()) {
+                        if (singleModel.isAddressPresent()) {
                             content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
                         }
                         openShareIntent(intentBitmap, content.toString());
                     } else {
                         intentBitmap = result;
-                        if (singleModel.hasAddress()) {
+                        if (singleModel.isAddressPresent()) {
                             content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
                         }
                         openShareIntent(intentBitmap, content.toString());
@@ -596,7 +525,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             });
         } else {
             intentBitmap = null;
-            if (singleModel.hasAddress()) {
+            if (singleModel.isAddressPresent()) {
                 content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
             }
             openShareIntent(intentBitmap, content.toString());
@@ -644,8 +573,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
 
     @Override
-    public void onImageClicked(int position) {
-        FeedModel feedModel = mFeedModelArrayList.get(position);
+    public void onImageClicked(FeedModel feedModel) {
         Intent intent = new Intent(getActivity(), FullscreenActivity.class);
         String encodedFileName = Uri.encode(feedModel.getFileName());
         intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedFileName);
@@ -709,17 +637,17 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         });
     }
 
-    private void like(final String postId, final int isLiking, final TextView likeCountTV, final int position, final View likeWrapper) {
+    private void like(final String postId, final int isLiking, final TextView likeCountTV, final FeedModel feedModel, final View likeWrapper) {
         final Call<ResponseBody> likeCall = Retrofit.getInstance().getInkService().likePost(mSharedHelper.getUserId(), postId, isLiking);
         likeCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
-                    like(postId, isLiking, likeCountTV, position, likeWrapper);
+                    like(postId, isLiking, likeCountTV, feedModel, likeWrapper);
                     return;
                 }
                 if (response.body() == null) {
-                    like(postId, isLiking, likeCountTV, position, likeWrapper);
+                    like(postId, isLiking, likeCountTV, feedModel, likeWrapper);
                     return;
                 }
 
@@ -727,7 +655,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     String likesCount = jsonObject.optString("likes_count");
-                    mFeedModelArrayList.get(position).setLikesCount(likesCount);
+                    feedModel.setLikesCount(likesCount);
                     likeWrapper.setEnabled(true);
                     if (!likesCount.equals("0")) {
                         likeCountTV.setVisibility(View.VISIBLE);
@@ -749,7 +677,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                like(postId, isLiking, likeCountTV, position, likeWrapper);
+                like(postId, isLiking, likeCountTV, feedModel, likeWrapper);
             }
         });
     }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import ink.va.models.BadgeResponseModel;
+import ink.va.models.FeedModel;
 import ink.va.models.MafiaMessageModel;
 import ink.va.models.MafiaRoomsModel;
 import ink.va.models.MyCollectionResponseModel;
@@ -482,9 +483,9 @@ public class Retrofit {
 
         @POST(Constants.GET_POSTS_URL)
         @FormUrlEncoded
-        Call<ResponseBody> getPosts(@Field("user_id") String userId,
-                                    @Field("offset") String offset,
-                                    @Field("count") String count);
+        Call<List<FeedModel>> getPosts(@Field("user_id") String userId,
+                                       @Field("offset") String offset,
+                                       @Field("count") String count);
 
 
         @POST(Constants.GET_COMMENTS_URL)

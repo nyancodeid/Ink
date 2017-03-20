@@ -8,12 +8,14 @@ import android.view.ViewGroup;
 
 import com.ink.va.R;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import ink.va.interfaces.FeedItemClick;
 import ink.va.models.FeedModel;
 import ink.va.utils.Animations;
 import ink.va.view_holders.FeedViewHolder;
+import lombok.Getter;
 
 
 /**
@@ -21,15 +23,16 @@ import ink.va.view_holders.FeedViewHolder;
  */
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    @Getter
     private List<FeedModel> feedList;
     private Context mContext;
     private FeedItemClick mOnClickListener;
     private int lastPosition = -1;
 
 
-    public FeedAdapter(List<FeedModel> feedList, Context context) {
+    public FeedAdapter(Context context) {
         mContext = context;
-        this.feedList = feedList;
+        feedList = new LinkedList<>();
     }
 
 
@@ -67,5 +70,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemCount() {
         return feedList.size();
+    }
+
+    public void setFeedList(List<FeedModel> feedList) {
+        this.feedList.addAll(feedList);
+        notifyDataSetChanged();
     }
 }

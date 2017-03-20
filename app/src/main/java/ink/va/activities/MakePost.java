@@ -129,8 +129,8 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                 if (isEditing) {
                     disableVisibilityControls();
                 }
-                hasAttachment = extras.getBoolean("hasAttachment");
-                hasAddress = extras.getBoolean("hasAddress");
+                hasAttachment = extras.getBoolean("attachmentPresent");
+                hasAddress = extras.getBoolean("addressPresent");
                 postId = extras.getString("postId");
                 if (hasAttachment) {
                     attachmentName = extras.getString("attachmentName");

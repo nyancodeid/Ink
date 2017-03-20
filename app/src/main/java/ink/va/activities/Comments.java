@@ -157,8 +157,8 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
             isLiked = extras.getBoolean("isLiked");
             ownerId = extras.getString("ownerId");
 
-            hasAttachment = extras.getBoolean("hasAttachment");
-            hasAddress = extras.getBoolean("hasAddress");
+            hasAttachment = extras.getBoolean("attachmentPresent");
+            hasAddress = extras.getBoolean("addressPresent");
             attachmentName = extras.getString("attachmentName");
             addressName = extras.getString("addressName");
             postId = extras.getString("postId");
@@ -477,8 +477,8 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                         case 0:
                             Intent intent = new Intent(getApplicationContext(), MakePost.class);
                             intent.putExtra("isEditing", true);
-                            intent.putExtra("hasAttachment", hasAttachment);
-                            intent.putExtra("hasAddress", hasAddress);
+                            intent.putExtra("attachmentPresent", hasAttachment);
+                            intent.putExtra("addressPresent", hasAddress);
                             intent.putExtra("attachmentName", attachmentName);
                             intent.putExtra("addressName", addressName);
                             intent.putExtra("postId", postId);
