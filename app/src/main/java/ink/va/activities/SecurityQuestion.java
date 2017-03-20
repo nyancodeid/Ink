@@ -62,6 +62,7 @@ public class SecurityQuestion extends BaseActivity {
         scaleIn = AnimationUtils.loadAnimation(this, R.anim.scale_in);
         progressDialog = ProgressDialog.get().buildProgressDialog(this, false);
         progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setTitle(getString(R.string.connecting));
         progressDialog.setMessage(getString(R.string.connectingToServer));
         ActionBar actionBar = getSupportActionBar();

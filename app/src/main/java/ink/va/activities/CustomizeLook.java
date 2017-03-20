@@ -245,6 +245,7 @@ public class CustomizeLook extends BaseActivity {
         setSupportActionBar(customizeToolbar);
         progressDialog = ink.va.utils.ProgressDialog.get().buildProgressDialog(this, false);
         progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setTitle(getString(R.string.pleaseWait));
         progressDialog.setMessage(getString(R.string.savingToServer));
 

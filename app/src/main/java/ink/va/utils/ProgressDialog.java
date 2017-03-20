@@ -59,4 +59,10 @@ public class ProgressDialog {
             progressDialogBuilder.setCancelable(cancelable);
         }
     }
+
+    public void setCanceledOnTouchOutside(boolean cancelable) {
+        if (progressDialogBuilder != null) {
+            progressDialogBuilder.setCanceledOnTouchOutside(cancelable);
+        }
+    }
 }

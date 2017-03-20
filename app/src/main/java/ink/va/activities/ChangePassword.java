@@ -48,6 +48,7 @@ public class ChangePassword extends BaseActivity {
         progressDialog.setTitle(getString(R.string.connecting));
         progressDialog.setMessage(getString(R.string.connectingToServer));
         progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
         ButterKnife.bind(this);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

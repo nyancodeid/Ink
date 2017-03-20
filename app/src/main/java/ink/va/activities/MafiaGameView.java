@@ -165,6 +165,7 @@ public class MafiaGameView extends BaseActivity {
         ButterKnife.bind(this);
         progressDialog = ProgressDialog.get().buildProgressDialog(this, false);
         progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
         sharedHelper = new SharedHelper(this);
         slideOutWithFade = AnimationUtils.loadAnimation(this, R.anim.slide_out_with_fade);
         slideInWithFade = AnimationUtils.loadAnimation(this, R.anim.slide_in_with_fade);
