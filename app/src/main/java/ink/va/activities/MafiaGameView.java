@@ -73,6 +73,7 @@ import retrofit2.Response;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_ERROR;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_TIMEOUT;
+import static com.github.nkzawa.socketio.client.Socket.EVENT_DISCONNECT;
 import static ink.va.utils.Constants.EVENT_MAFIA_GLOBAL_MESSAGE;
 import static ink.va.utils.Constants.EVENT_ON_MAFIA_GAME_STARTED;
 import static ink.va.utils.Constants.EVENT_ON_ROLE_RECEIVED;
@@ -421,6 +422,7 @@ public class MafiaGameView extends BaseActivity {
                     @Override
                     public void run() {
                         mafiaChatAdapter.insertMessage(mafiaMessageModel);
+                        hideNoMessages();
                         scrollToBottom();
                     }
                 });
@@ -444,6 +446,13 @@ public class MafiaGameView extends BaseActivity {
     private Emitter.Listener onSocketConnected = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
+        }
+    };
+
+    private Emitter.Listener onDisconnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+
         }
     };
 
@@ -724,6 +733,7 @@ public class MafiaGameView extends BaseActivity {
         }
 
         socket.on(EVENT_MAFIA_GLOBAL_MESSAGE, onGlobalMessageReceived);
+        socket.on(EVENT_DISCONNECT, onDisconnect);
         socket.on(EVENT_CONNECT_ERROR, onConnectionError);
         socket.on(EVENT_CONNECT_TIMEOUT, onConnectionTimeOut);
         socket.on(EVENT_CONNECT, onSocketConnected);
@@ -1179,6 +1189,7 @@ public class MafiaGameView extends BaseActivity {
     private void destroySocket() {
         socket.disconnect();
         socket.off(EVENT_MAFIA_GLOBAL_MESSAGE, onGlobalMessageReceived);
+        socket.off(EVENT_DISCONNECT, onDisconnect);
         socket.off(EVENT_CONNECT_ERROR, onConnectionError);
         socket.off(EVENT_ON_SOCKET_MESSAGE_RECEIVED, onSocketMessageReceived);
         socket.off(EVENT_CONNECT_TIMEOUT, onConnectionTimeOut);
