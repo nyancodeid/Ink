@@ -476,11 +476,33 @@ public class MafiaGameView extends BaseActivity {
             JSONObject jsonObject = (JSONObject) args[0];
             int roomId = jsonObject.optInt("roomId");
             if (roomId == mafiaRoomsModel.getId()) {
+
+                String systemMessage = jsonObject.optString("systemMessage");
+                long newOwnerId = jsonObject.optLong("newOwnerId");
+                final boolean isNewOwnerChosen = jsonObject.optBoolean("isNewOwnerChosen");
+                final MafiaMessageModel mafiaMessageModel = new MafiaMessageModel();
+                if (isNewOwnerChosen) {
+                    mafiaRoomsModel.setCreatorId(String.valueOf(newOwnerId));
+                    mafiaMessageModel.setUser(User.get().buildUser(sharedHelper));
+                    mafiaMessageModel.setSystemMessage(true);
+                    mafiaMessageModel.setSenderId("0");
+                    mafiaMessageModel.setId(String.valueOf(System.currentTimeMillis()));
+                    mafiaMessageModel.setRoomId(MafiaGameView.this.mafiaRoomsModel.getId());
+                    mafiaMessageModel.setMessage(systemMessage);
+
+                }
+
                 final ParticipantModel participantModel = gson.fromJson(jsonObject.optString("participantModel"), ParticipantModel.class);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
                         mafiaPlayersAdapter.removeUser(participantModel);
+                        if (isNewOwnerChosen) {
+                            mafiaChatAdapter.insertMessage(mafiaMessageModel);
+                            scrollToBottom();
+                            getMafiaRoomParticipants();
+                        }
                     }
                 });
             }
@@ -492,12 +514,22 @@ public class MafiaGameView extends BaseActivity {
         public void call(Object... args) {
             JSONObject jsonObject = (JSONObject) args[0];
             int roomId = jsonObject.optInt("roomId");
+            final String systemMessage = jsonObject.optString("systemMessage");
             if (roomId == mafiaRoomsModel.getId()) {
                 final ParticipantModel participantModel = gson.fromJson(jsonObject.optString("participantModel"), ParticipantModel.class);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        MafiaMessageModel mafiaMessageModel = new MafiaMessageModel();
+                        mafiaMessageModel.setMessage(systemMessage);
+                        mafiaMessageModel.setSystemMessage(true);
+                        mafiaMessageModel.setId(String.valueOf(System.currentTimeMillis()));
+                        mafiaMessageModel.setRoomId(mafiaRoomsModel.getId());
+                        mafiaMessageModel.setSenderId("0");
+                        mafiaMessageModel.setUser(User.get().buildUser(sharedHelper));
                         mafiaPlayersAdapter.addUser(participantModel);
+                        mafiaChatAdapter.insertMessage(mafiaMessageModel);
+                        scrollToBottom();
                     }
                 });
             }
@@ -798,6 +830,7 @@ public class MafiaGameView extends BaseActivity {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
+                    String systemMessage = jsonObject.optString("systemMessage");
                     if (success) {
 
                         if (socketJson != null) {
@@ -819,6 +852,7 @@ public class MafiaGameView extends BaseActivity {
                         String participantJson = gson.toJson(participantModel);
 
                         socketJson.put("roomId", mafiaRoomsModel.getId());
+                        socketJson.put("systemMessage", systemMessage);
                         socketJson.put("participantModel", participantJson);
 
                         socket.emit(EVENT_ON_USER_JOINED_MAFIA_ROOM, socketJson);
@@ -903,6 +937,11 @@ public class MafiaGameView extends BaseActivity {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
+
+                    String systemMessage = jsonObject.optString("systemMessage");
+                    long newOwnerId = jsonObject.optLong("newOwnerId");
+                    boolean isNewOwnerChosen = jsonObject.optBoolean("isNewOwnerChosen");
+
                     if (success) {
                         if (socketJson != null) {
                             socketJson = null;
@@ -916,6 +955,9 @@ public class MafiaGameView extends BaseActivity {
 
                         socketJson = new JSONObject();
                         socketJson.put("roomId", mafiaRoomsModel.getId());
+                        socketJson.put("systemMessage", systemMessage);
+                        socketJson.put("newOwnerId", newOwnerId);
+                        socketJson.put("isNewOwnerChosen", isNewOwnerChosen);
                         socketJson.put("participantModel", userJson);
 
 
