@@ -54,6 +54,7 @@ import ink.va.adapters.MafiaPlayersAdapter;
 import ink.va.models.MafiaMessageModel;
 import ink.va.models.MafiaRoomsModel;
 import ink.va.models.ParticipantModel;
+import ink.va.models.UserModel;
 import ink.va.service.MafiaGameService;
 import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
@@ -398,7 +399,23 @@ public class MafiaGameView extends BaseActivity {
         @Override
         public void call(Object... args) {
             JSONObject jsonObject = (JSONObject) args[0];
-            final MafiaMessageModel mafiaMessageModel = gson.fromJson(jsonObject.toString(), MafiaMessageModel.class);
+            long id = jsonObject.optLong("id");
+            int roomId = jsonObject.optInt("room_id");
+            String message = jsonObject.optString("message");
+            String senderId = jsonObject.optString("sender_id");
+            String user = jsonObject.optString("user");
+            boolean isSystemMessage = jsonObject.optBoolean("isSystemMessage");
+
+            UserModel userModel = gson.fromJson(user, UserModel.class);
+
+            final MafiaMessageModel mafiaMessageModel = new MafiaMessageModel();
+            mafiaMessageModel.setId(String.valueOf(id));
+            mafiaMessageModel.setRoomId(roomId);
+            mafiaMessageModel.setMessage(message);
+            mafiaMessageModel.setSenderId(senderId);
+            mafiaMessageModel.setSystemMessage(isSystemMessage);
+            mafiaMessageModel.setUser(userModel);
+
             if (mafiaMessageModel.getRoomId() == mafiaMessageModel.getRoomId()) {
                 runOnUiThread(new Runnable() {
                     @Override
@@ -586,6 +603,7 @@ public class MafiaGameView extends BaseActivity {
             if (currentPlayers < minimumYakudzaPlayers) {
                 int playersNeeded = minimumYakudzaPlayers - currentPlayers;
                 DialogUtils.showDialog(this, getString(R.string.cantStart), getString(R.string.needMorePlayersText, playersNeeded), true, null, false, null);
+                getMafiaRoomParticipants();
             } else {
                 callStartGame();
             }
@@ -594,6 +612,7 @@ public class MafiaGameView extends BaseActivity {
             if (currentPlayers < minimumClassicPlayers) {
                 int playersNeeded = minimumClassicPlayers - currentPlayers;
                 DialogUtils.showDialog(this, getString(R.string.cantStart), getString(R.string.needMorePlayersText, playersNeeded), true, null, false, null);
+                getMafiaRoomParticipants();
             } else {
                 callStartGame();
             }
