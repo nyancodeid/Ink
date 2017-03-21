@@ -482,8 +482,12 @@ public class MafiaGameView extends BaseActivity {
                 String systemMessage = jsonObject.optString("systemMessage");
                 long newOwnerId = jsonObject.optLong("newOwnerId");
                 final MafiaMessageModel mafiaMessageModel = new MafiaMessageModel();
+                boolean isNewOwnerChosen = jsonObject.optBoolean("isNewOwnerChosen");
 
-                mafiaRoomsModel.setCreatorId(String.valueOf(newOwnerId));
+                if (isNewOwnerChosen) {
+                    mafiaRoomsModel.setCreatorId(String.valueOf(newOwnerId));
+                }
+
                 mafiaPlayersAdapter.setOwnerId(mafiaRoomsModel.getCreatorId());
                 mafiaMessageModel.setUser(User.get().buildUser(sharedHelper));
                 mafiaMessageModel.setSystemMessage(true);
