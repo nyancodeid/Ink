@@ -13,6 +13,8 @@ import com.koushikdutta.ion.Ion;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.ParticipantModel;
 import ink.va.models.UserModel;
 import ink.va.utils.CircleTransform;
@@ -30,13 +32,32 @@ public class MafiaParticipantViewHolder extends RecyclerView.ViewHolder {
     TextView participantName;
     @BindView(R.id.roomOwnerTV)
     TextView roomOwnerTV;
+    @BindView(R.id.victimIcon)
+    ImageView victimIcon;
+    private RecyclerItemClickListener onItemClickListener;
+    private ParticipantModel participantModel;
 
     public MafiaParticipantViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
 
-    public void initData(final Context context, ParticipantModel participantModel, String ownerId) {
+    @OnClick(R.id.playersParentItem)
+    public void playersParentItemClicked() {
+        if (onItemClickListener != null) {
+            onItemClickListener.onItemClicked(participantModel);
+        }
+    }
+
+    public void initData(final Context context, ParticipantModel participantModel, String ownerId, RecyclerItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+        this.participantModel = participantModel;
+        if (participantModel.isVictim()) {
+            victimIcon.setVisibility(View.VISIBLE);
+        } else {
+            victimIcon.setVisibility(View.GONE);
+        }
+
         UserModel user = participantModel.getUser();
         participantName.setText(user.getFirstName() + " " + user.getLastName());
 

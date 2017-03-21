@@ -43,19 +43,40 @@ public class MafiaChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return mafiaMessageModels.size();
     }
 
-    public void setMafiaMessageModels(List<MafiaMessageModel> mafiaMessageModels) {
-        this.mafiaMessageModels.clear();
-        this.mafiaMessageModels.addAll(mafiaMessageModels);
-        notifyDataSetChanged();
+    public void setMafiaMessageModels(List<MafiaMessageModel> mafiaMessageModels, boolean isMafia) {
+        if (!isMafia) {
+            this.mafiaMessageModels.clear();
+            for (int i = 0; i < mafiaMessageModels.size(); i++) {
+                MafiaMessageModel mafiaMessageModel = mafiaMessageModels.get(i);
+                if (mafiaMessageModel.isMafiaMessage()) {
+                    continue;
+                }
+                this.mafiaMessageModels.addAll(mafiaMessageModels);
+            }
+            notifyDataSetChanged();
+        } else {
+            this.mafiaMessageModels.clear();
+            this.mafiaMessageModels.addAll(mafiaMessageModels);
+            notifyDataSetChanged();
+        }
     }
 
-    public void insertMessage(MafiaMessageModel mafiaMessageModel) {
-        mafiaMessageModels.add(mafiaMessageModel);
-        int index = mafiaMessageModels.indexOf(mafiaMessageModel);
-        notifyItemInserted(index);
+    public void insertMessage(MafiaMessageModel mafiaMessageModel, boolean isMafia) {
+        if (mafiaMessageModel.isMafiaMessage()) {
+            if (isMafia) {
+                mafiaMessageModels.add(mafiaMessageModel);
+                int index = mafiaMessageModels.indexOf(mafiaMessageModel);
+                notifyItemInserted(index);
+            }
+        } else {
+            mafiaMessageModels.add(mafiaMessageModel);
+            int index = mafiaMessageModels.indexOf(mafiaMessageModel);
+            notifyItemInserted(index);
+        }
+
     }
 
-    public void clear(){
+    public void clear() {
         mafiaMessageModels.clear();
         notifyDataSetChanged();
     }

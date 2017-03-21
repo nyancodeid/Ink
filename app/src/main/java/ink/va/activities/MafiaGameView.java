@@ -51,6 +51,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.adapters.MafiaChatAdapter;
 import ink.va.adapters.MafiaPlayersAdapter;
+import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.MafiaMessageModel;
 import ink.va.models.MafiaRoomsModel;
 import ink.va.models.ParticipantModel;
@@ -86,12 +87,14 @@ import static ink.va.utils.ErrorCause.GAME_ALREADY_IN_PROGRESS;
 import static ink.va.utils.ErrorCause.GAME_IN_PROGRESS;
 import static ink.va.utils.ErrorCause.MAXIMUM_PLAYERS_REACHED;
 import static ink.va.utils.ErrorCause.ROOM_DELETED;
+import static ink.va.utils.MafiaConstants.DAY_TYPE_DAYLIGHT;
+import static ink.va.utils.MafiaConstants.DAY_TYPE_NIGHT;
 import static ink.va.utils.Time.UNIT_DAY;
 import static ink.va.utils.Time.UNIT_HOUR;
 import static ink.va.utils.Time.UNIT_MINUTE;
 import static ink.va.utils.Time.convertToMillis;
 
-public class MafiaGameView extends BaseActivity {
+public class MafiaGameView extends BaseActivity implements RecyclerItemClickListener {
     private static final int ITEM_LEAVE_ID = 1;
     private static final int ITEM_JOIN_ID = 2;
     private static final int ITEM_DELETE_ID = 3;
@@ -143,6 +146,10 @@ public class MafiaGameView extends BaseActivity {
     TextView singleNightDurationTV;
     @BindView(R.id.roomLanguageTV)
     TextView roomLanguageTV;
+    @BindView(R.id.toggleMafiaChatMode)
+    ImageView toggleMafiaChatMode;
+    @BindView(R.id.choseVictimButton)
+    View choseVictimButton;
 
     private Animation slideOutWithFade;
     private Animation slideInWithFade;
@@ -159,6 +166,8 @@ public class MafiaGameView extends BaseActivity {
     private JSONObject socketJson;
     private Gson gson;
     private Runnable lastMethodToRun;
+    private boolean isMafiaToggled;
+    private String lastVictimId = "";
 
 
     @Override
@@ -188,6 +197,7 @@ public class MafiaGameView extends BaseActivity {
         initEditText(isParticipant());
         initGameInfo();
         initRecyclersAndService();
+        initToggleIcon();
         initDayTypeAndTime(null, false);
         if (!mafiaRoomsModel.isGameStarted()) {
             nightDayIV.setVisibility(View.INVISIBLE);
@@ -199,6 +209,41 @@ public class MafiaGameView extends BaseActivity {
         }
 
 
+    }
+
+    private void initToggleIcon() {
+        if (mafiaRoomsModel.isGameStarted() && mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT)) {
+            toggleMafiaChatMode.setVisibility(View.VISIBLE);
+            toggleMafiaChatMode.setImageResource(R.drawable.citizen_icon);
+            Snackbar.make(mafiaChatRecycler, getString(R.string.talkingGlobal), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            }).show();
+        }
+    }
+
+    private void toggleTalkSteam() {
+        if (isMafiaToggled) {
+            isMafiaToggled = false;
+            toggleMafiaChatMode.setImageResource(R.drawable.citizen_icon);
+            Snackbar.make(mafiaChatRecycler, getString(R.string.talkingGlobal), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            }).show();
+        } else {
+            isMafiaToggled = true;
+            toggleMafiaChatMode.setImageResource(R.drawable.mafia_icon);
+            Snackbar.make(mafiaChatRecycler, getString(R.string.talkingOnlyMafia), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            }).show();
+        }
     }
 
     private void initDayTypeAndTime(final String messageToInsert, final boolean isSystemMessage) {
@@ -230,12 +275,12 @@ public class MafiaGameView extends BaseActivity {
                     nightDayIV.setVisibility(View.VISIBLE);
 
                     switch (mafiaRoomsModel.getCurrentDayType()) {
-                        case Constants.DAY_TYPE_DAYLIGHT:
+                        case DAY_TYPE_DAYLIGHT:
                             isMorning = true;
                             nightDayIV.setImageResource(R.drawable.sun_icon);
                             transparentPanel.setDay();
                             break;
-                        case Constants.DAY_TYPE_NIGHT:
+                        case DAY_TYPE_NIGHT:
                             isMorning = false;
                             transparentPanel.setNight();
                             nightDayIV.setImageResource(R.drawable.moon_icon);
@@ -291,7 +336,7 @@ public class MafiaGameView extends BaseActivity {
                                     (seconds % 3600) / 60, (seconds % 60));
 
 
-                            timeLeftTV.setText(mafiaRoomsModel.getCurrentDayType().equals(Constants.DAY_TYPE_DAYLIGHT) ?
+                            timeLeftTV.setText(mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_DAYLIGHT) ?
                                     getString(R.string.timeLeftForNight, text) :
                                     getString(R.string.timeLeftForMorning, text));
                         }
@@ -302,11 +347,11 @@ public class MafiaGameView extends BaseActivity {
                             timeLeftTV.setText(getString(R.string.loadingText));
 
                             switch (mafiaRoomsModel.getCurrentDayType()) {
-                                case Constants.DAY_TYPE_DAYLIGHT:
+                                case DAY_TYPE_DAYLIGHT:
                                     //insert as night has come
                                     initDayTypeAndTime(NIGHT_COME_SYSTEM_MESSAGE, true);
                                     break;
-                                case Constants.DAY_TYPE_NIGHT:
+                                case DAY_TYPE_NIGHT:
                                     //insert as day has come
                                     initDayTypeAndTime(DAY_COME_SYSTEM_MESSAGE, true);
                                     break;
@@ -344,7 +389,6 @@ public class MafiaGameView extends BaseActivity {
         mafiaChatRecycler.setAdapter(mafiaChatAdapter);
         playersRecycler.setAdapter(mafiaPlayersAdapter);
         getMafiaRoomParticipants();
-        getMafiaRoomMessages();
 
         if (isOwner()) {
             sharedHelper.putMafiaParticipation(true);
@@ -362,7 +406,7 @@ public class MafiaGameView extends BaseActivity {
                     showNoMessages();
                 } else {
                     hideNoMessages();
-                    mafiaChatAdapter.setMafiaMessageModels(mafiaMessageModels);
+                    mafiaChatAdapter.setMafiaMessageModels(mafiaMessageModels, isMafia());
                     scrollToBottom();
                 }
             }
@@ -373,6 +417,21 @@ public class MafiaGameView extends BaseActivity {
                 Toast.makeText(MafiaGameView.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private boolean isMafia() {
+        ParticipantModel currentUserParticipant = null;
+        for (ParticipantModel participantModel : mafiaRoomsModel.getJoinedUsers()) {
+            if (participantModel.getUser().getUserId().equals(sharedHelper.getUserId())) {
+                currentUserParticipant = participantModel;
+                break;
+            }
+        }
+        if (currentUserParticipant != null && currentUserParticipant.getRole().equals(MafiaConstants.ROLE_MAFIA) ||
+                currentUserParticipant != null && currentUserParticipant.getRole().equals(MafiaConstants.ROLE_MAFIA_DON)) {
+            return true;
+        }
+        return false;
     }
 
     private void scrollToBottom() {
@@ -420,6 +479,7 @@ public class MafiaGameView extends BaseActivity {
             String senderId = jsonObject.optString("sender_id");
             String user = jsonObject.optString("user");
             boolean isSystemMessage = jsonObject.optBoolean("isSystemMessage");
+            boolean isMafiaMessage = jsonObject.optBoolean("isMafiaMessage");
 
             UserModel userModel = gson.fromJson(user, UserModel.class);
 
@@ -429,13 +489,14 @@ public class MafiaGameView extends BaseActivity {
             mafiaMessageModel.setMessage(message);
             mafiaMessageModel.setSenderId(senderId);
             mafiaMessageModel.setSystemMessage(isSystemMessage);
+            mafiaMessageModel.setMafiaMessage(isMafiaMessage);
             mafiaMessageModel.setUser(userModel);
 
             if (mafiaMessageModel.getRoomId() == mafiaMessageModel.getRoomId()) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mafiaChatAdapter.insertMessage(mafiaMessageModel);
+                        mafiaChatAdapter.insertMessage(mafiaMessageModel, isMafia());
                         hideNoMessages();
                         scrollToBottom();
                     }
@@ -518,7 +579,7 @@ public class MafiaGameView extends BaseActivity {
                     public void run() {
                         LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
                         mafiaPlayersAdapter.removeUser(participantModel);
-                        mafiaChatAdapter.insertMessage(mafiaMessageModel);
+                        mafiaChatAdapter.insertMessage(mafiaMessageModel, isMafia());
                         hideNoMessages();
                         scrollToBottom();
                         getMafiaRoomParticipants();
@@ -547,7 +608,7 @@ public class MafiaGameView extends BaseActivity {
                         mafiaMessageModel.setSenderId("0");
                         mafiaMessageModel.setUser(User.get().buildUser(sharedHelper));
                         mafiaPlayersAdapter.addUser(participantModel);
-                        mafiaChatAdapter.insertMessage(mafiaMessageModel);
+                        mafiaChatAdapter.insertMessage(mafiaMessageModel, isMafia());
                         hideNoMessages();
                         scrollToBottom();
                     }
@@ -883,12 +944,14 @@ public class MafiaGameView extends BaseActivity {
                     hideNoParticipants();
                     mafiaPlayersAdapter.setUsers(participants);
                 }
+                getMafiaRoomMessages();
             }
 
             @Override
             public void onFailure(Call<List<ParticipantModel>> call, Throwable t) {
                 Toast.makeText(MafiaGameView.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                 hideNoParticipants();
+                getMafiaRoomMessages();
             }
         });
     }
@@ -1088,6 +1151,21 @@ public class MafiaGameView extends BaseActivity {
         });
     }
 
+    @OnClick(R.id.choseVictimButton)
+    public void choseVictimButtonClicked() {
+        choseVictimButton.setVisibility(View.GONE);
+        chooseVictim();
+    }
+
+    private void chooseVictim() {
+
+    }
+
+    @OnClick(R.id.toggleMafiaChatMode)
+    public void toggleMafiaChatModeClicked() {
+        toggleTalkSteam();
+    }
+
 
     @OnClick(R.id.replyToRoomIV)
     public void replyToRoomIVClicked() {
@@ -1104,6 +1182,7 @@ public class MafiaGameView extends BaseActivity {
             socketJson.put("message", replyToRoomED.getText().toString());
             socketJson.put("sender_id", sharedHelper.getUserId());
             socketJson.put("isSystemMessage", false);
+            socketJson.put("isMafiaMessage", isMafiaToggled);
             String userJson = gson.toJson(User.get().buildUser(sharedHelper));
 
             socketJson.put("user", userJson);
@@ -1120,7 +1199,7 @@ public class MafiaGameView extends BaseActivity {
     private void silentMessageServerInsert(final String message, final boolean isSystemMessage) {
         if (isSystemMessage) {
             if (isOwner()) {
-                Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId(), isSystemMessage).enqueue(new Callback<ResponseBody>() {
+                Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId(), isSystemMessage, false).enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response == null) {
@@ -1164,12 +1243,12 @@ public class MafiaGameView extends BaseActivity {
                 mafiaMessageModel.setSenderId(sharedHelper.getUserId());
                 mafiaMessageModel.setSystemMessage(isSystemMessage);
                 mafiaMessageModel.setUser(User.get().buildUser(sharedHelper));
-                mafiaChatAdapter.insertMessage(mafiaMessageModel);
+                mafiaChatAdapter.insertMessage(mafiaMessageModel, isMafia());
                 hideNoMessages();
                 scrollToBottom();
             }
         } else {
-            Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId(), isSystemMessage).enqueue(new Callback<ResponseBody>() {
+            Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId(), isSystemMessage, isMafiaToggled).enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if (response == null) {
@@ -1210,10 +1289,11 @@ public class MafiaGameView extends BaseActivity {
             mafiaMessageModel.setId(String.valueOf(System.currentTimeMillis()));
             mafiaMessageModel.setMessage(message);
             mafiaMessageModel.setRoomId(mafiaRoomsModel.getId());
+            mafiaMessageModel.setMafiaMessage(isMafiaToggled);
             mafiaMessageModel.setSenderId(sharedHelper.getUserId());
             mafiaMessageModel.setSystemMessage(isSystemMessage);
             mafiaMessageModel.setUser(User.get().buildUser(sharedHelper));
-            mafiaChatAdapter.insertMessage(mafiaMessageModel);
+            mafiaChatAdapter.insertMessage(mafiaMessageModel, isMafia());
             hideNoMessages();
             scrollToBottom();
         }
@@ -1408,4 +1488,31 @@ public class MafiaGameView extends BaseActivity {
         socket.off(EVENT_ON_MAFIA_GAME_STARTED, onGameStarted);
     }
 
+    @Override
+    public void onItemClicked(int position, View view) {
+
+    }
+
+    @Override
+    public void onItemLongClick(Object object) {
+
+    }
+
+    @Override
+    public void onAdditionItemClick(int position, View view) {
+
+    }
+
+    @Override
+    public void onItemClicked(Object object) {
+        ParticipantModel participantModel = (ParticipantModel) object;
+        if (lastVictimId.equals(participantModel.getUser().getUserId())) {
+            mafiaPlayersAdapter.removeVictimMarks();
+            choseVictimButton.setVisibility(View.GONE);
+        } else {
+            lastVictimId = participantModel.getUser().getUserId();
+            mafiaPlayersAdapter.markPlayer(participantModel);
+            choseVictimButton.setVisibility(View.VISIBLE);
+        }
+    }
 }

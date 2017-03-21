@@ -17,4 +17,6 @@ public class MafiaConstants {
     public static final String UNIT_MINUTES = "minutes";
     public static final String UNIT_HOURS = "hours";
     public static final String UNIT_DAYS = "days";
+    public static final String DAY_TYPE_DAYLIGHT = "daylight";
+    public static final String DAY_TYPE_NIGHT = "night";
 }

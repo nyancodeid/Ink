@@ -12,8 +12,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.ParticipantModel;
 import ink.va.view_holders.MafiaParticipantViewHolder;
+import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -21,10 +23,13 @@ import lombok.Setter;
  */
 
 public class MafiaPlayersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    @Getter
     private List<ParticipantModel> users;
     private Context context;
     @Setter
     private String ownerId;
+    @Setter
+    RecyclerItemClickListener onItemClickListener;
 
     public MafiaPlayersAdapter() {
         users = new LinkedList<>();
@@ -39,7 +44,7 @@ public class MafiaPlayersAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((MafiaParticipantViewHolder) holder).initData(context, users.get(position), ownerId);
+        ((MafiaParticipantViewHolder) holder).initData(context, users.get(position), ownerId, onItemClickListener);
     }
 
     @Override
@@ -67,6 +72,23 @@ public class MafiaPlayersAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void removeUser(ParticipantModel participantModel) {
         participantModel.setRoomCreatorId(ownerId);
         users.remove(participantModel);
+        notifyDataSetChanged();
+    }
+
+    public void removeVictimMarks() {
+        for (ParticipantModel participantModel : users) {
+            participantModel.setVictim(false);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void markPlayer(ParticipantModel victim) {
+        for (ParticipantModel participantModel : users) {
+            if (participantModel.getUser().getUserId().equals(victim.getUser().getUserId())) {
+                participantModel.setVictim(true);
+                break;
+            }
+        }
         notifyDataSetChanged();
     }
 }

@@ -988,4 +988,7 @@
     <string name="maniacText">Маняк</string>
     <string name="sheriffText">Шериф</string>
     <string name="sniperText">Снайпер</string>
+
+    <string name="talkingGlobal">Вы теперь говорите в глобальном потоке</string>
+    <string name="talkingOnlyMafia">Вы теперь говорите только в потоке где мафия</string>
 </resources>

@@ -35,6 +35,10 @@ public class ParticipantModel implements Comparable<ParticipantModel> {
     @Getter
     private String roomCreatorId = "";
 
+    @Setter
+    @Getter
+    private boolean victim;
+
 
     @Override
     public boolean equals(Object obj) {

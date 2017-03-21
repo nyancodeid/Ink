@@ -200,15 +200,40 @@
         </android.support.v7.widget.RecyclerView>
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/choseVictimButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/replyToRoomED"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/circle_transparent_background_blue"
+        android:padding="10dp"
+        android:text="@string/choseVictim"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimary"
+        android:visibility="gone" />
+
     <EditText
         android:id="@+id/replyToRoomED"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/toggleMafiaChatMode"
         android:hint="@string/replyToRoom"
         android:maxHeight="100dp"
         android:paddingRight="55dp"
         android:textColor="@color/vk_black" />
+
+    <ImageView
+        android:id="@+id/toggleMafiaChatMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:padding="10dp"
+        android:src="@drawable/citizen_icon"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/replyToRoomIV"

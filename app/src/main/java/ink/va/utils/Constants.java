@@ -167,8 +167,6 @@ public class Constants {
     public static final String POST_TYPE_LOCAL = "local";
     public static final String POST_TYPE_GLOBAL = "global";
     public static final String BADGE_TYPE_BUY = "buy";
-    public static final String DAY_TYPE_DAYLIGHT = "daylight";
-    public static final String DAY_TYPE_NIGHT = "night";
     public static final String TYPE_NEW_OWNER = "newOwner";
     public static final String TYPE_ENTER_VIP = "enterVip";
     public static final String TYPE_BUY_VIP = "buyVip";

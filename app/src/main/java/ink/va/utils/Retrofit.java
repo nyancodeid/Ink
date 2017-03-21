@@ -196,7 +196,8 @@ public class Retrofit {
         Call<ResponseBody> silentMafiaMessageInsert(@Field("roomId") int roomId,
                                                     @Field("message") String message,
                                                     @Field("senderId") String senderId,
-                                                    @Field("isSystemMessage") boolean isSystemMessage);
+                                                    @Field("isSystemMessage") boolean isSystemMessage,
+                                                    @Field("isMafiaMessage") boolean isMafiaMessage);
 
         @POST(Constants.START_MAFIA_GAME_URL)
         @FormUrlEncoded
