@@ -90,10 +90,10 @@ public class MafiaRoomsModel implements Comparable<MafiaRoomsModel> {
     @Getter
     private String currentDayType;
 
-    @SerializedName("willSelfDestruct")
+    @SerializedName("firstNight")
     @Setter
     @Getter
-    private boolean willSelfDestruct;
+    private boolean firstNight;
 
     @SerializedName("gameEnded")
     @Getter

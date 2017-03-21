@@ -867,6 +867,15 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public void putRoleSeen(boolean seen) {
+        mEditor.putBoolean("seenRole", seen);
+        mEditor.commit();
+    }
+
+    public boolean hasSeenRole() {
+        return mSharedPreferences.getBoolean("seenRole", false);
+    }
+
     public void putMafiaLastRoomId(int roomId) {
         mEditor.putInt("mafiaRoomId", roomId);
         mEditor.commit();

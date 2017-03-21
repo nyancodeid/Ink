@@ -587,7 +587,7 @@ public class Retrofit {
         @POST(Constants.SET_USER_COINS_URL)
         @FormUrlEncoded
         Call<ResponseBody> setCoins(@Field("userId") String userId,
-                                    @Field("coinsCount") String coinstCount);
+                                    @Field("coinsCount") String coinsCount);
     }
 
     public interface MusicCloudInterface {

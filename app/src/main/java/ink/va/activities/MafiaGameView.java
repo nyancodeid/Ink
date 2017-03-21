@@ -29,6 +29,7 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ink.va.R;
 
 import org.joda.time.DateTime;
@@ -53,11 +54,13 @@ import ink.va.adapters.MafiaPlayersAdapter;
 import ink.va.models.MafiaMessageModel;
 import ink.va.models.MafiaRoomsModel;
 import ink.va.models.ParticipantModel;
+import ink.va.models.ParticipantModelWithoutUser;
 import ink.va.models.UserModel;
 import ink.va.service.MafiaGameService;
 import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.Keyboard;
+import ink.va.utils.MafiaRoles;
 import ink.va.utils.ProgressDialog;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -75,7 +78,6 @@ import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_TIMEOUT;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_DISCONNECT;
 import static ink.va.utils.Constants.EVENT_MAFIA_GLOBAL_MESSAGE;
 import static ink.va.utils.Constants.EVENT_ON_MAFIA_GAME_STARTED;
-import static ink.va.utils.Constants.EVENT_ON_ROLE_RECEIVED;
 import static ink.va.utils.Constants.EVENT_ON_SOCKET_MESSAGE_RECEIVED;
 import static ink.va.utils.Constants.EVENT_ON_USER_JOINED_MAFIA_ROOM;
 import static ink.va.utils.Constants.EVENT_ON_USER_LEFT_MAFIA_ROOM;
@@ -543,6 +545,22 @@ public class MafiaGameView extends BaseActivity {
                     JSONObject jsonObject = (JSONObject) args[0];
                     long id = jsonObject.optLong("roomId");
                     if (id == mafiaRoomsModel.getId()) {
+                        String participantWithoutUser = jsonObject.optString("participants");
+                        List<ParticipantModelWithoutUser> participantModelWithoutUsers = gson.fromJson(participantWithoutUser, new TypeToken<List<ParticipantModelWithoutUser>>() {
+                        }.getType());
+
+                        String role = "none";
+
+                        for (ParticipantModelWithoutUser participantModelWithoutUser : participantModelWithoutUsers) {
+                            String userId = participantModelWithoutUser.getParticipantId();
+                            if (userId.equals(sharedHelper.getUserId())) {
+                                role = participantModelWithoutUser.getRole();
+                                break;
+                            }
+                        }
+
+                        buildRole(role);
+
                         mafiaChatAdapter.clear();
                         mafiaRoomsModel.setGameStarted(true);
                         getMafiaRoomParticipants();
@@ -551,18 +569,6 @@ public class MafiaGameView extends BaseActivity {
                         initDayTypeAndTime(null, false);
                         LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
                     }
-
-                }
-            });
-        }
-    };
-
-    private Emitter.Listener onRoleReceived = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
 
                 }
             });
@@ -689,24 +695,36 @@ public class MafiaGameView extends BaseActivity {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
+                    String participantWithoutUser = jsonObject.optString("participants");
                     if (success) {
+                        List<ParticipantModelWithoutUser> participantModelWithoutUsers = gson.fromJson(participantWithoutUser, new TypeToken<List<ParticipantModelWithoutUser>>() {
+                        }.getType());
+                        String role = "none";
+
+                        for (ParticipantModelWithoutUser participantModelWithoutUser : participantModelWithoutUsers) {
+                            String userId = participantModelWithoutUser.getParticipantId();
+                            if (userId.equals(sharedHelper.getUserId())) {
+                                role = participantModelWithoutUser.getRole();
+                                break;
+                            }
+                        }
+
+                        buildRole(role);
+
                         menu.removeItem(ITEM_START_GAME);
                         menu.removeItem(ITEM_DELETE_ID);
-                        if (socketJson != null) {
-                            socketJson = null;
-                        }
-                        socketJson = new JSONObject();
-                        String roomJson = gson.toJson(mafiaRoomsModel);
-                        socketJson.put("roomModel", roomJson);
-                        socket.emit(EVENT_ON_MAFIA_GAME_STARTED, socketJson);
                         initDayTypeAndTime(null, false);
                         silentMessageServerInsert(GAME_STARTED_SYSTEM_MESSAGE, true);
+
                         if (socketJson != null) {
                             socketJson = null;
                         }
                         socketJson = new JSONObject();
+                        String participantsJson = gson.toJson(participantModelWithoutUsers);
+
                         socketJson.put("roomId", mafiaRoomsModel.getId());
                         socketJson.put("message", GAME_STARTED_SYSTEM_MESSAGE);
+                        socketJson.put("participants", participantsJson);
                         socket.emit(EVENT_ON_MAFIA_GAME_STARTED, socketJson);
                     } else {
                         Toast.makeText(MafiaGameView.this, getString(R.string.couldNotStartGame), Toast.LENGTH_SHORT).show();
@@ -726,6 +744,34 @@ public class MafiaGameView extends BaseActivity {
                 Toast.makeText(MafiaGameView.this, getString(R.string.couldNotStartGame), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void buildRole(String role) {
+        if (!sharedHelper.hasSeenRole()) {
+            switch (role) {
+                case MafiaRoles.ROLE_CITIZEN:
+                    openRoleView(R.drawable.mafia_role_citizen);
+                    break;
+                case MafiaRoles.ROLE_DOCTOR:
+                    openRoleView(R.drawable.mafia_doctor_role);
+                    break;
+                case MafiaRoles.ROLE_MAFIA:
+                    openRoleView(R.drawable.mafia_mafia_role);
+                    break;
+                case MafiaRoles.ROLE_MAFIA_DON:
+                    openRoleView(R.drawable.mafia_done_role);
+                    break;
+                case MafiaRoles.ROLE_MANIAC:
+                    openRoleView(R.drawable.mafia_maniac_role);
+                    break;
+                case MafiaRoles.ROLE_SHERIFF:
+                    openRoleView(R.drawable.mafia_sheriff_role);
+                    break;
+                case MafiaRoles.ROLE_SNIPER:
+                    openRoleView(R.drawable.mafia_sniper_role);
+                    break;
+            }
+        }
     }
 
     private void deleteRoom() {
@@ -790,7 +836,6 @@ public class MafiaGameView extends BaseActivity {
         socket.on(EVENT_ON_USER_LEFT_MAFIA_ROOM, onUserLeftRoom);
         socket.on(EVENT_ON_USER_JOINED_MAFIA_ROOM, onUserJoinedRoom);
         socket.on(EVENT_ON_MAFIA_GAME_STARTED, onGameStarted);
-        socket.on(EVENT_ON_ROLE_RECEIVED, onRoleReceived);
         socket.on(EVENT_ON_SOCKET_MESSAGE_RECEIVED, onSocketMessageReceived);
         socket.connect();
     }
@@ -1125,6 +1170,7 @@ public class MafiaGameView extends BaseActivity {
     }
 
     private void closeRoleView() {
+        sharedHelper.putRoleSeen(true);
         setButtonState(false);
         slideOutWithFade.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -1273,7 +1319,6 @@ public class MafiaGameView extends BaseActivity {
         socket.off(EVENT_CONNECT, onSocketConnected);
         socket.off(EVENT_ON_USER_JOINED_MAFIA_ROOM, onUserJoinedRoom);
         socket.off(EVENT_ON_MAFIA_GAME_STARTED, onGameStarted);
-        socket.off(EVENT_ON_ROLE_RECEIVED, onRoleReceived);
     }
 
 }
