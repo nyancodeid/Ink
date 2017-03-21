@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.ink.va.R;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,18 +48,24 @@ public class MafiaPlayersAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public void setUsers(List<ParticipantModel> users) {
+        for (ParticipantModel participantModel : users) {
+            participantModel.setRoomCreatorId(ownerId);
+        }
         this.users.clear();
+        Collections.sort(users);
         this.users.addAll(users);
         notifyDataSetChanged();
     }
 
     public void addUser(ParticipantModel participantModel) {
+        participantModel.setRoomCreatorId(ownerId);
         users.add(participantModel);
         int index = users.indexOf(participantModel);
         notifyItemInserted(index);
     }
 
     public void removeUser(ParticipantModel participantModel) {
+        participantModel.setRoomCreatorId(ownerId);
         users.remove(participantModel);
         notifyDataSetChanged();
     }

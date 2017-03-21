@@ -1,5 +1,7 @@
 package ink.va.models;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
@@ -12,7 +14,7 @@ import lombok.Setter;
  */
 
 @Parcel
-public class ParticipantModel {
+public class ParticipantModel implements Comparable<ParticipantModel> {
 
     @SerializedName("role")
     @Setter
@@ -28,6 +30,10 @@ public class ParticipantModel {
     @Setter
     @Getter
     private UserModel user;
+
+    @Setter
+    @Getter
+    private String roomCreatorId = "";
 
 
     @Override
@@ -46,5 +52,13 @@ public class ParticipantModel {
     @Override
     public int hashCode() {
         return user.getUserId().hashCode();
+    }
+
+    @Override
+    public int compareTo(@NonNull ParticipantModel o) {
+        if (o.getUser().getUserId().equals(roomCreatorId)) {
+            return 1;
+        }
+        return -1;
     }
 }
