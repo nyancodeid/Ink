@@ -39,6 +39,9 @@ public class MafiaGameService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if(sharedHelper==null){
+            sharedHelper = new SharedHelper(this);
+        }
         stopHandler = false;
         scheduleTask();
         if (sharedHelper == null) {
