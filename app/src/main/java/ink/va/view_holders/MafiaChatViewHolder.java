@@ -42,6 +42,8 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
     LinearLayout messageWrapper;
     @BindView(R.id.mafiaChatUserImage)
     ImageView mafiaChatUserImage;
+    @BindView(R.id.mafiaMessageParent)
+    View mafiaMessageParent;
 
     public MafiaChatViewHolder(View itemView) {
         super(itemView);
@@ -52,6 +54,13 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
         if (sharedHelper == null) {
             sharedHelper = new SharedHelper(context);
         }
+
+        if (mafiaMessageModel.isMafiaMessage()) {
+            mafiaMessageParent.setAlpha((float) 0.7);
+        } else {
+            mafiaMessageParent.setAlpha(1);
+        }
+
         UserModel user = mafiaMessageModel.getUser();
 
         messageUsername.setText(user.getFirstName() + " " + user.getLastName());

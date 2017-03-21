@@ -48,20 +48,15 @@ public class MafiaChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             this.mafiaMessageModels.clear();
             for (int i = 0; i < mafiaMessageModels.size(); i++) {
                 MafiaMessageModel mafiaMessageModel = mafiaMessageModels.get(i);
-                if (mafiaMessageModel.isMafiaMessage()) {
+                if (mafiaMessageModel.isMafiaMessage() || !mafiaMessageModel.isShowMessage()) {
                     continue;
                 }
                 this.mafiaMessageModels.add(mafiaMessageModel);
             }
             notifyDataSetChanged();
         } else {
-            for (MafiaMessageModel mafiaMessageModel : mafiaMessageModels) {
-                if (!mafiaMessageModel.isShowMessage()) {
-                    continue;
-                }
-                this.mafiaMessageModels.clear();
-                this.mafiaMessageModels.add(mafiaMessageModel);
-            }
+            this.mafiaMessageModels.clear();
+            this.mafiaMessageModels.addAll(mafiaMessageModels);
             notifyDataSetChanged();
         }
     }
