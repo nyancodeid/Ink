@@ -656,7 +656,7 @@ public class MafiaGameView extends BaseActivity {
     }
 
     private void startGame() {
-        if (mafiaRoomsModel.getGameType().equals(getString(R.string.yakudza))) {
+        if (mafiaRoomsModel.getGameType().equals(MafiaConstants.GAME_TYPE_YAKUDZA)) {
             int currentPlayers = mafiaRoomsModel.getJoinedUsers().size();
             if (currentPlayers < minimumYakudzaPlayers) {
                 int playersNeeded = minimumYakudzaPlayers - currentPlayers;
@@ -665,7 +665,7 @@ public class MafiaGameView extends BaseActivity {
             } else {
                 callStartGame();
             }
-        } else if (mafiaRoomsModel.getGameType().equals(getString(R.string.classic))) {
+        } else if (mafiaRoomsModel.getGameType().equals(MafiaConstants.GAME_TYPE_CLASSIC)) {
             int currentPlayers = mafiaRoomsModel.getJoinedUsers().size();
             if (currentPlayers < minimumClassicPlayers) {
                 int playersNeeded = minimumClassicPlayers - currentPlayers;
