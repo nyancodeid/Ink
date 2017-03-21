@@ -1159,6 +1159,7 @@ public class MafiaGameView extends BaseActivity {
             public void onAnimationEnd(Animation animation) {
                 setButtonState(true);
                 mafiaRoleHolder.setImageDrawable(ContextCompat.getDrawable(MafiaGameView.this, roleResourceId));
+                sharedHelper.putRoleSeen(true);
             }
 
             @Override
@@ -1170,7 +1171,6 @@ public class MafiaGameView extends BaseActivity {
     }
 
     private void closeRoleView() {
-        sharedHelper.putRoleSeen(true);
         setButtonState(false);
         slideOutWithFade.setAnimationListener(new Animation.AnimationListener() {
             @Override
