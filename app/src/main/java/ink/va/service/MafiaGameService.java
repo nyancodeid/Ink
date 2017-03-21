@@ -3,13 +3,9 @@ package ink.va.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import ink.va.models.MafiaRoomsModel;
 import ink.va.utils.Retrofit;
@@ -23,9 +19,9 @@ import retrofit2.Response;
  */
 
 public class MafiaGameService extends Service {
-    private ScheduledExecutorService scheduler;
     private LocalBinder mBinder = new LocalBinder();
     private SharedHelper sharedHelper;
+    private Handler handler;
 
     @Nullable
     @Override
@@ -50,33 +46,30 @@ public class MafiaGameService extends Service {
     }
 
     private void scheduleTask() {
-        if (scheduler == null || !scheduler.isTerminated() & !scheduler.isShutdown()) {
-            scheduler =
-                    Executors.newSingleThreadScheduledExecutor();
-
-            scheduler.scheduleAtFixedRate
-                    (new Runnable() {
-                        public void run() {
-                            checkMafiaGame();
-                            Log.d("askhfaskjfa", "run: pinging");
-                        }
-                    }, 0, 5, TimeUnit.SECONDS);
-        }
+        handler = new Handler();
+        checkMafiaGame();
     }
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            checkMafiaGame();
+        }
+    };
 
     private void checkMafiaGame() {
         Retrofit.getInstance().getInkService().checkMafiaRoom(sharedHelper.getMafiaRoomId(), sharedHelper.getUserId()).enqueue(new Callback<MafiaRoomsModel>() {
             @Override
             public void onResponse(Call<MafiaRoomsModel> call, Response<MafiaRoomsModel> response) {
+                handler.postDelayed(runnable, 5000);
                 MafiaRoomsModel mafiaRoomsModel = response.body();
                 if (mafiaRoomsModel.isGameEnded()) {
-
                 }
             }
 
             @Override
             public void onFailure(Call<MafiaRoomsModel> call, Throwable t) {
-
+                handler.postDelayed(runnable, 5000);
             }
         });
     }
@@ -84,12 +77,6 @@ public class MafiaGameService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        destroyScheduler();
     }
 
-    public void destroyScheduler() {
-        if (scheduler != null) {
-            scheduler.shutdown();
-        }
-    }
 }
