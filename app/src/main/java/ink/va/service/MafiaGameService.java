@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -57,6 +58,7 @@ public class MafiaGameService extends Service {
                     (new Runnable() {
                         public void run() {
                             checkMafiaGame();
+                            Log.d("askhfaskjfa", "run: pinging");
                         }
                     }, 0, 5, TimeUnit.SECONDS);
         }

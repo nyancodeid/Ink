@@ -186,7 +186,7 @@ public class MafiaGameView extends BaseActivity {
 
         initEditText(isParticipant());
         initGameInfo();
-        initRecyclers();
+        initRecyclersAndService();
         initDayTypeAndTime(null, false);
         if (!mafiaRoomsModel.isGameStarted()) {
             nightDayIV.setVisibility(View.INVISIBLE);
@@ -196,6 +196,8 @@ public class MafiaGameView extends BaseActivity {
                 openRoleView(sharedHelper.getRoleResourceId(), sharedHelper.getRoleName());
             }
         }
+
+
     }
 
     private void initDayTypeAndTime(final String messageToInsert, final boolean isSystemMessage) {
@@ -329,7 +331,7 @@ public class MafiaGameView extends BaseActivity {
         });
     }
 
-    private void initRecyclers() {
+    private void initRecyclersAndService() {
         mafiaPlayersAdapter = new MafiaPlayersAdapter();
         mafiaChatAdapter = new MafiaChatAdapter();
         mafiaPlayersAdapter.setOwnerId(mafiaRoomsModel.getCreatorId());
@@ -342,6 +344,11 @@ public class MafiaGameView extends BaseActivity {
         playersRecycler.setAdapter(mafiaPlayersAdapter);
         getMafiaRoomParticipants();
         getMafiaRoomMessages();
+
+        if (isOwner()) {
+            sharedHelper.putMafiaParticipation(true);
+            startService(new Intent(this, MafiaGameService.class));
+        }
     }
 
 
@@ -490,6 +497,10 @@ public class MafiaGameView extends BaseActivity {
 
                 if (isNewOwnerChosen) {
                     mafiaRoomsModel.setCreatorId(String.valueOf(newOwnerId));
+                    if (isOwner()) {
+                        sharedHelper.putMafiaParticipation(true);
+                        startService(new Intent(MafiaGameView.this, MafiaGameService.class));
+                    }
                 }
 
                 mafiaPlayersAdapter.setOwnerId(mafiaRoomsModel.getCreatorId());
@@ -915,7 +926,6 @@ public class MafiaGameView extends BaseActivity {
                         if (socketJson != null) {
                             socketJson = null;
                         }
-                        sharedHelper.putMafiaParticipation(true);
                         sharedHelper.putMafiaLastRoomId(mafiaRoomsModel.getId());
                         startService(new Intent(MafiaGameView.this, MafiaGameService.class));
                         Toast.makeText(MafiaGameView.this, getString(R.string.joined), Toast.LENGTH_SHORT).show();
@@ -988,11 +998,15 @@ public class MafiaGameView extends BaseActivity {
         isMenuAdded = false;
         initEditText(isParticipant());
         initGameInfo();
-        initRecyclers();
+        initRecyclersAndService();
         initDayTypeAndTime(null, false);
         if (!mafiaRoomsModel.isGameStarted()) {
             nightDayIV.setVisibility(View.INVISIBLE);
             timeLeftTV.setVisibility(View.INVISIBLE);
+        } else {
+            if (!sharedHelper.hasSeenRole() && isParticipant()) {
+                openRoleView(sharedHelper.getRoleResourceId(), sharedHelper.getRoleName());
+            }
         }
     }
 

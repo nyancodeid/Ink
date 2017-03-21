@@ -92,7 +92,7 @@ public class SplashScreen extends AppCompatActivity {
             startActivityForResult(new Intent(this, SecurityScreen.class), LOCK_SCREEN_REQUEST_CODE);
         } else {
             if (sharedHelper.hasAnyMafiaParticipation()) {
-                stopService(new Intent(this, MafiaGameService.class));
+                startService(new Intent(this, MafiaGameService.class));
             }
             Intent intent = new Intent(this, Intro.class);
             startActivity(intent);
