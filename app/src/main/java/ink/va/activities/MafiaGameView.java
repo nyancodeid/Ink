@@ -60,7 +60,7 @@ import ink.va.service.MafiaGameService;
 import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.Keyboard;
-import ink.va.utils.MafiaRoles;
+import ink.va.utils.MafiaConstants;
 import ink.va.utils.ProgressDialog;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -749,25 +749,25 @@ public class MafiaGameView extends BaseActivity {
     private void buildRole(String role) {
         if (!sharedHelper.hasSeenRole()) {
             switch (role) {
-                case MafiaRoles.ROLE_CITIZEN:
+                case MafiaConstants.ROLE_CITIZEN:
                     openRoleView(R.drawable.mafia_role_citizen, getString(R.string.citizenText));
                     break;
-                case MafiaRoles.ROLE_DOCTOR:
+                case MafiaConstants.ROLE_DOCTOR:
                     openRoleView(R.drawable.mafia_doctor_role, getString(R.string.doctorText));
                     break;
-                case MafiaRoles.ROLE_MAFIA:
+                case MafiaConstants.ROLE_MAFIA:
                     openRoleView(R.drawable.mafia_mafia_role, getString(R.string.mafiaText));
                     break;
-                case MafiaRoles.ROLE_MAFIA_DON:
+                case MafiaConstants.ROLE_MAFIA_DON:
                     openRoleView(R.drawable.mafia_done_role, getString(R.string.donText));
                     break;
-                case MafiaRoles.ROLE_MANIAC:
+                case MafiaConstants.ROLE_MANIAC:
                     openRoleView(R.drawable.mafia_maniac_role, getString(R.string.maniacText));
                     break;
-                case MafiaRoles.ROLE_SHERIFF:
+                case MafiaConstants.ROLE_SHERIFF:
                     openRoleView(R.drawable.mafia_sheriff_role, getString(R.string.sheriffText));
                     break;
-                case MafiaRoles.ROLE_SNIPER:
+                case MafiaConstants.ROLE_SNIPER:
                     openRoleView(R.drawable.mafia_sniper_role, getString(R.string.sniperText));
                     break;
             }
@@ -1271,24 +1271,24 @@ public class MafiaGameView extends BaseActivity {
             gameStartedTV.setText(getString(R.string.gameNotStarted));
         }
         String gameType = getString(R.string.classic);
-        if (mafiaRoomsModel.getGameType().equals(getString(R.string.yakudza))) {
+        if (mafiaRoomsModel.getGameType().equals(MafiaConstants.GAME_TYPE_YAKUDZA)) {
             gameType = getString(R.string.yakudza);
         }
         gameTypeTV.setText(getString(R.string.gameTypeText, gameType));
 
         String unit = getString(R.string.minutesUnit);
-        if (mafiaRoomsModel.getMorningDurationUnit().equals(getString(R.string.hoursUnit))) {
+        if (mafiaRoomsModel.getMorningDurationUnit().equals(MafiaConstants.UNIT_HOURS)) {
             unit = getString(R.string.hoursUnit);
-        } else if (mafiaRoomsModel.getMorningDurationUnit().equals(getString(R.string.daysUnit))) {
+        } else if (mafiaRoomsModel.getMorningDurationUnit().equals(MafiaConstants.UNIT_DAYS)) {
             unit = getString(R.string.daysUnit);
         }
 
         singleMorningDurationTV.setText(getString(R.string.oneMorningDuration, mafiaRoomsModel.getMorningDuration(), unit));
 
         String nightDuration = getString(R.string.minutesUnit);
-        if (mafiaRoomsModel.getNightDuration().equals(getString(R.string.hoursUnit))) {
+        if (mafiaRoomsModel.getNightDuration().equals(MafiaConstants.UNIT_HOURS)) {
             nightDuration = getString(R.string.hoursUnit);
-        } else if (mafiaRoomsModel.getNightDuration().equals(getString(R.string.daysUnit))) {
+        } else if (mafiaRoomsModel.getNightDuration().equals(MafiaConstants.UNIT_DAYS)) {
             nightDuration = getString(R.string.daysUnit);
         }
 

@@ -34,6 +34,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.service.MafiaGameService;
 import ink.va.utils.Keyboard;
+import ink.va.utils.MafiaConstants;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -302,9 +303,35 @@ public class MafiaAddRoomActivity extends BaseActivity {
 
     private void addRoom() {
         progressDialog.show();
+        String finalGameType = "none";
+        if (chosenGameType.equals(getString(R.string.classic))) {
+            finalGameType = MafiaConstants.GAME_TYPE_CLASSIC;
+        } else if (chosenGameType.equals(getString(R.string.yakudza))) {
+            finalGameType = MafiaConstants.GAME_TYPE_YAKUDZA;
+        }
+
+        String finalNightUnit = "none";
+        String finalMorningUnit = "none";
+
+        if (chosenMorningTimeUnit.equals(getString(R.string.minutesUnit))) {
+            finalMorningUnit = MafiaConstants.UNIT_MINUTES;
+        } else if (chosenMorningTimeUnit.equals(getString(R.string.hoursUnit))) {
+            finalMorningUnit = MafiaConstants.UNIT_HOURS;
+        } else if (chosenMorningTimeUnit.equals(getString(R.string.daysUnit))) {
+            finalMorningUnit = MafiaConstants.UNIT_DAYS;
+        }
+
+        if (chosenNightTimeUnit.equals(getString(R.string.minutesUnit))) {
+            finalNightUnit = MafiaConstants.UNIT_MINUTES;
+        } else if (chosenNightTimeUnit.equals(getString(R.string.hoursUnit))) {
+            finalNightUnit = MafiaConstants.UNIT_HOURS;
+        } else if (chosenNightTimeUnit.equals(getString(R.string.daysUnit))) {
+            finalNightUnit = MafiaConstants.UNIT_DAYS;
+        }
+
         Call<ResponseBody> addRoomCall = Retrofit.getInstance().getInkService().addMafiaRoom(roomNameTV.getText().toString().trim(),
-                chosenLanguage, chosenGameType, durationMorningED.getText().toString(), chosenMorningTimeUnit,
-                String.valueOf(estimatedNightDuration), chosenNightTimeUnit,
+                chosenLanguage, finalGameType, durationMorningED.getText().toString(), finalMorningUnit,
+                String.valueOf(estimatedNightDuration), finalNightUnit,
                 sharedHelper.getUserId(), maxPlayers);
         addRoomCall.enqueue(new Callback<ResponseBody>() {
             @Override

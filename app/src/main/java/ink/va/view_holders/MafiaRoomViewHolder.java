@@ -19,6 +19,7 @@ import butterknife.OnClick;
 import ink.va.interfaces.MafiaItemClickListener;
 import ink.va.models.MafiaRoomsModel;
 import ink.va.models.ParticipantModel;
+import ink.va.utils.MafiaConstants;
 import ink.va.utils.SharedHelper;
 
 /**
@@ -66,21 +67,21 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
         this.context = context;
         this.mafiaItemClickListener = mafiaItemClickListener;
         roomNameTV.setText(mafiaRoomsModel.getRoomName());
-        gameTypeTV.setText(mafiaRoomsModel.getGameType().equals(context.getString(R.string.classic)) ?
+        gameTypeTV.setText(mafiaRoomsModel.getGameType().equals(MafiaConstants.GAME_TYPE_CLASSIC) ?
                 context.getString(R.string.classic) : context.getString(R.string.yakudza));
         String finalMorningDurationName = context.getString(R.string.minutesUnit);
 
-        if (mafiaRoomsModel.getMorningDurationUnit().equals(context.getString(R.string.hoursUnit))) {
+        if (mafiaRoomsModel.getMorningDurationUnit().equals(MafiaConstants.UNIT_HOURS)) {
             finalMorningDurationName = context.getString(R.string.hoursUnit);
-        } else if (mafiaRoomsModel.getMorningDurationUnit().equals(context.getString(R.string.daysUnit))) {
+        } else if (mafiaRoomsModel.getMorningDurationUnit().equals(MafiaConstants.UNIT_DAYS)) {
             finalMorningDurationName = context.getString(R.string.daysUnit);
         }
 
         String finalNightDurationName = context.getString(R.string.minutesUnit);
 
-        if (mafiaRoomsModel.getNightDurationUnit().equals(context.getString(R.string.hoursUnit))) {
+        if (mafiaRoomsModel.getNightDurationUnit().equals(MafiaConstants.UNIT_HOURS)) {
             finalNightDurationName = context.getString(R.string.hoursUnit);
-        } else if (mafiaRoomsModel.getNightDurationUnit().equals(context.getString(R.string.daysUnit))) {
+        } else if (mafiaRoomsModel.getNightDurationUnit().equals(MafiaConstants.UNIT_DAYS)) {
             finalNightDurationName = context.getString(R.string.daysUnit);
         }
 
