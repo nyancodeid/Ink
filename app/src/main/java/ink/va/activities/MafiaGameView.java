@@ -249,19 +249,19 @@ public class MafiaGameView extends BaseActivity {
                     long gameDurationMillis = 0;
 
                     if (isMorning) {
-                        if (mafiaRoomsModel.getMorningDurationUnit().equals(getString(R.string.minutesUnit))) {
+                        if (mafiaRoomsModel.getMorningDurationUnit().equals(MafiaConstants.UNIT_MINUTES)) {
                             gameDurationMillis = convertToMillis(UNIT_MINUTE, Long.valueOf(mafiaRoomsModel.getMorningDuration()));
-                        } else if (mafiaRoomsModel.getMorningDurationUnit().equals(getString(R.string.hoursUnit))) {
+                        } else if (mafiaRoomsModel.getMorningDurationUnit().equals(MafiaConstants.UNIT_HOURS)) {
                             gameDurationMillis = convertToMillis(UNIT_HOUR, Long.valueOf(mafiaRoomsModel.getMorningDuration()));
-                        } else if (mafiaRoomsModel.getMorningDurationUnit().equals(getString(R.string.daysUnit))) {
+                        } else if (mafiaRoomsModel.getMorningDurationUnit().equals(MafiaConstants.UNIT_DAYS)) {
                             gameDurationMillis = convertToMillis(UNIT_DAY, Long.valueOf(mafiaRoomsModel.getMorningDuration()));
                         }
                     } else {
-                        if (mafiaRoomsModel.getNightDurationUnit().equals(getString(R.string.minutesUnit))) {
+                        if (mafiaRoomsModel.getNightDurationUnit().equals(MafiaConstants.UNIT_MINUTES)) {
                             gameDurationMillis = convertToMillis(UNIT_MINUTE, Long.valueOf(mafiaRoomsModel.getNightDuration()));
-                        } else if (mafiaRoomsModel.getNightDurationUnit().equals(getString(R.string.hoursUnit))) {
+                        } else if (mafiaRoomsModel.getNightDurationUnit().equals(MafiaConstants.UNIT_HOURS)) {
                             gameDurationMillis = convertToMillis(UNIT_HOUR, Long.valueOf(mafiaRoomsModel.getNightDuration()));
-                        } else if (mafiaRoomsModel.getNightDurationUnit().equals(getString(R.string.daysUnit))) {
+                        } else if (mafiaRoomsModel.getNightDurationUnit().equals(MafiaConstants.UNIT_DAYS)) {
                             gameDurationMillis = convertToMillis(UNIT_DAY, Long.valueOf(mafiaRoomsModel.getNightDuration()));
                         }
                     }
