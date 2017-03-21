@@ -876,6 +876,20 @@ public class SharedHelper {
         return mSharedPreferences.getBoolean("seenRole", false);
     }
 
+    public void putLastRole(int roleResourceId, String roleName) {
+        mEditor.putString("roleName", roleName);
+        mEditor.putInt("roleResourceId", roleResourceId);
+        mEditor.commit();
+    }
+
+    public int getRoleResourceId() {
+        return mSharedPreferences.getInt("roleResourceId", R.drawable.mafia_role_citizen);
+    }
+
+    public String getRoleName() {
+        return mSharedPreferences.getString("roleName", "");
+    }
+
     public void putMafiaLastRoomId(int roomId) {
         mEditor.putInt("mafiaRoomId", roomId);
         mEditor.commit();

@@ -191,6 +191,10 @@ public class MafiaGameView extends BaseActivity {
         if (!mafiaRoomsModel.isGameStarted()) {
             nightDayIV.setVisibility(View.INVISIBLE);
             timeLeftTV.setVisibility(View.INVISIBLE);
+        } else {
+            if (!sharedHelper.hasSeenRole()) {
+                openRoleView(sharedHelper.getRoleResourceId(), sharedHelper.getRoleName());
+            }
         }
     }
 
@@ -682,6 +686,7 @@ public class MafiaGameView extends BaseActivity {
     }
 
     private void callStartGame() {
+        sharedHelper.putRoleSeen(false);
         showDialog(getString(R.string.connecting), getString(R.string.startingGame));
         Retrofit.getInstance().getInkService().startMafiaGame(mafiaRoomsModel.getId()).enqueue(new Callback<ResponseBody>() {
             @Override
@@ -755,24 +760,31 @@ public class MafiaGameView extends BaseActivity {
             switch (role) {
                 case MafiaConstants.ROLE_CITIZEN:
                     openRoleView(R.drawable.mafia_role_citizen, getString(R.string.citizenText));
+                    sharedHelper.putLastRole(R.drawable.mafia_role_citizen, getString(R.string.citizenText));
                     break;
                 case MafiaConstants.ROLE_DOCTOR:
                     openRoleView(R.drawable.mafia_doctor_role, getString(R.string.doctorText));
+                    sharedHelper.putLastRole(R.drawable.mafia_doctor_role, getString(R.string.doctorText));
                     break;
                 case MafiaConstants.ROLE_MAFIA:
                     openRoleView(R.drawable.mafia_mafia_role, getString(R.string.mafiaText));
+                    sharedHelper.putLastRole(R.drawable.mafia_mafia_role, getString(R.string.mafiaText));
                     break;
                 case MafiaConstants.ROLE_MAFIA_DON:
                     openRoleView(R.drawable.mafia_done_role, getString(R.string.donText));
+                    sharedHelper.putLastRole(R.drawable.mafia_done_role, getString(R.string.donText));
                     break;
                 case MafiaConstants.ROLE_MANIAC:
                     openRoleView(R.drawable.mafia_maniac_role, getString(R.string.maniacText));
+                    sharedHelper.putLastRole(R.drawable.mafia_maniac_role, getString(R.string.maniacText));
                     break;
                 case MafiaConstants.ROLE_SHERIFF:
                     openRoleView(R.drawable.mafia_sheriff_role, getString(R.string.sheriffText));
+                    sharedHelper.putLastRole(R.drawable.mafia_sheriff_role, getString(R.string.sheriffText));
                     break;
                 case MafiaConstants.ROLE_SNIPER:
                     openRoleView(R.drawable.mafia_sniper_role, getString(R.string.sniperText));
+                    sharedHelper.putLastRole(R.drawable.mafia_sniper_role, getString(R.string.sniperText));
                     break;
             }
         }
@@ -798,6 +810,7 @@ public class MafiaGameView extends BaseActivity {
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        sharedHelper.putRoleSeen(false);
                         stopService(new Intent(MafiaGameView.this, MafiaGameService.class));
                         sharedHelper.putMafiaParticipation(false);
                         finish();
@@ -897,7 +910,7 @@ public class MafiaGameView extends BaseActivity {
                     boolean success = jsonObject.optBoolean("success");
                     String systemMessage = jsonObject.optString("systemMessage");
                     if (success) {
-
+                        sharedHelper.putRoleSeen(false);
                         if (socketJson != null) {
                             socketJson = null;
                         }
@@ -1011,6 +1024,7 @@ public class MafiaGameView extends BaseActivity {
                         if (socketJson != null) {
                             socketJson = null;
                         }
+                        sharedHelper.putRoleSeen(false);
                         ParticipantModel participantModel = new ParticipantModel();
                         participantModel.setUser(User.get().buildUser(sharedHelper));
                         participantModel.setEliminated(true);

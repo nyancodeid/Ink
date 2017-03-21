@@ -331,6 +331,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        sharedHelper.putRoleSeen(false);
                         stopService(new Intent(MafiaRoomActivity.this, MafiaGameService.class));
                         sharedHelper.putMafiaParticipation(false);
                         mafiaRoomAdapter.clear();
@@ -379,6 +380,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        sharedHelper.putRoleSeen(false);
                         sharedHelper.putMafiaParticipation(true);
                         sharedHelper.putMafiaLastRoomId(id);
                         startService(new Intent(MafiaRoomActivity.this, MafiaGameService.class));
@@ -447,6 +449,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        sharedHelper.putRoleSeen(false);
                         stopService(new Intent(MafiaRoomActivity.this, MafiaGameService.class));
                         sharedHelper.putMafiaParticipation(false);
                         getRoomsAccordingly();
