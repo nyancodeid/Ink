@@ -51,12 +51,17 @@ public class MafiaChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 if (mafiaMessageModel.isMafiaMessage()) {
                     continue;
                 }
-                this.mafiaMessageModels.addAll(mafiaMessageModels);
+                this.mafiaMessageModels.add(mafiaMessageModel);
             }
             notifyDataSetChanged();
         } else {
-            this.mafiaMessageModels.clear();
-            this.mafiaMessageModels.addAll(mafiaMessageModels);
+            for (MafiaMessageModel mafiaMessageModel : mafiaMessageModels) {
+                if (!mafiaMessageModel.isShowMessage()) {
+                    continue;
+                }
+                this.mafiaMessageModels.clear();
+                this.mafiaMessageModels.add(mafiaMessageModel);
+            }
             notifyDataSetChanged();
         }
     }

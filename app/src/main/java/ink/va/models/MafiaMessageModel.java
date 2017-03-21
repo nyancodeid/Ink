@@ -40,4 +40,9 @@ public class MafiaMessageModel {
     @Setter
     @Getter
     private boolean isMafiaMessage;
+
+    @SerializedName("showMessage")
+    @Setter
+    @Getter
+    private boolean showMessage;
 }

@@ -83,6 +83,7 @@ import static ink.va.utils.Constants.EVENT_ON_SOCKET_MESSAGE_RECEIVED;
 import static ink.va.utils.Constants.EVENT_ON_USER_JOINED_MAFIA_ROOM;
 import static ink.va.utils.Constants.EVENT_ON_USER_LEFT_MAFIA_ROOM;
 import static ink.va.utils.ErrorCause.ALREADY_IN_ROOM;
+import static ink.va.utils.ErrorCause.ALREADY_SHOT_PLAYER;
 import static ink.va.utils.ErrorCause.GAME_ALREADY_IN_PROGRESS;
 import static ink.va.utils.ErrorCause.GAME_IN_PROGRESS;
 import static ink.va.utils.ErrorCause.MAXIMUM_PLAYERS_REACHED;
@@ -265,7 +266,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
             @Override
             public void onResponse(Call<MafiaRoomsModel> call, Response<MafiaRoomsModel> response) {
                 mafiaRoomsModel = response.body();
-
+                initToggleIcon();
                 if (mafiaRoomsModel.isGameStarted()) {
                     nightDayIV.setVisibility(View.VISIBLE);
                     timeLeftTV.setVisibility(View.VISIBLE);
@@ -273,17 +274,19 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                     boolean isMorning = true;
 
                     nightDayIV.setVisibility(View.VISIBLE);
-
                     switch (mafiaRoomsModel.getCurrentDayType()) {
                         case DAY_TYPE_DAYLIGHT:
                             isMorning = true;
                             nightDayIV.setImageResource(R.drawable.sun_icon);
                             transparentPanel.setDay();
+                            mafiaRoomsModel.setCurrentDayType(DAY_TYPE_DAYLIGHT);
+                            getMafiaRoomMessages();
                             break;
                         case DAY_TYPE_NIGHT:
                             isMorning = false;
                             transparentPanel.setNight();
                             nightDayIV.setImageResource(R.drawable.moon_icon);
+                            mafiaRoomsModel.setCurrentDayType(DAY_TYPE_NIGHT);
                             break;
                     }
 
@@ -405,9 +408,10 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                 if (mafiaMessageModels.isEmpty()) {
                     showNoMessages();
                 } else {
-                    hideNoMessages();
                     mafiaChatAdapter.setMafiaMessageModels(mafiaMessageModels, isMafia());
+                    hideNoMessages();
                     scrollToBottom();
+
                 }
             }
 
@@ -1505,14 +1509,60 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
     @Override
     public void onItemClicked(Object object) {
-        ParticipantModel participantModel = (ParticipantModel) object;
-        if (lastVictimId.equals(participantModel.getUser().getUserId())) {
-            mafiaPlayersAdapter.removeVictimMarks();
-            choseVictimButton.setVisibility(View.GONE);
-        } else {
-            lastVictimId = participantModel.getUser().getUserId();
-            mafiaPlayersAdapter.markPlayer(participantModel);
-            choseVictimButton.setVisibility(View.VISIBLE);
+//        ParticipantModel participantModel = (ParticipantModel) object;
+//        if (lastVictimId.equals(participantModel.getUser().getUserId())) {
+//            mafiaPlayersAdapter.removeVictimMarks();
+//            choseVictimButton.setVisibility(View.GONE);
+//        } else {
+//            lastVictimId = participantModel.getUser().getUserId();
+//            mafiaPlayersAdapter.markPlayer(participantModel);
+//            choseVictimButton.setVisibility(View.VISIBLE);
+//        }
+        if (isMafia() && mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT) && !mafiaRoomsModel.isFirstNight()) {
+            shoot((ParticipantModel) object);
         }
+    }
+
+
+    private void shoot(final ParticipantModel participantModel) {
+        showDialog(getString(R.string.shooting), getString(R.string.shootingPlayer));
+        Retrofit.getInstance().getInkService().shoot(mafiaRoomsModel.getId(), sharedHelper.getUserId(), participantModel.getUser().getUserId()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    shoot(participantModel);
+                    return;
+                }
+                if (response.body() == null) {
+                    shoot(participantModel);
+                    return;
+                }
+                hideDialog();
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+
+                    } else {
+                        String cause = jsonObject.optString("cause");
+                        if (cause.equals(ALREADY_SHOT_PLAYER)) {
+
+                        } else {
+
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                hideDialog();
+            }
+        });
     }
 }

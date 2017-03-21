@@ -203,6 +203,12 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> startMafiaGame(@Field("roomId") int roomId);
 
+        @POST(Constants.SHOOT_MAFIA_PLAYER)
+        @FormUrlEncoded
+        Call<ResponseBody> shoot(@Field("roomId") int roomId,
+                                 @Field("shooterId") String shooterId,
+                                 @Field("victimId") String victimId);
+
         @POST(Constants.MAFIA_ROOM_PARTICIPANTS)
         @FormUrlEncoded
         Call<List<ParticipantModel>> getMafiaRoomParticipants(@Field("roomId") int roomId);

@@ -991,4 +991,7 @@
 
     <string name="talkingGlobal">Вы теперь говорите в глобальном потоке</string>
     <string name="talkingOnlyMafia">Вы теперь говорите только в потоке где мафия</string>
+
+    <string name="shooting">Стреляем</string>
+    <string name="shootingPlayer">Стреляем в игрока,пожалуйста подождите...</string>
 </resources>

@@ -95,6 +95,7 @@ public class Constants {
     public static final String SET_USER_COINS_URL = "SetUserCoins.php";
     public static final String SINGLE_USER_MESSAGES = "SingleUserMessages.php";
     public static final String CHAT_MESSAGES = "ChatMessages.php";
+    public static final String SHOOT_MAFIA_PLAYER = "ShootMafiaPlayer.php";
     public static final String GROUP_OPTIONS_URL = "GroupOptions.php";
     public static final String CHANGE_PASSWORD = "ChangePassword.php";
     public static final String SECURITY_QUESTION = "SecurityQuestion.php";
