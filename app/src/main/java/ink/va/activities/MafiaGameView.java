@@ -192,7 +192,7 @@ public class MafiaGameView extends BaseActivity {
             nightDayIV.setVisibility(View.INVISIBLE);
             timeLeftTV.setVisibility(View.INVISIBLE);
         } else {
-            if (!sharedHelper.hasSeenRole()) {
+            if (!sharedHelper.hasSeenRole() && isParticipant()) {
                 openRoleView(sharedHelper.getRoleResourceId(), sharedHelper.getRoleName());
             }
         }
@@ -1102,54 +1102,105 @@ public class MafiaGameView extends BaseActivity {
     }
 
     private void silentMessageServerInsert(final String message, final boolean isSystemMessage) {
-        Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId(), isSystemMessage).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    silentMessageServerInsert(message, isSystemMessage);
-                    return;
-                }
-                if (response.body() == null) {
-                    silentMessageServerInsert(message, isSystemMessage);
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    String cause = jsonObject.optString("cause");
-                    if (!success) {
-                        if (cause.equals(ROOM_DELETED)) {
-                            finish();
-                            LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
-                            Toast.makeText(MafiaGameView.this, getString(R.string.roomDeleted), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(MafiaGameView.this, getString(R.string.messageNotSent), Toast.LENGTH_SHORT).show();
+        if (isSystemMessage) {
+            if (isOwner()) {
+                Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId(), isSystemMessage).enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        if (response == null) {
+                            silentMessageServerInsert(message, isSystemMessage);
+                            return;
+                        }
+                        if (response.body() == null) {
+                            silentMessageServerInsert(message, isSystemMessage);
+                            return;
+                        }
+                        try {
+                            String responseBody = response.body().string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            boolean success = jsonObject.optBoolean("success");
+                            String cause = jsonObject.optString("cause");
+                            if (!success) {
+                                if (cause.equals(ROOM_DELETED)) {
+                                    finish();
+                                    LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
+                                    Toast.makeText(MafiaGameView.this, getString(R.string.roomDeleted), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(MafiaGameView.this, getString(R.string.messageNotSent), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        Toast.makeText(MafiaGameView.this, getString(R.string.messageNotSent), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                MafiaMessageModel mafiaMessageModel = new MafiaMessageModel();
+                mafiaMessageModel.setId(String.valueOf(System.currentTimeMillis()));
+                mafiaMessageModel.setMessage(message);
+                mafiaMessageModel.setRoomId(mafiaRoomsModel.getId());
+                mafiaMessageModel.setSenderId(sharedHelper.getUserId());
+                mafiaMessageModel.setSystemMessage(isSystemMessage);
+                mafiaMessageModel.setUser(User.get().buildUser(sharedHelper));
+                mafiaChatAdapter.insertMessage(mafiaMessageModel);
+                hideNoMessages();
+                scrollToBottom();
+            }
+        } else {
+            Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId(), isSystemMessage).enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response == null) {
+                        silentMessageServerInsert(message, isSystemMessage);
+                        return;
+                    }
+                    if (response.body() == null) {
+                        silentMessageServerInsert(message, isSystemMessage);
+                        return;
+                    }
+                    try {
+                        String responseBody = response.body().string();
+                        JSONObject jsonObject = new JSONObject(responseBody);
+                        boolean success = jsonObject.optBoolean("success");
+                        String cause = jsonObject.optString("cause");
+                        if (!success) {
+                            if (cause.equals(ROOM_DELETED)) {
+                                finish();
+                                LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
+                                Toast.makeText(MafiaGameView.this, getString(R.string.roomDeleted), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(MafiaGameView.this, getString(R.string.messageNotSent), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(MafiaGameView.this, getString(R.string.messageNotSent), Toast.LENGTH_SHORT).show();
-            }
-        });
-        MafiaMessageModel mafiaMessageModel = new MafiaMessageModel();
-        mafiaMessageModel.setId(String.valueOf(System.currentTimeMillis()));
-        mafiaMessageModel.setMessage(message);
-        mafiaMessageModel.setRoomId(mafiaRoomsModel.getId());
-        mafiaMessageModel.setSenderId(sharedHelper.getUserId());
-        mafiaMessageModel.setSystemMessage(isSystemMessage);
-        mafiaMessageModel.setUser(User.get().buildUser(sharedHelper));
-        mafiaChatAdapter.insertMessage(mafiaMessageModel);
-        hideNoMessages();
-        scrollToBottom();
-
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(MafiaGameView.this, getString(R.string.messageNotSent), Toast.LENGTH_SHORT).show();
+                }
+            });
+            MafiaMessageModel mafiaMessageModel = new MafiaMessageModel();
+            mafiaMessageModel.setId(String.valueOf(System.currentTimeMillis()));
+            mafiaMessageModel.setMessage(message);
+            mafiaMessageModel.setRoomId(mafiaRoomsModel.getId());
+            mafiaMessageModel.setSenderId(sharedHelper.getUserId());
+            mafiaMessageModel.setSystemMessage(isSystemMessage);
+            mafiaMessageModel.setUser(User.get().buildUser(sharedHelper));
+            mafiaChatAdapter.insertMessage(mafiaMessageModel);
+            hideNoMessages();
+            scrollToBottom();
+        }
     }
 
     @OnClick(R.id.closeRoleView)
