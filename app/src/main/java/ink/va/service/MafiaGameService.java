@@ -22,6 +22,7 @@ public class MafiaGameService extends Service {
     private LocalBinder mBinder = new LocalBinder();
     private SharedHelper sharedHelper;
     private Handler handler;
+    private boolean stopHandler;
 
     @Nullable
     @Override
@@ -38,6 +39,7 @@ public class MafiaGameService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        stopHandler = false;
         scheduleTask();
         if (sharedHelper == null) {
             sharedHelper = new SharedHelper(this);
@@ -61,7 +63,9 @@ public class MafiaGameService extends Service {
         Retrofit.getInstance().getInkService().checkMafiaRoom(sharedHelper.getMafiaRoomId(), sharedHelper.getUserId()).enqueue(new Callback<MafiaRoomsModel>() {
             @Override
             public void onResponse(Call<MafiaRoomsModel> call, Response<MafiaRoomsModel> response) {
-                handler.postDelayed(runnable, 5000);
+                if (!stopHandler) {
+                    handler.postDelayed(runnable, 5000);
+                }
                 MafiaRoomsModel mafiaRoomsModel = response.body();
                 if (mafiaRoomsModel.isGameEnded()) {
                 }
@@ -69,7 +73,9 @@ public class MafiaGameService extends Service {
 
             @Override
             public void onFailure(Call<MafiaRoomsModel> call, Throwable t) {
-                handler.postDelayed(runnable, 5000);
+                if (!stopHandler) {
+                    handler.postDelayed(runnable, 5000);
+                }
             }
         });
     }
@@ -77,6 +83,9 @@ public class MafiaGameService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        stopHandler = true;
+        handler = null;
+        runnable = null;
     }
 
 }
