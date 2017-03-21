@@ -982,4 +982,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="maniacText">Maniac</string>
     <string name="sheriffText">Sheriff</string>
     <string name="sniperText">Sniper</string>
+    <string name="yakudzaNotAvailable">* The \'Yakudza\' game type is not available yet and will be available soon</string>
 </resources>

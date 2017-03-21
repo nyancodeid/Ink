@@ -24,6 +24,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@string/condensedFont"
+            android:text="@string/yakudzaNotAvailable"
+            android:textStyle="italic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="20dp"
             android:fontFamily="@string/condensedFont"
@@ -83,13 +91,13 @@
 
         <TextView
             android:id="@+id/maxPlayersTV"
-            android:textColor="@color/vk_black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="20dp"
             android:fontFamily="@string/condensedFont"
-            android:text="@string/maxPlayers" />
+            android:text="@string/maxPlayers"
+            android:textColor="@color/vk_black" />
 
         <TextView
             android:layout_width="wrap_content"

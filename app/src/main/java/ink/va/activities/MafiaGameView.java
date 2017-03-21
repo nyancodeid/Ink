@@ -97,8 +97,9 @@ public class MafiaGameView extends BaseActivity {
     private static final int ITEM_DELETE_ID = 3;
     private static final int ITEM_START_GAME = 4;
     private static final String NIGHT_COME_SYSTEM_MESSAGE = "The night has come to the city wrapping the danger around the civilians as the Mafia has gone hunting. Be careful!";
-    private static final String DAY_COME_SYSTEM_MESSAGE = "The Day has come to the city with the significant pleasure of secure and warm feeling.";
-    public static final String GAME_STARTED_SYSTEM_MESSAGE = "The game has started. Drawing the roles to the players.";
+    private static final String DAY_COME_SYSTEM_MESSAGE = "The Day has come to the city with the significant pleasure of secure and warm feeling";
+    public static final String GAME_STARTED_SYSTEM_MESSAGE = "The game has started. Drawing the roles to the players";
+    public static final String MAFIA_PICKING_MESSAGE = "The Mafia is now Picking the victims ";
 
 
     private MafiaRoomsModel mafiaRoomsModel;
@@ -736,6 +737,7 @@ public class MafiaGameView extends BaseActivity {
                         menu.removeItem(ITEM_DELETE_ID);
                         initDayTypeAndTime(null, false);
                         silentMessageServerInsert(GAME_STARTED_SYSTEM_MESSAGE, true);
+                        silentMessageServerInsert(MAFIA_PICKING_MESSAGE, true);
 
                         if (socketJson != null) {
                             socketJson = null;

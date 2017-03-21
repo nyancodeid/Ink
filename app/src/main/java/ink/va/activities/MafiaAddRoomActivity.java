@@ -103,7 +103,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
 
         gameTypes = new ArrayList<>();
         gameTypes.add(getString(R.string.classic));
-        gameTypes.add(getString(R.string.yakudza));
+//        gameTypes.add(getString(R.string.yakudza));
 
         timeUnits = new ArrayList<>();
         timeUnits.add(getString(R.string.minutesUnit));

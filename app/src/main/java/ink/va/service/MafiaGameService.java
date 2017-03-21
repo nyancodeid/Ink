@@ -3,7 +3,7 @@ package ink.va.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.Handler;
+import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
@@ -21,8 +21,7 @@ import retrofit2.Response;
 public class MafiaGameService extends Service {
     private LocalBinder mBinder = new LocalBinder();
     private SharedHelper sharedHelper;
-    private Handler handler;
-    private boolean stopHandler;
+    private CountDownTimer countDownTimer;
 
     @Nullable
     @Override
@@ -39,35 +38,46 @@ public class MafiaGameService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(sharedHelper==null){
-            sharedHelper = new SharedHelper(this);
-        }
-        stopHandler = false;
-        scheduleTask();
+
+        startTimer();
         if (sharedHelper == null) {
             sharedHelper = new SharedHelper(this);
         }
+        scheduleTask();
         return START_STICKY;
     }
 
+    private void startTimer() {
+        if (countDownTimer == null) {
+            countDownTimer = new CountDownTimer(5000, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+
+                }
+
+                @Override
+                public void onFinish() {
+                    checkMafiaGame();
+                }
+            };
+            countDownTimer.start();
+        }
+    }
+
     private void scheduleTask() {
-        handler = new Handler();
         checkMafiaGame();
     }
 
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            checkMafiaGame();
-        }
-    };
 
     private void checkMafiaGame() {
         Retrofit.getInstance().getInkService().checkMafiaRoom(sharedHelper.getMafiaRoomId(), sharedHelper.getUserId()).enqueue(new Callback<MafiaRoomsModel>() {
             @Override
             public void onResponse(Call<MafiaRoomsModel> call, Response<MafiaRoomsModel> response) {
-                if (!stopHandler) {
-                    handler.postDelayed(runnable, 5000);
+                if (countDownTimer != null) {
+                    countDownTimer.cancel();
+                    countDownTimer.start();
+                } else {
+                    startTimer();
                 }
                 MafiaRoomsModel mafiaRoomsModel = response.body();
                 if (mafiaRoomsModel.isGameEnded()) {
@@ -76,8 +86,11 @@ public class MafiaGameService extends Service {
 
             @Override
             public void onFailure(Call<MafiaRoomsModel> call, Throwable t) {
-                if (!stopHandler) {
-                    handler.postDelayed(runnable, 5000);
+                if (countDownTimer != null) {
+                    countDownTimer.cancel();
+                    countDownTimer.start();
+                } else {
+                    startTimer();
                 }
             }
         });
@@ -86,9 +99,10 @@ public class MafiaGameService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopHandler = true;
-        handler = null;
-        runnable = null;
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        countDownTimer = null;
     }
 
 }
