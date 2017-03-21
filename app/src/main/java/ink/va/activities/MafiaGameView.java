@@ -706,6 +706,7 @@ public class MafiaGameView extends BaseActivity {
                     boolean success = jsonObject.optBoolean("success");
                     String participantWithoutUser = jsonObject.optString("participants");
                     if (success) {
+                        LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
                         List<ParticipantModelWithoutUser> participantModelWithoutUsers = gson.fromJson(participantWithoutUser, new TypeToken<List<ParticipantModelWithoutUser>>() {
                         }.getType());
                         String role = "none";
