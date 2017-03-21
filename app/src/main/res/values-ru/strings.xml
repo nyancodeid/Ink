@@ -980,4 +980,12 @@
     <string name="startingGame">Начинаем игру, пожалуйста подождите...</string>
     <string name="couldNotStartGame">Не удалось начать игру...</string>
     <string name="roomDeleted">Комната была удалена</string>
+
+    <string name="citizenText">Гражданин</string>
+    <string name="doctorText">Доктор</string>
+    <string name="mafiaText">Мафия</string>
+    <string name="donText">Дон Мафии</string>
+    <string name="maniacText">Маняк</string>
+    <string name="sheriffText">Шериф</string>
+    <string name="sniperText">Снайпер</string>
 </resources>

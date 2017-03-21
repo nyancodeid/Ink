@@ -750,25 +750,25 @@ public class MafiaGameView extends BaseActivity {
         if (!sharedHelper.hasSeenRole()) {
             switch (role) {
                 case MafiaRoles.ROLE_CITIZEN:
-                    openRoleView(R.drawable.mafia_role_citizen);
+                    openRoleView(R.drawable.mafia_role_citizen, getString(R.string.citizenText));
                     break;
                 case MafiaRoles.ROLE_DOCTOR:
-                    openRoleView(R.drawable.mafia_doctor_role);
+                    openRoleView(R.drawable.mafia_doctor_role, getString(R.string.doctorText));
                     break;
                 case MafiaRoles.ROLE_MAFIA:
-                    openRoleView(R.drawable.mafia_mafia_role);
+                    openRoleView(R.drawable.mafia_mafia_role, getString(R.string.mafiaText));
                     break;
                 case MafiaRoles.ROLE_MAFIA_DON:
-                    openRoleView(R.drawable.mafia_done_role);
+                    openRoleView(R.drawable.mafia_done_role, getString(R.string.donText));
                     break;
                 case MafiaRoles.ROLE_MANIAC:
-                    openRoleView(R.drawable.mafia_maniac_role);
+                    openRoleView(R.drawable.mafia_maniac_role, getString(R.string.maniacText));
                     break;
                 case MafiaRoles.ROLE_SHERIFF:
-                    openRoleView(R.drawable.mafia_sheriff_role);
+                    openRoleView(R.drawable.mafia_sheriff_role, getString(R.string.sheriffText));
                     break;
                 case MafiaRoles.ROLE_SNIPER:
-                    openRoleView(R.drawable.mafia_sniper_role);
+                    openRoleView(R.drawable.mafia_sniper_role, getString(R.string.sniperText));
                     break;
             }
         }
@@ -1146,9 +1146,10 @@ public class MafiaGameView extends BaseActivity {
         closeRoleView.setEnabled(enabled);
     }
 
-    private void openRoleView(final int roleResourceId) {
+    private void openRoleView(final int roleResourceId, String roleName) {
         Keyboard.hideKeyboard(this);
         mafiaRoleView.setVisibility(View.VISIBLE);
+        mafiaRoleExplanationTV.setText(getString(R.string.youAre, roleName));
         slideInWithFade.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {

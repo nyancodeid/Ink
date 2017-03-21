@@ -975,4 +975,11 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="startingGame">Starting the game, please wait...</string>
     <string name="couldNotStartGame">Could not start the game...</string>
     <string name="roomDeleted">Room was deleted</string>
+    <string name="citizenText">Citizen</string>
+    <string name="doctorText">Doctor</string>
+    <string name="mafiaText">Mafia</string>
+    <string name="donText">Kingpin</string>
+    <string name="maniacText">Maniac</string>
+    <string name="sheriffText">Sheriff</string>
+    <string name="sniperText">Sniper</string>
 </resources>
