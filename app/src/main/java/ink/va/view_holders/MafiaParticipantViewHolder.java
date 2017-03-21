@@ -36,7 +36,7 @@ public class MafiaParticipantViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void initData(Context context, ParticipantModel participantModel, String ownerId) {
+    public void initData(final Context context, ParticipantModel participantModel, String ownerId) {
         UserModel user = participantModel.getUser();
         participantName.setText(user.getFirstName() + " " + user.getLastName());
 
@@ -63,7 +63,8 @@ public class MafiaParticipantViewHolder extends RecyclerView.ViewHolder {
                 public void onCompleted(Exception e, ImageView result) {
                     if (e != null) {
                         e.printStackTrace();
-                        participantImage.setImageResource(R.drawable.no_image);
+                        Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
+                                .withBitmap().transform(new CircleTransform()).intoImageView(participantImage);
                     }
                 }
             });

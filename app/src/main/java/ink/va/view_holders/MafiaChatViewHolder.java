@@ -48,7 +48,7 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void initData(MafiaMessageModel mafiaMessageModel, Context context) {
+    public void initData(MafiaMessageModel mafiaMessageModel, final Context context) {
         if (sharedHelper == null) {
             sharedHelper = new SharedHelper(context);
         }
@@ -130,7 +130,8 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
                     @Override
                     public void onCompleted(Exception e, ImageView result) {
                         if (e != null) {
-                            mafiaChatUserImage.setImageResource(R.drawable.user_image_placeholder);
+                            Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
+                                    .withBitmap().transform(new CircleTransform()).intoImageView(mafiaChatUserImage);
                         }
                     }
                 });
