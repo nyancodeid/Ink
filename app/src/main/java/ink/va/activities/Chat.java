@@ -153,7 +153,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private int pagingEnd = 50;
     private LinearLayoutManager linearLayoutManager;
     private int lastVisiblePosition;
-    private View chatHeaderView;
     private MessagePagingTask messagePagingTask;
     private boolean furtherLoad = true;
 
@@ -446,7 +445,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                             doMessagesPaging(pagingStart, pagingEnd, true);
                         }
                         loadingMessages.setVisibility(View.GONE);
-                        chatHeaderView = chatAdapter.getHeaderView();
                     }
                 });
 
@@ -1134,8 +1132,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (!firstPaging && chatHeaderView != null && chatHeaderView.getVisibility() != View.VISIBLE) {
-                chatHeaderView.setVisibility(View.VISIBLE);
+            if (!firstPaging && chatAdapter.getHeaderView() != null && chatAdapter.getHeaderView().getVisibility() != View.VISIBLE) {
+                chatAdapter.getHeaderView().setVisibility(View.VISIBLE);
             }
         }
 
@@ -1171,10 +1169,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 furtherLoad = false;
             }
             chatModels = null;
-            if (chatHeaderView != null && chatHeaderView.getVisibility() == View.VISIBLE) {
-                chatHeaderView.setVisibility(View.GONE);
+            if (chatAdapter.getHeaderView() != null && chatAdapter.getHeaderView().getVisibility() == View.VISIBLE) {
+                chatAdapter.getHeaderView().setVisibility(View.GONE);
             }
-            if(firstPaging){
+            if (firstPaging) {
                 scrollToBottom();
             }
         }

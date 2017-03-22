@@ -76,8 +76,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public View getHeaderView() {
-        View view = headerView.findViewById(R.id.chatHeaderView);
-        return view;
+        View view = null;
+        if (headerView != null) {
+            view = headerView.findViewById(R.id.chatHeaderView);
+        }
+
+        return view != null ? view : new View(mContext);
     }
 
     public void setOnItemClickListener(RecyclerItemClickListener onItemClickListener) {

@@ -213,7 +213,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     }
 
     private void initToggleIcon() {
-        if (mafiaRoomsModel.isGameStarted() && mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT)) {
+        if (mafiaRoomsModel.isGameStarted() && mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT) && isParticipant() && isMafia()) {
             toggleMafiaChatMode.setVisibility(View.VISIBLE);
             toggleMafiaChatMode.setImageResource(R.drawable.citizen_icon);
             Snackbar.make(mafiaChatRecycler, getString(R.string.talkingGlobal), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
