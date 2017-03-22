@@ -209,7 +209,6 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
             }
         }
 
-
     }
 
     private void initToggleIcon() {
@@ -649,7 +648,6 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                         mafiaChatAdapter.clear();
                         mafiaRoomsModel.setGameStarted(true);
                         getMafiaRoomParticipants();
-                        getMafiaRoomMessages();
                         initGameInfo();
                         initDayTypeAndTime(null, false);
                         LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
@@ -1534,24 +1532,27 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
-
+                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.boomShakkaLakkaText), getString(R.string.shotPlayer), true, null, false, null);
                     } else {
                         String cause = jsonObject.optString("cause");
                         if (cause.equals(ALREADY_SHOT_PLAYER)) {
-
+                            DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.alreadyShot), true, null, false, null);
                         } else {
-
+                            DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
                         }
                     }
                 } catch (IOException e) {
+                    DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
                     e.printStackTrace();
                 } catch (JSONException e) {
+                    DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
                 hideDialog();
             }
         });

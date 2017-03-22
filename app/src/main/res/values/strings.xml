@@ -988,4 +988,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="choseVictim">Chose as victim</string>
     <string name="shooting">Shooting</string>
     <string name="shootingPlayer">Shooting the player,please standby...</string>
+    <string name="shotPlayer">You got \'em shot!</string>
+    <string name="alreadyShot">You got shot already for this night,wait you\'r next turn</string>
 </resources>
