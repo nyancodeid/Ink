@@ -1612,7 +1612,6 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
         } else {
             if (lastVotedUserId != null) {
                 if (lastVotedUserId.equals(participantModel.getUser().getUserId())) {
-                    lastVotedUserId = "";
                     DialogUtils.showDialog(this, getString(R.string.caution), getString(R.string.removingHint), true, new DialogUtils.DialogListener() {
                         @Override
                         public void onNegativeClicked() {
@@ -1626,13 +1625,12 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
                         @Override
                         public void onPositiveClicked() {
-                            lastVotedUserId = participantModel.getUser().getUserId();
+                            lastVotedUserId = "noId";
                             removeVote(participantModel);
                         }
                     }, true, getString(R.string.cancel));
                 } else {
-                    // TODO: 3/23/2017 show error
-                    showDialog(getString(R.string.error), getString(R.string.cantVote));
+                    DialogUtils.showDialog(this, getString(R.string.error), getString(R.string.cantVote), true, null, false, null);
                 }
             } else {
                 DialogUtils.showDialog(this, getString(R.string.caution), getString(R.string.voteHint), true, new DialogUtils.DialogListener() {
@@ -1669,6 +1667,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                     removeVote(participantModel);
                     return;
                 }
+                hideDialog();
                 try {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
@@ -1688,6 +1687,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                hideDialog();
                 DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
             }
         });
@@ -1706,6 +1706,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                     removeVote(participantModel);
                     return;
                 }
+                hideDialog();
                 try {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
@@ -1725,6 +1726,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                hideDialog();
                 DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
             }
         });

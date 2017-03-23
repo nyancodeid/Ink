@@ -65,6 +65,7 @@ public class MafiaParticipantViewHolder extends RecyclerView.ViewHolder {
             votingCountTV.setVisibility(View.GONE);
         } else {
             votingCountTV.setText(context.getString(R.string.votes, participantModel.getVotingCont()));
+            votingCountTV.setVisibility(View.VISIBLE);
         }
 
         UserModel user = participantModel.getUser();

@@ -1016,10 +1016,10 @@
     <string name="votes">%1$d голос(ов)</string>
 
     <string name="voteHint">Вы хотите проголосовать,вы можете проголосовать только 1 раз за утро,продолжить?</string>
-    <string name="voting">Voting...</string>
-    <string name="removingVote">Removing vote...</string>
-    <string name="cantVote">You can\'t vote again, you must wait until next morning</string>
-    <string name="removingHint">If you remove you\'r vote,you will not be able to vote again until the next morning,is that ok?</string>
+    <string name="voting">Голосуем....</string>
+    <string name="removingVote">Удаляем проголосованное...</string>
+    <string name="cantVote">Вы не можете снова проголосовать, вы должны подождать до следуюшего утра</string>
+    <string name="removingHint">Если вы удалите ваш голос,вы не сможете заново проголосовать до тех пор,пока новое утро не наступит,продолжить?</string>
 
     <string name="voted">Проголосовано!</string>
     <string name="voteRemoved">Голос удален</string>
