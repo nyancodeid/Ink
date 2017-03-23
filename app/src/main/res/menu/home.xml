@@ -9,7 +9,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/notifications"
-        android:icon="@drawable/globus_icon"
+        android:icon="@drawable/notification_icon"
         android:orderInCategory="3"
         android:title="@string/notificationTitle"
         app:showAsAction="always" />

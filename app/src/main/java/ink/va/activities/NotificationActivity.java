@@ -5,6 +5,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -56,6 +57,8 @@ public class NotificationActivity extends AppCompatActivity implements RecyclerI
         notificationRecycler.setLayoutManager(linearLayoutManager);
         notificationRecycler.setAdapter(notificationAdapter);
         getNotifications();
+        getSupportActionBar().setTitle(getString(R.string.notificationTitle));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -87,6 +90,12 @@ public class NotificationActivity extends AppCompatActivity implements RecyclerI
     @Override
     public void onItemClicked(Object object) {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return super.onOptionsItemSelected(item);
     }
 
     private void silentRemove(final UserNotificationModel notificationModel) {

@@ -514,7 +514,7 @@ public class HomeActivity extends BaseActivity
                 if (menuItem != null) {
                     if (mSharedHelper.getNotificationIconColor() == null) {
                         menuItem.getItem(2).setIcon(ContextCompat.getDrawable(getApplicationContext(),
-                                R.drawable.globus_icon));
+                                R.drawable.notification_icon));
                     } else {
                         menuItem.getItem(2).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getNotificationIconColor()),
                                 PorterDuff.Mode.SRC_ATOP);
@@ -959,13 +959,13 @@ public class HomeActivity extends BaseActivity
                         boolean hasRead = jsonObject.optBoolean("hasRead");
                         if (hasRead) {
                             if (menuItem != null) {
-                                menuItem.getItem(2).setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.globus_active));
+                                menuItem.getItem(2).setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_notification_icon));
                             }
                         } else {
                             if (menuItem != null) {
                                 if (mSharedHelper.getNotificationIconColor() == null) {
                                     menuItem.getItem(2).setIcon(ContextCompat.getDrawable(getApplicationContext(),
-                                            R.drawable.globus_icon));
+                                            R.drawable.notification_icon));
                                 } else {
                                     menuItem.getItem(2).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getNotificationIconColor()),
                                             PorterDuff.Mode.SRC_ATOP);
