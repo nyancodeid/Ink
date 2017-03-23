@@ -60,6 +60,7 @@ import ink.va.models.UserModel;
 import ink.va.service.MafiaGameService;
 import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
+import ink.va.utils.ErrorCause;
 import ink.va.utils.Keyboard;
 import ink.va.utils.MafiaConstants;
 import ink.va.utils.ProgressDialog;
@@ -301,6 +302,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                             transparentPanel.setNight();
                             nightDayIV.setImageResource(R.drawable.moon_icon);
                             mafiaRoomsModel.setCurrentDayType(DAY_TYPE_NIGHT);
+                            checkIfSheriff();
                             break;
                     }
 
@@ -396,6 +398,17 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                 }).show();
             }
         });
+    }
+
+    private void checkIfSheriff() {
+        if (isSheriff()) {
+            Snackbar.make(mafiaChatRecycler, getString(R.string.sheriffCheckHint), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            }).show();
+        }
     }
 
     private void initRecyclersAndService() {
@@ -1552,13 +1565,97 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
     @Override
     public void onItemClicked(Object object) {
+        ParticipantModel participantModel = (ParticipantModel) object;
         if (isMafia() && mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT) && !mafiaRoomsModel.isFirstNight()) {
-            shoot((ParticipantModel) object);
+            shoot(participantModel);
         } else {
-            if (mafiaRoomsModel.isFirstNight()) {
-                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.cantShoot), getString(R.string.firstNightHint), true, null, false, null);
+            if (isMafia()) {
+                if (mafiaRoomsModel.isFirstNight()) {
+                    DialogUtils.showDialog(MafiaGameView.this, getString(R.string.cantShoot), getString(R.string.firstNightHint), true, null, false, null);
+                }
+            } else if (isSheriff()) {
+                if (mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT)) {
+                    if (sharedHelper.getUserId().equals(participantModel.getUser().getUserId())) {
+                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.checkingSelf), true, null, false, null);
+                    } else {
+                        checkPlayer(participantModel);
+                    }
+                } else {
+                    DialogUtils.showDialog(MafiaGameView.this, getString(R.string.waitForNightToCheck), getString(R.string.firstNightHint), true, null, false, null);
+                }
             }
         }
+    }
+
+    private void checkPlayer(final ParticipantModel participantModel) {
+        showDialog(getString(R.string.loadingText), getString(R.string.loadingText));
+
+        Retrofit.getInstance().getInkService().checkMafiaPlayer(mafiaRoomsModel.getId(), sharedHelper.getUserId(), participantModel.getUser().getUserId()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    checkPlayer(participantModel);
+                    return;
+                }
+                if (response.body() == null) {
+                    checkPlayer(participantModel);
+                    return;
+                }
+                hideDialog();
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        String role = jsonObject.optString("role");
+                        switch (role) {
+                            case MafiaConstants.ROLE_CITIZEN:
+                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.information), getString(R.string.playerIsText, getString(R.string.citizenText)), true, null, false, null);
+                                break;
+                            case MafiaConstants.ROLE_MAFIA:
+                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.playerIsText, getString(R.string.mafiaText)), true, null, false, null);
+                                break;
+                            case MafiaConstants.ROLE_MAFIA_DON:
+                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.playerIsText, getString(R.string.donText)), true, null, false, null);
+                                break;
+                            default:
+                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
+                        }
+                    } else {
+                        String cause = jsonObject.optString("cause");
+                        switch (cause) {
+                            case ErrorCause.NOT_SHERIFF:
+                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.notSheriffError), true, null, false, null);
+                                break;
+                            case ErrorCause.PLAYER_ALREADY_CHECKED:
+                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.alreadyCheckedError), true, null, false, null);
+                                break;
+                            default:
+                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Snackbar.make(mafiaRoleView, getString(R.string.serverErrorText), BaseTransientBottomBar.LENGTH_LONG).setAction(getString(R.string.vk_retry), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        checkPlayer(participantModel);
+                    }
+                }).show();
+            }
+        });
+    }
+
+    private boolean isSheriff() {
+        ParticipantModel participantModel = getCurrentParticipantModel();
+        return participantModel.getRole().equals(MafiaConstants.ROLE_SHERIFF);
     }
 
 
@@ -1586,9 +1683,9 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                         String cause = jsonObject.optString("cause");
                         if (cause.equals(ALREADY_SHOT_PLAYER)) {
                             DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.alreadyShot), true, null, false, null);
-                        } else if(cause.equals(PLAYER_ELIMINATED)){
+                        } else if (cause.equals(PLAYER_ELIMINATED)) {
                             DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.playerEliminatedText), true, null, false, null);
-                        }else{
+                        } else {
                             DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
                         }
                     }

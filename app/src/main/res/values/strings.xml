@@ -996,4 +996,11 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="gameEndedText">The game has ended. The winner is %1$s</string>
     <string name="eliminatedText">Eliminated</string>
     <string name="playerEliminatedText">Player is already eliminated</string>
+    <string name="sheriffCheckHint">You can check a player during night. Click on the player to check</string>
+    <string name="waitForNightToCheck">Wait for the night to check the player</string>
+    <string name="notSheriffError">You are not a sheriff to check a player</string>
+    <string name="alreadyCheckedError">You have already checked a player during this night. Wait for the next night</string>
+    <string name="checkingSelf">Seriously? You are trying to check yourself?</string>
+    <string name="information">Information</string>
+    <string name="playerIsText">The player is %1$s</string>
 </resources>

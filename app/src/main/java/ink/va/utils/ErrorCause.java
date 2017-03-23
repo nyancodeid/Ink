@@ -23,5 +23,7 @@ public class ErrorCause {
     public static final String ROOM_DELETED = "roomDeleted";
     public static final String ALREADY_SHOT_PLAYER = "alreadyShotPlayer";
     public static final String PLAYER_ELIMINATED = "playerEliminated";
+    public static final String PLAYER_ALREADY_CHECKED = "alreadyCheckedPlayer";
+    public static final String NOT_SHERIFF = "notSheriff";
 
 }

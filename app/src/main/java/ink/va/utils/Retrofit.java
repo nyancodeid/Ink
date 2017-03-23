@@ -327,6 +327,13 @@ public class Retrofit {
         Call<ResponseBody> leaveRoom(@Field("roomId") int roomId,
                                      @Field("userId") String userId);
 
+
+        @POST(Constants.CHECK_MAFIA_PLAYER)
+        @FormUrlEncoded
+        Call<ResponseBody> checkMafiaPlayer(@Field("roomId") int roomId,
+                                            @Field("checkerId") String checkerId,
+                                            @Field("userIdToCheck") String userIdToCheck);
+
         @POST(Constants.JOIN_MAFIA_ROOM)
         @FormUrlEncoded
         Call<ResponseBody> joinRoom(@Field("roomId") int roomId,
