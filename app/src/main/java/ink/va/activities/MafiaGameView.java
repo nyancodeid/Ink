@@ -270,17 +270,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                 mafiaRoomsModel = response.body();
                 if (checkGameEnding) {
                     if (mafiaRoomsModel.isGameEnded()) {
-                        nightDayIV.setImageResource(R.drawable.sun_icon);
-                        toggleMafiaChatMode.setVisibility(View.GONE);
-                        initEditText(false);
-                        replyToRoomIV.setEnabled(false);
-                        replyToRoomIV.setClickable(false);
-                        String winnerName = getString(R.string.citizenText);
-                        nightDayIV.setVisibility(View.VISIBLE);
-                        if (mafiaRoomsModel.getWhoWon().equals(MafiaConstants.ROLE_MAFIA)) {
-                            winnerName = getString(R.string.mafiaText);
-                        }
-                        replyToRoomED.setText(getString(R.string.gameEndedText, winnerName));
+                        buildGameEnding();
                         return;
                     }
                 }
@@ -296,16 +286,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                             nightDayIV.setImageResource(R.drawable.sun_icon);
 
                             if (mafiaRoomsModel.isGameEnded()) {
-                                toggleMafiaChatMode.setVisibility(View.GONE);
-                                initEditText(false);
-                                replyToRoomIV.setEnabled(false);
-                                replyToRoomIV.setClickable(false);
-                                String winnerName = getString(R.string.citizenText);
-                                nightDayIV.setVisibility(View.VISIBLE);
-                                if (mafiaRoomsModel.getWhoWon().equals(MafiaConstants.ROLE_MAFIA)) {
-                                    winnerName = getString(R.string.mafiaText);
-                                }
-                                replyToRoomED.setText(getString(R.string.gameEndedText, winnerName));
+                                buildGameEnding();
                                 proceed = false;
                             }
 
@@ -417,6 +398,21 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                 }).show();
             }
         });
+    }
+
+    private void buildGameEnding() {
+        nightDayIV.setImageResource(R.drawable.sun_icon);
+        toggleMafiaChatMode.setVisibility(View.GONE);
+        initEditText(false);
+        replyToRoomIV.setEnabled(false);
+        replyToRoomIV.setClickable(false);
+        String winnerName = getString(R.string.citizenText);
+        nightDayIV.setVisibility(View.VISIBLE);
+        if (mafiaRoomsModel.getWhoWon().equals(MafiaConstants.ROLE_MAFIA)) {
+            winnerName = getString(R.string.mafiaText);
+        }
+        replyToRoomED.setHint(getString(R.string.gameEndedText, winnerName));
+        timeLeftTV.setText(getString(R.string.selfDestructHint));
     }
 
     private void checkIfSheriff() {

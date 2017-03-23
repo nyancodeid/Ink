@@ -1003,4 +1003,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="checkingSelf">Seriously? You are trying to check yourself?</string>
     <string name="information">Information</string>
     <string name="playerIsText">The player is %1$s</string>
+    <string name="selfDestructHint">The room will self destruct after 1 hour</string>
 </resources>

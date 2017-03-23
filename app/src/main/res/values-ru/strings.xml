@@ -1012,4 +1012,5 @@
     <string name="checkingSelf">Серьезно?Вы пытаетесь проверить себя?</string>
     <string name="information">Информация</string>
     <string name="playerIsText">Игрок - %1$s</string>
+    <string name="selfDestructHint">Комната самоликвидируеться через 1 час</string>
 </resources>
