@@ -1010,4 +1010,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="removingVote">Удаляем проголосованное...</string>
     <string name="cantVote">Вы не можете снова проголосовать, вы должны подождать до следуюшего утра</string>
     <string name="removingHint">Если вы удалите ваш голос,вы не сможете заново проголосовать до тех пор,пока новое утро не наступит,продолжить?</string>
+    <string name="voted">Voted!</string>
+    <string name="voteRemoved">Vote was removed</string>
 </resources>

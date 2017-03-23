@@ -1020,4 +1020,7 @@
     <string name="removingVote">Removing vote...</string>
     <string name="cantVote">You can\'t vote again, you must wait until next morning</string>
     <string name="removingHint">If you remove you\'r vote,you will not be able to vote again until the next morning,is that ok?</string>
+
+    <string name="voted">Проголосовано!</string>
+    <string name="voteRemoved">Голос удален</string>
 </resources>
