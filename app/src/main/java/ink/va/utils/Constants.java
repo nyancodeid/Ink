@@ -67,6 +67,7 @@ public class Constants {
     public static final String CHECK_MAFIA_PLAYER = "CheckMafiaPlayer.php";
     public static final String MAFIA_VOTE_PLAYER ="MafiaVotePlayer.php";
     public static final String MAFIA_REMOVE_VOTE_PLAYER ="MafiaRemoveVotePlayer.php";
+    public static final String GET_USER_NOTIFICATIONS = "GetUserNotificaitons.php";
     public static final String MAFIA_ROOM_PARTICIPANTS = "GetMafiaRoomParticipants.php";
     public static final String JOIN_MAFIA_ROOM = "JoinMafiaRoom.php";
     public static final String RESPOND_TO_REQUEST_URL = "RespondToRequest.php";

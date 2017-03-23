@@ -15,6 +15,7 @@ import ink.va.models.MyMessagesModel;
 import ink.va.models.ParticipantModel;
 import ink.va.models.ServerInformationModel;
 import ink.va.models.UserModel;
+import ink.va.models.UserNotificationModel;
 import ink.va.models.VipGlobalChatResponseModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -339,6 +340,10 @@ public class Retrofit {
         Call<ResponseBody> voteMafiaPlayer(@Field("voterId") String voterId,
                                            @Field("roomId") int roomId,
                                            @Field("userToVote") String userToVote);
+
+        @POST(Constants.GET_USER_NOTIFICATIONS)
+        @FormUrlEncoded
+        Call<List<UserNotificationModel>> getUserNotifications(@Field("userId") String userId);
 
         @POST(Constants.MAFIA_REMOVE_VOTE_PLAYER)
         @FormUrlEncoded
