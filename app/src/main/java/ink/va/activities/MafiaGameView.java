@@ -169,6 +169,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     private Runnable lastMethodToRun;
     private boolean isMafiaToggled;
     private String lastVictimId = "";
+    private int serverReconnectTry;
 
 
     @Override
@@ -279,7 +280,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                             nightDayIV.setImageResource(R.drawable.sun_icon);
                             transparentPanel.setDay();
                             mafiaRoomsModel.setCurrentDayType(DAY_TYPE_DAYLIGHT);
-                            getMafiaRoomMessages();
+                            getMafiaRoomParticipants();
                             break;
                         case DAY_TYPE_NIGHT:
                             isMorning = false;
@@ -368,9 +369,14 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
             @Override
             public void onFailure(Call<MafiaRoomsModel> call, Throwable t) {
+                if (serverReconnectTry == 0) {
+                    initDayTypeAndTime(null, false);
+                    serverReconnectTry++;
+                }
                 Snackbar.make(mafiaRoleView, getString(R.string.serverErrorText), BaseTransientBottomBar.LENGTH_LONG).setAction(getString(R.string.vk_retry), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        serverReconnectTry = 0;
                         reorderItems();
                     }
                 }).show();
@@ -945,6 +951,10 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                 } else {
                     hideNoParticipants();
                     mafiaPlayersAdapter.setUsers(participants);
+                    initEditText(getCurrentParticipantModel().isEliminated());
+                    if (getCurrentParticipantModel().isEliminated()) {
+                        buildEliminatedView();
+                    }
                 }
                 getMafiaRoomMessages();
             }
@@ -956,6 +966,10 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                 getMafiaRoomMessages();
             }
         });
+    }
+
+    private void buildEliminatedView() {
+        replyToRoomED.setHint(getString(R.string.eliminatedHint));
     }
 
     private void hideNoParticipants() {
@@ -1368,7 +1382,9 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
             replyToRoomED.setClickable(true);
             replyToRoomED.setFocusable(true);
             replyToRoomED.setFocusableInTouchMode(true);
-            replyToRoomIV.setEnabled(true);
+            replyToRoomIV.setEnabled(false);
+            replyToRoomIV.setFocusable(false);
+            replyToRoomIV.setFocusableInTouchMode(false);
             replyToRoomED.removeTextChangedListener(editTextWatcher);
             replyToRoomED.addTextChangedListener(editTextWatcher);
         } else {
@@ -1377,7 +1393,10 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
             replyToRoomED.setFocusable(false);
             replyToRoomED.setFocusableInTouchMode(false);
             replyToRoomED.setHint(getString(R.string.cantReply));
+            replyToRoomIV.setFocusable(true);
+            replyToRoomIV.setFocusableInTouchMode(true);
             replyToRoomIV.setEnabled(false);
+            replyToRoomED.removeTextChangedListener(editTextWatcher);
         }
 
     }
@@ -1392,6 +1411,18 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
             }
         }
         return isParticipant;
+    }
+
+    private ParticipantModel getCurrentParticipantModel() {
+        ParticipantModel participantModel = new ParticipantModel();
+        String currentUserId = sharedHelper.getUserId();
+        for (ParticipantModel eachId : mafiaRoomsModel.getJoinedUsers()) {
+            if (eachId.getUser().getUserId().equals(currentUserId)) {
+                participantModel = eachId;
+                break;
+            }
+        }
+        return participantModel;
     }
 
     private boolean isOwner() {
@@ -1509,8 +1540,8 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     public void onItemClicked(Object object) {
         if (isMafia() && mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT) && !mafiaRoomsModel.isFirstNight()) {
             shoot((ParticipantModel) object);
-        }else{
-            if(mafiaRoomsModel.isFirstNight()){
+        } else {
+            if (mafiaRoomsModel.isFirstNight()) {
                 DialogUtils.showDialog(MafiaGameView.this, getString(R.string.cantShoot), getString(R.string.firstNightHint), true, null, false, null);
             }
         }

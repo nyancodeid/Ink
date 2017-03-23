@@ -999,4 +999,5 @@
     <string name="alreadyShot">Вы уже стреляли в эту ночь. Подожди следующей ночи</string>
     <string name="cantShoot">Нельзя Стрелять</string>
     <string name="firstNightHint">В первую ночь вы говорите о стрельбе для последующих ночей</string>
+    <string name="eliminatedHint">Вы были исключены из  игры. Теперь вы следите за игрой</string>
 </resources>
