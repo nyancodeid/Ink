@@ -40,14 +40,30 @@
             android:layout_toRightOf="@+id/participantImage"
             android:clickable="false"
             android:ellipsize="end"
-            android:textSize="11sp"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:fontFamily="@string/condensedFont"
             android:maxLines="1"
             android:text="@string/loadingText"
             android:textColor="@color/defaultGroupColor"
+            android:textSize="11sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/votingCountTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/participantName"
+            android:layout_alignStart="@+id/participantName"
+            android:layout_below="@+id/participantName"
+            android:ellipsize="end"
+            android:focusable="false"
+            android:fontFamily="@string/condensedFont"
+            android:maxLines="1"
+            android:text="@string/loadingText"
+            android:textColor="@color/defaultGroupColor"
+            android:textSize="11sp"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/roomOwnerTV"

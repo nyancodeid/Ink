@@ -1004,4 +1004,10 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="information">Information</string>
     <string name="playerIsText">The player is %1$s</string>
     <string name="selfDestructHint">The room will self destruct after 1 hour</string>
+    <string name="votes">%1$d vote(s)</string>
+    <string name="voteHint">You are about to vote,you can only do this once per a morning,is that ok?</string>
+    <string name="voting">Голосуем....</string>
+    <string name="removingVote">Удаляем проголосованное...</string>
+    <string name="cantVote">Вы не можете снова проголосовать, вы должны подождать до следуюшего утра</string>
+    <string name="removingHint">Если вы удалите ваш голос,вы не сможете заново проголосовать до тех пор,пока новое утро не наступит,продолжить?</string>
 </resources>

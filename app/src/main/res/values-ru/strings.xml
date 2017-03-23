@@ -1013,4 +1013,11 @@
     <string name="information">Информация</string>
     <string name="playerIsText">Игрок - %1$s</string>
     <string name="selfDestructHint">Комната самоликвидируеться через 1 час</string>
+    <string name="votes">%1$d голос(ов)</string>
+
+    <string name="voteHint">Вы хотите проголосовать,вы можете проголосовать только 1 раз за утро,продолжить?</string>
+    <string name="voting">Voting...</string>
+    <string name="removingVote">Removing vote...</string>
+    <string name="cantVote">You can\'t vote again, you must wait until next morning</string>
+    <string name="removingHint">If you remove you\'r vote,you will not be able to vote again until the next morning,is that ok?</string>
 </resources>

@@ -34,6 +34,9 @@ public class MafiaParticipantViewHolder extends RecyclerView.ViewHolder {
     TextView roomOwnerTV;
     @BindView(R.id.victimIcon)
     ImageView victimIcon;
+    @BindView(R.id.votingCountTV)
+    TextView votingCountTV;
+
     private RecyclerItemClickListener onItemClickListener;
     private ParticipantModel participantModel;
 
@@ -58,6 +61,11 @@ public class MafiaParticipantViewHolder extends RecyclerView.ViewHolder {
             victimIcon.setVisibility(View.GONE);
         }
 
+        if (participantModel.getVotingCont() == 0) {
+            votingCountTV.setVisibility(View.GONE);
+        } else {
+            votingCountTV.setText(context.getString(R.string.votes, participantModel.getVotingCont()));
+        }
 
         UserModel user = participantModel.getUser();
         participantName.setText(user.getFirstName() + " " + user.getLastName());

@@ -172,6 +172,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     private boolean isMafiaToggled;
     private String lastVictimId = "";
     private int serverReconnectTry;
+    private String lastVotedUserId;
 
 
     @Override
@@ -283,6 +284,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                     switch (mafiaRoomsModel.getCurrentDayType()) {
                         case DAY_TYPE_DAYLIGHT:
                             isMorning = true;
+                            lastVotedUserId = null;
                             nightDayIV.setImageResource(R.drawable.sun_icon);
 
                             if (mafiaRoomsModel.isGameEnded()) {
@@ -1591,23 +1593,85 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
         ParticipantModel currentModel = getCurrentParticipantModel();
         if (!currentModel.isEliminated()) {
             ParticipantModel participantModel = (ParticipantModel) object;
-            if (isMafia() && mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT) && !mafiaRoomsModel.isFirstNight()) {
-                shoot(participantModel);
+            if (!mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT)) {
+                showNightOptions(participantModel);
             } else {
-                if (isMafia()) {
-                    if (mafiaRoomsModel.isFirstNight()) {
-                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.cantShoot), getString(R.string.firstNightHint), true, null, false, null);
+                showDayOptions(participantModel);
+            }
+        }
+    }
+
+    private void showDayOptions(final ParticipantModel participantModel) {
+        if (lastVotedUserId != null) {
+            if (lastVotedUserId.equals(participantModel.getUser().getUserId())) {
+                lastVotedUserId = "";
+                DialogUtils.showDialog(this, getString(R.string.caution), getString(R.string.removingHint), true, new DialogUtils.DialogListener() {
+                    @Override
+                    public void onNegativeClicked() {
+
                     }
-                } else if (isSheriff()) {
-                    if (mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT)) {
-                        if (sharedHelper.getUserId().equals(participantModel.getUser().getUserId())) {
-                            DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.checkingSelf), true, null, false, null);
-                        } else {
-                            checkPlayer(participantModel);
-                        }
+
+                    @Override
+                    public void onDialogDismissed() {
+
+                    }
+
+                    @Override
+                    public void onPositiveClicked() {
+                        lastVotedUserId = participantModel.getUser().getUserId();
+                        removeVote();
+                    }
+                }, true, getString(R.string.cancel));
+            } else {
+                // TODO: 3/23/2017 show error
+                showDialog(getString(R.string.error), getString(R.string.cantVote));
+            }
+        } else {
+            DialogUtils.showDialog(this, getString(R.string.caution), getString(R.string.voteHint), true, new DialogUtils.DialogListener() {
+                @Override
+                public void onNegativeClicked() {
+
+                }
+
+                @Override
+                public void onDialogDismissed() {
+
+                }
+
+                @Override
+                public void onPositiveClicked() {
+                    lastVotedUserId = participantModel.getUser().getUserId();
+                    vote();
+                }
+            }, true, getString(R.string.cancel));
+        }
+    }
+
+    private void vote() {
+        showDialog(getString(R.string.loadingText), getString(R.string.voting));
+    }
+
+    private void removeVote() {
+        showDialog(getString(R.string.loadingText), getString(R.string.removingVote));
+    }
+
+    private void showNightOptions(ParticipantModel participantModel) {
+        if (isMafia() && mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT) && !mafiaRoomsModel.isFirstNight()) {
+            shoot(participantModel);
+        } else {
+            if (isMafia()) {
+                if (mafiaRoomsModel.isFirstNight()) {
+                    DialogUtils.showDialog(MafiaGameView.this, getString(R.string.cantShoot), getString(R.string.firstNightHint), true, null, false, null);
+                }
+            } else if (isSheriff()) {
+                if (mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT)) {
+                    if (sharedHelper.getUserId().equals(participantModel.getUser().getUserId())) {
+                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.checkingSelf), true, null, false, null);
                     } else {
-                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.waitForNightToCheck), true, null, false, null);
+                        checkPlayer(participantModel);
                     }
+                } else {
+                    DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.waitForNightToCheck), true, null, false, null);
                 }
             }
         }

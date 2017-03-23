@@ -39,6 +39,11 @@ public class ParticipantModel implements Comparable<ParticipantModel> {
     @Getter
     private boolean victim;
 
+    @SerializedName("votingCount")
+    @Setter
+    @Getter
+    private int votingCont;
+
 
     @Override
     public boolean equals(Object obj) {
