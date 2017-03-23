@@ -120,6 +120,11 @@ public class MafiaRoomsModel implements Comparable<MafiaRoomsModel> {
     @Setter
     private String currentServerDate;
 
+    @SerializedName("whoWon")
+    @Setter
+    @Getter
+    private String whoWon;
+
     @Override
     public int compareTo(MafiaRoomsModel o) {
         boolean isParticipant = false;

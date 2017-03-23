@@ -266,6 +266,19 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
             @Override
             public void onResponse(Call<MafiaRoomsModel> call, Response<MafiaRoomsModel> response) {
                 mafiaRoomsModel = response.body();
+                if (mafiaRoomsModel.isGameEnded()) {
+                    toggleMafiaChatMode.setVisibility(View.GONE);
+                    initEditText(false);
+                    replyToRoomIV.setEnabled(false);
+                    replyToRoomIV.setClickable(false);
+                    String winnerName = getString(R.string.citizenText);
+                    nightDayIV.setVisibility(View.VISIBLE);
+                    if (mafiaRoomsModel.getWhoWon().equals(MafiaConstants.ROLE_MAFIA)) {
+                        winnerName = getString(R.string.mafiaText);
+                    }
+                    replyToRoomED.setText(getString(R.string.gameEndedText, winnerName));
+                    return;
+                }
                 initToggleIcon();
                 if (mafiaRoomsModel.isGameStarted()) {
                     nightDayIV.setVisibility(View.VISIBLE);
@@ -951,7 +964,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                 } else {
                     hideNoParticipants();
                     mafiaPlayersAdapter.setUsers(participants);
-                    initEditText(getCurrentParticipantModel().isEliminated());
+                    initEditText(!getCurrentParticipantModel().isEliminated());
                     if (getCurrentParticipantModel().isEliminated()) {
                         buildEliminatedView();
                     }
