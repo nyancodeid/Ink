@@ -199,11 +199,16 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        initEditText(isParticipant());
         initGameInfo();
         initRecyclersAndService();
         initToggleIcon();
-        initDayTypeAndTime(null, false, true);
+        if (mafiaRoomsModel.isGameEnded()) {
+            buildEliminatedView();
+            buildGameEnding();
+        } else {
+            initEditText(isParticipant(), true);
+            initDayTypeAndTime(null, false, true);
+        }
         if (!mafiaRoomsModel.isGameStarted()) {
             nightDayIV.setVisibility(View.INVISIBLE);
             timeLeftTV.setVisibility(View.INVISIBLE);
@@ -415,7 +420,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
         }
         replyToRoomED.setHint(getString(R.string.gameEndedText, winnerName));
         timeLeftTV.setText(getString(R.string.selfDestructHint));
-        initEditText(false);
+        initEditText(false, false);
     }
 
     private void checkIfSheriff() {
@@ -996,16 +1001,19 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                 } else {
                     hideNoParticipants();
                     mafiaPlayersAdapter.setUsers(participants);
+                    if (mafiaRoomsModel.isGameEnded()) {
+                        getMafiaRoomMessages();
+                        return;
+                    }
                     if (getCurrentParticipantModel().isEliminated()) {
-                        initEditText(!getCurrentParticipantModel().isEliminated());
+                        initEditText(!getCurrentParticipantModel().isEliminated(), true);
                     } else {
-                        initEditText(isParticipant());
+                        initEditText(isParticipant(), true);
                     }
                     if (getCurrentParticipantModel().isEliminated()) {
                         buildEliminatedView();
                     }
                 }
-                getMafiaRoomMessages();
             }
 
             @Override
@@ -1126,7 +1134,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     private void reorderItems() {
         LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
         isMenuAdded = false;
-        initEditText(isParticipant());
+        initEditText(isParticipant(), true);
         initGameInfo();
         initRecyclersAndService();
         initDayTypeAndTime(null, false, false);
@@ -1424,9 +1432,11 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
         mafiaRoleView.startAnimation(slideOutWithFade);
     }
 
-    private void initEditText(boolean enabled) {
+    private void initEditText(boolean enabled, boolean useHint) {
         if (enabled) {
-            replyToRoomED.setHint(getString(R.string.replyToRoom));
+            if (useHint) {
+                replyToRoomED.setHint(getString(R.string.replyToRoom));
+            }
             replyToRoomED.setEnabled(true);
             replyToRoomED.setClickable(true);
             replyToRoomED.setFocusable(true);
@@ -1441,7 +1451,9 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
             replyToRoomED.setClickable(false);
             replyToRoomED.setFocusable(false);
             replyToRoomED.setFocusableInTouchMode(false);
-            replyToRoomED.setHint(getString(R.string.cantReply));
+            if (useHint) {
+                replyToRoomED.setHint(getString(R.string.cantReply));
+            }
             replyToRoomIV.setFocusable(true);
             replyToRoomIV.setFocusableInTouchMode(true);
             replyToRoomIV.setEnabled(false);
@@ -1592,6 +1604,9 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     @Override
     public void onItemClicked(Object object) {
         ParticipantModel currentModel = getCurrentParticipantModel();
+        if (mafiaRoomsModel.isGameEnded()) {
+            return;
+        }
         if (!currentModel.isEliminated()) {
             ParticipantModel participantModel = (ParticipantModel) object;
             if (mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT)) {

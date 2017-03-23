@@ -620,6 +620,9 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> setCoins(@Field("userId") String userId,
                                     @Field("coinsCount") String coinsCount);
+
+        @POST(Constants.TEST_URL)
+        Call<ResponseBody> testCall();
     }
 
     public interface MusicCloudInterface {

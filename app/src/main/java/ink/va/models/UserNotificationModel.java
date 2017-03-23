@@ -36,4 +36,9 @@ public class UserNotificationModel {
     @Getter
     private boolean isSystemMessage;
 
+    @SerializedName("methodToRun")
+    @Setter
+    @Getter
+    private String methodToRun;
+
 }

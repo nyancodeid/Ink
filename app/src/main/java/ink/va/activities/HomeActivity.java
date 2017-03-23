@@ -414,10 +414,10 @@ public class HomeActivity extends BaseActivity
             if (notificationBundle != null) {
                 String postId = notificationBundle.getString(NOTIFICATION_POST_ID_KEY);
                 handleFeedNotification(postId);
-            }else{
+            } else {
                 String jsonObject = intent.getExtras().getString(NOTIFICATION_MESSAGE_BUNDLE_KEY);
                 boolean autoRedirect = intent.getExtras().getBoolean(NOTIFICATION_AUTO_REDIRECT_BUNDLE_KEY);
-                if(autoRedirect){
+                if (autoRedirect) {
                     Intent chatIntent = new Intent(this, Chat.class);
                     chatIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
                     chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -531,6 +531,7 @@ public class HomeActivity extends BaseActivity
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {

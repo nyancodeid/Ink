@@ -97,9 +97,16 @@ public class MafiaRoomViewHolder extends RecyclerView.ViewHolder {
         if (!mafiaRoomsModel.isGameStarted()) {
             gameStatus.setTextColor(ContextCompat.getColor(context, R.color.red));
             gameStatus.setText(context.getString(R.string.gameNotStarted));
-        } else {
+        } else if (mafiaRoomsModel.isGameStarted()) {
             gameStatus.setTextColor(ContextCompat.getColor(context, R.color.darkGreen));
             gameStatus.setText(context.getString(R.string.gameStarted));
+        }
+
+        if (mafiaRoomsModel.isGameEnded()) {
+            gameStatus.setTextColor(ContextCompat.getColor(context, R.color.red));
+            gameStatus.setText(context.getString(R.string.gameEndedText, mafiaRoomsModel.getWhoWon().equals(MafiaConstants.ROLE_MAFIA) ?
+                    context.getString(R.string.mafiaText) : context.getString(R.string.citizenText)
+            ));
         }
         if (position > 2) {
             if (position == maxSize) {

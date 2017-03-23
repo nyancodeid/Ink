@@ -30,6 +30,7 @@ public class Constants {
     public static final String CHECK_BAN_URL = "CheckBan.php";
     public static final String WHO_VIEWED_URL = "WhoViewed.php";
     public static final String USER_COINS_UPDATE = "CoinsUpdate.php";
+    public static final String TEST_URL = "Test.php";
     public static final String GROUP_REQUESTS_URL = "GetUserRequests.php";
     public static final String ADD_MAFIA_ROOM_URL = "AddMafiaRoom.php";
     public static final String GET_MAFIA_ROOMS_URL = "GetMafiaRooms.php";
