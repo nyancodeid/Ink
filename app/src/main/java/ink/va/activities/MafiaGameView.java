@@ -1583,7 +1583,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                             checkPlayer(participantModel);
                         }
                     } else {
-                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.waitForNightToCheck), getString(R.string.firstNightHint), true, null, false, null);
+                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.waitForNightToCheck), true, null, false, null);
                     }
                 }
             }
