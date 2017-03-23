@@ -22,5 +22,6 @@ public class ErrorCause {
     public static final String GAME_ALREADY_IN_PROGRESS = "gameAlreadyInProgress";
     public static final String ROOM_DELETED = "roomDeleted";
     public static final String ALREADY_SHOT_PLAYER = "alreadyShotPlayer";
+    public static final String PLAYER_ELIMINATED = "playerEliminated";
 
 }

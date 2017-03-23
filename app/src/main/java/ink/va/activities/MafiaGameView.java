@@ -87,6 +87,7 @@ import static ink.va.utils.ErrorCause.ALREADY_SHOT_PLAYER;
 import static ink.va.utils.ErrorCause.GAME_ALREADY_IN_PROGRESS;
 import static ink.va.utils.ErrorCause.GAME_IN_PROGRESS;
 import static ink.va.utils.ErrorCause.MAXIMUM_PLAYERS_REACHED;
+import static ink.va.utils.ErrorCause.PLAYER_ELIMINATED;
 import static ink.va.utils.ErrorCause.ROOM_DELETED;
 import static ink.va.utils.MafiaConstants.DAY_TYPE_DAYLIGHT;
 import static ink.va.utils.MafiaConstants.DAY_TYPE_NIGHT;
@@ -1585,7 +1586,9 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                         String cause = jsonObject.optString("cause");
                         if (cause.equals(ALREADY_SHOT_PLAYER)) {
                             DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.alreadyShot), true, null, false, null);
-                        } else {
+                        } else if(cause.equals(PLAYER_ELIMINATED)){
+                            DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.playerEliminatedText), true, null, false, null);
+                        }else{
                             DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
                         }
                     }

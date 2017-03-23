@@ -1000,4 +1000,8 @@
     <string name="cantShoot">Нельзя Стрелять</string>
     <string name="firstNightHint">В первую ночь вы говорите о стрельбе для последующих ночей</string>
     <string name="eliminatedHint">Вы были исключены из  игры. Теперь вы следите за игрой</string>
+
+    <string name="gameEndedText">Игра закончена. Победитель - %1$s</string>
+    <string name="eliminatedText">Исключен</string>
+    <string name="playerEliminatedText">Игрок уже исключен</string>
 </resources>

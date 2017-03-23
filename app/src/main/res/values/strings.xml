@@ -994,4 +994,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="firstNightHint">On the first night you are only going to talk about shooting for the rest of the nights</string>
     <string name="eliminatedHint">You was eliminated. You are now spectacular to room</string>
     <string name="gameEndedText">The game has ended. The winner is %1$s</string>
+    <string name="eliminatedText">Eliminated</string>
+    <string name="playerEliminatedText">Player is already eliminated</string>
 </resources>
