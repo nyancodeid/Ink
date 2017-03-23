@@ -1025,4 +1025,6 @@
     <string name="voteRemoved">Голос удален</string>
 
     <string name="firstNightGeneralHint">В первую ночь вы встречаетесь с участниками и разговариваете с ними...</string>
+    <string name="cantVoteSelf">Вы не можете проголосовать против самого себя</string>
+
 </resources>

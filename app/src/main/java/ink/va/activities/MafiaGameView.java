@@ -302,6 +302,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                             nightDayIV.setImageResource(R.drawable.moon_icon);
                             mafiaRoomsModel.setCurrentDayType(DAY_TYPE_NIGHT);
                             checkIfSheriff();
+                            getMafiaRoomParticipants();
                             break;
                     }
                     if (proceed) {
@@ -1593,7 +1594,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
         ParticipantModel currentModel = getCurrentParticipantModel();
         if (!currentModel.isEliminated()) {
             ParticipantModel participantModel = (ParticipantModel) object;
-            if (!mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT)) {
+            if (mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT)) {
                 showNightOptions(participantModel);
             } else {
                 if (!mafiaRoomsModel.isFirstNight()) {
@@ -1606,10 +1607,35 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     }
 
     private void showDayOptions(final ParticipantModel participantModel) {
-        if (lastVotedUserId != null) {
-            if (lastVotedUserId.equals(participantModel.getUser().getUserId())) {
-                lastVotedUserId = "";
-                DialogUtils.showDialog(this, getString(R.string.caution), getString(R.string.removingHint), true, new DialogUtils.DialogListener() {
+        if (sharedHelper.getUserId().equals(participantModel.getUser().getUserId())) {
+            DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.cantVoteSelf), true, null, false, null);
+        } else {
+            if (lastVotedUserId != null) {
+                if (lastVotedUserId.equals(participantModel.getUser().getUserId())) {
+                    lastVotedUserId = "";
+                    DialogUtils.showDialog(this, getString(R.string.caution), getString(R.string.removingHint), true, new DialogUtils.DialogListener() {
+                        @Override
+                        public void onNegativeClicked() {
+
+                        }
+
+                        @Override
+                        public void onDialogDismissed() {
+
+                        }
+
+                        @Override
+                        public void onPositiveClicked() {
+                            lastVotedUserId = participantModel.getUser().getUserId();
+                            removeVote(participantModel);
+                        }
+                    }, true, getString(R.string.cancel));
+                } else {
+                    // TODO: 3/23/2017 show error
+                    showDialog(getString(R.string.error), getString(R.string.cantVote));
+                }
+            } else {
+                DialogUtils.showDialog(this, getString(R.string.caution), getString(R.string.voteHint), true, new DialogUtils.DialogListener() {
                     @Override
                     public void onNegativeClicked() {
 
@@ -1623,31 +1649,10 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                     @Override
                     public void onPositiveClicked() {
                         lastVotedUserId = participantModel.getUser().getUserId();
-                        removeVote(participantModel);
+                        vote(participantModel);
                     }
                 }, true, getString(R.string.cancel));
-            } else {
-                // TODO: 3/23/2017 show error
-                showDialog(getString(R.string.error), getString(R.string.cantVote));
             }
-        } else {
-            DialogUtils.showDialog(this, getString(R.string.caution), getString(R.string.voteHint), true, new DialogUtils.DialogListener() {
-                @Override
-                public void onNegativeClicked() {
-
-                }
-
-                @Override
-                public void onDialogDismissed() {
-
-                }
-
-                @Override
-                public void onPositiveClicked() {
-                    lastVotedUserId = participantModel.getUser().getUserId();
-                    vote(participantModel);
-                }
-            }, true, getString(R.string.cancel));
         }
     }
 
