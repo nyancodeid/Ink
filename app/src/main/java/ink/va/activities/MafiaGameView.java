@@ -1565,23 +1565,26 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
     @Override
     public void onItemClicked(Object object) {
-        ParticipantModel participantModel = (ParticipantModel) object;
-        if (isMafia() && mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT) && !mafiaRoomsModel.isFirstNight()) {
-            shoot(participantModel);
-        } else {
-            if (isMafia()) {
-                if (mafiaRoomsModel.isFirstNight()) {
-                    DialogUtils.showDialog(MafiaGameView.this, getString(R.string.cantShoot), getString(R.string.firstNightHint), true, null, false, null);
-                }
-            } else if (isSheriff()) {
-                if (mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT)) {
-                    if (sharedHelper.getUserId().equals(participantModel.getUser().getUserId())) {
-                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.checkingSelf), true, null, false, null);
-                    } else {
-                        checkPlayer(participantModel);
+        ParticipantModel currentModel = getCurrentParticipantModel();
+        if (!currentModel.isEliminated()) {
+            ParticipantModel participantModel = (ParticipantModel) object;
+            if (isMafia() && mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT) && !mafiaRoomsModel.isFirstNight()) {
+                shoot(participantModel);
+            } else {
+                if (isMafia()) {
+                    if (mafiaRoomsModel.isFirstNight()) {
+                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.cantShoot), getString(R.string.firstNightHint), true, null, false, null);
                     }
-                } else {
-                    DialogUtils.showDialog(MafiaGameView.this, getString(R.string.waitForNightToCheck), getString(R.string.firstNightHint), true, null, false, null);
+                } else if (isSheriff()) {
+                    if (mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT)) {
+                        if (sharedHelper.getUserId().equals(participantModel.getUser().getUserId())) {
+                            DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.checkingSelf), true, null, false, null);
+                        } else {
+                            checkPlayer(participantModel);
+                        }
+                    } else {
+                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.waitForNightToCheck), getString(R.string.firstNightHint), true, null, false, null);
+                    }
                 }
             }
         }
