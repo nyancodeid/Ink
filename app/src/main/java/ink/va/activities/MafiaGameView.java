@@ -1613,13 +1613,13 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                                 DialogUtils.showDialog(MafiaGameView.this, getString(R.string.information), getString(R.string.playerIsText, getString(R.string.citizenText)), true, null, false, null);
                                 break;
                             case MafiaConstants.ROLE_MAFIA:
-                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.playerIsText, getString(R.string.mafiaText)), true, null, false, null);
+                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.information), getString(R.string.playerIsText, getString(R.string.mafiaText)), true, null, false, null);
                                 break;
                             case MafiaConstants.ROLE_MAFIA_DON:
-                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.playerIsText, getString(R.string.donText)), true, null, false, null);
+                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.information), getString(R.string.playerIsText, getString(R.string.donText)), true, null, false, null);
                                 break;
                             default:
-                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
+                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.information), getString(R.string.serverErrorText), true, null, false, null);
                         }
                     } else {
                         String cause = jsonObject.optString("cause");
