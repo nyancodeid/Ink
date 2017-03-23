@@ -1004,4 +1004,12 @@
     <string name="gameEndedText">Игра закончена. Победитель - %1$s</string>
     <string name="eliminatedText">Исключен</string>
     <string name="playerEliminatedText">Игрок уже исключен</string>
+
+    <string name="sheriffCheckHint">Вы можете проверить игрока в течение ночи. Кликните на игрока чтобы проверить</string>
+    <string name="waitForNightToCheck">Дождитесь ночи чтобы проверить игрока</string>
+    <string name="notSheriffError">Вы не Шериф чтобы проверять игрока</string>
+    <string name="alreadyCheckedError">Вы уже проверили одного игрока в течении этой ночи. Дождитесь следующей</string>
+    <string name="checkingSelf">Серьезно?Вы пытаетесь проверить себя?</string>
+    <string name="information">Информация</string>
+    <string name="playerIsText">Игрок - %1$s</string>
 </resources>
