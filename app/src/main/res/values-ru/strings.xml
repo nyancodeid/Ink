@@ -994,4 +994,9 @@
 
     <string name="shooting">Стреляем</string>
     <string name="shootingPlayer">Стреляем в игрока,пожалуйста подождите...</string>
+
+    <string name="shotPlayer">Вы выстрелили!</string>
+    <string name="alreadyShot">Вы уже стреляли в эту ночь. Подожди следующей ночи</string>
+    <string name="cantShoot">Нельзя Стрелять</string>
+    <string name="firstNightHint">В первую ночь вы говорите о стрельбе для последующих ночей</string>
 </resources>

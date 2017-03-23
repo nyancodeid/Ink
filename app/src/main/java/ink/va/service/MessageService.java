@@ -62,7 +62,7 @@ public class MessageService extends Service {
     public static final String NOTIFICATION_REPLY = "notificationReply";
     private SharedHelper sharedHelper;
     private String currentUserId;
-    LocalBinder mBinder = new LocalBinder();
+    private  LocalBinder mBinder = new LocalBinder();
     private SocketListener onSocketListener;
     private List<Integer> socketListeners = new LinkedList<>();
     private GeneralCallback emitListener;

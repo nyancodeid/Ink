@@ -990,4 +990,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="shootingPlayer">Shooting the player,please standby...</string>
     <string name="shotPlayer">You got \'em shot!</string>
     <string name="alreadyShot">You got shot already for this night,wait you\'r next turn</string>
+    <string name="cantShoot">Can\'t shoot</string>
+    <string name="firstNightHint">On the first night you are only going to talk about shooting for the rest of the nights</string>
 </resources>

@@ -1509,6 +1509,10 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     public void onItemClicked(Object object) {
         if (isMafia() && mafiaRoomsModel.getCurrentDayType().equals(DAY_TYPE_NIGHT) && !mafiaRoomsModel.isFirstNight()) {
             shoot((ParticipantModel) object);
+        }else{
+            if(mafiaRoomsModel.isFirstNight()){
+                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.cantShoot), getString(R.string.firstNightHint), true, null, false, null);
+            }
         }
     }
 
