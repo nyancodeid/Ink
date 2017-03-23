@@ -1023,4 +1023,6 @@
 
     <string name="voted">Проголосовано!</string>
     <string name="voteRemoved">Голос удален</string>
+
+    <string name="firstNightGeneralHint">В первую ночь вы встречаетесь с участниками и разговариваете с ними...</string>
 </resources>

@@ -1012,4 +1012,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="removingHint">Если вы удалите ваш голос,вы не сможете заново проголосовать до тех пор,пока новое утро не наступит,продолжить?</string>
     <string name="voted">Voted!</string>
     <string name="voteRemoved">Vote was removed</string>
+    <string name="firstNightGeneralHint">On the first night you are going to meet the players and talk to each other...</string>
 </resources>
