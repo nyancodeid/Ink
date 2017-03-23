@@ -41,6 +41,11 @@ public class UserNotificationModel {
     @Getter
     private String methodToRun;
 
+    @SerializedName("hasRead")
+    @Setter
+    @Getter
+    private String hasRead;
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

@@ -52,7 +52,6 @@ import com.pollfish.interfaces.PollfishSurveyNotAvailableListener;
 import com.pollfish.interfaces.PollfishSurveyReceivedListener;
 import com.pollfish.interfaces.PollfishUserNotEligibleListener;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -512,7 +511,16 @@ public class HomeActivity extends BaseActivity
         //noinspection SimplifiableIfStatement
         switch (item.getItemId()) {
             case R.id.notifications:
-                startActivity(new Intent(getApplicationContext(), RequestsView.class));
+                if (menuItem != null) {
+                    if (mSharedHelper.getNotificationIconColor() == null) {
+                        menuItem.getItem(2).setIcon(ContextCompat.getDrawable(getApplicationContext(),
+                                R.drawable.globus_icon));
+                    } else {
+                        menuItem.getItem(2).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getNotificationIconColor()),
+                                PorterDuff.Mode.SRC_ATOP);
+                    }
+                }
+                startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
                 break;
             case R.id.stickerShop:
                 startActivity(new Intent(getApplicationContext(), Shop.class));
@@ -916,7 +924,7 @@ public class HomeActivity extends BaseActivity
 
     @Override
     protected void onResume() {
-        getMyRequests();
+        hasNotifications();
         if (messagesCountTV != null) {
             initializeCountDrawer(messagesCountTV);
         }
@@ -929,6 +937,54 @@ public class HomeActivity extends BaseActivity
             loadImage();
         }
         super.onResume();
+    }
+
+    private void hasNotifications() {
+        Retrofit.getInstance().getInkService().hasUnreadNotifications(mSharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    hasNotifications();
+                    return;
+                }
+                if (response.body() == null) {
+                    hasNotifications();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        boolean hasRead = jsonObject.optBoolean("hasRead");
+                        if (hasRead) {
+                            if (menuItem != null) {
+                                menuItem.getItem(2).setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.globus_active));
+                            }
+                        } else {
+                            if (menuItem != null) {
+                                if (mSharedHelper.getNotificationIconColor() == null) {
+                                    menuItem.getItem(2).setIcon(ContextCompat.getDrawable(getApplicationContext(),
+                                            R.drawable.globus_icon));
+                                } else {
+                                    menuItem.getItem(2).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getNotificationIconColor()),
+                                            PorterDuff.Mode.SRC_ATOP);
+                                }
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
     }
 
     private void updateUserCoins() {
@@ -1001,56 +1057,6 @@ public class HomeActivity extends BaseActivity
         Notification.get().setAppAlive(false);
     }
 
-    private void getMyRequests() {
-        Call<ResponseBody> myRequestsCall = Retrofit.getInstance().getInkService().getMyRequests(mSharedHelper.getUserId());
-        myRequestsCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getMyRequests();
-                    return;
-                }
-                if (response.body() == null) {
-                    getMyRequests();
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (success) {
-                        JSONArray jsonArray = jsonObject.optJSONArray("requests");
-                        if (jsonArray.length() <= 0) {
-                            if (menuItem != null) {
-                                if (mSharedHelper.getNotificationIconColor() == null) {
-                                    menuItem.getItem(1).setIcon(ContextCompat.getDrawable(getApplicationContext(),
-                                            R.drawable.notification_icon));
-                                } else {
-                                    menuItem.getItem(1).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getNotificationIconColor()),
-                                            PorterDuff.Mode.SRC_ATOP);
-                                }
-                            }
-                        } else {
-                            if (menuItem != null) {
-                                menuItem.getItem(1).setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_notification_icon));
-                            }
-                        }
-                    } else {
-                        getMyRequests();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getMyRequests();
-            }
-        });
-    }
 
     @Override
     public void onAccountDeleted() {
@@ -1123,12 +1129,12 @@ public class HomeActivity extends BaseActivity
         }
 
         if (mSharedHelper.getNotificationIconColor() != null) {
-            menuItem.getItem(1).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getNotificationIconColor()),
+            menuItem.getItem(2).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getNotificationIconColor()),
                     PorterDuff.Mode.SRC_ATOP);
         }
 
         if (mSharedHelper.getShopIconColor() != null) {
-            menuItem.getItem(2).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getShopIconColor()),
+            menuItem.getItem(1).getIcon().setColorFilter(Color.parseColor(mSharedHelper.getShopIconColor()),
                     PorterDuff.Mode.SRC_ATOP);
         }
         if (mSharedHelper.getActionBarColor() != null) {
@@ -1161,10 +1167,10 @@ public class HomeActivity extends BaseActivity
         }
 
         if (mSharedHelper.getNotificationIconColor() == null) {
-            menuItem.getItem(1).getIcon().setColorFilter(null);
+            menuItem.getItem(2).getIcon().setColorFilter(null);
         }
         if (mSharedHelper.getShopIconColor() == null) {
-            menuItem.getItem(2).getIcon().setColorFilter(null);
+            menuItem.getItem(1).getIcon().setColorFilter(null);
         }
         if (mSharedHelper.getActionBarColor() == null) {
             mToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));

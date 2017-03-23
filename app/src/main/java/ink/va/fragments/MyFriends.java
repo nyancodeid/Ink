@@ -45,6 +45,7 @@ import java.util.List;
 
 import ink.va.activities.HomeActivity;
 import ink.va.activities.OpponentProfile;
+import ink.va.activities.RequestsView;
 import ink.va.adapters.FriendsAdapter;
 import ink.va.animations.CircularPathAnimation;
 import ink.va.interfaces.ColorChangeListener;
@@ -93,6 +94,7 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
     private boolean isSearchActive;
     private ImageView searchIcon;
     private boolean hasContentChanged;
+    private ImageView friendsRequestIV;
 
 
     public static MyFriends newInstance() {
@@ -138,7 +140,13 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
         slideIn = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in);
         slideOut = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out);
         mFriendsAdapter = new FriendsAdapter(mFriendsModelArrayList, getActivity());
-
+        friendsRequestIV = (ImageView) view.findViewById(R.id.friendsRequestIV);
+        friendsRequestIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), RequestsView.class));
+            }
+        });
         searchWrapper = (RelativeLayout) view.findViewById(R.id.searchWrapper);
         friendsRootLayout = (RelativeLayout) view.findViewById(R.id.friendsRootLayout);
 
@@ -200,6 +208,7 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
             }
         });
         getFriends();
+        getMyRequests();
     }
 
     private void activateSearch() {
@@ -572,6 +581,56 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
             if (mSharedHelper.getFriendsColor() != null) {
                 friendsRootLayout.setBackgroundColor(Color.parseColor(mSharedHelper.getFriendsColor()));
             }
+        }
+    }
+
+
+    private void getMyRequests() {
+        Call<ResponseBody> myRequestsCall = Retrofit.getInstance().getInkService().getMyRequests(mSharedHelper.getUserId());
+        myRequestsCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    getMyRequests();
+                    return;
+                }
+                if (response.body() == null) {
+                    getMyRequests();
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        JSONArray jsonArray = jsonObject.optJSONArray("requests");
+                        if (jsonArray.length() <= 0) {
+                            notifyUserFriendRequests(false);
+                        } else {
+                            notifyUserFriendRequests(true);
+                        }
+                    } else {
+                        getMyRequests();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                getMyRequests();
+            }
+        });
+    }
+
+    private void notifyUserFriendRequests(boolean hasFriendRequests) {
+        if (hasFriendRequests) {
+            friendsRequestIV.setImageResource(R.drawable.friend_request_icon_active);
+        } else {
+            friendsRequestIV.setImageResource(R.drawable.friend_request_inactive_icon);
         }
     }
 }

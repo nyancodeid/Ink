@@ -159,12 +159,27 @@ public class NotificationActivity extends AppCompatActivity implements RecyclerI
                 } else {
                     notificationAdapter.setUserNotificationModels(userNotificationModels);
                     hideNoNotifications();
+                    silentNotificationCheck();
                 }
             }
 
             @Override
             public void onFailure(Call<List<UserNotificationModel>> call, Throwable t) {
                 Toast.makeText(NotificationActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void silentNotificationCheck() {
+        Retrofit.getInstance().getInkService().checkNotificationAsRead(sharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
             }
         });
     }

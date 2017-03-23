@@ -9,8 +9,8 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/notifications"
-        android:icon="@drawable/notification_icon"
-        android:orderInCategory="2"
+        android:icon="@drawable/globus_icon"
+        android:orderInCategory="3"
         android:title="@string/notificationTitle"
         app:showAsAction="always" />
 
@@ -18,7 +18,7 @@
     <item
         android:id="@+id/shop"
         android:icon="@drawable/shop_icon"
-        android:orderInCategory="3"
+        android:orderInCategory="2"
         android:title="@string/shopTitle"
         app:showAsAction="always">
         <menu>

@@ -627,6 +627,14 @@ public class Retrofit {
         @POST(Constants.REMOVE_NOTIFICATION)
         @FormUrlEncoded
         Call<ResponseBody> removeNotification(@Field("notificationId") String notificationId);
+
+        @POST(Constants.CHECK_NOTIFICATIONS_READ)
+        @FormUrlEncoded
+        Call<ResponseBody> checkNotificationAsRead(@Field("userId") String userId);
+
+        @POST(Constants.HAS_UNREAD_NOTIFICATIONS)
+        @FormUrlEncoded
+        Call<ResponseBody> hasUnreadNotifications(@Field("userId") String userId);
     }
 
     public interface MusicCloudInterface {
