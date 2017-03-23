@@ -997,7 +997,11 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                 } else {
                     hideNoParticipants();
                     mafiaPlayersAdapter.setUsers(participants);
-                    initEditText(!getCurrentParticipantModel().isEliminated());
+                    if (getCurrentParticipantModel().isEliminated()) {
+                        initEditText(!getCurrentParticipantModel().isEliminated());
+                    } else {
+                        initEditText(isParticipant());
+                    }
                     if (getCurrentParticipantModel().isEliminated()) {
                         buildEliminatedView();
                     }
@@ -1461,10 +1465,14 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
     private ParticipantModel getCurrentParticipantModel() {
         ParticipantModel participantModel = new ParticipantModel();
+        participantModel.setRoomCreatorId(mafiaRoomsModel.getCreatorId());
+        participantModel.setRole("none");
+        participantModel.setEliminated(false);
+        participantModel.setUser(User.get().buildUser(sharedHelper));
         String currentUserId = sharedHelper.getUserId();
-        for (ParticipantModel eachId : mafiaRoomsModel.getJoinedUsers()) {
-            if (eachId.getUser().getUserId().equals(currentUserId)) {
-                participantModel = eachId;
+        for (ParticipantModel eachParticipant : mafiaRoomsModel.getJoinedUsers()) {
+            if (eachParticipant.getUser().getUserId().equals(currentUserId)) {
+                participantModel = eachParticipant;
                 break;
             }
         }
