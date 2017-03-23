@@ -256,6 +256,14 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> deleteAccount(@Field("userId") String userId);
 
+        @POST(Constants.INSERT_USER_NOTIFICATION)
+        @FormUrlEncoded
+        Call<ResponseBody> insertUserNotification(@Field("userId") String userId,
+                                                  @Field("notificationTitle") String notificationTitle,
+                                                  @Field("notificationMessage") String notificationMessage,
+                                                  @Field("isSystemMessage") String isSystemMessage,
+                                                  @Field("methodToRun") String methodToRun);
+
         @POST(Constants.SHOP_COINS_URL)
         Call<ResponseBody> getCoins();
 

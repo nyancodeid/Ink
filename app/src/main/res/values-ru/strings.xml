@@ -1029,6 +1029,6 @@
 
     <string name="notVotedToDelet">Вы не проголосовали чтобы удалять голос</string>
 
-    <string name="couldNotRemoveText"Не получилось удалить...</string>
+    <string name="couldNotRemoveText">Не получилось удалить...</string>
 
 </resources>

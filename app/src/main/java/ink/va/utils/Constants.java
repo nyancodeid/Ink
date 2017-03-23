@@ -35,6 +35,7 @@ public class Constants {
     public static final String CHECK_NOTIFICATIONS_READ = "CheckNotificationsRead.php";
     public static final String HAS_UNREAD_NOTIFICATIONS = "HasUnreadNotification.php";
     public static final String GROUP_REQUESTS_URL = "GetUserRequests.php";
+    public static final String INSERT_USER_NOTIFICATION = "InsertUserNotification.php";
     public static final String ADD_MAFIA_ROOM_URL = "AddMafiaRoom.php";
     public static final String GET_MAFIA_ROOMS_URL = "GetMafiaRooms.php";
     public static final String VIP_GLOBAL_CHAT_URL = "VipGlobalChat.php";

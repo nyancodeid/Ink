@@ -185,7 +185,6 @@ public class Registration extends BaseActivity implements View.OnClickListener {
         }
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
