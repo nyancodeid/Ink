@@ -58,12 +58,13 @@ public class MafiaParticipantViewHolder extends RecyclerView.ViewHolder {
             victimIcon.setVisibility(View.GONE);
         }
 
-        if (participantModel.isEliminated()) {
-            participantName.setText(context.getString(R.string.eliminatedText));
-        }
 
         UserModel user = participantModel.getUser();
         participantName.setText(user.getFirstName() + " " + user.getLastName());
+
+        if (participantModel.isEliminated()) {
+            participantName.setText(context.getString(R.string.eliminatedText));
+        }
 
         if (ownerId.equals(user.getUserId())) {
             roomOwnerTV.setVisibility(View.VISIBLE);

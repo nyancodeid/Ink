@@ -1655,7 +1655,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
     private boolean isSheriff() {
         ParticipantModel participantModel = getCurrentParticipantModel();
-        return participantModel.getRole().equals(MafiaConstants.ROLE_SHERIFF);
+        return participantModel.getRole().equals(MafiaConstants.ROLE_SHERIFF) && !participantModel.isEliminated();
     }
 
 
