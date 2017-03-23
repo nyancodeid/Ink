@@ -84,6 +84,9 @@ public class NotificationActivity extends AppCompatActivity implements RecyclerI
         UserNotificationModel notificationModel = (UserNotificationModel) object;
         notificationAdapter.removeItem(notificationModel);
         silentRemove(notificationModel);
+        if (notificationAdapter.getUserNotificationModels().isEmpty()) {
+            showNoNotifications();
+        }
     }
 
 

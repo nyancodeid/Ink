@@ -13,6 +13,7 @@ import java.util.List;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.UserNotificationModel;
 import ink.va.view_holders.NotificationViewHolder;
+import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -23,6 +24,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Setter
     private RecyclerItemClickListener onItemClickListener;
 
+    @Getter
     List<UserNotificationModel> userNotificationModels;
 
     public NotificationAdapter() {
