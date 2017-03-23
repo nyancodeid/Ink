@@ -11,8 +11,7 @@
         android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:padding="10dp">
+        android:foreground="?android:attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/participantImage"
@@ -41,6 +40,7 @@
             android:layout_toRightOf="@+id/participantImage"
             android:clickable="false"
             android:ellipsize="end"
+            android:textSize="11sp"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:fontFamily="@string/condensedFont"
