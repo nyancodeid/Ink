@@ -37,7 +37,7 @@ public class NotificationViewHolder extends RecyclerView.ViewHolder {
 
     public void initData(UserNotificationModel userNotificationModel) {
         this.userNotificationModel = userNotificationModel;
-        notificationTitleTV.setText(userNotificationModel.getNotificationText());
+        notificationTitleTV.setText(userNotificationModel.getNotificationTitle());
         notificationMessageTV.setText(userNotificationModel.getNotificationText());
     }
 
