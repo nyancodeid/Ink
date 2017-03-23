@@ -336,13 +336,15 @@ public class Retrofit {
 
         @POST(Constants.MAFIA_VOTE_PLAYER)
         @FormUrlEncoded
-        Call<ResponseBody> voteMafiaPlayer(@Field("roomId") int roomId,
+        Call<ResponseBody> voteMafiaPlayer(@Field("voterId") String voterId,
+                                           @Field("roomId") int roomId,
                                            @Field("userToVote") String userToVote);
 
         @POST(Constants.MAFIA_REMOVE_VOTE_PLAYER)
         @FormUrlEncoded
-        Call<ResponseBody> removeMafiaPlayerVote(@Field("roomId") int roomId,
-                                           @Field("userToUnvote") String userToVote);
+        Call<ResponseBody> removeMafiaPlayerVote(@Field("voterId") String voterId,
+                                                 @Field("roomId") int roomId,
+                                                 @Field("userToUnvote") String userToVote);
 
 
         @POST(Constants.JOIN_MAFIA_ROOM)
