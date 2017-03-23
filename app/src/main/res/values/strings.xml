@@ -1015,4 +1015,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="firstNightGeneralHint">On the first night you are going to meet the players and talk to each other...</string>
     <string name="cantVoteSelf">You can not vote for yourself</string>
     <string name="notVotedToDelet">You did not voted to remove the voting either</string>
+    <string name="couldNotRemoveText">Could not remove...</string>
+    <string name="noNotifications">No Notifications Yet</string>
 </resources>

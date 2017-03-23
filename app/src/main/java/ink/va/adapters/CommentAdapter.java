@@ -266,7 +266,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
                 @Override
                 public void onClick(View view) {
                     if (onItemClickListener != null) {
-                        onItemClickListener.onAdditionItemClick(position, itemViewHolder.commentMoreIcon);
+                        onItemClickListener.onAdditionalItemClick(position, itemViewHolder.commentMoreIcon);
                     }
                 }
             });

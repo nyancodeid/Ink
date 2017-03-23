@@ -97,5 +97,21 @@ public class ChatModel implements Comparable<ChatModel> {
         }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof ChatModel) {
+            if (((ChatModel) obj).getMessageId().equals(messageId)) {
+                return true;
+            }
+        }
+        return super.equals(obj);
+    }
 
+    @Override
+    public int hashCode() {
+        return messageId.hashCode();
+    }
 }

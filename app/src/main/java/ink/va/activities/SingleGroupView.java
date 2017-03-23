@@ -381,7 +381,12 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             }
 
             @Override
-            public void onAdditionItemClick(int position, View view) {
+            public void onAdditionalItemClick(int position, View view) {
+
+            }
+
+            @Override
+            public void onAdditionalItemClicked(Object object) {
 
             }
 
@@ -827,7 +832,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     }
 
     @Override
-    public void onAdditionItemClick(int position, View view) {
+    public void onAdditionalItemClick(int position, View view) {
         final GroupMessagesModel groupMessagesModel = groupMessagesModels.get(position);
         DialogUtils.showPopUp(SingleGroupView.this, view, new ItemClickListener<MenuItem>() {
             @Override
@@ -857,6 +862,11 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                 }
             }
         }, getString(R.string.editMessage), getString(R.string.deleteMessage));
+    }
+
+    @Override
+    public void onAdditionalItemClicked(Object object) {
+
     }
 
     @Override

@@ -31,6 +31,7 @@ public class Constants {
     public static final String WHO_VIEWED_URL = "WhoViewed.php";
     public static final String USER_COINS_UPDATE = "CoinsUpdate.php";
     public static final String TEST_URL = "Test.php";
+    public static final String REMOVE_NOTIFICATION = "RemoveNotification.php";
     public static final String GROUP_REQUESTS_URL = "GetUserRequests.php";
     public static final String ADD_MAFIA_ROOM_URL = "AddMafiaRoom.php";
     public static final String GET_MAFIA_ROOMS_URL = "GetMafiaRooms.php";
@@ -66,8 +67,8 @@ public class Constants {
     public static final String DELETE_MAFIA_ROOM = "DeleteMafiaRoom.php";
     public static final String LEAVE_MAFIA_ROOM = "LeaveMafiaRoom.php";
     public static final String CHECK_MAFIA_PLAYER = "CheckMafiaPlayer.php";
-    public static final String MAFIA_VOTE_PLAYER ="MafiaVotePlayer.php";
-    public static final String MAFIA_REMOVE_VOTE_PLAYER ="MafiaRemoveVotePlayer.php";
+    public static final String MAFIA_VOTE_PLAYER = "MafiaVotePlayer.php";
+    public static final String MAFIA_REMOVE_VOTE_PLAYER = "MafiaRemoveVotePlayer.php";
     public static final String GET_USER_NOTIFICATIONS = "GetUserNotificaitons.php";
     public static final String MAFIA_ROOM_PARTICIPANTS = "GetMafiaRoomParticipants.php";
     public static final String JOIN_MAFIA_ROOM = "JoinMafiaRoom.php";

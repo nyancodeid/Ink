@@ -90,7 +90,7 @@ public class GroupMessagesViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 if (onClickListener != null) {
-                    onClickListener.onAdditionItemClick(position, groupMessageMoreIcon);
+                    onClickListener.onAdditionalItemClick(position, groupMessageMoreIcon);
                 }
             }
         });

@@ -373,7 +373,12 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
     }
 
     @Override
-    public void onAdditionItemClick(int position, View view) {
+    public void onAdditionalItemClick(int position, View view) {
+
+    }
+
+    @Override
+    public void onAdditionalItemClicked(Object object) {
 
     }
 

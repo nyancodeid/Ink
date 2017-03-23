@@ -459,7 +459,7 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
     }
 
     @Override
-    public void onAdditionItemClick(int position, View view) {
+    public void onAdditionalItemClick(int position, View view) {
         final FriendsModel friendsModel = mFriendsModelArrayList.get(position);
         PopupMenu popupMenu = new PopupMenu(getActivity(), view);
         popupMenu.getMenu().add(getString(R.string.removeFromFriends));
@@ -473,6 +473,11 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
             }
         });
         popupMenu.show();
+    }
+
+    @Override
+    public void onAdditionalItemClicked(Object object) {
+
     }
 
     @Override

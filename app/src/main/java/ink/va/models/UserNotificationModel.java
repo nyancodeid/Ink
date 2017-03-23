@@ -41,4 +41,21 @@ public class UserNotificationModel {
     @Getter
     private String methodToRun;
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj instanceof UserNotificationModel) {
+            if (((UserNotificationModel) obj).getId().equals(id)) {
+                return true;
+            }
+        }
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }

@@ -795,7 +795,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     }
 
     @Override
-    public void onAdditionItemClick(int position, View view) {
+    public void onAdditionalItemClick(int position, View view) {
         int actualPosition = position - 1;
         try {
             final CommentModel commentModel = mCommentModels.get(actualPosition);
@@ -836,6 +836,11 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
         } catch (ArrayIndexOutOfBoundsException e) {
 
         }
+    }
+
+    @Override
+    public void onAdditionalItemClicked(Object object) {
+
     }
 
     @Override

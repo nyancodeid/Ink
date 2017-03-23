@@ -623,6 +623,10 @@ public class Retrofit {
 
         @POST(Constants.TEST_URL)
         Call<ResponseBody> testCall();
+
+        @POST(Constants.REMOVE_NOTIFICATION)
+        @FormUrlEncoded
+        Call<ResponseBody> removeNotification(@Field("notificationId") String notificationId);
     }
 
     public interface MusicCloudInterface {

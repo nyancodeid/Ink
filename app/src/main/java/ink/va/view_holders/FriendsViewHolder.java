@@ -81,7 +81,7 @@ public class FriendsViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View view) {
                 if (recyclerItemClickListener != null) {
-                    recyclerItemClickListener.onAdditionItemClick(position, friendMoreIcon);
+                    recyclerItemClickListener.onAdditionalItemClick(position, friendMoreIcon);
                 }
             }
         });

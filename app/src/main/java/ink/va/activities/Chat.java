@@ -899,7 +899,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     }
 
     @Override
-    public void onAdditionItemClick(int position, View view) {
+    public void onAdditionalItemClick(int position, View view) {
+
+    }
+
+    @Override
+    public void onAdditionalItemClicked(Object object) {
 
     }
 

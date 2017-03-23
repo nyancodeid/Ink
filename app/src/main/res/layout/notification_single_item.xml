@@ -1,6 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/notificationParentLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/notificationIV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:src="@mipmap/ic_launcher"
+            app:ibg_civ_border_color="@color/colorPrimary"
+            app:ibg_civ_border_width="1dp" />
+
+        <TextView
+            android:id="@+id/notificationTitleTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/notificationIV"
+            android:layout_marginLeft="20dp"
+            android:layout_toLeftOf="@+id/removeNotificationIV"
+            android:layout_toRightOf="@+id/notificationIV"
+            android:fontFamily="@string/condensedFont"
+            android:text="@string/loadingText"
+            android:textColor="@color/vk_black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/notificationMessageTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/notificationTitleTV"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_toLeftOf="@+id/removeNotificationIV"
+            android:layout_toRightOf="@+id/notificationIV"
+            android:fontFamily="@string/condensedFont"
+            android:text="@string/loadingText" />
+
+        <ImageView
+            android:id="@+id/removeNotificationIV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="4dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:padding="7dp"
+            android:src="@drawable/trash_icon_grey" />
+    </RelativeLayout>
+</RelativeLayout>

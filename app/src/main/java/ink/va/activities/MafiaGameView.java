@@ -1597,7 +1597,12 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     }
 
     @Override
-    public void onAdditionItemClick(int position, View view) {
+    public void onAdditionalItemClick(int position, View view) {
+
+    }
+
+    @Override
+    public void onAdditionalItemClicked(Object object) {
 
     }
 
