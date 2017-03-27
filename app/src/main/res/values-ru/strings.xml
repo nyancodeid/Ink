@@ -1080,4 +1080,22 @@
         Наслаждайтесь временем! Желаю тебе удачи!
         \n\n\n
     </string>
+
+    <string name="createTrend">Создать Тренд</string>
+    <string name="trendTitle">Название Тренда</string>
+    <string name="trendContent">Контент Тренда</string>
+    <string name="trendImageURL">Ссылка изображения Тренда</string>
+    <string name="externalTrendUrl">EВнешняя ссылка для навигации когда на Тренде был клик </string>
+    <string name="trendCategory">Категория Тренда (если доступно,то будет использоваться существующий,если нет,тогда ваш будет использоваться как новая категория)</string>
+    <string name="isPremiumText">Тренд премиум?? если да,то дополнительно %1$d монет будет снята с вашего счета </string>
+    <string name="createTrendNotice">* Обратите внимание что все поля обязательны и один Тренд стоит %1$d монет. После того,как Тренд будет сделан,оно будет видится навсегда</string>
+    <string name="finalPriceText">Всего монет для снятия со счета - - %1$d</string>
+    <string name="creatingTrend">Создаем Тренд,пожалуйста подождите...</string>
+    <string name="urlError">Ссылка на изображение было некорректным, пожалуйста внимательно посмотрите ссылку и попробуйте снова</string>
+    <string name="checking">Проверяем....</string>
+    <string name="checkingImage">Проверяем ссылку на изображение...</string>
+    <string name="trendCreated">Тренд Создан,теперь вы можете посмотреть ее</string>
+    <string name="trendDeleteWarning">Если вы удалите Тренд,вы не получите монеты обратно и не сможете восстановить Тренд,продолжить?</string>
+    <string name="deleted">Удалено</string>
+    <string name="notDeleted">Невозможно удалить...</string>
 </resources>

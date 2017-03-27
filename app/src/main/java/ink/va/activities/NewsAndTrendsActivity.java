@@ -41,8 +41,8 @@ public class NewsAndTrendsActivity extends BaseActivity {
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
 
-        tabLayout.getTabAt(0).setIcon(R.drawable.world_icon);
-        tabLayout.getTabAt(1).setIcon(R.drawable.whats_trending_vector);
+        tabLayout.getTabAt(0).setIcon(R.drawable.whats_trending_vector);
+        tabLayout.getTabAt(1).setIcon(R.drawable.world_icon);
     }
 
     @Override
@@ -57,8 +57,8 @@ public class NewsAndTrendsActivity extends BaseActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(GlobalNews.create(), getString(R.string.worldwideNewsTitle));
         adapter.addFragment(WhatsTrending.create(), getString(R.string.whatsTrendingTitle));
+        adapter.addFragment(GlobalNews.create(), getString(R.string.worldwideNewsTitle));
         viewPager.setAdapter(adapter);
     }
 
