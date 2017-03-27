@@ -72,6 +72,8 @@ public class CreateTrend extends BaseActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(getString(R.string.connecting));
         progressDialog.setMessage(getString(R.string.loadingText));
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         trendCategories = new ArrayList<>();
@@ -139,6 +141,7 @@ public class CreateTrend extends BaseActivity {
 
     private void createTrend() {
         String imageUrl = trendImageUrlED.getText().toString().trim();
+        progressDialog.show();
         checkImageUrl(imageUrl);
     }
 
