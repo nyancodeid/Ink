@@ -35,6 +35,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.fragments.WhatsTrending.UPDATE_TRENDS;
+
 public class CreateTrend extends BaseActivity {
 
     private List<String> trendCategories;
@@ -135,6 +137,12 @@ public class CreateTrend extends BaseActivity {
             trendTitleED.setError(getString(R.string.emptyField));
             canProceed = false;
         }
+
+        if (autoCompleteTrendCategoriesTV.getText().toString().trim().isEmpty()) {
+            autoCompleteTrendCategoriesTV.setError(getString(R.string.emptyField));
+            canProceed = false;
+        }
+
         if (canProceed) {
             createTrend();
         }
@@ -201,6 +209,7 @@ public class CreateTrend extends BaseActivity {
 
                                     @Override
                                     public void onPositiveClicked() {
+                                        setResult(UPDATE_TRENDS);
                                         finish();
                                     }
                                 }, false, null);
@@ -231,5 +240,10 @@ public class CreateTrend extends BaseActivity {
 
     private void updatePricingMessage(int finalPrice) {
         finalPriceTV.setText(getString(R.string.finalPriceText, finalPrice));
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

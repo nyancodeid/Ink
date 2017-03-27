@@ -57,6 +57,7 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
     private TrendAdapter trendAdapter;
     private String advertisementPrice;
     private String topTrendPrice;
+    public static final int UPDATE_TRENDS = 5;
 
     public static WhatsTrending create() {
         WhatsTrending whatsTrending = new WhatsTrending();
@@ -82,8 +83,6 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
         trendRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         trendRecycler.setAdapter(trendAdapter);
         trendSwipe.setOnRefreshListener(this);
-        getCategories();
-
         categoriesList = new ArrayList<>();
         hintAdapter = new HintAdapter(getActivity(), android.R.layout.simple_spinner_item, categoriesList);
         hintAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -108,6 +107,7 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
 
             }
         });
+        getCategories();
     }
 
 
@@ -117,7 +117,7 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
         intent.putStringArrayListExtra("trendCategories", categoriesList);
         intent.putExtra("advertisementPrice", advertisementPrice);
         intent.putExtra("topTrendPrice", topTrendPrice);
-        startActivity(intent);
+        startActivityForResult(intent, UPDATE_TRENDS);
     }
 
     private void getTrendByCategory(final String category) {
@@ -155,7 +155,7 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
                             }
                             for (int i = 0; i < trendsArray.length(); i++) {
                                 JSONObject eachObject = trendsArray.optJSONObject(i);
-                                trendModel = new TrendModel(eachObject.optString("creator_id"), eachObject.optString("title"), eachObject.optString("content"), eachObject.optString("image_url"),
+                                trendModel = new TrendModel(eachObject.optString("creatorId"), eachObject.optString("title"), eachObject.optString("content"), eachObject.optString("image_url"),
                                         eachObject.optString("external_url"), eachObject.optString("category"), eachObject.optString("id"), eachObject.optBoolean("isTop"));
                                 trendModelArrayList.add(trendModel);
                                 trendAdapter.notifyDataSetChanged();
@@ -207,7 +207,7 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
                             }
                             for (int i = 0; i < trendsArray.length(); i++) {
                                 JSONObject eachObject = trendsArray.optJSONObject(i);
-                                trendModel = new TrendModel(eachObject.optString("creator_id"), eachObject.optString("title"), eachObject.optString("content"), eachObject.optString("image_url"),
+                                trendModel = new TrendModel(eachObject.optString("creatorId"), eachObject.optString("title"), eachObject.optString("content"), eachObject.optString("image_url"),
                                         eachObject.optString("external_url"), eachObject.optString("category"), eachObject.optString("id"), eachObject.optBoolean("isTop"));
                                 trendModelArrayList.add(trendModel);
                                 trendAdapter.notifyDataSetChanged();
@@ -243,6 +243,8 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private void getCategories() {
         startRefreshing();
+        categoriesList.clear();
+        hintAdapter.notifyDataSetChanged();
         Call<ResponseBody> categoriesCall = Retrofit.getInstance().getInkService().getTrendCategories(Constants.TREND_CATEGORIES_TOKEN);
         categoriesCall.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -288,6 +290,7 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onRefresh() {
+        getCategories();
         getTrendByCategory(lastKnownCategory);
     }
 
@@ -378,9 +381,22 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
         TrendModel trendModel = (TrendModel) object;
 
         String urlToOpen = trendModel.getExternalUrl();
+        if (!urlToOpen.startsWith("http://")) {
+            urlToOpen = "http://" + urlToOpen;
+        }
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setData(Uri.parse(urlToOpen));
         startActivity(intent);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case UPDATE_TRENDS:
+                onRefresh();
+                break;
+        }
     }
 }
