@@ -1,5 +1,6 @@
 package ink.va.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.ink.va.R;
 
@@ -22,8 +24,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import ink.va.activities.CreateTrend;
 import ink.va.adapters.HintAdapter;
 import ink.va.adapters.TrendAdapter;
 import ink.va.utils.Constants;
@@ -42,12 +46,14 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
     private RecyclerView trendRecycler;
     private AppCompatSpinner categoriesSpinner;
     private HintAdapter hintAdapter;
-    private List<String> categoriesList;
+    private ArrayList<String> categoriesList;
     private RelativeLayout spinnerWrapper;
     private ArrayList<TrendModel> trendModelArrayList;
     private String lastKnownCategory;
     private TrendModel trendModel;
     private TrendAdapter trendAdapter;
+    private String advertisementPrice;
+    private String topTrendPrice;
 
     public static WhatsTrending create() {
         WhatsTrending whatsTrending = new WhatsTrending();
@@ -63,6 +69,7 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
         trendModelArrayList = new ArrayList<>();
         trendAdapter = new TrendAdapter(getActivity(), trendModelArrayList);
         trendSwipe = (SwipeRefreshLayout) view.findViewById(R.id.trendSwipe);
@@ -99,6 +106,16 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
         });
     }
 
+
+    @OnClick(R.id.createTrend)
+    public void createTrendClicked() {
+        Intent intent = new Intent(getActivity(), CreateTrend.class);
+        intent.putStringArrayListExtra("trendCategories", categoriesList);
+        intent.putExtra("advertisementPrice", advertisementPrice);
+        intent.putExtra("topTrendPrice", topTrendPrice);
+        startActivity(intent);
+    }
+
     private void getTrendByCategory(final String category) {
         startRefreshing();
         trendModelArrayList.clear();
@@ -118,6 +135,8 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
                         String responseBody = response.body().string();
                         JSONObject jsonObject = new JSONObject(responseBody);
                         boolean success = jsonObject.optBoolean("success");
+                        advertisementPrice = jsonObject.optString("advertisementPrice");
+                        topTrendPrice = jsonObject.optString("topTrendPrice");
                         if (success) {
                             JSONArray trendsArray = jsonObject.optJSONArray("trends");
                             if (trendsArray.length() == 0) {
@@ -150,7 +169,8 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    getTrendByCategory(category);
+                    trendSwipe.setRefreshing(false);
+                    Toast.makeText(getActivity(), getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {

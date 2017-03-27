@@ -1067,4 +1067,12 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
         Enjoy you\'r time! Wish you good luck!
         \n\n\n
     </string>
+    <string name="createTrend">Create Trend</string>
+    <string name="trendTitle">Trend Title</string>
+    <string name="trendContent">Trend Content</string>
+    <string name="trendImageURL">Trend Image URL</string>
+    <string name="externalTrendUrl">External URL to navigate when trend is clicked</string>
+    <string name="trendCategory">Trend Category (if available,the existing will be used, otherwise you\'r input will be used as new category)</string>
+    <string name="isPremiumText">Is the trend premium? If positive, the additional %1$d coins will be charged</string>
+    <string name="createTrendNotice">* Notice that all fields are mandatory and the single trend creation will cost %1$d. After the trend is created, it will be displayed for lifetime</string>
 </resources>

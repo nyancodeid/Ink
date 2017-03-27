@@ -27,5 +27,6 @@ public class ErrorCause {
     public static final String NOT_SHERIFF = "notSheriff";
     public static final String ALREADY_VOTED = "alreadyVoted";
     public static final String NOT_VOTED_TO_REMOVE = "notVoted";
+    public static final String CATEGORY_EXISTS = "categoryExists";
 
 }

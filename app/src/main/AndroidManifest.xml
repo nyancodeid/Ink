@@ -347,7 +347,8 @@
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity android:name="ink.va.activities.MafiaGameView" />
         <activity android:name="ink.va.activities.MafiaInfoActivity" />
-        <activity android:name="ink.va.activities.NotificationActivity"></activity>
+        <activity android:name="ink.va.activities.NotificationActivity" />
+        <activity android:name="ink.va.activities.CreateTrend"></activity>
     </application>
 
 </manifest>

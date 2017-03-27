@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context="ink.va.activities.CreateTrend">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="@string/createTrend"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/trendNoticeTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/createTrendNotice" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/linesColor"></View>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/trendTitle" />
+
+        <EditText
+            android:id="@+id/trendTitleED"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:maxLines="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/trendContent" />
+
+        <EditText
+            android:id="@+id/trendContentED"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:maxLines="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/trendImageURL" />
+
+        <EditText
+            android:id="@+id/trendImageUrlED"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:maxLines="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/externalTrendUrl" />
+
+        <EditText
+            android:id="@+id/trendExternalED"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:maxLines="1" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/trendCategory" />
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTrendCategoriesTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:maxLines="1" />
+
+        <TextView
+            android:id="@+id/isPremiumTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/isPremiumText" />
+
+        <Switch
+            android:id="@+id/isPremiumSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="5dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/createTrend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginBottom="40dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/com_adobe_image_ok_mark" />
+    </LinearLayout>
+</ScrollView>

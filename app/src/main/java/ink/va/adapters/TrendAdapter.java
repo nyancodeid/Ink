@@ -83,6 +83,8 @@ public class TrendAdapter extends RecyclerView.Adapter<TrendAdapter.ViewHolder> 
                 context.startActivity(intent);
             }
         });
+        int maxSize = getItemCount() - 1;
+        holder.trendSpacing.setVisibility(position >= maxSize ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -98,6 +100,7 @@ public class TrendAdapter extends RecyclerView.Adapter<TrendAdapter.ViewHolder> 
         private ImageView premiumBadgeIcon;
         private Button trendViewMore;
         private ProgressBar imageLoadingProgress;
+        private View trendSpacing;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -108,6 +111,7 @@ public class TrendAdapter extends RecyclerView.Adapter<TrendAdapter.ViewHolder> 
             premiumBadgeIcon = (ImageView) itemView.findViewById(R.id.premiumBadgeIcon);
             imageLoadingProgress = (ProgressBar) itemView.findViewById(R.id.imageLoadingProgress);
             trendViewMore = (Button) itemView.findViewById(R.id.trendViewMore);
+            trendSpacing = itemView.findViewById(R.id.trendSpacing);
         }
     }
 }
