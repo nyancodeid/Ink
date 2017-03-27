@@ -91,6 +91,21 @@
                 android:textAllCaps="false"
                 android:textColor="@color/colorPrimary" />
 
+            <ImageView
+                android:id="@+id/removeTrendIV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/trendViewMore"
+                android:layout_alignParentRight="true"
+                android:layout_margin="5dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                android:padding="10dp"
+                android:src="@drawable/trash_icon_grey"
+                android:visibility="gone" />
+
             <ProgressBar
                 android:id="@+id/imageLoadingProgress"
                 android:layout_width="wrap_content"

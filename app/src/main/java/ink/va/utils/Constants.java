@@ -39,6 +39,7 @@ public class Constants {
     public static final String ADD_MAFIA_ROOM_URL = "AddMafiaRoom.php";
     public static final String GET_MAFIA_ROOMS_URL = "GetMafiaRooms.php";
     public static final String VIP_GLOBAL_CHAT_URL = "VipGlobalChat.php";
+    public static final String DELETE_TREND_URL = "DeleteTrend.php";
     public static final String USER_GIFS_URL = "GetUserGifs.php";
     public static final String GET_USER_COLLECTIONS = "GetUserCollection.php";
     public static final String GET_SINGLE_MAFIA_ROOM = "GetSingleMafiaRoom.php";

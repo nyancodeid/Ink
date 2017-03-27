@@ -1,19 +1,40 @@
 package ink.va.fragments;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Created by PC-Comp on 9/12/2016.
  */
 public class TrendModel {
+    @Getter
+    @Setter
     private String title;
+    @Getter
+    @Setter
     private String content;
+    @Getter
+    @Setter
     private String imageUrl;
+    @Getter
+    @Setter
     private String externalUrl;
+    @Getter
+    @Setter
     private String category;
+    @Getter
+    @Setter
     private String id;
+    @Getter
+    @Setter
     private boolean isTop;
+    @Getter
+    @Setter
+    private String creatorId;
 
-    public TrendModel(String title, String content, String imageUrl, String externalUrl, String category, String id, boolean isTop) {
+    public TrendModel(String creatorId,String title, String content, String imageUrl, String externalUrl, String category, String id, boolean isTop) {
         this.title = title;
+        this.creatorId = creatorId;
         this.content = content;
         this.imageUrl = imageUrl;
         this.externalUrl = externalUrl;
@@ -22,59 +43,4 @@ public class TrendModel {
         this.isTop = isTop;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public String getExternalUrl() {
-        return externalUrl;
-    }
-
-    public void setExternalUrl(String externalUrl) {
-        this.externalUrl = externalUrl;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public boolean isTop() {
-        return isTop;
-    }
-
-    public void setTop(boolean top) {
-        isTop = top;
-    }
 }

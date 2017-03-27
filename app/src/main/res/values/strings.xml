@@ -1081,4 +1081,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="checking">Checking...</string>
     <string name="checkingImage">Checking image url...</string>
     <string name="trendCreated">Trend was created successfully and you can now view it</string>
+    <string name="trendDeleteWarning">If you delete the trend, you will not get the paid coins back and neither you will be able to recover the trend,is that ok?</string>
+    <string name="deleted">Deleted</string>
+    <string name="notDeleted">Can\'t delete...</string>
 </resources>

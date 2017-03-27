@@ -1,6 +1,7 @@
 package ink.va.fragments;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -30,7 +31,9 @@ import butterknife.OnClick;
 import ink.va.activities.CreateTrend;
 import ink.va.adapters.HintAdapter;
 import ink.va.adapters.TrendAdapter;
+import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.utils.Constants;
+import ink.va.utils.DialogUtils;
 import ink.va.utils.Retrofit;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -40,7 +43,7 @@ import retrofit2.Response;
 /**
  * Created by PC-Comp on 9/12/2016.
  */
-public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefreshListener, RecyclerItemClickListener {
 
     private SwipeRefreshLayout trendSwipe;
     private RecyclerView trendRecycler;
@@ -151,7 +154,7 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
                             }
                             for (int i = 0; i < trendsArray.length(); i++) {
                                 JSONObject eachObject = trendsArray.optJSONObject(i);
-                                trendModel = new TrendModel(eachObject.optString("title"), eachObject.optString("content"), eachObject.optString("image_url"),
+                                trendModel = new TrendModel(eachObject.optString("creator_id"), eachObject.optString("title"), eachObject.optString("content"), eachObject.optString("image_url"),
                                         eachObject.optString("external_url"), eachObject.optString("category"), eachObject.optString("id"), eachObject.optBoolean("isTop"));
                                 trendModelArrayList.add(trendModel);
                                 trendAdapter.notifyDataSetChanged();
@@ -203,7 +206,7 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
                             }
                             for (int i = 0; i < trendsArray.length(); i++) {
                                 JSONObject eachObject = trendsArray.optJSONObject(i);
-                                trendModel = new TrendModel(eachObject.optString("title"), eachObject.optString("content"), eachObject.optString("image_url"),
+                                trendModel = new TrendModel(eachObject.optString("creator_id"), eachObject.optString("title"), eachObject.optString("content"), eachObject.optString("image_url"),
                                         eachObject.optString("external_url"), eachObject.optString("category"), eachObject.optString("id"), eachObject.optBoolean("isTop"));
                                 trendModelArrayList.add(trendModel);
                                 trendAdapter.notifyDataSetChanged();
@@ -285,5 +288,98 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onRefresh() {
         getTrendByCategory(lastKnownCategory);
+    }
+
+    @Override
+    public void onItemClicked(int position, View view) {
+
+    }
+
+    @Override
+    public void onItemLongClick(Object object) {
+
+    }
+
+    @Override
+    public void onAdditionalItemClick(int position, View view) {
+
+    }
+
+    @Override
+    public void onAdditionalItemClicked(Object object) {
+        final TrendModel trendModel = (TrendModel) object;
+
+        DialogUtils.showDialog(getActivity(), getString(R.string.caution), getString(R.string.trendDeleteWarning), true, new DialogUtils.DialogListener() {
+            @Override
+            public void onNegativeClicked() {
+
+            }
+
+            @Override
+            public void onDialogDismissed() {
+
+            }
+
+            @Override
+            public void onPositiveClicked() {
+                trendSwipe.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        trendSwipe.setRefreshing(true);
+                        callToDeleteServer(trendModel);
+                    }
+                });
+            }
+        }, true, getString(R.string.cancel));
+    }
+
+    private void callToDeleteServer(final TrendModel trendModel) {
+        Retrofit.getInstance().getInkService().deleteTrend(trendModel.getId()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    callToDeleteServer(trendModel);
+                    return;
+                }
+
+                if (response.body() == null) {
+                    callToDeleteServer(trendModel);
+                    return;
+                }
+                trendSwipe.setRefreshing(false);
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        getTrendByCategory(lastKnownCategory);
+                        Toast.makeText(getActivity(), getString(R.string.deleted), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getActivity(), getString(R.string.notDeleted), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                trendSwipe.setRefreshing(false);
+                Toast.makeText(getActivity(), getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onItemClicked(Object object) {
+        TrendModel trendModel = (TrendModel) object;
+
+        String urlToOpen = trendModel.getExternalUrl();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setData(Uri.parse(urlToOpen));
+        startActivity(intent);
     }
 }

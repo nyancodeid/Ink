@@ -525,6 +525,10 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> getTrends(@Field("type") String categoryType);
 
+        @POST(Constants.DELETE_TREND_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> deleteTrend(@Field("trendId") String trendId);
+
         @POST(Constants.ADD_ADVERTISEMENT_URL)
         @FormUrlEncoded
         Call<ResponseBody> addAdvertisement(@Field("title") String title,
