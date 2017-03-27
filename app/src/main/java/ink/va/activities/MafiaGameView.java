@@ -1005,6 +1005,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                         getMafiaRoomMessages();
                         return;
                     }
+                    getMafiaRoomMessages();
                     if (getCurrentParticipantModel().isEliminated()) {
                         initEditText(!getCurrentParticipantModel().isEliminated(), true);
                     } else {
