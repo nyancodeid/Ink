@@ -1029,7 +1029,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
         desired player during the night.
         \nThe idea of the citizen players is to eliminate all of the mafia members to win,as simple as it gets.
         \n\n
-        The Role of Mafia Players:
+        <b>The Role of Mafia Players:</b>
         \n\n
         There are 3 mafia players as stated and all of them must shoot same person during the night. As soon as night has come,the mafia player will have ability to talk to each other in global
         chat so the citizens will not see their conversation. At that point,until the morning,all of the mafia members are obliged to shoot the same person, so the person will be counted as eliminated.
@@ -1043,26 +1043,28 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
         \n\n
         The citizens are winning only in the case of all mafia members to be eliminated through voting.
         \n\n\
-        The KingPing Role:
+        <b>The KingPing Role:</b>
         \n\n
         Basically talking about the Head of Mafia Players, we can say that the KingPin is the one who is deciding the victim for the night.
 
         \n\n
-        The Sheriff Role:
+        <b>The Sheriff Role:</b>
         \n\n
-        The Ultimate help for citizens is the Sheriff Role. Sheriff can check one player each night to see that player's role,whether the player is from mafia the player is citizen.
+        The Ultimate help for citizens is the Sheriff Role. Sheriff can check one player each night to see that player\'s role,whether the player is from mafia the player is citizen.
 
         \n\n
-        The Voting:
+        <b>The Voting:</b>
         \n\n
         During the morning all of the players can vote by posting a vote candidate with the click of the desired participant in the room. Even mafia can vote and make voting. This is the
         only tool for citizens to eliminate the mafia player.
+
         \n\n
-        The Ending:
+        <b>The Ending:</b>
         \n\n
         At the end of the game,the winner players will be rewarded with concrete price which will vary from time to time.
 
         \n\n\n
         Enjoy you\'r time! Wish you good luck!
+        \n\n\n
     </string>
 </resources>
