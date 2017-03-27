@@ -75,6 +75,7 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
         ButterKnife.bind(this, view);
         trendModelArrayList = new ArrayList<>();
         trendAdapter = new TrendAdapter(getActivity(), trendModelArrayList);
+        trendAdapter.setOnItemClickListener(this);
         trendSwipe = (SwipeRefreshLayout) view.findViewById(R.id.trendSwipe);
         trendRecycler = (RecyclerView) view.findViewById(R.id.trendRecycler);
         spinnerWrapper = (RelativeLayout) view.findViewById(R.id.spinnerWrapper);

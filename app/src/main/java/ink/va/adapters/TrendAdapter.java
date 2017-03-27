@@ -11,7 +11,9 @@ import com.ink.va.R;
 import java.util.ArrayList;
 
 import ink.va.fragments.TrendModel;
+import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.view_holders.TrendViewHolder;
+import lombok.Setter;
 
 /**
  * Created by PC-Comp on 9/12/2016.
@@ -19,6 +21,8 @@ import ink.va.view_holders.TrendViewHolder;
 public class TrendAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<TrendModel> trendModelArrayList;
     private Context context;
+    @Setter
+    private RecyclerItemClickListener onItemClickListener;
 
     public TrendAdapter(Context context, ArrayList<TrendModel> trendModelArrayList) {
         this.context = context;
@@ -34,7 +38,7 @@ public class TrendAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         final TrendModel trendModel = trendModelArrayList.get(position);
-        ((TrendViewHolder) holder).initData(trendModel, position, getItemCount() - 1, context);
+        ((TrendViewHolder) holder).initData(trendModel, position, getItemCount() - 1, context, onItemClickListener);
     }
 
     @Override
