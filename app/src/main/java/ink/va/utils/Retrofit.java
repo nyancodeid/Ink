@@ -528,12 +528,12 @@ public class Retrofit {
         @POST(Constants.ADD_ADVERTISEMENT_URL)
         @FormUrlEncoded
         Call<ResponseBody> addAdvertisement(@Field("title") String title,
-                                         @Field("content") String content,
-                                         @Field("imageUrl") String imageUrl,
-                                         @Field("externalUrl") String externalUrl,
-                                         @Field("category") String category,
-                                         @Field("isTop") boolean isTop,
-                                         @Field("userId") String userId);
+                                            @Field("content") String content,
+                                            @Field("imageUrl") String imageUrl,
+                                            @Field("externalUrl") String externalUrl,
+                                            @Field("category") String category,
+                                            @Field("isTop") boolean isTop,
+                                            @Field("userId") String userId);
 
         @POST(Constants.GET_POSTS_URL)
         @FormUrlEncoded
