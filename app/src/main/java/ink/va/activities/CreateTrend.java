@@ -27,6 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.ErrorCause;
+import ink.va.utils.Keyboard;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -165,7 +166,7 @@ public class CreateTrend extends BaseActivity {
     private void callCreateTrend(final String imageUrl) {
         progressDialog.setTitle(getString(R.string.creating));
         progressDialog.setMessage(getString(R.string.creatingTrend));
-
+        Keyboard.hideKeyboard(this);
         Retrofit.getInstance().getInkService().addAdvertisement(trendTitleED.getText().toString().trim(), trendContentED.getText().toString().trim(),
                 imageUrl, trendExternalED.getText().toString().trim(), autoCompleteTrendCategoriesTV.getText().toString().trim(), isPremiumSwitch.isChecked(),
                 sharedHelper.getUserId())
