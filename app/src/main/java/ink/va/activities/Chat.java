@@ -1163,9 +1163,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
             if (!chatModels.isEmpty()) {
                 furtherLoad = true;
-                if (firstPaging) {
-                    Collections.reverse(chatModels);
-                }
+                Collections.reverse(chatModels);
                 chatAdapter.insertChatModelWithItemNotify(chatModels, firstPaging);
                 if (!firstPaging) {
                     moreMessagesHint.setVisibility(View.VISIBLE);

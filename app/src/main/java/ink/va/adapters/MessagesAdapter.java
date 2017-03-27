@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.ink.va.R;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void setUserMessagesModels(List<UserMessagesModel> userMessagesModels) {
+        Collections.sort(userMessagesModels);
         this.userMessagesModels.clear();
         this.userMessagesModels.addAll(userMessagesModels);
         notifyDataSetChanged();
@@ -56,7 +58,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((UserMessagesViewHolder) holder).initData(userMessagesModels.get(position), mContext,onItemClickListener);
+        ((UserMessagesViewHolder) holder).initData(userMessagesModels.get(position), mContext, onItemClickListener);
     }
 
     @Override
