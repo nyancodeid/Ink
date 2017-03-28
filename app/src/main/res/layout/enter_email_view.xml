@@ -34,7 +34,7 @@
         android:layout_marginTop="5dp"
         android:background="@drawable/circle_corner"
         android:fontFamily="@string/appFont"
-        android:text="@string/done_button"
+        android:text="@string/done_text"
         android:textAllCaps="false"
         android:textColor="#ffffff" />
 </RelativeLayout>

@@ -35,7 +35,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:hint="@string/searchPerson"
-            android:imeActionLabel="@string/done_button"
+            android:imeActionLabel="@string/done_text"
             android:imeOptions="actionDone"
             android:maxLines="1"
             android:minHeight="50dp"
