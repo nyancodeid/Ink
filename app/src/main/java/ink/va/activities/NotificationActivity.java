@@ -68,10 +68,6 @@ public class NotificationActivity extends AppCompatActivity implements RecyclerI
 
     @Override
     public void onItemLongClick(Object object) {
-        UserNotificationModel notificationModel = (UserNotificationModel) object;
-        if (!notificationModel.getMethodToRun().isEmpty()) {
-            interpreterHelper.evaluateCode(notificationModel.getMethodToRun());
-        }
     }
 
     @Override
@@ -92,7 +88,10 @@ public class NotificationActivity extends AppCompatActivity implements RecyclerI
 
     @Override
     public void onItemClicked(Object object) {
-
+        UserNotificationModel notificationModel = (UserNotificationModel) object;
+        if (!notificationModel.getMethodToRun().isEmpty()) {
+            interpreterHelper.evaluateCode(notificationModel.getMethodToRun());
+        }
     }
 
     @Override
