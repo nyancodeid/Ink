@@ -548,6 +548,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
                         DialogUtils.showDialog(getActivity(), getString(R.string.success), getString(R.string.reported), true, null, false, null);
+                        mAdapter.clear();
+
                         onRefresh();
                     } else {
                         DialogUtils.showDialog(getActivity(), getString(R.string.error), getString(R.string.reportError), true, null, false, null);
