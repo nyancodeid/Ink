@@ -59,6 +59,7 @@ import ink.va.models.FeedModel;
 import ink.va.utils.Animations;
 import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
+import ink.va.utils.InputField;
 import ink.va.utils.PermissionsChecker;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -493,11 +494,76 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         case 1:
                             openShareView(feedModel);
                             break;
+                        case 2:
+                            showReportField(feedModel);
+                            break;
                     }
 
                 }
-            }, getString(R.string.viewProfile), getString(share));
+            }, getString(R.string.viewProfile), getString(share), getString(R.string.report));
         }
+    }
+
+    private void showReportField(final FeedModel feedModel) {
+        InputField.createInputFieldView(getActivity(), new InputField.ClickHandler() {
+            @Override
+            public void onPositiveClicked(Object... result) {
+                AlertDialog dialog = (AlertDialog) result[1];
+                dialog.dismiss();
+                String reportCauseMessage = String.valueOf(result[0]);
+                reportPost(feedModel, reportCauseMessage);
+            }
+
+            @Override
+            public void onNegativeClicked(Object... result) {
+                AlertDialog dialog = (AlertDialog) result[1];
+                dialog.dismiss();
+            }
+        }, null, getString(R.string.reportCause), null);
+    }
+
+    private void reportPost(final FeedModel feedModel, final String reportCauseMessage) {
+        Retrofit.getInstance().getInkService().reportPost(feedModel.getId(), String.valueOf(feedModel.isGlobalPost()), reportCauseMessage, mSharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    reportPost(feedModel, reportCauseMessage);
+                    return;
+                }
+                if (response.body() == null) {
+                    reportPost(feedModel, reportCauseMessage);
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        DialogUtils.showDialog(getActivity(), getString(R.string.success), getString(R.string.reported), true, null, false, null);
+                        feedRefresh.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                feedRefresh.setRefreshing(true);
+                                onRefresh();
+                            }
+                        });
+                    } else {
+                        DialogUtils.showDialog(getActivity(), getString(R.string.error), getString(R.string.reportError), true, null, false, null);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    DialogUtils.showDialog(getActivity(), getString(R.string.error), getString(R.string.reportError), true, null, false, null);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    DialogUtils.showDialog(getActivity(), getString(R.string.error), getString(R.string.reportError), true, null, false, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                DialogUtils.showDialog(getActivity(), getString(R.string.error), getString(R.string.reportError), true, null, false, null);
+            }
+        });
     }
 
     private void openShareView(final FeedModel singleModel) {

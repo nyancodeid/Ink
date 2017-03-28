@@ -109,6 +109,13 @@ public class Retrofit {
         Call<ResponseBody> getSingleUserDetails(@Field("user_id") String userId,
                                                 @Field("currentUserId") String currentUserId);
 
+        @POST(Constants.REPORT_POST_URL)
+        @FormUrlEncoded
+        Call<ResponseBody> reportPost(@Field("postId") String postId,
+                                      @Field("isGlobalPost") String isGlobalPost,
+                                      @Field("causeMessage") String causeMessage,
+                                      @Field("reporterId") String reporterId);
+
         @POST(Constants.CHANGE_VIP_MEMBERSHIP)
         @FormUrlEncoded
         Call<ResponseBody> changeMembership(@Field("user_id") String userId,

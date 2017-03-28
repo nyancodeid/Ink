@@ -1084,4 +1084,8 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="trendDeleteWarning">If you delete the trend, you will not get the paid coins back and neither you will be able to recover the trend,is that ok?</string>
     <string name="deleted">Deleted</string>
     <string name="notDeleted">Can\'t delete...</string>
+    <string name="report">Report</string>
+    <string name="reportCause">What\'s the report cause</string>
+    <string name="reported">You have anonymously reported, we will investigate and let you know about the decision</string>
+    <string name="reportError">We were unable to proceed you\'r request, please try again and if this is keeping to continue, contact the support team</string>
 </resources>

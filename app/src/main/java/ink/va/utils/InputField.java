@@ -28,6 +28,7 @@ public class InputField {
 
         View newCommentView = ((Activity) context).getLayoutInflater().inflate(R.layout.new_comment_body, null);
         final EditText newCommentBody = (EditText) newCommentView.findViewById(R.id.newCommentBody);
+        final TextInputLayout inputFiledLayout = (TextInputLayout) newCommentView.findViewById(R.id.inputFiledLayout);
         newCommentBody.getBackground().mutate().setColorFilter(ContextCompat.getColor(context, R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
         final TextView additionTextField = (TextView) newCommentView.findViewById(R.id.additionTextField);
         if (additionalText != null) {
@@ -35,6 +36,7 @@ public class InputField {
         }
         if (hint != null) {
             newCommentBody.setHint(hint);
+            inputFiledLayout.setHint(hint);
         }
         if (text != null) {
             newCommentBody.setText(text);

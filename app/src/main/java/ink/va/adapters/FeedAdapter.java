@@ -74,7 +74,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void setFeedList(List<FeedModel> feedList) {
         this.feedList.clear();
-        this.feedList.addAll(feedList);
-        notifyDataSetChanged();
+        for (FeedModel feedModel : feedList) {
+            if (feedModel.isReported()) {
+                continue;
+            }
+            this.feedList.addAll(feedList);
+            notifyDataSetChanged();
+        }
     }
 }

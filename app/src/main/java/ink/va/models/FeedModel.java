@@ -152,4 +152,9 @@ public class FeedModel {
     @Getter
     private boolean isGlobalPost;
 
+    @SerializedName("isReported")
+    @Setter
+    @Getter
+    private boolean isReported;
+
 }

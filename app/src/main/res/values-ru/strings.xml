@@ -1098,4 +1098,9 @@
     <string name="trendDeleteWarning">Если вы удалите Тренд,вы не получите монеты обратно и не сможете восстановить Тренд,продолжить?</string>
     <string name="deleted">Удалено</string>
     <string name="notDeleted">Невозможно удалить...</string>
+    <string name="report">Пожаловаться</string>
+    <string name="reportCause">Причина вашего пожалования</string>
+
+    <string name="reported">Вы пожаловались анонимно. Мы изучим вашу жалобы и дадим вам знать о решении</string>
+    <string name="reportError">Мы не смогли выполнить ваш запрос, повторите попытку, и если это продолжается, обратитесь в службу поддержки.</string>
 </resources>
