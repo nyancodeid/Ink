@@ -103,11 +103,12 @@ public class ChatModel implements Comparable<ChatModel> {
             return false;
         }
         if (obj instanceof ChatModel) {
-            if (((ChatModel) obj).getMessageId().equals(messageId)) {
+            ChatModel chatModel = (ChatModel) obj;
+            if (chatModel.getMessageId().equals(messageId)) {
                 return true;
             }
         }
-        return super.equals(obj);
+        return false;
     }
 
     @Override
