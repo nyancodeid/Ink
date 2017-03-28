@@ -1074,7 +1074,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="externalTrendUrl">External URL to navigate when trend is clicked</string>
     <string name="trendCategory">Trend Category (if available,the existing will be used, otherwise you\'r input will be used as new category)</string>
     <string name="isPremiumText">Is the trend premium? If positive, the additional %1$d coins will be charged</string>
-    <string name="createTrendNotice">* Notice that all fields are mandatory and the single trend creation will cost %1$d. After the trend is created, it will be displayed for lifetime</string>
+    <string name="createTrendNotice">* Notice that all fields are mandatory and the single trend creation will cost %1$d coins. After the trend is created, it will be displayed for lifetime</string>
     <string name="finalPriceText">The total coins to charge - %1$d</string>
     <string name="creatingTrend">Creating trend,please wait...</string>
     <string name="urlError">The specified image URL was incorrect and we were unable to load it, please check the URL and try again</string>
