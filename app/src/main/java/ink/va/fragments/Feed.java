@@ -523,6 +523,13 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     }
 
     private void reportPost(final FeedModel feedModel, final String reportCauseMessage) {
+        final ink.va.utils.ProgressDialog dialog = ink.va.utils.ProgressDialog.get().buildProgressDialog(getActivity(), true);
+        dialog.setTitle(getString(R.string.connecting));
+        dialog.setMessage(getString(R.string.loadingText));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
         Retrofit.getInstance().getInkService().reportPost(feedModel.getId(), String.valueOf(feedModel.isGlobalPost()), reportCauseMessage, mSharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -534,6 +541,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                     reportPost(feedModel, reportCauseMessage);
                     return;
                 }
+                dialog.hide();
                 try {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
@@ -555,6 +563,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                dialog.hide();
                 DialogUtils.showDialog(getActivity(), getString(R.string.error), getString(R.string.reportError), true, null, false, null);
             }
         });
