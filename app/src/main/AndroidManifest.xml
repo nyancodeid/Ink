@@ -202,6 +202,7 @@
             android:theme="@style/VK.Transparent" />
         <activity
             android:name="ink.va.activities.Groups"
+            android:theme="@style/LoginTheme"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name="ink.va.activities.ChatRoulette"

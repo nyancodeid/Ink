@@ -1088,4 +1088,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="reportCause">What\'s the report cause</string>
     <string name="reported">You have anonymously reported, we will investigate and let you know about the decision</string>
     <string name="reportError">We were unable to proceed you\'r request, please try again and if this is keeping to continue, contact the support team</string>
+    <string name="canProceedText">You may proceed now</string>
 </resources>

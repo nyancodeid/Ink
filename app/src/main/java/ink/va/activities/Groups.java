@@ -251,6 +251,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                 (SearchView) menu.findItem(R.id.searchFriendIcon).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

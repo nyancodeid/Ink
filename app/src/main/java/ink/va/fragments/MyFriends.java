@@ -423,7 +423,6 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
         isClosed = false;
         parentActivity.getHomeFab().close(true);
         personSearchWrapper.setVisibility(View.VISIBLE);
-
     }
 
     @Override

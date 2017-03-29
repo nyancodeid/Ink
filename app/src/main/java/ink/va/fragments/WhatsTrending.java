@@ -58,6 +58,8 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
     private String advertisementPrice;
     private String topTrendPrice;
     public static final int UPDATE_TRENDS = 5;
+    private boolean attemptedToCreate;
+    private boolean isDataLoaded;
 
     public static WhatsTrending create() {
         WhatsTrending whatsTrending = new WhatsTrending();
@@ -113,16 +115,28 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @OnClick(R.id.createTrend)
     public void createTrendClicked() {
-        Intent intent = new Intent(getActivity(), CreateTrend.class);
-        intent.putStringArrayListExtra("trendCategories", categoriesList);
-        intent.putExtra("advertisementPrice", advertisementPrice);
-        intent.putExtra("topTrendPrice", topTrendPrice);
-        startActivityForResult(intent, UPDATE_TRENDS);
+        attemptedToCreate = true;
+        if (isDataLoaded) {
+            Intent intent = new Intent(getActivity(), CreateTrend.class);
+            intent.putStringArrayListExtra("trendCategories", categoriesList);
+            intent.putExtra("advertisementPrice", advertisementPrice);
+            intent.putExtra("topTrendPrice", topTrendPrice);
+            startActivityForResult(intent, UPDATE_TRENDS);
+            attemptedToCreate = false;
+        } else {
+            Snackbar.make(trendRecycler, getString(R.string.waitTillLoad), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            }).show();
+        }
     }
 
     private void getTrendByCategory(final String category) {
         startRefreshing();
         trendModelArrayList.clear();
+        isDataLoaded = false;
         if (category == null) {
             Call<ResponseBody> trendsCall = Retrofit.getInstance().getInkService().getTrends(Constants.TREND_TYPE_ALL);
             trendsCall.enqueue(new Callback<ResponseBody>() {
@@ -141,6 +155,16 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
                         boolean success = jsonObject.optBoolean("success");
                         advertisementPrice = jsonObject.optString("advertisementPrice");
                         topTrendPrice = jsonObject.optString("topTrendPrice");
+                        isDataLoaded = true;
+                        if (attemptedToCreate) {
+                            attemptedToCreate = false;
+                            Snackbar.make(trendRecycler, getString(R.string.canProceedText), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                }
+                            }).show();
+                        }
                         if (success) {
                             JSONArray trendsArray = jsonObject.optJSONArray("trends");
                             if (trendsArray.length() == 0) {
