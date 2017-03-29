@@ -150,7 +150,7 @@
     <string name="attachUrlTitle">Attach URL</string>
     <string name="attachUrlError">You should input something</string>
     <string name="urlIsNotValid">URL is not valid...</string>
-    <string name="storagePermissions">Storage permissions are required for attachment</string>
+    <string name="storagePermissions">Storage permissions are required </string>
     <string name="sizeExceeded">File size exceeded</string>
     <string name="sizeExceededMessage">You have exceeded the maximum size of file which is 20MB.Please reduce the file size and try again.</string>
     <string name="fileError">File error</string>

@@ -71,6 +71,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     private static final long SERVER_INFO_TIME = 300000;//5 minutes each server call
+    private static final String COMPONENT_NAME_FULL_SCREEN_ACTIVITY = "ink.va.activities.FullscreenActivity";
+
     @Nullable
     @BindView(R.id.sendChatMessage)
     FloatingActionButton sendChatMessage;
@@ -519,6 +521,19 @@ public abstract class BaseActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void startActivity(Intent intent) {
+        if (intent.getComponent() != null) {
+            if (intent.getComponent().getClassName().equals(COMPONENT_NAME_FULL_SCREEN_ACTIVITY)) {
+                super.startActivity(intent);
+                overridePendingTransition(R.anim.slide_up_calm, R.anim.slide_down_slow);
+            } else {
+                super.startActivity(intent);
+            }
+        } else {
+            super.startActivity(intent);
+        }
+    }
 
     private void fetchData(Response<ResponseBody> response) {
         try {

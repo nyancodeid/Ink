@@ -153,7 +153,7 @@
     <string name="attachUrlTitle">Прикрепить URL-адрес</string>
     <string name="attachUrlError">Вы должны ввести что-то</string>
     <string name="urlIsNotValid">URL-адрес неккоректный...</string>
-    <string name="storagePermissions">Нужно разрешение памяти для прикрепления</string>
+    <string name="storagePermissions">Нужно разрешение памяти</string>
     <string name="sizeExceeded">Размер документа превысил норму</string>
     <string name="sizeExceededMessage">вы превысели норму документа, которое 20MB.Пожалуйста уменьшите размер документа и попробуйте сноваы .</string>
     <string name="fileError">Ошибка документа</string>

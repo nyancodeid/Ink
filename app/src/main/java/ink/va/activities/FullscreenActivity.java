@@ -1,11 +1,14 @@
 package ink.va.activities;
 
+import android.Manifest;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,10 +24,13 @@ import com.koushikdutta.ion.ProgressCallback;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.utils.DialogUtils;
+import ink.va.utils.PermissionsChecker;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 
 public class FullscreenActivity extends BaseActivity {
+    private static final int STORAGE_PERMISSION_REQUEST_CODE = 5;
     private String fullUrlToLoad;
 
     @BindView(R.id.fullscreen_content)
@@ -130,7 +136,27 @@ public class FullscreenActivity extends BaseActivity {
                 }
             }).show();
         } else {
-            queDownload(fullUrlToLoad);
+            if (!PermissionsChecker.isStoragePermissionGranted(this)) {
+                DialogUtils.showDialog(this, getString(R.string.feather_attention), getString(R.string.storagePermissions), true, new DialogUtils.DialogListener() {
+                    @Override
+                    public void onNegativeClicked() {
+
+                    }
+
+                    @Override
+                    public void onDialogDismissed() {
+
+                    }
+
+                    @Override
+                    public void onPositiveClicked() {
+                        ActivityCompat.requestPermissions(FullscreenActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                STORAGE_PERMISSION_REQUEST_CODE);
+                    }
+                }, true, getString(R.string.cancel));
+            } else {
+                queDownload(fullUrlToLoad);
+            }
         }
     }
 
@@ -161,7 +187,26 @@ public class FullscreenActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+            overridePendingTransition(R.anim.slide_up_calm, R.anim.slide_down_slow);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_up_calm, R.anim.slide_down_slow);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case STORAGE_PERMISSION_REQUEST_CODE:
+                if (PermissionsChecker.isStoragePermissionGranted(this)) {
+                    queDownload(fullUrlToLoad);
+                }
+                break;
+        }
     }
 }
