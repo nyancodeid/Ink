@@ -619,6 +619,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                             opponentLastName = lastName;
                             initUser();
                         }
+                        opponentImageUrl = jsonObject.optString("image_link");
+                        loadUserImage();
                         isDataLoaded = true;
                     } catch (IOException e) {
                         isDataLoaded = true;
@@ -636,6 +638,23 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             });
         } else {
             isDataLoaded = true;
+        }
+    }
+
+    private void loadUserImage() {
+        if (opponentImageUrl != null && !opponentImageUrl.isEmpty()) {
+            if (isSocialAccount) {
+                Ion.with(this).load(opponentImageUrl).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform())
+                        .intoImageView(opponentImage);
+            } else {
+                String encodedImage = Uri.encode(opponentImageUrl);
+                Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
+                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(opponentImage);
+            }
+        } else {
+            Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
+                    .withBitmap().transform(new CircleTransform())
+                    .intoImageView(opponentImage);
         }
     }
 

@@ -409,7 +409,7 @@
     <string name="inputNewComment">Прокомментировать</string>
     <string name="changesWasSaved">Изменения сохранены</string>
     <string name="commentWasDeleted">Комментарий удален</string>
-    <string name="allGroups">Группы доступные мне</string>
+    <string name="allGroups">Все групы</string>
     <string name="deleteGroup">Удалить группу</string>
     <string name="error_no_scores">"Еще не рекордов"</string>
     <string name="with_friends_dialog_title">Играть с друзьями</string>

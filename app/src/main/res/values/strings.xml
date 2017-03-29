@@ -409,7 +409,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="inputNewComment">Input new comment</string>
     <string name="changesWasSaved">Changes was saved</string>
     <string name="commentWasDeleted">Comment was deleted</string>
-    <string name="allGroups">Groups Aavailable To Me</string>
+    <string name="allGroups">All Groups</string>
     <string name="deleteGroup">Delete Group</string>
     <string name="error_no_scores">"No scores to display"</string>
     <string name="with_friends_dialog_title">Play with Friends</string>
