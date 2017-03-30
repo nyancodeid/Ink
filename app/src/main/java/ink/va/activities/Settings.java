@@ -29,6 +29,9 @@ public class Settings extends BaseActivity {
     @BindView(R.id.snowSwitch)
     Switch snowSwitch;
 
+    @BindView(R.id.mafiaSwitch)
+    Switch mafiaSwitch;
+
 
     private SharedHelper sharedHelper;
 
@@ -43,6 +46,7 @@ public class Settings extends BaseActivity {
         commentSwitch.setChecked(sharedHelper.showCommentNotification());
         likeSwitch.setChecked(sharedHelper.showLikeNotification());
         snowSwitch.setChecked(sharedHelper.showSnow());
+        mafiaSwitch.setChecked(sharedHelper.showMafiaNotification());
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -92,6 +96,17 @@ public class Settings extends BaseActivity {
         } else {
             likeSwitch.setChecked(true);
             sharedHelper.putShowLikeNotification(true);
+        }
+    }
+
+    @OnClick(R.id.mafiaWrapper)
+    public void mafiaWrapperClicked() {
+        if (mafiaSwitch.isChecked()) {
+            mafiaSwitch.setChecked(false);
+            sharedHelper.putShowMafiaNotification(false);
+        } else {
+            mafiaSwitch.setChecked(true);
+            sharedHelper.putShowMafiaNotification(true);
         }
     }
 

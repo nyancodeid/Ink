@@ -275,6 +275,7 @@ public class Constants {
     public static final String EVENT_ON_USER_LEFT_MAFIA_ROOM = "onRoomLeft";
     public static final String EVENT_ON_USER_JOINED_MAFIA_ROOM = "onUserJoinedRoom";
     public static final String EVENT_ON_MAFIA_GAME_STARTED = "onMafiaGameStarted";
+    public static final String EVENT_ON_GAME_CREATED = "onGameCreated";
     public static final String EVENT_ON_SOCKET_MESSAGE_RECEIVED = "socketMessageReceived";
 
     /**
@@ -285,5 +286,6 @@ public class Constants {
     public static final String EVENT_MESSAGE_RECEIVED = "onClientMessageReceived";
     public static final String EVENT_ONLINE_STATUS = "onlineStatus";
     public static final String EVENT_PING = "ping";
+    public static final String EVENT_CREATE_GAME = "creatingGame";
 }
 

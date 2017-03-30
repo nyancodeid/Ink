@@ -702,6 +702,7 @@
     <string name="commented_post">прокоментировал ваш пост</string>
 
     <string name="enableGroupNotificationText">Разрешать уведомления группы</string>
+    <string name="enableMafiaNotification">Разрешать уведомления создания комнаты Мафии</string>
     <string name="enableLikeNotificationText">Разрешать уведомления \'Лайк\'</string>
     <string name="enableCommentNotificationText">Разрешать уведомления комментариев</string>
     <string name="share_ink_with">Поделится приложением Инк с помощю</string>
@@ -1113,4 +1114,9 @@
     <string name="choseVictim">Выграть как жертву</string>
     <string name="noNotifications">Уведомлений пока что нет</string>
     <string name="howToPlayText">Как Играть</string>
+
+    <string name="gameRoomCreated">Создана Игровая Комната</string>
+    <string name="userCreatedRoom">%1$s только что создал новую игровую комнату Мафии</string>
+    <string name="viewRoom">Просмотреть Комнату</string>
+    <string name="userCreatedRoomLong">%1$s создал комнату игры Мафия где вы можете присоединиться к игре! Чтобы увидеть список комнат,кликните на уведомление </string>
 </resources>

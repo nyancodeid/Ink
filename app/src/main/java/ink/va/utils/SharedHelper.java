@@ -154,6 +154,15 @@ public class SharedHelper {
         return mSharedPreferences.getBoolean("showLikeNotification", true);
     }
 
+    public boolean showMafiaNotification() {
+        return mSharedPreferences.getBoolean("showMafiaNotification", true);
+    }
+
+    public void putShowMafiaNotification(boolean value) {
+        mEditor.putBoolean("showMafiaNotification", value);
+        mEditor.commit();
+    }
+
     public boolean isRainbowMessageActivated() {
         return mSharedPreferences.getBoolean("isRainbowModeActivated", false);
     }

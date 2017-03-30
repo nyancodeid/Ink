@@ -1089,4 +1089,9 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="reported">You have anonymously reported, we will investigate and let you know about the decision</string>
     <string name="reportError">We were unable to proceed you\'r request, please try again and if this is keeping to continue, contact the support team</string>
     <string name="canProceedText">You may proceed now</string>
+    <string name="gameRoomCreated">Game Room Created</string>
+    <string name="userCreatedRoom">%1$s created a new mafia game room</string>
+    <string name="viewRoom">View Room</string>
+    <string name="userCreatedRoomLong">%1$s created a new game room where you can join to the astonishing game! Click on the notification tray to go to the Room List</string>
+    <string name="enableMafiaNotification">Enable Mafia Room Notifications</string>
 </resources>

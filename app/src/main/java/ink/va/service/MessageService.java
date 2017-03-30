@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ink.va.activities.Chat;
+import ink.va.activities.MafiaRoomActivity;
 import ink.va.activities.ReplyView;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.interfaces.SocketListener;
@@ -50,6 +51,7 @@ import static ink.va.utils.Constants.EVENT_MESSAGE_RECEIVED;
 import static ink.va.utils.Constants.EVENT_MESSAGE_SENT;
 import static ink.va.utils.Constants.EVENT_NEW_MESSAGE;
 import static ink.va.utils.Constants.EVENT_ONLINE_STATUS;
+import static ink.va.utils.Constants.EVENT_ON_GAME_CREATED;
 import static ink.va.utils.Constants.EVENT_STOPPED_TYPING;
 import static ink.va.utils.Constants.EVENT_TYPING;
 import static ink.va.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
@@ -62,7 +64,7 @@ public class MessageService extends Service {
     public static final String NOTIFICATION_REPLY = "notificationReply";
     private SharedHelper sharedHelper;
     private String currentUserId;
-    private  LocalBinder mBinder = new LocalBinder();
+    private LocalBinder mBinder = new LocalBinder();
     private SocketListener onSocketListener;
     private List<Integer> socketListeners = new LinkedList<>();
     private GeneralCallback emitListener;
@@ -191,6 +193,26 @@ public class MessageService extends Service {
         }
     };
 
+    private Emitter.Listener onMafiaGameCreated = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject jsonObject = (JSONObject) args[0];
+            String firstName = jsonObject.optString("firstName");
+            String lastName = jsonObject.optString("lastName");
+            String roomId = jsonObject.optString("roomId");
+
+            String messageTitle = getString(R.string.gameRoomCreated);
+            String messageContent = getString(R.string.userCreatedRoom, firstName + " " + lastName);
+            String bigTextSummary = getString(R.string.viewRoom);
+            String bigTextContentBody = getString(R.string.userCreatedRoomLong, firstName + " " + lastName);
+            if (sharedHelper.showMafiaNotification()) {
+                sendGeneralNotification(messageTitle, messageContent, Integer.valueOf(roomId),
+                        bigTextSummary, bigTextContentBody,
+                        R.drawable.ic_gamepad_variant_white_24dp, MafiaRoomActivity.class);
+            }
+        }
+    };
+
     private Emitter.Listener onMessageSent = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -280,6 +302,7 @@ public class MessageService extends Service {
         mSocket.on(EVENT_MESSAGE_SENT, onMessageSent);
         mSocket.on(EVENT_CONNECT_TIMEOUT, onSocketTimeOut);
         mSocket.on(EVENT_ONLINE_STATUS, onOnlineStatusReceived);
+        mSocket.on(EVENT_ON_GAME_CREATED, onMafiaGameCreated);
         mSocket.connect();
     }
 
@@ -354,6 +377,7 @@ public class MessageService extends Service {
             mSocket.off(EVENT_DISCONNECT, onSocketDisconnected);
             mSocket.off(EVENT_NEW_MESSAGE, onNewMessageReceived);
             mSocket.off(EVENT_STOPPED_TYPING, onUserStoppedTyping);
+            mSocket.off(EVENT_ON_GAME_CREATED, onMafiaGameCreated);
             mSocket.off(EVENT_TYPING, onUserTyping);
             mSocket.off(EVENT_MESSAGE_SENT, onMessageSent);
             mSocket.off(EVENT_CONNECT_TIMEOUT, onSocketTimeOut);
@@ -463,7 +487,7 @@ public class MessageService extends Service {
                         Intent intent = new Intent(context.getPackageName() + "Messages");
                         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
                         localBroadcastManager.sendBroadcast(intent);
-                        notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
+                        notificationManagerCompat.notify(Integer.valueOf(jsonObject.optInt("messageId")), notification);
                     }
                 });
 
@@ -471,4 +495,33 @@ public class MessageService extends Service {
         });
     }
 
+    public void sendGeneralNotification(String messageTitle, String messageContent,
+                                        int uniqueId, String bigTextSummary,
+                                        String bigTextContent, int iconResourceId, Class<?> resultClass) {
+
+        Intent requestsViewIntent = new Intent(getApplicationContext(), resultClass);
+
+        PendingIntent contentIntent = PendingIntent.getBroadcast(getApplicationContext(), uniqueId, requestsViewIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        final NotificationManager notificationManagerCompat = (NotificationManager)
+                getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
+
+        android.support.v7.app.NotificationCompat.Builder builder = new android.support.v7.app.NotificationCompat.Builder(getApplicationContext());
+        builder.setSmallIcon(iconResourceId);
+        builder.setAutoCancel(true);
+        builder.setContentTitle(messageTitle);
+        builder.setContentText(messageContent);
+        builder.setDefaults(android.app.Notification.DEFAULT_ALL);
+
+        builder.setStyle(new NotificationCompat.BigTextStyle()
+                .setSummaryText(bigTextSummary)
+                .setBigContentTitle(bigTextSummary)
+                .bigText(bigTextContent)
+        );
+        builder.setContentIntent(contentIntent);
+        builder.setShowWhen(true);
+        final android.app.Notification notification = builder.build();
+        notificationManagerCompat.notify(Integer.valueOf(uniqueId), notification);
+    }
 }

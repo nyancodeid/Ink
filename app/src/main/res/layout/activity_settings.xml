@@ -245,6 +245,48 @@
 
         </RelativeLayout>
 
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/linesColor"></View>
+
+
+        <RelativeLayout
+            android:id="@+id/mafiaWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:minHeight="50dp">
+
+            <TextView
+                android:id="@+id/enableMafiaNotificationTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/mafiaSwitch"
+                android:fontFamily="@string/condensedFont"
+                android:text="@string/enableMafiaNotification" />
+
+            <Switch
+                android:id="@+id/mafiaSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:clickable="false"
+                android:focusable="false" />
+
+        </RelativeLayout>
+
+
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

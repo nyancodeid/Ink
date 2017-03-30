@@ -33,6 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.service.MafiaGameService;
+import ink.va.service.MessageService;
 import ink.va.utils.Keyboard;
 import ink.va.utils.MafiaConstants;
 import ink.va.utils.Retrofit;
@@ -42,6 +43,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.utils.Constants.EVENT_CREATE_GAME;
 import static ink.va.utils.ErrorCause.ALREADY_IN_ROOM;
 
 
@@ -80,6 +82,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
     private SharedHelper sharedHelper;
     private android.app.ProgressDialog progressDialog;
     private int maxPlayers;
+    private MessageService messageService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -354,6 +357,14 @@ public class MafiaAddRoomActivity extends BaseActivity {
                         Intent intent = new Intent();
                         intent.putExtra("hasAdded", true);
                         setResult(RESULT_OK, intent);
+                        JSONObject mafiaJsonObject = new JSONObject();
+                        mafiaJsonObject.put("firstName", sharedHelper.getFirstName());
+                        mafiaJsonObject.put("firstName", sharedHelper.getLastName());
+                        mafiaJsonObject.put("roomId", jsonObject.optString("roomId"));
+                        if (messageService != null) {
+                            messageService.emit(EVENT_CREATE_GAME, mafiaJsonObject);
+                        }
+
                         finish();
                     } else {
                         String cause = jsonObject.optString("cause");
@@ -393,5 +404,17 @@ public class MafiaAddRoomActivity extends BaseActivity {
 
     private void initMaxPlayers() {
         maxPlayersTV.setText(getString(R.string.maxPlayers, maxPlayers));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService();
+    }
+
+    @Override
+    public void onServiceConnected(MessageService messageService) {
+        super.onServiceConnected(messageService);
+        this.messageService = messageService;
     }
 }
