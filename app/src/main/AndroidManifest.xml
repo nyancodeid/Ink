@@ -202,8 +202,8 @@
             android:theme="@style/VK.Transparent" />
         <activity
             android:name="ink.va.activities.Groups"
-            android:theme="@style/LoginTheme"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/LoginTheme" />
         <activity
             android:name="ink.va.activities.ChatRoulette"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -341,7 +341,9 @@
             android:label="@string/backUpRestoreServices" />
         <activity android:name="ink.va.activities.SecurityActivity" />
         <activity android:name="ink.va.activities.SecurityScreen" />
-        <activity android:name="ink.va.activities.MafiaRoomActivity" />
+        <activity
+            android:name="ink.va.activities.MafiaRoomActivity"
+            android:launchMode="singleTask" />
         <activity
             android:name="ink.va.activities.MafiaAddRoomActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

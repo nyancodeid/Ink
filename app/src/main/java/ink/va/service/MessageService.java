@@ -501,7 +501,7 @@ public class MessageService extends Service {
 
         Intent requestsViewIntent = new Intent(getApplicationContext(), resultClass);
 
-        PendingIntent contentIntent = PendingIntent.getBroadcast(getApplicationContext(), uniqueId, requestsViewIntent,
+        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), uniqueId, requestsViewIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         final NotificationManager notificationManagerCompat = (NotificationManager)
