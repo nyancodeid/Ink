@@ -487,7 +487,8 @@ public class MessageService extends Service {
                         Intent intent = new Intent(context.getPackageName() + "Messages");
                         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
                         localBroadcastManager.sendBroadcast(intent);
-                        notificationManagerCompat.notify(Integer.valueOf(jsonObject.optInt("messageId")), notification);
+                        notificationManagerCompat.notify(Integer.valueOf(opponentId), notification)
+                        ;
                     }
                 });
 
