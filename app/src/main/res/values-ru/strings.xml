@@ -789,8 +789,7 @@
     <string name="versionName">Версия v%1$s</string>
     <string name="aboutTitle">О Приложении</string>
     <string name="aboutContent">Инк является оффициальной торговой маркой Компании V.A. Entertainment.Логотипы,идеи и персонажи либо собственнось Компании,либо использованны под лицензией о свободном распространении.
-\nДля любых ворпосов или для помощи,вы можете связатся с одним из членом нашей команди прямо из приложения.
-\n\nИНК-Мир Красок.</string>
+\nДля любых ворпосов или для помощи,вы можете связатся с одним из членом нашей команди прямо из приложения.</string>
     <string name="enterAmount">Внесите Сумму</string>
     <string name="doIt">Сделать это</string>
     <string name="vip_chat">V.I.P. Чат</string>
@@ -1119,4 +1118,8 @@
     <string name="userCreatedRoom">%1$s только что создал новую игровую комнату Мафии</string>
     <string name="viewRoom">Просмотреть Комнату</string>
     <string name="userCreatedRoomLong">%1$s создал комнату игры Мафия где вы можете присоединиться к игре! Чтобы увидеть список комнат,кликните на уведомление </string>
+
+    <string name="credits">Кредиты</string>
+    <string name="backFrontDeveloper">Разработчик Android и Back-End</string>
+    <string name="uxDeveloper">UI/UX Дизайнер</string>
 </resources>

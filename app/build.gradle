@@ -30,8 +30,8 @@ android {
         applicationId "com.ink.va"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 49
-        versionName "1.3.8"
+        versionCode 50
+        versionName "1.3.9"
         manifestPlaceholders = [appPackageName: "${applicationId}"]
         multiDexEnabled true
         setProperty("archivesBaseName", "Ink")
