@@ -1044,18 +1044,54 @@ public class HomeActivity extends BaseActivity
     }
 
     private void handleSocialImage() {
-        final String finalUrl = FACEBOOK_GRAPH_FIRST_URL + mSharedHelper.getUserId() + FACEBOOK_GRAPH_LAST_URL;
-        Ion.with(HomeActivity.this).load(finalUrl).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
+
+        Retrofit.getInstance().getInkService().getSingleUserDetails(mSharedHelper.getUserId(),"").enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onCompleted(Exception e, Bitmap result) {
-                if (e == null) {
-                    mSharedHelper.putImageLink(finalUrl);
-                    Ion.with(HomeActivity.this).load(finalUrl).withBitmap().placeholder(R.drawable.user_image_placeholder).
-                            intoImageView(mProfileImage);
-                    sendUpdateToServer();
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    return;
                 }
+                if (response.body() == null) {
+                    return;
+                }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    String facebookProfileUrl = jsonObject.optString("facebook_profile");
+                    if (!facebookProfileUrl.isEmpty()) {
+                        if (facebookProfileUrl.contains("/")) {
+                            String[] parts = facebookProfileUrl.split("/");
+                            if (parts.length >= 3) {
+                                String userId = parts[4].trim();
+                                final String finalUrl = FACEBOOK_GRAPH_FIRST_URL + userId + FACEBOOK_GRAPH_LAST_URL;
+                                Ion.with(HomeActivity.this).load(finalUrl).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                                    @Override
+                                    public void onCompleted(Exception e, Bitmap result) {
+                                        if (e == null) {
+                                            mSharedHelper.putImageLink(finalUrl);
+                                            Ion.with(HomeActivity.this).load(finalUrl).withBitmap().placeholder(R.drawable.user_image_placeholder).
+                                                    intoImageView(mProfileImage);
+                                            sendUpdateToServer();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
             }
         });
+
     }
 
     private void sendUpdateToServer() {

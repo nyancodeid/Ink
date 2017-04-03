@@ -597,7 +597,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     }
 
     private void getOpponentData() {
-        Retrofit.getInstance().getInkService().getSingleUserDetails(opponentId, sharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
+        Retrofit.getInstance().getInkService().getSingleUserDetails(opponentId, "").enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response == null) {
