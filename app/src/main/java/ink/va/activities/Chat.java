@@ -264,7 +264,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            initUser();
+                            getOpponentData();
                         }
                     });
                 }
@@ -593,52 +593,47 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             isSocialAccount = extras != null ? extras.containsKey("isSocialAccount") ? extras.getBoolean("isSocialAccount") : false : false;
         }
 
-        checkOpponentNames();
+        getOpponentData();
     }
 
-    private void checkOpponentNames() {
-        if (opponentFirstName == null || opponentFirstName.equals("null") || opponentFirstName.isEmpty()) {
-            Retrofit.getInstance().getInkService().getSingleUserDetails(opponentId, sharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if (response == null) {
-                        checkOpponentNames();
-                        return;
-                    }
-                    if (response.body() == null) {
-                        checkOpponentNames();
-                        return;
-                    }
-                    try {
-                        String responseBody = response.body().string();
-                        JSONObject jsonObject = new JSONObject(responseBody);
-                        String firstName = jsonObject.optString("first_name");
-                        String lastName = jsonObject.optString("last_name");
-                        if (opponentFirstName == null || opponentFirstName.equals("null") || opponentFirstName.isEmpty()) {
-                            opponentFirstName = firstName;
-                            opponentLastName = lastName;
-                            initUser();
-                        }
-                        opponentImageUrl = jsonObject.optString("image_link");
-                        loadUserImage();
-                        isDataLoaded = true;
-                    } catch (IOException e) {
-                        isDataLoaded = true;
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        isDataLoaded = true;
-                        e.printStackTrace();
-                    }
+    private void getOpponentData() {
+        Retrofit.getInstance().getInkService().getSingleUserDetails(opponentId, sharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    getOpponentData();
+                    return;
                 }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                if (response.body() == null) {
+                    getOpponentData();
+                    return;
                 }
-            });
-        } else {
-            isDataLoaded = true;
-        }
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    String firstName = jsonObject.optString("first_name");
+                    String lastName = jsonObject.optString("last_name");
+                    opponentFirstName = firstName;
+                    opponentLastName = lastName;
+                    loadUserImage();
+                    initUser();
+                    opponentImageUrl = jsonObject.optString("image_link");
+                    isDataLoaded = true;
+                } catch (IOException e) {
+                    isDataLoaded = true;
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    isDataLoaded = true;
+                    e.printStackTrace();
+                }
+                isDataLoaded = true;
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                isDataLoaded = true;
+            }
+        });
     }
 
     private void loadUserImage() {
