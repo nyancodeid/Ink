@@ -46,6 +46,7 @@ import com.instabug.library.Instabug;
 import com.instabug.library.invocation.InstabugInvocationMode;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.bitmap.BitmapDecodeException;
 import com.pollfish.interfaces.PollfishClosedListener;
 import com.pollfish.interfaces.PollfishOpenedListener;
 import com.pollfish.interfaces.PollfishSurveyCompletedListener;
@@ -1005,14 +1006,15 @@ public class HomeActivity extends BaseActivity
 
     private void loadImage() {
         if (mSharedHelper.hasImage()) {
-
             if (!mSharedHelper.getImageLink().isEmpty()) {
                 if (isSocialAccount()) {
                     Ion.with(getApplicationContext()).load(mSharedHelper.getImageLink()).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(mProfileImage).setCallback(new FutureCallback<ImageView>() {
                         @Override
                         public void onCompleted(Exception e, ImageView result) {
                             if (e != null) {
-                                handleSocialImage();
+                                if (e instanceof BitmapDecodeException) {
+                                    handleSocialImage();
+                                }
                             }
                             mSharedHelper.putShouldLoadImage(false);
                         }
@@ -1025,7 +1027,9 @@ public class HomeActivity extends BaseActivity
                                 @Override
                                 public void onCompleted(Exception e, ImageView result) {
                                     if (e != null) {
-                                        handleSocialImage();
+                                        if (e instanceof BitmapDecodeException) {
+                                            handleSocialImage();
+                                        }
                                     }
                                     mSharedHelper.putShouldLoadImage(false);
                                 }
@@ -1044,53 +1048,55 @@ public class HomeActivity extends BaseActivity
     }
 
     private void handleSocialImage() {
-
-        Retrofit.getInstance().getInkService().getSingleUserDetails(mSharedHelper.getUserId(),"").enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    return;
-                }
-                if (response.body() == null) {
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    String facebookProfileUrl = jsonObject.optString("facebook_profile");
-                    if (!facebookProfileUrl.isEmpty()) {
-                        if (facebookProfileUrl.contains("/")) {
-                            String[] parts = facebookProfileUrl.split("/");
-                            if (parts.length >= 3) {
-                                String userId = parts[4].trim();
-                                final String finalUrl = FACEBOOK_GRAPH_FIRST_URL + userId + FACEBOOK_GRAPH_LAST_URL;
-                                Ion.with(HomeActivity.this).load(finalUrl).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                                    @Override
-                                    public void onCompleted(Exception e, Bitmap result) {
-                                        if (e == null) {
-                                            mSharedHelper.putImageLink(finalUrl);
-                                            Ion.with(HomeActivity.this).load(finalUrl).withBitmap().placeholder(R.drawable.user_image_placeholder).
-                                                    intoImageView(mProfileImage);
-                                            sendUpdateToServer();
+        if (mSharedHelper.isSocialAccount()) {
+            Retrofit.getInstance().getInkService().getSingleUserDetails(mSharedHelper.getUserId(), "").enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response == null) {
+                        return;
+                    }
+                    if (response.body() == null) {
+                        return;
+                    }
+                    try {
+                        String responseBody = response.body().string();
+                        JSONObject jsonObject = new JSONObject(responseBody);
+                        String facebookProfileUrl = jsonObject.optString("facebook_profile");
+                        if (!facebookProfileUrl.isEmpty()) {
+                            if (facebookProfileUrl.contains("/")) {
+                                String[] parts = facebookProfileUrl.split("/");
+                                if (parts.length >= 3) {
+                                    String userId = parts[4].trim();
+                                    final String finalUrl = FACEBOOK_GRAPH_FIRST_URL + userId + FACEBOOK_GRAPH_LAST_URL;
+                                    Ion.with(HomeActivity.this).load(finalUrl).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                                        @Override
+                                        public void onCompleted(Exception e, Bitmap result) {
+                                            if (e == null) {
+                                                mSharedHelper.putImageLink(finalUrl);
+                                                Ion.with(HomeActivity.this).load(finalUrl).withBitmap().placeholder(R.drawable.user_image_placeholder)
+                                                        .transform(new CircleTransform()).
+                                                        intoImageView(mProfileImage);
+                                                sendUpdateToServer();
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                }
                             }
                         }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+
                 }
 
-            }
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
+                }
+            });
+        }
 
     }
 
