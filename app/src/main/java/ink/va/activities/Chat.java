@@ -615,9 +615,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                     String lastName = jsonObject.optString("last_name");
                     opponentFirstName = firstName;
                     opponentLastName = lastName;
+                    opponentImageUrl = jsonObject.optString("image_link");
                     loadUserImage();
                     initUser();
-                    opponentImageUrl = jsonObject.optString("image_link");
                     isDataLoaded = true;
                 } catch (IOException e) {
                     isDataLoaded = true;
