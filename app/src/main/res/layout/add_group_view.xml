@@ -5,13 +5,13 @@
     android:id="@+id/nestedScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/defaultGroupColor"
     android:fadeScrollbars="false"
     android:scrollbarAlwaysDrawHorizontalTrack="true"
     android:scrollbarAlwaysDrawVerticalTrack="true"
     android:scrollbarFadeDuration="0">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -23,18 +23,20 @@
             android:layout_marginTop="25dp"
             android:fontFamily="@string/appFont"
             android:text="@string/addGroupName"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/vk_white" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:textColorHint="#ffffff">
 
             <EditText
                 android:id="@+id/groupName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/addGroupHint" />
+                android:hint="@string/addGroupHint"
+                android:textColor="@color/vk_white" />
         </android.support.design.widget.TextInputLayout>
 
 
@@ -45,18 +47,20 @@
             android:layout_marginTop="15dp"
             android:fontFamily="@string/appFont"
             android:text="@string/addGroupDescription"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/vk_white" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:textColorHint="#ffffff">
 
             <EditText
                 android:id="@+id/groupDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/addGroupDescriptionHint" />
+                android:hint="@string/addGroupDescriptionHint"
+                android:textColor="@color/vk_white" />
         </android.support.design.widget.TextInputLayout>
 
         <TextView
@@ -67,7 +71,7 @@
             android:layout_marginTop="10dp"
             android:fontFamily="@string/appFont"
             android:text="@string/noBackgroundColorSelected"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/vk_white" />
 
         <Button
             android:id="@+id/pickBackgroundColor"
@@ -98,7 +102,7 @@
             android:layout_marginTop="20dp"
             android:fontFamily="@string/appFont"
             android:text="@string/noImageSelected"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/vk_white" />
 
         <Button
             android:id="@+id/pickImage"
@@ -106,6 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="30dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/group_buttons"
             android:padding="10dp"
