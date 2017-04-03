@@ -536,6 +536,11 @@ public class Retrofit {
         @FormUrlEncoded
         Call<ResponseBody> deleteTrend(@Field("trendId") String trendId);
 
+        @POST(Constants.UPDATE_USER_IMAGE)
+        @FormUrlEncoded
+        Call<ResponseBody> updateUserImage(@Field("userId") String userId,
+                                           @Field("imageLink") String imageLink);
+
         @POST(Constants.ADD_ADVERTISEMENT_URL)
         @FormUrlEncoded
         Call<ResponseBody> addAdvertisement(@Field("title") String title,

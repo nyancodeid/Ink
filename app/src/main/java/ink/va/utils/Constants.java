@@ -22,6 +22,9 @@ public class Constants {
      * The appendable of main url
      */
     public static final String USER_IMAGES_FOLDER = "UserImages/";
+    public static final String UPDATE_USER_IMAGE = "UpdateUserImage.php";
+    public static final String FACEBOOK_GRAPH_FIRST_URL = "http://graph.facebook.com/";
+    public static final String FACEBOOK_GRAPH_LAST_URL = "/picture?type=large";
     public static final String PACK_BACKGROUNDS_FOLDER = "PackBackgrounds/";
     public static final String GROUP_IMAGES_FOLDER = "GroupImages/";
     public static final String ADD_GROUP_URL = "AddGroup.php";

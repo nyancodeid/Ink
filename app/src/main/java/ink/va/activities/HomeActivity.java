@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
@@ -88,6 +89,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.utils.Constants.FACEBOOK_GRAPH_FIRST_URL;
+import static ink.va.utils.Constants.FACEBOOK_GRAPH_LAST_URL;
 import static ink.va.utils.Constants.NOTIFICATION_AUTO_REDIRECT_BUNDLE_KEY;
 import static ink.va.utils.Constants.NOTIFICATION_BUNDLE_EXTRA_KEY;
 import static ink.va.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
@@ -183,6 +186,7 @@ public class HomeActivity extends BaseActivity
             bottomSheetDialog.show();
         }
 
+
         checkNotification(getIntent());
 
         User.get().setUserName(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
@@ -255,8 +259,6 @@ public class HomeActivity extends BaseActivity
         panelHeader = (RelativeLayout) headerView.findViewById(R.id.panelHeader);
         navigationView.setNavigationItemSelectedListener(this);
         LocalBroadcastManager.getInstance(this).registerReceiver(feedUpdateReceiver, new IntentFilter(getPackageName() + "HomeActivity"));
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
     }
 
 
@@ -1009,6 +1011,9 @@ public class HomeActivity extends BaseActivity
                     Ion.with(getApplicationContext()).load(mSharedHelper.getImageLink()).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(mProfileImage).setCallback(new FutureCallback<ImageView>() {
                         @Override
                         public void onCompleted(Exception e, ImageView result) {
+                            if (e != null) {
+                                handleSocialImage();
+                            }
                             mSharedHelper.putShouldLoadImage(false);
                         }
                     });
@@ -1019,6 +1024,9 @@ public class HomeActivity extends BaseActivity
                             .setCallback(new FutureCallback<ImageView>() {
                                 @Override
                                 public void onCompleted(Exception e, ImageView result) {
+                                    if (e != null) {
+                                        handleSocialImage();
+                                    }
                                     mSharedHelper.putShouldLoadImage(false);
                                 }
                             });
@@ -1033,6 +1041,35 @@ public class HomeActivity extends BaseActivity
                         }
                     });
         }
+    }
+
+    private void handleSocialImage() {
+        final String finalUrl = FACEBOOK_GRAPH_FIRST_URL + mSharedHelper.getUserId() + FACEBOOK_GRAPH_LAST_URL;
+        Ion.with(HomeActivity.this).load(finalUrl).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
+            @Override
+            public void onCompleted(Exception e, Bitmap result) {
+                if (e == null) {
+                    mSharedHelper.putImageLink(finalUrl);
+                    Ion.with(HomeActivity.this).load(finalUrl).withBitmap().placeholder(R.drawable.user_image_placeholder).
+                            intoImageView(mProfileImage);
+                    sendUpdateToServer();
+                }
+            }
+        });
+    }
+
+    private void sendUpdateToServer() {
+        Retrofit.getInstance().getInkService().updateUserImage(mSharedHelper.getUserId(), mSharedHelper.getImageLink()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
     }
 
 
