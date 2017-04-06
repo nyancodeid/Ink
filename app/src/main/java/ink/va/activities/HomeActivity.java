@@ -959,8 +959,8 @@ public class HomeActivity extends BaseActivity
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
-                        boolean hasRead = jsonObject.optBoolean("hasRead");
-                        if (hasRead) {
+                        boolean hasUnreadNotifications = jsonObject.optBoolean("hasRead");
+                        if (hasUnreadNotifications) {
                             if (menuItem != null) {
                                 menuItem.getItem(2).setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.active_notification_icon));
                             }
@@ -985,7 +985,7 @@ public class HomeActivity extends BaseActivity
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
     }

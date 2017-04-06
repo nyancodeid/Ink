@@ -217,6 +217,7 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
                         String responseBody = response.body().string();
                         JSONObject jsonObject = new JSONObject(responseBody);
                         boolean success = jsonObject.optBoolean("success");
+                        isDataLoaded = true;
                         if (success) {
                             JSONArray trendsArray = jsonObject.optJSONArray("trends");
                             if (trendsArray.length() == 0) {

@@ -559,6 +559,7 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
     @Override
     public void onRefresh() {
         getFriends();
+        getMyRequests();
     }
 
     @Override

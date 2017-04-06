@@ -430,14 +430,14 @@ public class MessageService extends Service {
                 Intent broadcastIntent = new Intent(context, NotificationBroadcast.class);
                 broadcastIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
 
-                PendingIntent broadcastPendingIntent = PendingIntent.getBroadcast(context, jsonObject.optInt("messageId"),
+                PendingIntent broadcastPendingIntent = PendingIntent.getBroadcast(context, Integer.valueOf(opponentId),
                         broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 PendingIntent replyPendingIntent = PendingIntent.getActivity(context,
-                        Integer.valueOf(jsonObject.optInt("messageId")), replyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        Integer.valueOf(opponentId), replyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-                PendingIntent deleteReceiver = PendingIntent.getBroadcast(context, jsonObject.optInt("messageId"), deleteIntent,
+                PendingIntent deleteReceiver = PendingIntent.getBroadcast(context, Integer.valueOf(opponentId), deleteIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
 
                 final NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
@@ -487,8 +487,7 @@ public class MessageService extends Service {
                         Intent intent = new Intent(context.getPackageName() + "Messages");
                         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
                         localBroadcastManager.sendBroadcast(intent);
-                        notificationManagerCompat.notify(Integer.valueOf(opponentId), notification)
-                        ;
+                        notificationManagerCompat.notify(Integer.valueOf(opponentId), notification);
                     }
                 });
 

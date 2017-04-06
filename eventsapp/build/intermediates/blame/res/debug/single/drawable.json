@@ -68,12 +68,12 @@
         "source": "D:\\Ink\\eventsapp\\src\\main\\res\\drawable\\conference.jpg"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable\\ic_launcher.png",
-        "source": "D:\\Ink\\eventsapp\\src\\main\\res\\drawable\\ic_launcher.png"
-    },
-    {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ic_clear.xml",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable\\abc_ic_clear.xml"
+    },
+    {
+        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable\\ic_launcher.png",
+        "source": "D:\\Ink\\eventsapp\\src\\main\\res\\drawable\\ic_launcher.png"
     },
     {
         "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_textfield_searchview_holo_dark.xml",
