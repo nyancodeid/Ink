@@ -261,12 +261,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 @Override
                 public void onSuccess(Object o) {
                     getMessages();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            getOpponentData();
-                        }
-                    });
                 }
 
                 @Override

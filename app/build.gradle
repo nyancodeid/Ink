@@ -31,7 +31,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 52
-        versionName "1.4.1"
+        versionName "1.4.2"
         manifestPlaceholders = [appPackageName: "${applicationId}"]
         multiDexEnabled true
         setProperty("archivesBaseName", "Ink")

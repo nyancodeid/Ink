@@ -415,20 +415,25 @@ public class MessageService extends Service {
                 requestsViewIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
                 requestsViewIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 requestsViewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                requestsViewIntent.setAction(opponentId);
 
                 Intent replyIntent = new Intent(context, ReplyView.class);
                 replyIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
+                replyIntent.setAction(opponentId);
 
                 Intent deleteIntent = new Intent(context, DeleteReceiver.class);
                 deleteIntent.putExtra("notificationId", Integer.valueOf(opponentId));
+                deleteIntent.setAction(opponentId);
 
                 Intent nReplyIntent = new Intent(context, ReplyIntentReceiver.class);
                 nReplyIntent.putExtra("notificationId", Integer.valueOf(opponentId));
                 nReplyIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
+                nReplyIntent.setAction(opponentId);
 
 
                 Intent broadcastIntent = new Intent(context, NotificationBroadcast.class);
                 broadcastIntent.putExtra(NOTIFICATION_MESSAGE_BUNDLE_KEY, jsonObject.toString());
+                broadcastIntent.setAction(opponentId);
 
                 PendingIntent broadcastPendingIntent = PendingIntent.getBroadcast(context, Integer.valueOf(opponentId),
                         broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);

@@ -557,6 +557,10 @@ public class Retrofit {
                                        @Field("offset") String offset,
                                        @Field("count") String count);
 
+        @POST(Constants.GET_USER_POSTS_URL)
+        @FormUrlEncoded
+        Call<List<FeedModel>> getUserPosts(@Field("user_id") String userId);
+
 
         @POST(Constants.GET_COMMENTS_URL)
         @FormUrlEncoded
