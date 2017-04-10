@@ -60,23 +60,36 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toLeftOf="@+id/postVisibilityIcon"
+                    android:layout_toRightOf="@+id/feedUserImage"
                     android:fontFamily="@string/condensedFont"
+                    android:gravity="center"
                     android:text="@string/personPosted"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textSize="24sp" />
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/feedUserImage"
+                    android:layout_width="46dp"
+                    android:layout_height="46dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:adjustViewBounds="true"
+                    android:background="?attr/selectableItemBackgroundBorderless" />
 
                 <TextView
                     android:id="@+id/feedContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/userPostedTitle"
+                    android:layout_below="@+id/feedUserImage"
                     android:layout_margin="10dp"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:layout_marginTop="10dp"
                     android:autoLink="web"
                     android:fontFamily="@string/appFont"
@@ -314,8 +327,12 @@
                         android:src="@drawable/download_icon" />
                 </RelativeLayout>
 
+
             </RelativeLayout>
+
+
         </android.support.v7.widget.CardView>
+
 
     </RelativeLayout>
 
@@ -326,14 +343,5 @@
         android:layout_below="@+id/feedSpaceWrapper"
         android:visibility="visible" />
 
-
-    <ImageView
-        android:id="@+id/feedUserImage"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="10dp"
-        android:adjustViewBounds="true"
-        android:background="?attr/selectableItemBackgroundBorderless" />
 
 </RelativeLayout>
