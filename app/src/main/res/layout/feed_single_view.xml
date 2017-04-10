@@ -134,14 +134,14 @@
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <TextView
                         android:id="@+id/likesCountTV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="11dp"
                         android:layout_toRightOf="@+id/likeIcon"
                         android:fontFamily="@string/appFont"
                         android:text="@string/likesText"
@@ -153,8 +153,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="13dp"
                         android:background="@drawable/like_inactive" />
 
 
@@ -164,23 +164,22 @@
                     android:id="@+id/commentWrapper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/likeWrapper"
                     android:layout_below="@id/actionDivider"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <ImageView
                         android:id="@+id/commentIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="15dp"
                         android:background="@drawable/comment_icon" />
 
                     <TextView
@@ -188,7 +187,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="14dp"
+                        android:layout_marginTop="11dp"
                         android:layout_toRightOf="@+id/commentIcon"
                         android:fontFamily="@string/appFont"
                         android:text="@string/comments_count_text"
@@ -197,6 +196,46 @@
 
 
                 </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/shareWrapper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/likeWrapper"
+                    android:layout_below="@id/actionDivider"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="10dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:visibility="visible">
+
+                    <ImageView
+                        android:id="@+id/shareIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/share_grey" />
+
+                    <TextView
+                        android:id="@+id/shareTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="11dp"
+                        android:layout_toRightOf="@+id/shareIcon"
+                        android:fontFamily="@string/appFont"
+                        android:text="@string/share"
+                        android:textSize="12sp"
+                        android:visibility="visible" />
+
+
+                </RelativeLayout>
+
 
                 <RelativeLayout
                     android:id="@+id/feedAddressLayout"

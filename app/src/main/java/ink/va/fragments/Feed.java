@@ -68,8 +68,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.ink.va.R.string.share;
-
 /**
  * Created by USER on 2016-06-21.
  */
@@ -472,12 +470,9 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                             });
                             builder.show();
                             break;
-                        case 2:
-                            openShareView(feedModel);
-                            break;
                     }
                 }
-            }, getString(R.string.edit), getString(R.string.delete), getString(share));
+            }, getString(R.string.edit), getString(R.string.delete));
         } else {
             DialogUtils.showPopUp(getActivity(), view, new ItemClickListener<MenuItem>() {
                 @Override
@@ -492,15 +487,12 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                             startActivity(intent);
                             break;
                         case 1:
-                            openShareView(feedModel);
-                            break;
-                        case 2:
                             showReportField(feedModel);
                             break;
                     }
 
                 }
-            }, getString(R.string.viewProfile), getString(share), getString(R.string.report));
+            }, getString(R.string.viewProfile), getString(R.string.report));
         }
     }
 
@@ -649,6 +641,11 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         String encodedFileName = Uri.encode(feedModel.getFileName());
         intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedFileName);
         startActivity(intent);
+    }
+
+    @Override
+    public void onShareClicked(FeedModel feedModel) {
+        openShareView(feedModel);
     }
 
     private void openGoogleMaps(String address) {

@@ -25,4 +25,6 @@ public interface FeedItemClick {
     void onMoreClicked(FeedModel feedModel, View view);
 
     void onImageClicked(FeedModel feedModel);
+
+    void onShareClicked(FeedModel feedModel);
 }

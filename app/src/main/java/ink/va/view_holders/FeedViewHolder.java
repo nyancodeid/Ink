@@ -19,6 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.interfaces.FeedItemClick;
 import ink.va.models.FeedModel;
+import ink.va.utils.Animations;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.FileUtils;
@@ -59,6 +60,8 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
     ImageView imageHolder;
     @BindView(R.id.postVisibilityIcon)
     ImageView postVisibilityIcon;
+    @BindView(R.id.shareIcon)
+    ImageView shareIcon;
 
     @BindView(R.id.feedItemCard)
     CardView feedItemCard;
@@ -71,6 +74,8 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
     RelativeLayout likeWrapper;
     @BindView(R.id.commentWrapper)
     RelativeLayout commentWrapper;
+    @BindView(R.id.shareWrapper)
+    RelativeLayout shareWrapper;
 
 
     Context mContext;
@@ -120,6 +125,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
 
     private void hideActions() {
         commentWrapper.setVisibility(View.GONE);
+        shareWrapper.setVisibility(View.GONE);
         likeWrapper.setVisibility(View.GONE);
         feedMoreIcon.setVisibility(View.INVISIBLE);
         actionDivider.setVisibility(View.GONE);
@@ -133,6 +139,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
 
     private void handleGroupMessages() {
         commentWrapper.setVisibility(View.GONE);
+        shareWrapper.setVisibility(View.GONE);
         likeWrapper.setVisibility(View.GONE);
         feedMoreIcon.setVisibility(View.INVISIBLE);
         actionDivider.setVisibility(View.GONE);
@@ -204,6 +211,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
 
     private void handlePosts() {
         commentWrapper.setVisibility(View.VISIBLE);
+        shareWrapper.setVisibility(View.VISIBLE);
         likeWrapper.setVisibility(View.VISIBLE);
         actionDivider.setVisibility(View.VISIBLE);
         feedMoreIcon.setVisibility(View.VISIBLE);
@@ -256,6 +264,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
                 }
             }
         });
+
         feedContent.setMovementMethod(LinkMovementMethod.getInstance());
         feedContent.setText(mContext.getString(R.string.quoteOpen) + feedModel.getContent() + mContext.getString(R.string.quoteClose));
         whenPosted.setText(Time.convertToLocalTime(feedModel.getDatePosted()));
@@ -372,6 +381,17 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
                 }
             }
         });
+        shareWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Animations.animateCircular(shareIcon);
+
+                if (mOnClickListener != null) {
+                    mOnClickListener.onShareClicked(feedModel);
+                }
+            }
+        });
+
         imageHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
