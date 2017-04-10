@@ -120,19 +120,6 @@
 
                 </View>
 
-                <TextView
-                    android:id="@+id/likesCountTV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/actionDivider"
-                    android:layout_alignStart="@+id/actionDivider"
-                    android:layout_below="@+id/actionDivider"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:fontFamily="@string/appFont"
-                    android:text="@string/likesText"
-                    android:textSize="12sp"
-                    android:visibility="invisible" />
 
                 <RelativeLayout
                     android:id="@+id/likeWrapper"
@@ -140,7 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@+id/actionDivider"
                     android:layout_alignStart="@+id/actionDivider"
-                    android:layout_below="@+id/likesCountTV"
+                    android:layout_below="@+id/actionDivider"
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
@@ -149,38 +136,35 @@
                     android:foreground="?android:attr/selectableItemBackground"
                     android:visibility="gone">
 
+                    <TextView
+                        android:id="@+id/likesCountTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_toRightOf="@+id/likeIcon"
+                        android:fontFamily="@string/appFont"
+                        android:text="@string/likesText"
+                        android:textSize="12sp"
+                        android:visibility="visible" />
+
                     <ImageView
                         android:id="@+id/likeIcon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="30dp"
-                        android:layout_marginRight="30dp"
                         android:layout_marginTop="20dp"
                         android:background="@drawable/like_inactive" />
 
 
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/commentCountTV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/likesCountTV"
-                    android:layout_below="@+id/actionDivider"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/likeWrapper"
-                    android:fontFamily="@string/appFont"
-                    android:text="@string/comments_count_text"
-                    android:textSize="12sp"
-                    android:visibility="invisible" />
-
-
                 <RelativeLayout
                     android:id="@+id/commentWrapper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/likesCountTV"
+                    android:layout_below="@id/actionDivider"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="5dp"
@@ -196,9 +180,20 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="30dp"
-                        android:layout_marginRight="30dp"
                         android:layout_marginTop="20dp"
                         android:background="@drawable/comment_icon" />
+
+                    <TextView
+                        android:id="@+id/commentCountTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="14dp"
+                        android:layout_toRightOf="@+id/commentIcon"
+                        android:fontFamily="@string/appFont"
+                        android:text="@string/comments_count_text"
+                        android:textSize="12sp"
+                        android:visibility="visible" />
 
 
                 </RelativeLayout>
@@ -295,11 +290,11 @@
 
     <ImageView
         android:id="@+id/feedUserImage"
-        android:adjustViewBounds="true"
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="10dp"
+        android:adjustViewBounds="true"
         android:background="?attr/selectableItemBackgroundBorderless" />
 
 </RelativeLayout>
