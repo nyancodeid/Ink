@@ -1,9 +1,12 @@
 package ink.va.fragments;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -26,6 +29,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.activities.CreateTrend;
@@ -35,6 +39,7 @@ import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.Retrofit;
+import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -60,6 +65,10 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
     public static final int UPDATE_TRENDS = 5;
     private boolean attemptedToCreate;
     private boolean isDataLoaded;
+    private SharedHelper sharedHelper;
+
+    @BindView(R.id.createTrend)
+    FloatingActionButton createTrend;
 
     public static WhatsTrending create() {
         WhatsTrending whatsTrending = new WhatsTrending();
@@ -77,6 +86,12 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         trendModelArrayList = new ArrayList<>();
+        sharedHelper = new SharedHelper(getActivity());
+
+        if (sharedHelper.getMenuButtonColor() != null) {
+            createTrend.setBackgroundTintList((ColorStateList.valueOf(Color.parseColor(sharedHelper.getMenuButtonColor()))));
+        }
+
         trendAdapter = new TrendAdapter(getActivity(), trendModelArrayList);
         trendAdapter.setOnItemClickListener(this);
         trendSwipe = (SwipeRefreshLayout) view.findViewById(R.id.trendSwipe);

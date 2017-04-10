@@ -1,12 +1,14 @@
 package ink.va.activities;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.ink.va.R;
@@ -31,6 +33,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.ink.va.R.id.packShopBG;
+
 /**
  * Created by PC-Comp on 1/31/2017.
  */
@@ -41,6 +45,8 @@ public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefr
     RecyclerView badgeRecycler;
     @BindView(R.id.badgeRefresh)
     SwipeRefreshLayout badgeRefresh;
+    @BindView(R.id.badgeShopBG)
+    RelativeLayout badgeShopBG;
     private BadgeAdapter badgeAdapter;
     private SharedHelper sharedHelper;
     private android.app.ProgressDialog progressDialog;
@@ -69,6 +75,12 @@ public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefr
                 badgeRefresh.setRefreshing(true);
             }
         });
+
+        if (sharedHelper.getFeedColor() != null) {
+            badgeShopBG.setBackgroundColor(Color.parseColor(sharedHelper.getFeedColor()));
+        }
+
+
         getBadges();
     }
 

@@ -2,6 +2,7 @@ package ink.va.fragments;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.ink.va.R;
@@ -51,6 +53,8 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
     RecyclerView packsRecycler;
     @BindView(R.id.packsSwipe)
     SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.packShopBG)
+    RelativeLayout packShopBG;
     private Dialog mProgressDialog;
 
     private PacksAdapter packsAdapter;
@@ -81,8 +85,11 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         packsRecycler.setLayoutManager(linearLayoutManager);
         packsRecycler.setAdapter(packsAdapter);
-        getPacks();
+        if (sharedHelper.getFeedColor() != null) {
+            packShopBG.setBackgroundColor(Color.parseColor(sharedHelper.getFeedColor()));
+        }
 
+        getPacks();
 
     }
 
