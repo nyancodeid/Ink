@@ -33,8 +33,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.ink.va.R.id.packShopBG;
-
 /**
  * Created by PC-Comp on 1/31/2017.
  */
