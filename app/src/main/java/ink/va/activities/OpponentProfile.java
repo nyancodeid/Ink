@@ -1,50 +1,68 @@
 package ink.va.activities;
 
+import android.Manifest;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
+import ink.va.adapters.OpponentProfileAdapter;
+import ink.va.interfaces.FeedItemClick;
+import ink.va.interfaces.ItemClickListener;
+import ink.va.models.FeedModel;
+import ink.va.models.UserModel;
+import ink.va.utils.Animations;
 import ink.va.utils.Constants;
+import ink.va.utils.DialogUtils;
 import ink.va.utils.DimDialog;
+import ink.va.utils.InputField;
+import ink.va.utils.PermissionsChecker;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.ScrollAwareFABBehavior;
 import ink.va.utils.SharedHelper;
-import it.sephiroth.android.library.picasso.NetworkPolicy;
-import it.sephiroth.android.library.picasso.Picasso;
-import it.sephiroth.android.library.picasso.Target;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,64 +72,41 @@ import retrofit2.Response;
 /**
  * Created by USER on 2016-06-22.
  */
-public class OpponentProfile extends BaseActivity {
-    private String mOpponentId;
-    private String mFirstName;
-    private String mLastName;
+public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, FeedItemClick {
 
-    private String mFacebookLink;
-    private boolean isSocialAccount;
-    private boolean hasFriendRequested;
-    private boolean isDataLoaded;
-    private SharedHelper sharedHelper;
+    private static final int SHARE_INTENT_RESULT = 5;
+    private static final int STORAGE_PERMISSION_REQUEST = 115;
 
-    //Butter knife binders.
-    @BindView(R.id.profileImage)
-    ImageView mProfileImage;
-    @BindView(R.id.addressTV)
-    TextView mAddress;
-    @BindView(R.id.phoneTV)
-    TextView mPhone;
-    @BindView(R.id.relationshipTV)
-    TextView mRelationship;
-    @BindView(R.id.genderTV)
-    TextView mGender;
-    @BindView(R.id.facebookTV)
-    TextView mFacebook;
-    @BindView(R.id.facebookWrapper)
-    RelativeLayout mFacebookWrapper;
-    @BindView(R.id.skypeTV)
-    TextView mSkype;
-    @BindView(R.id.triangleView)
-    ImageView mTriangleView;
-    @BindView(R.id.statusCard)
-    CardView mCardView;
-    @BindView(R.id.genderIcon)
-    ImageView mGenderImageView;
-    @BindView(R.id.statusText)
-    TextView mStatusText;
-    @BindView(R.id.userName)
-    TextView mUsername;
-    @BindView(R.id.profileFab)
-    FloatingActionMenu mProfileFab;
-    @BindView(R.id.opponentImageLoading)
-    AVLoadingIndicatorView mOpponentImageLoading;
-    @BindView(R.id.addressWrapper)
-    RelativeLayout mAddressWrapper;
     @BindView(R.id.sendMessage)
     FloatingActionButton sendMessage;
     @BindView(R.id.removeFriend)
     FloatingActionButton removeFriend;
-    @BindView(R.id.callUserPhone)
-    ImageView callUserPhone;
-    @BindView(R.id.singleUserBadge)
-    ImageView singleUserBadge;
+    private boolean isFriend;
+    private boolean disableButton;
+    @BindView(R.id.profileFab)
+    FloatingActionMenu mProfileFab;
     @BindView(R.id.opponentProfileRoot)
     public View opponentProfileRoot;
+    @BindView(R.id.opponentProfileRefresh)
+    SwipeRefreshLayout opponentProfileRefresh;
+    @BindView(R.id.opponentProfileRecycler)
+    RecyclerView opponentProfileRecycler;
+    private OpponentProfileAdapter opponentProfileAdapter;
+    private List<FeedModel> feedModels;
+
+    private String mOpponentId;
+    private String mFirstName;
+    private String mLastName;
+    private SharedHelper sharedHelper;
+    private boolean hasFriendRequested;
     private String mOpponentImage;
-    private boolean isFriend;
-    private Target target;
-    private boolean disableButton;
+    private boolean isSocialAccount;
+    private Gson gson;
+    private StringBuilder content;
+    private Bitmap intentBitmap;
+    private String shareFileName;
+    private File shareOutPutDir;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +117,13 @@ public class OpponentProfile extends BaseActivity {
         mProfileFab.setEnabled(false);
         Bundle extras = getIntent().getExtras();
         sharedHelper = new SharedHelper(this);
+        feedModels = new LinkedList<>();
+        gson = new Gson();
+        opponentProfileRefresh.setOnRefreshListener(this);
+        opponentProfileAdapter = new OpponentProfileAdapter(feedModels, true, false, this);
+        opponentProfileAdapter.setOnFeedItemClickListener(this);
+        opponentProfileRecycler.setLayoutManager(new LinearLayoutManager(this));
+        opponentProfileRecycler.setAdapter(opponentProfileAdapter);
 
         ActionBar actionBar = getSupportActionBar();
         if (extras != null) {
@@ -137,8 +139,7 @@ public class OpponentProfile extends BaseActivity {
                     sendMessage.setVisibility(View.GONE);
                 }
             }
-            enableButton();
-            mUsername.setText(mFirstName + " " + mLastName);
+//            enableButton();
             if (actionBar != null) {
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 actionBar.setTitle(mFirstName + " " + mLastName);
@@ -182,37 +183,10 @@ public class OpponentProfile extends BaseActivity {
         removeFriend(mOpponentId);
     }
 
-    @OnClick(R.id.facebookWrapper)
-    public void facebook() {
-        if (!mFacebook.getText().toString().equals(getString(R.string.loadingText)) && !mFacebook.getText().toString().equals(getString(R.string.noFacebook))) {
-            Snackbar.make(mFacebookWrapper, getString(R.string.openingFacebook), Snackbar.LENGTH_SHORT);
-            String addressToPass = mFacebookLink;
-            openFacebookPage(addressToPass);
-        }
-    }
-
-    @OnClick(R.id.addressWrapper)
-    public void addressWrapper() {
-        if (!mAddress.getText().toString().equals(getString(R.string.loadingText)) && !mAddress.getText().toString().equals(getString(R.string.noAddress))) {
-            Snackbar.make(mAddressWrapper, getString(R.string.openingGoogle), Snackbar.LENGTH_SHORT);
-            String addressToPass = mAddress.getText().toString();
-            openGoogleMaps(addressToPass);
-        }
-    }
 
     @OnClick(R.id.sendMessage)
     public void WriteMessage() {
         mProfileFab.close(true);
-        if (!isDataLoaded) {
-            Snackbar.make(mTriangleView, getString(R.string.waitTillLoad), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            }).show();
-            mProfileFab.close(true);
-            return;
-        }
         if (isFriend) {
             Intent intent = new Intent(getApplicationContext(), Chat.class);
             intent.putExtra("firstName", mFirstName);
@@ -222,8 +196,8 @@ public class OpponentProfile extends BaseActivity {
             intent.putExtra("opponentImage", mOpponentImage);
             startActivity(intent);
         } else {
-            if (!isDataLoaded) {
-                Snackbar.make(mTriangleView, getString(R.string.waitTillLoad), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+            if (hasFriendRequested) {
+                Snackbar.make(opponentProfileRecycler, getString(R.string.youHaveSentAlreadyRequest), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
@@ -231,41 +205,12 @@ public class OpponentProfile extends BaseActivity {
                 }).show();
                 mProfileFab.close(true);
             } else {
-                if (isDataLoaded) {
-                    if (hasFriendRequested) {
-                        Snackbar.make(mTriangleView, getString(R.string.youHaveSentAlreadyRequest), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-
-                            }
-                        }).show();
-                        mProfileFab.close(true);
-                    } else {
-                        mProfileFab.close(true);
-                        requestFriend();
-                    }
-                } else {
-                    Snackbar.make(mTriangleView, getString(R.string.waitTillLoad), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    }).show();
-                    mProfileFab.close(true);
-                }
-
+                mProfileFab.close(true);
+                requestFriend();
             }
         }
     }
 
-    @OnClick(R.id.callUserPhone)
-    public void callUserPhone() {
-        String phoneNumber = mPhone.getText().toString();
-        Intent intent = new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse("tel:" + phoneNumber));
-        startActivity(intent);
-
-    }
 
     private void removeFriend(final String friendId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -351,17 +296,17 @@ public class OpponentProfile extends BaseActivity {
                     DimDialog.hideDialog();
                     if (success) {
                         hasFriendRequested = true;
-                        Snackbar.make(mTriangleView, getString(R.string.requestSent), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(opponentProfileRecycler, getString(R.string.requestSent), Snackbar.LENGTH_SHORT).show();
                     } else {
-                        Snackbar.make(mTriangleView, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(opponentProfileRecycler, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
                     DimDialog.hideDialog();
-                    Snackbar.make(mTriangleView, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(opponentProfileRecycler, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
                     e.printStackTrace();
                 } catch (JSONException e) {
                     DimDialog.hideDialog();
-                    Snackbar.make(mTriangleView, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(opponentProfileRecycler, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
@@ -380,112 +325,29 @@ public class OpponentProfile extends BaseActivity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 mProfileFab.setEnabled(true);
+
                 try {
                     String responseString = response.body().string();
                     try {
                         JSONObject jsonObject = new JSONObject(responseString);
                         boolean success = jsonObject.optBoolean("success");
                         if (success) {
-                            String userId = jsonObject.optString("userId");
-                            String firstName = jsonObject.optString("first_name");
-                            String lastName = jsonObject.optString("last_name");
 
-                            mFirstName = firstName;
-                            mLastName = lastName;
+                            UserModel userModel = gson.fromJson(responseString, UserModel.class);
+                            opponentProfileAdapter.setUserJsonObject(jsonObject);
+                            isSocialAccount = userModel.isSocialAccount();
 
-                            mUsername.setText(mFirstName + " " + mLastName);
 
-                            String gender = jsonObject.optString("gender");
-                            String badgeName = jsonObject.optString("badge_name");
-                            String phoneNumber = jsonObject.optString("phone_number");
-                            mFacebookLink = jsonObject.optString("facebook_profile");
+                            mFirstName = userModel.getFirstName();
+                            mLastName = userModel.getLastName();
+
                             mOpponentImage = jsonObject.optString("image_link");
-                            String skype = jsonObject.optString("skype");
-                            String address = jsonObject.optString("address");
                             isFriend = jsonObject.optBoolean("isFriend");
                             setUpFriendView();
-                            String relationship = jsonObject.optString("relationship");
-                            String status = jsonObject.optString("status");
-                            String facebookName = jsonObject.optString("facebook_name");
                             hasFriendRequested = jsonObject.optBoolean("hasFriendRequested");
+                            getUserPosts();
 
-                            Ion.with(OpponentProfile.this).load(Constants.MAIN_URL + badgeName).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                                @Override
-                                public void onCompleted(Exception e, Bitmap result) {
-                                    if (e == null) {
-                                        singleUserBadge.setImageBitmap(result);
-                                    } else {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
-
-                            boolean shouldHighlightFacebook = true;
-                            boolean shouldHighlightAddress = true;
-                            isSocialAccount = jsonObject.optBoolean("isSocialAccount");
-                            if (mOpponentImage != null && !mOpponentImage.isEmpty()) {
-                                if (isSocialAccount) {
-                                    Picasso.with(getApplicationContext()).load(mOpponentImage).networkPolicy(NetworkPolicy.NO_CACHE).into(getTarget());
-                                } else {
-                                    String encodedImage = Uri.encode(mOpponentImage);
-                                    Picasso.with(getApplicationContext()).load(Constants.MAIN_URL +
-                                            Constants.USER_IMAGES_FOLDER + encodedImage).networkPolicy(NetworkPolicy.NO_CACHE).into(getTarget());
-                                }
-                            } else {
-                                Picasso.with(getApplicationContext()).load(R.drawable.no_image).into(getTarget());
-                            }
-
-                            if (status.isEmpty()) {
-                                mStatusText.setText(getString(R.string.shortNoStatus));
-                            } else {
-                                mStatusText.setText(status);
-                            }
-                            if (!gender.isEmpty()) {
-                                if (gender.equals(Constants.GENDER_FEMALE)) {
-                                    mGenderImageView.setBackground(null);
-                                    mGenderImageView.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_gender_female));
-                                } else {
-                                    mGenderImageView.setBackground(null);
-                                    mGenderImageView.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_gender_male));
-                                }
-                            } else {
-                                gender = getString(R.string.noGender);
-                            }
-
-                            if (phoneNumber.isEmpty()) {
-                                phoneNumber = getString(R.string.noPhone);
-                            } else {
-                                callUserPhone.setVisibility(View.VISIBLE);
-                            }
-                            if (mFacebookLink.isEmpty()) {
-                                mFacebookLink = getString(R.string.noFacebook);
-                                facebookName = getString(R.string.noFacebook);
-                                shouldHighlightFacebook = false;
-                            }
-                            if (skype.isEmpty()) {
-                                skype = getString(R.string.noSkype);
-                            }
-                            if (address.isEmpty()) {
-                                address = getString(R.string.noAddress);
-                                shouldHighlightAddress = false;
-                            }
-                            if (relationship.isEmpty()) {
-                                relationship = getString(R.string.noRelationship);
-                            }
-                            mPhone.setText(phoneNumber);
-                            if (shouldHighlightFacebook) {
-                                mFacebook.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
-                            }
-                            if (shouldHighlightAddress) {
-                                mAddress.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
-                            }
-                            mFacebook.setText(facebookName);
-                            mSkype.setText(skype);
-                            mAddress.setText(address);
-                            mRelationship.setText(relationship);
-                            mGender.setText(gender);
                         } else {
-                            mOpponentImageLoading.setVisibility(View.GONE);
                             AlertDialog.Builder builder = new AlertDialog.Builder(OpponentProfile.this);
                             builder.setTitle(getString(R.string.singleUserErrorTile));
                             builder.setMessage(getString(R.string.singleUserErrorMessage));
@@ -498,60 +360,78 @@ public class OpponentProfile extends BaseActivity {
                             builder.show();
                         }
                     } catch (JSONException e) {
+                        opponentProfileRefresh.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                opponentProfileRefresh.setRefreshing(false);
+                            }
+                        });
+                        Toast.makeText(OpponentProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
-                    isDataLoaded = true;
                 } catch (IOException e) {
+                    opponentProfileRefresh.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            opponentProfileRefresh.setRefreshing(false);
+                        }
+                    });
+                    Toast.makeText(OpponentProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getSingleUser();
+                opponentProfileRefresh.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        opponentProfileRefresh.setRefreshing(false);
+                    }
+                });
+                Toast.makeText(OpponentProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private Target getTarget() {
-        if (target == null) {
-            target = new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
-                    mOpponentImageLoading.setVisibility(View.GONE);
-                    mProfileImage.setImageBitmap(bitmap);
+    private void getUserPosts() {
+        Retrofit.getInstance().getInkService().getUserPosts(mOpponentId).enqueue(new Callback<List<FeedModel>>() {
+            @Override
+            public void onResponse(Call<List<FeedModel>> call, Response<List<FeedModel>> response) {
+                opponentProfileAdapter.setHasServerError(false);
+                if (response.body().isEmpty()) {
+                    opponentProfileAdapter.setShowNoFeedsOrError(true);
+                    feedModels.add(new FeedModel());
+                    opponentProfileAdapter.notifyDataSetChanged();
+                } else {
+                    opponentProfileAdapter.setShowNoFeedsOrError(false);
+                    for (FeedModel feedModel : response.body()) {
+                        feedModels.add(feedModel);
+                        opponentProfileAdapter.notifyDataSetChanged();
+                    }
                 }
-
-                @Override
-                public void onBitmapFailed(Drawable drawable) {
-                    mOpponentImageLoading.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onPrepareLoad(Drawable drawable) {
-
-                }
-            };
-        }
-        return target;
-    }
-
-
-    @OnClick(R.id.profileImage)
-    public void profileImage() {
-        Intent intent = new Intent(getApplicationContext(), FullscreenActivity.class);
-        if (mOpponentImage != null && !mOpponentImage.isEmpty()) {
-            if (isSocialAccount) {
-                intent.putExtra("link", mOpponentImage);
-            } else {
-                String encodedFileName = Uri.encode(mOpponentImage);
-                intent.putExtra("link", Constants.MAIN_URL +
-                        Constants.USER_IMAGES_FOLDER + encodedFileName);
+                opponentProfileRefresh.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        opponentProfileRefresh.setRefreshing(false);
+                    }
+                });
             }
-        } else {
-            intent.putExtra("link", Constants.NO_IMAGE_URL);
-        }
-        startActivity(intent);
+
+            @Override
+            public void onFailure(Call<List<FeedModel>> call, Throwable t) {
+                opponentProfileRefresh.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        opponentProfileRefresh.setRefreshing(false);
+                    }
+                });
+                opponentProfileAdapter.setShowNoFeedsOrError(true);
+                opponentProfileAdapter.setHasServerError(true);
+                feedModels.add(new FeedModel());
+                opponentProfileAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
 
@@ -559,6 +439,126 @@ public class OpponentProfile extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         supportFinishAfterTransition();
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        DimDialog.hideDialog();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onRefresh() {
+        feedModels.clear();
+        opponentProfileAdapter.notifyDataSetChanged();
+        getSingleUser();
+    }
+
+    @Override
+    public void onCardViewClick(FeedModel feedModel, String type) {
+        switch (type) {
+            case Constants.WALL_TYPE_GROUP_MESSAGE:
+                startGroupActivity(feedModel);
+                break;
+            case Constants.WALL_TYPE_POST:
+                startCommentActivity(feedModel);
+                break;
+        }
+    }
+
+    @Override
+    public void onAddressClick(FeedModel feedModel) {
+        String address = feedModel.getAddress();
+        openGoogleMaps(address);
+    }
+
+    @Override
+    public void onAttachmentClick(FeedModel feedModel) {
+        String fileName = feedModel.getFileName();
+        String userId = feedModel.getPosterId();
+        showPromptDialog(fileName);
+    }
+
+    @Override
+    public void onCardLongClick(FeedModel feedModel) {
+
+    }
+
+    @Override
+    public void onLikeClick(FeedModel feedModel, ImageView likeView, TextView likeCountTV, View likeWrapper) {
+        Animations.animateCircular(likeView);
+        boolean isLiked = feedModel.isLiked();
+        likeWrapper.setEnabled(false);
+        if (isLiked) {
+            //must dislike
+            like(feedModel.getId(), 1, likeCountTV, feedModel, likeWrapper);
+            likeView.setBackgroundResource(R.drawable.like_inactive);
+            feedModel.setLiked(false);
+        } else {
+            //must like
+            like(feedModel.getId(), 0, likeCountTV, feedModel, likeWrapper);
+            likeView.setBackgroundResource(R.drawable.like_active);
+            feedModel.setLiked(true);
+        }
+    }
+
+    @Override
+    public void onCommentClicked(FeedModel feedModel, View commentView) {
+        if (commentView != null) {
+            Animations.animateCircular(commentView);
+        }
+
+        startCommentActivity(feedModel);
+    }
+
+    @Override
+    public void onMoreClicked(final FeedModel feedModel, View view) {
+        DialogUtils.showPopUp(this, view, new ItemClickListener<MenuItem>() {
+            @Override
+            public void onItemClick(MenuItem clickedItem) {
+                switch (clickedItem.getItemId()) {
+                    case 0:
+                        showReportField(feedModel);
+                        break;
+                }
+
+            }
+        }, getString(R.string.report));
+    }
+
+    @Override
+    public void onImageClicked(FeedModel feedModel) {
+        Intent intent = new Intent(this, FullscreenActivity.class);
+        String encodedFileName = Uri.encode(feedModel.getFileName());
+        intent.putExtra("link", Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedFileName);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onShareClicked(FeedModel feedModel) {
+        openShareView(feedModel);
+    }
+
+    private void showPromptDialog(final String fileName) {
+
+        int index = fileName.indexOf(":");
+        String finalFileName = fileName.substring(index + 1, fileName.length());
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.downloadQuestion));
+        builder.setMessage(getString(R.string.downloadTheFile) + " " + finalFileName);
+        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                queDownload(fileName);
+            }
+        });
+        builder.show();
     }
 
     private void openGoogleMaps(String address) {
@@ -569,31 +569,281 @@ public class OpponentProfile extends BaseActivity {
         if (mapIntent.resolveActivity(getPackageManager()) != null) {
             startActivity(mapIntent);
         }
+    }
+
+
+    private void queDownload(String fileName) {
+        int index = fileName.indexOf(":");
+        String finalFileName = fileName.substring(index + 1, fileName.length());
+        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(
+                Uri.parse(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + fileName));
+        request.setTitle(finalFileName);
+
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setVisibleInDownloadsUi(true);
+        downloadManager.enqueue(request);
 
     }
 
-    private Intent getOpenFacebookIntent(String page) {
+    private void like(final String postId, final int isLiking, final TextView likeCountTV, final FeedModel feedModel, final View likeWrapper) {
+        final Call<ResponseBody> likeCall = Retrofit.getInstance().getInkService().likePost(sharedHelper.getUserId(), postId, isLiking);
+        likeCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    like(postId, isLiking, likeCountTV, feedModel, likeWrapper);
+                    return;
+                }
+                if (response.body() == null) {
+                    like(postId, isLiking, likeCountTV, feedModel, likeWrapper);
+                    return;
+                }
 
-        try {
-            getPackageManager()
-                    .getPackageInfo("com.facebook.katana", 0);
-            return new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("fb://facewebmodal/f?href=" + page));
-        } catch (Exception e) {
-            return new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(page));
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    String likesCount = jsonObject.optString("likes_count");
+                    feedModel.setLikesCount(likesCount);
+                    likeWrapper.setEnabled(true);
+                    if (!likesCount.equals("0")) {
+                        likeCountTV.setVisibility(View.VISIBLE);
+                        if (Integer.parseInt(likesCount) > 1) {
+                            likeCountTV.setText(likesCount + " " + getString(R.string.likesText));
+                        } else {
+                            likeCountTV.setText(likesCount + " " + getString(R.string.singleLikeText));
+                        }
+                    } else {
+                        likeCountTV.setVisibility(View.INVISIBLE);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                like(postId, isLiking, likeCountTV, feedModel, likeWrapper);
+            }
+        });
+    }
+
+
+    private void startGroupActivity(FeedModel feedModel) {
+
+        Intent intent = new Intent(this, SingleGroupView.class);
+        intent.putExtra("groupName", feedModel.getGroupName());
+        intent.putExtra("groupId", feedModel.getId());
+        intent.putExtra("groupColor", feedModel.getGroupColor());
+        intent.putExtra("groupImage", feedModel.getGroupImage());
+        intent.putExtra("groupDescription", feedModel.getGroupDescription());
+        intent.putExtra("groupOwnerId", feedModel.getGroupOwnerId());
+        intent.putExtra("groupOwnerName", feedModel.getGroupOwnerName());
+        intent.putExtra("count", feedModel.getCount());
+        intent.putExtra("ownerImage", feedModel.getOwnerImage());
+        intent.putExtra("isSocialAccount", feedModel.isSocialAccount());
+        intent.putExtra("isMember", true);
+        intent.putExtra("isFriend", feedModel.isFriend());
+        startActivity(intent);
+    }
+
+    private void startCommentActivity(FeedModel feedModel) {
+
+        Intent intent = new Intent(this, Comments.class);
+        intent.putExtra("postId", feedModel.getId());
+        intent.putExtra("userImage", feedModel.getUserImage());
+        intent.putExtra("postBody", feedModel.getContent());
+        intent.putExtra("attachment", feedModel.getFileName());
+        intent.putExtra("location", feedModel.getAddress());
+        intent.putExtra("name", feedModel.getFirstName() + " " + feedModel.getLastName());
+        intent.putExtra("date", feedModel.getDatePosted());
+        intent.putExtra("likesCount", feedModel.getLikesCount());
+        intent.putExtra("isLiked", feedModel.isLiked());
+        intent.putExtra("isSocialAccount", feedModel.isSocialAccount());
+        intent.putExtra("ownerId", feedModel.getPosterId());
+
+        intent.putExtra("attachmentPresent", feedModel.isAttachmentPresent());
+        intent.putExtra("addressPresent", feedModel.isAddressPresent());
+        intent.putExtra("attachmentName", feedModel.getFileName());
+        intent.putExtra("addressName", feedModel.getAddress());
+        intent.putExtra("postId", feedModel.getId());
+        intent.putExtra("postBody", feedModel.getContent());
+
+        intent.putExtra("isPostOwner", feedModel.isPostOwner());
+        intent.putExtra("isFriend", feedModel.isFriend());
+
+
+        startActivity(intent);
+    }
+
+    private void openShareView(final FeedModel singleModel) {
+
+        content = new StringBuilder();
+        content.append(singleModel.getContent());
+
+        if (singleModel.isAttachmentPresent()) {
+            Ion.with(this).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + Uri.encode(singleModel.getFileName())).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+                @Override
+                public void onCompleted(Exception e, Bitmap result) {
+                    if (e != null) {
+                        if (singleModel.isAddressPresent()) {
+                            content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
+                        }
+                        openShareIntent(intentBitmap, content.toString());
+                    } else {
+                        intentBitmap = result;
+                        if (singleModel.isAddressPresent()) {
+                            content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
+                        }
+                        openShareIntent(intentBitmap, content.toString());
+                    }
+                }
+            });
+        } else {
+            intentBitmap = null;
+            if (singleModel.isAddressPresent()) {
+                content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
+            }
+            openShareIntent(intentBitmap, content.toString());
         }
+
     }
 
-    private void openFacebookPage(String page) {
-        Intent facebookIntent = getOpenFacebookIntent(page);
-        startActivity(facebookIntent);
+    private void openShareIntent(@Nullable Bitmap result, String text) {
+        if (shareOutPutDir != null && shareOutPutDir.exists()) {
+            shareOutPutDir.delete();
+        }
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("*/*");
+        shareFileName = "Ink_File" + System.currentTimeMillis() + ".jpg";
+
+        if (result != null) {
+            if (!PermissionsChecker.isStoragePermissionGranted(this)) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_REQUEST);
+                return;
+            }
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            result.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+
+            shareOutPutDir = new File(Environment.getExternalStorageDirectory() + File.separator + shareFileName);
+            try {
+                shareOutPutDir.createNewFile();
+                FileOutputStream fo = new FileOutputStream(shareOutPutDir);
+                fo.write(bytes.toByteArray());
+            } catch (IOException e) {
+                e.printStackTrace();
+                Snackbar.make(opponentProfileRecycler, getString(R.string.error), Snackbar.LENGTH_SHORT).show();
+            }
+            intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file:///sdcard/" + shareFileName));
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(text);
+        stringBuilder.append("\n\n" + getString(R.string.ink_share_text));
+
+        intent.putExtra(Intent.EXTRA_TEXT, stringBuilder.toString());
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.share_ink_with)), SHARE_INTENT_RESULT);
+    }
+
+    private void showReportField(final FeedModel feedModel) {
+        InputField.createInputFieldView(this, new InputField.ClickHandler() {
+            @Override
+            public void onPositiveClicked(Object... result) {
+                AlertDialog dialog = (AlertDialog) result[1];
+                dialog.dismiss();
+                String reportCauseMessage = String.valueOf(result[0]);
+                reportPost(feedModel, reportCauseMessage);
+            }
+
+            @Override
+            public void onNegativeClicked(Object... result) {
+                AlertDialog dialog = (AlertDialog) result[1];
+                dialog.dismiss();
+            }
+        }, null, getString(R.string.reportCause), null);
+    }
+
+
+    private void reportPost(final FeedModel feedModel, final String reportCauseMessage) {
+        final ink.va.utils.ProgressDialog dialog = ink.va.utils.ProgressDialog.get().buildProgressDialog(OpponentProfile.this, true);
+        dialog.setTitle(getString(R.string.connecting));
+        dialog.setMessage(getString(R.string.loadingText));
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+        Retrofit.getInstance().getInkService().reportPost(feedModel.getId(), String.valueOf(feedModel.isGlobalPost()), reportCauseMessage, sharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    reportPost(feedModel, reportCauseMessage);
+                    return;
+                }
+                if (response.body() == null) {
+                    reportPost(feedModel, reportCauseMessage);
+                    return;
+                }
+                dialog.hide();
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        DialogUtils.showDialog(OpponentProfile.this, getString(R.string.done_text), getString(R.string.reported), true, null, false, null);
+                        opponentProfileAdapter.clear();
+
+                        onRefresh();
+                    } else {
+                        DialogUtils.showDialog(OpponentProfile.this, getString(R.string.error), getString(R.string.reportError), true, null, false, null);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    DialogUtils.showDialog(OpponentProfile.this, getString(R.string.error), getString(R.string.reportError), true, null, false, null);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    DialogUtils.showDialog(OpponentProfile.this, getString(R.string.error), getString(R.string.reportError), true, null, false, null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                dialog.hide();
+                DialogUtils.showDialog(OpponentProfile.this, getString(R.string.error), getString(R.string.reportError), true, null, false, null);
+            }
+        });
     }
 
     @Override
-    protected void onDestroy() {
-        DimDialog.hideDialog();
-        super.onDestroy();
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case SHARE_INTENT_RESULT:
+                if (shareOutPutDir != null) {
+                    shareOutPutDir.delete();
+                }
+                break;
+        }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case STORAGE_PERMISSION_REQUEST:
+                if (!PermissionsChecker.isStoragePermissionGranted(this)) {
+                    Snackbar.make(opponentProfileRecycler, getString(R.string.storagePermissions), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
+                } else {
+                    openShareIntent(intentBitmap, content.toString());
+                }
+                break;
+        }
+    }
 }

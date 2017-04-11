@@ -1096,4 +1096,5 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="credits">Credits</string>
     <string name="backFrontDeveloper">Android and Back-End Developer</string>
     <string name="uxDeveloper">UI/UX Designer</string>
+    <string name="feedError">Could not fetch feeds, please check your internet</string>
 </resources>

@@ -118,7 +118,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         feedRefresh = (SwipeRefreshLayout) view.findViewById(R.id.feedRefresh);
         feedRootLayout = (RelativeLayout) view.findViewById(R.id.feedRootLayout);
         feedRefresh.setColorSchemeColors(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.colorPrimary));
-        noPostsWrapper = (RelativeLayout) view.findViewById(R.id.noPostsWrapper);
+        noPostsWrapper = (RelativeLayout) view.findViewById(R.id.noPostOrErrorWrapper);
         deleteDialog = new ProgressDialog(getActivity());
         deleteDialog.setTitle(getString(R.string.deleting));
         deleteDialog.setMessage(getString(R.string.deletingPost));

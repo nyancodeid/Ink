@@ -25,6 +25,7 @@ import ink.va.utils.Constants;
 import ink.va.utils.FileUtils;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
+import lombok.Setter;
 
 /**
  * Created by PC-Comp on 12/20/2016.
@@ -89,6 +90,18 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
     View spacing;
     @BindView(R.id.actionDivider)
     View actionDivider;
+    @BindView(R.id.feedItemWrapper)
+    View feedItemWrapper;
+    @BindView(R.id.noPostOrErrorWrapper)
+    View noPostOrErrorWrapper;
+    @BindView(R.id.noPostIconOrError)
+    ImageView noPostIconOrError;
+    @BindView(R.id.noPostOrErrorTV)
+    TextView noPostOrErrorTV;
+    @Setter
+    private boolean showNoFeedOrError;
+    @Setter
+    private boolean hasServerError;
 
     public FeedViewHolder(View view) {
         super(view);
@@ -99,27 +112,50 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
                          FeedItemClick feedItemClick, int maxCount) {
         sharedHelper = new SharedHelper(context);
 
-        if (position == (maxCount - 1)) {
-            spacing.setVisibility(View.VISIBLE);
+        if (showNoFeedOrError) {
+            if (feedItemWrapper.getVisibility() == View.VISIBLE) {
+                feedItemWrapper.setVisibility(View.GONE);
+            }
+            if (noPostOrErrorWrapper.getVisibility() == View.GONE) {
+                noPostOrErrorWrapper.setVisibility(View.VISIBLE);
+            }
+            if (hasServerError) {
+                noPostIconOrError.setBackgroundResource(R.drawable.network_error);
+                noPostOrErrorTV.setText(context.getString(R.string.feedError));
+            } else {
+                noPostIconOrError.setBackgroundResource(R.drawable.no_posts);
+                noPostOrErrorTV.setText(context.getString(R.string.noPostsYet));
+            }
         } else {
-            spacing.setVisibility(View.GONE);
-        }
+            if (feedItemWrapper.getVisibility() == View.GONE) {
+                feedItemWrapper.setVisibility(View.VISIBLE);
+            }
+            if (noPostOrErrorWrapper.getVisibility() == View.VISIBLE) {
+                noPostOrErrorWrapper.setVisibility(View.GONE);
+            }
 
-        postVisibilityIcon.setImageResource(feedModel.isGlobalPost() ? R.drawable.global_icon_greyed_out : R.drawable.local_icon_greyed_out);
+            if (position == (maxCount - 1)) {
+                spacing.setVisibility(View.VISIBLE);
+            } else {
+                spacing.setVisibility(View.GONE);
+            }
 
-        mOnClickListener = feedItemClick;
-        mContext = context;
-        this.feedModel = feedModel;
-        switch (feedModel.getType()) {
-            case Constants.WALL_TYPE_POST:
-                handlePosts();
-                break;
-            case Constants.WALL_TYPE_GROUP_MESSAGE:
-                handleGroupMessages();
-                break;
-            default:
-                hideActions();
+            postVisibilityIcon.setImageResource(feedModel.isGlobalPost() ? R.drawable.global_icon_greyed_out : R.drawable.local_icon_greyed_out);
 
+            mOnClickListener = feedItemClick;
+            mContext = context;
+            this.feedModel = feedModel;
+            switch (feedModel.getType()) {
+                case Constants.WALL_TYPE_POST:
+                    handlePosts();
+                    break;
+                case Constants.WALL_TYPE_GROUP_MESSAGE:
+                    handleGroupMessages();
+                    break;
+                default:
+                    hideActions();
+
+            }
         }
     }
 

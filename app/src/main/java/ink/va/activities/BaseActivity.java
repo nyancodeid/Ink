@@ -191,8 +191,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    finish();
-                    System.exit(0);
+                    finishAffinity();
                 }
             });
 
@@ -352,8 +351,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            finish();
-                            System.exit(0);
+                            finishAffinity();
 
                         }
                     });
@@ -547,7 +545,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                     String mLastNameToSend = jsonObject.optString("last_name");
                     String mGenderToSend = jsonObject.optString("gender");
                     String mBadgeName = jsonObject.optString("badge_name");
-                    String mPhoneNumberToSend = jsonObject.optString("phone_number");
+                    String mPhoneNumberToSend = jsonObject.optString("phoneNumber");
                     String mFacebookProfileToSend = jsonObject.optString("facebook_profile");
                     String mFacebookName = jsonObject.optString("facebook_name");
                     String mImageLinkToSend = jsonObject.optString("image_link");

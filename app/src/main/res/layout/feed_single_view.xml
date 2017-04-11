@@ -9,7 +9,7 @@
 
 
     <RelativeLayout
-        android:id="@+id/feedSpaceWrapper"
+        android:id="@+id/feedItemParent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -20,16 +20,43 @@
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="45dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/com_facebook_tooltip_black_background"
             android:foreground="?android:attr/selectableItemBackground"
             app:cardCornerRadius="8dp"
             app:cardElevation="10dp">
 
             <RelativeLayout
+                android:id="@+id/noPostOrErrorWrapper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/noPostIconOrError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/no_posts" />
+
+                <TextView
+                    android:id="@+id/noPostOrErrorTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/noPostIconOrError"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="@string/appFont"
+                    android:text="@string/noPostsYet" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/feedItemWrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clickable="false">
+                android:clickable="false"
+                android:visibility="visible">
 
                 <ImageView
                     android:id="@+id/feedMoreIcon"
@@ -340,7 +367,7 @@
         android:id="@+id/spacing"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:layout_below="@+id/feedSpaceWrapper"
+        android:layout_below="@+id/feedItemParent"
         android:visibility="visible" />
 
 

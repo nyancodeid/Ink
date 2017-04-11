@@ -55,14 +55,14 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/noPostsWrapper"
+        android:id="@+id/noPostOrErrorWrapper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="gone">
 
         <ImageView
-            android:id="@+id/noPostIcon"
+            android:id="@+id/noPostIconOrError"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/no_posts" />
@@ -70,7 +70,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/noPostIcon"
+            android:layout_below="@+id/noPostIconOrError"
             android:layout_centerHorizontal="true"
             android:fontFamily="@string/appFont"
             android:text="@string/noPostsYet" />
