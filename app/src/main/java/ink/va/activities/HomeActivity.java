@@ -54,10 +54,13 @@ import com.pollfish.interfaces.PollfishSurveyNotAvailableListener;
 import com.pollfish.interfaces.PollfishSurveyReceivedListener;
 import com.pollfish.interfaces.PollfishUserNotEligibleListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -67,8 +70,9 @@ import ink.va.fragments.MyFriends;
 import ink.va.interfaces.AccountDeleteListener;
 import ink.va.interfaces.ColorChangeListener;
 import ink.va.models.CoinsResponse;
-import ink.va.service.MessageService;
+import ink.va.models.FriendModel;
 import ink.va.service.SendTokenService;
+import ink.va.service.SocketService;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.DeviceChecker;
@@ -84,6 +88,7 @@ import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.User;
 import io.smooch.ui.ConversationActivity;
+import lombok.Getter;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -137,11 +142,10 @@ public class HomeActivity extends BaseActivity
     public String currentScreen;
     public static final String SCREEN_FEED = "feed";
     public static final String SCREEN_FRIENDS = "friends";
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
+    @Getter
+    private SocketService socketService;
     private boolean openInstaBug;
+    private Gson friendGson;
 
 
     @Override
@@ -161,6 +165,7 @@ public class HomeActivity extends BaseActivity
         SETTINGS = getString(R.string.settingsString);
         mToolbar.setTitle(FEED);
         mSharedHelper = new SharedHelper(this);
+        friendGson = new Gson();
 
 
         initService();
@@ -189,6 +194,8 @@ public class HomeActivity extends BaseActivity
 
 
         checkNotification(getIntent());
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(feedUpdateReceiver, new IntentFilter(getPackageName() + "HomeActivity"));
 
         User.get().setUserName(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
         User.get().setUserId(mSharedHelper.getUserId());
@@ -259,12 +266,51 @@ public class HomeActivity extends BaseActivity
         mUserNameTV = (TextView) headerView.findViewById(R.id.userNameTextView);
         panelHeader = (RelativeLayout) headerView.findViewById(R.id.panelHeader);
         navigationView.setNavigationItemSelectedListener(this);
-        LocalBroadcastManager.getInstance(this).registerReceiver(feedUpdateReceiver, new IntentFilter(getPackageName() + "HomeActivity"));
     }
 
 
-    private void initService() {
-        startService(new Intent(getApplicationContext(), MessageService.class));
+    public void initService() {
+        startService(new Intent(getApplicationContext(), SocketService.class));
+    }
+
+
+    private void getFriends() {
+        final List<String> friendIds = new LinkedList<>();
+        try {
+            final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().getFriends(mSharedHelper.getUserId());
+            responseBodyCall.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    try {
+                        String responseString = response.body().string();
+                        try {
+                            JSONObject jsonObject = new JSONObject(responseString);
+                            boolean success = jsonObject.optBoolean("success");
+                            if (success) {
+                                JSONArray friendsArray = jsonObject.optJSONArray("friends");
+                                FriendModel[] friendModels = friendGson.fromJson(friendsArray.toString(), FriendModel[].class);
+                                for (FriendModel friendModel : friendModels) {
+                                    friendIds.add(friendModel.getFriendId());
+                                }
+                                User.get().setFriendIds(friendIds);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    getFriends();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -311,6 +357,16 @@ public class HomeActivity extends BaseActivity
         });
     }
 
+    private BroadcastReceiver feedUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean feedUpdateReceiver = intent.getExtras() != null ? intent.getExtras().containsKey("updateFromPost") ? intent.getExtras().getBoolean("updateFromPost") : false : false;
+            if (feedUpdateReceiver) {
+                mFeed.onRefresh();
+            }
+        }
+    };
+
     private void checkIsWarned() {
         if (!mSharedHelper.isDeviceWarned()) {
             if (DeviceChecker.isHuawei()) {
@@ -351,26 +407,6 @@ public class HomeActivity extends BaseActivity
     }
 
 
-    private BroadcastReceiver feedUpdateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            getCoins();
-            if (mFeed != null) {
-                //meaning new comment triggered the broadcast
-                if (intent.getExtras() != null) {
-                    Bundle extras = intent.getExtras();
-                    final String postId = extras.getString("postId");
-                    handleFeedNotification(postId);
-                } else {
-                    //meaning just trigger the feed update
-                    mFeed.triggerFeedUpdate(false);
-                }
-
-            }
-        }
-    };
-
-
     private void openInstBug() {
         Instabug.invoke(InstabugInvocationMode.NEW_FEEDBACK);
     }
@@ -388,20 +424,6 @@ public class HomeActivity extends BaseActivity
         }
     }
 
-    private void handleFeedNotification(final String postId) {
-        if (mFeed != null && coinsText != null) {
-            mFeed.triggerFeedUpdate(false);
-            Snackbar.make(coinsText, getString(R.string.newComment), Snackbar.LENGTH_LONG).setAction(getString(R.string.view), new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mSharedHelper.putPostId(postId);
-                    mFeed.checkShowComment();
-                }
-            }).show();
-        }
-
-    }
-
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -415,7 +437,6 @@ public class HomeActivity extends BaseActivity
             Bundle notificationBundle = intent.getBundleExtra(NOTIFICATION_BUNDLE_EXTRA_KEY);
             if (notificationBundle != null) {
                 String postId = notificationBundle.getString(NOTIFICATION_POST_ID_KEY);
-                handleFeedNotification(postId);
             } else {
                 String jsonObject = intent.getExtras().getString(NOTIFICATION_MESSAGE_BUNDLE_KEY);
                 boolean autoRedirect = intent.getExtras().getBoolean(NOTIFICATION_AUTO_REDIRECT_BUNDLE_KEY);
@@ -428,6 +449,12 @@ public class HomeActivity extends BaseActivity
                 }
             }
         }
+    }
+
+    @Override
+    public void onServiceConnected(SocketService socketService) {
+        super.onServiceConnected(socketService);
+        this.socketService = socketService;
     }
 
     @OnClick(R.id.earnCoins)
@@ -652,7 +679,7 @@ public class HomeActivity extends BaseActivity
                 builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        stopService(new Intent(HomeActivity.this, MessageService.class));
+                        stopService(new Intent(HomeActivity.this, SocketService.class));
                         logoutUser();
                     }
                 });
@@ -939,6 +966,7 @@ public class HomeActivity extends BaseActivity
         if (mSharedHelper.shouldLoadImage()) {
             loadImage();
         }
+        getFriends();
         super.onResume();
     }
 

@@ -699,7 +699,7 @@
     <string name="likedPostText">-у понравился ваш пост</string>
     <string name="posted_text">опубликовал в</string>
     <string name="group_post_title">Пост в Группе</string>
-    <string name="commented_post">прокоментировал ваш пост</string>
+    <string name="commented_post">прокоментировал пост</string>
 
     <string name="enableGroupNotificationText">Разрешать уведомления группы</string>
     <string name="enableMafiaNotification">Разрешать уведомления создания комнаты Мафии</string>
@@ -1123,4 +1123,15 @@
     <string name="backFrontDeveloper">Разработчик Android и Back-End</string>
     <string name="uxDeveloper">UI/UX Дизайнер</string>
     <string name="feedError">Не удалось получить посты, проверьте свой интернет.</string>
+    <string name="dontReceiveNotificationText">Не получать уведомления</string>
+    <string name="youWillNotReceiveNotifications">Вы больше не будете получать уведомления об этом</string>
+    <string name="enableNotifications">Включить уведомления</string>
+    <string name="youWillReceiveNotifications">Вы будете получать уведомления об этом</string>
+    <string name="postLiked">Пост Понравлен</string>
+    <string name="madeGlobalPost">сделал(а) глобальный пост</string>
+
+    <string name="friendRequested">Запрос в Друзья</string>
+
+    <string name="sentFriendRequest"> запросил быть с вами друзьями</string>
+    <string name="deniedYourRequest">отклонил ваш запрос в друзья</string>
 </resources>

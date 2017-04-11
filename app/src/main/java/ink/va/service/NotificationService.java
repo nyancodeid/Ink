@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -43,10 +42,8 @@ import ink.va.utils.SharedHelper;
 import static ink.va.utils.Constants.DELETE_MESSAGE_REQUESTED;
 import static ink.va.utils.Constants.NOTIFICAITON_TYPE_GLOBAL_CHAT_MESSAGE;
 import static ink.va.utils.Constants.NOTIFICATION_BUNDLE_EXTRA_KEY;
-import static ink.va.utils.Constants.NOTIFICATION_POST_ID_KEY;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_CALL;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_CHAT_ROULETTE;
-import static ink.va.utils.Constants.NOTIFICATION_TYPE_COMMENT_ADDED;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_FRIEND_REQUEST;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_GROUP_REQUEST;
@@ -110,8 +107,6 @@ public class NotificationService extends FirebaseMessagingService {
                 break;
 
             case NOTIFICATION_TYPE_FRIEND_REQUEST:
-                Log.d(TAG, "onMessageReceived: " + "user with id " + response.get("requesterId") + " with the name " + response.get("requesterName") + " with the image"
-                        + response.get("requesterImage") + " requested to be friend with you");
 
                 sendFriendRequestNotification(getApplicationContext(), response.get("requesterName"), response.get("requestId"));
                 break;
@@ -130,27 +125,6 @@ public class NotificationService extends FirebaseMessagingService {
                 localBroadcastManager = LocalBroadcastManager.getInstance(this);
                 localBroadcastManager.sendBroadcast(intent);
                 break;
-
-            case NOTIFICATION_TYPE_COMMENT_ADDED:
-                if (mSharedHelper.showCommentNotification()) {
-                    String postId = response.get("postId");
-                    mSharedHelper.putPostId(postId);
-                    String firstName = response.get("firstName");
-                    String lastName = response.get("lastName");
-                    String commentId = response.get("id");
-                    String commentBody = response.get("commentBody");
-
-                    Bundle bundle = new Bundle();
-                    bundle.putString(NOTIFICATION_POST_ID_KEY, postId);
-
-                    sendGeneralNotification(getApplicationContext(), commentId, firstName + " " + lastName + " " + getString(R.string.commented_post),
-                            commentBody, bundle);
-                    Intent commentIntent = new Intent(getPackageName() + "HomeActivity");
-                    commentIntent.putExtra(NOTIFICATION_POST_ID_KEY, postId);
-                    LocalBroadcastManager.getInstance(NotificationService.this).sendBroadcast(commentIntent);
-                }
-                break;
-
 
             case NOTIFICATION_TYPE_POSTED_IN_GROUP:
                 if (mSharedHelper.showGroupNotification()) {

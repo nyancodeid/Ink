@@ -288,6 +288,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
                     .intoImageView(feedUserImage);
         }
         if (feedModel.getPosterId().equals(sharedHelper.getUserId())) {
+            sharedHelper.putOwnPostId(feedModel.getId());
             feedModel.setPostOwner(true);
         } else {
             feedModel.setPostOwner(false);
@@ -306,8 +307,10 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
         whenPosted.setText(Time.convertToLocalTime(feedModel.getDatePosted()));
         userPostedTitle.setText(feedModel.getFirstName() + " " + feedModel.getLastName());
         if (feedModel.isLiked()) {
+            sharedHelper.putLikedPostId(feedModel.getId());
             likeIcon.setBackgroundResource(R.drawable.like_active);
         } else {
+            sharedHelper.removeLikedPostId(feedModel.getId());
             likeIcon.setBackgroundResource(R.drawable.like_inactive);
         }
 

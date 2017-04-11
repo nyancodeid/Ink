@@ -63,10 +63,13 @@ import ink.va.utils.InputField;
 import ink.va.utils.PermissionsChecker;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
+import ink.va.utils.Time;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static ink.va.utils.Constants.EVENT_POST_LIKED;
 
 /**
  * Created by USER on 2016-06-21.
@@ -330,7 +333,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         intent.putExtra("attachment", feedModel.getFileName());
         intent.putExtra("location", feedModel.getAddress());
         intent.putExtra("name", feedModel.getFirstName() + " " + feedModel.getLastName());
-        intent.putExtra("date", feedModel.getDatePosted());
+        intent.putExtra("date", Time.convertToLocalTime(feedModel.getDatePosted()));
         intent.putExtra("likesCount", feedModel.getLikesCount());
         intent.putExtra("isLiked", feedModel.isLiked());
         intent.putExtra("isSocialAccount", feedModel.isSocialAccount());
@@ -419,6 +422,28 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             like(feedModel.getId(), 0, likeCountTV, feedModel, likeWrapper);
             likeView.setBackgroundResource(R.drawable.like_active);
             feedModel.setLiked(true);
+            JSONObject likeJson = new JSONObject();
+            try {
+                likeJson.put("postOwnerId", feedModel.getPosterId());
+                likeJson.put("likerFirstName", mSharedHelper.getFirstName());
+                likeJson.put("likerLastName", mSharedHelper.getLastName());
+                likeJson.put("likerId", mSharedHelper.getUserId());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            if (((HomeActivity) getActivity()).getSocketService() != null) {
+                if (!((HomeActivity) getActivity()).getSocketService().isSocketConnected()) {
+                    ((HomeActivity) getActivity()).getSocketService().connectSocket();
+                }
+                ((HomeActivity) getActivity()).getSocketService().emit(EVENT_POST_LIKED, likeJson);
+            } else {
+                ((HomeActivity) getActivity()).initService();
+                if (!((HomeActivity) getActivity()).getSocketService().isSocketConnected()) {
+                    ((HomeActivity) getActivity()).getSocketService().connectSocket();
+                }
+                ((HomeActivity) getActivity()).getSocketService().emit(EVENT_POST_LIKED, likeJson);
+            }
         }
     }
 
@@ -489,10 +514,21 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                         case 1:
                             showReportField(feedModel);
                             break;
+                        case 2:
+                            if (mSharedHelper.postMuted(feedModel.getId())) {
+                                mSharedHelper.removeNotificationDisabledPost(feedModel.getId());
+                                Toast.makeText(parentActivity, getString(R.string.youWillReceiveNotifications), Toast.LENGTH_SHORT).show();
+                            } else {
+                                mSharedHelper.putNotificationDisabledPostId(feedModel.getId());
+                                Toast.makeText(parentActivity, getString(R.string.youWillNotReceiveNotifications), Toast.LENGTH_SHORT).show();
+                            }
+
+
+                            break;
                     }
 
                 }
-            }, getString(R.string.viewProfile), getString(R.string.report));
+            }, getString(R.string.viewProfile), getString(R.string.report), mSharedHelper.postMuted(feedModel.getId()) ? getString(R.string.enableNotifications) : getString(R.string.dontReceiveNotificationText));
         }
     }
 
@@ -683,6 +719,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        mSharedHelper.removeOwnPostId(postId);
                         deleteDialog.dismiss();
                         Snackbar.make(mRecyclerView, getString(R.string.postDeleted), Snackbar.LENGTH_SHORT).show();
                     } else {
@@ -750,16 +787,6 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         });
     }
 
-    public void triggerFeedUpdate(boolean checkCommentAutomatic) {
-        if (mOffset == 0) {
-            mOffset = 10;
-        }
-        getFeeds(0, mOffset, true, false, false, checkCommentAutomatic);
-    }
-
-    public void updateAdapter() {
-        mAdapter.notifyDataSetChanged();
-    }
 
     @Override
     public void onColorChanged() {

@@ -281,6 +281,12 @@ public class Constants {
     public static final String EVENT_ON_MAFIA_GAME_STARTED = "onMafiaGameStarted";
     public static final String EVENT_ON_GAME_CREATED = "onGameCreated";
     public static final String EVENT_ON_SOCKET_MESSAGE_RECEIVED = "socketMessageReceived";
+    public static final String EVENT_ON_COMMENT_ADDED = "onCommentAdded";
+    public static final String EVENT_ON_POST_LIKED = "onPostLiked";
+    public static final String EVENT_ON_POST_MADE = "onPostMade";
+    public static final String EVENT_ON_FRIEND_REQUESTED = "onFriendRequested";
+    public static final String EVENT_ON_FRIEND_REQUEST_ACCEPTED = "onFriendRequestAccepted";
+    public static final String EVENT_ON_FRIEND_REQUEST_DECLINED = "onFriendRequestDeclined";
 
     /**
      * Socket Emit Events
@@ -288,8 +294,21 @@ public class Constants {
     public static final String EVENT_ADD_USER = "addUser";
     public static final String EVENT_SEND_MESSAGE = "sendMessage";
     public static final String EVENT_MESSAGE_RECEIVED = "onClientMessageReceived";
+    public static final String EVENT_COMMENT_RECEIVED = "onClientCommentReceived";
+    public static final String EVENT_FRIEND_REQUEST_ACCEPT_RECEIVED = "onClientFriendRequestAcceptReceived";
+    public static final String EVENT_FRIEND_REQUEST_DECLINE_RECEIVED = "onClientFriendRequestDeclineReceived";
+    public static final String EVENT_POST_LIKE_RECEIVED = "onClientPostLikeReceived";
+    public static final String EVENT_POST_MADE_RECEIVED = "onClientPostMadeReceived";
+    public static final String EVENT_FRIEND_REQUEST_RECEIVED = "onClientFriendRequestReceived";
+
     public static final String EVENT_ONLINE_STATUS = "onlineStatus";
     public static final String EVENT_PING = "ping";
+    public static final String EVENT_COMMENT_ADDED = "commentAdded";
+    public static final String EVENT_POST_LIKED = "postLiked";
+    public static final String EVENT_POST_MADE = "postMade";
+    public static final String EVENT_FRIEND_REQUESTED = "friendRequested";
+    public static final String EVENT_ACCEPT_FRIEND_REQUEST = "acceptFriendRequest";
+    public static final String EVENT_DECLINE_FRIEND_REQUEST = "declineFriendRequest";
     public static final String EVENT_CREATE_GAME = "creatingGame";
 }
 

@@ -1,6 +1,11 @@
 package ink.va.utils;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import ink.va.models.UserModel;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by USER on 2016-07-20.
@@ -13,6 +18,13 @@ public class User {
     private String userName;
     private String userId;
     private boolean isCoinsLoaded;
+    @Setter
+    @Getter
+    private List<String> friendIds;
+
+    public User() {
+        friendIds = new LinkedList<>();
+    }
 
     public int getCoins() {
         return coins;
@@ -86,6 +98,5 @@ public class User {
         userModel.setLogin(sharedHelper.getLogin());
         return userModel;
     }
-
 
 }

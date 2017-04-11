@@ -56,6 +56,7 @@ import ink.va.interfaces.CommentClickHandler;
 import ink.va.interfaces.ItemClickListener;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.CommentModel;
+import ink.va.service.SocketService;
 import ink.va.utils.Animations;
 import ink.va.utils.ClipManager;
 import ink.va.utils.Constants;
@@ -69,6 +70,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.utils.Constants.EVENT_COMMENT_ADDED;
+import static ink.va.utils.Constants.EVENT_POST_LIKED;
+import static ink.va.utils.Constants.NOTIFICATION_BUNDLE_EXTRA_KEY;
 import static ink.va.utils.Constants.REQUEST_CODE_CHOSE_STICKER;
 import static ink.va.utils.Constants.STARTING_FOR_RESULT_BUNDLE_KEY;
 
@@ -124,6 +128,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     private boolean isStickerChosen;
     private String lastChosenStickerUrl;
     private boolean isAnimated;
+    private SocketService socketService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,26 +150,49 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         if (extras != null) {
-            mPostId = extras.getString("postId");
-            mUserImage = extras.getString("userImage");
-            mPostBody = extras.getString("postBody");
-            mAttachment = extras.getString("attachment");
-            isOwnerSocialAccount = extras.getBoolean("isSocialAccount");
-            mLocation = extras.getString("location");
-            mName = extras.getString("name");
-            mDate = extras.getString("date");
-            mLikesCount = extras.getString("likesCount");
-            isLiked = extras.getBoolean("isLiked");
-            ownerId = extras.getString("ownerId");
+            if (extras.containsKey(NOTIFICATION_BUNDLE_EXTRA_KEY)) {
+                Bundle bundle = extras.getBundle(NOTIFICATION_BUNDLE_EXTRA_KEY);
+                mPostId = bundle.getString("postId");
+                mUserImage = bundle.getString("userImage");
+                mPostBody = bundle.getString("postBody");
+                mAttachment = bundle.getString("attachment");
+                isOwnerSocialAccount = bundle.getBoolean("isSocialAccount");
+                mLocation = bundle.getString("location");
+                mName = bundle.getString("name");
+                mDate = bundle.getString("date");
+                mLikesCount = bundle.getString("likesCount");
+                isLiked = bundle.getBoolean("isLiked");
+                ownerId = bundle.getString("ownerId");
+                hasAttachment = bundle.getBoolean("attachmentPresent");
+                hasAddress = bundle.getBoolean("addressPresent");
+                attachmentName = bundle.getString("attachmentName");
+                addressName = bundle.getString("addressName");
+                postId = bundle.getString("postId");
+                postBody = bundle.getString("postBody");
+                isPostOwner = bundle.getBoolean("isPostOwner");
+                isFriend = bundle.getBoolean("isFriend");
+            } else {
+                mPostId = extras.getString("postId");
+                mUserImage = extras.getString("userImage");
+                mPostBody = extras.getString("postBody");
+                mAttachment = extras.getString("attachment");
+                isOwnerSocialAccount = extras.getBoolean("isSocialAccount");
+                mLocation = extras.getString("location");
+                mName = extras.getString("name");
+                mDate = extras.getString("date");
+                mLikesCount = extras.getString("likesCount");
+                isLiked = extras.getBoolean("isLiked");
+                ownerId = extras.getString("ownerId");
+                hasAttachment = extras.getBoolean("attachmentPresent");
+                hasAddress = extras.getBoolean("addressPresent");
+                attachmentName = extras.getString("attachmentName");
+                addressName = extras.getString("addressName");
+                postId = extras.getString("postId");
+                postBody = extras.getString("postBody");
+                isPostOwner = extras.getBoolean("isPostOwner");
+                isFriend = extras.getBoolean("isFriend");
+            }
 
-            hasAttachment = extras.getBoolean("attachmentPresent");
-            hasAddress = extras.getBoolean("addressPresent");
-            attachmentName = extras.getString("attachmentName");
-            addressName = extras.getString("addressName");
-            postId = extras.getString("postId");
-            postBody = extras.getString("postBody");
-            isPostOwner = extras.getBoolean("isPostOwner");
-            isFriend = extras.getBoolean("isFriend");
         }
 
         mCommentAdapter = new CommentAdapter(ownerId, mCommentModels, this, mUserImage,
@@ -391,6 +419,44 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        String commentId = jsonObject.optString("commentId");
+
+                        if (socketService != null) {
+                            JSONObject commentJson = new JSONObject();
+
+
+                            commentJson.put("postId", mPostId);
+                            commentJson.put("userImage", mUserImage);
+                            commentJson.put("postBody", mPostBody);
+                            commentJson.put("attachment", mAttachment);
+                            commentJson.put("isSocialAccount", isOwnerSocialAccount);
+                            commentJson.put("location", mLocation);
+                            commentJson.put("name", mName);
+                            commentJson.put("date", mDate);
+                            commentJson.put("likesCount", mLikesCount);
+                            commentJson.put("isLiked", isLiked);
+                            commentJson.put("ownerId", ownerId);
+                            commentJson.put("attachmentPresent", hasAttachment);
+                            commentJson.put("addressPresent", hasAddress);
+                            commentJson.put("attachmentName", attachmentName);
+                            commentJson.put("addressName", addressName);
+                            commentJson.put("postId", postId);
+                            commentJson.put("postBody", postBody);
+                            commentJson.put("isPostOwner", isPostOwner);
+                            commentJson.put("isFriend", isFriend);
+
+                            commentJson.put("commentId", commentId);
+                            commentJson.put("currentUserId", mSharedHelper.getUserId());
+                            commentJson.put("commenterId", commenterId);
+                            commentJson.put("commentBody", commentBody);
+                            commentJson.put("commenterFirstName", mSharedHelper.getFirstName());
+                            commentJson.put("commenterLastName", mSharedHelper.getLastName());
+
+                            socketService.emit(EVENT_COMMENT_ADDED, commentJson);
+                            commentJson = null;
+                        }
+
+                        mSharedHelper.putCommentedPost(postId);
                         Snackbar.make(mCommentRefresher, getString(R.string.commentAdded), Snackbar.LENGTH_SHORT).
                                 setAction("OK", new View.OnClickListener() {
                                     @Override
@@ -434,6 +500,18 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        getComments(mPostId, false);
+    }
+
+    @Override
+    public void onServiceConnected(SocketService socketService) {
+        super.onServiceConnected(socketService);
+        this.socketService = socketService;
+    }
+
+    @Override
     public void onRefresh() {
         getComments(mPostId, false);
     }
@@ -454,6 +532,19 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
             likeView.setBackgroundResource(R.drawable.like_active);
             mCommentAdapter.setIsLiked(true);
             isLiked = true;
+            JSONObject likeJson = new JSONObject();
+            try {
+                likeJson.put("postOwnerId", ownerId);
+                likeJson.put("likerFirstName", mSharedHelper.getFirstName());
+                likeJson.put("likerLastName", mSharedHelper.getLastName());
+                likeJson.put("likerId", mSharedHelper.getUserId());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            if (socketService != null) {
+                socketService.emit(EVENT_POST_LIKED, likeJson);
+            }
         }
     }
 

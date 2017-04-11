@@ -245,6 +245,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
 
         if (sharedHelper.getUserId().equals(commentModel.getCommenterId())) {
             itemViewHolder.commentMoreIcon.setImageResource(R.drawable.more_icon);
+            sharedHelper.putCommentedPost(commentModel.getPostId());
         } else {
             itemViewHolder.commentMoreIcon.setImageResource(R.drawable.copy_icon);
         }

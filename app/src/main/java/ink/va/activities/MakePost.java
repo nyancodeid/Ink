@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.ink.va.R;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,6 +52,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.models.CoinsResponse;
+import ink.va.service.SocketService;
 import ink.va.utils.Constants;
 import ink.va.utils.FileUtils;
 import ink.va.utils.PermissionsChecker;
@@ -58,11 +60,15 @@ import ink.va.utils.ProgressRequestBody;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
+import ink.va.utils.User;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static ink.va.utils.Constants.EVENT_POST_MADE;
+import static ink.va.utils.Constants.POST_TYPE_GLOBAL;
+import static ink.va.utils.Constants.POST_TYPE_LOCAL;
 import static ink.va.utils.ErrorCause.NOT_ENOUGH_COINS;
 
 public class MakePost extends BaseActivity implements ProgressRequestBody.UploadCallbacks {
@@ -104,6 +110,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     private String addressName;
     private String shouldDelete = "false";
     private String postType;
+    private SocketService socketService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -251,14 +258,14 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     @OnClick(R.id.postVisibilityIV)
     public void postVisibilityIVClicked() {
         switch (postType) {
-            case Constants.POST_TYPE_GLOBAL:
+            case POST_TYPE_GLOBAL:
                 postType = Constants.POST_TYPE_LOCAL;
                 postVisibilityHint.setText(getString(R.string.localPostHint));
                 postVisibilityIV.setImageResource(R.drawable.local_icon);
                 break;
             case Constants.POST_TYPE_LOCAL:
                 postVisibilityIV.setImageResource(R.drawable.global_icon);
-                postType = Constants.POST_TYPE_GLOBAL;
+                postType = POST_TYPE_GLOBAL;
                 postVisibilityHint.setText(getString(R.string.loadingText));
                 getCoinsToCharge();
                 break;
@@ -397,6 +404,12 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     }
 
     @Override
+    public void onServiceConnected(SocketService socketService) {
+        super.onServiceConnected(socketService);
+        this.socketService = socketService;
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data != null) {
             Uri uri = data.getData();
@@ -532,10 +545,51 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        if (!isEditing) {
+                            String insertedPostId = jsonObject.optString("postId");
+                            mSharedHelper.putOwnPostId(insertedPostId);
+                            JSONObject postJson = new JSONObject();
+                            switch (postType) {
+                                case POST_TYPE_GLOBAL:
+                                    postJson.put("posterId", mSharedHelper.getUserId());
+                                    postJson.put("insertedPostId", insertedPostId);
+                                    postJson.put("posterFirstName", mSharedHelper.getFirstName());
+                                    postJson.put("posterLastName", mSharedHelper.getLastName());
+                                    postJson.put("postType", postType);
+
+                                    socketService.emit(EVENT_POST_MADE, postJson);
+                                    postJson = null;
+                                    break;
+                                case POST_TYPE_LOCAL:
+                                    postJson.put("posterId", mSharedHelper.getUserId());
+                                    postJson.put("insertedPostId", insertedPostId);
+                                    postJson.put("posterFirstName", mSharedHelper.getFirstName());
+                                    postJson.put("posterLastName", mSharedHelper.getLastName());
+                                    postJson.put("postType", postType);
+
+                                    JSONArray friendsArray = new JSONArray();
+                                    for (String friendId : User.get().getFriendIds()) {
+                                        friendsArray.put(friendId);
+                                    }
+
+                                    postJson.put("friends", friendsArray);
+                                    socketService.emit(EVENT_POST_MADE, postJson);
+                                    postJson = null;
+                                    break;
+                            }
+                        }
                         progressDialog.dismiss();
                         LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "Comments"));
-                        LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
-                        Toast.makeText(MakePost.this, getString(R.string.post_shared), Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getPackageName() + "HomeActivity");
+                        intent.putExtra("updateFromPost", true);
+
+                        LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(intent);
+
+                        if (!isEditing) {
+                            Toast.makeText(MakePost.this, getString(R.string.post_shared), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MakePost.this, getString(R.string.saved), Toast.LENGTH_SHORT).show();
+                        }
 
                         finish();
                         overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
@@ -590,6 +644,35 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        if (!isEditing) {
+                            String insertedPostId = jsonObject.optString("postId");
+                            mSharedHelper.putOwnPostId(insertedPostId);
+                            JSONObject postJson = new JSONObject();
+                            switch (postType) {
+                                case POST_TYPE_GLOBAL:
+                                    postJson.put("posterId", mSharedHelper.getUserId());
+                                    postJson.put("insertedPostId", insertedPostId);
+                                    postJson.put("posterFirstName", mSharedHelper.getFirstName());
+                                    postJson.put("posterLastName", mSharedHelper.getLastName());
+                                    postJson.put("postType", postType);
+
+                                    socketService.emit(EVENT_POST_MADE, postJson);
+                                    postJson = null;
+                                    break;
+                                case POST_TYPE_LOCAL:
+                                    postJson.put("posterId", mSharedHelper.getUserId());
+                                    postJson.put("insertedPostId", insertedPostId);
+                                    postJson.put("posterFirstName", mSharedHelper.getFirstName());
+                                    postJson.put("posterLastName", mSharedHelper.getLastName());
+                                    postJson.put("postType", postType);
+                                    postJson.put("friends", User.get().getFriendIds());
+
+                                    socketService.emit(EVENT_POST_MADE, postJson);
+                                    postJson = null;
+                                    break;
+                            }
+                        }
+
                         progressDialog.dismiss();
                         LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "Comments"));
                         LocalBroadcastManager.getInstance(MakePost.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));

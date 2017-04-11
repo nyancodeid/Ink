@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
 import ink.va.adapters.RequestsAdapter;
 import ink.va.interfaces.RequestListener;
 import ink.va.models.RequestsModel;
+import ink.va.service.SocketService;
 import ink.va.utils.Constants;
 import ink.va.utils.DimDialog;
 import ink.va.utils.Retrofit;
@@ -37,6 +38,9 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static ink.va.utils.Constants.EVENT_ACCEPT_FRIEND_REQUEST;
+import static ink.va.utils.Constants.EVENT_DECLINE_FRIEND_REQUEST;
 
 public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, RequestListener {
 
@@ -52,6 +56,7 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
     private RequestsAdapter requestsAdapter;
     private RequestsModel requestsModel;
     private List<RequestsModel> requestsModels;
+    private SocketService socketService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +82,12 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
             actionBar.setTitle(getString(R.string.myRequests));
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        getMyRequests();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
         getMyRequests();
     }
 
@@ -320,7 +331,7 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
                 requestSwipe.setRefreshing(true);
             }
         });
-        RequestsModel requestsModel = requestsModels.get(position);
+        final RequestsModel requestsModel = requestsModels.get(position);
         Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.RESPOND_TYPE_ACCEPT_FRIEND_REQUEST, sharedHelper.getUserId(),
                 sharedHelper.getFirstName() + " " + sharedHelper.getLastName(), "", requestsModel.getRequesterId());
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
@@ -340,6 +351,14 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
                     boolean success = jsonObject.optBoolean("success");
                     DimDialog.hideDialog();
                     if (success) {
+                        JSONObject requestAcceptedJson = new JSONObject();
+                        requestAcceptedJson.put("destinationId", requestsModel.getRequesterId());
+                        requestAcceptedJson.put("acceptorFirstName", sharedHelper.getFirstName());
+                        requestAcceptedJson.put("acceptorLastName", sharedHelper.getLastName());
+                        requestAcceptedJson.put("requestId", requestsModel.getRequestId());
+
+                        socketService.emit(EVENT_ACCEPT_FRIEND_REQUEST, requestAcceptedJson);
+                        requestAcceptedJson = null;
                         Snackbar.make(requestsRecycler, getString(R.string.friendRequestAccepted), Snackbar.LENGTH_LONG).show();
                         getMyRequests();
                     }
@@ -368,7 +387,7 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
                 requestSwipe.setRefreshing(true);
             }
         });
-        RequestsModel requestsModel = requestsModels.get(position);
+        final RequestsModel requestsModel = requestsModels.get(position);
         Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.RESPOND_TYPE_DENY_FRIEND_REQUEST, requestsModel.getRequestId(), "",
                 "", "");
         responseBodyCall.enqueue(new Callback<ResponseBody>() {
@@ -387,6 +406,14 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        JSONObject requestDeclinedJson = new JSONObject();
+                        requestDeclinedJson.put("destinationId", requestsModel.getRequesterId());
+                        requestDeclinedJson.put("declinerFirstName", sharedHelper.getFirstName());
+                        requestDeclinedJson.put("declinerLastName", sharedHelper.getLastName());
+                        requestDeclinedJson.put("requestId", requestsModel.getRequestId());
+
+                        socketService.emit(EVENT_DECLINE_FRIEND_REQUEST, requestDeclinedJson);
+                        requestDeclinedJson = null;
                         DimDialog.hideDialog();
                         Snackbar.make(requestsRecycler, getString(R.string.friendRequestDenied), Snackbar.LENGTH_LONG).show();
                         getMyRequests();
@@ -422,6 +449,11 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
         startActivity(intent);
     }
 
+    @Override
+    public void onServiceConnected(SocketService socketService) {
+        super.onServiceConnected(socketService);
+        this.socketService = socketService;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

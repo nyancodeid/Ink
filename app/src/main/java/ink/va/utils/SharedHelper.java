@@ -2,10 +2,12 @@ package ink.va.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.v4.util.ArraySet;
 
 import com.ink.va.R;
 
 import java.util.Map;
+import java.util.Set;
 
 import lombok.Getter;
 
@@ -23,6 +25,10 @@ public class SharedHelper {
     private static final String QB_USER_PASSWORD = "qb_user_password";
     private static final String QB_USER_FULL_NAME = "qb_user_full_name";
     private static final String QB_USER_TAGS = "qb_user_tags";
+    private static final String LIKED_POST_SET = "likedPostSet";
+    private static final String OWN_POSTS_SET_KEY = "ownPostSetKey";
+    private static final String COMMENTED_POSTS_SET_KEY = "commentPostSetKey";
+    public static final String NOTIFICATION_DISABLED_POSTS = "notificationDisabledPostsId";
 
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
@@ -176,6 +182,186 @@ public class SharedHelper {
         mEditor.putBoolean("securityWarning", value);
         mEditor.commit();
     }
+
+    public void putLikedPostId(String likedPostId) {
+        Set<String> likedPosts = mSharedPreferences.getStringSet(LIKED_POST_SET, new android.support.v4.util.ArraySet<String>());
+        boolean exists = false;
+        for (String eachLikedId : likedPosts) {
+            if (eachLikedId.equals(likedPostId)) {
+                exists = true;
+                break;
+            }
+        }
+        if (!exists) {
+            likedPosts.add(likedPostId);
+        }
+
+        mEditor.putStringSet(LIKED_POST_SET, likedPosts);
+        mEditor.commit();
+    }
+
+    public void removeLikedPostId(String likedPostId) {
+        Set<String> likedPosts = mSharedPreferences.getStringSet(LIKED_POST_SET, new android.support.v4.util.ArraySet<String>());
+        for (String eachId : likedPosts) {
+            if (eachId.equals(likedPostId)) {
+                likedPosts.remove(eachId);
+                break;
+            }
+        }
+        mEditor.putStringSet(LIKED_POST_SET, likedPosts);
+        mEditor.commit();
+    }
+
+    public Set<String> getLikedPosts() {
+        return mSharedPreferences.getStringSet(LIKED_POST_SET, new android.support.v4.util.ArraySet<String>());
+    }
+
+
+    public void putOwnPostId(String postId) {
+        Set<String> ownPostsIds = mSharedPreferences.getStringSet(OWN_POSTS_SET_KEY, new android.support.v4.util.ArraySet<String>());
+        boolean exists = false;
+        for (String eachId : ownPostsIds) {
+            if (eachId.equals(postId)) {
+                exists = true;
+                break;
+            }
+        }
+        if (!exists) {
+            ownPostsIds.add(postId);
+        }
+        mEditor.putStringSet(OWN_POSTS_SET_KEY, ownPostsIds);
+        mEditor.commit();
+    }
+
+    public void removeOwnPostId(String postId) {
+        Set<String> likedPosts = mSharedPreferences.getStringSet(OWN_POSTS_SET_KEY, new android.support.v4.util.ArraySet<String>());
+        for (String eachId : likedPosts) {
+            if (eachId.equals(postId)) {
+                likedPosts.remove(eachId);
+                break;
+            }
+        }
+        mEditor.putStringSet(OWN_POSTS_SET_KEY, likedPosts);
+        mEditor.commit();
+    }
+
+    public Set<String> getOwnPostsIds() {
+        return mSharedPreferences.getStringSet(OWN_POSTS_SET_KEY, new android.support.v4.util.ArraySet<String>());
+    }
+
+
+    public void putCommentedPost(String postId) {
+        Set<String> postWithComments = mSharedPreferences.getStringSet(COMMENTED_POSTS_SET_KEY, new android.support.v4.util.ArraySet<String>());
+        boolean exists = false;
+        for (String eachId : postWithComments) {
+            if (eachId.equals(postId)) {
+                exists = true;
+                break;
+            }
+        }
+        if (!exists) {
+            postWithComments.add(postId);
+        }
+        mEditor.putStringSet(COMMENTED_POSTS_SET_KEY, postWithComments);
+        mEditor.commit();
+    }
+
+    public Set<String> getCommentedPostIds() {
+        return mSharedPreferences.getStringSet(COMMENTED_POSTS_SET_KEY, new ArraySet<String>());
+    }
+
+    public void putNotificationDisabledPostId(String postId) {
+        Set<String> postWithComments = mSharedPreferences.getStringSet(NOTIFICATION_DISABLED_POSTS, new android.support.v4.util.ArraySet<String>());
+        boolean exists = false;
+        for (String eachId : postWithComments) {
+            if (eachId.equals(postId)) {
+                exists = true;
+                break;
+            }
+        }
+        if (!exists) {
+            postWithComments.add(postId);
+        }
+        mEditor.putStringSet(NOTIFICATION_DISABLED_POSTS, postWithComments);
+        mEditor.commit();
+    }
+
+    public void removeNotificationDisabledPost(String postId) {
+        Set<String> postWithComments = mSharedPreferences.getStringSet(NOTIFICATION_DISABLED_POSTS, new android.support.v4.util.ArraySet<String>());
+        for (String eachId : postWithComments) {
+            if (eachId.equals(postId)) {
+                postWithComments.remove(eachId);
+                break;
+            }
+        }
+        mEditor.putStringSet(NOTIFICATION_DISABLED_POSTS, postWithComments);
+        mEditor.commit();
+    }
+
+    public boolean postMuted(String postId) {
+        Set<String> postWithComments = mSharedPreferences.getStringSet(NOTIFICATION_DISABLED_POSTS, new android.support.v4.util.ArraySet<String>());
+        boolean exists = false;
+        for (String eachId : postWithComments) {
+            if (eachId.equals(postId)) {
+                exists = true;
+                break;
+            }
+        }
+        return exists;
+    }
+
+    public Set<String> getDisabledNotificationsPostIds() {
+        return mSharedPreferences.getStringSet(NOTIFICATION_DISABLED_POSTS, new ArraySet<String>());
+    }
+
+    public boolean hasCommented(String postId) {
+        boolean hasCommented = false;
+        for (String eachCommentId : getCommentedPostIds()) {
+            if (eachCommentId.equals(postId)) {
+                hasCommented = true;
+                break;
+            }
+        }
+        for (String disabledNotificationsIds : getDisabledNotificationsPostIds()) {
+            if (disabledNotificationsIds.equals(postId)) {
+                hasCommented = false;
+                break;
+            }
+        }
+
+        return hasCommented;
+    }
+
+    public boolean hasPostLiked(String postId) {
+        boolean exists = false;
+        for (String eachLikedPostId : getLikedPosts()) {
+            if (eachLikedPostId.equals(postId)) {
+                exists = true;
+                break;
+            }
+        }
+
+        for (String disabledNotificationsIds : getDisabledNotificationsPostIds()) {
+            if (disabledNotificationsIds.equals(postId)) {
+                exists = false;
+                break;
+            }
+        }
+
+        return exists;
+    }
+
+    public boolean postOwner(String postId) {
+        boolean exists = false;
+        for (String eachLikedPostId : getOwnPostsIds()) {
+            if (eachLikedPostId.equals(postId)) {
+                exists = true;
+                break;
+            }
+        }
+        return exists;
+    }
+
 
     public boolean isSecurityQuestionSet() {
         return mSharedPreferences.getBoolean("securityWarning", false);

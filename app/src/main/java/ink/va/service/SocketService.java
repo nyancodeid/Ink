@@ -7,9 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
 import android.support.v4.content.LocalBroadcastManager;
@@ -27,8 +29,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ink.va.activities.Chat;
+import ink.va.activities.Comments;
 import ink.va.activities.MafiaRoomActivity;
 import ink.va.activities.ReplyView;
+import ink.va.activities.RequestsView;
+import ink.va.activities.SplashScreen;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.interfaces.SocketListener;
 import ink.va.models.ChatModel;
@@ -47,20 +52,34 @@ import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_ERROR;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_TIMEOUT;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_DISCONNECT;
 import static ink.va.utils.Constants.EVENT_ADD_USER;
+import static ink.va.utils.Constants.EVENT_COMMENT_RECEIVED;
+import static ink.va.utils.Constants.EVENT_FRIEND_REQUEST_ACCEPT_RECEIVED;
+import static ink.va.utils.Constants.EVENT_FRIEND_REQUEST_DECLINE_RECEIVED;
+import static ink.va.utils.Constants.EVENT_FRIEND_REQUEST_RECEIVED;
 import static ink.va.utils.Constants.EVENT_MESSAGE_RECEIVED;
 import static ink.va.utils.Constants.EVENT_MESSAGE_SENT;
 import static ink.va.utils.Constants.EVENT_NEW_MESSAGE;
 import static ink.va.utils.Constants.EVENT_ONLINE_STATUS;
+import static ink.va.utils.Constants.EVENT_ON_COMMENT_ADDED;
+import static ink.va.utils.Constants.EVENT_ON_FRIEND_REQUESTED;
+import static ink.va.utils.Constants.EVENT_ON_FRIEND_REQUEST_ACCEPTED;
+import static ink.va.utils.Constants.EVENT_ON_FRIEND_REQUEST_DECLINED;
 import static ink.va.utils.Constants.EVENT_ON_GAME_CREATED;
+import static ink.va.utils.Constants.EVENT_ON_POST_LIKED;
+import static ink.va.utils.Constants.EVENT_ON_POST_MADE;
+import static ink.va.utils.Constants.EVENT_POST_LIKE_RECEIVED;
+import static ink.va.utils.Constants.EVENT_POST_MADE_RECEIVED;
 import static ink.va.utils.Constants.EVENT_STOPPED_TYPING;
 import static ink.va.utils.Constants.EVENT_TYPING;
+import static ink.va.utils.Constants.NOTIFICATION_BUNDLE_EXTRA_KEY;
 import static ink.va.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
+import static ink.va.utils.Constants.POST_TYPE_GLOBAL;
 import static ink.va.utils.Constants.SOCKET_URL;
 import static ink.va.utils.Constants.STATUS_DELIVERED;
 
 
-public class MessageService extends Service {
-    private static final String TAG = MessageService.class.getSimpleName();
+public class SocketService extends Service {
+    private static final String TAG = SocketService.class.getSimpleName();
     public static final String NOTIFICATION_REPLY = "notificationReply";
     private SharedHelper sharedHelper;
     private String currentUserId;
@@ -68,10 +87,10 @@ public class MessageService extends Service {
     private SocketListener onSocketListener;
     private List<Integer> socketListeners = new LinkedList<>();
     private GeneralCallback emitListener;
-    public static MessageService messageService;
+    public static SocketService socketService;
 
-    public MessageService() {
-        messageService = this;
+    public SocketService() {
+        socketService = this;
     }
 
     private com.github.nkzawa.socketio.client.Socket mSocket;
@@ -88,8 +107,8 @@ public class MessageService extends Service {
         return START_STICKY;
     }
 
-    public static MessageService get() {
-        return messageService;
+    public static SocketService get() {
+        return socketService;
     }
 
     private void initSocketFully() {
@@ -109,6 +128,139 @@ public class MessageService extends Service {
     /**
      * Socket Listeners
      */
+
+    private Emitter.Listener onFriendRequestDeclined = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject jsonObject = (JSONObject) args[0];
+            emit(EVENT_FRIEND_REQUEST_DECLINE_RECEIVED, jsonObject);
+
+            String destinationId = jsonObject.optString("destinationId");
+            String declinerFirstName = jsonObject.optString("declinerFirstName");
+            String declinerLastName = jsonObject.optString("declinerLastName");
+            String requestId = jsonObject.optString("requestId");
+
+            sendGeneralNotification(getString(R.string.requestDenied), declinerFirstName + " " + declinerLastName + " " + getString(R.string.deniedYourRequest),
+                    Integer.valueOf(requestId), getString(R.string.requestDenied),
+                    declinerFirstName + " " + declinerLastName + " " + getString(R.string.deniedYourRequest), R.drawable.remove_friend_icon, SplashScreen.class, null, null);
+        }
+    };
+
+    private Emitter.Listener onFriendRequestAccepted = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject jsonObject = (JSONObject) args[0];
+            emit(EVENT_FRIEND_REQUEST_ACCEPT_RECEIVED, jsonObject);
+            String destinationId = jsonObject.optString("destinationId");
+            String acceptorFirstName = jsonObject.optString("acceptorFirstName");
+            String acceptorLastName = jsonObject.optString("acceptorLastName");
+            String requestId = jsonObject.optString("requestId");
+
+            sendGeneralNotification(getString(R.string.requestAccepted), acceptorFirstName + " " + acceptorLastName + " " + getString(R.string.acceptedYourFriendRequest),
+                    Integer.valueOf(requestId), getString(R.string.requestAccepted),
+                    acceptorFirstName + " " + acceptorLastName + " " + getString(R.string.acceptedYourFriendRequest), R.drawable.friend_request_white_icon, SplashScreen.class, null, null);
+
+        }
+    };
+
+    private Emitter.Listener onCommentAdded = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject jsonObject = (JSONObject) args[0];
+            emit(EVENT_COMMENT_RECEIVED, sharedHelper.getUserId());
+
+            Bundle bundle = new Bundle();
+            bundle.putString("postId", jsonObject.optString("postId"));
+            bundle.putString("userImage", jsonObject.optString("userImage"));
+            bundle.putString("postBody", jsonObject.optString("postBody"));
+            bundle.putString("attachment", jsonObject.optString("attachment"));
+            bundle.putString("isSocialAccount", jsonObject.optString("isSocialAccount"));
+            bundle.putString("location", jsonObject.optString("location"));
+            bundle.putString("name", jsonObject.optString("name"));
+            bundle.putString("date", jsonObject.optString("date"));
+            bundle.putString("likesCount", jsonObject.optString("likesCount"));
+            bundle.putString("isLiked", jsonObject.optString("isLiked"));
+            bundle.putString("ownerId", jsonObject.optString("ownerId"));
+            bundle.putString("attachmentPresent", jsonObject.optString("attachmentPresent"));
+            bundle.putString("addressPresent", jsonObject.optString("addressPresent"));
+            bundle.putString("attachmentName", jsonObject.optString("attachmentName"));
+            bundle.putString("addressName", jsonObject.optString("addressName"));
+            bundle.putString("postId", jsonObject.optString("postId"));
+            bundle.putString("postBody", jsonObject.optString("postBody"));
+            bundle.putString("isPostOwner", jsonObject.optString("isPostOwner"));
+            bundle.putString("isFriend", jsonObject.optString("isFriend"));
+
+            String postId = jsonObject.optString("postId");
+            String commenterFirstName = jsonObject.optString("commenterFirstName");
+            String commenterLastName = jsonObject.optString("commenterLastName");
+            String commentBody = jsonObject.optString("commentBody");
+            int commentId = Integer.valueOf(jsonObject.optString("commentId"));
+
+            if (sharedHelper.hasCommented(postId)) {
+                sendGeneralNotification(getString(R.string.commentAdded), commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
+                        commentId, commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
+                        commentBody, R.drawable.comment_icon_white, Comments.class, bundle, NOTIFICATION_BUNDLE_EXTRA_KEY);
+            } else if (sharedHelper.hasPostLiked(postId)) {
+                sendGeneralNotification(getString(R.string.commentAdded), commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
+                        commentId, commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
+                        commentBody, R.drawable.comment_icon_white, Comments.class, bundle, NOTIFICATION_BUNDLE_EXTRA_KEY);
+            } else if (sharedHelper.postOwner(postId)) {
+                sendGeneralNotification(getString(R.string.commentAdded), commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
+                        commentId, commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
+                        commentBody, R.drawable.comment_icon_white, Comments.class, bundle, NOTIFICATION_BUNDLE_EXTRA_KEY);
+            }
+        }
+    };
+
+    private Emitter.Listener onPostLiked = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject jsonObject = (JSONObject) args[0];
+            emit(EVENT_POST_LIKE_RECEIVED, jsonObject);
+
+            String likerFirstName = jsonObject.optString("likerFirstName");
+            String likerLastName = jsonObject.optString("likerLastName");
+            String likerId = jsonObject.optString("likerId");
+
+            sendGeneralNotification(getString(R.string.postLiked), likerFirstName + " " + likerLastName + " " + getString(R.string.likedPostText), Integer.valueOf(likerId), getString(R.string.postLiked),
+                    likerFirstName + " " + likerLastName + " " + getString(R.string.likedPostText), R.drawable.like_icon_white, SplashScreen.class, null, null);
+        }
+    };
+
+    private Emitter.Listener onPostMade = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject jsonObject = (JSONObject) args[0];
+            emit(EVENT_POST_MADE_RECEIVED, jsonObject);
+            String posterId = jsonObject.optString("posterId");
+            String insertedPostId = jsonObject.optString("insertedPostId");
+            String posterFirstName = jsonObject.optString("posterFirstName");
+            String posterLastName = jsonObject.optString("posterLastName");
+            String postType = jsonObject.optString("postType");
+
+            sendGeneralNotification(getString(R.string.newPost), posterFirstName + " " + posterLastName + " " + (postType.equals(POST_TYPE_GLOBAL) ? getString(R.string.madeGlobalPost) : getString(R.string.madePost)),
+
+                    Integer.valueOf(insertedPostId), getString(R.string.newPost),
+                    posterFirstName + " " + posterLastName + " " + (postType.equals(POST_TYPE_GLOBAL) ? getString(R.string.madeGlobalPost) : getString(R.string.madePost)), R.drawable.feed_white_icon, SplashScreen.class, null, null);
+
+        }
+    };
+
+    private Emitter.Listener onFriendRequested = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject jsonObject = (JSONObject) args[0];
+            emit(EVENT_FRIEND_REQUEST_RECEIVED, jsonObject);
+            String requesterFirstName = jsonObject.optString("requesterFirstName");
+            String requesterLastName = jsonObject.optString("requesterLastName");
+            String requestedUserId = jsonObject.optString("requestedUserId");
+            String requesterId = jsonObject.optString("requesterId");
+
+            sendGeneralNotification(getString(R.string.friendRequested), requesterFirstName + " " + requesterLastName + " " + getString(R.string.sentFriendRequest),
+                    Integer.valueOf(requesterId), getString(R.string.friendRequested),
+                    requesterFirstName + " " + requesterLastName + " " + getString(R.string.sentFriendRequest), R.drawable.request_friend_icon, RequestsView.class, null, null);
+        }
+    };
 
     private Emitter.Listener onOnlineStatusReceived = new Emitter.Listener() {
         @Override
@@ -208,7 +360,7 @@ public class MessageService extends Service {
             if (sharedHelper.showMafiaNotification()) {
                 sendGeneralNotification(messageTitle, messageContent, Integer.valueOf(roomId),
                         bigTextSummary, bigTextContentBody,
-                        R.drawable.ic_gamepad_variant_white_24dp, MafiaRoomActivity.class);
+                        R.drawable.ic_gamepad_variant_white_24dp, MafiaRoomActivity.class, null, null);
             }
         }
     };
@@ -303,12 +455,19 @@ public class MessageService extends Service {
         mSocket.on(EVENT_CONNECT_TIMEOUT, onSocketTimeOut);
         mSocket.on(EVENT_ONLINE_STATUS, onOnlineStatusReceived);
         mSocket.on(EVENT_ON_GAME_CREATED, onMafiaGameCreated);
+        mSocket.on(EVENT_ON_COMMENT_ADDED, onCommentAdded);
+        mSocket.on(EVENT_ON_FRIEND_REQUEST_ACCEPTED, onFriendRequestAccepted);
+        mSocket.on(EVENT_ON_FRIEND_REQUEST_DECLINED, onFriendRequestDeclined);
+        mSocket.on(EVENT_ON_POST_LIKED, onPostLiked);
+        mSocket.on(EVENT_ON_POST_MADE, onPostMade);
+        mSocket.on(EVENT_ON_FRIEND_REQUESTED, onFriendRequested);
+
         mSocket.connect();
     }
 
     public class LocalBinder extends Binder {
-        public MessageService getService() {
-            return MessageService.this;
+        public SocketService getService() {
+            return SocketService.this;
         }
     }
 
@@ -373,7 +532,9 @@ public class MessageService extends Service {
         if (mSocket != null) {
             mSocket.disconnect();
             mSocket.off(EVENT_CONNECT, onSocketConnected);
+            mSocket.off(EVENT_ON_FRIEND_REQUEST_ACCEPTED, onFriendRequestAccepted);
             mSocket.off(EVENT_CONNECT_ERROR, onSocketConnectionError);
+            mSocket.off(EVENT_ON_FRIEND_REQUEST_DECLINED, onFriendRequestDeclined);
             mSocket.off(EVENT_DISCONNECT, onSocketDisconnected);
             mSocket.off(EVENT_NEW_MESSAGE, onNewMessageReceived);
             mSocket.off(EVENT_STOPPED_TYPING, onUserStoppedTyping);
@@ -382,6 +543,10 @@ public class MessageService extends Service {
             mSocket.off(EVENT_MESSAGE_SENT, onMessageSent);
             mSocket.off(EVENT_CONNECT_TIMEOUT, onSocketTimeOut);
             mSocket.off(EVENT_ONLINE_STATUS, onOnlineStatusReceived);
+            mSocket.off(EVENT_ON_COMMENT_ADDED, onCommentAdded);
+            mSocket.off(EVENT_ON_POST_LIKED, onPostLiked);
+            mSocket.off(EVENT_ON_POST_MADE, onPostMade);
+            mSocket.off(EVENT_ON_FRIEND_REQUESTED, onFriendRequested);
         }
     }
 
@@ -502,9 +667,13 @@ public class MessageService extends Service {
 
     public void sendGeneralNotification(String messageTitle, String messageContent,
                                         int uniqueId, String bigTextSummary,
-                                        String bigTextContent, int iconResourceId, Class<?> resultClass) {
+                                        String bigTextContent, int iconResourceId, Class<?> resultClass, @Nullable Bundle extras, @Nullable String extrasKey) {
 
         Intent requestsViewIntent = new Intent(getApplicationContext(), resultClass);
+        requestsViewIntent.setAction(String.valueOf(uniqueId));
+        if (extras != null) {
+            requestsViewIntent.putExtra(extrasKey, extras);
+        }
 
         PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), uniqueId, requestsViewIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);

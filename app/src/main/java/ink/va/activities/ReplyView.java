@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.models.ChatModel;
-import ink.va.service.MessageService;
+import ink.va.service.SocketService;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.RealmHelper;
@@ -59,7 +59,7 @@ public class ReplyView extends BaseActivity {
 
     private SharedHelper sharedHelper;
     private boolean isSocialAccount;
-    private MessageService messageService;
+    private SocketService socketService;
     private Gson chatGSON;
     private String jsonExtra;
     private JSONObject receivedMessageJson;
@@ -159,13 +159,13 @@ public class ReplyView extends BaseActivity {
     public void replyMessage() {
         String messageToSend = mReplyBody.getText().toString().replaceAll(":\\)", "\u263A")
                 .replaceAll(":\\(", "\u2639").replaceAll(":D", "\uD83D\uDE00").trim();
-        if (messageService == null) {
-            Toast.makeText(messageService, getString(R.string.feather_try_again), Toast.LENGTH_SHORT).show();
+        if (socketService == null) {
+            Toast.makeText(socketService, getString(R.string.feather_try_again), Toast.LENGTH_SHORT).show();
         } else {
             replyMessage.setVisibility(View.GONE);
             sendProgress.setVisibility(View.VISIBLE);
 
-            messageService.connectSocket();
+            socketService.connectSocket();
 
             final ChatModel chatModel = chatGSON.fromJson(receivedMessageJson.toString(), ChatModel.class);
             chatModel.setDate(Time.getCurrentTime());
@@ -210,19 +210,19 @@ public class ReplyView extends BaseActivity {
     }
 
     @Override
-    public void onServiceConnected(MessageService messageService) {
-        super.onServiceConnected(messageService);
-        this.messageService = messageService;
+    public void onServiceConnected(SocketService socketService) {
+        super.onServiceConnected(socketService);
+        this.socketService = socketService;
     }
 
     private void localMessageInsert(ChatModel chatModel, final JSONObject messageJson) {
         RealmHelper.getInstance().insertMessage(chatModel, new GeneralCallback() {
             @Override
             public void onSuccess(Object o) {
-                messageService.setEmitListener(new GeneralCallback() {
+                socketService.setEmitListener(new GeneralCallback() {
                     @Override
                     public void onSuccess(Object o) {
-                        messageService.destroyEmitListener();
+                        socketService.destroyEmitListener();
                         finish();
                         overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
 
@@ -233,7 +233,7 @@ public class ReplyView extends BaseActivity {
 
                     }
                 });
-                messageService.emit(EVENT_SEND_MESSAGE, messageJson);
+                socketService.emit(EVENT_SEND_MESSAGE, messageJson);
             }
 
             @Override

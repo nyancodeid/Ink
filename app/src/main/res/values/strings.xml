@@ -698,7 +698,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="likedPostText"> liked your post</string>
     <string name="posted_text">posted in</string>
     <string name="group_post_title">Group Post</string>
-    <string name="commented_post">commented on your post</string>
+    <string name="commented_post">commented on post</string>
     <string name="title_settings">Settings</string>
     <string name="enableGroupNotificationText">Enable Group Notification</string>
     <string name="enableLikeNotificationText">Enable Likes Notification</string>
@@ -1097,4 +1097,14 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="backFrontDeveloper">Android and Back-End Developer</string>
     <string name="uxDeveloper">UI/UX Designer</string>
     <string name="feedError">Could not fetch feeds, please check your internet</string>
+    <string name="dontReceiveNotificationText">Don\'t Receive Notifications</string>
+    <string name="youWillNotReceiveNotifications">You will no longer receive notifications from this</string>
+    <string name="youWillReceiveNotifications">You will receive notifications from this</string>
+    <string name="enableNotifications">Enable Notifications</string>
+    <string name="postLiked">Post Liked</string>
+    <string name="madeGlobalPost">made a global post</string>
+    <string name="friendRequested">New Friend Request</string>
+    <string name="sentFriendRequest">sent friend request to you</string>
+    <string name="deniedYourRequest">Denied your friend request</string>
+
 </resources>

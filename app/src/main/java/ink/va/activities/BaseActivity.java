@@ -45,7 +45,7 @@ import fab.FloatingActionButton;
 import ink.StartupApplication;
 import ink.va.interfaces.AccountDeleteListener;
 import ink.va.models.ServerInformationModel;
-import ink.va.service.MessageService;
+import ink.va.service.SocketService;
 import ink.va.utils.Constants;
 import ink.va.utils.DimDialog;
 import ink.va.utils.Notification;
@@ -128,7 +128,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private CountDownTimer countDownTimer;
     private Dialog vipLoadingDialog;
     private int appVersionCode = 0;
-    private MessageService messageService;
+    private SocketService socketService;
     private Intent messageIntent;
     private boolean unbindCalled;
     private ScheduledExecutorService scheduler;
@@ -160,8 +160,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                 window.setStatusBarColor(Color.parseColor(sharedHelper.getStatusBarColor()));
             }
         }
-        messageIntent = new Intent(this, MessageService.class);
-        if (messageService == null) {
+        messageIntent = new Intent(this, SocketService.class);
+        if (socketService == null) {
             bindService(messageIntent, mConnection, BIND_AUTO_CREATE);
         }
         scheduleTask();
@@ -234,9 +234,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
-            MessageService.LocalBinder binder = (MessageService.LocalBinder) service;
-            messageService = binder.getService();
-            BaseActivity.this.onServiceConnected(messageService);
+            SocketService.LocalBinder binder = (SocketService.LocalBinder) service;
+            socketService = binder.getService();
+            BaseActivity.this.onServiceConnected(socketService);
         }
 
         @Override
@@ -449,7 +449,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         vipLoadingDialog.dismiss();
     }
 
-    public void onServiceConnected(MessageService messageService) {
+    public void onServiceConnected(SocketService socketService) {
 
     }
 
@@ -469,8 +469,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (messageService != null) {
-            messageService.emit(EVENT_PING, pingJson);
+        if (socketService != null) {
+            socketService.emit(EVENT_PING, pingJson);
         }
     }
 

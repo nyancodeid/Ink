@@ -50,7 +50,7 @@ import ink.va.callbacks.GeneralCallback;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.interfaces.SocketListener;
 import ink.va.models.ChatModel;
-import ink.va.service.MessageService;
+import ink.va.service.SocketService;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.ClipManager;
 import ink.va.utils.Constants;
@@ -69,7 +69,7 @@ import rx.Observer;
 import rx.functions.Func1;
 
 import static ink.va.activities.SplashScreen.LOCK_SCREEN_REQUEST_CODE;
-import static ink.va.service.MessageService.sendMessageNotification;
+import static ink.va.service.SocketService.sendMessageNotification;
 import static ink.va.utils.Constants.EVENT_ONLINE_STATUS;
 import static ink.va.utils.Constants.EVENT_SEND_MESSAGE;
 import static ink.va.utils.Constants.EVENT_STOPPED_TYPING;
@@ -142,7 +142,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private JSONObject typingJson;
     private boolean isSocialAccount;
     private String opponentImageUrl;
-    private MessageService messageService;
+    private SocketService socketService;
     private MediaPlayer sendMessagePlayer;
     private MediaPlayer receiveMessagePlayer;
     private boolean isDataLoaded;
@@ -295,8 +295,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 @Override
                 public void onClick(View v) {
                     showSuccess = true;
-                    if (messageService != null) {
-                        messageService.connectSocket();
+                    if (socketService != null) {
+                        socketService.connectSocket();
                     } else {
                         Snackbar.make(mRecyclerView, getString(R.string.couldNotConnectToServer), Snackbar.LENGTH_SHORT).show();
                     }
@@ -418,7 +418,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        messageService.emit(EVENT_ONLINE_STATUS, onlineStatusJson);
+        socketService.emit(EVENT_ONLINE_STATUS, onlineStatusJson);
     }
 
     private void getMessages() {
@@ -521,7 +521,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             @Override
             public void onSuccess(Object o) {
                 if (sendMessage) {
-                    messageService.emit(EVENT_SEND_MESSAGE, messageJson);
+                    socketService.emit(EVENT_SEND_MESSAGE, messageJson);
                 }
 
             }
@@ -722,7 +722,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                                 e.printStackTrace();
                             }
 
-                            messageService.emit(EVENT_TYPING, typingJson);
+                            socketService.emit(EVENT_TYPING, typingJson);
                         }
                         return true;
                     }
@@ -752,7 +752,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        messageService.emit(EVENT_STOPPED_TYPING, typingJson);
+                        socketService.emit(EVENT_STOPPED_TYPING, typingJson);
                     }
                 });
 
@@ -952,11 +952,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     }
 
     @Override
-    public void onServiceConnected(MessageService messageService) {
-        super.onServiceConnected(messageService);
-        this.messageService = messageService;
-        socketConnected = messageService.isSocketConnected();
-        messageService.setOnSocketListener(this, Integer.valueOf(sharedHelper.getUserId()));
+    public void onServiceConnected(SocketService socketService) {
+        super.onServiceConnected(socketService);
+        this.socketService = socketService;
+        socketConnected = socketService.isSocketConnected();
+        socketService.setOnSocketListener(this, Integer.valueOf(sharedHelper.getUserId()));
         getOpponentStatus();
         scheduleTask();
     }
@@ -965,8 +965,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     protected void onDestroy() {
         super.onDestroy();
         Notification.get().setSendingRemote(true);
-        if (messageService != null) {
-            messageService.destroyListener();
+        if (socketService != null) {
+            socketService.destroyListener();
         }
         unbindService();
         destroyScheduler();

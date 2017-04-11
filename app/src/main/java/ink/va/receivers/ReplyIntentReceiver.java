@@ -20,13 +20,13 @@ import org.json.JSONObject;
 
 import ink.va.callbacks.GeneralCallback;
 import ink.va.models.ChatModel;
-import ink.va.service.MessageService;
+import ink.va.service.SocketService;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
 import lombok.Setter;
 
-import static ink.va.service.MessageService.NOTIFICATION_REPLY;
+import static ink.va.service.SocketService.NOTIFICATION_REPLY;
 import static ink.va.utils.Constants.EVENT_PING;
 import static ink.va.utils.Constants.EVENT_SEND_MESSAGE;
 import static ink.va.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
@@ -38,7 +38,7 @@ import static ink.va.utils.Constants.STATUS_DELIVERED;
 
 public class ReplyIntentReceiver extends BroadcastReceiver {
     private SharedHelper sharedHelper;
-    private MessageService messageService;
+    private SocketService socketService;
     @Setter
     private OnBindCallback onBindCallback;
     private Context context;
@@ -87,18 +87,18 @@ public class ReplyIntentReceiver extends BroadcastReceiver {
         }
         final String finalMessageToSend = messageToSend;
 
-        if (messageService == null) {
+        if (socketService == null) {
             setOnBindCallback(new OnBindCallback() {
                 @Override
                 public void onBind() {
                     sendMessage(finalMessageToSend);
                 }
             });
-            Intent messageIntent = new Intent(context, MessageService.class);
-            messageService = MessageService.get();
-            if (messageService == null) {
+            Intent messageIntent = new Intent(context, SocketService.class);
+            socketService = SocketService.get();
+            if (socketService == null) {
                 context.startService(messageIntent);
-                messageService = MessageService.get();
+                socketService = SocketService.get();
             }
             sendMessage(finalMessageToSend);
         } else {
@@ -108,7 +108,7 @@ public class ReplyIntentReceiver extends BroadcastReceiver {
     }
 
     private void sendMessage(String finalMessageToSend) {
-        messageService.connectSocket();
+        socketService.connectSocket();
         final ChatModel chatModel = chatGSON.fromJson(receivedMessageJson.toString(), ChatModel.class);
         chatModel.setDate(Time.getCurrentTime());
         chatModel.setMessageId(String.valueOf(System.currentTimeMillis()));
@@ -157,8 +157,8 @@ public class ReplyIntentReceiver extends BroadcastReceiver {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if (messageService != null) {
-            messageService.emit(EVENT_PING, pingJson);
+        if (socketService != null) {
+            socketService.emit(EVENT_PING, pingJson);
         }
     }
 
@@ -167,8 +167,8 @@ public class ReplyIntentReceiver extends BroadcastReceiver {
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
-            MessageService.LocalBinder binder = (MessageService.LocalBinder) service;
-            messageService = binder.getService();
+            SocketService.LocalBinder binder = (SocketService.LocalBinder) service;
+            socketService = binder.getService();
             onBindCallback.onBind();
         }
 
@@ -182,10 +182,10 @@ public class ReplyIntentReceiver extends BroadcastReceiver {
         RealmHelper.getInstance().insertMessage(chatModel, new GeneralCallback() {
             @Override
             public void onSuccess(Object o) {
-                messageService.setEmitListener(new GeneralCallback() {
+                socketService.setEmitListener(new GeneralCallback() {
                     @Override
                     public void onSuccess(Object o) {
-                        messageService.destroyEmitListener();
+                        socketService.destroyEmitListener();
                         removeNotificationIfNeeded();
                     }
 
@@ -194,7 +194,7 @@ public class ReplyIntentReceiver extends BroadcastReceiver {
 
                     }
                 });
-                messageService.emit(EVENT_SEND_MESSAGE, messageJson);
+                socketService.emit(EVENT_SEND_MESSAGE, messageJson);
             }
 
             @Override

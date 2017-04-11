@@ -33,7 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.service.MafiaGameService;
-import ink.va.service.MessageService;
+import ink.va.service.SocketService;
 import ink.va.utils.Keyboard;
 import ink.va.utils.MafiaConstants;
 import ink.va.utils.Retrofit;
@@ -82,7 +82,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
     private SharedHelper sharedHelper;
     private android.app.ProgressDialog progressDialog;
     private int maxPlayers;
-    private MessageService messageService;
+    private SocketService socketService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -361,8 +361,8 @@ public class MafiaAddRoomActivity extends BaseActivity {
                         mafiaJsonObject.put("firstName", sharedHelper.getFirstName());
                         mafiaJsonObject.put("firstName", sharedHelper.getLastName());
                         mafiaJsonObject.put("roomId", jsonObject.optString("roomId"));
-                        if (messageService != null) {
-                            messageService.emit(EVENT_CREATE_GAME, mafiaJsonObject);
+                        if (socketService != null) {
+                            socketService.emit(EVENT_CREATE_GAME, mafiaJsonObject);
                         }
 
                         finish();
@@ -413,8 +413,8 @@ public class MafiaAddRoomActivity extends BaseActivity {
     }
 
     @Override
-    public void onServiceConnected(MessageService messageService) {
-        super.onServiceConnected(messageService);
-        this.messageService = messageService;
+    public void onServiceConnected(SocketService socketService) {
+        super.onServiceConnected(socketService);
+        this.socketService = socketService;
     }
 }

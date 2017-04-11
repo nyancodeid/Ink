@@ -53,6 +53,7 @@ import ink.va.interfaces.FeedItemClick;
 import ink.va.interfaces.ItemClickListener;
 import ink.va.models.FeedModel;
 import ink.va.models.UserModel;
+import ink.va.service.SocketService;
 import ink.va.utils.Animations;
 import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
@@ -63,10 +64,14 @@ import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.ScrollAwareFABBehavior;
 import ink.va.utils.SharedHelper;
+import ink.va.utils.Time;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static ink.va.utils.Constants.EVENT_FRIEND_REQUESTED;
+import static ink.va.utils.Constants.EVENT_POST_LIKED;
 
 
 /**
@@ -106,6 +111,7 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
     private Bitmap intentBitmap;
     private String shareFileName;
     private File shareOutPutDir;
+    private SocketService socketService;
 
 
     @Override
@@ -295,6 +301,14 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
                     boolean success = jsonObject.optBoolean("success");
                     DimDialog.hideDialog();
                     if (success) {
+                        JSONObject friendRequestJson = new JSONObject();
+                        friendRequestJson.put("requesterFirstName", sharedHelper.getFirstName());
+                        friendRequestJson.put("requesterLastName", sharedHelper.getLastName());
+                        friendRequestJson.put("requestedUserId", mOpponentId);
+                        friendRequestJson.put("requesterId", sharedHelper.getUserId());
+
+                        socketService.emit(EVENT_FRIEND_REQUESTED, friendRequestJson);
+                        friendRequestJson = null;
                         hasFriendRequested = true;
                         Snackbar.make(opponentProfileRecycler, getString(R.string.requestSent), Snackbar.LENGTH_SHORT).show();
                     } else {
@@ -448,6 +462,12 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
     }
 
     @Override
+    public void onServiceConnected(SocketService socketService) {
+        super.onServiceConnected(socketService);
+        this.socketService = socketService;
+    }
+
+    @Override
     public void onRefresh() {
         feedModels.clear();
         opponentProfileAdapter.notifyDataSetChanged();
@@ -499,6 +519,20 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
             like(feedModel.getId(), 0, likeCountTV, feedModel, likeWrapper);
             likeView.setBackgroundResource(R.drawable.like_active);
             feedModel.setLiked(true);
+
+            JSONObject likeJson = new JSONObject();
+            try {
+                likeJson.put("postOwnerId", feedModel.getPosterId());
+                likeJson.put("likerFirstName", sharedHelper.getFirstName());
+                likeJson.put("likerLastName", sharedHelper.getLastName());
+                likeJson.put("likerId", sharedHelper.getUserId());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            if (socketService != null) {
+                socketService.emit(EVENT_POST_LIKED, likeJson);
+            }
         }
     }
 
@@ -659,7 +693,7 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
         intent.putExtra("attachment", feedModel.getFileName());
         intent.putExtra("location", feedModel.getAddress());
         intent.putExtra("name", feedModel.getFirstName() + " " + feedModel.getLastName());
-        intent.putExtra("date", feedModel.getDatePosted());
+        intent.putExtra("date", Time.convertToLocalTime(feedModel.getDatePosted()));
         intent.putExtra("likesCount", feedModel.getLikesCount());
         intent.putExtra("isLiked", feedModel.isLiked());
         intent.putExtra("isSocialAccount", feedModel.isSocialAccount());
