@@ -670,6 +670,7 @@ public class SocketService extends Service {
                                         String bigTextContent, int iconResourceId, Class<?> resultClass, @Nullable Bundle extras, @Nullable String extrasKey) {
 
         Intent requestsViewIntent = new Intent(getApplicationContext(), resultClass);
+        requestsViewIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         requestsViewIntent.setAction(String.valueOf(uniqueId));
         if (extras != null) {
             requestsViewIntent.putExtra(extrasKey, extras);

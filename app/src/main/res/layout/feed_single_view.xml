@@ -174,6 +174,8 @@
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground"
+                    android:minHeight="40dp"
+                    android:minWidth="50dp"
                     android:visibility="visible">
 
                     <TextView
@@ -201,6 +203,8 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:minHeight="40dp"
+                    android:minWidth="50dp"
                     android:id="@+id/commentWrapper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -238,6 +242,8 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:minHeight="40dp"
+                    android:minWidth="50dp"
                     android:id="@+id/shareWrapper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

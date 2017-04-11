@@ -1,13 +1,16 @@
 package ink.va.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,14 +21,22 @@ import com.mikhaellopez.hfrecyclerview.HFRecyclerView;
 
 import java.util.List;
 
+import ink.va.activities.MyProfile;
+import ink.va.activities.OpponentProfile;
 import ink.va.interfaces.CommentClickHandler;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.CommentModel;
+import ink.va.models.UserModel;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.ClipManager;
 import ink.va.utils.Constants;
 import ink.va.utils.FileUtils;
+import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
+import lombok.Setter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by USER on 2016-07-05.
@@ -40,6 +51,7 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
     private String location;
     private String date;
     private String name;
+    @Setter
     private String likesCount;
     private CommentClickHandler commentClickHandler;
     private boolean isLiked;
@@ -48,6 +60,8 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
     String ownerId;
     private RecyclerItemClickListener onItemClickListener;
     private boolean showingNoComments = false;
+    @Setter
+    private String postId;
 
     public CommentAdapter(String ownerId, List<CommentModel> data,
                           Context context, String ownerImage,
@@ -96,10 +110,9 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
 
     private void handleHeaderView(final int position, final RecyclerView.ViewHolder holder) {
         final HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-        if (ownerId.equals(sharedHelper.getUserId())) {
-        } else {
-        }
-        ((HeaderViewHolder) holder).commentMoreIcon.setOnClickListener(new View.OnClickListener() {
+        headerViewHolder.getLiker(postId);
+
+        headerViewHolder.commentMoreIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (commentClickHandler != null) {
@@ -282,12 +295,15 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
 
     }
 
-    class HeaderViewHolder extends RecyclerView.ViewHolder {
+    class HeaderViewHolder extends RecyclerView.ViewHolder implements RecyclerItemClickListener {
         private ImageView postOwnerImage, likeIcon, imageHolder;
         private TextView postBody, postDate, commenterName, commentAttachmentName, commentAddress, likesCountTV;
         private RelativeLayout commentLikeWrapper, commentAddressLayout, commentAttachmentLayout;
         private ImageView commentMoreIcon;
         private RelativeLayout noCommentWrapper;
+        private RecyclerView likerHorizontalRecycler;
+        private ProgressBar likerProgress;
+        private LikerAdapter likerAdapter;
 
         public HeaderViewHolder(View itemView) {
             super(itemView);
@@ -305,10 +321,75 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             commentAddressLayout = (RelativeLayout) itemView.findViewById(R.id.commentAddresslayout);
             noCommentWrapper = (RelativeLayout) itemView.findViewById(R.id.noCommentWrapper);
             commentAttachmentLayout = (RelativeLayout) itemView.findViewById(R.id.commentAttachmentLayout);
+            likerProgress = (ProgressBar) itemView.findViewById(R.id.likerProgress);
+            likerAdapter = new LikerAdapter();
+            likerAdapter.setOnItemClickListener(this);
+            likerHorizontalRecycler = (RecyclerView) itemView.findViewById(R.id.likerHorizontalRecycler);
+            LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+            likerHorizontalRecycler.setLayoutManager(horizontalLayoutManager);
+            likerHorizontalRecycler.setAdapter(likerAdapter);
+        }
+
+        private void getLiker(String postId) {
+            Retrofit.getInstance().getInkService().getLikedUsers(postId).enqueue(new Callback<List<UserModel>>() {
+                @Override
+                public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
+                    if (likerProgress.getVisibility() == View.VISIBLE) {
+                        likerProgress.setVisibility(View.GONE);
+                    }
+
+                    if (response.body().isEmpty()) {
+                        likerHorizontalRecycler.setVisibility(View.GONE);
+                    } else {
+                        likerHorizontalRecycler.setVisibility(View.VISIBLE);
+                        likerAdapter.setUserModels(response.body());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<UserModel>> call, Throwable t) {
+                    likerProgress.setVisibility(View.GONE);
+                }
+            });
+        }
+
+        @Override
+        public void onItemClicked(int position, View view) {
+
+        }
+
+        @Override
+        public void onItemLongClick(Object object) {
+
+        }
+
+        @Override
+        public void onAdditionalItemClick(int position, View view) {
+
+        }
+
+        @Override
+        public void onAdditionalItemClicked(Object object) {
+
+        }
+
+        @Override
+        public void onItemClicked(Object object) {
+            UserModel userModel = (UserModel) object;
+            if (userModel.getUserId().equals(sharedHelper.getUserId())) {
+                context.startActivity(new Intent(context, MyProfile.class));
+            } else {
+                Intent intent = new Intent(context, OpponentProfile.class);
+                intent.putExtra("id", userModel.getUserId());
+                intent.putExtra("firstName", userModel.getFirstName());
+                intent.putExtra("lastName", userModel.getLastName());
+                intent.putExtra("isFriend", true);
+                context.startActivity(intent);
+            }
         }
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder {
+    public class ItemViewHolder extends RecyclerView.ViewHolder {
         private TextView commenterBody;
         private ImageView commenterImage;
         private ImageView commentMoreIcon;
@@ -316,16 +397,20 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         private RelativeLayout commentRootLayout;
         private ImageView imageView;
 
+
         public ItemViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.stickerView);
 
             commentMoreIcon = (ImageView) itemView.findViewById(R.id.commentMoreIcon);
+
             commenterBody = (TextView) itemView.findViewById(R.id.commenterBody);
             commenterName = (TextView) itemView.findViewById(R.id.commenterName);
             commenterImage = (ImageView) itemView.findViewById(R.id.commenterImage);
             commentRootLayout = (RelativeLayout) itemView.findViewById(R.id.commentRootLayout);
         }
+
+
     }
 
     public void setOnLikeClickListener(CommentClickHandler onLikeClickListener) {

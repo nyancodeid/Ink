@@ -1,51 +1,59 @@
 [
     {
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_tab_unselected_pressed_holo.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_tab_unselected_pressed_holo.9.png"
+    },
+    {
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_cab_background_top_holo_light.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_cab_background_top_holo_light.9.png"
+    },
+    {
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_stacked_solid_dark_holo.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_stacked_solid_dark_holo.9.png"
+    },
+    {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_selected_holo_dark.9.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_textfield_search_selected_holo_dark.9.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_menu_dropdown_panel_holo_light.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_menu_dropdown_panel_holo_light.9.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_ab_back_holo_dark.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_ab_back_holo_dark.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_cab_background_top_holo_light.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_cab_background_top_holo_light.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_menu_moreoverflow_normal_holo_dark.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_menu_moreoverflow_normal_holo_dark.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_menu_hardkey_panel_holo_dark.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_menu_hardkey_panel_holo_dark.9.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_default_holo_light.9.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_spinner_ab_default_holo_light.9.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_stacked_transparent_dark_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ab_stacked_transparent_dark_holo.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_bottom_solid_light_holo.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_bottom_solid_light_holo.9.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_menu_share_holo_dark.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_menu_share_holo_dark.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_clear_disabled.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_clear_disabled.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_default_holo_dark.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_spinner_ab_default_holo_dark.9.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_bottom_solid_light_holo.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_bottom_solid_light_holo.9.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_clear_search_api_disabled_holo_light.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_clear_search_api_disabled_holo_light.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_menu_share_holo_dark.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_menu_share_holo_dark.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_commit_search_api_holo_dark.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_commit_search_api_holo_dark.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_focused_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_list_focused_holo.9.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_bottom_transparent_light_holo.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_bottom_transparent_light_holo.9.png"
+    },
+    {
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_transparent_light_holo.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_transparent_light_holo.9.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_default_holo_light.9.png",
@@ -56,12 +64,20 @@
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_list_divider_holo_dark.9.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_cab_done_holo_dark.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_cab_done_holo_dark.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_cab_done_holo_light.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_cab_done_holo_light.png"
+    },
+    {
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_tab_selected_pressed_holo.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_tab_selected_pressed_holo.9.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_commit_search_api_holo_light.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_commit_search_api_holo_light.png"
+    },
+    {
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_tab_selected_holo.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_tab_selected_holo.9.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_stacked_transparent_dark_holo.9.png",
@@ -72,10 +88,6 @@
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_textfield_search_right_selected_holo_light.9.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_voice_search.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_voice_search.png"
-    },
-    {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_cab_done_holo_dark.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_cab_done_holo_dark.png"
     },
@@ -84,24 +96,12 @@
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_search_api_holo_light.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_transparent_light_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ab_transparent_light_holo.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_clear_normal.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_clear_normal.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_tab_selected_pressed_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_tab_selected_pressed_holo.9.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_focused_holo_light.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_spinner_ab_focused_holo_light.9.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_default_holo_dark.9.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_spinner_ab_default_holo_dark.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_selected_holo_light.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_textfield_search_selected_holo_light.9.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_clear_search_api_holo_light.png",
@@ -116,20 +116,24 @@
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_textfield_search_default_holo_dark.9.png"
     },
     {
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_pressed_holo_light.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_list_pressed_holo_light.9.png"
+    },
+    {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_bottom_transparent_dark_holo.9.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_bottom_transparent_dark_holo.9.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_solid_dark_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ab_solid_dark_holo.9.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_pressed_holo_dark.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_spinner_ab_pressed_holo_dark.9.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_transparent_dark_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ab_transparent_dark_holo.9.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_selected_holo_light.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_textfield_search_selected_holo_light.9.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_focused_holo_light.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_spinner_ab_focused_holo_light.9.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_go.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_go.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_cab_background_bottom_holo_dark.9.png",
@@ -144,10 +148,6 @@
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_menu_hardkey_panel_holo_light.9.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_bottom_solid_dark_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ab_bottom_solid_dark_holo.9.png"
-    },
-    {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_right_default_holo_dark.9.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_textfield_search_right_default_holo_dark.9.png"
     },
@@ -156,16 +156,16 @@
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_solid_light_holo.9.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_selected_holo_dark.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_textfield_search_selected_holo_dark.9.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_tab_selected_focused_holo.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_tab_selected_focused_holo.9.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_ab_back_holo_light.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_ab_back_holo_light.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_tab_selected_focused_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_tab_selected_focused_holo.9.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_bottom_solid_dark_holo.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_bottom_solid_dark_holo.9.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_cab_background_top_holo_dark.9.png",
@@ -180,28 +180,20 @@
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_menu_moreoverflow_normal_holo_dark.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_right_default_holo_light.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_textfield_search_right_default_holo_light.9.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_voice_search.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_voice_search.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_menu_hardkey_panel_holo_dark.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_menu_hardkey_panel_holo_dark.9.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_focused_holo.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_list_focused_holo.9.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_longpressed_holo.9.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_list_longpressed_holo.9.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_right_selected_holo_light.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_textfield_search_right_selected_holo_light.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_right_selected_holo_dark.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_textfield_search_right_selected_holo_dark.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_pressed_holo_light.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_list_pressed_holo_light.9.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_menu_moreoverflow_normal_holo_light.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_menu_moreoverflow_normal_holo_light.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_clear_normal.png",
@@ -212,20 +204,20 @@
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_list_divider_holo_light.9.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_default_holo_light.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_textfield_search_default_holo_light.9.png"
-    },
-    {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_pressed_holo_dark.9.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_list_pressed_holo_dark.9.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_clear_search_api_disabled_holo_light.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_clear_search_api_disabled_holo_light.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_right_selected_holo_dark.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_textfield_search_right_selected_holo_dark.9.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_transparent_dark_holo.9.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_transparent_dark_holo.9.png"
+    },
+    {
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_menu_dropdown_panel_holo_light.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_menu_dropdown_panel_holo_light.9.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_focused_holo_dark.9.png",
@@ -236,20 +228,8 @@
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_menu_share_holo_light.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_cab_background_bottom_holo_dark.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_cab_background_bottom_holo_dark.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_menu_share_holo_light.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_menu_share_holo_light.png"
-    },
-    {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_disabled_holo_dark.9.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_spinner_ab_disabled_holo_dark.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_clear_disabled.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_clear_disabled.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_stacked_transparent_light_holo.9.png",
@@ -260,8 +240,16 @@
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_menu_dropdown_panel_holo_dark.9.png"
     },
     {
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_solid_dark_holo.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_solid_dark_holo.9.png"
+    },
+    {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_go_search_api_holo_light.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_go_search_api_holo_light.png"
+    },
+    {
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_selector_disabled_holo_dark.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_list_selector_disabled_holo_dark.9.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_cab_background_bottom_holo_light.9.png",
@@ -272,12 +260,12 @@
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_spinner_ab_pressed_holo_light.9.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_commit_search_api_holo_dark.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_commit_search_api_holo_dark.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_right_default_holo_light.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_textfield_search_right_default_holo_light.9.png"
     },
     {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_tab_unselected_pressed_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_tab_unselected_pressed_holo.9.png"
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_stacked_solid_light_holo.9.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_stacked_solid_light_holo.9.png"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_search.png",
@@ -290,273 +278,5 @@
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_share_pack_holo_dark.9.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_share_pack_holo_dark.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_go.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_go.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_tab_unselected_pressed_holo.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_tab_unselected_pressed_holo.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_pressed_holo_dark.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_list_pressed_holo_dark.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_cab_background_top_holo_light.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_cab_background_top_holo_light.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_stacked_solid_dark_holo.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_stacked_solid_dark_holo.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_ab_back_holo_dark.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_ab_back_holo_dark.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_menu_hardkey_panel_holo_dark.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_menu_hardkey_panel_holo_dark.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_search.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_search.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_menu_moreoverflow_normal_holo_light.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_menu_moreoverflow_normal_holo_light.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_menu_share_holo_dark.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_menu_share_holo_dark.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_ab_back_holo_dark.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_ab_back_holo_dark.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_share_pack_holo_dark.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ab_share_pack_holo_dark.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_commit_search_api_holo_light.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_commit_search_api_holo_light.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_commit_search_api_holo_dark.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_commit_search_api_holo_dark.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_selector_disabled_holo_light.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_list_selector_disabled_holo_light.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_bottom_transparent_light_holo.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_bottom_transparent_light_holo.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_transparent_light_holo.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_transparent_light_holo.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_cab_background_top_holo_dark.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_cab_background_top_holo_dark.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_cab_background_bottom_holo_light.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_cab_background_bottom_holo_light.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_cab_done_holo_light.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_cab_done_holo_light.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_tab_selected_pressed_holo.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_tab_selected_pressed_holo.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_tab_selected_holo.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_tab_selected_holo.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_bottom_transparent_light_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ab_bottom_transparent_light_holo.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_bottom_solid_light_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ab_bottom_solid_light_holo.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_disabled_holo_light.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_spinner_ab_disabled_holo_light.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_pressed_holo_dark.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_spinner_ab_pressed_holo_dark.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_focused_holo_light.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_spinner_ab_focused_holo_light.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_pressed_holo_light.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_list_pressed_holo_light.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_pressed_holo_dark.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_spinner_ab_pressed_holo_dark.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_share_pack_holo_light.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ab_share_pack_holo_light.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_search_api_holo_light.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_search_api_holo_light.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_selected_holo_light.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_textfield_search_selected_holo_light.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_go.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_go.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_tab_selected_focused_holo.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_tab_selected_focused_holo.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_solid_light_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ab_solid_light_holo.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_bottom_solid_dark_holo.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_bottom_solid_dark_holo.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_divider_holo_dark.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_list_divider_holo_dark.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_voice_search.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_voice_search.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_focused_holo.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_list_focused_holo.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_ab_back_holo_light.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_ab_back_holo_light.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_menu_hardkey_panel_holo_light.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_menu_hardkey_panel_holo_light.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_bottom_transparent_dark_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ab_bottom_transparent_dark_holo.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_clear_search_api_holo_light.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_clear_search_api_holo_light.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_menu_moreoverflow_normal_holo_light.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ic_menu_moreoverflow_normal_holo_light.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_stacked_solid_dark_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ab_stacked_solid_dark_holo.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_right_default_holo_dark.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_textfield_search_right_default_holo_dark.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_voice_search_api_holo_light.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_voice_search_api_holo_light.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_cab_done_holo_light.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_cab_done_holo_light.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_right_selected_holo_dark.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_textfield_search_right_selected_holo_dark.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_default_holo_dark.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_textfield_search_default_holo_dark.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_menu_dropdown_panel_holo_light.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_menu_dropdown_panel_holo_light.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_pressed_holo_light.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_spinner_ab_pressed_holo_light.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_stacked_solid_light_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ab_stacked_solid_light_holo.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_tab_selected_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_tab_selected_holo.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_selector_disabled_holo_dark.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_list_selector_disabled_holo_dark.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_longpressed_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_list_longpressed_holo.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_solid_dark_holo.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_solid_dark_holo.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_disabled_holo_dark.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_spinner_ab_disabled_holo_dark.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_stacked_transparent_light_holo.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ab_stacked_transparent_light_holo.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_selector_disabled_holo_dark.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_list_selector_disabled_holo_dark.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ic_go_search_api_holo_light.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_ic_go_search_api_holo_light.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_focused_holo_dark.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_spinner_ab_focused_holo_dark.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_list_divider_holo_light.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_list_divider_holo_light.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_textfield_search_right_default_holo_light.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_textfield_search_right_default_holo_light.9.png"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_ab_stacked_solid_light_holo.9.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xhdpi\\abc_ab_stacked_solid_light_holo.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_spinner_ab_default_holo_light.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_spinner_ab_default_holo_light.9.png"
-    },
-    {
-        "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi\\abc_menu_dropdown_panel_holo_dark.9.png",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\drawable-xhdpi\\abc_menu_dropdown_panel_holo_dark.9.png"
     }
 ]

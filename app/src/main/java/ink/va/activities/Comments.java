@@ -197,6 +197,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
         mCommentAdapter = new CommentAdapter(ownerId, mCommentModels, this, mUserImage,
                 mPostBody, mAttachment, mLocation, mDate, mName, mLikesCount, isLiked, isOwnerSocialAccount);
+        mCommentAdapter.setPostId(mPostId);
         mCommentAdapter.setOnLikeClickListener(this);
         mCommentRefresher.setColorSchemeColors(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
@@ -750,6 +751,8 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                     } else {
                         likeCountTV.setVisibility(View.GONE);
                     }
+                    mCommentAdapter.setLikesCount(likesCount);
+                    mCommentAdapter.notifyDataSetChanged();
                 } catch (IOException e) {
                     shouldUpdate = false;
                     e.printStackTrace();

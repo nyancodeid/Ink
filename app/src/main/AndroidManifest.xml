@@ -189,8 +189,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
         <activity
-            android:name="ink.va.activities.Comments"
-            android:launchMode="singleTask" />
+            android:name="ink.va.activities.Comments" />
         <activity
             android:name="ink.va.activities.SplashScreen"
             android:configChanges="keyboardHidden|orientation|screenSize"

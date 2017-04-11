@@ -123,6 +123,7 @@ public class Constants {
     public static final String DELETE_POST_URL = "DeletePost.php";
     public static final String COMMENT_OPTIONS_URL = "CommentOptions.php";
     public static final String GET_COMMENTS_URL = "GetComments.php";
+    public static final String GET_LIKED_USERS = "GetLikedUsers.php";
     public static final String SOCIAL_LOGIN_URL = "SocialLogin.php";
     public static final String TEMPORARY_PASSWORD = "TemporaryPassword.php";
     public static final String ADD_COMMENT_URL = "AddComment.php";

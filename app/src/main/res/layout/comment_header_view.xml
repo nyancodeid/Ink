@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="30dp"
+    android:animateLayoutChanges="true"
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView
@@ -91,19 +92,28 @@
 
             </View>
 
-            <TextView
-                android:id="@+id/commentLikesCount"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/likerHorizontalRecycler"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/actionDivider"
-                android:layout_alignStart="@+id/actionDivider"
+                android:layout_height="35dp"
                 android:layout_below="@+id/actionDivider"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:fontFamily="@string/appFont"
-                android:text="@string/likesText"
-                android:textSize="12sp"
-                android:visibility="gone" />
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="9dp"
+                android:layout_toRightOf="@+id/commentLikeWrapper"
+                android:background="@drawable/grey_transparent_rectangle"
+                android:overScrollMode="never">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <ProgressBar
+                android:id="@+id/likerProgress"
+                style="@style/AdobeImageWidget.ProgressBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/actionDivider"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp" />
 
             <RelativeLayout
                 android:id="@+id/commentLikeWrapper"
@@ -111,24 +121,37 @@
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/actionDivider"
                 android:layout_alignStart="@+id/actionDivider"
-                android:layout_below="@+id/commentLikesCount"
+                android:layout_below="@+id/actionDivider"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground">
+                android:foreground="?android:attr/selectableItemBackground"
+                android:minHeight="40dp"
+                android:minWidth="50dp">
 
                 <ImageView
                     android:id="@+id/commentLikeIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginRight="30dp"
                     android:layout_marginTop="20dp"
                     android:background="@drawable/like_inactive" />
 
+                <TextView
+                    android:id="@+id/commentLikesCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_toRightOf="@+id/commentLikeIcon"
+                    android:ellipsize="end"
+                    android:fontFamily="@string/appFont"
+                    android:maxLength="20"
+                    android:text="@string/likesText"
+                    android:textSize="12sp"
+                    android:visibility="visible" />
 
             </RelativeLayout>
 

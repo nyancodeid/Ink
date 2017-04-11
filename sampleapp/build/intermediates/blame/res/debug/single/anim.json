@@ -8,20 +8,8 @@
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\anim\\abc_slide_out_bottom.xml"
     },
     {
-        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_out_bottom.xml",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\anim\\abc_slide_out_bottom.xml"
-    },
-    {
         "merged": "E:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\anim\\abc_fade_out.xml",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\anim\\abc_fade_out.xml"
-    },
-    {
-        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_out_top.xml",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\anim\\abc_slide_out_top.xml"
-    },
-    {
-        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\anim\\abc_fade_out.xml",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\anim\\abc_fade_out.xml"
     },
     {
         "merged": "E:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_out_top.xml",
@@ -34,17 +22,5 @@
     {
         "merged": "E:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_in_top.xml",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\anim\\abc_slide_in_top.xml"
-    },
-    {
-        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_in_top.xml",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\anim\\abc_slide_in_top.xml"
-    },
-    {
-        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\anim\\abc_fade_in.xml",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\anim\\abc_fade_in.xml"
-    },
-    {
-        "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_in_bottom.xml",
-        "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\anim\\abc_slide_in_bottom.xml"
     }
 ]
