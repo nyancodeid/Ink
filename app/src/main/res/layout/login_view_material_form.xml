@@ -22,7 +22,7 @@
             android:textColorHint="#ffffff">
 
             <EditText
-                android:id="@+id/email"
+                android:id="@+id/loginED"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/login_vector_icon"
@@ -45,7 +45,7 @@
             android:textColorHint="#ffffff">
 
             <EditText
-                android:id="@+id/password"
+                android:id="@+id/passwordED"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/password_icon"

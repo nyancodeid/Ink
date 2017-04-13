@@ -7,49 +7,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
-
-        <RelativeLayout
-            android:id="@+id/inkSignInWrapper"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
-            android:paddingBottom="10dp">
-
-            <ImageView
-                android:id="@+id/inkSignInIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_margin="10dp"
-                android:src="@mipmap/ic_launcher" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/inkSignInIcon"
-                android:fontFamily="@string/appFont"
-                android:text="@string/registerInkAccount"
-                android:textStyle="bold" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@+id/inkSignInWrapper"
-            android:background="#b3b3b3"></View>
-
-
         <RelativeLayout
             android:id="@+id/googleSignInWrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/inkSignInWrapper"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
@@ -158,7 +119,6 @@
             android:background="#b3b3b3"></View>
 
 
-
         <RelativeLayout
             android:id="@+id/linkedInSingInWrapper"
             android:layout_width="match_parent"
@@ -217,10 +177,10 @@
 
             <TextView
                 android:id="@+id/acceptPrivacyText"
-                android:fontFamily="@string/appFont"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/privacyCheckBox"
+                android:fontFamily="@string/appFont"
                 android:text="@string/privacyPolicyShort"
                 android:textColor="#3F51B5" />
         </RelativeLayout>

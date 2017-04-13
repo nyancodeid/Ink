@@ -90,9 +90,6 @@
             android:name="ink.va.activities.Intro"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name="ink.va.activities.Registration"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
-        <activity
             android:name="ink.va.activities.HomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/feedText"

@@ -16,6 +16,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,6 +60,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.utils.Constants;
+import ink.va.utils.ErrorCause;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.SocialSignIn;
@@ -85,21 +87,39 @@ public class Login extends BaseActivity {
     MaterialLoginView materialLoginView;
     @BindView(R.id.registrationFirstName)
     TextInputLayout registrationFirstName;
+    @BindView(R.id.firstName)
+    EditText firstName;
+
+    @BindView(R.id.privacyCheckBox)
+    AppCompatCheckBox privacyCheckBox;
 
     @BindView(R.id.registrationLastName)
     TextInputLayout registrationLastName;
+    @BindView(R.id.lastName)
+    EditText lastName;
 
     @BindView(R.id.registrationLogin)
     TextInputLayout registrationLogin;
+    @BindView(R.id.registrationLoginED)
+    EditText login;
 
     @BindView(R.id.registrationPassword)
     TextInputLayout registrationPassword;
+    @BindView(R.id.registrationPasswordED)
+    EditText password;
 
     @BindView(R.id.registrationConfirmPassword)
     TextInputLayout registrationConfirmPassword;
+    @BindView(R.id.confirmPassword)
+    EditText confirmPassword;
 
     @BindView(R.id.loginInput)
     TextInputLayout loginInput;
+    @BindView(R.id.loginED)
+    EditText loginED;
+
+    @BindView(R.id.passwordED)
+    EditText passwordED;
 
     @BindView(R.id.passwordInput)
     TextInputLayout passwordInput;
@@ -137,7 +157,7 @@ public class Login extends BaseActivity {
             startHomeActivity();
         }
 
-        registrationFirstName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        firstName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
@@ -146,35 +166,60 @@ public class Login extends BaseActivity {
             }
         });
 
-        registrationLastName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        lastName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                registrationLastName.setError(null);
+                if (hasFocus) {
+                    registrationLastName.setError(null);
+                }
             }
         });
 
-        registrationLogin.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        login.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                registrationLogin.setError(null);
+                if (hasFocus) {
+                    registrationLogin.setError(null);
+                }
             }
         });
 
-        registrationPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                registrationPassword.setError(null);
+                if (hasFocus) {
+                    registrationPassword.setError(null);
+                }
 
             }
         });
 
-        registrationConfirmPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        confirmPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                registrationConfirmPassword.setError(null);
+                if (hasFocus) {
+                    registrationConfirmPassword.setError(null);
+                }
             }
         });
 
+        loginED.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    loginInput.setError(null);
+                }
+            }
+        });
+
+        passwordED.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    passwordInput.setError(null);
+                }
+            }
+        });
         mBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -198,164 +243,269 @@ public class Login extends BaseActivity {
         startActivity(new Intent(getApplicationContext(), ForgotPassword.class));
     }
 
+    @OnClick(R.id.acceptPrivacyText)
+    public void acceptPrivacyClicked() {
+        Intent intent = new Intent(getApplicationContext(), Policy.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.signInButton)
+    public void signInButtonClicked() {
+        if (canProceed(true)) {
+            proceedLogin();
+        }
+    }
+
     @OnClick(R.id.register)
     public void registerClicked() {
-        if (canProceed()) {
+        if (canProceed(false)) {
+            registerUser();
         }
     }
 
-    private boolean canProceed() {
-        if (registrationFirstName.getEditText().getText().toString().trim().isEmpty()) {
-            registrationFirstName.setError(getString(R.string.errorFirstName));
-            return false;
-        }
-        if (registrationLastName.getEditText().getText().toString().trim().isEmpty()) {
-            registrationLastName.setError(getString(R.string.errorLastName));
-            return false;
-        }
-        if (registrationLogin.getEditText().getText().toString().trim().isEmpty()) {
-            registrationLogin.setError(getString(R.string.fieldsMandatory));
-            return false;
-        }
+    private void registerUser() {
+        progressDialog.setTitle(getString(R.string.pleaseWait));
+        progressDialog.setMessage(getString(R.string.connectingToServer));
+        progressDialog.show();
+        final Call<ResponseBody> register = Retrofit.getInstance().getInkService().register(
+                registrationLogin.getEditText().getText().toString().trim(),
+                registrationPassword.getEditText().getText().toString().trim(),
+                registrationFirstName.getEditText().getText().toString().trim(),
+                registrationLastName.getEditText().getText().toString().trim());
+        register.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    registerUser();
+                    return;
+                }
+                if (response.body() == null) {
+                    registerUser();
+                    return;
+                }
+                progressDialog.hide();
+                try {
+                    try {
+                        String responseString = response.body().string();
+                        JSONObject jsonObject = new JSONObject(responseString);
+                        boolean success = jsonObject.optBoolean("success");
+                        if (success) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+                            builder.setTitle(getString(R.string.successRegistration));
+                            builder.setMessage(getString(R.string.successRegistrationMessage));
+                            builder.setCancelable(false);
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    loginED.setText(registrationLogin.getEditText().getText().toString().trim());
+                                    passwordED.setText(registrationPassword.getEditText().getText().toString().trim());
+                                    materialLoginView.getRegisterView().findViewById(R.id.register_cancel).performClick();
+                                }
+                            });
+                            builder.show();
+                        } else {
+                            String cause = jsonObject.optString("cause");
+                            if (cause.equals(ErrorCause.USER_ALREADY_EXIST)) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+                                builder.setTitle(getString(R.string.userExist));
+                                builder.setMessage(getString(R.string.userExistMessage));
+                                builder.setCancelable(false);
+                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                builder.show();
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
-        if (registrationLogin.getEditText().getText().toString().trim().length() < 5) {
-            registrationLogin.setError(getString(R.string.login_too_short));
-            return false;
-        }
-
-        if (registrationPassword.getEditText().getText().toString().trim().isEmpty()) {
-            registrationPassword.setError(getString(R.string.fieldsMandatory));
-            return false;
-        }
-
-        if (registrationConfirmPassword.getEditText().getText().toString().trim().isEmpty()) {
-            registrationConfirmPassword.setError(getString(R.string.fieldsMandatory));
-            return false;
-        }
-
-        if (registrationPassword.getEditText().getText().toString().trim().length() < 5 || registrationConfirmPassword.getEditText().getText().toString().trim().length() < 5) {
-            registrationPassword.setError(getString(R.string.password_too_short));
-            return false;
-        }
-
-        if (!registrationPassword.getEditText().getText().toString().trim().equals(registrationConfirmPassword.getEditText().getText().toString().trim().isEmpty())) {
-            registrationPassword.setError(getString(R.string.doesnotMatch));
-            registrationConfirmPassword.setError(getString(R.string.doesnotMatch));
-            return false;
-        }
-
-        return true;
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressDialog.hide();
+                Toast.makeText(Login.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-//    private void proceedLogin() {
-//        final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().login(mLoginView.getText().toString().toString(),
-//                mPasswordView.getText().toString());
-//        responseBodyCall.enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                if (response == null) {
-//                    proceedLogin();
-//                    return;
-//                }
-//                if (response.body() == null) {
-//                    proceedLogin();
-//                    return;
-//                }
-//                AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
-//                try {
-//                    try {
-//                        String responseString = response.body().string();
-//                        JSONObject jsonObject = new JSONObject(responseString);
-//                        boolean success = jsonObject.optBoolean("success");
-//                        if (!success) {
-//                            enableButtons();
-//                            mProgressView.setVisibility(View.GONE);
-//                            builder.setTitle(getString(R.string.errorLogin));
-//                            builder.setMessage(getString(R.string.errorLoginMessage));
-//                            builder.setCancelable(false);
-//                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    dialog.dismiss();
-//
-//                                }
-//                            });
-//                            builder.show();
-//                        } else {
-//                            boolean banned = jsonObject.optBoolean("banned");
-//                            if (!banned) {
-//                                String userId = jsonObject.optString("user_id");
-//                                String securityQuestion = jsonObject.optString("securityQuestion");
-//                                mSharedHelper.putSecurityQuestionSet(securityQuestion != null && !securityQuestion.isEmpty());
-//                                mSharedHelper.putFirstName(jsonObject.optString("first_name"));
-//                                mSharedHelper.putIsAccountRecoverable(true);
-//                                mSharedHelper.putLastName(jsonObject.optString("last_name"));
-//                                mSharedHelper.setPassword(jsonObject.optString("password"));
-//                                mSharedHelper.putUserId(userId);
-//                                mSharedHelper.putShouldShowIntro(false);
-//                                mSharedHelper.putLogin(jsonObject.optString("login"));
-//                                mSharedHelper.putIsSocialAccount(false);
-//                                mSharedHelper.putIsAccountRecoverable(true);
-//                                String imageLink = jsonObject.optString("imageLink");
-//                                if (imageLink != null && !imageLink.isEmpty()) {
-//                                    mSharedHelper.putImageLink(imageLink);
-//                                }
-//                                startHomeActivity();
-//                            } else {
-//                                mProgressView.setVisibility(View.GONE);
-//                                enableButtons();
-//                                builder.setTitle(getString(R.string.ban_title));
-//                                builder.setMessage(getString(R.string.ban_message));
-//                                builder.setCancelable(false);
-//                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        dialog.dismiss();
-//                                    }
-//                                });
-//                                builder.show();
-//                            }
-//                        }
-//                    } catch (JSONException e) {
-//                        enableButtons();
-//                        mProgressView.setVisibility(View.GONE);
-//                        builder.setTitle(getString(R.string.errorLogin));
-//                        builder.setMessage(getString(R.string.errorLoginMessage));
-//                        builder.setCancelable(false);
-//                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                dialog.dismiss();
-//
-//                            }
-//                        });
-//                        builder.show();
-//                        e.printStackTrace();
-//                    }
-//                } catch (IOException e) {
-//                    enableButtons();
-//                    mProgressView.setVisibility(View.GONE);
-//                    builder.setTitle(getString(R.string.errorLogin));
-//                    builder.setMessage(getString(R.string.errorLoginMessage));
-//                    builder.setCancelable(false);
-//                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.dismiss();
-//
-//                        }
-//                    });
-//                    builder.show();
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                attemptLogin();
-//            }
-//        });
-//    }
+    private boolean canProceed(boolean proceedLogin) {
+        if (proceedLogin) {
+            if (loginInput.getEditText().getText().toString().trim().isEmpty()) {
+                loginInput.setError(getString(R.string.emptyField));
+                return false;
+            }
+            if (passwordInput.getEditText().getText().toString().trim().isEmpty()) {
+                passwordInput.setError(getString(R.string.emptyField));
+                return false;
+            }
+            return true;
+        } else {
+            if (registrationFirstName.getEditText().getText().toString().trim().isEmpty()) {
+                registrationFirstName.setError(getString(R.string.errorFirstName));
+                return false;
+            }
+            if (registrationLastName.getEditText().getText().toString().trim().isEmpty()) {
+                registrationLastName.setError(getString(R.string.errorLastName));
+                return false;
+            }
+            if (registrationLogin.getEditText().getText().toString().trim().isEmpty()) {
+                registrationLogin.setError(getString(R.string.fieldsMandatory));
+                return false;
+            }
+
+            if (registrationLogin.getEditText().getText().toString().trim().length() < 5) {
+                registrationLogin.setError(getString(R.string.login_too_short));
+                return false;
+            }
+
+            if (registrationPassword.getEditText().getText().toString().trim().isEmpty()) {
+                registrationPassword.setError(getString(R.string.fieldsMandatory));
+                return false;
+            }
+
+            if (registrationConfirmPassword.getEditText().getText().toString().trim().isEmpty()) {
+                registrationConfirmPassword.setError(getString(R.string.fieldsMandatory));
+                return false;
+            }
+
+            if (registrationPassword.getEditText().getText().toString().trim().length() < 5 || registrationConfirmPassword.getEditText().getText().toString().trim().length() < 5) {
+                registrationPassword.setError(getString(R.string.password_too_short));
+                return false;
+            }
+
+            if (!registrationPassword.getEditText().getText().toString().trim().equals(registrationConfirmPassword.getEditText().getText().toString().trim())) {
+                registrationPassword.setError(getString(R.string.doesnotMatch));
+                registrationConfirmPassword.setError(getString(R.string.doesnotMatch));
+                return false;
+            }
+
+            if (!privacyCheckBox.isChecked()) {
+                Snackbar.make(privacyCheckBox, getString(R.string.youMustAccept), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                }).show();
+                return false;
+            }
+            return true;
+        }
+    }
+
+    private void proceedLogin() {
+        progressDialog.setTitle(getString(R.string.pleaseWait));
+        progressDialog.setMessage(getString(R.string.logging));
+        progressDialog.show();
+        final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().login(loginInput.getEditText().getText().toString().toString(),
+                passwordInput.getEditText().getText().toString());
+        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    proceedLogin();
+                    return;
+                }
+                if (response.body() == null) {
+                    proceedLogin();
+                    return;
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+                progressDialog.hide();
+                try {
+                    try {
+                        String responseString = response.body().string();
+                        JSONObject jsonObject = new JSONObject(responseString);
+                        boolean success = jsonObject.optBoolean("success");
+                        if (!success) {
+                            builder.setTitle(getString(R.string.errorLogin));
+                            builder.setMessage(getString(R.string.errorLoginMessage));
+                            builder.setCancelable(false);
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+
+                                }
+                            });
+                            builder.show();
+                        } else {
+                            boolean banned = jsonObject.optBoolean("banned");
+                            if (!banned) {
+                                String userId = jsonObject.optString("user_id");
+                                String securityQuestion = jsonObject.optString("securityQuestion");
+                                mSharedHelper.putSecurityQuestionSet(securityQuestion != null && !securityQuestion.isEmpty());
+                                mSharedHelper.putFirstName(jsonObject.optString("first_name"));
+                                mSharedHelper.putIsAccountRecoverable(true);
+                                mSharedHelper.putLastName(jsonObject.optString("last_name"));
+                                mSharedHelper.setPassword(jsonObject.optString("password"));
+                                mSharedHelper.putUserId(userId);
+                                mSharedHelper.putShouldShowIntro(false);
+                                mSharedHelper.putLogin(jsonObject.optString("login"));
+                                mSharedHelper.putIsSocialAccount(false);
+                                mSharedHelper.putIsAccountRecoverable(true);
+                                String imageLink = jsonObject.optString("imageLink");
+                                if (imageLink != null && !imageLink.isEmpty()) {
+                                    mSharedHelper.putImageLink(imageLink);
+                                }
+                                startHomeActivity();
+                            } else {
+                                builder.setTitle(getString(R.string.ban_title));
+                                builder.setMessage(getString(R.string.ban_message));
+                                builder.setCancelable(false);
+                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                builder.show();
+                            }
+                        }
+                    } catch (JSONException e) {
+                        builder.setTitle(getString(R.string.errorLogin));
+                        builder.setMessage(getString(R.string.errorLoginMessage));
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+
+                            }
+                        });
+                        builder.show();
+                        e.printStackTrace();
+                    }
+                } catch (IOException e) {
+                    builder.setTitle(getString(R.string.errorLogin));
+                    builder.setMessage(getString(R.string.errorLoginMessage));
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+
+                        }
+                    });
+                    builder.show();
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressDialog.hide();
+                Toast.makeText(Login.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     private void startHomeActivity() {
         Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
@@ -402,7 +552,6 @@ public class Login extends BaseActivity {
             }
         });
 
-        RelativeLayout inkSignInWrapper = (RelativeLayout) optionsView.findViewById(R.id.inkSignInWrapper);
         alertDialog = builder.show();
         final AlertDialog finalAlertDialog = alertDialog;
         googleSignInWrapper.setOnClickListener(new OnClickListener() {
@@ -498,24 +647,6 @@ public class Login extends BaseActivity {
                 openVkLogin();
             }
         });
-        inkSignInWrapper.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!appCompatCheckBox.isChecked()) {
-                    Snackbar.make(appCompatCheckBox, getString(R.string.youMustAccept), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    }).show();
-                    return;
-                }
-                if (finalAlertDialog != null) {
-                    finalAlertDialog.dismiss();
-                }
-                startActivity(new Intent(getApplicationContext(), Registration.class));
-            }
-        });
     }
 
     private Scope buildScope() {
@@ -589,23 +720,6 @@ public class Login extends BaseActivity {
         return true;
     }
 
-
-//    private void disableButtons() {
-//        mLoginView.setEnabled(false);
-//        mPasswordView.setEnabled(false);
-//        mLoginButton.setEnabled(false);
-//        mRegisterWrapper.setEnabled(false);
-//    }
-//
-//    private void enableButtons() {
-//        if (mLoginView != null) {
-//            mLoginView.setEnabled(true);
-//            mPasswordView.setEnabled(true);
-//            mLoginButton.setEnabled(true);
-//            mRegisterWrapper.setEnabled(true);
-//        }
-//
-//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -767,7 +881,7 @@ public class Login extends BaseActivity {
         mSharedHelper.putIsRegistered(isRegistered);
         mSharedHelper.putIsSocialAccount(isSocial);
         mSharedHelper.putImageLink(imageUrl);
-//        startHomeActivity();
+        startHomeActivity();
     }
 
 }

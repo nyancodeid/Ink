@@ -6,5 +6,13 @@
     {
         "merged": "D:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout-v11\\abc_simple_decor.xml",
         "source": "C:\\Users\\PC-Comp\\.android\\build-cache\\e6211f72c7188f95eaf92d5008e1f193b74e913e\\output\\res\\layout-v11\\abc_simple_decor.xml"
+    },
+    {
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout-v11\\abc_action_bar_decor.xml",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\layout-v11\\abc_action_bar_decor.xml"
+    },
+    {
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout-v11\\abc_simple_decor.xml",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\layout-v11\\abc_simple_decor.xml"
     }
 ]

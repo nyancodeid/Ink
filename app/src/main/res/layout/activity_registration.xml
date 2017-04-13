@@ -76,7 +76,7 @@
         app:errorEnabled="true">
 
         <EditText
-            android:id="@+id/login"
+            android:id="@+id/registrationLoginED"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@string/appFont"
@@ -99,7 +99,7 @@
         app:errorEnabled="true">
 
         <EditText
-            android:id="@+id/password"
+            android:id="@+id/registrationPasswordED"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@string/appFont"
@@ -156,4 +156,30 @@
         android:textAllCaps="false"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linkedInDivider"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/privacyCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:backgroundTint="@color/vk_white"
+            android:buttonTint="@color/vk_white"
+            android:checked="true" />
+
+        <TextView
+            android:id="@+id/acceptPrivacyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/privacyCheckBox"
+            android:fontFamily="@string/appFont"
+            android:text="@string/privacyPolicyShort"
+            android:textColor="@color/vk_white" />
+    </RelativeLayout>
 </LinearLayout>
