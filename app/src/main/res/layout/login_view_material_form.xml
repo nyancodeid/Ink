@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dialog_width"
+    android:layout_height="wrap_content"
+    android:background="@drawable/blue_gradient"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/email_login_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/loginInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:textColorHint="#ffffff">
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/login_vector_icon"
+                android:drawablePadding="10dp"
+                android:fontFamily="@string/appFont"
+                android:hint="@string/loginText"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/vk_white"
+                android:textColorHint="@color/vk_white" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/passwordInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:textColorHint="#ffffff">
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/password_icon"
+                android:drawablePadding="10dp"
+                android:fontFamily="@string/appFont"
+                android:hint="@string/passwordText"
+                android:imeActionId="@+id/login"
+                android:imeActionLabel="@string/action_sign_in_short"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/vk_white"
+                android:textColorHint="@color/vk_white" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:id="@+id/forgotPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@string/appFont"
+            android:foreground="?attr/selectableItemBackground"
+            android:padding="10dp"
+            android:text="@string/forgotPassword"
+            android:textColor="@color/vk_white" />
+
+        <Button
+            android:id="@+id/signInButton"
+            style="?attr/selectableItemBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/login_button_background"
+            android:elevation="5dp"
+            android:fontFamily="@string/appFont"
+            android:text="@string/action_sign_in"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/or"
+            android:textColor="@color/vk_white" />
+
+        <RelativeLayout
+            android:id="@+id/anotherOption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/loginMaterialForm"
+            android:layout_margin="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/login_button_background"
+            android:clickable="true"
+            android:elevation="5dp"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:minHeight="40dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@string/appFont"
+                android:text="@string/chooseAnotherOption"
+                android:textColor="@color/colorPrimary" />
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>

@@ -22,6 +22,8 @@
     <color name="darkGoldColor">#996600</color>
     <color name="orangeColor">#ff6633</color>
     <color name="activeBlack">#50000000</color>
+    <color name="material_login_register_color">#7f8fe7</color>
+    <color name="light_blue">#00cccc</color>
 
     <integer-array name="rainbow">
         <item>@color/rainbow_red</item>

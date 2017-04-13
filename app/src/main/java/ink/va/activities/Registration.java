@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 
 import com.ink.va.R;
 
@@ -40,8 +39,6 @@ public class Registration extends BaseActivity implements View.OnClickListener {
     Button mRegister;
     @BindView(R.id.rootRegistrationLayout)
     LinearLayout mRootRegistrationLayout;
-    @BindView(R.id.registrationScrollView)
-    ScrollView registrationScrollView;
     private View mRegisterLoading;
 
     @BindView(R.id.firstName)
@@ -61,7 +58,6 @@ public class Registration extends BaseActivity implements View.OnClickListener {
             actionBar.setTitle(getString(R.string.registerAccount));
         }
 
-        mRegisterLoading = findViewById(R.id.registerLoading);
         mRegister.setOnClickListener(this);
     }
 
@@ -78,12 +74,6 @@ public class Registration extends BaseActivity implements View.OnClickListener {
                 && !mPassword.getText().toString().isEmpty()) {
 
             Keyboard.hideKeyboard(this);
-            registrationScrollView.post(new Runnable() {
-                @Override
-                public void run() {
-                    registrationScrollView.smoothScrollTo(0, 0);
-                }
-            });
 
             mRegisterLoading.setVisibility(View.VISIBLE);
             mRootRegistrationLayout.setEnabled(false);
