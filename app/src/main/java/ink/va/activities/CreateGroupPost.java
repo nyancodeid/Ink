@@ -24,6 +24,7 @@ import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,18 +42,21 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
+import ink.va.service.SocketService;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.FileUtils;
 import ink.va.utils.ProgressRequestBody;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
+import ink.va.utils.User;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 import static ink.va.activities.MakePost.MAX_FILE_SIZE;
+import static ink.va.utils.Constants.EVENT_SEND_GROUP_MESSAGE;
 
 public class CreateGroupPost extends BaseActivity implements ProgressRequestBody.UploadCallbacks {
 
@@ -81,6 +85,19 @@ public class CreateGroupPost extends BaseActivity implements ProgressRequestBody
     private boolean isFileChosen;
     private File chosenFile;
     private SharedHelper sharedHelper;
+    private SocketService socketService;
+    private String groupNme;
+    private String mGroupName;
+    private String mGroupColor;
+    private String mGroupImage;
+    private String mGroupDescription;
+    private String mGroupOwnerId;
+    private String mGroupOwnerName;
+    private String mCount;
+    private String mOwnerImage;
+    private boolean isSocialAccount;
+    private boolean isMember;
+    private boolean isFriendWithOwner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +107,18 @@ public class CreateGroupPost extends BaseActivity implements ProgressRequestBody
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             groupId = bundle.getString("groupId");
+            groupNme = bundle.getString("groupNme");
+            mGroupName = bundle.getString("groupName");
+            mGroupColor = bundle.getString("groupColor");
+            mGroupImage = bundle.getString("groupImage");
+            mGroupDescription = bundle.getString("groupDescription");
+            mGroupOwnerId = bundle.getString("groupOwnerId");
+            mGroupOwnerName = bundle.getString("groupOwnerName");
+            mCount = bundle.getString("count");
+            mOwnerImage = bundle.getString("ownerImage");
+            isSocialAccount = bundle.getBoolean("isSocialAccount");
+            isMember = bundle.getBoolean("isMember");
+            isFriendWithOwner = bundle.getBoolean("isFriend");
         }
 
 
@@ -196,9 +225,10 @@ public class CreateGroupPost extends BaseActivity implements ProgressRequestBody
         if (chosenFile != null) {
             map.put("file\"; filename=\"" + chosenFile.getName() + "\"", requestBody);
         }
+        final String message = groupInputField.getText().toString().trim();
 
         Call<ResponseBody> sendGroupMessageCall = Retrofit.getInstance().getInkService().sendGroupMessage(map, groupId,
-                groupInputField.getText().toString().trim(), sharedHelper.getUserId(),
+                message, sharedHelper.getUserId(),
                 sharedHelper.getImageLink(), sharedHelper.getFirstName() + " " + sharedHelper.getLastName());
         groupInputField.setText("");
         groupMessageSpin.setVisibility(View.VISIBLE);
@@ -219,10 +249,38 @@ public class CreateGroupPost extends BaseActivity implements ProgressRequestBody
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
-                        finish();
+
+                        JSONObject groupJson = new JSONObject();
+                        groupJson.put("senderName", sharedHelper.getFirstName() + " " + sharedHelper.getLastName());
+                        groupJson.put("senderId", sharedHelper.getUserId());
+                        groupJson.put("message", message);
+
+                        groupJson.put("groupId", groupId);
+                        groupJson.put("groupName", mGroupName);
+                        groupJson.put("groupColor", mGroupColor);
+                        groupJson.put("groupImage", mGroupImage);
+                        groupJson.put("groupDescription", mGroupDescription);
+                        groupJson.put("groupOwnerId", mGroupOwnerId);
+                        groupJson.put("groupOwnerName", mGroupOwnerName);
+                        groupJson.put("count", mCount);
+                        groupJson.put("ownerImage", mOwnerImage);
+                        groupJson.put("isSocialAccount", isSocialAccount);
+                        groupJson.put("isMember", isMember);
+                        groupJson.put("isFriend", isFriendWithOwner);
+
+                        JSONArray participantsArray = new JSONArray();
+                        for (String eachParticipantId : User.get().getParticipantIds()) {
+                            participantsArray.put(eachParticipantId);
+                        }
+
+                        groupJson.put("groupParticipants", participantsArray);
+
+                        socketService.emit(EVENT_SEND_GROUP_MESSAGE, groupJson);
+                        groupJson = null;
                         overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
                         LocalBroadcastManager.getInstance(CreateGroupPost.this).sendBroadcast(new Intent(getPackageName() +
                                 "SingleGroupView"));
+                        finish();
                     } else {
                         sendGroupMessage();
                     }
@@ -235,12 +293,18 @@ public class CreateGroupPost extends BaseActivity implements ProgressRequestBody
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                sendGroupMessage();
+                groupMessageSpin.setVisibility(View.GONE);
+                Toast.makeText(CreateGroupPost.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
 
     }
 
+    @Override
+    public void onServiceConnected(SocketService socketService) {
+        super.onServiceConnected(socketService);
+        this.socketService = socketService;
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

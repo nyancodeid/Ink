@@ -665,7 +665,12 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                                     postJson.put("posterFirstName", mSharedHelper.getFirstName());
                                     postJson.put("posterLastName", mSharedHelper.getLastName());
                                     postJson.put("postType", postType);
-                                    postJson.put("friends", User.get().getFriendIds());
+
+                                    JSONArray friendsArray = new JSONArray();
+                                    for (String friendId : User.get().getFriendIds()) {
+                                        friendsArray.put(friendId);
+                                    }
+                                    postJson.put("friends", friendsArray);
 
                                     socketService.emit(EVENT_POST_MADE, postJson);
                                     postJson = null;

@@ -90,6 +90,7 @@
         android:id="@+id/messageSenderImage"
         android:layout_width="76dp"
         android:layout_height="76dp"
+        android:adjustViewBounds="true"
         android:layout_centerHorizontal="true"
         android:layout_margin="5dp"
         android:src="@drawable/user_image_placeholder" />

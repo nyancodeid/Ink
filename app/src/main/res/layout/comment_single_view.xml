@@ -38,6 +38,7 @@
         android:id="@+id/commenterImage"
         android:layout_width="46dp"
         android:layout_height="46dp"
+        android:adjustViewBounds="true"
         android:layout_margin="10dp" />
 
     <TextView

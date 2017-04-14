@@ -175,6 +175,7 @@
             android:layout_height="56dp"
             android:layout_marginRight="10dp"
             android:src="@drawable/no_image"
+            android:adjustViewBounds="true"
             app:layout_anchor="@+id/groupImage"
             app:layout_anchorGravity="bottom|right" />
 

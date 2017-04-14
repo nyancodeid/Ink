@@ -253,6 +253,7 @@ public class Constants {
     public static final String PACK_BACKGROUND_BUNDLE_KEY = "pack_background";
     public static final String STICKER_URL_EXTRA_KEY = "stickerUrlExtra";
     public static final String NOTIFICATION_BUNDLE_EXTRA_KEY = "notification_bundle_key";
+    public static final String NOTIFICATION_RECEIVED_GROUP_BUNDLE = "notification_group_bundle";
     public static final String STICKER_IS_ANIMATED_EXTRA_KEY = "stickerIsAnimated";
     public static final String PACK_IMAGE_BUNDLE_KEY = "pack_image";
     public static final String SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY = "SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY";
@@ -288,6 +289,8 @@ public class Constants {
     public static final String EVENT_ON_FRIEND_REQUESTED = "onFriendRequested";
     public static final String EVENT_ON_FRIEND_REQUEST_ACCEPTED = "onFriendRequestAccepted";
     public static final String EVENT_ON_FRIEND_REQUEST_DECLINED = "onFriendRequestDeclined";
+    public static final String EVENT_ON_REQUEST_GROUP_JOIN = "onRequestGroupJoin";
+    public static final String EVENT_ON_NEW_GROUP_MESSAGE = "onNewGroupMessage";
 
     /**
      * Socket Emit Events
@@ -301,15 +304,19 @@ public class Constants {
     public static final String EVENT_POST_LIKE_RECEIVED = "onClientPostLikeReceived";
     public static final String EVENT_POST_MADE_RECEIVED = "onClientPostMadeReceived";
     public static final String EVENT_FRIEND_REQUEST_RECEIVED = "onClientFriendRequestReceived";
+    public static final String EVENT_REQUEST_GROUP_JOIN_RECEIVED = "requestGroupJoinReceived";
+    public static final String EVENT_ON_SEND_GROUP_MESSAGE_RECEIVED  = "onSendGroupMessageReceived";
 
     public static final String EVENT_ONLINE_STATUS = "onlineStatus";
     public static final String EVENT_PING = "ping";
     public static final String EVENT_COMMENT_ADDED = "commentAdded";
     public static final String EVENT_POST_LIKED = "postLiked";
+    public static final String EVENT_REQUEST_GROUP_JOIN = "requestGroupJoin";
     public static final String EVENT_POST_MADE = "postMade";
     public static final String EVENT_FRIEND_REQUESTED = "friendRequested";
     public static final String EVENT_ACCEPT_FRIEND_REQUEST = "acceptFriendRequest";
     public static final String EVENT_DECLINE_FRIEND_REQUEST = "declineFriendRequest";
     public static final String EVENT_CREATE_GAME = "creatingGame";
+    public static final String EVENT_SEND_GROUP_MESSAGE = "sendGroupMessage";
 }
 

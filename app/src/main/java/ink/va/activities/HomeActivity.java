@@ -587,6 +587,10 @@ public class HomeActivity extends BaseActivity
                 shouldOpenActivity = true;
                 setLastClassToOpen(MyCollection.class, false);
                 break;
+            case R.id.myRequests:
+                shouldOpenActivity = true;
+                setLastClassToOpen(RequestsView.class, false);
+                break;
             case R.id.vipChat:
                 callToVipServer(Constants.TYPE_ENTER_VIP);
                 break;

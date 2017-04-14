@@ -21,6 +21,9 @@ public class User {
     @Setter
     @Getter
     private List<String> friendIds;
+    @Setter
+    @Getter
+    private List<String> participantIds;
 
     public User() {
         friendIds = new LinkedList<>();

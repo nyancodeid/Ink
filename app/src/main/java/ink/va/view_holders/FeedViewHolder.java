@@ -147,9 +147,11 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
             this.feedModel = feedModel;
             switch (feedModel.getType()) {
                 case Constants.WALL_TYPE_POST:
+                    postVisibilityIcon.setVisibility(View.VISIBLE);
                     handlePosts();
                     break;
                 case Constants.WALL_TYPE_GROUP_MESSAGE:
+                    postVisibilityIcon.setVisibility(View.INVISIBLE);
                     handleGroupMessages();
                     break;
                 default:
@@ -166,6 +168,7 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
         feedMoreIcon.setVisibility(View.INVISIBLE);
         actionDivider.setVisibility(View.GONE);
         whenPosted.setVisibility(View.GONE);
+        postVisibilityIcon.setVisibility(View.INVISIBLE);
         feedAddressLayout.setVisibility(View.GONE);
         imageHolder.setVisibility(View.GONE);
         feedAttachmentLayout.setVisibility(View.GONE);

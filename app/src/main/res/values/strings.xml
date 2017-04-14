@@ -1106,5 +1106,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="friendRequested">New Friend Request</string>
     <string name="sentFriendRequest">sent friend request to you</string>
     <string name="deniedYourRequest">Denied your friend request</string>
+    <string name="group_request_text">Group Request</string>
 
 </resources>

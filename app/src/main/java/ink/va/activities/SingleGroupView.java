@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ink.va.R;
 import com.koushikdutta.async.future.FutureCallback;
@@ -44,6 +45,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -55,6 +57,7 @@ import ink.va.interfaces.ItemClickListener;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.GroupMessagesModel;
 import ink.va.models.MemberModel;
+import ink.va.service.SocketService;
 import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
@@ -62,10 +65,14 @@ import ink.va.utils.InputField;
 import ink.va.utils.Retrofit;
 import ink.va.utils.ScrollAwareFABButtonehavior;
 import ink.va.utils.SharedHelper;
+import ink.va.utils.User;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static ink.va.utils.Constants.EVENT_REQUEST_GROUP_JOIN;
+import static ink.va.utils.Constants.NOTIFICATION_RECEIVED_GROUP_BUNDLE;
 
 public class SingleGroupView extends BaseActivity implements RecyclerItemClickListener, AppBarLayout.OnOffsetChangedListener, SwipeRefreshLayout.OnRefreshListener {
 
@@ -125,6 +132,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     private ProgressDialog progressDialog;
     private Snackbar snackbar;
     private boolean isFriendWithOwner;
+    private SocketService socketService;
+    private boolean isParticipantsLoaded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,43 +207,41 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         groupMessagesAdapter.setOnClickListener(this);
         groupMessagesRecycler.setAdapter(groupMessagesAdapter);
         if (extras != null) {
-            mGroupName = extras.getString("groupName");
-            isSocialAccount = extras.getBoolean("isSocialAccount");
-            mGroupId = extras.getString("groupId");
-            mGroupColor = extras.getString("groupColor");
-            mGroupImage = extras.getString("groupImage");
-            mGroupDescription = extras.getString("groupDescription");
-            mGroupOwnerId = extras.getString("groupOwnerId");
-            mGroupOwnerName = extras.getString("groupOwnerName");
-            mCount = extras.getString("count");
-            mOwnerImage = extras.getString("ownerImage");
-            isMember = extras.getBoolean("isMember");
-            isFriendWithOwner = extras.getBoolean("isFriend");
+            if (extras.containsKey(NOTIFICATION_RECEIVED_GROUP_BUNDLE)) {
+                Bundle bundle = extras.getBundle(NOTIFICATION_RECEIVED_GROUP_BUNDLE);
+                mGroupName = bundle.getString("groupName");
+                isSocialAccount = bundle.getBoolean("isSocialAccount");
+                mGroupId = bundle.getString("groupId");
+                mGroupColor = bundle.getString("groupColor");
+                mGroupImage = bundle.getString("groupImage");
+                mGroupDescription = bundle.getString("groupDescription");
+                mGroupOwnerId = bundle.getString("groupOwnerId");
+                mGroupOwnerName = bundle.getString("groupOwnerName");
+                mCount = bundle.getString("count");
+                mOwnerImage = bundle.getString("ownerImage");
+                isMember = bundle.getBoolean("isMember");
+                isFriendWithOwner = bundle.getBoolean("isFriend");
+            } else {
+                mGroupName = extras.getString("groupName");
+                isSocialAccount = extras.getBoolean("isSocialAccount");
+                mGroupId = extras.getString("groupId");
+                mGroupColor = extras.getString("groupColor");
+                mGroupImage = extras.getString("groupImage");
+                mGroupDescription = extras.getString("groupDescription");
+                mGroupOwnerId = extras.getString("groupOwnerId");
+                mGroupOwnerName = extras.getString("groupOwnerName");
+                mCount = extras.getString("count");
+                mOwnerImage = extras.getString("ownerImage");
+                isMember = extras.getBoolean("isMember");
+                isFriendWithOwner = extras.getBoolean("isFriend");
+            }
         }
         mJoinGroupButton.setEnabled(false);
         mJoinGroupButton.setText(getString(R.string.loadingText));
-        if (!isMember) {
-            mJoinGroupButton.setVisibility(View.VISIBLE);
-            mAddMessageToGroup.setVisibility(View.GONE);
-            mJoinGroupButton.setText(getString(R.string.joinGroup));
-        } else {
-            mJoinGroupButton.setVisibility(View.GONE);
-            mAddMessageToGroup.setVisibility(View.VISIBLE);
-            CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) mAddMessageToGroup.getLayoutParams();
-            p.setBehavior(new ScrollAwareFABButtonehavior(this));
-            mAddMessageToGroup.setLayoutParams(p);
-        }
+        initButtons();
         getGroupMessages();
         mGroupSingleDescription.setText(mGroupDescription);
-        mGroupSingleFollowersCount.setText(mCount + " " + getString(R.string.participantText));
-        if (!mCount.equals("0")) {
-            mGroupSingleFollowersCount.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    getParticipants();
-                }
-            });
-        }
+        initCount();
         setSupportActionBar(mToolbar);
         mCollapsingToolbar.setTitle(mGroupName);
 
@@ -277,9 +284,67 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         }
     }
 
+    private void initCount() {
+        mGroupSingleFollowersCount.setText(mCount + " " + getString(R.string.participantText));
+        if (!mCount.equals("0")) {
+            mGroupSingleFollowersCount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getParticipants();
+                }
+            });
+        }
+    }
+
+    private void initButtons() {
+        if (!isMember) {
+            if (mSharedHelper.getUserId().equals(mGroupOwnerId)) {
+                mJoinGroupButton.setVisibility(View.GONE);
+                mAddMessageToGroup.setVisibility(View.VISIBLE);
+                CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) mAddMessageToGroup.getLayoutParams();
+                p.setBehavior(new ScrollAwareFABButtonehavior(this));
+                mAddMessageToGroup.setLayoutParams(p);
+            } else {
+                mJoinGroupButton.setVisibility(View.VISIBLE);
+                mAddMessageToGroup.setVisibility(View.GONE);
+                mJoinGroupButton.setText(getString(R.string.joinGroup));
+            }
+        } else {
+            mJoinGroupButton.setVisibility(View.GONE);
+            mAddMessageToGroup.setVisibility(View.VISIBLE);
+            CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) mAddMessageToGroup.getLayoutParams();
+            p.setBehavior(new ScrollAwareFABButtonehavior(this));
+            mAddMessageToGroup.setLayoutParams(p);
+        }
+    }
+
 
     public boolean isRecyclerScrollable(RecyclerView recyclerView) {
         return recyclerView.computeHorizontalScrollRange() > recyclerView.getWidth() || recyclerView.computeVerticalScrollRange() > recyclerView.getHeight();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Bundle extras = intent.getExtras();
+        if (extras.containsKey(NOTIFICATION_RECEIVED_GROUP_BUNDLE)) {
+            Bundle bundle = extras.getBundle(NOTIFICATION_RECEIVED_GROUP_BUNDLE);
+            String groupId = bundle.getString("groupId");
+            if (!mGroupId.equals(groupId)) {
+                Intent relaunchIntent = new Intent(this, SingleGroupView.class);
+                relaunchIntent.putExtra(NOTIFICATION_RECEIVED_GROUP_BUNDLE, bundle);
+                finish();
+                startActivity(relaunchIntent);
+            } else {
+                getGroupMessages();
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getParticipantsFromServer();
     }
 
     private void leaveGroup() {
@@ -338,6 +403,9 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     private void getParticipants() {
         if (memberModels != null) {
             memberModels.clear();
+        }
+        if (User.get().getParticipantIds() != null) {
+            User.get().getParticipantIds().clear();
         }
         final AlertDialog.Builder builder = new AlertDialog.Builder(SingleGroupView.this);
         builder.setTitle(getString(R.string.membersTitle));
@@ -404,6 +472,7 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             }
         });
         builder.show();
+        isParticipantsLoaded = false;
         Call<ResponseBody> participantCall = Retrofit.getInstance().getInkService().getParticipants(mSharedHelper.getUserId(), mGroupId);
         participantCall.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -415,20 +484,24 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                 if (response.body() == null) {
                     getParticipants();
                 }
+                isParticipantsLoaded = true;
                 try {
                     String responseBody = response.body().string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
                         JSONArray jsonArray = jsonObject.optJSONArray("members");
+                        List<String> participantIds = new LinkedList<String>();
                         if (jsonArray.length() <= 0) {
                             Snackbar.make(membersLoading, getString(R.string.noMembers), Snackbar.LENGTH_LONG).show();
                             membersLoading.setVisibility(View.GONE);
+                            participantIds.add("dummy");
                             return;
                         }
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject eachObject = jsonArray.optJSONObject(i);
                             String memberId = eachObject.optString("participant_id");
+                            participantIds.add(memberId);
                             String memberName = eachObject.optString("participant_name");
                             String memberImage = eachObject.optString("participant_image");
                             String memberItemId = eachObject.optString("participant_item_id");
@@ -440,6 +513,12 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                             memberModels.add(memberModel);
                             memberAdapter.notifyDataSetChanged();
                         }
+
+                        if (!mSharedHelper.getUserId().equals(mGroupOwnerId)) {
+                            participantIds.add(mGroupOwnerId);
+                        }
+                        User.get().setParticipantIds(participantIds);
+                        participantIds = null;
                         membersLoading.setVisibility(View.GONE);
                     } else {
                         getParticipants();
@@ -453,7 +532,76 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getParticipants();
+                isParticipantsLoaded = true;
+                membersLoading.setVisibility(View.GONE);
+                Toast.makeText(socketService, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void getParticipantsFromServer() {
+        if (User.get().getParticipantIds() != null) {
+            User.get().getParticipantIds().clear();
+        }
+        isParticipantsLoaded = false;
+        Call<ResponseBody> participantCall = Retrofit.getInstance().getInkService().getParticipants(mSharedHelper.getUserId(), mGroupId);
+        participantCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response == null) {
+                    getParticipantsFromServer();
+                    return;
+                }
+                if (response.body() == null) {
+                    getParticipantsFromServer();
+                    return;
+                }
+                isParticipantsLoaded = true;
+                try {
+                    String responseBody = response.body().string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        JSONArray jsonArray = jsonObject.optJSONArray("members");
+                        List<String> participantIds = new LinkedList<>();
+                        if (jsonArray.length() <= 0) {
+                            participantIds.add("dummy");
+                            return;
+                        }
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject eachObject = jsonArray.optJSONObject(i);
+                            String memberId = eachObject.optString("participant_id");
+                            participantIds.add(memberId);
+                            String memberName = eachObject.optString("participant_name");
+                            String memberImage = eachObject.optString("participant_image");
+                            String memberItemId = eachObject.optString("participant_item_id");
+                            String memberGroupId = eachObject.optString("participant_group_id");
+                            String isFriend = eachObject.optString("isFriend");
+                            boolean isIncognito = eachObject.optBoolean("isIncognito");
+                            memberModel = new MemberModel(Boolean.valueOf(isFriend), isIncognito, memberId, memberName, memberImage, memberItemId
+                                    , memberGroupId);
+                            memberModels.add(memberModel);
+                            memberAdapter.notifyDataSetChanged();
+                        }
+
+                        if (!mSharedHelper.getUserId().equals(mGroupOwnerId)) {
+                            participantIds.add(mGroupOwnerId);
+                        }
+                        User.get().setParticipantIds(participantIds);
+                        participantIds = null;
+                    } else {
+                        Toast.makeText(socketService, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                isParticipantsLoaded = true;
             }
         });
     }
@@ -481,6 +629,13 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                         mJoinGroupButton.setText(getString(R.string.pending));
                         Snackbar.make(mJoinGroupButton, getString(R.string.successfullyRequested), Snackbar.LENGTH_SHORT).show();
                         isRequested = true;
+                        JSONObject requestJson = new JSONObject();
+                        requestJson.put("destinationId", mGroupOwnerId);
+                        requestJson.put("requesterId", mSharedHelper.getUserId());
+                        requestJson.put("groupName", mGroupName);
+                        requestJson.put("requesterName", mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
+                        socketService.emit(EVENT_REQUEST_GROUP_JOIN, requestJson);
+                        requestJson = null;
                     } else {
                         requestJoin();
                     }
@@ -498,6 +653,11 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         });
     }
 
+    @Override
+    public void onServiceConnected(SocketService socketService) {
+        super.onServiceConnected(socketService);
+        this.socketService = socketService;
+    }
 
     @OnClick(R.id.groupImage)
     public void groupImageView() {
@@ -529,8 +689,25 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
 
     @OnClick(R.id.addMessageToGroup)
     public void addMessage() {
+        if (User.get().getParticipantIds().isEmpty() && !isParticipantsLoaded) {
+            Toast.makeText(socketService, getString(R.string.waitTillLoad), Toast.LENGTH_SHORT).show();
+            return;
+        }
         Intent intent = new Intent(getApplicationContext(), CreateGroupPost.class);
+        intent.putExtra("groupNme", mGroupName);
         intent.putExtra("groupId", mGroupId);
+        intent.putExtra("groupName", mGroupName);
+        intent.putExtra("groupColor", mGroupColor);
+        intent.putExtra("groupImage", mGroupImage);
+        intent.putExtra("groupDescription", mGroupDescription);
+        intent.putExtra("groupOwnerId", mGroupOwnerId);
+        intent.putExtra("groupOwnerName", mGroupOwnerName);
+        intent.putExtra("count", mCount);
+        intent.putExtra("ownerImage", mOwnerImage);
+        intent.putExtra("isSocialAccount", isSocialAccount);
+        intent.putExtra("isMember", isMember);
+        intent.putExtra("isFriend", isFriendWithOwner);
+
         startActivity(intent);
         overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
     }
@@ -722,11 +899,16 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
                     if (success) {
                         boolean hasMessages = jsonObject.optBoolean("hasMessages");
                         isRequested = jsonObject.optBoolean("alreadyRequested");
+                        isMember = jsonObject.optBoolean("isMember");
+                        mCount = jsonObject.optString("participants");
+                        initCount();
                         mJoinGroupButton.setEnabled(true);
                         if (isRequested) {
                             mJoinGroupButton.setText(getString(R.string.pending));
                         } else {
-                            mJoinGroupButton.setText(getString(R.string.joinGroup));
+                            initButtons();
+                            invalidateOptionsMenu();
+                            getParticipantsFromServer();
                         }
                         if (hasMessages) {
                             noGroupMessageLayout.setVisibility(View.GONE);
@@ -1006,5 +1188,6 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     @Override
     public void onRefresh() {
         getGroupMessages();
+        getParticipantsFromServer();
     }
 }

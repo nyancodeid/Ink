@@ -357,6 +357,13 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                mCommentsLoading.setVisibility(View.GONE);
+                mCommentRefresher.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mCommentRefresher.setRefreshing(false);
+                    }
+                });
                 Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
@@ -503,7 +510,19 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        getComments(mPostId, false);
+        Bundle extras = intent.getExtras();
+        if (extras.containsKey(NOTIFICATION_BUNDLE_EXTRA_KEY)) {
+            Bundle bundle = extras.getBundle(NOTIFICATION_BUNDLE_EXTRA_KEY);
+            String postId = bundle.getString("postId");
+            if (this.postId.equals(postId)) {
+                getComments(mPostId, false);
+            } else {
+                Intent relaunchIntent = new Intent(this, Comments.class);
+                relaunchIntent.putExtra(NOTIFICATION_BUNDLE_EXTRA_KEY, bundle);
+                finish();
+                startActivity(relaunchIntent);
+            }
+        }
     }
 
     @Override

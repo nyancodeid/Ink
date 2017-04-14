@@ -37,6 +37,7 @@
 
             <ImageView
                 android:id="@+id/postOwnerImage"
+                android:adjustViewBounds="true"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_alignTop="@+id/commenterName"

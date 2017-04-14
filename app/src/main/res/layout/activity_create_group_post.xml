@@ -26,6 +26,7 @@
 
             <ImageView
                 android:id="@+id/currentUserImage"
+                android:adjustViewBounds="true"
                 android:layout_width="54dp"
                 android:layout_height="54dp"
                 android:layout_marginLeft="5dp"

@@ -33,6 +33,7 @@ import ink.va.activities.Comments;
 import ink.va.activities.MafiaRoomActivity;
 import ink.va.activities.ReplyView;
 import ink.va.activities.RequestsView;
+import ink.va.activities.SingleGroupView;
 import ink.va.activities.SplashScreen;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.interfaces.SocketListener;
@@ -65,14 +66,19 @@ import static ink.va.utils.Constants.EVENT_ON_FRIEND_REQUESTED;
 import static ink.va.utils.Constants.EVENT_ON_FRIEND_REQUEST_ACCEPTED;
 import static ink.va.utils.Constants.EVENT_ON_FRIEND_REQUEST_DECLINED;
 import static ink.va.utils.Constants.EVENT_ON_GAME_CREATED;
+import static ink.va.utils.Constants.EVENT_ON_NEW_GROUP_MESSAGE;
 import static ink.va.utils.Constants.EVENT_ON_POST_LIKED;
 import static ink.va.utils.Constants.EVENT_ON_POST_MADE;
+import static ink.va.utils.Constants.EVENT_ON_REQUEST_GROUP_JOIN;
+import static ink.va.utils.Constants.EVENT_ON_SEND_GROUP_MESSAGE_RECEIVED;
 import static ink.va.utils.Constants.EVENT_POST_LIKE_RECEIVED;
 import static ink.va.utils.Constants.EVENT_POST_MADE_RECEIVED;
+import static ink.va.utils.Constants.EVENT_REQUEST_GROUP_JOIN_RECEIVED;
 import static ink.va.utils.Constants.EVENT_STOPPED_TYPING;
 import static ink.va.utils.Constants.EVENT_TYPING;
 import static ink.va.utils.Constants.NOTIFICATION_BUNDLE_EXTRA_KEY;
 import static ink.va.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
+import static ink.va.utils.Constants.NOTIFICATION_RECEIVED_GROUP_BUNDLE;
 import static ink.va.utils.Constants.POST_TYPE_GLOBAL;
 import static ink.va.utils.Constants.SOCKET_URL;
 import static ink.va.utils.Constants.STATUS_DELIVERED;
@@ -82,7 +88,6 @@ public class SocketService extends Service {
     private static final String TAG = SocketService.class.getSimpleName();
     public static final String NOTIFICATION_REPLY = "notificationReply";
     private SharedHelper sharedHelper;
-    private String currentUserId;
     private LocalBinder mBinder = new LocalBinder();
     private SocketListener onSocketListener;
     private List<Integer> socketListeners = new LinkedList<>();
@@ -113,7 +118,6 @@ public class SocketService extends Service {
 
     private void initSocketFully() {
         sharedHelper = new SharedHelper(this);
-        currentUserId = sharedHelper.getUserId();
         destroySocket();
         try {
             mSocket = IO.socket(SOCKET_URL);
@@ -133,6 +137,11 @@ public class SocketService extends Service {
         @Override
         public void call(Object... args) {
             JSONObject jsonObject = (JSONObject) args[0];
+            try {
+                jsonObject.put("receiverId", sharedHelper.getUserId());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             emit(EVENT_FRIEND_REQUEST_DECLINE_RECEIVED, jsonObject);
 
             String destinationId = jsonObject.optString("destinationId");
@@ -146,10 +155,71 @@ public class SocketService extends Service {
         }
     };
 
+    private Emitter.Listener onNewGroupMessage = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject jsonObject = (JSONObject) args[0];
+            try {
+                jsonObject.put("receiverId", sharedHelper.getUserId());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            emit(EVENT_ON_SEND_GROUP_MESSAGE_RECEIVED, jsonObject);
+            Bundle extras = new Bundle();
+            String groupName = jsonObject.optString("groupName");
+
+            extras.putString("groupId", jsonObject.optString("groupId"));
+            extras.putString("groupName", groupName);
+            extras.putString("groupColor", jsonObject.optString("groupColor"));
+            extras.putString("groupImage", jsonObject.optString("groupImage"));
+            extras.putString("groupDescription", jsonObject.optString("groupDescription"));
+            extras.putString("groupOwnerId", jsonObject.optString("groupOwnerId"));
+            extras.putString("groupOwnerName", jsonObject.optString("groupOwnerName"));
+            extras.putString("count", jsonObject.optString("count"));
+            extras.putString("ownerImage", jsonObject.optString("ownerImage"));
+            extras.putString("isSocialAccount", jsonObject.optString("isSocialAccount"));
+            extras.putString("isMember", jsonObject.optString("isMember"));
+            extras.putString("isFriend", jsonObject.optString("isFriend"));
+
+            String senderName = jsonObject.optString("senderName");
+            String senderId = jsonObject.optString("senderId");
+            String message = jsonObject.optString("message");
+
+            sendGeneralNotification(senderName + " " + getString(R.string.posted_text) + " " + groupName, message,
+                    Integer.valueOf(senderId), senderName + " " + getString(R.string.posted_text) + " " + groupName,
+                    message, R.drawable.group_message_icon_white, SingleGroupView.class, extras, NOTIFICATION_RECEIVED_GROUP_BUNDLE);
+        }
+    };
+
+    private Emitter.Listener onGroupJoinRequest = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject jsonObject = (JSONObject) args[0];
+            try {
+                jsonObject.put("receiverId", sharedHelper.getUserId());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            emit(EVENT_REQUEST_GROUP_JOIN_RECEIVED, jsonObject);
+            String destinationId = jsonObject.optString("destinationId");
+            String requesterId = jsonObject.optString("requesterId");
+            String groupName = jsonObject.optString("groupName");
+            String requesterName = jsonObject.optString("requesterName");
+
+            sendGeneralNotification(getString(R.string.group_request_text), requesterName + " " + getString(R.string.requestedText) + " " + groupName,
+                    Integer.valueOf(requesterId), getString(R.string.group_request_text),
+                    requesterName + " " + getString(R.string.requestedText) + " " + groupName, R.drawable.group_request_vector, RequestsView.class, null, null);
+        }
+    };
     private Emitter.Listener onFriendRequestAccepted = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             JSONObject jsonObject = (JSONObject) args[0];
+            try {
+                jsonObject.put("receiverId", sharedHelper.getUserId());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             emit(EVENT_FRIEND_REQUEST_ACCEPT_RECEIVED, jsonObject);
             String destinationId = jsonObject.optString("destinationId");
             String acceptorFirstName = jsonObject.optString("acceptorFirstName");
@@ -167,7 +237,12 @@ public class SocketService extends Service {
         @Override
         public void call(Object... args) {
             JSONObject jsonObject = (JSONObject) args[0];
-            emit(EVENT_COMMENT_RECEIVED, sharedHelper.getUserId());
+            try {
+                jsonObject.put("receiverId", sharedHelper.getUserId());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            emit(EVENT_COMMENT_RECEIVED, jsonObject);
 
             Bundle bundle = new Bundle();
             bundle.putString("postId", jsonObject.optString("postId"));
@@ -216,6 +291,11 @@ public class SocketService extends Service {
         @Override
         public void call(Object... args) {
             JSONObject jsonObject = (JSONObject) args[0];
+            try {
+                jsonObject.put("receiverId", sharedHelper.getUserId());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             emit(EVENT_POST_LIKE_RECEIVED, jsonObject);
 
             String likerFirstName = jsonObject.optString("likerFirstName");
@@ -231,6 +311,11 @@ public class SocketService extends Service {
         @Override
         public void call(Object... args) {
             JSONObject jsonObject = (JSONObject) args[0];
+            try {
+                jsonObject.put("receiverId", sharedHelper.getUserId());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             emit(EVENT_POST_MADE_RECEIVED, jsonObject);
             String posterId = jsonObject.optString("posterId");
             String insertedPostId = jsonObject.optString("insertedPostId");
@@ -306,7 +391,7 @@ public class SocketService extends Service {
 
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("id", currentUserId);
+                jsonObject.put("id", sharedHelper.getUserId());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -398,7 +483,7 @@ public class SocketService extends Service {
     private Emitter.Listener onSocketConnected = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            mSocket.emit(EVENT_ADD_USER, currentUserId);
+            mSocket.emit(EVENT_ADD_USER, sharedHelper.getUserId());
             if (onSocketListener != null) {
                 onSocketListener.onSocketConnected();
             }
@@ -450,6 +535,7 @@ public class SocketService extends Service {
         mSocket.on(EVENT_DISCONNECT, onSocketDisconnected);
         mSocket.on(EVENT_NEW_MESSAGE, onNewMessageReceived);
         mSocket.on(EVENT_STOPPED_TYPING, onUserStoppedTyping);
+        mSocket.on(EVENT_ON_NEW_GROUP_MESSAGE, onNewGroupMessage);
         mSocket.on(EVENT_TYPING, onUserTyping);
         mSocket.on(EVENT_MESSAGE_SENT, onMessageSent);
         mSocket.on(EVENT_CONNECT_TIMEOUT, onSocketTimeOut);
@@ -458,6 +544,7 @@ public class SocketService extends Service {
         mSocket.on(EVENT_ON_COMMENT_ADDED, onCommentAdded);
         mSocket.on(EVENT_ON_FRIEND_REQUEST_ACCEPTED, onFriendRequestAccepted);
         mSocket.on(EVENT_ON_FRIEND_REQUEST_DECLINED, onFriendRequestDeclined);
+        mSocket.on(EVENT_ON_REQUEST_GROUP_JOIN, onGroupJoinRequest);
         mSocket.on(EVENT_ON_POST_LIKED, onPostLiked);
         mSocket.on(EVENT_ON_POST_MADE, onPostMade);
         mSocket.on(EVENT_ON_FRIEND_REQUESTED, onFriendRequested);
@@ -537,6 +624,8 @@ public class SocketService extends Service {
             mSocket.off(EVENT_ON_FRIEND_REQUEST_DECLINED, onFriendRequestDeclined);
             mSocket.off(EVENT_DISCONNECT, onSocketDisconnected);
             mSocket.off(EVENT_NEW_MESSAGE, onNewMessageReceived);
+            mSocket.off(EVENT_ON_REQUEST_GROUP_JOIN, onGroupJoinRequest);
+            mSocket.off(EVENT_ON_NEW_GROUP_MESSAGE, onNewGroupMessage);
             mSocket.off(EVENT_STOPPED_TYPING, onUserStoppedTyping);
             mSocket.off(EVENT_ON_GAME_CREATED, onMafiaGameCreated);
             mSocket.off(EVENT_TYPING, onUserTyping);

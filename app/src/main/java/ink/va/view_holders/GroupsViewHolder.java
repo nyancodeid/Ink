@@ -29,6 +29,7 @@ public class GroupsViewHolder extends RecyclerView.ViewHolder {
     public ImageView groupImage, ownerImage;
     public CardView groupBackground;
     private ProgressBar singleItemLoading;
+    private View joinedTV;
 
     public GroupsViewHolder(View view) {
         super(view);
@@ -38,6 +39,7 @@ public class GroupsViewHolder extends RecyclerView.ViewHolder {
         ownerImage = (ImageView) view.findViewById(R.id.ownerImage);
         groupBackground = (CardView) view.findViewById(R.id.groupBackground);
         singleItemLoading = (ProgressBar) view.findViewById(R.id.singleItemLoading);
+        joinedTV = view.findViewById(R.id.joinedTV);
     }
 
     public void initData(GroupsModel groupsModel, Context context) {
@@ -54,6 +56,8 @@ public class GroupsViewHolder extends RecyclerView.ViewHolder {
             followersCount.setTextColor(Color.parseColor("#ffffff"));
             groupName.setTextColor(Color.parseColor("#ffffff"));
         }
+
+        joinedTV.setVisibility(groupsModel.isMember() ? View.VISIBLE : View.GONE);
         if (!groupsModel.getGroupImage().isEmpty()) {
             groupImage.setScaleType(ImageView.ScaleType.FIT_XY);
             String encodedImage = Uri.encode(groupsModel.getGroupImage());

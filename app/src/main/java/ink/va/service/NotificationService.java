@@ -34,26 +34,15 @@ import java.util.Map;
 import ink.va.activities.HomeActivity;
 import ink.va.activities.RequestsView;
 import ink.va.activities.SplashScreen;
-import ink.va.callbacks.GeneralCallback;
-import ink.va.utils.Notification;
-import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
 
-import static ink.va.utils.Constants.DELETE_MESSAGE_REQUESTED;
 import static ink.va.utils.Constants.NOTIFICAITON_TYPE_GLOBAL_CHAT_MESSAGE;
 import static ink.va.utils.Constants.NOTIFICATION_BUNDLE_EXTRA_KEY;
-import static ink.va.utils.Constants.NOTIFICATION_TYPE_CALL;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_CHAT_ROULETTE;
-import static ink.va.utils.Constants.NOTIFICATION_TYPE_FRIEND_REQUEST;
-import static ink.va.utils.Constants.NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED;
-import static ink.va.utils.Constants.NOTIFICATION_TYPE_GROUP_REQUEST;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_LOCATION_REQUEST_ACCEPTED;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_LOCATION_REQUEST_DECLINED;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_LOCATION_SESSION_ENDED;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_LOCATION_UPDATES;
-import static ink.va.utils.Constants.NOTIFICATION_TYPE_POSTED_IN_GROUP;
-import static ink.va.utils.Constants.NOTIFICATION_TYPE_POST_LIKED;
-import static ink.va.utils.Constants.NOTIFICATION_TYPE_POST_MADE;
 import static ink.va.utils.Constants.NOTIFICATION_TYPE_REQUESTING_LOCATION;
 
 public class NotificationService extends FirebaseMessagingService {
@@ -83,10 +72,6 @@ public class NotificationService extends FirebaseMessagingService {
         String type = response.get("type");
 
         switch (type) {
-            case NOTIFICATION_TYPE_GROUP_REQUEST:
-                sendGroupRequestNotification(getApplicationContext(), response.get("requesterName"),
-                        response.get("requestedGroup"), response.get("requestId"));
-                break;
 
             case NOTIFICATION_TYPE_CHAT_ROULETTE:
                 Intent intent = new Intent(getPackageName() + "WaitRoom");
@@ -96,19 +81,12 @@ public class NotificationService extends FirebaseMessagingService {
                 intent.putExtra("isDisconnected", response.get("isDisconnected"));
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                 break;
-            case NOTIFICATION_TYPE_CALL:
-                break;
 
             case NOTIFICAITON_TYPE_GLOBAL_CHAT_MESSAGE:
                 intent = new Intent(getPackageName() + ".GlobalVipChat");
                 intent.putExtra("data", remoteMessage);
                 LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
                 localBroadcastManager.sendBroadcast(intent);
-                break;
-
-            case NOTIFICATION_TYPE_FRIEND_REQUEST:
-
-                sendFriendRequestNotification(getApplicationContext(), response.get("requesterName"), response.get("requestId"));
                 break;
 
             case NOTIFICATION_TYPE_REQUESTING_LOCATION:
@@ -124,34 +102,6 @@ public class NotificationService extends FirebaseMessagingService {
                 intent.putExtra("type", NOTIFICATION_TYPE_LOCATION_SESSION_ENDED);
                 localBroadcastManager = LocalBroadcastManager.getInstance(this);
                 localBroadcastManager.sendBroadcast(intent);
-                break;
-
-            case NOTIFICATION_TYPE_POSTED_IN_GROUP:
-                if (mSharedHelper.showGroupNotification()) {
-                    String name = response.get("name");
-                    String id = response.get("id");
-                    String groupName = response.get("groupName");
-                    sendGeneralNotification(getApplicationContext(), id,
-                            getString(R.string.group_post_title) + " " + groupName,
-                            name + " " + getString(R.string.posted_text) + " " + groupName,
-                            null);
-                }
-                LocalBroadcastManager.getInstance(NotificationService.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
-
-                break;
-
-            case NOTIFICATION_TYPE_POST_LIKED:
-                if (mSharedHelper.showLikeNotification()) {
-                    String firstName = response.get("firstName");
-                    String lastName = response.get("lastName");
-                    String postId = response.get("id");
-                    sendGeneralNotification(getApplicationContext(), postId, getString(R.string.likeText),
-                            firstName + " " + lastName + getString(R.string.likedPostText),
-                            null);
-
-                    sendLikeNotification(getApplicationContext(), firstName + " " + lastName, postId);
-                }
-                LocalBroadcastManager.getInstance(NotificationService.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
                 break;
 
 
@@ -174,10 +124,7 @@ public class NotificationService extends FirebaseMessagingService {
                 localBroadcastManager = LocalBroadcastManager.getInstance(this);
                 localBroadcastManager.sendBroadcast(intent);
                 break;
-            case NOTIFICATION_TYPE_FRIEND_REQUEST_ACCEPTED:
-                sendGeneralNotification(getApplicationContext(), response.get("requesterId"), response.get("requesterName") + " " +
-                        getString(R.string.acceptedYourFriendRequest), "", null);
-                break;
+
             case NOTIFICATION_TYPE_LOCATION_UPDATES:
                 String latitude = response.get("latitude");
                 String longitude = response.get("longitude");
@@ -189,37 +136,7 @@ public class NotificationService extends FirebaseMessagingService {
                 localBroadcastManager = LocalBroadcastManager.getInstance(this);
                 localBroadcastManager.sendBroadcast(intent);
                 break;
-            case NOTIFICATION_TYPE_POST_MADE:
-                String postId = response.get("postId");
-                String firstName = response.get("firstName");
-                String lastName = response.get("lastName");
-                sendGeneralNotification(getApplicationContext(), postId, getString(R.string.newPost),
-                        firstName + " " + lastName + " " + getString(R.string.madePost), null);
-                break;
-            case DELETE_MESSAGE_REQUESTED:
-                String messageId = response.get("messageId");
-                if (Notification.get().isSendingRemote()) {
-                    RealmHelper.getInstance().removeMessage(messageId, new GeneralCallback<Boolean>() {
-                        @Override
-                        public void onSuccess(Boolean aBoolean) {
 
-                        }
-
-                        @Override
-                        public void onFailure(Boolean aBoolean) {
-
-                        }
-                    });
-                } else {
-                    intent = new Intent(getPackageName() + ".Chat");
-                    intent.putExtra("messageId", messageId);
-                    intent.putExtra("type", DELETE_MESSAGE_REQUESTED);
-                    localBroadcastManager = LocalBroadcastManager.getInstance(this);
-                    localBroadcastManager.sendBroadcast(intent);
-                }
-
-
-                break;
             default:
                 sendGeneralNotification(getApplicationContext(),
                         response.get("uniqueId"), response.get("title"),

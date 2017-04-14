@@ -29,6 +29,11 @@
                     android:icon="@drawable/collection_icon"
                     android:title="@string/my_collection_text" />
 
+                <item
+                    android:id="@+id/myRequests"
+                    android:icon="@drawable/my_requests_icon_black"
+                    android:title="@string/myRequests" />
+
 
                 <item
                     android:id="@+id/whoViewed"
@@ -74,7 +79,8 @@
                     android:icon="@drawable/customize_icon"
                     android:title="@string/customizeAppText" />
 
-                <item android:id="@+id/about"
+                <item
+                    android:id="@+id/about"
                     android:icon="@drawable/information_icon"
                     android:title="@string/aboutTitle">
 
