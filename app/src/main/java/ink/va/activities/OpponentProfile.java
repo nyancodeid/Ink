@@ -408,7 +408,7 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
     }
 
     private void getUserPosts() {
-        Retrofit.getInstance().getInkService().getUserPosts(mOpponentId).enqueue(new Callback<List<FeedModel>>() {
+        Retrofit.getInstance().getInkService().getUserPosts(mOpponentId, sharedHelper.getUserId()).enqueue(new Callback<List<FeedModel>>() {
             @Override
             public void onResponse(Call<List<FeedModel>> call, Response<List<FeedModel>> response) {
                 opponentProfileAdapter.setHasServerError(false);

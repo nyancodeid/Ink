@@ -559,7 +559,8 @@ public class Retrofit {
 
         @POST(Constants.GET_USER_POSTS_URL)
         @FormUrlEncoded
-        Call<List<FeedModel>> getUserPosts(@Field("user_id") String userId);
+        Call<List<FeedModel>> getUserPosts(@Field("user_id") String userId,
+                                           @Field("currentUserId") String currentUserId);
 
         @POST(Constants.GET_LIKED_USERS)
         @FormUrlEncoded
