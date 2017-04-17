@@ -92,6 +92,11 @@ public class SplashScreen extends AppCompatActivity {
             startActivityForResult(new Intent(this, SecurityScreen.class), LOCK_SCREEN_REQUEST_CODE);
         } else {
             if (sharedHelper.hasAnyMafiaParticipation()) {
+                try {
+                    stopService(new Intent(getApplicationContext(), MafiaGameService.class));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 startService(new Intent(this, MafiaGameService.class));
             }
             Intent intent = new Intent(this, Intro.class);
@@ -108,6 +113,11 @@ public class SplashScreen extends AppCompatActivity {
                 boolean hasUnlocked = data.getExtras() != null ? data.getExtras().getBoolean("hasUnlocked") : false;
                 if (hasUnlocked) {
                     if (sharedHelper.hasAnyMafiaParticipation()) {
+                        try {
+                            stopService(new Intent(getApplicationContext(), MafiaGameService.class));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         startService(new Intent(this, MafiaGameService.class));
                     }
                     Intent intent = new Intent(this, Intro.class);

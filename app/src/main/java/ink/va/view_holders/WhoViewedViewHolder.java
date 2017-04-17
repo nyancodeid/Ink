@@ -10,14 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.ion.Ion;
 
 import java.text.SimpleDateFormat;
 
 import ink.va.adapters.WhoViewedAdapter;
 import ink.va.models.WhoViewedModel;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.Time;
 
 /**
@@ -56,11 +55,10 @@ public class WhoViewedViewHolder extends RecyclerView.ViewHolder {
                 url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage;
             }
 
-            Ion.with(context).load(url)
-                    .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(whoViewedImage);
+            ImageLoader.loadImage(context, true, false, url, 0, R.drawable.user_image_placeholder, whoViewedImage, null);
+
         } else {
-            Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
-                    .withBitmap().transform(new CircleTransform()).intoImageView(whoViewedImage);
+            ImageLoader.loadImage(context, true, true, null, R.drawable.no_image, R.drawable.user_image_placeholder, whoViewedImage, null);
         }
 
         if (whoViewedModel.isFriend()) {

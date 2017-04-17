@@ -15,8 +15,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 import com.mikhaellopez.hfrecyclerview.HFRecyclerView;
 
 import java.util.List;
@@ -27,10 +25,10 @@ import ink.va.interfaces.CommentClickHandler;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.CommentModel;
 import ink.va.models.UserModel;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.ClipManager;
 import ink.va.utils.Constants;
 import ink.va.utils.FileUtils;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import lombok.Setter;
@@ -122,14 +120,19 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         });
         if (ownerImage != null && !ownerImage.isEmpty()) {
             if (isOwnerSocialAccount) {
-                Ion.with(context).load(ownerImage).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
+
+                ImageLoader.loadImage(context, true, false, ownerImage,
+                        0, R.drawable.user_image_placeholder, ((HeaderViewHolder) holder).postOwnerImage, null);
             } else {
                 String encodedImage = Uri.encode(ownerImage);
-                Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        encodedImage).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
+                ImageLoader.loadImage(context, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage,
+                        0, R.drawable.user_image_placeholder, ((HeaderViewHolder) holder).postOwnerImage, null);
             }
         } else {
-            Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(headerViewHolder.postOwnerImage);
+
+            ImageLoader.loadImage(context, true, true, null,
+                    R.drawable.no_image, R.drawable.user_image_placeholder, ((HeaderViewHolder) holder).postOwnerImage, null);
+
         }
         headerViewHolder.postBody.setMovementMethod(LinkMovementMethod.getInstance());
         headerViewHolder.postBody.setText(context.getString(R.string.quoteOpen) + ownerPostBody + context.getString(R.string.quoteClose));
@@ -147,8 +150,9 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
                 headerViewHolder.imageHolder.setVisibility(View.VISIBLE);
                 String encodedImage = Uri.encode(attachment);
                 ((HeaderViewHolder) holder).commentAttachmentLayout.setVisibility(View.GONE);
-                Ion.with(context).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedImage).withBitmap().placeholder(R.drawable.big_image_place_holder)
-                        .intoImageView(headerViewHolder.imageHolder);
+
+                ImageLoader.loadImage(context, false, false, Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedImage,
+                        0, R.drawable.big_image_place_holder, headerViewHolder.imageHolder, null);
             } else {
                 ((HeaderViewHolder) holder).commentAttachmentLayout.setVisibility(View.VISIBLE);
                 headerViewHolder.imageHolder.setVisibility(View.GONE);
@@ -264,15 +268,17 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
         }
         if (commentModel.getCommenterImage() != null && !commentModel.getCommenterImage().isEmpty()) {
             if (commentModel.isSocialAccount()) {
-                Ion.with(context).load(commentModel.getCommenterImage()).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
+                ImageLoader.loadImage(context, true, false, commentModel.getCommenterImage(),
+                        0, R.drawable.user_image_placeholder, itemViewHolder.commenterImage, null);
             } else {
                 String encodedImage = Uri.encode(commentModel.getCommenterImage());
 
-                Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        encodedImage).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
+                ImageLoader.loadImage(context, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage,
+                        0, R.drawable.user_image_placeholder, itemViewHolder.commenterImage, null);
             }
         } else {
-            Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(itemViewHolder.commenterImage);
+            ImageLoader.loadImage(context, true, true, null,
+                    R.drawable.no_image, R.drawable.user_image_placeholder, itemViewHolder.commenterImage, null);
         }
 
         if (sharedHelper.getUserId().equals(commentModel.getCommenterId())) {
@@ -440,12 +446,8 @@ public class CommentAdapter extends HFRecyclerView<CommentModel> {
             holder.imageView.setImageResource(0);
             holder.imageView.setVisibility(View.VISIBLE);
 
-            Ion.with(context).load(Constants.MAIN_URL + commentModel.getStickerUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.imageView)
-                    .setCallback(new FutureCallback<ImageView>() {
-                        @Override
-                        public void onCompleted(Exception e, ImageView result) {
-                        }
-                    });
+            ImageLoader.loadImage(context, false, false, Constants.MAIN_URL + commentModel.getStickerUrl(),
+                    0, R.drawable.time_loading_vector, holder.imageView, null);
         } else {
             holder.imageView.setImageResource(0);
             holder.imageView.setVisibility(View.GONE);

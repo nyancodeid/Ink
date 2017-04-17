@@ -353,6 +353,11 @@ public class MafiaAddRoomActivity extends BaseActivity {
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
+                        try {
+                            stopService(new Intent(getApplicationContext(),MafiaGameService.class));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         startService(new Intent(MafiaAddRoomActivity.this, MafiaGameService.class));
                         Intent intent = new Intent();
                         intent.putExtra("hasAdded", true);

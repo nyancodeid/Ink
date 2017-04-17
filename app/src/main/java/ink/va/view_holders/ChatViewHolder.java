@@ -1,7 +1,6 @@
 package ink.va.view_holders;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
@@ -15,8 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import java.util.Date;
 
@@ -29,6 +26,7 @@ import ink.va.models.ChatModel;
 import ink.va.utils.Constants;
 import ink.va.utils.Dp;
 import ink.va.utils.FileUtils;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.Regex;
 import ink.va.utils.SharedHelper;
 
@@ -200,13 +198,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
             imageView.setImageResource(0);
             imageViewWrapper.setVisibility(View.VISIBLE);
 
-            Ion.with(mContext).load(Constants.MAIN_URL + chatModel.getStickerUrl()).withBitmap().placeholder(R.drawable.time_loading_vector)
-                    .intoImageView(imageView)
-                    .setCallback(new FutureCallback<ImageView>() {
-                        @Override
-                        public void onCompleted(Exception e, ImageView result) {
-                        }
-                    });
+            ImageLoader.loadImage(mContext, false, false, Constants.MAIN_URL + chatModel.getStickerUrl(), 0, R.drawable.time_loading_vector, imageView, null);
 
             if (chatModel.getMessage().trim().isEmpty()) {
                 chatViewBubble.setVisibility(View.GONE);
@@ -221,17 +213,14 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
                 imageViewWrapper.setVisibility(View.VISIBLE);
 
                 String encoded = Uri.encode(chatModel.getMessage());
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encoded).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+
+                ImageLoader.loadImage(mContext, false, false, Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encoded, 0, R.drawable.chat_attachment_icon, imageView, new ImageLoader.ImageLoadedCallback() {
                     @Override
-                    public void onCompleted(Exception e, Bitmap result) {
-                        if (e == null) {
-                            imageView.setImageResource(0);
-                            imageView.setImageBitmap(result);
-                        } else {
+                    public void onImageLoaded(Object result, Exception e) {
+                        if (e != null) {
                             imageView.setBackgroundResource(R.drawable.chat_attachment_icon);
                             imageViewWrapper.setVisibility(View.VISIBLE);
                         }
-
                     }
                 });
                 imageViewWrapper.setVisibility(View.VISIBLE);

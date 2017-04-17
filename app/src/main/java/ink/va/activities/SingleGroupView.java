@@ -35,8 +35,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
@@ -58,9 +56,9 @@ import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.GroupMessagesModel;
 import ink.va.models.MemberModel;
 import ink.va.service.SocketService;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.InputField;
 import ink.va.utils.Retrofit;
 import ink.va.utils.ScrollAwareFABButtonehavior;
@@ -248,12 +246,13 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         if (mGroupImage != null && !mGroupImage.isEmpty()) {
             mGroupImageView.setScaleType(ImageView.ScaleType.FIT_XY);
             String encodedImage = Uri.encode(mGroupImage);
-            Ion.with(this).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + encodedImage).withBitmap().fitXY().centerCrop().intoImageView(mGroupImageView).setCallback(new FutureCallback<ImageView>() {
-                @Override
-                public void onCompleted(Exception e, ImageView result) {
-                    hideGroupImageLoading();
-                }
-            });
+            ImageLoader.loadImage(this, false, false, Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + encodedImage,
+                    0, R.drawable.no_group_image, mGroupImageView, new ImageLoader.ImageLoadedCallback() {
+                        @Override
+                        public void onImageLoaded(Object result, Exception e) {
+                            hideGroupImageLoading();
+                        }
+                    });
         } else {
             mGroupImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             mGroupImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.no_group_image));
@@ -261,14 +260,14 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         }
         if (mOwnerImage != null && !mOwnerImage.isEmpty()) {
             if (isSocialAccount) {
-                Ion.with(this).load(mOwnerImage).withBitmap().transform(new CircleTransform()).intoImageView(mOwnerImageView);
+                ImageLoader.loadImage(this, true, false, mOwnerImage, 0, R.drawable.user_image_placeholder, mOwnerImageView, null);
             } else {
                 String encodedImage = Uri.encode(mOwnerImage);
-                Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        encodedImage).withBitmap().transform(new CircleTransform()).intoImageView(mOwnerImageView);
+                ImageLoader.loadImage(this, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                        encodedImage, 0, R.drawable.user_image_placeholder, mOwnerImageView, null);
             }
         } else {
-            Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(mOwnerImageView);
+            ImageLoader.loadImage(this, true, true, null, R.drawable.no_image, R.drawable.user_image_placeholder, mOwnerImageView, null);
         }
 
         if (mGroupColor != null && !mGroupColor.isEmpty()) {

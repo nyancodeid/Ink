@@ -61,6 +61,7 @@
                 android:layout_margin="16dp"
                 android:adjustViewBounds="true"
                 android:fitsSystemWindows="true"
+                android:minHeight="170dp"
                 android:scaleType="fitXY" />
 
             <TextView

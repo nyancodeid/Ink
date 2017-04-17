@@ -37,7 +37,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
@@ -45,7 +44,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,8 +55,8 @@ import fab.FloatingActionButton;
 import ink.va.adapters.GroupsAdapter;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.models.GroupsModel;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.RecyclerTouchListener;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -676,7 +674,8 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                 if (selectedImagePath != null) {
                     mImageLinkToSend = selectedImagePath;
                     isImageChosen = true;
-                    Ion.with(getApplicationContext()).load(new File(selectedImagePath)).withBitmap().transform(new CircleTransform()).intoImageView(groupImage);
+                    ImageLoader.loadImage(getApplicationContext(), false, false, selectedImagePath,
+                            0, R.drawable.user_image_placeholder, groupImage, null);
                 } else {
                     isImageChosen = false;
                 }

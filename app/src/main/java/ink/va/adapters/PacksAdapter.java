@@ -1,9 +1,7 @@
 package ink.va.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 import com.romainpiel.shimmer.Shimmer;
 import com.romainpiel.shimmer.ShimmerTextView;
 
@@ -23,6 +19,7 @@ import java.util.List;
 
 import ink.va.models.PacksModel;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 
 
 /**
@@ -99,23 +96,23 @@ public class PacksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             this.packsModel = packsModel;
             packCoinCount.setText(packsModel.packsPrice);
             packId = String.valueOf(packsModel.packsId);
-            packWrapper.setBackground(ContextCompat.getDrawable(context, R.drawable.big_image_place_holder));
-            Ion.with(context).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packsModel.packBackground).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                @Override
-                public void onCompleted(Exception e, Bitmap result) {
-                    packWrapper.setBackground(null);
-                    if (e == null) {
-                        packWrapper.setImageBitmap(result);
-                    }
-                }
-            });
-            Ion.with(context).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packsModel.packImageBackground)
-                    .withBitmap().placeholder(R.drawable.gift_box_vector).intoImageView(packImage).setCallback(new FutureCallback<ImageView>() {
-                @Override
-                public void onCompleted(Exception e, ImageView result) {
-                    packImage.clearAnimation();
-                }
-            });
+
+            ImageLoader.loadImage(context, false, false, Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packsModel.packBackground,
+                    0, R.drawable.big_image_place_holder, packWrapper, new ImageLoader.ImageLoadedCallback() {
+                        @Override
+                        public void onImageLoaded(Object result, Exception e) {
+                            packWrapper.clearAnimation();
+                        }
+                    });
+
+            ImageLoader.loadImage(context, false, false, Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packsModel.packImageBackground,
+                    0, R.drawable.gift_box_vector, packImage, new ImageLoader.ImageLoadedCallback() {
+                        @Override
+                        public void onImageLoaded(Object result, Exception e) {
+                            packImage.clearAnimation();
+                        }
+                    });
+
             packTitleTV.setText(packsModel.packNameEn);
             shimmer = new Shimmer();
             shimmer.setDuration(4000);

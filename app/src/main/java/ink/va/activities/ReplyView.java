@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ink.va.R;
-import com.koushikdutta.ion.Ion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,8 +24,8 @@ import butterknife.OnClick;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.models.ChatModel;
 import ink.va.service.SocketService;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
@@ -253,17 +252,17 @@ public class ReplyView extends BaseActivity {
     private void loadImage() {
         if (opponentImage != null && !opponentImage.isEmpty()) {
             if (isSocialAccount) {
-                Ion.with(this).load(opponentImage).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform())
-                        .intoImageView(opponentIV);
+
+                ImageLoader.loadImage(this, true, false, opponentImage,
+                        0, R.drawable.user_image_placeholder, opponentIV, null);
             } else {
                 String encodedImage = Uri.encode(opponentImage);
-                Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
-                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(opponentIV);
+                ImageLoader.loadImage(this, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage,
+                        0, R.drawable.user_image_placeholder, opponentIV, null);
             }
         } else {
-            Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
-                    .withBitmap().transform(new CircleTransform())
-                    .intoImageView(opponentIV);
+            ImageLoader.loadImage(this, true, true, null,
+                    R.drawable.no_image, R.drawable.user_image_placeholder, opponentIV, null);
         }
     }
 

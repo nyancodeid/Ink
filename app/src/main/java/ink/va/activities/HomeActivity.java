@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,8 +46,6 @@ import com.google.gson.Gson;
 import com.ink.va.R;
 import com.instabug.library.Instabug;
 import com.instabug.library.invocation.InstabugInvocationMode;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.bitmap.BitmapDecodeException;
 import com.pollfish.interfaces.PollfishClosedListener;
 import com.pollfish.interfaces.PollfishOpenedListener;
@@ -73,13 +73,12 @@ import ink.va.models.CoinsResponse;
 import ink.va.models.FriendModel;
 import ink.va.service.SendTokenService;
 import ink.va.service.SocketService;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.DeviceChecker;
 import ink.va.utils.DimDialog;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.FileUtils;
-import ink.va.utils.IonCache;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.Keyboard;
 import ink.va.utils.Notification;
 import ink.va.utils.PollFish;
@@ -88,6 +87,8 @@ import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.User;
 import io.smooch.ui.ConversationActivity;
+import it.sephiroth.android.library.picasso.Picasso;
+import it.sephiroth.android.library.picasso.Target;
 import lombok.Getter;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import okhttp3.ResponseBody;
@@ -270,6 +271,11 @@ public class HomeActivity extends BaseActivity
 
 
     public void initService() {
+        try {
+            stopService(new Intent(this, SocketService.class));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         startService(new Intent(getApplicationContext(), SocketService.class));
     }
 
@@ -888,7 +894,7 @@ public class HomeActivity extends BaseActivity
             public void run() {
                 LoginManager.getInstance().logOut();
                 RealmHelper.getInstance().clearDatabase(null);
-                IonCache.clearIonCache(getApplicationContext());
+                ImageLoader.clearIonCache(getApplicationContext());
                 FileUtils.clearApplicationData(getApplicationContext());
                 boolean editorHintValue = mSharedHelper.isEditorHintShown();
                 mSharedHelper.clean();
@@ -953,6 +959,11 @@ public class HomeActivity extends BaseActivity
 
 
     private void startTokenService() {
+        try {
+            stopService(new Intent(getApplicationContext(), SendTokenService.class));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         startService(new Intent(getApplicationContext(), SendTokenService.class));
     }
 
@@ -971,8 +982,26 @@ public class HomeActivity extends BaseActivity
             loadImage();
         }
         getFriends();
+        Picasso.with(this).load("https://images.sciencedaily.com/2016/10/161026102701_1_540x360.jpg").into(target);
         super.onResume();
     }
+
+    private Target target = new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
+            Log.d(TAG, "onBitmapLoaded: ");
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable drawable) {
+            Log.d(TAG, "onBitmapFailed: " + drawable);
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable drawable) {
+            Log.d(TAG, "onPrepareLoad: " + drawable);
+        }
+    };
 
     private void hasNotifications() {
         Retrofit.getInstance().getInkService().hasUnreadNotifications(mSharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
@@ -1040,43 +1069,46 @@ public class HomeActivity extends BaseActivity
         if (mSharedHelper.hasImage()) {
             if (!mSharedHelper.getImageLink().isEmpty()) {
                 if (isSocialAccount()) {
-                    Ion.with(getApplicationContext()).load(mSharedHelper.getImageLink()).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(mProfileImage).setCallback(new FutureCallback<ImageView>() {
-                        @Override
-                        public void onCompleted(Exception e, ImageView result) {
-                            if (e != null) {
-                                if (e instanceof BitmapDecodeException) {
-                                    handleSocialImage();
-                                }
-                            }
-                            mSharedHelper.putShouldLoadImage(false);
-                        }
-                    });
-                } else {
-                    String encodedImage = Uri.encode(mSharedHelper.getImageLink());
-                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL +
-                            Constants.USER_IMAGES_FOLDER + encodedImage).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(mProfileImage)
-                            .setCallback(new FutureCallback<ImageView>() {
+                    ImageLoader.loadImage(getApplicationContext(), true, false, mSharedHelper.getImageLink(),
+                            0, R.drawable.user_image_placeholder, mProfileImage, new ImageLoader.ImageLoadedCallback() {
                                 @Override
-                                public void onCompleted(Exception e, ImageView result) {
+                                public void onImageLoaded(Object result, Exception e) {
                                     if (e != null) {
                                         if (e instanceof BitmapDecodeException) {
                                             handleSocialImage();
                                         }
+                                        mSharedHelper.putShouldLoadImage(false);
                                     }
-                                    mSharedHelper.putShouldLoadImage(false);
+                                }
+                            });
+                } else {
+                    String encodedImage = Uri.encode(mSharedHelper.getImageLink());
+
+                    ImageLoader.loadImage(getApplicationContext(), true, false, Constants.MAIN_URL +
+                                    Constants.USER_IMAGES_FOLDER + encodedImage,
+                            0, R.drawable.user_image_placeholder, mProfileImage, new ImageLoader.ImageLoadedCallback() {
+                                @Override
+                                public void onImageLoaded(Object result, Exception e) {
+                                    if (e != null) {
+                                        if (e instanceof BitmapDecodeException) {
+                                            handleSocialImage();
+                                        }
+                                        mSharedHelper.putShouldLoadImage(false);
+                                    }
                                 }
                             });
                 }
             }
         } else {
-            Ion.with(getApplicationContext()).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(mProfileImage)
-                    .setCallback(new FutureCallback<ImageView>() {
+            ImageLoader.loadImage(getApplicationContext(), true, true, null,
+                    R.drawable.no_image, R.drawable.user_image_placeholder, mProfileImage, new ImageLoader.ImageLoadedCallback() {
                         @Override
-                        public void onCompleted(Exception e, ImageView result) {
+                        public void onImageLoaded(Object result, Exception e) {
                             mSharedHelper.putShouldLoadImage(false);
                         }
                     });
         }
+
     }
 
     private void handleSocialImage() {
@@ -1100,18 +1132,17 @@ public class HomeActivity extends BaseActivity
                                 if (parts.length >= 3) {
                                     String userId = parts[4].trim();
                                     final String finalUrl = FACEBOOK_GRAPH_FIRST_URL + userId + FACEBOOK_GRAPH_LAST_URL;
-                                    Ion.with(HomeActivity.this).load(finalUrl).withBitmap().asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                                        @Override
-                                        public void onCompleted(Exception e, Bitmap result) {
-                                            if (e == null) {
-                                                mSharedHelper.putImageLink(finalUrl);
-                                                Ion.with(HomeActivity.this).load(finalUrl).withBitmap().placeholder(R.drawable.user_image_placeholder)
-                                                        .transform(new CircleTransform()).
-                                                        intoImageView(mProfileImage);
-                                                sendUpdateToServer();
-                                            }
-                                        }
-                                    });
+
+                                    ImageLoader.loadImage(getApplicationContext(), true, false, finalUrl,
+                                            0, R.drawable.user_image_placeholder, mProfileImage, new ImageLoader.ImageLoadedCallback() {
+                                                @Override
+                                                public void onImageLoaded(Object result, Exception e) {
+                                                    if (e == null) {
+                                                        mSharedHelper.putImageLink(finalUrl);
+                                                        sendUpdateToServer();
+                                                    }
+                                                }
+                                            });
                                 }
                             }
                         }

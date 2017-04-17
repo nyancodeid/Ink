@@ -23,8 +23,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import java.io.IOException;
@@ -38,14 +36,13 @@ import ink.va.callbacks.GeneralCallback;
 import ink.va.decorators.DividerItemDecoration;
 import ink.va.interfaces.MusicClickListener;
 import ink.va.models.Track;
-import ink.va.utils.CircleTransform;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.MediaPlayerManager;
 import ink.va.utils.Retrofit;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 
 
 public class Music extends BaseActivity implements MusicClickListener {
@@ -193,16 +190,17 @@ public class Music extends BaseActivity implements MusicClickListener {
 
 
         if (image != null && !image.equals("null")) {
-            Ion.with(getApplicationContext()).load(image).withBitmap().placeholder(R.drawable.time_loading_vector).transform(new CircleTransform()).intoImageView(currentlyPlayingImage).setCallback(new FutureCallback<ImageView>() {
-                @Override
-                public void onCompleted(Exception e, ImageView result) {
-                    bottomSheetImageProgress.setVisibility(View.GONE);
-                    if (e != null) {
-                        currentlyPlayingImage.setBackground(null);
-                        currentlyPlayingImage.setImageResource(R.drawable.gradient_no_image);
-                    }
-                }
-            });
+            ImageLoader.loadImage(getApplicationContext(), true, false, image,
+                    0, R.drawable.user_image_placeholder, currentlyPlayingImage, new ImageLoader.ImageLoadedCallback() {
+                        @Override
+                        public void onImageLoaded(Object result, Exception e) {
+                            bottomSheetImageProgress.setVisibility(View.GONE);
+                            if (e != null) {
+                                currentlyPlayingImage.setBackground(null);
+                                currentlyPlayingImage.setImageResource(R.drawable.gradient_no_image);
+                            }
+                        }
+                    });
         } else {
             bottomSheetImageProgress.setVisibility(View.GONE);
             currentlyPlayingImage.setBackground(null);

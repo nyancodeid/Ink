@@ -10,15 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.MemberModel;
 import ink.va.utils.Animations;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 
 /**
  * Created by USER on 2016-07-12.
@@ -64,11 +63,11 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
         holder.name.setText(memberModel.getMemberName());
         if (memberModel.getMemberImage() != null && !memberModel.getMemberImage().isEmpty()) {
             String url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + memberModel.getMemberImage();
-            Ion.with(mContext).load(url)
-                    .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(holder.friendImage);
+            ImageLoader.loadImage(mContext, true, false, url,
+                    0, R.drawable.user_image_placeholder, holder.friendImage, null);
         } else {
-            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.user_image_placeholder)
-                    .transform(new CircleTransform()).intoImageView(holder.friendImage);
+            ImageLoader.loadImage(mContext, true, true, null,
+                    R.drawable.no_image, R.drawable.user_image_placeholder, holder.friendImage, null);
         }
         holder.friednsCardView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,7 +1,6 @@
 package ink.va.view_holders;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,13 +9,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.FriendsModel;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 
 /**
  * Created by USER on 2016-12-20.
@@ -64,12 +61,12 @@ public class FriendsViewHolder extends RecyclerView.ViewHolder {
                 url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage;
             }
 
-            Ion.with(context).load(url)
-                    .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).
-                    intoImageView(friendImage);
+
+            ImageLoader.loadImage(context, true, false, url,
+                    0, R.drawable.user_image_placeholder, friendImage, null);
         } else {
-            Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
-                    .withBitmap().transform(new CircleTransform()).intoImageView(friendImage);
+            ImageLoader.loadImage(context, true, true, null,
+                    R.drawable.no_image, R.drawable.user_image_placeholder, friendImage, null);
         }
 
         if (friendsModel.isFriend()) {
@@ -94,16 +91,8 @@ public class FriendsViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
-        Ion.with(context).load(Constants.MAIN_URL + friendsModel.getBadgeName()).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-            @Override
-            public void onCompleted(Exception e, Bitmap result) {
-                if (e == null) {
-                    friendBadge.setImageBitmap(result);
-                } else {
-                    e.printStackTrace();
-                }
-            }
-        });
+        ImageLoader.loadImage(context, true, false, Constants.MAIN_URL + friendsModel.getBadgeName(),
+                0, R.drawable.badge_placeholder, friendBadge, null);
     }
 
     public View getViewToAnimate() {

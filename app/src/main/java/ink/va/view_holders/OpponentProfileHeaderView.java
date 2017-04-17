@@ -15,8 +15,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONObject;
@@ -26,6 +24,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.activities.FullscreenActivity;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 import it.sephiroth.android.library.picasso.NetworkPolicy;
 import it.sephiroth.android.library.picasso.Picasso;
 import it.sephiroth.android.library.picasso.Target;
@@ -101,16 +100,8 @@ public class OpponentProfileHeaderView extends RecyclerView.ViewHolder {
         String address = jsonObject.optString("address");
         String relationship = jsonObject.optString("relationship");
 
-        Ion.with(context).load(Constants.MAIN_URL + badgeName).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-            @Override
-            public void onCompleted(Exception e, Bitmap result) {
-                if (e == null) {
-                    singleUserBadge.setImageBitmap(result);
-                } else {
-                    e.printStackTrace();
-                }
-            }
-        });
+
+        ImageLoader.loadImage(context,true,false,Constants.MAIN_URL + badgeName,0,R.drawable.badge_placeholder,singleUserBadge,null);
         userName.setText(firstName + " " + lastName);
         boolean shouldHighlightFacebook = true;
         boolean shouldHighlightAddress = true;

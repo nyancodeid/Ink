@@ -12,14 +12,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 
 import ink.va.interfaces.NewsItemClickListener;
 import ink.va.models.NewsModel;
 import ink.va.models.NewsTopic;
+import ink.va.utils.ImageLoader;
 
 /**
  * Created by PC-Comp on 9/12/2016.
@@ -74,12 +73,8 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 NewsTopic newsTopic = newsTopics.get(0);
                 if (newsTopic.imageUrl != null && !newsTopic.imageUrl.equals("null") && !newsTopic.imageUrl.isEmpty()) {
                     holder.newsImage.setVisibility(View.VISIBLE);
-                    Ion.with(context).load(newsTopic.imageUrl).withBitmap().placeholder(R.drawable.breaking_news_vector).intoImageView(holder.newsImage).setCallback(new FutureCallback<ImageView>() {
-                        @Override
-                        public void onCompleted(Exception e, ImageView result) {
+                    ImageLoader.loadImage(context, false, false, newsTopic.imageUrl, 0, R.drawable.breaking_news_vector, holder.newsImage, null);
 
-                        }
-                    });
                 } else {
                     holder.newsImage.setVisibility(View.GONE);
                 }
@@ -139,7 +134,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             super(itemView);
             newsTitle = (TextView) itemView.findViewById(R.id.newsTitle);
             newsContent = (TextView) itemView.findViewById(R.id.trendContent);
-            newsImage = (ImageView) itemView.findViewById(R.id.trendImage);
+            newsImage = (ImageView) itemView.findViewById(R.id.newImage);
             newsViewMore = (Button) itemView.findViewById(R.id.trendViewMore);
         }
     }

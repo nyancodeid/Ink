@@ -11,14 +11,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
 import ink.va.interfaces.MusicClickListener;
 import ink.va.models.Track;
-import ink.va.utils.CircleTransform;
+import ink.va.utils.ImageLoader;
 
 /**
  * Created by PC-Comp on 8/1/2016.
@@ -77,9 +75,10 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
 
         if (track.mArtworkURL != null && !track.equals("null") && !track.mArtworkURL.equals("null") && !track.mArtworkURL.isEmpty()) {
             holder.musicImage.setBackground(null);
-            Ion.with(mContext).load(track.mArtworkURL).withBitmap().transform(new CircleTransform()).intoImageView(holder.musicImage).setCallback(new FutureCallback<ImageView>() {
+
+            ImageLoader.loadImage(mContext, true, false, track.mArtworkURL, 0, R.drawable.gradient_no_image, holder.musicImage, new ImageLoader.ImageLoadedCallback() {
                 @Override
-                public void onCompleted(Exception e, ImageView result) {
+                public void onImageLoaded(Object result, Exception e) {
                     holder.musicSingleImageLoading.setVisibility(View.GONE);
                     if (e != null) {
                         holder.musicImage.setBackground(null);

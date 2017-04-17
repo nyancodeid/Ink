@@ -21,6 +21,8 @@ public class FileUtils {
 
     public static final String[] IMAGE_TYPES = new String[]{"jpg", "png", "gif", "jpeg"};
     private static Thread mWorkerThread;
+    public static final String INK_DIRECTORY_NAME = "Ink Files";
+    public static final String INK_FILE_PREFIX = "ink_file";
 
     public static String getPath(Context context, Uri uri) throws URISyntaxException {
         if ("content".equalsIgnoreCase(uri.getScheme())) {
@@ -65,8 +67,7 @@ public class FileUtils {
 
     public static boolean isImageType(String fileName) {
         boolean success = false;
-        int lastIndex = fileName.lastIndexOf(".");
-        String fileExtension = fileName.substring(lastIndex + 1, fileName.length());
+        String fileExtension = getExtension(fileName);
         for (int i = 0; i < IMAGE_TYPES.length; i++) {
             if (fileExtension.equals(IMAGE_TYPES[i])) {
                 success = true;
@@ -76,9 +77,13 @@ public class FileUtils {
         return success;
     }
 
-    public static boolean isVideo(String fileName) {
+    public static String getExtension(String fileName) {
         int lastIndex = fileName.lastIndexOf(".");
-        String fileExtension = fileName.substring(lastIndex + 1, fileName.length());
+        return fileName.substring(lastIndex + 1, fileName.length());
+    }
+
+    public static boolean isVideo(String fileName) {
+        String fileExtension = getExtension(fileName);
         if (fileExtension.equals("mp4")) {
             return true;
         } else {

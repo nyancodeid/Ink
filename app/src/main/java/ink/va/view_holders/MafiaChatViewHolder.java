@@ -12,8 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -21,8 +19,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.models.MafiaMessageModel;
 import ink.va.models.UserModel;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.SharedHelper;
 
 /**
@@ -133,20 +131,15 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
                     url = Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage;
                 }
 
-                Ion.with(context).load(url)
-                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).
-                        intoImageView(mafiaChatUserImage).setCallback(new FutureCallback<ImageView>() {
-                    @Override
-                    public void onCompleted(Exception e, ImageView result) {
-                        if (e != null) {
-                            Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
-                                    .withBitmap().transform(new CircleTransform()).intoImageView(mafiaChatUserImage);
-                        }
-                    }
-                });
+                ImageLoader.loadImage(context, true, false, url,
+                        0, R.drawable.user_image_placeholder, mafiaChatUserImage, new ImageLoader.ImageLoadedCallback() {
+                            @Override
+                            public void onImageLoaded(Object result, Exception e) {
+                                ImageLoader.loadImage(context, true, true, null, R.drawable.no_image, R.drawable.user_image_placeholder, mafiaChatUserImage, null);
+                            }
+                        });
             } else {
-                Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
-                        .withBitmap().transform(new CircleTransform()).intoImageView(mafiaChatUserImage);
+                ImageLoader.loadImage(context, true, true, null, R.drawable.no_image, R.drawable.user_image_placeholder, mafiaChatUserImage, null);
             }
         }
     }

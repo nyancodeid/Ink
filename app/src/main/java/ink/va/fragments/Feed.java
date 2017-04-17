@@ -30,8 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,6 +57,7 @@ import ink.va.models.FeedModel;
 import ink.va.utils.Animations;
 import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.InputField;
 import ink.va.utils.PermissionsChecker;
 import ink.va.utils.Retrofit;
@@ -605,23 +604,25 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         content.append(singleModel.getContent());
 
         if (singleModel.isAttachmentPresent()) {
-            Ion.with(getActivity()).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + Uri.encode(singleModel.getFileName())).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                @Override
-                public void onCompleted(Exception e, Bitmap result) {
-                    if (e != null) {
-                        if (singleModel.isAddressPresent()) {
-                            content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
+
+            ImageLoader.loadImage(getActivity(), false, false, Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + Uri.encode(singleModel.getFileName()),
+                    null, 0, null, new ImageLoader.ImageLoadedCallback() {
+                        @Override
+                        public void onImageLoaded(Object result, Exception e) {
+                            if (e != null) {
+                                if (singleModel.isAddressPresent()) {
+                                    content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
+                                }
+                                openShareIntent(intentBitmap, content.toString());
+                            } else {
+                                intentBitmap = (Bitmap) result;
+                                if (singleModel.isAddressPresent()) {
+                                    content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
+                                }
+                                openShareIntent(intentBitmap, content.toString());
+                            }
                         }
-                        openShareIntent(intentBitmap, content.toString());
-                    } else {
-                        intentBitmap = result;
-                        if (singleModel.isAddressPresent()) {
-                            content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
-                        }
-                        openShareIntent(intentBitmap, content.toString());
-                    }
-                }
-            });
+                    });
         } else {
             intentBitmap = null;
             if (singleModel.isAddressPresent()) {

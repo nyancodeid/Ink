@@ -8,35 +8,6 @@
 
 
     <RelativeLayout
-        android:id="@+id/videoWrapper"
-        android:layout_centerHorizontal="true"
-        android:layout_width="170dp"
-        android:layout_height="170dp"
-        android:background="@drawable/circle_transparent_background"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground">
-
-
-        <VideoView
-            android:id="@+id/video_view_sticker_choser"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_centerInParent="true" />
-
-        <ProgressBar
-            android:id="@+id/singleVideoViewLoading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
         android:id="@+id/sticker_not_animated_parent"
         android:layout_width="170dp"
         android:layout_height="170dp"
@@ -45,7 +16,7 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <com.wang.avi.AVLoadingIndicatorView
             android:id="@+id/gifLoadingSingleItem"

@@ -1,7 +1,6 @@
 package ink.va.view_holders;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -12,17 +11,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.interfaces.FeedItemClick;
 import ink.va.models.FeedModel;
 import ink.va.utils.Animations;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.FileUtils;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
 import lombok.Setter;
@@ -199,16 +196,16 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
         } else {
             imageHolder.setVisibility(View.VISIBLE);
             String encodedImage = Uri.encode(feedModel.getGroupMessageFileName());
-            Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedImage).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                @Override
-                public void onCompleted(Exception e, Bitmap result) {
-                    if (e == null) {
-                        imageHolder.setImageBitmap(result);
-                    } else {
-                        imageHolder.setVisibility(View.GONE);
-                    }
-                }
-            });
+
+            ImageLoader.loadImage(mContext, false, false, Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedImage,
+                    0, R.drawable.chat_attachment_icon, imageHolder, new ImageLoader.ImageLoadedCallback() {
+                        @Override
+                        public void onImageLoaded(Object result, Exception e) {
+                            if (e != null) {
+                                imageHolder.setVisibility(View.GONE);
+                            }
+                        }
+                    });
         }
 
 
@@ -230,20 +227,19 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
         });
         if (feedModel.getUserImage() != null && !feedModel.getUserImage().isEmpty()) {
             if (feedModel.isSocialAccount()) {
-                Ion.with(mContext).load(feedModel.getUserImage())
-                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform())
-                        .intoImageView(feedUserImage);
+
+                ImageLoader.loadImage(mContext, true, false, feedModel.getUserImage(),
+                        0, R.drawable.user_image_placeholder, feedUserImage, null);
             } else {
                 String encodedImage = Uri.encode(feedModel.getUserImage());
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
-                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform())
-                        .intoImageView(feedUserImage);
+
+                ImageLoader.loadImage(mContext, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage,
+                        0, R.drawable.user_image_placeholder, feedUserImage, null);
             }
 
         } else {
-            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
-                    .withBitmap().transform(new CircleTransform())
-                    .intoImageView(feedUserImage);
+            ImageLoader.loadImage(mContext, true, true, null,
+                    R.drawable.no_image, R.drawable.user_image_placeholder, feedUserImage, null);
         }
 
     }
@@ -275,20 +271,18 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
 
         if (feedModel.getUserImage() != null && !feedModel.getUserImage().isEmpty()) {
             if (feedModel.isSocialAccount()) {
-                Ion.with(mContext).load(feedModel.getUserImage())
-                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform())
-                        .intoImageView(feedUserImage);
+
+                ImageLoader.loadImage(mContext, true, false, feedModel.getUserImage(),
+                        0, R.drawable.user_image_placeholder, feedUserImage, null);
             } else {
                 String encodedImage = Uri.encode(feedModel.getUserImage());
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
-                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform())
-                        .intoImageView(feedUserImage);
+                ImageLoader.loadImage(mContext, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage,
+                        0, R.drawable.user_image_placeholder, feedUserImage, null);
             }
 
         } else {
-            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
-                    .withBitmap().transform(new CircleTransform())
-                    .intoImageView(feedUserImage);
+            ImageLoader.loadImage(mContext, true, true, null,
+                    R.drawable.no_image, R.drawable.user_image_placeholder, feedUserImage, null);
         }
         if (feedModel.getPosterId().equals(sharedHelper.getUserId())) {
             sharedHelper.putOwnPostId(feedModel.getId());
@@ -328,15 +322,8 @@ public class FeedViewHolder extends RecyclerView.ViewHolder {
                 imageHolder.setVisibility(View.VISIBLE);
                 feedAttachmentLayout.setVisibility(View.GONE);
 
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + Uri.encode(feedModel.getFileName())).withBitmap().placeholder(R.drawable.big_image_place_holder)
-                        .intoImageView(imageHolder).setCallback(new FutureCallback<ImageView>() {
-                    @Override
-                    public void onCompleted(Exception e, ImageView result) {
-                        if (e != null) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+                ImageLoader.loadImage(mContext, false, false, Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + Uri.encode(feedModel.getFileName()),
+                        0, R.drawable.big_image_place_holder, imageHolder, null);
             } else {
                 feedAttachmentLayout.setVisibility(View.VISIBLE);
                 imageHolder.setVisibility(View.GONE);

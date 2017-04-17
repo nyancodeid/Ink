@@ -1,10 +1,8 @@
 package ink.va.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
@@ -17,17 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
-import ink.va.models.ChatModel;
 import ink.va.models.RandomChatModel;
-import ink.va.utils.Constants;
 import ink.va.utils.Dp;
-import ink.va.utils.FileUtils;
-import ink.va.utils.Regex;
 import ink.va.utils.SharedHelper;
 
 /**
@@ -155,61 +147,6 @@ public class RandomChatAdapter extends RecyclerView.Adapter<RandomChatAdapter.Vi
         holder.imageViewWrapper.setVisibility(View.GONE);
 //        checkForSticker(chatModel, holder);
 
-    }
-
-
-    private void checkForSticker(final ChatModel chatModel, final RandomChatAdapter.ViewHolder holder) {
-        if (chatModel.isStickerChosen()) {
-            holder.imageView.setImageResource(0);
-            holder.imageViewWrapper.setVisibility(View.VISIBLE);
-
-            Ion.with(mContext).load(Constants.MAIN_URL + chatModel.getStickerUrl()).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(holder.imageView)
-                    .setCallback(new FutureCallback<ImageView>() {
-                        @Override
-                        public void onCompleted(Exception e, ImageView result) {
-                            holder.imageView.setTag(LOADED);
-                        }
-                    });
-
-            if (chatModel.getMessage().trim().isEmpty()) {
-                holder.chatViewBubble.setVisibility(View.GONE);
-            } else {
-                holder.chatViewBubble.setVisibility(View.VISIBLE);
-            }
-        } else if (Regex.isAttachment(chatModel.getMessage())) {
-
-            if (FileUtils.isImageType(chatModel.getMessage())) {
-
-                holder.imageView.setImageResource(0);
-                holder.imageView.setBackgroundResource(R.drawable.time_loading_vector);
-                holder.imageViewWrapper.setVisibility(View.VISIBLE);
-
-                String encoded = Uri.encode(chatModel.getMessage());
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encoded).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                    @Override
-                    public void onCompleted(Exception e, Bitmap result) {
-                        if (e == null) {
-                            holder.imageView.setImageResource(0);
-                            holder.imageView.setImageBitmap(result);
-                        } else {
-                            holder.imageView.setBackgroundResource(R.drawable.chat_attachment_icon);
-                            holder.imageViewWrapper.setVisibility(View.VISIBLE);
-                        }
-
-                    }
-                });
-                holder.imageViewWrapper.setVisibility(View.VISIBLE);
-            }
-
-        } else {
-            holder.imageView.setImageResource(0);
-            if (chatModel.getMessage().trim().isEmpty()) {
-                holder.chatViewBubble.setVisibility(View.GONE);
-            } else {
-                holder.chatViewBubble.setVisibility(View.VISIBLE);
-            }
-            holder.imageViewWrapper.setVisibility(View.GONE);
-        }
     }
 
 

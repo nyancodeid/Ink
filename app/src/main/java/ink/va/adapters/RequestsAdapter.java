@@ -11,15 +11,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
 import fab.FloatingActionButton;
 import ink.va.interfaces.RequestListener;
 import ink.va.models.RequestsModel;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 
 /**
  * Created by USER on 2016-07-11.
@@ -65,15 +64,18 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.ViewHo
 
         if (!requestsModel.getRequesterImage().isEmpty()) {
             if (requestsModel.isSocialAccount()) {
-                Ion.with(mContext).load(requestsModel.getRequesterImage()).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(holder.requesterImage);
+                ImageLoader.loadImage(mContext, true, false, requestsModel.getRequesterImage(),
+                        0, R.drawable.user_image_placeholder, holder.requesterImage, null);
             } else {
                 String encodedImage = Uri.encode(requestsModel.getRequesterImage());
 
-                Ion.with(mContext).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        encodedImage).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(holder.requesterImage);
+                ImageLoader.loadImage(mContext, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                                encodedImage,
+                        0, R.drawable.user_image_placeholder, holder.requesterImage, null);
             }
         } else {
-            Ion.with(mContext).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(holder.requesterImage);
+            ImageLoader.loadImage(mContext, true, true, null,
+                    R.drawable.no_image, R.drawable.user_image_placeholder, holder.requesterImage, null);
         }
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override

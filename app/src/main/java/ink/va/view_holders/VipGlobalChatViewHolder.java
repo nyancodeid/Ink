@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.ion.Ion;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,8 +20,8 @@ import butterknife.OnClick;
 import ink.va.interfaces.VipGlobalChatClickListener;
 import ink.va.models.UserModel;
 import ink.va.models.VipGlobalChatModel;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.SharedHelper;
 
 import static ink.va.utils.MembershipTypes.MEMBERSHIP_TYPE_BLACK;
@@ -142,19 +141,14 @@ public class VipGlobalChatViewHolder extends RecyclerView.ViewHolder {
 
     private void configureUserImage() {
         if (userModel.getImageUrl().isEmpty()) {
-            Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "vip_image_placeholder")
-                    .withBitmap().transform(new CircleTransform())
-                    .intoImageView(globalVipMemberImage);
+            ImageLoader.loadImage(context, true, true, null, R.drawable.vip_image_placeholder, R.drawable.vip_image_placeholder, globalVipMemberImage, null);
         } else {
             if (userModel.isSocialAccount()) {
-                Ion.with(context).load(userModel.getImageUrl()).
-                        withBitmap().placeholder(R.drawable.vip_image_placeholder).transform(new CircleTransform())
-                        .intoImageView(globalVipMemberImage);
+                ImageLoader.loadImage(context, true, false, userModel.getImageUrl(), 0, R.drawable.vip_image_placeholder, globalVipMemberImage, null);
             } else {
                 String encodedImage = Uri.encode(userModel.getImageUrl());
-                Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage).
-                        withBitmap().placeholder(R.drawable.vip_image_placeholder).transform(new CircleTransform())
-                        .intoImageView(globalVipMemberImage);
+
+                ImageLoader.loadImage(context, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage, 0, R.drawable.vip_image_placeholder, globalVipMemberImage, null);
             }
         }
     }

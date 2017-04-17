@@ -12,8 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +23,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.utils.Constants;
 import ink.va.utils.ErrorCause;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.User;
@@ -84,20 +83,22 @@ public class PackFullScreen extends BaseActivity {
         String packContentString = extras.getString(PACK_CONTENT_BUNDLE_KEY);
         packContent.setText(packContentString);
 
-        Ion.with(this).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packBackgroundURL).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(packBackground).setCallback(new FutureCallback<ImageView>() {
+        ImageLoader.loadImage(this, false, false, Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packBackgroundURL, 0, R.drawable.big_image_place_holder, packBackground, new ImageLoader.ImageLoadedCallback() {
             @Override
-            public void onCompleted(Exception e, ImageView result) {
+            public void onImageLoaded(Object result, Exception e) {
                 packBackgroundLoaded = true;
                 notifyImagesLoaded();
             }
         });
-        Ion.with(this).load(Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packImageURL).withBitmap().placeholder(R.drawable.user_image_placeholder).intoImageView(packImage).setCallback(new FutureCallback<ImageView>() {
+
+        ImageLoader.loadImage(this, false, false, Constants.MAIN_URL + Constants.PACK_BACKGROUNDS_FOLDER + packImageURL, 0, R.drawable.user_image_placeholder, packImage, new ImageLoader.ImageLoadedCallback() {
             @Override
-            public void onCompleted(Exception e, ImageView result) {
+            public void onImageLoaded(Object result, Exception e) {
                 packImageLoaded = true;
                 notifyImagesLoaded();
             }
         });
+
     }
 
 

@@ -8,15 +8,14 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.ink.va.R;
-import com.koushikdutta.ion.Ion;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.UserModel;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 
 /**
  * Created by USER on 2017-04-12.
@@ -39,20 +38,18 @@ public class LikerViewHolder extends RecyclerView.ViewHolder {
         this.userModel = userModel;
         if (userModel.getImageUrl() != null && !userModel.getImageUrl().isEmpty()) {
             if (userModel.isSocialAccount()) {
-                Ion.with(context).load(userModel.getImageUrl())
-                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform())
-                        .intoImageView(likerImage);
+                ImageLoader.loadImage(context, true, false, userModel.getImageUrl(),
+                        0, R.drawable.user_image_placeholder, likerImage, null);
+
             } else {
                 String encodedImage = Uri.encode(userModel.getImageUrl());
-                Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
-                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform())
-                        .intoImageView(likerImage);
+                ImageLoader.loadImage(context, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage,
+                        0, R.drawable.user_image_placeholder, likerImage, null);
             }
 
         } else {
-            Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
-                    .withBitmap().transform(new CircleTransform())
-                    .intoImageView(likerImage);
+            ImageLoader.loadImage(context, true, true, null,
+                    R.drawable.no_image, R.drawable.user_image_placeholder, likerImage, null);
         }
     }
 

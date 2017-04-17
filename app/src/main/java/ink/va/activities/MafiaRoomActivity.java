@@ -383,6 +383,11 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                         sharedHelper.putRoleSeen(false);
                         sharedHelper.putMafiaParticipation(true);
                         sharedHelper.putMafiaLastRoomId(id);
+                        try {
+                            stopService(new Intent(getApplicationContext(),MafiaGameService.class));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         startService(new Intent(MafiaRoomActivity.this, MafiaGameService.class));
                         Toast.makeText(MafiaRoomActivity.this, getString(R.string.joined), Toast.LENGTH_SHORT).show();
                         getRoomsAccordingly();

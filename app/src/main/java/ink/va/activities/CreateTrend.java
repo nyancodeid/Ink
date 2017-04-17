@@ -1,7 +1,6 @@
 package ink.va.activities;
 
 import android.app.ProgressDialog;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -12,8 +11,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +24,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.ErrorCause;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.Keyboard;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -158,17 +156,18 @@ public class CreateTrend extends BaseActivity {
         progressDialog.setTitle(getString(R.string.checking));
         progressDialog.setMessage(getString(R.string.checkingImage));
 
-        Ion.with(this).load(imageUrl).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-            @Override
-            public void onCompleted(Exception e, Bitmap result) {
-                if (e != null) {
-                    progressDialog.dismiss();
-                    DialogUtils.showDialog(CreateTrend.this, getString(R.string.error), getString(R.string.urlError), true, null, false, null);
-                } else {
-                    callCreateTrend(imageUrl);
-                }
-            }
-        });
+        ImageLoader.loadImage(this, false, false, imageUrl,
+                null, R.drawable.user_image_placeholder, null, new ImageLoader.ImageLoadedCallback() {
+                    @Override
+                    public void onImageLoaded(Object result, Exception e) {
+                        if (e != null) {
+                            progressDialog.dismiss();
+                            DialogUtils.showDialog(CreateTrend.this, getString(R.string.error), getString(R.string.urlError), true, null, false, null);
+                        } else {
+                            callCreateTrend(imageUrl);
+                        }
+                    }
+                });
     }
 
     private void callCreateTrend(final String imageUrl) {

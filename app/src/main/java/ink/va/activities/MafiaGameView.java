@@ -450,6 +450,11 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
         if (isOwner()) {
             sharedHelper.putMafiaParticipation(true);
+            try {
+                stopService(new Intent(getApplicationContext(),MafiaGameService.class));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             startService(new Intent(this, MafiaGameService.class));
         }
     }
@@ -620,6 +625,11 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                     mafiaRoomsModel.setCreatorId(String.valueOf(newOwnerId));
                     if (isOwner()) {
                         sharedHelper.putMafiaParticipation(true);
+                        try {
+                            stopService(new Intent(getApplicationContext(),MafiaGameService.class));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         startService(new Intent(MafiaGameView.this, MafiaGameService.class));
                     }
                 }
@@ -1066,6 +1076,11 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                             socketJson = null;
                         }
                         sharedHelper.putMafiaLastRoomId(mafiaRoomsModel.getId());
+                        try {
+                            stopService(new Intent(getApplicationContext(),MafiaGameService.class));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         startService(new Intent(MafiaGameView.this, MafiaGameService.class));
                         Toast.makeText(MafiaGameView.this, getString(R.string.joined), Toast.LENGTH_SHORT).show();
                         List<ParticipantModel> joinedUsers = mafiaRoomsModel.getJoinedUsers();

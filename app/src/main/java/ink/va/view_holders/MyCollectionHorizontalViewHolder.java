@@ -8,14 +8,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.adapters.MyCollectionHorizontalAdapter;
 import ink.va.models.MyCollectionModel;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 
 /**
  * Created by PC-Comp on 12/22/2016.
@@ -40,14 +39,8 @@ public class MyCollectionHorizontalViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void initData(Context context, final MyCollectionModel myCollectionModel, final @Nullable MyCollectionHorizontalAdapter.OnCollectionClickListener onCollectionClickListener) {
-        Ion.with(context).load(Constants.MAIN_URL + myCollectionModel.getStickerUrl()).intoImageView(collectionImage).setCallback(new FutureCallback<ImageView>() {
-            @Override
-            public void onCompleted(Exception e, ImageView result) {
-                if (e != null) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        ImageLoader.loadImage(context, false, false, Constants.MAIN_URL + myCollectionModel.getStickerUrl(), 0, 0, collectionImage, null);
+
         collectionName.setText(myCollectionModel.getPackName());
         collectionCardView.setOnClickListener(new View.OnClickListener() {
             @Override

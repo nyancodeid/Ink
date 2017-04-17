@@ -29,7 +29,6 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.ink.va.R;
 import com.jakewharton.rxbinding.widget.RxTextView;
-import com.koushikdutta.ion.Ion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,9 +50,9 @@ import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.interfaces.SocketListener;
 import ink.va.models.ChatModel;
 import ink.va.service.SocketService;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.ClipManager;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.Keyboard;
 import ink.va.utils.Notification;
 import ink.va.utils.RealmHelper;
@@ -637,17 +636,14 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private void loadUserImage() {
         if (opponentImageUrl != null && !opponentImageUrl.isEmpty()) {
             if (isSocialAccount) {
-                Ion.with(this).load(opponentImageUrl).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform())
-                        .intoImageView(opponentImage);
+                ImageLoader.loadImage(this, true, false, opponentImageUrl, 0, R.drawable.user_image_placeholder, opponentImage, null);
+
             } else {
                 String encodedImage = Uri.encode(opponentImageUrl);
-                Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
-                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(opponentImage);
+                ImageLoader.loadImage(this, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage, 0, R.drawable.user_image_placeholder, opponentImage, null);
             }
         } else {
-            Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
-                    .withBitmap().transform(new CircleTransform())
-                    .intoImageView(opponentImage);
+            ImageLoader.loadImage(this, true, true, null, R.drawable.no_image, R.drawable.user_image_placeholder, opponentImage, null);
         }
     }
 
@@ -684,17 +680,13 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         chatTitle.setText(opponentFirstName + " " + opponentLastName);
         if (opponentImageUrl != null && !opponentImageUrl.isEmpty()) {
             if (isSocialAccount) {
-                Ion.with(this).load(opponentImageUrl).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform())
-                        .intoImageView(opponentImage);
+                ImageLoader.loadImage(this, true, false, opponentImageUrl, 0, R.drawable.user_image_placeholder, opponentImage, null);
             } else {
                 String encodedImage = Uri.encode(opponentImageUrl);
-                Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
-                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(opponentImage);
+                ImageLoader.loadImage(this, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage, 0, R.drawable.user_image_placeholder, opponentImage, null);
             }
         } else {
-            Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image")
-                    .withBitmap().transform(new CircleTransform())
-                    .intoImageView(opponentImage);
+            ImageLoader.loadImage(this, true, true, null, R.drawable.no_image, R.drawable.user_image_placeholder, opponentImage, null);
         }
     }
 
@@ -835,7 +827,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
     private void handleStickerChosenView() {
         mSendChatMessage.setEnabled(true);
-        Ion.with(this).load(Constants.MAIN_URL + lastChosenStickerUrl).withBitmap().placeholder(R.drawable.time_loading_vector).intoImageView(stickerPreviewImageView);
+        ImageLoader.loadImage(this, false, false, Constants.MAIN_URL + lastChosenStickerUrl, 0, R.drawable.time_loading_vector, stickerPreviewImageView, null);
         stickerPreviewLayout.setVisibility(View.VISIBLE);
     }
 

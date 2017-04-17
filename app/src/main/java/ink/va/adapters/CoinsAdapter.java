@@ -10,12 +10,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.ion.Ion;
 
 import java.util.List;
 
 import ink.va.models.CoinsModel;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 
 /**
  * Created by USER on 2016-10-22.
@@ -62,7 +62,10 @@ public class CoinsAdapter extends RecyclerView.Adapter<CoinsAdapter.ViewHolder> 
         holder.coinsDollarCount.setText(coinsModel.coinsPrice);
         holder.coinsGivenCount.setText(coinsModel.coinsCount);
         holder.coinsReducedCount.setText(coinsModel.coinsReduced);
-        Ion.with(mContext).load(Constants.MAIN_URL + Constants.COIN_ICON_FOLDER + coinsModel.coinsIcon).intoImageView(holder.coinsIcon);
+
+        ImageLoader.loadImage(mContext, false, false, Constants.MAIN_URL + Constants.COIN_ICON_FOLDER + coinsModel.coinsIcon,
+                0, R.drawable.coins_icon, holder.coinsIcon, null);
+
         holder.coinsDollarCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

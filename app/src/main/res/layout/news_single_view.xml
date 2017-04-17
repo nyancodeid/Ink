@@ -30,7 +30,7 @@
                 android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/trendImage"
+                android:id="@+id/newImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/newsTitle"
@@ -38,14 +38,14 @@
                 android:layout_margin="16dp"
                 android:adjustViewBounds="true"
                 android:fitsSystemWindows="true"
-                android:scaleType="fitXY"
-                android:src="@drawable/breaking_news_vector" />
+                android:minHeight="170dp"
+                android:scaleType="fitXY" />
 
             <TextView
                 android:id="@+id/trendContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/trendImage"
+                android:layout_below="@+id/newImage"
                 android:layout_marginLeft="16dp"
                 android:ellipsize="end"
                 android:fontFamily="@string/appFont"

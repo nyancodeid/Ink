@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.ion.Ion;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONException;
@@ -23,8 +22,8 @@ import butterknife.OnClick;
 import butterknife.OnLongClick;
 import ink.va.interfaces.MyMessagesItemClickListener;
 import ink.va.models.UserMessagesModel;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
@@ -103,11 +102,11 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
             if (userMessagesModel.isSocialAccount()) {
                 url = userMessagesModel.getImageName();
             }
-            Ion.with(context).load(url)
-                    .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(messagesImage);
+
+            ImageLoader.loadImage(context, true, false, url, 0, R.drawable.user_image_placeholder, messagesImage, null);
         } else {
-            Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap()
-                    .transform(new CircleTransform()).intoImageView(messagesImage);
+
+            ImageLoader.loadImage(context, true, true, null, R.drawable.no_image, R.drawable.user_image_placeholder, messagesImage, null);
         }
 
     }
@@ -161,19 +160,14 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
 
                         if (imageUrl != null && !imageUrl.isEmpty()) {
                             if (isSocialAccount) {
-                                Ion.with(context).load(imageUrl)
-                                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(messagesImage);
-
+                                ImageLoader.loadImage(context, true, false, imageUrl, 0, R.drawable.user_image_placeholder, messagesImage, null);
                             } else {
                                 String encodedImage = Uri.encode(imageUrl);
-
-                                Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage)
-                                        .withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(messagesImage);
+                                ImageLoader.loadImage(context, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage, 0, R.drawable.user_image_placeholder, messagesImage, null);
 
                             }
                         } else {
-                            Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap()
-                                    .transform(new CircleTransform()).intoImageView(messagesImage);
+                            ImageLoader.loadImage(context, true, true, null, R.drawable.no_image, R.drawable.user_image_placeholder, messagesImage, null);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

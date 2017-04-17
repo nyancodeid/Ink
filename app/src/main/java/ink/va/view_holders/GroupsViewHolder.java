@@ -12,12 +12,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import ink.va.models.GroupsModel;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 
 /**
  * Created by PC-Comp on 12/21/2016.
@@ -61,13 +59,14 @@ public class GroupsViewHolder extends RecyclerView.ViewHolder {
         if (!groupsModel.getGroupImage().isEmpty()) {
             groupImage.setScaleType(ImageView.ScaleType.FIT_XY);
             String encodedImage = Uri.encode(groupsModel.getGroupImage());
-            Ion.with(context).load(Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER +
-                    encodedImage).withBitmap().fitXY().centerCrop().intoImageView(groupImage).setCallback(new FutureCallback<ImageView>() {
-                @Override
-                public void onCompleted(Exception e, ImageView result) {
-                    singleItemLoading.setVisibility(View.GONE);
-                }
-            });
+
+            ImageLoader.loadImage(context, false, false, Constants.MAIN_URL + Constants.GROUP_IMAGES_FOLDER + encodedImage,
+                    0, 0, groupImage, new ImageLoader.ImageLoadedCallback() {
+                        @Override
+                        public void onImageLoaded(Object result, Exception e) {
+                            singleItemLoading.setVisibility(View.GONE);
+                        }
+                    });
         } else {
             groupImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
             groupImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.no_group_image));
@@ -75,14 +74,18 @@ public class GroupsViewHolder extends RecyclerView.ViewHolder {
         }
         if (groupsModel.getOwnerImage() != null && !groupsModel.getOwnerImage().isEmpty()) {
             if (groupsModel.isSocialAccount()) {
-                Ion.with(context).load(groupsModel.getOwnerImage()).withBitmap().transform(new CircleTransform()).intoImageView(ownerImage);
+
+                ImageLoader.loadImage(context, true, false, groupsModel.getOwnerImage(),
+                        0, R.drawable.user_image_placeholder, ownerImage, null);
             } else {
                 String encodedImage = Uri.encode(groupsModel.getOwnerImage());
-                Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                        encodedImage).withBitmap().transform(new CircleTransform()).intoImageView(ownerImage);
+                ImageLoader.loadImage(context, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
+                                encodedImage,
+                        0, R.drawable.user_image_placeholder, ownerImage, null);
             }
         } else {
-            Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(ownerImage);
+            ImageLoader.loadImage(context, true, true, null,
+                    R.drawable.no_image, R.drawable.user_image_placeholder, ownerImage, null);
         }
         groupBackground.setCardBackgroundColor(Color.parseColor(hexColor));
         groupName.setText(groupsModel.getGroupName());

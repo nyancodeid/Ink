@@ -21,8 +21,6 @@ import android.widget.Toast;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,9 +41,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.va.service.SocketService;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
 import ink.va.utils.FileUtils;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.ProgressRequestBody;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -125,15 +123,17 @@ public class CreateGroupPost extends BaseActivity implements ProgressRequestBody
         sharedHelper = new SharedHelper(this);
         if (!sharedHelper.getImageLink().isEmpty()) {
             if (isSocialAccount()) {
-                Ion.with(this).load(sharedHelper.getImageLink()).withBitmap().transform(new CircleTransform()).intoImageView(currentUserImage);
+                ImageLoader.loadImage(this, true, false, sharedHelper.getImageLink(),
+                        0, R.drawable.user_image_placeholder, currentUserImage, null);
+
             } else {
                 String encodedImage = Uri.encode(sharedHelper.getImageLink());
-                Ion.with(this).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage).withBitmap().
-                        transform(new CircleTransform()).intoImageView(currentUserImage);
+                ImageLoader.loadImage(this, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage,
+                        0, R.drawable.user_image_placeholder, currentUserImage, null);
             }
         } else {
-            Ion.with(this).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").
-                    withBitmap().transform(new CircleTransform()).intoImageView(currentUserImage);
+            ImageLoader.loadImage(this, true, true, null,
+                    R.drawable.no_image, R.drawable.user_image_placeholder, currentUserImage, null);
         }
         currentUserName.setText(sharedHelper.getFirstName() + " " + sharedHelper.getLastName());
         sendGroupMessageIcon.setShowAnimation(AnimationUtils.loadAnimation(this, R.anim.fab_scale_up));
@@ -384,23 +384,24 @@ public class CreateGroupPost extends BaseActivity implements ProgressRequestBody
                 chosenFile = file;
                 isFileChosen = true;
                 imageChosenWrapper.setVisibility(View.VISIBLE);
-                Ion.with(this).load(chosenFile).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                    @Override
-                    public void onCompleted(Exception e, Bitmap result) {
-                        if (e == null) {
-                            enableButtons();
-                            imagePickerIV.setImageBitmap(result);
-                        } else {
-                            Snackbar.make(imagePickerIV, getString(R.string.com_facebook_image_download_unknown_error), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
 
+                ImageLoader.loadImage(this, false, false, chosenFile,
+                        0, R.drawable.user_image_placeholder, imagePickerIV, new ImageLoader.ImageLoadedCallback() {
+                            @Override
+                            public void onImageLoaded(Object result, Exception e) {
+                                if (e != null) {
+                                    Snackbar.make(imagePickerIV, getString(R.string.com_facebook_image_download_unknown_error), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+
+                                        }
+                                    }).show();
+                                    imageChosenWrapper.setVisibility(View.GONE);
+                                } else {
+                                    enableButtons();
                                 }
-                            }).show();
-                            imageChosenWrapper.setVisibility(View.GONE);
-                        }
-                    }
-                });
+                            }
+                        });
 
             } else {
                 isFileChosen = false;

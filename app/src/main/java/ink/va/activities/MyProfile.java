@@ -44,8 +44,6 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,7 +67,7 @@ import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.FileUtils;
 import ink.va.utils.FragmentDialog;
-import ink.va.utils.IonCache;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.Keyboard;
 import ink.va.utils.PermissionsChecker;
 import ink.va.utils.RealmHelper;
@@ -356,10 +354,9 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                     mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
                     isImageChosen = true;
                     imageLoadingProgress.setVisibility(View.VISIBLE);
-
-                    Ion.with(getApplicationContext()).load(new File(selectedImagePath)).withBitmap().intoImageView(profileImage).setCallback(new FutureCallback<ImageView>() {
+                    ImageLoader.loadImage(getApplicationContext(), false, false, new File(selectedImagePath), 0, 0, profileImage, new ImageLoader.ImageLoadedCallback() {
                         @Override
-                        public void onCompleted(Exception e, ImageView result) {
+                        public void onImageLoaded(Object result, Exception e) {
                             imageLoadingProgress.setVisibility(View.GONE);
                         }
                     });
@@ -452,16 +449,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
 
                     attachValues(true);
 
-                    Ion.with(this).load(Constants.MAIN_URL + mBadgeName).asBitmap().setCallback(new FutureCallback<Bitmap>() {
-                        @Override
-                        public void onCompleted(Exception e, Bitmap result) {
-                            if (e == null) {
-                                badgeIcon.setImageBitmap(result);
-                            } else {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+                    ImageLoader.loadImage(this, true, false, Constants.MAIN_URL + mBadgeName, 0, R.drawable.badge_placeholder, badgeIcon, null);
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MyProfile.this);
                     builder.setTitle(getString(R.string.singleUserErrorTile));
@@ -535,19 +523,20 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
             if (shouldLoadImage) {
                 if (isSocialAccount()) {
                     imageLoadingProgress.setVisibility(View.VISIBLE);
-                    Ion.with(getApplicationContext()).load(mImageLinkToSend).withBitmap().intoImageView(profileImage).setCallback(new FutureCallback<ImageView>() {
+                    ImageLoader.loadImage(getApplicationContext(), false, false, mImageLinkToSend, 0, 0, profileImage, new ImageLoader.ImageLoadedCallback() {
                         @Override
-                        public void onCompleted(Exception e, ImageView result) {
+                        public void onImageLoaded(Object result, Exception e) {
                             imageLoadingProgress.setVisibility(View.GONE);
                         }
                     });
                 } else {
                     String encodedImage = Uri.encode(mImageLinkToSend);
                     imageLoadingProgress.setVisibility(View.VISIBLE);
-                    Ion.with(getApplicationContext()).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage).withBitmap().intoImageView(profileImage)
-                            .setCallback(new FutureCallback<ImageView>() {
+
+                    ImageLoader.loadImage(this, false, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage, 0, 0, profileImage,
+                            new ImageLoader.ImageLoadedCallback() {
                                 @Override
-                                public void onCompleted(Exception e, ImageView result) {
+                                public void onImageLoaded(Object result, Exception e) {
                                     imageLoadingProgress.setVisibility(View.GONE);
                                 }
                             });
@@ -1260,7 +1249,8 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                             if (imageId != null && !imageId.isEmpty()) {
                                 String imageLink = mSharedHelper.getUserId() + ".png";
                                 mSharedHelper.putImageLink(imageLink);
-                                IonCache.clearIonCache(getApplicationContext());
+                                ImageLoader.clearIonCache(getApplicationContext());
+                                ImageLoader.clearPicassoCache(getApplicationContext());
                                 FileUtils.deleteDirectoryTree(getApplicationContext().getCacheDir());
                                 mSharedHelper.putIsSocialAccount(false);
                             }

@@ -31,8 +31,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ink.va.R;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,6 +56,7 @@ import ink.va.utils.Animations;
 import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.DimDialog;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.InputField;
 import ink.va.utils.PermissionsChecker;
 import ink.va.utils.RealmHelper;
@@ -719,16 +718,16 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
         content.append(singleModel.getContent());
 
         if (singleModel.isAttachmentPresent()) {
-            Ion.with(this).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + Uri.encode(singleModel.getFileName())).asBitmap().setCallback(new FutureCallback<Bitmap>() {
+            ImageLoader.loadImage(this, false, false, Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + Uri.encode(singleModel.getFileName()), 0, R.drawable.chat_attachment_icon, null, new ImageLoader.ImageLoadedCallback() {
                 @Override
-                public void onCompleted(Exception e, Bitmap result) {
+                public void onImageLoaded(Object result, Exception e) {
                     if (e != null) {
                         if (singleModel.isAddressPresent()) {
                             content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
                         }
                         openShareIntent(intentBitmap, content.toString());
                     } else {
-                        intentBitmap = result;
+                        intentBitmap = (Bitmap) result;
                         if (singleModel.isAddressPresent()) {
                             content.append("\n" + getString(R.string.locatedAt) + " " + singleModel.getAddress());
                         }

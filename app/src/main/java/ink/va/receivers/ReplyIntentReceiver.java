@@ -97,6 +97,11 @@ public class ReplyIntentReceiver extends BroadcastReceiver {
             Intent messageIntent = new Intent(context, SocketService.class);
             socketService = SocketService.get();
             if (socketService == null) {
+                try {
+                    context.stopService(new Intent(context,SocketService.class));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 context.startService(messageIntent);
                 socketService = SocketService.get();
             }

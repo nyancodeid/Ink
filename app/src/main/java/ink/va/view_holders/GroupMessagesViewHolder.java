@@ -10,12 +10,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.koushikdutta.ion.Ion;
 
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.models.GroupMessagesModel;
-import ink.va.utils.CircleTransform;
 import ink.va.utils.Constants;
+import ink.va.utils.ImageLoader;
 import ink.va.utils.SharedHelper;
 
 /**
@@ -65,17 +64,19 @@ public class GroupMessagesViewHolder extends RecyclerView.ViewHolder {
             if (encodedImage.isEmpty()) {
                 groupImageView.setVisibility(View.GONE);
             } else {
-                Ion.with(context).load(Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedImage).withBitmap().placeholder(R.drawable.big_image_place_holder).intoImageView(groupImageView);
+                ImageLoader.loadImage(context, false, false, Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + encodedImage,
+                        0, R.drawable.big_image_place_holder, groupImageView, null);
             }
 
         }
         if (!groupMessagesModel.getSenderImage().isEmpty()) {
             String encodedImage = Uri.encode(groupMessagesModel.getSenderImage());
 
-            Ion.with(context).load(Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER +
-                    encodedImage).withBitmap().placeholder(R.drawable.user_image_placeholder).transform(new CircleTransform()).intoImageView(messageSenderImage);
+            ImageLoader.loadImage(context, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage,
+                    0, R.drawable.user_image_placeholder, messageSenderImage, null);
         } else {
-            Ion.with(context).load(Constants.ANDROID_DRAWABLE_DIR + "no_image").withBitmap().transform(new CircleTransform()).intoImageView(messageSenderImage);
+            ImageLoader.loadImage(context, true, true, null,
+                    R.drawable.no_image, R.drawable.user_image_placeholder, messageSenderImage, null);
         }
 
         groupMessageBody.setMovementMethod(LinkMovementMethod.getInstance());

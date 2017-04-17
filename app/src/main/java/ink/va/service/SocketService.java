@@ -38,11 +38,9 @@ import ink.va.activities.SplashScreen;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.interfaces.SocketListener;
 import ink.va.models.ChatModel;
-import ink.va.receivers.AlarmReceiver;
 import ink.va.receivers.DeleteReceiver;
 import ink.va.receivers.NotificationBroadcast;
 import ink.va.receivers.ReplyIntentReceiver;
-import ink.va.utils.AlarmUtils;
 import ink.va.utils.Notification;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
@@ -603,14 +601,14 @@ public class SocketService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        AlarmUtils.scheduleAlarmWithMinutes(this, AlarmReceiver.class, 10);
+//        AlarmUtils.scheduleAlarmWithMinutes(this, AlarmReceiver.class, 10);
         destroySocket();
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         Notification.get().setSendingRemote(true);
-        AlarmUtils.scheduleAlarmWithMinutes(getApplicationContext(), AlarmReceiver.class, 10);
+//        AlarmUtils.scheduleAlarmWithMinutes(getApplicationContext(), AlarmReceiver.class, 10);
         destroySocket();
         super.onTaskRemoved(rootIntent);
     }
