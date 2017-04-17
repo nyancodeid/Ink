@@ -3,24 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
     android:background="@drawable/feed_background_color"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context="ink.va.activities.Login">
 
 
-    <TextView
+    <ImageView
         android:id="@+id/appNameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
-        android:fontFamily="@string/thinFont"
-        android:text="@string/app_name"
-        android:textColor="@color/vk_white"
-        android:textSize="40sp"
-        android:textStyle="bold" />
+        android:layout_marginTop="5dp"
+        android:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/intelligentHint"

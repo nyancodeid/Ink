@@ -88,7 +88,7 @@ public class SocketService extends Service {
     private SharedHelper sharedHelper;
     private LocalBinder mBinder = new LocalBinder();
     private SocketListener onSocketListener;
-    private List<Integer> socketListeners = new LinkedList<>();
+    private List<Integer> socketListeners;
     private GeneralCallback emitListener;
     public static SocketService socketService;
 
@@ -115,15 +115,21 @@ public class SocketService extends Service {
     }
 
     private void initSocketFully() {
-        sharedHelper = new SharedHelper(this);
         destroySocket();
+
+        if (socketListeners == null) {
+            socketListeners = new LinkedList<>();
+        }
+        if (sharedHelper == null) {
+            sharedHelper = new SharedHelper(this);
+        }
+
         try {
             mSocket = IO.socket(SOCKET_URL);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
         initSocket();
-
     }
 
 
@@ -635,6 +641,12 @@ public class SocketService extends Service {
             mSocket.off(EVENT_ON_POST_MADE, onPostMade);
             mSocket.off(EVENT_ON_FRIEND_REQUESTED, onFriendRequested);
         }
+        mSocket = null;
+        if (socketListeners != null) {
+            socketListeners.clear();
+        }
+        socketListeners = null;
+        onSocketListener = null;
     }
 
 
