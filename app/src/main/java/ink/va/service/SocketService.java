@@ -189,9 +189,11 @@ public class SocketService extends Service {
             String senderId = jsonObject.optString("senderId");
             String message = jsonObject.optString("message");
 
-            sendGeneralNotification(senderName + " " + getString(R.string.posted_text) + " " + groupName, message,
-                    Integer.valueOf(senderId), senderName + " " + getString(R.string.posted_text) + " " + groupName,
-                    message, R.drawable.group_message_icon_white, SingleGroupView.class, extras, NOTIFICATION_RECEIVED_GROUP_BUNDLE);
+            if (sharedHelper.showGroupNotification()) {
+                sendGeneralNotification(senderName + " " + getString(R.string.posted_text) + " " + groupName, message,
+                        Integer.valueOf(senderId), senderName + " " + getString(R.string.posted_text) + " " + groupName,
+                        message, R.drawable.group_message_icon_white, SingleGroupView.class, extras, NOTIFICATION_RECEIVED_GROUP_BUNDLE);
+            }
         }
     };
 
@@ -248,8 +250,17 @@ public class SocketService extends Service {
             }
             emit(EVENT_COMMENT_RECEIVED, jsonObject);
 
+            boolean isLiked = false;
+            String postId = jsonObject.optString("postId");
+            for (String eachLikedPostId : sharedHelper.getLikedPosts()) {
+                if (eachLikedPostId.equals(postId)) {
+                    isLiked = true;
+                    break;
+                }
+            }
+
             Bundle bundle = new Bundle();
-            bundle.putString("postId", jsonObject.optString("postId"));
+            bundle.putString("postId", postId);
             bundle.putString("userImage", jsonObject.optString("userImage"));
             bundle.putString("postBody", jsonObject.optString("postBody"));
             bundle.putString("attachment", jsonObject.optString("attachment"));
@@ -258,7 +269,7 @@ public class SocketService extends Service {
             bundle.putString("name", jsonObject.optString("name"));
             bundle.putString("date", jsonObject.optString("date"));
             bundle.putString("likesCount", jsonObject.optString("likesCount"));
-            bundle.putString("isLiked", jsonObject.optString("isLiked"));
+            bundle.putString("isLiked", String.valueOf(isLiked));
             bundle.putString("ownerId", jsonObject.optString("ownerId"));
             bundle.putString("attachmentPresent", jsonObject.optString("attachmentPresent"));
             bundle.putString("addressPresent", jsonObject.optString("addressPresent"));
@@ -269,24 +280,25 @@ public class SocketService extends Service {
             bundle.putString("isPostOwner", jsonObject.optString("isPostOwner"));
             bundle.putString("isFriend", jsonObject.optString("isFriend"));
 
-            String postId = jsonObject.optString("postId");
             String commenterFirstName = jsonObject.optString("commenterFirstName");
             String commenterLastName = jsonObject.optString("commenterLastName");
             String commentBody = jsonObject.optString("commentBody");
             int commentId = Integer.valueOf(jsonObject.optString("commentId"));
 
-            if (sharedHelper.hasCommented(postId)) {
-                sendGeneralNotification(getString(R.string.commentAdded), commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
-                        commentId, commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
-                        commentBody, R.drawable.comment_icon_white, Comments.class, bundle, NOTIFICATION_BUNDLE_EXTRA_KEY);
-            } else if (sharedHelper.hasPostLiked(postId)) {
-                sendGeneralNotification(getString(R.string.commentAdded), commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
-                        commentId, commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
-                        commentBody, R.drawable.comment_icon_white, Comments.class, bundle, NOTIFICATION_BUNDLE_EXTRA_KEY);
-            } else if (sharedHelper.postOwner(postId)) {
-                sendGeneralNotification(getString(R.string.commentAdded), commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
-                        commentId, commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
-                        commentBody, R.drawable.comment_icon_white, Comments.class, bundle, NOTIFICATION_BUNDLE_EXTRA_KEY);
+            if (sharedHelper.showCommentNotification()) {
+                if (sharedHelper.hasCommented(postId)) {
+                    sendGeneralNotification(getString(R.string.commentAdded), commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
+                            commentId, commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
+                            commentBody, R.drawable.comment_icon_white, Comments.class, bundle, NOTIFICATION_BUNDLE_EXTRA_KEY);
+                } else if (sharedHelper.hasPostLiked(postId)) {
+                    sendGeneralNotification(getString(R.string.commentAdded), commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
+                            commentId, commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
+                            commentBody, R.drawable.comment_icon_white, Comments.class, bundle, NOTIFICATION_BUNDLE_EXTRA_KEY);
+                } else if (sharedHelper.postOwner(postId)) {
+                    sendGeneralNotification(getString(R.string.commentAdded), commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
+                            commentId, commenterFirstName + " " + commenterLastName + " " + getString(R.string.commented_post),
+                            commentBody, R.drawable.comment_icon_white, Comments.class, bundle, NOTIFICATION_BUNDLE_EXTRA_KEY);
+                }
             }
         }
     };
@@ -305,9 +317,10 @@ public class SocketService extends Service {
             String likerFirstName = jsonObject.optString("likerFirstName");
             String likerLastName = jsonObject.optString("likerLastName");
             String likerId = jsonObject.optString("likerId");
-
-            sendGeneralNotification(getString(R.string.postLiked), likerFirstName + " " + likerLastName + " " + getString(R.string.likedPostText), Integer.valueOf(likerId), getString(R.string.postLiked),
-                    likerFirstName + " " + likerLastName + " " + getString(R.string.likedPostText), R.drawable.like_icon_white, SplashScreen.class, null, null);
+            if (sharedHelper.showLikeNotification()) {
+                sendGeneralNotification(getString(R.string.postLiked), likerFirstName + " " + likerLastName + " " + getString(R.string.likedPostText), Integer.valueOf(likerId), getString(R.string.postLiked),
+                        likerFirstName + " " + likerLastName + " " + getString(R.string.likedPostText), R.drawable.like_icon_white, SplashScreen.class, null, null);
+            }
         }
     };
 

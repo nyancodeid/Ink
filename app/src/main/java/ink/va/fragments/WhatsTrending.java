@@ -422,8 +422,17 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
 
         String urlToOpen = trendModel.getExternalUrl();
         if (!urlToOpen.startsWith("http://")) {
-            urlToOpen = "http://" + urlToOpen;
+            if (!urlToOpen.startsWith("https://")) {
+                urlToOpen = "http://" + urlToOpen;
+            }
         }
+
+        if (!urlToOpen.startsWith("https://")) {
+            if (!urlToOpen.startsWith("http://")) {
+                urlToOpen = "https://" + urlToOpen;
+            }
+        }
+
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setData(Uri.parse(urlToOpen));
