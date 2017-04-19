@@ -1,11 +1,16 @@
 package ink.va.utils;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+
+import com.ink.va.R;
 
 import ink.va.interfaces.ItemClickListener;
 
@@ -90,4 +95,33 @@ public class DialogUtils {
         void onPositiveClicked();
     }
 
+    public static void showPermissionRequestDialog(Context context, String requestContentText, @Nullable final DialogListener dialogListener) {
+        final Dialog dialog = new Dialog(context, R.style.FullscreenTheme);
+        dialog.setContentView(R.layout.request_permission_view);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        View grant = dialog.findViewById(R.id.grantPermission);
+        View cancel = dialog.findViewById(R.id.cancelRequestPermission);
+        TextView permissionRequestTV = (TextView) dialog.findViewById(R.id.permissionRequestTV);
+        permissionRequestTV.setText(requestContentText);
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dialogListener != null) {
+                    dialogListener.onNegativeClicked();
+                }
+                dialog.dismiss();
+            }
+        });
+        grant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (dialogListener != null) {
+                    dialogListener.onPositiveClicked();
+                }
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
 }

@@ -324,6 +324,7 @@
     <string name="incorrectEmail">Неправильный e-mail</string>
     <string name="useDebiceInfo">Напишите информацию о модели устройства</string>
     <string name="accountPermissionNeeded">Нужно разрешение аккаунта для адеса e-mail</string>
+    <string name="permissionNeeded">Нужно разрешение</string>
     <string name="chooseIssueType">Выберите тип вопроса </string>
     <string name="chooseEmail">Выберите контактный e-mail : </string>
     <string name="fillAdditionalInformation">Пожалуйста опишите вашу проблему в деталях :</string>
@@ -1134,4 +1135,12 @@
 
     <string name="sentFriendRequest"> запросил быть с вами друзьями</string>
     <string name="deniedYourRequest">отклонил ваш запрос в друзья</string>
+
+    <string name="greeting_appendix">Доброе (ый)  %1$s %2$s, погода в %3$s (e) %4$s</string>
+    <string name="morning">Утро</string>
+    <string name="afternoon">После полудня</string>
+    <string name="evening">Вечер</string>
+    <string name="night">Ночи</string>
+    <string name="location_for_weather">Нам нужно ваше разрешение на доступ к местоположению, чтобы показывать информацию о погоде для вашего места</string>
+    <string name="enableGreetingWidget">Разрешить приветственный виджет</string>
 </resources>

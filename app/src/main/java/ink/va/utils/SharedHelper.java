@@ -1093,4 +1093,13 @@ public class SharedHelper {
     public int getMafiaRoomId() {
         return mSharedPreferences.getInt("mafiaRoomId", 0);
     }
+
+    public boolean showGreeting() {
+        return mSharedPreferences.getBoolean("showGreeting", true);
+    }
+
+    public void putShowGreeting(boolean value) {
+        mEditor.putBoolean("showGreeting", value);
+        mEditor.commit();
+    }
 }

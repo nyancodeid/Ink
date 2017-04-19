@@ -323,6 +323,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="incorrectEmail">Incorrect e-mail</string>
     <string name="useDebiceInfo">Include device hardware and model information </string>
     <string name="accountPermissionNeeded">Account permission needed for e-mail address</string>
+    <string name="permissionNeeded">Permission Needed</string>
     <string name="chooseIssueType">Select issue type </string>
     <string name="chooseEmail">Choose contact back e-mail : </string>
     <string name="fillAdditionalInformation">Please describe your issue in details :</string>
@@ -1107,5 +1108,13 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="sentFriendRequest">sent friend request to you</string>
     <string name="deniedYourRequest">Denied your friend request</string>
     <string name="group_request_text">Group Request</string>
+    <string name="greeting_appendix">Good %1$s %2$s, the weather in %3$s is %4$s</string>
+    <string name="morning">Morning</string>
+    <string name="afternoon">Afternoon</string>
+    <string name="evening">Evening</string>
+    <string name="night">Night</string>
+    <string name="location_for_weather">We need your permission for the location access to show the weather information for your place</string>
+    <string name="closeHint">you can close this from settings</string>
+    <string name="enableGreetingWidget">Enable Greeting Widget</string>
 
 </resources>

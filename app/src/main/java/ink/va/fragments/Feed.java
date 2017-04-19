@@ -6,8 +6,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,6 +22,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +32,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.ink.va.R;
 
 import org.json.JSONException;
@@ -67,17 +75,27 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import zh.wang.android.yweathergetter4a.WeatherInfo;
+import zh.wang.android.yweathergetter4a.YahooWeather;
+import zh.wang.android.yweathergetter4a.YahooWeatherInfoListener;
 
 import static ink.va.utils.Constants.EVENT_POST_LIKED;
+import static ink.va.utils.Time.DAYTIME_AFTERNOON;
+import static ink.va.utils.Time.DAYTIME_EVENING;
+import static ink.va.utils.Time.DAYTIME_MORNING;
+import static ink.va.utils.Time.DAYTIME_NIGHT;
 
 /**
  * Created by USER on 2016-06-21.
  */
 public class Feed extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener,
-        FeedItemClick, ColorChangeListener {
+        FeedItemClick, ColorChangeListener, YahooWeatherInfoListener, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
     private static final String TAG = Feed.class.getSimpleName();
     private static final int SHARE_INTENT_RESULT = 5;
     private static final int STORAGE_PERMISSION_REQUEST = 115;
+    public static final int LOCATION_PERMISSION_REQUEST = 116;
     private RecyclerView mRecyclerView;
     private FeedAdapter mAdapter;
     private SwipeRefreshLayout feedRefresh;
@@ -92,8 +110,21 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private String shareFileName;
     private File shareOutPutDir;
     private StringBuilder content;
+    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+
     @BindView(R.id.scrollUpFeed)
     View scrollUpFeed;
+    @BindView(R.id.greetingCard)
+    View greetingCard;
+    @BindView(R.id.greetingTV)
+    TextView greetingTV;
+    @BindView(R.id.weatherIV)
+    ImageView weatherIV;
+    private double currentLatitude;
+    private double currentLongitude;
+    private boolean wasOnPause;
 
     public static Feed newInstance() {
         Feed feed = new Feed();
@@ -157,7 +188,20 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 }
             }
         });
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                // The next two lines tell the new client that “this” current class will handle connection stuff
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                //fourth line adds the LocationServices API endpoint from GooglePlayServices
+                .addApi(LocationServices.API)
+                .build();
 
+        // Create the LocationRequest object
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_NO_POWER);
+
+
+        initGreeting();
 
         ((HomeActivity) getActivity()).setOnColorChangeListener(this);
         if (mOffset == 0) {
@@ -201,6 +245,104 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             }
         });
         hideScroller();
+    }
+
+    @Override
+    public void gotWeatherInfo(WeatherInfo weatherInfo, YahooWeather.ErrorType errorType) {
+        if (weatherInfo != null) {
+            // Add your code here
+            // weatherInfo object contains all information returned by Yahoo Weather API
+            // if `weatherInfo` is null, you can get the error from `errorType`
+            if (!isDetached()) {
+                String greetingMessage = getString(R.string.greeting_appendix);
+                switch (Time.getDayTime()) {
+                    case DAYTIME_MORNING:
+                        greetingMessage = getString(R.string.greeting_appendix, getString(R.string.morning), mSharedHelper.getFirstName(), weatherInfo.getLocationCity(), weatherInfo.getCurrentText());
+                        break;
+                    case DAYTIME_AFTERNOON:
+                        greetingMessage = getString(R.string.greeting_appendix, getString(R.string.afternoon), mSharedHelper.getFirstName(), weatherInfo.getLocationCity(), weatherInfo.getCurrentText());
+                        break;
+                    case DAYTIME_EVENING:
+                        greetingMessage = getString(R.string.greeting_appendix, getString(R.string.evening), mSharedHelper.getFirstName(), weatherInfo.getLocationCity(), weatherInfo.getCurrentText());
+                        break;
+                    case DAYTIME_NIGHT:
+                        greetingMessage = getString(R.string.greeting_appendix, getString(R.string.night), mSharedHelper.getFirstName(), weatherInfo.getLocationCity(), weatherInfo.getCurrentText());
+                        break;
+                }
+
+                ImageLoader.loadImage(getActivity(), false, false, weatherInfo.getCurrentConditionIconURL(), 0, R.drawable.sun_icon, weatherIV, null);
+                greetingTV.setText(greetingMessage);
+                showGreetingCard();
+            }
+
+        }
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        try {
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            if (location == null) {
+
+
+            } else {
+                //If everything went fine lets get latitude and longitude
+                currentLatitude = location.getLatitude();
+                currentLongitude = location.getLongitude();
+                YahooWeather yahooWeather = YahooWeather.getInstance();
+                yahooWeather.queryYahooWeatherByLatLon(getActivity(), currentLatitude, currentLongitude, this);
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+            /*
+             * Google Play services can resolve some errors it detects.
+             * If the error has a resolution, try sending an Intent to
+             * start a Google Play services activity that can resolve
+             * error.
+             */
+        if (connectionResult.hasResolution()) {
+            try {
+                // Start an Activity that tries to resolve the error
+                connectionResult.startResolutionForResult(getActivity(), CONNECTION_FAILURE_RESOLUTION_REQUEST);
+                    /*
+                     * Thrown if Google Play services canceled the original
+                     * PendingIntent
+                     */
+            } catch (IntentSender.SendIntentException e) {
+                // Log the error
+                e.printStackTrace();
+            }
+        } else {
+                /*
+                 * If no resolution is available, display a dialog to the
+                 * user with the error.
+                 */
+            Log.e("Error", "Location services connection failed with code " + connectionResult.getErrorCode());
+        }
+    }
+
+    /**
+     * If locationChanges change lat and long
+     *
+     * @param location
+     */
+    @Override
+    public void onLocationChanged(Location location) {
+        currentLatitude = location.getLatitude();
+        currentLongitude = location.getLongitude();
+        YahooWeather yahooWeather = YahooWeather.getInstance();
+        yahooWeather.queryYahooWeatherByLatLon(getActivity(), currentLatitude, currentLongitude, this);
     }
 
     @Override
@@ -290,6 +432,66 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 break;
         }
 
+    }
+
+
+    private void initGreeting() {
+        if (!PermissionsChecker.isLocationPermissionGranted(getActivity())) {
+            hideGreetingCard();
+            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) && shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                DialogUtils.showPermissionRequestDialog(getActivity(), getString(R.string.location_for_weather), new DialogUtils.DialogListener() {
+                    @Override
+                    public void onNegativeClicked() {
+
+                    }
+
+                    @Override
+                    public void onDialogDismissed() {
+
+                    }
+
+                    @Override
+                    public void onPositiveClicked() {
+                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST);
+                    }
+                });
+            }
+            return;
+        }
+        if (mSharedHelper.showGreeting()) {
+            if (!mGoogleApiClient.isConnected()) {
+                mGoogleApiClient.connect();
+            }
+        }
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    private void showGreetingCard() {
+        if (greetingCard.getVisibility() == View.GONE) {
+            greetingCard.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideGreetingCard() {
+        if (greetingCard.getVisibility() == View.VISIBLE) {
+            greetingCard.setVisibility(View.GONE);
+        }
     }
 
 
@@ -699,8 +901,17 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     @Override
     public void onResume() {
         super.onResume();
+        if (wasOnPause) {
+            wasOnPause = false;
+            checkWidget();
+        }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        wasOnPause = true;
+    }
 
     private void deletePost(final String postId, final String attachmentName) {
         Call<ResponseBody> deletePostCall = Retrofit.getInstance().getInkService().deletePost(postId, attachmentName);
@@ -838,6 +1049,23 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                     openShareIntent(intentBitmap, content.toString());
                 }
                 break;
+            case LOCATION_PERMISSION_REQUEST:
+                if (PermissionsChecker.isLocationPermissionGranted(getActivity())) {
+                    initGreeting();
+                }
+                break;
         }
     }
+
+    public void checkWidget() {
+        if (greetingCard != null) {
+            if (mSharedHelper.showGreeting()) {
+                initGreeting();
+                showGreetingCard();
+            } else {
+                hideGreetingCard();
+            }
+        }
+    }
+
 }

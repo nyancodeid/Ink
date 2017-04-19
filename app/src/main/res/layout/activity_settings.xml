@@ -246,7 +246,6 @@
         </RelativeLayout>
 
 
-
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -286,11 +285,43 @@
         </RelativeLayout>
 
 
-
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="10dp"
             android:background="@color/linesColor"></View>
+
+
+        <RelativeLayout
+            android:id="@+id/greetingWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:minHeight="50dp">
+
+            <TextView
+                android:id="@+id/enableGreetingTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/greetingSwitch"
+                android:fontFamily="@string/condensedFont"
+                android:text="@string/enableGreetingWidget" />
+
+            <Switch
+                android:id="@+id/greetingSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:clickable="false"
+                android:focusable="false" />
+
+        </RelativeLayout>
+
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

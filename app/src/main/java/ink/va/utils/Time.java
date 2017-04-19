@@ -25,6 +25,20 @@ public class Time {
     public static final int UNIT_HOUR = 1;
     public static final int UNIT_DAY = 2;
     public static final int UNIT_SECOND = 3;
+    public static final int DAYTIME_MORNING = 4;
+    public static final int DAYTIME_AFTERNOON = 5;
+    public static final int DAYTIME_EVENING = 6;
+    public static final int DAYTIME_NIGHT = 7;
+
+    @IntDef({UNIT_DAY, UNIT_HOUR, UNIT_SECOND, UNIT_MINUTE})
+    public @interface TimeUnits {
+
+    }
+
+    @IntDef({DAYTIME_MORNING, DAYTIME_AFTERNOON, DAYTIME_EVENING, DAYTIME_NIGHT})
+    public @interface DayTypes {
+
+    }
 
     public static String getCurrentTime() {
         Calendar calendar = Calendar.getInstance();
@@ -203,8 +217,21 @@ public class Time {
         return finalResult;
     }
 
-    @IntDef({UNIT_DAY, UNIT_HOUR, UNIT_SECOND, UNIT_MINUTE})
-    public @interface TimeUnits {
 
+    public static int getDayTime() {
+        Calendar c = Calendar.getInstance();
+        int timeOfDay = c.get(Calendar.HOUR_OF_DAY);
+
+        if (timeOfDay >= 0 && timeOfDay < 12) {
+            return DAYTIME_MORNING;
+        } else if (timeOfDay >= 12 && timeOfDay < 16) {
+            return DAYTIME_AFTERNOON;
+        } else if (timeOfDay >= 16 && timeOfDay < 21) {
+            return DAYTIME_EVENING;
+        } else if (timeOfDay >= 21 && timeOfDay < 24) {
+            return DAYTIME_NIGHT;
+        } else {
+            return DAYTIME_MORNING;
+        }
     }
 }

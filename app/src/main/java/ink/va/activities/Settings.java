@@ -32,6 +32,9 @@ public class Settings extends BaseActivity {
     @BindView(R.id.mafiaSwitch)
     Switch mafiaSwitch;
 
+    @BindView(R.id.greetingSwitch)
+    Switch greetingSwitch;
+
 
     private SharedHelper sharedHelper;
 
@@ -47,6 +50,7 @@ public class Settings extends BaseActivity {
         likeSwitch.setChecked(sharedHelper.showLikeNotification());
         snowSwitch.setChecked(sharedHelper.showSnow());
         mafiaSwitch.setChecked(sharedHelper.showMafiaNotification());
+        greetingSwitch.setChecked(sharedHelper.showGreeting());
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -107,6 +111,17 @@ public class Settings extends BaseActivity {
         } else {
             mafiaSwitch.setChecked(true);
             sharedHelper.putShowMafiaNotification(true);
+        }
+    }
+
+    @OnClick(R.id.greetingWrapper)
+    public void greetingWrapperClicked() {
+        if (greetingSwitch.isChecked()) {
+            greetingSwitch.setChecked(false);
+            sharedHelper.putShowGreeting(false);
+        } else {
+            greetingSwitch.setChecked(true);
+            sharedHelper.putShowGreeting(true);
         }
     }
 

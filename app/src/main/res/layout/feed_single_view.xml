@@ -17,10 +17,9 @@
             android:id="@+id/feedItemCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/com_facebook_tooltip_black_background"
             android:foreground="?android:attr/selectableItemBackground"
             app:cardCornerRadius="8dp"
@@ -203,8 +202,6 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:minHeight="40dp"
-                    android:minWidth="50dp"
                     android:id="@+id/commentWrapper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -216,6 +213,8 @@
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground"
+                    android:minHeight="40dp"
+                    android:minWidth="50dp"
                     android:visibility="visible">
 
                     <ImageView
@@ -242,8 +241,6 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:minHeight="40dp"
-                    android:minWidth="50dp"
                     android:id="@+id/shareWrapper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -257,6 +254,8 @@
                     android:background="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:foreground="?android:attr/selectableItemBackground"
+                    android:minHeight="40dp"
+                    android:minWidth="50dp"
                     android:visibility="visible">
 
                     <ImageView

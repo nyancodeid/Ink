@@ -168,7 +168,6 @@ public class HomeActivity extends BaseActivity
         mSharedHelper = new SharedHelper(this);
         friendGson = new Gson();
 
-
         initService();
 
         if (!mSharedHelper.isSecurityQuestionSet() && isAccountRecoverable()) {
@@ -268,7 +267,6 @@ public class HomeActivity extends BaseActivity
         panelHeader = (RelativeLayout) headerView.findViewById(R.id.panelHeader);
         navigationView.setNavigationItemSelectedListener(this);
     }
-
 
     public void initService() {
         try {
@@ -985,6 +983,7 @@ public class HomeActivity extends BaseActivity
         Picasso.with(this).load("https://images.sciencedaily.com/2016/10/161026102701_1_540x360.jpg").into(target);
         super.onResume();
     }
+
 
     private Target target = new Target() {
         @Override
