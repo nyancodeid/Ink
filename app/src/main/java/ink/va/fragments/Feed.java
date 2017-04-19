@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
@@ -22,7 +21,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,7 +32,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.ink.va.R;
@@ -89,9 +86,8 @@ import static ink.va.utils.Time.DAYTIME_NIGHT;
  * Created by USER on 2016-06-21.
  */
 public class Feed extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener,
-        FeedItemClick, ColorChangeListener, YahooWeatherInfoListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        FeedItemClick, ColorChangeListener, YahooWeatherInfoListener, com.google.android.gms.location.LocationListener,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final String TAG = Feed.class.getSimpleName();
     private static final int SHARE_INTENT_RESULT = 5;
     private static final int STORAGE_PERMISSION_REQUEST = 115;
@@ -111,8 +107,6 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private File shareOutPutDir;
     private StringBuilder content;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-    private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;
 
     @BindView(R.id.scrollUpFeed)
     View scrollUpFeed;
@@ -126,6 +120,8 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private double currentLongitude;
     private boolean wasOnPause;
     private boolean failedLocate;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
 
     public static Feed newInstance() {
         Feed feed = new Feed();
@@ -189,6 +185,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 }
             }
         });
+
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 // The next two lines tell the new client that “this” current class will handle connection stuff
                 .addConnectionCallbacks(this)
@@ -196,11 +193,6 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 //fourth line adds the LocationServices API endpoint from GooglePlayServices
                 .addApi(LocationServices.API)
                 .build();
-
-        // Create the LocationRequest object
-        mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_LOW_POWER);
-
 
         initGreeting();
 
@@ -279,72 +271,44 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         }
     }
 
-    @Override
-    public void onConnected(Bundle bundle) {
-        try {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if (location == null) {
-                failedLocate = true;
-                hideGreetingCard();
-            } else {
-                failedLocate = false;
-                //If everything went fine lets get latitude and longitude
-                currentLatitude = location.getLatitude();
-                currentLongitude = location.getLongitude();
-                YahooWeather yahooWeather = YahooWeather.getInstance();
-                yahooWeather.queryYahooWeatherByLatLon(getActivity(), currentLatitude, currentLongitude, this);
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-            /*
-             * Google Play services can resolve some errors it detects.
-             * If the error has a resolution, try sending an Intent to
-             * start a Google Play services activity that can resolve
-             * error.
-             */
-        if (connectionResult.hasResolution()) {
-            try {
-                // Start an Activity that tries to resolve the error
-                connectionResult.startResolutionForResult(getActivity(), CONNECTION_FAILURE_RESOLUTION_REQUEST);
-                    /*
-                     * Thrown if Google Play services canceled the original
-                     * PendingIntent
-                     */
-            } catch (IntentSender.SendIntentException e) {
-                // Log the error
-                e.printStackTrace();
-            }
+    private void handleLocation(Location location) {
+        if (location == null) {
+            failedLocate = true;
+            hideGreetingCard();
         } else {
-                /*
-                 * If no resolution is available, display a dialog to the
-                 * user with the error.
-                 */
-            Log.e("Error", "Location services connection failed with code " + connectionResult.getErrorCode());
+            failedLocate = false;
+            //If everything went fine lets get latitude and longitude
+            currentLatitude = location.getLatitude();
+            currentLongitude = location.getLongitude();
+            YahooWeather yahooWeather = YahooWeather.getInstance();
+            yahooWeather.queryYahooWeatherByLatLon(getActivity(), currentLatitude, currentLongitude, this);
         }
     }
 
-    /**
-     * If locationChanges change lat and long
-     *
-     * @param location
-     */
     @Override
-    public void onLocationChanged(Location location) {
-        currentLatitude = location.getLatitude();
-        currentLongitude = location.getLongitude();
-        YahooWeather yahooWeather = YahooWeather.getInstance();
-        yahooWeather.queryYahooWeatherByLatLon(getActivity(), currentLatitude, currentLongitude, this);
+    public void onStart() {
+        super.onStart();
+        if (mSharedHelper.showGreeting()) {
+            if (!mGoogleApiClient.isConnected()) {
+                mGoogleApiClient.connect();
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
     }
 
     @Override
@@ -440,56 +404,29 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private void initGreeting() {
         if (!PermissionsChecker.isLocationPermissionGranted(getActivity())) {
             hideGreetingCard();
-            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) && shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                DialogUtils.showPermissionRequestDialog(getActivity(), getString(R.string.location_for_weather), new DialogUtils.DialogListener() {
-                    @Override
-                    public void onNegativeClicked() {
+            DialogUtils.showPermissionRequestDialog(getActivity(), getString(R.string.location_for_weather), new DialogUtils.DialogListener() {
+                @Override
+                public void onNegativeClicked() {
 
+                }
+
+                @Override
+                public void onDialogDismissed() {
+
+                }
+
+                @Override
+                public void onPositiveClicked() {
+                    if (!isDetached()) {
+                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST);
                     }
-
-                    @Override
-                    public void onDialogDismissed() {
-
-                    }
-
-                    @Override
-                    public void onPositiveClicked() {
-                        if (!isDetached()) {
-                            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST);
-                        }
-                    }
-                });
-            }
+                }
+            });
             return;
         }
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (mSharedHelper.showGreeting()) {
-            if (!mGoogleApiClient.isConnected()) {
-                mGoogleApiClient.connect();
-            }
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
 
     private void showGreetingCard() {
         if (greetingCard.getVisibility() == View.GONE) {
@@ -1081,4 +1018,42 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         }
     }
 
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        try {
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (location == null) {
+                // Create the LocationRequest object
+                mLocationRequest = LocationRequest.create()
+                        .setPriority(LocationRequest.PRIORITY_NO_POWER)
+                        .setInterval(10 * 1000)        // 10 seconds, in milliseconds
+                        .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            } else {
+                handleLocation(location);
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        handleLocation(location);
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            mGoogleApiClient.disconnect();
+        }
+    }
 }

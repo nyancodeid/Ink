@@ -9,7 +9,7 @@
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="300dp"
         android:layout_centerInParent="true"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
@@ -69,6 +69,7 @@
                 android:foreground="?attr/selectableItemBackground"
                 android:padding="5dp"
                 android:text="@string/grant"
+                android:textSize="20sp"
                 android:textColor="@color/colorPrimary" />
 
             <TextView
@@ -78,6 +79,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_marginBottom="5dp"
+                android:textSize="20sp"
                 android:layout_marginLeft="30dp"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"

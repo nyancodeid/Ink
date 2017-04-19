@@ -18,6 +18,7 @@ import ink.va.interfaces.ItemClickListener;
  * Created by PC-Comp on 8/12/2016.
  */
 public class DialogUtils {
+    private static Dialog dialog;
 
     public static void showPopUp(final Context context, View viewToAttach, @Nullable final ItemClickListener<MenuItem> itemClickListener, String... itemsToAdd) {
         android.support.v7.widget.PopupMenu popupMenu = new android.support.v7.widget.PopupMenu(context, viewToAttach);
@@ -96,32 +97,68 @@ public class DialogUtils {
     }
 
     public static void showPermissionRequestDialog(Context context, String requestContentText, @Nullable final DialogListener dialogListener) {
-        final Dialog dialog = new Dialog(context, R.style.FullscreenTheme);
-        dialog.setContentView(R.layout.request_permission_view);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        View grant = dialog.findViewById(R.id.grantPermission);
-        View cancel = dialog.findViewById(R.id.cancelRequestPermission);
-        TextView permissionRequestTV = (TextView) dialog.findViewById(R.id.permissionRequestTV);
-        permissionRequestTV.setText(requestContentText);
+        if (dialog != null) {
+            if (!dialog.isShowing()) {
+                dialog = new Dialog(context, R.style.FullscreenTheme);
+                dialog.setContentView(R.layout.request_permission_view);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+                View grant = dialog.findViewById(R.id.grantPermission);
+                View cancel = dialog.findViewById(R.id.cancelRequestPermission);
+                TextView permissionRequestTV = (TextView) dialog.findViewById(R.id.permissionRequestTV);
+                permissionRequestTV.setText(requestContentText);
 
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (dialogListener != null) {
-                    dialogListener.onNegativeClicked();
-                }
-                dialog.dismiss();
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (dialogListener != null) {
+                            dialogListener.onNegativeClicked();
+                        }
+                        dialog.hide();
+                        dialog = null;
+                    }
+                });
+                grant.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (dialogListener != null) {
+                            dialogListener.onPositiveClicked();
+                        }
+                        dialog.hide();
+                        dialog = null;
+                    }
+                });
+                dialog.show();
             }
-        });
-        grant.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (dialogListener != null) {
-                    dialogListener.onPositiveClicked();
+        } else {
+            dialog = new Dialog(context, R.style.FullscreenTheme);
+            dialog.setContentView(R.layout.request_permission_view);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+            View grant = dialog.findViewById(R.id.grantPermission);
+            View cancel = dialog.findViewById(R.id.cancelRequestPermission);
+            TextView permissionRequestTV = (TextView) dialog.findViewById(R.id.permissionRequestTV);
+            permissionRequestTV.setText(requestContentText);
+
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (dialogListener != null) {
+                        dialogListener.onNegativeClicked();
+                    }
+                    dialog.hide();
+                    dialog = null;
                 }
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
+            });
+            grant.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (dialogListener != null) {
+                        dialogListener.onPositiveClicked();
+                    }
+                    dialog.hide();
+                    dialog = null;
+                }
+            });
+            dialog.show();
+        }
     }
 }
