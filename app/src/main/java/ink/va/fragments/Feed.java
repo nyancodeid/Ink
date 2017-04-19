@@ -200,7 +200,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 .build();
 
         mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_NO_POWER);
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         initGreeting();
 
