@@ -125,6 +125,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private double currentLatitude;
     private double currentLongitude;
     private boolean wasOnPause;
+    private boolean failedLocate;
 
     public static Feed newInstance() {
         Feed feed = new Feed();
@@ -198,7 +199,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
         // Create the LocationRequest object
         mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_NO_POWER);
+                .setPriority(LocationRequest.PRIORITY_LOW_POWER);
 
 
         initGreeting();
@@ -281,12 +282,13 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     @Override
     public void onConnected(Bundle bundle) {
         try {
-            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (location == null) {
-
-
+                failedLocate = true;
+                hideGreetingCard();
             } else {
+                failedLocate = false;
                 //If everything went fine lets get latitude and longitude
                 currentLatitude = location.getLatitude();
                 currentLongitude = location.getLongitude();
@@ -452,18 +454,25 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
                     @Override
                     public void onPositiveClicked() {
-                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST);
+                        if (!isDetached()) {
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST);
+                        }
                     }
                 });
             }
             return;
         }
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         if (mSharedHelper.showGreeting()) {
             if (!mGoogleApiClient.isConnected()) {
                 mGoogleApiClient.connect();
             }
         }
-
     }
 
     @Override
@@ -1059,9 +1068,13 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     public void checkWidget() {
         if (greetingCard != null) {
-            if (mSharedHelper.showGreeting()) {
-                initGreeting();
-                showGreetingCard();
+            if (!failedLocate) {
+                if (mSharedHelper.showGreeting()) {
+                    initGreeting();
+                    showGreetingCard();
+                } else {
+                    hideGreetingCard();
+                }
             } else {
                 hideGreetingCard();
             }
