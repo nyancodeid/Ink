@@ -12,8 +12,10 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -64,6 +66,7 @@ import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.ImageLoader;
 import ink.va.utils.InputField;
+import ink.va.utils.LocationUtils;
 import ink.va.utils.PermissionsChecker;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -92,6 +95,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private static final int SHARE_INTENT_RESULT = 5;
     private static final int STORAGE_PERMISSION_REQUEST = 115;
     public static final int LOCATION_PERMISSION_REQUEST = 116;
+    private static final int LOCATION_SETTINGS_RESULT = 118;
     private RecyclerView mRecyclerView;
     private FeedAdapter mAdapter;
     private SwipeRefreshLayout feedRefresh;
@@ -122,6 +126,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private boolean failedLocate;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private boolean showDisableLocation;
 
     public static Feed newInstance() {
         Feed feed = new Feed();
@@ -193,6 +198,9 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 //fourth line adds the LocationServices API endpoint from GooglePlayServices
                 .addApi(LocationServices.API)
                 .build();
+
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_NO_POWER);
 
         initGreeting();
 
@@ -271,18 +279,13 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         }
     }
 
-    private void handleLocation(Location location) {
-        if (location == null) {
-            failedLocate = true;
-            hideGreetingCard();
-        } else {
-            failedLocate = false;
-            //If everything went fine lets get latitude and longitude
-            currentLatitude = location.getLatitude();
-            currentLongitude = location.getLongitude();
-            YahooWeather yahooWeather = YahooWeather.getInstance();
-            yahooWeather.queryYahooWeatherByLatLon(getActivity(), currentLatitude, currentLongitude, this);
-        }
+    private void handleLocation() {
+        currentLatitude = mSharedHelper.getUserLatitude();
+        currentLongitude = mSharedHelper.getUserLongitude();
+        failedLocate = false;
+        //If everything went fine lets get latitude and longitude
+        YahooWeather yahooWeather = YahooWeather.getInstance();
+        yahooWeather.queryYahooWeatherByLatLon(getActivity(), currentLatitude, currentLongitude, this);
     }
 
     @Override
@@ -404,7 +407,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     private void initGreeting() {
         if (!PermissionsChecker.isLocationPermissionGranted(getActivity())) {
             hideGreetingCard();
-            DialogUtils.showPermissionRequestDialog(getActivity(), getString(R.string.location_for_weather), new DialogUtils.DialogListener() {
+            DialogUtils.showCustomDialog(getActivity(), getString(R.string.location_for_weather), getString(R.string.grant), getString(R.string.permissionNeeded), new DialogUtils.DialogListener() {
                 @Override
                 public void onNegativeClicked() {
 
@@ -963,6 +966,15 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                     shareOutPutDir.delete();
                 }
                 break;
+            case LOCATION_SETTINGS_RESULT:
+                if (LocationUtils.isLocationEnabled(getActivity())) {
+                    if (mGoogleApiClient.isConnected()) {
+                        mGoogleApiClient.disconnect();
+                    }
+                    showDisableLocation = true;
+                    mGoogleApiClient.connect();
+                }
+                break;
         }
     }
 
@@ -1005,9 +1017,9 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     public void checkWidget() {
         if (greetingCard != null) {
-            if (!failedLocate) {
+            if (mSharedHelper.hasLocationSaved()) {
                 if (mSharedHelper.showGreeting()) {
-                    initGreeting();
+                    handleLocation();
                     showGreetingCard();
                 } else {
                     hideGreetingCard();
@@ -1021,20 +1033,42 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        try {
-            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if (location == null) {
-                // Create the LocationRequest object
-                mLocationRequest = LocationRequest.create()
-                        .setPriority(LocationRequest.PRIORITY_NO_POWER)
-                        .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-                        .setFastestInterval(1 * 1000); // 1 second, in milliseconds
-                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        if (!isDetached()) {
+            if (!LocationUtils.isLocationEnabled(getActivity())) {
+                if (!mSharedHelper.hasLocationSaved()) {
+                    DialogUtils.showCustomDialog(getActivity(), getString(R.string.locationSettingsNeeded),
+                            getString(R.string.proceed), getString(R.string.actionRequired), new DialogUtils.DialogListener() {
+                                @Override
+                                public void onNegativeClicked() {
+                                    hideGreetingCard();
+                                }
+
+                                @Override
+                                public void onDialogDismissed() {
+
+                                }
+
+                                @Override
+                                public void onPositiveClicked() {
+                                    Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                    startActivityForResult(settingsIntent, LOCATION_SETTINGS_RESULT);
+                                }
+                            });
+                } else {
+                    handleLocation();
+                }
             } else {
-                handleLocation(location);
+                if (mSharedHelper.hasLocationSaved()) {
+                    handleLocation();
+                } else {
+                    try {
+                        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+                    } catch (SecurityException e) {
+                        e.printStackTrace();
+                        hideGreetingCard();
+                    }
+                }
             }
-        } catch (SecurityException e) {
-            e.printStackTrace();
         }
     }
 
@@ -1050,10 +1084,23 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     @Override
     public void onLocationChanged(Location location) {
-        handleLocation(location);
-        if (mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-            mGoogleApiClient.disconnect();
+        if (!isDetached()) {
+            mSharedHelper.putUserLocation(location.getLongitude(), location.getLatitude());
+            handleLocation();
+            if (showDisableLocation) {
+                showDisableLocation = false;
+                Snackbar.make(mRecyclerView, getString(R.string.canTurnOffLocation), BaseTransientBottomBar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(settingsIntent);
+                    }
+                }).show();
+            }
+            if (mGoogleApiClient.isConnected()) {
+                LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+                mGoogleApiClient.disconnect();
+            }
         }
     }
 }

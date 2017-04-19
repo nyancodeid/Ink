@@ -1116,5 +1116,8 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="location_for_weather">We need your permission for the location access to show the weather information for your place</string>
     <string name="closeHint">you can close this from settings</string>
     <string name="enableGreetingWidget">Enable Greeting Widget</string>
+    <string name="locationSettingsNeeded">We need the location settings to be turned on to proceed. This is only one-time action which is going to be taken from you and will not be necessary after you have turned on the location services</string>
+    <string name="actionRequired">Action Required</string>
+    <string name="canTurnOffLocation">Now you can turn off the location services manually</string>
 
 </resources>

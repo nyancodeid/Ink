@@ -1143,4 +1143,7 @@
     <string name="night">Ночи</string>
     <string name="location_for_weather">Нам нужно ваше разрешение на доступ к местоположению, чтобы показывать информацию о погоде для вашего места</string>
     <string name="enableGreetingWidget">Разрешить приветственный виджет</string>
+    <string name="locationSettingsNeeded">Нам нужны настройки местоположения, которые нужно включить, чтобы продолжить. Это будет только одноразовое действие, которое будет взято у вас и не понадобится после того, как вы включите сервисы определения местоположения</string>
+    <string name="actionRequired">Необходимое действие</string>
+    <string name="canTurnOffLocation">Теперь вы можете отключить службы геолокации вручную.</string>
 </resources>

@@ -96,13 +96,20 @@ public class DialogUtils {
         void onPositiveClicked();
     }
 
-    public static void showPermissionRequestDialog(Context context, String requestContentText, @Nullable final DialogListener dialogListener) {
+    public static void showCustomDialog(Context context, String requestContentText,
+                                        @Nullable String positiveButtonText, String customDialogHeaderText,
+                                        @Nullable final DialogListener dialogListener) {
         if (dialog != null) {
             if (!dialog.isShowing()) {
                 dialog = new Dialog(context, R.style.FullscreenTheme);
                 dialog.setContentView(R.layout.request_permission_view);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-                View grant = dialog.findViewById(R.id.grantPermission);
+                TextView positiveButton = (TextView) dialog.findViewById(R.id.positiveButton);
+                TextView customDialogHeaderContent = (TextView) dialog.findViewById(R.id.customDialogHeaderContent);
+                customDialogHeaderContent.setText(customDialogHeaderText);
+                if (positiveButtonText != null) {
+                    positiveButton.setText(positiveButtonText);
+                }
                 View cancel = dialog.findViewById(R.id.cancelRequestPermission);
                 TextView permissionRequestTV = (TextView) dialog.findViewById(R.id.permissionRequestTV);
                 permissionRequestTV.setText(requestContentText);
@@ -117,7 +124,7 @@ public class DialogUtils {
                         dialog = null;
                     }
                 });
-                grant.setOnClickListener(new View.OnClickListener() {
+                positiveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (dialogListener != null) {
@@ -133,7 +140,12 @@ public class DialogUtils {
             dialog = new Dialog(context, R.style.FullscreenTheme);
             dialog.setContentView(R.layout.request_permission_view);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-            View grant = dialog.findViewById(R.id.grantPermission);
+            TextView positiveButton = (TextView) dialog.findViewById(R.id.positiveButton);
+            TextView customDialogHeaderContent = (TextView) dialog.findViewById(R.id.customDialogHeaderContent);
+            customDialogHeaderContent.setText(customDialogHeaderText);
+            if (positiveButtonText != null) {
+                positiveButton.setText(positiveButtonText);
+            }
             View cancel = dialog.findViewById(R.id.cancelRequestPermission);
             TextView permissionRequestTV = (TextView) dialog.findViewById(R.id.permissionRequestTV);
             permissionRequestTV.setText(requestContentText);
@@ -148,7 +160,7 @@ public class DialogUtils {
                     dialog = null;
                 }
             });
-            grant.setOnClickListener(new View.OnClickListener() {
+            positiveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (dialogListener != null) {

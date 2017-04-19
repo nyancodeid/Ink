@@ -439,6 +439,24 @@ public class SharedHelper {
         return mSharedPreferences.getString("userStatus", context.getString(R.string.noStatusText));
     }
 
+    public void putUserLocation(double longitde, double latitude) {
+        mEditor.putString("userLongitude", String.valueOf(longitde));
+        mEditor.putString("userLatitude", String.valueOf(latitude));
+        mEditor.commit();
+    }
+
+    public boolean hasLocationSaved() {
+        return mSharedPreferences.contains("userLongitude") && mSharedPreferences.contains("userLatitude");
+    }
+
+    public double getUserLongitude() {
+        return Double.valueOf(mSharedPreferences.getString("userLongitude", "0.0"));
+    }
+
+    public double getUserLatitude() {
+        return Double.valueOf(mSharedPreferences.getString("userLatitude", "0.0"));
+    }
+
     public void putUserStatus(String value) {
         mEditor.putString("userStatus", value);
         mEditor.commit();
