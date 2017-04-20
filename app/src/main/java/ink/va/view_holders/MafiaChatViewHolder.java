@@ -69,6 +69,7 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
         } else {
             finalMessage = StringEscapeUtils.unescapeJava(mafiaMessageModel.getMessage());
         }
+
         mafiaMessageContainer.setText(finalMessage);
 
         if (mafiaMessageModel.isSystemMessage()) {
@@ -135,7 +136,9 @@ public class MafiaChatViewHolder extends RecyclerView.ViewHolder {
                         0, R.drawable.user_image_placeholder, mafiaChatUserImage, new ImageLoader.ImageLoadedCallback() {
                             @Override
                             public void onImageLoaded(Object result, Exception e) {
-                                ImageLoader.loadImage(context, true, true, null, R.drawable.no_image, R.drawable.user_image_placeholder, mafiaChatUserImage, null);
+                                if (e != null) {
+                                    ImageLoader.loadImage(context, true, true, null, R.drawable.no_image, R.drawable.user_image_placeholder, mafiaChatUserImage, null);
+                                }
                             }
                         });
             } else {

@@ -1,5 +1,6 @@
 package ink.va.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Getter
     List<UserNotificationModel> userNotificationModels;
+    private Context context;
 
     public NotificationAdapter() {
         userNotificationModels = new LinkedList<>();
@@ -33,6 +35,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        context = parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notification_single_item, parent, false);
         return new NotificationViewHolder(view);
     }
@@ -40,7 +43,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ((NotificationViewHolder) holder).setOnItemClickListener(onItemClickListener);
-        ((NotificationViewHolder) holder).initData(userNotificationModels.get(position));
+        ((NotificationViewHolder) holder).initData(userNotificationModels.get(position),context);
     }
 
     @Override

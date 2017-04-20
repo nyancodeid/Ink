@@ -1,5 +1,6 @@
 package ink.va.activities;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,11 +9,15 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
 
+import com.google.cloud.translate.Translation;
 import com.ink.va.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.utils.Constants;
+import ink.va.utils.LanguageUtils;
+import ink.va.utils.TranslationUtils;
 
 import static ink.va.utils.Constants.KILL_APP_BUNDLE_KEY;
 import static ink.va.utils.Constants.SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY;
@@ -40,20 +45,66 @@ public class ServerNotification extends BaseActivity {
         setStatusBarColor(R.color.orangeColor);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            String content = bundle.getString(SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY);
+            final String content = bundle.getString(SERVER_NOTIFICATION_CONTENT_BUNDLE_KEY);
             killApp = bundle.getBoolean(KILL_APP_BUNDLE_KEY);
             warningText = bundle.getString(WARNING_TEXT_BUNDLE_KEY);
             if (killApp) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    serverNewsContent.setText(Html.fromHtml(warningText, Html.FROM_HTML_MODE_LEGACY));
+
+                    TranslationUtils.Translate(warningText, Constants.APP_SOURCE_LANGUAGE, LanguageUtils.getLocalLanguage(this), new TranslationUtils.TranslationCallback() {
+                        @TargetApi(Build.VERSION_CODES.N)
+                        @Override
+                        public void onTranslationDone(Translation result) {
+                            serverNewsContent.setText(Html.fromHtml(result.getTranslatedText(), Html.FROM_HTML_MODE_LEGACY));
+                        }
+
+                        @TargetApi(Build.VERSION_CODES.N)
+                        @Override
+                        public void onTranslationFailed(Exception e) {
+                            serverNewsContent.setText(Html.fromHtml(warningText, Html.FROM_HTML_MODE_LEGACY));
+                        }
+                    });
                 } else {
-                    serverNewsContent.setText(Html.fromHtml(warningText));
+
+                    TranslationUtils.Translate(warningText, Constants.APP_SOURCE_LANGUAGE, LanguageUtils.getLocalLanguage(this), new TranslationUtils.TranslationCallback() {
+                        @Override
+                        public void onTranslationDone(Translation result) {
+                            serverNewsContent.setText(Html.fromHtml(result.getTranslatedText()));
+                        }
+
+                        @Override
+                        public void onTranslationFailed(Exception e) {
+                            serverNewsContent.setText(Html.fromHtml(warningText));
+                        }
+                    });
                 }
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    serverNewsContent.setText(Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY));
+                    TranslationUtils.Translate(content, Constants.APP_SOURCE_LANGUAGE, LanguageUtils.getLocalLanguage(this), new TranslationUtils.TranslationCallback() {
+                        @TargetApi(Build.VERSION_CODES.N)
+                        @Override
+                        public void onTranslationDone(Translation result) {
+                            serverNewsContent.setText(Html.fromHtml(result.getTranslatedText(), Html.FROM_HTML_MODE_LEGACY));
+                        }
+
+                        @TargetApi(Build.VERSION_CODES.N)
+                        @Override
+                        public void onTranslationFailed(Exception e) {
+                            serverNewsContent.setText(Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY));
+                        }
+                    });
                 } else {
-                    serverNewsContent.setText(Html.fromHtml(content));
+                    TranslationUtils.Translate(content, Constants.APP_SOURCE_LANGUAGE, LanguageUtils.getLocalLanguage(this), new TranslationUtils.TranslationCallback() {
+                        @Override
+                        public void onTranslationDone(Translation result) {
+                            serverNewsContent.setText(Html.fromHtml(result.getTranslatedText()));
+                        }
+
+                        @Override
+                        public void onTranslationFailed(Exception e) {
+                            serverNewsContent.setText(Html.fromHtml(content));
+                        }
+                    });
                 }
 
             }

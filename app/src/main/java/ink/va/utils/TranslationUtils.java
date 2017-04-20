@@ -15,14 +15,14 @@ import com.google.cloud.translate.Translation;
 
 public class TranslationUtils {
 
-    public static void Translate(final String sourceText, final String fromLanguage, final String toLanguage, @Nullable final TranslationCallback translationCallback) {
+    public static void Translate(final Object sourceText, final Object fromLanguage, final String toLanguage, @Nullable final TranslationCallback translationCallback) {
         Thread workerThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 Translate translate = TranslateOptions.newBuilder().setApiKey(Constants.GOOGLE_API_KEY).build().getService();
 
                 try {
-                    final Translation translation = translate.translate(sourceText, Translate.TranslateOption.sourceLanguage(fromLanguage),
+                    final Translation translation = translate.translate(sourceText.toString(), Translate.TranslateOption.sourceLanguage(fromLanguage.toString()),
                             Translate.TranslateOption.targetLanguage(toLanguage));
 
                     if (translationCallback != null) {
