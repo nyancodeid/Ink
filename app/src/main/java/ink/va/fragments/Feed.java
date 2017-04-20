@@ -254,7 +254,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             // Add your code here
             // weatherInfo object contains all information returned by Yahoo Weather API
             // if `weatherInfo` is null, you can get the error from `errorType`
-            if (!isDetached()) {
+            if (!isDetached()&&getActivity()!=null) {
                 String greetingMessage = getString(R.string.greeting_appendix);
                 switch (Time.getDayTime()) {
                     case DAYTIME_MORNING:
