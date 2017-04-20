@@ -64,6 +64,8 @@ import static ink.va.utils.Constants.EVENT_ON_FRIEND_REQUESTED;
 import static ink.va.utils.Constants.EVENT_ON_FRIEND_REQUEST_ACCEPTED;
 import static ink.va.utils.Constants.EVENT_ON_FRIEND_REQUEST_DECLINED;
 import static ink.va.utils.Constants.EVENT_ON_GAME_CREATED;
+import static ink.va.utils.Constants.EVENT_ON_GLOBAL_MESSAGE;
+import static ink.va.utils.Constants.EVENT_ON_GLOBAL_MESSAGE_RECEIVED;
 import static ink.va.utils.Constants.EVENT_ON_NEW_GROUP_MESSAGE;
 import static ink.va.utils.Constants.EVENT_ON_POST_LIKED;
 import static ink.va.utils.Constants.EVENT_ON_POST_MADE;
@@ -364,6 +366,20 @@ public class SocketService extends Service {
         }
     };
 
+    private Emitter.Listener onGlobalMessage = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject jsonObject = (JSONObject) args[0];
+            try {
+                jsonObject.put("receiverId", sharedHelper.getUserId());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            emit(EVENT_ON_GLOBAL_MESSAGE_RECEIVED, jsonObject);
+
+        }
+    };
+
     private Emitter.Listener onOnlineStatusReceived = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -557,6 +573,7 @@ public class SocketService extends Service {
         mSocket.on(EVENT_MESSAGE_SENT, onMessageSent);
         mSocket.on(EVENT_CONNECT_TIMEOUT, onSocketTimeOut);
         mSocket.on(EVENT_ONLINE_STATUS, onOnlineStatusReceived);
+        mSocket.on(EVENT_ON_GLOBAL_MESSAGE, onGlobalMessage);
         mSocket.on(EVENT_ON_GAME_CREATED, onMafiaGameCreated);
         mSocket.on(EVENT_ON_COMMENT_ADDED, onCommentAdded);
         mSocket.on(EVENT_ON_FRIEND_REQUEST_ACCEPTED, onFriendRequestAccepted);

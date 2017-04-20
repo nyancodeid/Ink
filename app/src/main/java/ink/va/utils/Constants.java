@@ -144,7 +144,9 @@ public class Constants {
 
     public static final String ANDROID_RESOURCE_DIR = "android.resource://";
     public static final String HUAWEI_MODEL = "HUAWEI";
+    public static final String APP_SOURCE_LANGUAGE = "en";
     public static final String SERVER_TIME_ZONE = "America/Los_Angeles";
+    public static final String GOOGLE_API_KEY = "AIzaSyDwESqkAVNo_6TQi5F2WDH-8mYJ10bRPDc";
     public static final String CLOUD_CLIENT_ID = "15bf6f497229585b1cf45983d3d65b10";
     public static final String CLOUD_API_URL = "https://api.soundcloud.com";
     public static final String SUBJECT_FEEDBACK = "Feedback";
@@ -291,6 +293,7 @@ public class Constants {
     public static final String EVENT_ON_FRIEND_REQUEST_DECLINED = "onFriendRequestDeclined";
     public static final String EVENT_ON_REQUEST_GROUP_JOIN = "onRequestGroupJoin";
     public static final String EVENT_ON_NEW_GROUP_MESSAGE = "onNewGroupMessage";
+    public static final String EVENT_ON_GLOBAL_MESSAGE = "onGlobalMessage";
 
     /**
      * Socket Emit Events
@@ -305,7 +308,8 @@ public class Constants {
     public static final String EVENT_POST_MADE_RECEIVED = "onClientPostMadeReceived";
     public static final String EVENT_FRIEND_REQUEST_RECEIVED = "onClientFriendRequestReceived";
     public static final String EVENT_REQUEST_GROUP_JOIN_RECEIVED = "requestGroupJoinReceived";
-    public static final String EVENT_ON_SEND_GROUP_MESSAGE_RECEIVED  = "onSendGroupMessageReceived";
+    public static final String EVENT_ON_SEND_GROUP_MESSAGE_RECEIVED = "onSendGroupMessageReceived";
+    public static final String EVENT_ON_GLOBAL_MESSAGE_RECEIVED = "onClientGlobalMessageReceived";
 
     public static final String EVENT_ONLINE_STATUS = "onlineStatus";
     public static final String EVENT_PING = "ping";

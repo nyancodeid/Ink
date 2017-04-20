@@ -1033,7 +1033,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (!isDetached()) {
+        if (!isDetached()&&getActivity()!=null) {
             if (!LocationUtils.isLocationEnabled(getActivity())) {
                 if (!mSharedHelper.hasLocationSaved()) {
                     DialogUtils.showCustomDialog(getActivity(), getString(R.string.locationSettingsNeeded),

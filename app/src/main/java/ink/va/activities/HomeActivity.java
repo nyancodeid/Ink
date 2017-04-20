@@ -41,6 +41,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.google.cloud.translate.Translation;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.ink.va.R;
@@ -85,6 +86,7 @@ import ink.va.utils.PollFish;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
+import ink.va.utils.TranslationUtils;
 import ink.va.utils.User;
 import io.smooch.ui.ConversationActivity;
 import it.sephiroth.android.library.picasso.Picasso;
@@ -169,6 +171,30 @@ public class HomeActivity extends BaseActivity
         friendGson = new Gson();
 
         initService();
+
+        // The text to translate
+        String text = "Hello, world!";
+
+        // Translates some text into Russian
+        String localeLanguage;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            localeLanguage = getResources().getConfiguration().getLocales().get(0).getLanguage();
+        } else {
+            localeLanguage = getResources().getConfiguration().locale.getLanguage();
+        }
+
+        TranslationUtils.Translate(text, Constants.APP_SOURCE_LANGUAGE, localeLanguage, new TranslationUtils.TranslationCallback() {
+            @Override
+            public void onTranslationDone(Translation result) {
+                setTitle(result.getTranslatedText());
+            }
+
+            @Override
+            public void onTranslationFailed(Exception e) {
+
+            }
+        });
+
 
         if (!mSharedHelper.isSecurityQuestionSet() && isAccountRecoverable()) {
             View warningView = getLayoutInflater().inflate(R.layout.app_warning_view, null);
