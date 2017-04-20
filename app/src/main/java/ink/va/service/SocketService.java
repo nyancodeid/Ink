@@ -18,6 +18,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
+import com.google.cloud.translate.Translation;
 import com.google.gson.Gson;
 import com.ink.va.R;
 
@@ -30,6 +31,7 @@ import java.util.List;
 
 import ink.va.activities.Chat;
 import ink.va.activities.Comments;
+import ink.va.activities.HomeActivity;
 import ink.va.activities.MafiaRoomActivity;
 import ink.va.activities.ReplyView;
 import ink.va.activities.RequestsView;
@@ -41,9 +43,12 @@ import ink.va.models.ChatModel;
 import ink.va.receivers.DeleteReceiver;
 import ink.va.receivers.NotificationBroadcast;
 import ink.va.receivers.ReplyIntentReceiver;
+import ink.va.utils.Constants;
+import ink.va.utils.LanguageUtils;
 import ink.va.utils.Notification;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.SharedHelper;
+import ink.va.utils.TranslationUtils;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT;
@@ -376,7 +381,37 @@ public class SocketService extends Service {
                 e.printStackTrace();
             }
             emit(EVENT_ON_GLOBAL_MESSAGE_RECEIVED, jsonObject);
+            final String title = jsonObject.optString("title");
+            final String message = jsonObject.optString("message");
 
+            TranslationUtils.Translate(title, Constants.APP_SOURCE_LANGUAGE, LanguageUtils.getLocalLanguage(getApplicationContext()), new TranslationUtils.TranslationCallback() {
+                @Override
+                public void onTranslationDone(Translation result) {
+                    final String translatedTitle = result.getTranslatedText();
+                    TranslationUtils.Translate(message, Constants.APP_SOURCE_LANGUAGE, LanguageUtils.getLocalLanguage(getApplicationContext()), new TranslationUtils.TranslationCallback() {
+                        @Override
+                        public void onTranslationDone(Translation result) {
+                            String translatedMessage = result.getTranslatedText();
+
+                            sendGeneralNotification(translatedTitle, translatedMessage,
+                                    (int) System.currentTimeMillis(), translatedTitle,
+                                    translatedMessage, R.drawable.notificaiton_icon_global, HomeActivity.class, null, null);
+                        }
+
+                        @Override
+                        public void onTranslationFailed(Exception e) {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onTranslationFailed(Exception e) {
+                    sendGeneralNotification(title, message,
+                            (int) System.currentTimeMillis(), title,
+                            message, R.drawable.notificaiton_icon_global, HomeActivity.class, null, null);
+                }
+            });
         }
     };
 
@@ -664,6 +699,7 @@ public class SocketService extends Service {
             mSocket.off(EVENT_ON_GAME_CREATED, onMafiaGameCreated);
             mSocket.off(EVENT_TYPING, onUserTyping);
             mSocket.off(EVENT_MESSAGE_SENT, onMessageSent);
+            mSocket.off(EVENT_ON_GLOBAL_MESSAGE, onGlobalMessage);
             mSocket.off(EVENT_CONNECT_TIMEOUT, onSocketTimeOut);
             mSocket.off(EVENT_ONLINE_STATUS, onOnlineStatusReceived);
             mSocket.off(EVENT_ON_COMMENT_ADDED, onCommentAdded);

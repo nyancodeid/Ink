@@ -34,11 +34,18 @@ public class TranslationUtils {
                             }
                         });
                     }
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     e.printStackTrace();
-                    if (translationCallback != null) {
-                        translationCallback.onTranslationFailed(e);
-                    }
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (translationCallback != null) {
+                                translationCallback.onTranslationFailed(e);
+                            }
+                        }
+                    });
+
                 }
             }
         });
