@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.NavigationView;
@@ -251,6 +252,10 @@ public class HomeActivity extends BaseActivity
         }
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationMenuView navigationMenuView = (NavigationMenuView) navigationView.getChildAt(0);
+        if (navigationMenuView != null) {
+            navigationMenuView.setVerticalScrollBarEnabled(false);
+        }
 
         messagesCountTV = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().findItem(R.id.messages));
 

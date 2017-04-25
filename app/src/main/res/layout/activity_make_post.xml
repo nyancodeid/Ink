@@ -223,7 +223,6 @@
                     android:hint="@string/writePost"
                     android:inputType="textMultiLine"
                     android:maxHeight="250dp"
-                    android:maxLines="50"
                     android:minHeight="200dp" />
 
 
