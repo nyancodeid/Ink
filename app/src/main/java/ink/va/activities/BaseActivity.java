@@ -19,7 +19,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -76,11 +75,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Nullable
     @BindView(R.id.sendChatMessage)
     FloatingActionButton sendChatMessage;
-
-    @Nullable
-    @BindView(R.id.makePostToolbar)
-    Toolbar makePostToolbar;
-
 
     @Nullable
     @BindView(R.id.chatRouletteSendMessage)
@@ -252,11 +246,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         ButterKnife.bind(this);
-        if (sharedHelper.getActionBarColor() != null) {
-            if (makePostToolbar != null) {
-                makePostToolbar.setBackgroundColor(Color.parseColor(sharedHelper.getActionBarColor()));
-            }
-        }
         if (sharedHelper.getSendButtonColor() != null) {
             if (sendChatMessage != null) {
                 sendChatMessage.setColorNormal(Color.parseColor(sharedHelper.getSendButtonColor()));

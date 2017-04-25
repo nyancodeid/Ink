@@ -136,7 +136,7 @@
     <string name="discardChanges">Discard changes</string>
     <string name="discardChangesQuestion">Do you want to discard changes you have made?</string>
     <string name="googleMapsApiKey">AIzaSyC_SMdaFoOfRqBhUlzVVG9NO1U0g9P1MfU</string>
-    <string name="selectLocation">Select your location</string>
+    <string name="selectLocation">Select your location (Hint: Click on desired place to attach)</string>
     <string name="openingMap">Opening map...</string>
     <string name="permissionsRequired">Permissions are required to show your location</string>
     <string name="generalPermissionsNotGranted">All of permissions not granted.Uploading will not work</string>
@@ -1119,5 +1119,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="locationSettingsNeeded">We need the location settings to be turned on to proceed. This is only one-time action which is going to be taken from you and will not be necessary after you have turned on the location services</string>
     <string name="actionRequired">Action Required</string>
     <string name="canTurnOffLocation">Now you can turn off the location services manually</string>
+    <string name="turnLocationOn">Turn location on for this function to work</string>
+    <string name="shareToInk">Share to Ink</string>
 
 </resources>

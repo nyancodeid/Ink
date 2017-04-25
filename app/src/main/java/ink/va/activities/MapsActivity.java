@@ -11,10 +11,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -36,6 +38,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.va.callbacks.GeneralCallback;
+import ink.va.utils.LocationUtils;
 import ink.va.utils.PermissionsChecker;
 
 public class MapsActivity extends BaseActivity implements OnMapReadyCallback,
@@ -73,7 +76,15 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback,
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-
+        if (!LocationUtils.isLocationEnabled(this)) {
+            Snackbar.make(mMapsToolbar, getString(R.string.turnLocationOn), BaseTransientBottomBar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent settingsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivityForResult(settingsIntent, 0);
+                }
+            }).show();
+        }
     }
 
 

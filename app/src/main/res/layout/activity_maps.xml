@@ -12,14 +12,14 @@
         android:id="@+id/mapsToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        android:background="@color/vk_white">
 
         <ImageView
             android:id="@+id/backGoogleMaps"
             style="?attr/selectableItemBackground"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/close_vector"
+            android:background="@drawable/close_vector_grey"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
@@ -35,8 +35,7 @@
             android:ellipsize="end"
             android:fontFamily="@string/appFont"
             android:maxLines="1"
-            android:text="@string/selectLocation"
-            android:textColor="#ffffff" />
+            android:text="@string/selectLocation" />
     </android.support.v7.widget.Toolbar>
 
 

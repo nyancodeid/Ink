@@ -13,12 +13,10 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
@@ -119,8 +117,6 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
         ButterKnife.bind(this);
         mSharedHelper = new SharedHelper(this);
         postType = Constants.POST_TYPE_LOCAL;
-        Toolbar makePostToolbar = (Toolbar) findViewById(R.id.makePostToolbar);
-        setSupportActionBar(makePostToolbar);
         Linkify.addLinks(mPostBody, Linkify.WEB_URLS);
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(getString(R.string.posting));
@@ -343,7 +339,6 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
             if (!isPermissionsGranted()) {
                 requestPermission();
             }
-            Snackbar.make(mCheckWrapper, getString(R.string.storagePermissions), Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -500,7 +495,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (!isPermissionsGranted()) {
-            Snackbar.make(mCheckWrapper, getString(R.string.storagePermissions), Snackbar.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.storagePermissions), Toast.LENGTH_SHORT).show();
         } else {
             showAttachmentDialog();
         }

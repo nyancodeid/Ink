@@ -164,7 +164,8 @@
         <activity
             android:name="ink.va.activities.MakePost"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/Theme.Transparent">
+            android:label="@string/shareToInk"
+            android:theme="@style/DialogTheme">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 
@@ -183,9 +184,10 @@
         <activity
             android:name="ink.va.activities.MapsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label=""
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Transparent" />
+            android:theme="@style/TransparentDialog" />
         <activity android:name="ink.va.activities.Comments" />
         <activity
             android:name="ink.va.activities.SplashScreen"

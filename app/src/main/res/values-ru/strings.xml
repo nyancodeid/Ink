@@ -139,7 +139,7 @@
     <string name="discardChanges">Отменить изменения</string>
     <string name="discardChangesQuestion">Вы хотите отменить все изменения, которые вы сделали?</string>
     <string name="googleMapsApiKey">AIzaSyC_SMdaFoOfRqBhUlzVVG9NO1U0g9P1MfU</string>
-    <string name="selectLocation">Выберите ваше местоположение</string>
+    <string name="selectLocation">Выберите ваше местоположение (Подсказка: нажмите на нужное место для прикрепления)</string>
     <string name="openingMap">Открываем карту...</string>
     <string name="permissionsRequired">Нужно разрешение для того, что бы показать ваше местоположение</string>
     <string name="generalPermissionsNotGranted">Не все разрешения предоставлены.Загрузка не возможна</string>
@@ -1146,4 +1146,6 @@
     <string name="locationSettingsNeeded">Нам нужны настройки местоположения, которые нужно включить, чтобы продолжить. Это будет только одноразовое действие, которое будет взято у вас и не понадобится после того, как вы включите сервисы определения местоположения</string>
     <string name="actionRequired">Необходимое действие</string>
     <string name="canTurnOffLocation">Теперь вы можете отключить службы геолокации вручную.</string>
+    <string name="turnLocationOn">Включите местоположение, чтобы эта функция работала</string>
+    <string name="shareToInk">Поделиться в Инк-е</string>
 </resources>
