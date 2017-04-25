@@ -14,9 +14,10 @@
 
     <ImageView
         android:id="@+id/profileImage"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_marginBottom="20dp"
         android:adjustViewBounds="true"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
         android:src="@android:drawable/sym_def_app_icon" />
 
     <TextView
@@ -24,18 +25,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/profileImage"
-        android:fontFamily="@string/appFont"
-        android:text="android.studio@android.com"
+        android:fontFamily="@string/condensedFont"
+        android:text="@string/loadingText"
         android:textColor="#ffffff" />
 
     <ImageView
         android:id="@+id/coinsImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_width="24dp"
+        android:layout_height="30dp"
+        android:layout_alignTop="@+id/profileImage"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
         android:layout_toRightOf="@+id/profileImage"
-        android:src="@drawable/coins_icon" />
+        android:src="@drawable/coins_image" />
 
     <TextView
         android:id="@+id/coinsText"
@@ -44,7 +46,7 @@
         android:layout_alignBottom="@+id/coinsImage"
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/coinsImage"
-        android:fontFamily="@string/appFont"
+        android:fontFamily="@string/condensedFont"
         android:text="@string/loadingText"
-        android:textColor="#ffffff" />
+        android:textColor="#ffd200" />
 </RelativeLayout>
