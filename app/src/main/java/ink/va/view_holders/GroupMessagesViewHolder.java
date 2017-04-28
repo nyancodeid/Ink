@@ -44,7 +44,7 @@ public class GroupMessagesViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    public void initData(Context context, GroupMessagesModel groupMessagesModel,
+    public void initData(final Context context, GroupMessagesModel groupMessagesModel,
                          final RecyclerItemClickListener onClickListener, final int position) {
         this.context = context;
         sharedHelper = new SharedHelper(context);
@@ -70,10 +70,18 @@ public class GroupMessagesViewHolder extends RecyclerView.ViewHolder {
 
         }
         if (!groupMessagesModel.getSenderImage().isEmpty()) {
-            String encodedImage = Uri.encode(groupMessagesModel.getSenderImage());
+            final String encodedImage = Uri.encode(groupMessagesModel.getSenderImage());
 
             ImageLoader.loadImage(context, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage,
-                    0, R.drawable.user_image_placeholder, messageSenderImage, null);
+                    0, R.drawable.user_image_placeholder, messageSenderImage, new ImageLoader.ImageLoadedCallback() {
+                        @Override
+                        public void onImageLoaded(Object result, Exception e) {
+                            if (e != null) {
+                                ImageLoader.loadImage(context, true, false, encodedImage,
+                                        0, R.drawable.user_image_placeholder, messageSenderImage, null);
+                            }
+                        }
+                    });
         } else {
             ImageLoader.loadImage(context, true, true, null,
                     R.drawable.no_image, R.drawable.user_image_placeholder, messageSenderImage, null);
