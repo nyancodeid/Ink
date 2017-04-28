@@ -44,7 +44,7 @@ public class GroupMessagesViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    public void initData(final Context context, GroupMessagesModel groupMessagesModel,
+    public void initData(final Context context, final GroupMessagesModel groupMessagesModel,
                          final RecyclerItemClickListener onClickListener, final int position) {
         this.context = context;
         sharedHelper = new SharedHelper(context);
@@ -77,7 +77,7 @@ public class GroupMessagesViewHolder extends RecyclerView.ViewHolder {
                         @Override
                         public void onImageLoaded(Object result, Exception e) {
                             if (e != null) {
-                                ImageLoader.loadImage(context, true, false, encodedImage,
+                                ImageLoader.loadImage(context, true, false, groupMessagesModel.getSenderImage(),
                                         0, R.drawable.user_image_placeholder, messageSenderImage, null);
                             }
                         }
