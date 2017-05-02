@@ -718,7 +718,7 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
         content.append(singleModel.getContent());
 
         if (singleModel.isAttachmentPresent()) {
-            ImageLoader.loadImage(this, false, false, Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + Uri.encode(singleModel.getFileName()), 0, R.drawable.chat_attachment_icon, null, new ImageLoader.ImageLoadedCallback() {
+            ImageLoader.loadImage(this, false, false, Constants.MAIN_URL + Constants.UPLOADED_FILES_DIR + Uri.encode(singleModel.getFileName()), null, R.drawable.chat_attachment_icon, null, new ImageLoader.ImageLoadedCallback() {
                 @Override
                 public void onImageLoaded(Object result, Exception e) {
                     if (e != null) {
