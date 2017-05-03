@@ -16,6 +16,7 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -33,22 +34,26 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.IntConsumer;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import fab.FloatingActionButton;
 import ink.StartupApplication;
 import ink.va.interfaces.AccountDeleteListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.ServerInformationModel;
 import ink.va.service.SocketService;
 import ink.va.utils.Constants;
 import ink.va.utils.DimDialog;
 import ink.va.utils.Notification;
 import ink.va.utils.ProcessManager;
+import ink.va.utils.ProgressDialog;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Version;
@@ -66,7 +71,7 @@ import static ink.va.utils.Constants.WARNING_TEXT_BUNDLE_KEY;
 /**
  * Created by USER on 2016-07-24.
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity<T> extends AppCompatActivity {
 
 
     private static final long SERVER_INFO_TIME = 300000;//5 minutes each server call
@@ -404,6 +409,58 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    public void makeRequest(Call<T> call, @Nullable final View progress, final boolean dismissibleProgress,
+                            @Nullable final RequestCallback requestCallback) {
+
+        call.enqueue(new Callback<T>() {
+            @Override
+            public void onResponse(Call<T> call, Response<T> response) {
+                if (progress != null) {
+                    if (dismissibleProgress) {
+                        if (progress instanceof SwipeRefreshLayout) {
+                            progress.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ((SwipeRefreshLayout) progress).setRefreshing(false);
+                                }
+                            });
+                        } else {
+                            if (progress != null) {
+                                progress.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                }
+                if (requestCallback != null) {
+                    requestCallback.onRequestSuccess(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<T> call, Throwable t) {
+                if (progress != null) {
+                    if (dismissibleProgress) {
+                        if (progress instanceof SwipeRefreshLayout) {
+                            progress.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ((SwipeRefreshLayout) progress).setRefreshing(false);
+                                }
+                            });
+                        } else {
+                            if (progress != null) {
+                                progress.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                }
+                if (requestCallback != null) {
+                    requestCallback.onRequestFailed(t);
+                }
+            }
+        });
+    }
+
     protected void hideActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -569,6 +626,5 @@ public abstract class BaseActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
 
 }

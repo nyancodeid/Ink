@@ -70,6 +70,7 @@ import ink.va.fragments.Feed;
 import ink.va.fragments.MyFriends;
 import ink.va.interfaces.AccountDeleteListener;
 import ink.va.interfaces.ColorChangeListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.CoinsResponse;
 import ink.va.models.FriendModel;
 import ink.va.service.SendTokenService;
@@ -93,9 +94,6 @@ import it.sephiroth.android.library.picasso.Target;
 import lombok.Getter;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static ink.va.utils.Constants.FACEBOOK_GRAPH_FIRST_URL;
 import static ink.va.utils.Constants.FACEBOOK_GRAPH_LAST_URL;
@@ -217,7 +215,6 @@ public class HomeActivity extends BaseActivity
 
         FileUtils.deleteDirectoryTree(getApplicationContext().getCacheDir());
 
-
         checkIsWarned();
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -287,12 +284,11 @@ public class HomeActivity extends BaseActivity
     private void getFriends() {
         final List<String> friendIds = new LinkedList<>();
         try {
-            final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().getFriends(mSharedHelper.getUserId());
-            responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            makeRequest(Retrofit.getInstance().getInkService().getFriends(mSharedHelper.getUserId()), null, false, new RequestCallback() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                public void onRequestSuccess(Object result) {
                     try {
-                        String responseString = response.body().string();
+                        String responseString = ((ResponseBody) result).string();
                         try {
                             JSONObject jsonObject = new JSONObject(responseString);
                             boolean success = jsonObject.optBoolean("success");
@@ -310,12 +306,11 @@ public class HomeActivity extends BaseActivity
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                 }
 
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    getFriends();
+                public void onRequestFailed(Object[] result) {
+
                 }
             });
         } catch (Exception e) {
@@ -475,21 +470,12 @@ public class HomeActivity extends BaseActivity
 
     private void getCoins() {
         coinsText.setText(getString(R.string.updating));
-        Call<ResponseBody> coinsCall = Retrofit.getInstance().getInkService().getCoins(mSharedHelper.getUserId());
-        coinsCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getCoins(mSharedHelper.getUserId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getCoins();
-                    return;
-                }
-                if (response.body() == null) {
-                    getCoins();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 Gson gson = new Gson();
                 try {
-                    CoinsResponse coinsResponse = gson.fromJson(response.body().string(), CoinsResponse.class);
+                    CoinsResponse coinsResponse = gson.fromJson(((ResponseBody) result).string(), CoinsResponse.class);
                     if (coinsResponse.success) {
                         User.get().setCoins(coinsResponse.coins);
                         coinsText.setText(getString(R.string.coinsText, coinsResponse.coins));
@@ -501,12 +487,11 @@ public class HomeActivity extends BaseActivity
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getCoins();
+            public void onRequestFailed(Object[] result) {
+
             }
         });
     }
@@ -729,21 +714,12 @@ public class HomeActivity extends BaseActivity
         progressDialog.setCanceledOnTouchOutside(true);
         progressDialog.show();
 
-        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().callVipServer(mSharedHelper.getUserId(), type);
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().callVipServer(mSharedHelper.getUserId(), type), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    callToVipServer(type);
-                    return;
-                }
-                if (response.body() == null) {
-                    callToVipServer(type);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 progressDialog.dismiss();
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -865,14 +841,8 @@ public class HomeActivity extends BaseActivity
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 progressDialog.dismiss();
-                Snackbar.make(mToolbar, getString(R.string.vip_enter_error), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                }).show();
             }
         });
     }
@@ -1009,19 +979,11 @@ public class HomeActivity extends BaseActivity
     };
 
     private void hasNotifications() {
-        Retrofit.getInstance().getInkService().hasUnreadNotifications(mSharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().hasUnreadNotifications(mSharedHelper.getUserId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    hasNotifications();
-                    return;
-                }
-                if (response.body() == null) {
-                    hasNotifications();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -1050,8 +1012,8 @@ public class HomeActivity extends BaseActivity
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                t.printStackTrace();
+            public void onRequestFailed(Object[] result) {
+
             }
         });
     }
@@ -1118,17 +1080,11 @@ public class HomeActivity extends BaseActivity
 
     private void handleSocialImage() {
         if (mSharedHelper.isSocialAccount()) {
-            Retrofit.getInstance().getInkService().getSingleUserDetails(mSharedHelper.getUserId(), "").enqueue(new Callback<ResponseBody>() {
+            makeRequest(Retrofit.getInstance().getInkService().getSingleUserDetails(mSharedHelper.getUserId(), ""), null, false, new RequestCallback() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if (response == null) {
-                        return;
-                    }
-                    if (response.body() == null) {
-                        return;
-                    }
+                public void onRequestSuccess(Object result) {
                     try {
-                        String responseBody = response.body().string();
+                        String responseBody = ((ResponseBody) result).string();
                         JSONObject jsonObject = new JSONObject(responseBody);
                         String facebookProfileUrl = jsonObject.optString("facebook_profile");
                         if (!facebookProfileUrl.isEmpty()) {
@@ -1156,11 +1112,10 @@ public class HomeActivity extends BaseActivity
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
                 }
 
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                public void onRequestFailed(Object[] result) {
 
                 }
             });
@@ -1169,17 +1124,7 @@ public class HomeActivity extends BaseActivity
     }
 
     private void sendUpdateToServer() {
-        Retrofit.getInstance().getInkService().updateUserImage(mSharedHelper.getUserId(), mSharedHelper.getImageLink()).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
+        makeRequest(Retrofit.getInstance().getInkService().updateUserImage(mSharedHelper.getUserId(), mSharedHelper.getImageLink()), null, false, null);
     }
 
 
@@ -1358,22 +1303,13 @@ public class HomeActivity extends BaseActivity
 
     private void getReward() {
         DimDialog.showDimDialog(this, getString(R.string.redeeming));
-        Call<ResponseBody> getRewardCall = Retrofit.getInstance().getInkService().getReward(mSharedHelper.getUserId(), Constants.POLLFISH_TOKEN);
-        getRewardCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getReward(mSharedHelper.getUserId(), Constants.POLLFISH_TOKEN), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getReward();
-                    return;
-                }
-                if (response.body() == null) {
-                    getReward();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 pollFish.hidePollFish();
                 DimDialog.hideDialog();
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -1393,10 +1329,9 @@ public class HomeActivity extends BaseActivity
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 pollFish.hidePollFish();
                 DimDialog.hideDialog();
-                Toast.makeText(HomeActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }

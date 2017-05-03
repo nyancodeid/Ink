@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -29,15 +28,13 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.interfaces.RequestCallback;
 import ink.va.utils.Constants;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.Retrofit;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class ForgotPassword extends AppCompatActivity {
+public class ForgotPassword extends BaseActivity {
     @BindView(R.id.resetPasswordText)
     TextView resetPasswordText;
     @BindView(R.id.loginContainer)
@@ -115,22 +112,13 @@ public class ForgotPassword extends AppCompatActivity {
     private void requestLogin(final String login) {
         setSecurityQuestionContainerEnabled(false);
         forgotPasswordProgress.setVisibility(View.VISIBLE);
-        Call<ResponseBody> loginCall = Retrofit.getInstance().getInkService().getUserLogin(login, Constants.USER_LOGIN_TOKEN);
-        loginCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getUserLogin(login, Constants.USER_LOGIN_TOKEN), forgotPasswordProgress, true, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    requestLogin(login);
-                    return;
-                }
-                if (response.body() == null) {
-                    requestLogin(login);
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
-                    forgotPasswordProgress.setVisibility(View.GONE);
                     setSecurityQuestionContainerEnabled(true);
                     securityQuestion = jsonObject.optString("securityQuestion");
                     securityAnswer = jsonObject.optString("securityAnswer");
@@ -179,8 +167,8 @@ public class ForgotPassword extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                requestLogin(login);
+            public void onRequestFailed(Object[] result) {
+
             }
         });
     }
@@ -205,23 +193,13 @@ public class ForgotPassword extends AppCompatActivity {
 
     private void getTemporaryPassword() {
         forgotPasswordProgress.setVisibility(View.VISIBLE);
-        Call<ResponseBody> temporaryPasswordCall = Retrofit.getInstance().getInkService().getTemporaryPassword(inputLogin, Constants.USER_LOGIN_TOKEN);
-        temporaryPasswordCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getTemporaryPassword(inputLogin, Constants.USER_LOGIN_TOKEN), forgotPasswordProgress, true, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getTemporaryPassword();
-                    return;
-                }
-                if (response.body() == null) {
-                    getTemporaryPassword();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody)result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
-                    forgotPasswordProgress.setVisibility(View.GONE);
                     if (success) {
                         String tempPassword = jsonObject.optString("tempPassword");
                         startResultAnimation();
@@ -257,8 +235,8 @@ public class ForgotPassword extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getTemporaryPassword();
+            public void onRequestFailed(Object[] result) {
+
             }
         });
     }

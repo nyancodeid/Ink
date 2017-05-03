@@ -52,6 +52,7 @@ import butterknife.OnClick;
 import ink.va.adapters.MafiaChatAdapter;
 import ink.va.adapters.MafiaPlayersAdapter;
 import ink.va.interfaces.RecyclerItemClickListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.MafiaMessageModel;
 import ink.va.models.MafiaRoomsModel;
 import ink.va.models.ParticipantModel;
@@ -70,9 +71,6 @@ import ink.va.utils.Time;
 import ink.va.utils.TransparentPanel;
 import ink.va.utils.User;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT;
 import static com.github.nkzawa.socketio.client.Socket.EVENT_CONNECT_ERROR;
@@ -270,10 +268,10 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
         stopService(new Intent(MafiaGameView.this, MafiaGameService.class));
 
-        Retrofit.getInstance().getInkService().getSingleMafiaRoom(mafiaRoomsModel.getId()).enqueue(new Callback<MafiaRoomsModel>() {
+        makeRequest(Retrofit.getInstance().getInkService().getSingleMafiaRoom(mafiaRoomsModel.getId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<MafiaRoomsModel> call, Response<MafiaRoomsModel> response) {
-                mafiaRoomsModel = response.body();
+            public void onRequestSuccess(Object result) {
+                mafiaRoomsModel = (MafiaRoomsModel) result;
                 if (checkGameEnding) {
                     if (mafiaRoomsModel.isGameEnded()) {
                         buildGameEnding();
@@ -388,11 +386,10 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                     }
                 }
 
-
             }
 
             @Override
-            public void onFailure(Call<MafiaRoomsModel> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 if (serverReconnectTry == 0) {
                     initDayTypeAndTime(null, false, false);
                     serverReconnectTry++;
@@ -451,7 +448,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
         if (isOwner()) {
             sharedHelper.putMafiaParticipation(true);
             try {
-                stopService(new Intent(getApplicationContext(),MafiaGameService.class));
+                stopService(new Intent(getApplicationContext(), MafiaGameService.class));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -461,10 +458,10 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
 
     private void getMafiaRoomMessages() {
-        Retrofit.getInstance().getInkService().getMafiaChat(mafiaRoomsModel.getId()).enqueue(new Callback<List<MafiaMessageModel>>() {
+        makeRequest(Retrofit.getInstance().getInkService().getMafiaChat(mafiaRoomsModel.getId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<List<MafiaMessageModel>> call, Response<List<MafiaMessageModel>> response) {
-                List<MafiaMessageModel> mafiaMessageModels = response.body();
+            public void onRequestSuccess(Object result) {
+                List<MafiaMessageModel> mafiaMessageModels = (List<MafiaMessageModel>) result;
                 if (mafiaMessageModels.isEmpty()) {
                     showNoMessages();
                 } else {
@@ -476,9 +473,8 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
             }
 
             @Override
-            public void onFailure(Call<List<MafiaMessageModel>> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 hideNoMessages();
-                Toast.makeText(MafiaGameView.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -626,7 +622,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                     if (isOwner()) {
                         sharedHelper.putMafiaParticipation(true);
                         try {
-                            stopService(new Intent(getApplicationContext(),MafiaGameService.class));
+                            stopService(new Intent(getApplicationContext(), MafiaGameService.class));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -829,20 +825,13 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     private void callStartGame() {
         sharedHelper.putRoleSeen(false);
         showDialog(getString(R.string.connecting), getString(R.string.startingGame));
-        Retrofit.getInstance().getInkService().startMafiaGame(mafiaRoomsModel.getId()).enqueue(new Callback<ResponseBody>() {
+
+        makeRequest(Retrofit.getInstance().getInkService().startMafiaGame(mafiaRoomsModel.getId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    callStartGame();
-                    return;
-                }
-                if (response.body() == null) {
-                    callStartGame();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 hideDialog();
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     String participantWithoutUser = jsonObject.optString("participants");
@@ -891,9 +880,8 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 hideDialog();
-                Toast.makeText(MafiaGameView.this, getString(R.string.couldNotStartGame), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -935,21 +923,12 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
     private void deleteRoom() {
         showDialog(getString(R.string.pleaseWait), getString(R.string.deleting));
-        Call<ResponseBody> deleteCall = Retrofit.getInstance().getInkService().deleteMafiaRoom(mafiaRoomsModel.getId(), sharedHelper.getUserId());
-        deleteCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().deleteMafiaRoom(mafiaRoomsModel.getId(), sharedHelper.getUserId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    deleteRoom();
-                    return;
-                }
-                if (response.body() == null) {
-                    deleteRoom();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 hideDialog();
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -974,9 +953,8 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 hideDialog();
-                Toast.makeText(MafiaGameView.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -1001,10 +979,10 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     }
 
     private void getMafiaRoomParticipants() {
-        Retrofit.getInstance().getInkService().getMafiaRoomParticipants(mafiaRoomsModel.getId()).enqueue(new Callback<List<ParticipantModel>>() {
+        makeRequest(Retrofit.getInstance().getInkService().getMafiaRoomParticipants(mafiaRoomsModel.getId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<List<ParticipantModel>> call, Response<List<ParticipantModel>> response) {
-                List<ParticipantModel> participants = response.body();
+            public void onRequestSuccess(Object result) {
+                List<ParticipantModel> participants = (List<ParticipantModel>) result;
                 mafiaRoomsModel.setJoinedUsers(participants);
                 if (participants.isEmpty()) {
                     showNoParticipants();
@@ -1028,8 +1006,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
             }
 
             @Override
-            public void onFailure(Call<List<ParticipantModel>> call, Throwable t) {
-                Toast.makeText(MafiaGameView.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+            public void onRequestFailed(Object[] result) {
                 hideNoParticipants();
                 getMafiaRoomMessages();
             }
@@ -1052,21 +1029,12 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
     private void joinRoom() {
         showDialog(getString(R.string.pleaseWait), getString(R.string.joining));
-        Call<ResponseBody> joinRoomCall = Retrofit.getInstance().getInkService().joinRoom(mafiaRoomsModel.getId(), sharedHelper.getUserId());
-        joinRoomCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().joinRoom(mafiaRoomsModel.getId(), sharedHelper.getUserId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    joinRoom();
-                    return;
-                }
-                if (response.body() == null) {
-                    joinRoom();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 hideDialog();
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     String systemMessage = jsonObject.optString("systemMessage");
@@ -1077,7 +1045,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                         }
                         sharedHelper.putMafiaLastRoomId(mafiaRoomsModel.getId());
                         try {
-                            stopService(new Intent(getApplicationContext(),MafiaGameService.class));
+                            stopService(new Intent(getApplicationContext(), MafiaGameService.class));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -1140,11 +1108,11 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 hideDialog();
-                Toast.makeText(MafiaGameView.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     private void reorderItems() {
@@ -1167,21 +1135,12 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
     private void leaveRoom() {
         showDialog(getString(R.string.pleaseWait), getString(R.string.leavingText));
-        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().leaveRoom(mafiaRoomsModel.getId(), sharedHelper.getUserId());
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().leaveRoom(mafiaRoomsModel.getId(), sharedHelper.getUserId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    leaveRoom();
-                    return;
-                }
-                if (response.body() == null) {
-                    leaveRoom();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 hideDialog();
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
 
@@ -1233,9 +1192,8 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 hideDialog();
-                Toast.makeText(MafiaGameView.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -1288,19 +1246,11 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     private void silentMessageServerInsert(final String message, final boolean isSystemMessage) {
         if (isSystemMessage) {
             if (isOwner()) {
-                Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId(), isSystemMessage, false).enqueue(new Callback<ResponseBody>() {
+                makeRequest(Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId(), isSystemMessage, false), null, false, new RequestCallback() {
                     @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response == null) {
-                            silentMessageServerInsert(message, isSystemMessage);
-                            return;
-                        }
-                        if (response.body() == null) {
-                            silentMessageServerInsert(message, isSystemMessage);
-                            return;
-                        }
+                    public void onRequestSuccess(Object result) {
                         try {
-                            String responseBody = response.body().string();
+                            String responseBody = ((ResponseBody) result).string();
                             JSONObject jsonObject = new JSONObject(responseBody);
                             boolean success = jsonObject.optBoolean("success");
                             String cause = jsonObject.optString("cause");
@@ -1321,10 +1271,11 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                     }
 
                     @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    public void onRequestFailed(Object[] result) {
                         Toast.makeText(MafiaGameView.this, getString(R.string.messageNotSent), Toast.LENGTH_SHORT).show();
                     }
                 });
+
                 MafiaMessageModel mafiaMessageModel = new MafiaMessageModel();
                 mafiaMessageModel.setId(String.valueOf(System.currentTimeMillis()));
                 mafiaMessageModel.setMessage(message);
@@ -1337,43 +1288,37 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
                 scrollToBottom();
             }
         } else {
-            Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId(), isSystemMessage, isMafiaToggled).enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if (response == null) {
-                        silentMessageServerInsert(message, isSystemMessage);
-                        return;
-                    }
-                    if (response.body() == null) {
-                        silentMessageServerInsert(message, isSystemMessage);
-                        return;
-                    }
-                    try {
-                        String responseBody = response.body().string();
-                        JSONObject jsonObject = new JSONObject(responseBody);
-                        boolean success = jsonObject.optBoolean("success");
-                        String cause = jsonObject.optString("cause");
-                        if (!success) {
-                            if (cause.equals(ROOM_DELETED)) {
-                                finish();
-                                LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
-                                Toast.makeText(MafiaGameView.this, getString(R.string.roomDeleted), Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(MafiaGameView.this, getString(R.string.messageNotSent), Toast.LENGTH_SHORT).show();
+            makeRequest(Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId(), isSystemMessage, isMafiaToggled),
+                    null, false, new RequestCallback() {
+                        @Override
+                        public void onRequestSuccess(Object result) {
+                            try {
+                                String responseBody = ((ResponseBody) result).string();
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                boolean success = jsonObject.optBoolean("success");
+                                String cause = jsonObject.optString("cause");
+                                if (!success) {
+                                    if (cause.equals(ROOM_DELETED)) {
+                                        finish();
+                                        LocalBroadcastManager.getInstance(MafiaGameView.this).sendBroadcast(new Intent(getPackageName() + "update"));
+                                        Toast.makeText(MafiaGameView.this, getString(R.string.roomDeleted), Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(MafiaGameView.this, getString(R.string.messageNotSent), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
 
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    Toast.makeText(MafiaGameView.this, getString(R.string.messageNotSent), Toast.LENGTH_SHORT).show();
-                }
-            });
+                        @Override
+                        public void onRequestFailed(Object[] result) {
+                            Toast.makeText(MafiaGameView.this, getString(R.string.messageNotSent), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
             MafiaMessageModel mafiaMessageModel = new MafiaMessageModel();
             mafiaMessageModel.setId(String.valueOf(System.currentTimeMillis()));
             mafiaMessageModel.setMessage(message);
@@ -1692,21 +1637,13 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
     private void vote(final ParticipantModel participantModel) {
         showDialog(getString(R.string.loadingText), getString(R.string.voting));
-        Retrofit.getInstance().getInkService().voteMafiaPlayer(sharedHelper.getUserId(),
-                mafiaRoomsModel.getId(), participantModel.getUser().getUserId()).enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().voteMafiaPlayer(sharedHelper.getUserId(),
+                mafiaRoomsModel.getId(), participantModel.getUser().getUserId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    removeVote(participantModel);
-                    return;
-                }
-                if (response.body() == null) {
-                    removeVote(participantModel);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 hideDialog();
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -1729,56 +1666,47 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 hideDialog();
-                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
             }
         });
     }
 
     private void removeVote(final ParticipantModel participantModel) {
         showDialog(getString(R.string.loadingText), getString(R.string.removingVote));
-        Retrofit.getInstance().getInkService().removeMafiaPlayerVote(sharedHelper.getUserId(),
-                mafiaRoomsModel.getId(), participantModel.getUser().getUserId()).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    removeVote(participantModel);
-                    return;
-                }
-                if (response.body() == null) {
-                    removeVote(participantModel);
-                    return;
-                }
-                hideDialog();
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (success) {
-                        Toast.makeText(MafiaGameView.this, getString(R.string.voteRemoved), Toast.LENGTH_SHORT).show();
-                        getMafiaRoomParticipants();
-                    } else {
-                        String cause = jsonObject.optString("cause");
-                        if (cause.equals(ErrorCause.NOT_VOTED_TO_REMOVE)) {
-                            DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.notVotedToDelet), true, null, false, null);
-                        } else {
-                            DialogUtils.showDialog(MafiaGameView.this, getString(R.string.information), getString(R.string.serverErrorText), true, null, false, null);
+        makeRequest(Retrofit.getInstance().getInkService().removeMafiaPlayerVote(sharedHelper.getUserId(),
+                mafiaRoomsModel.getId(), participantModel.getUser().getUserId()),
+                null, false, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        hideDialog();
+                        try {
+                            String responseBody = ((ResponseBody) result).string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            boolean success = jsonObject.optBoolean("success");
+                            if (success) {
+                                Toast.makeText(MafiaGameView.this, getString(R.string.voteRemoved), Toast.LENGTH_SHORT).show();
+                                getMafiaRoomParticipants();
+                            } else {
+                                String cause = jsonObject.optString("cause");
+                                if (cause.equals(ErrorCause.NOT_VOTED_TO_REMOVE)) {
+                                    DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.notVotedToDelet), true, null, false, null);
+                                } else {
+                                    DialogUtils.showDialog(MafiaGameView.this, getString(R.string.information), getString(R.string.serverErrorText), true, null, false, null);
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                hideDialog();
-                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
-            }
-        });
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+                        hideDialog();
+                    }
+                });
     }
 
     private void showNightOptions(ParticipantModel participantModel) {
@@ -1806,67 +1734,55 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     private void checkPlayer(final ParticipantModel participantModel) {
         showDialog(getString(R.string.loadingText), getString(R.string.loadingText));
 
-        Retrofit.getInstance().getInkService().checkMafiaPlayer(mafiaRoomsModel.getId(), sharedHelper.getUserId(), participantModel.getUser().getUserId()).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    checkPlayer(participantModel);
-                    return;
-                }
-                if (response.body() == null) {
-                    checkPlayer(participantModel);
-                    return;
-                }
-                hideDialog();
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (success) {
-                        String role = jsonObject.optString("role");
-                        switch (role) {
-                            case MafiaConstants.ROLE_CITIZEN:
-                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.information), getString(R.string.playerIsText, getString(R.string.citizenText)), true, null, false, null);
-                                break;
-                            case MafiaConstants.ROLE_MAFIA:
-                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.information), getString(R.string.playerIsText, getString(R.string.mafiaText)), true, null, false, null);
-                                break;
-                            case MafiaConstants.ROLE_MAFIA_DON:
-                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.information), getString(R.string.playerIsText, getString(R.string.donText)), true, null, false, null);
-                                break;
-                            default:
-                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.information), getString(R.string.serverErrorText), true, null, false, null);
-                        }
-                    } else {
-                        String cause = jsonObject.optString("cause");
-                        switch (cause) {
-                            case ErrorCause.NOT_SHERIFF:
-                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.notSheriffError), true, null, false, null);
-                                break;
-                            case ErrorCause.PLAYER_ALREADY_CHECKED:
-                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.alreadyCheckedError), true, null, false, null);
-                                break;
-                            default:
-                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Snackbar.make(mafiaRoleView, getString(R.string.serverErrorText), BaseTransientBottomBar.LENGTH_LONG).setAction(getString(R.string.vk_retry), new View.OnClickListener() {
+        makeRequest(Retrofit.getInstance().getInkService().checkMafiaPlayer(mafiaRoomsModel.getId(), sharedHelper.getUserId(), participantModel.getUser().getUserId()),
+                null, false, new RequestCallback() {
                     @Override
-                    public void onClick(View v) {
-                        checkPlayer(participantModel);
+                    public void onRequestSuccess(Object result) {
+                        hideDialog();
+                        try {
+                            String responseBody = ((ResponseBody) result).string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            boolean success = jsonObject.optBoolean("success");
+                            if (success) {
+                                String role = jsonObject.optString("role");
+                                switch (role) {
+                                    case MafiaConstants.ROLE_CITIZEN:
+                                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.information), getString(R.string.playerIsText, getString(R.string.citizenText)), true, null, false, null);
+                                        break;
+                                    case MafiaConstants.ROLE_MAFIA:
+                                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.information), getString(R.string.playerIsText, getString(R.string.mafiaText)), true, null, false, null);
+                                        break;
+                                    case MafiaConstants.ROLE_MAFIA_DON:
+                                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.information), getString(R.string.playerIsText, getString(R.string.donText)), true, null, false, null);
+                                        break;
+                                    default:
+                                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.information), getString(R.string.serverErrorText), true, null, false, null);
+                                }
+                            } else {
+                                String cause = jsonObject.optString("cause");
+                                switch (cause) {
+                                    case ErrorCause.NOT_SHERIFF:
+                                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.notSheriffError), true, null, false, null);
+                                        break;
+                                    case ErrorCause.PLAYER_ALREADY_CHECKED:
+                                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.alreadyCheckedError), true, null, false, null);
+                                        break;
+                                    default:
+                                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                }).show();
-            }
-        });
+
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+                        hideDialog();
+                    }
+                });
     }
 
     private boolean isSheriff() {
@@ -1877,48 +1793,40 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
     private void shoot(final ParticipantModel participantModel) {
         showDialog(getString(R.string.shooting), getString(R.string.shootingPlayer));
-        Retrofit.getInstance().getInkService().shoot(mafiaRoomsModel.getId(), sharedHelper.getUserId(), participantModel.getUser().getUserId()).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    shoot(participantModel);
-                    return;
-                }
-                if (response.body() == null) {
-                    shoot(participantModel);
-                    return;
-                }
-                hideDialog();
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (success) {
-                        DialogUtils.showDialog(MafiaGameView.this, getString(R.string.boomShakkaLakkaText), getString(R.string.shotPlayer), true, null, false, null);
-                    } else {
-                        String cause = jsonObject.optString("cause");
-                        if (cause.equals(ALREADY_SHOT_PLAYER)) {
-                            DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.alreadyShot), true, null, false, null);
-                        } else if (cause.equals(PLAYER_ELIMINATED)) {
-                            DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.playerEliminatedText), true, null, false, null);
-                        } else {
+        makeRequest(Retrofit.getInstance().getInkService().shoot(mafiaRoomsModel.getId(), sharedHelper.getUserId(), participantModel.getUser().getUserId()),
+                null, false, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        hideDialog();
+                        try {
+                            String responseBody = ((ResponseBody) result).string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            boolean success = jsonObject.optBoolean("success");
+                            if (success) {
+                                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.boomShakkaLakkaText), getString(R.string.shotPlayer), true, null, false, null);
+                            } else {
+                                String cause = jsonObject.optString("cause");
+                                if (cause.equals(ALREADY_SHOT_PLAYER)) {
+                                    DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.alreadyShot), true, null, false, null);
+                                } else if (cause.equals(PLAYER_ELIMINATED)) {
+                                    DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.playerEliminatedText), true, null, false, null);
+                                } else {
+                                    DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
+                                }
+                            }
+                        } catch (IOException e) {
                             DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
+                            e.printStackTrace();
                         }
                     }
-                } catch (IOException e) {
-                    DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                DialogUtils.showDialog(MafiaGameView.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
-                hideDialog();
-            }
-        });
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+                        hideDialog();
+                    }
+                });
     }
 }

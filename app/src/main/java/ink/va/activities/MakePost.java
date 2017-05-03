@@ -49,6 +49,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.CoinsResponse;
 import ink.va.service.SocketService;
 import ink.va.utils.Constants;
@@ -60,9 +61,6 @@ import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
 import ink.va.utils.User;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static ink.va.utils.Constants.EVENT_POST_MADE;
 import static ink.va.utils.Constants.POST_TYPE_GLOBAL;
@@ -520,7 +518,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
         if (isEditing) {
             finalType = Constants.POST_TYPE_EDIT;
         }
-        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().makePost(mSharedHelper.getUserId(),
+        makeRequest(Retrofit.getInstance().getInkService().makePost(mSharedHelper.getUserId(),
                 postBody,
                 googleAdress,
                 mSharedHelper.getImageLink(),
@@ -530,13 +528,11 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                 finalType,
                 attachmentName,
                 postId,
-                shouldDelete, postType);
-
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+                shouldDelete, postType), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -607,8 +603,8 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                callToServerWithoutBody(postBody, googleAdress);
+            public void onRequestFailed(Object[] result) {
+                progressDialog.dismiss();
             }
         });
     }
@@ -622,7 +618,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
         if (isEditing) {
             finalType = Constants.POST_TYPE_EDIT;
         }
-        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().makePost(map,
+        makeRequest(Retrofit.getInstance().getInkService().makePost(map,
                 mSharedHelper.getUserId(),
                 postBody, googleAddress,
                 mSharedHelper.getImageLink(),
@@ -630,12 +626,11 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                 mSharedHelper.getLastName(),
                 Time.getTimeZone(),
                 finalType, postId,
-                shouldDelete, postType);
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+                shouldDelete, postType), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -698,8 +693,8 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                callToServerWithBody(map, postBody, googleAddress);
+            public void onRequestFailed(Object[] result) {
+                progressDialog.dismiss();
             }
         });
     }
@@ -784,21 +779,12 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     }
 
     private void getCoinsToCharge() {
-        Call<ResponseBody> coinsCall = Retrofit.getInstance().getInkService().getCoins(mSharedHelper.getUserId());
-        coinsCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getCoins(mSharedHelper.getUserId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getCoinsToCharge();
-                    return;
-                }
-                if (response.body() == null) {
-                    getCoinsToCharge();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 Gson gson = new Gson();
                 try {
-                    CoinsResponse coinsResponse = gson.fromJson(response.body().string(), CoinsResponse.class);
+                    CoinsResponse coinsResponse = gson.fromJson(((ResponseBody) result).string(), CoinsResponse.class);
                     if (coinsResponse.success) {
                         postVisibilityHint.setText(getString(R.string.globalPostHint, coinsResponse.coinsDeducateForGlobal));
                     } else {
@@ -811,8 +797,8 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getCoinsToCharge();
+            public void onRequestFailed(Object[] result) {
+
             }
         });
     }

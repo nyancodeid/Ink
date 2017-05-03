@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.interfaces.RequestCallback;
 import ink.va.service.MafiaGameService;
 import ink.va.service.SocketService;
 import ink.va.utils.Keyboard;
@@ -39,9 +40,6 @@ import ink.va.utils.MafiaConstants;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static ink.va.utils.Constants.EVENT_CREATE_GAME;
 import static ink.va.utils.ErrorCause.ALREADY_IN_ROOM;
@@ -332,29 +330,20 @@ public class MafiaAddRoomActivity extends BaseActivity {
             finalNightUnit = MafiaConstants.UNIT_DAYS;
         }
 
-        Call<ResponseBody> addRoomCall = Retrofit.getInstance().getInkService().addMafiaRoom(roomNameTV.getText().toString().trim(),
+        makeRequest(Retrofit.getInstance().getInkService().addMafiaRoom(roomNameTV.getText().toString().trim(),
                 chosenLanguage, finalGameType, durationMorningED.getText().toString(), finalMorningUnit,
                 String.valueOf(estimatedNightDuration), finalNightUnit,
-                sharedHelper.getUserId(), maxPlayers);
-        addRoomCall.enqueue(new Callback<ResponseBody>() {
+                sharedHelper.getUserId(), maxPlayers), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    addRoom();
-                    return;
-                }
-                if (response.body() == null) {
-                    addRoom();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 progressDialog.dismiss();
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
                         try {
-                            stopService(new Intent(getApplicationContext(),MafiaGameService.class));
+                            stopService(new Intent(getApplicationContext(), MafiaGameService.class));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -396,9 +385,8 @@ public class MafiaAddRoomActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 progressDialog.dismiss();
-                Toast.makeText(MafiaAddRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }

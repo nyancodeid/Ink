@@ -55,20 +55,18 @@ import ink.va.decorators.DividerItemDecoration;
 import ink.va.interfaces.CommentClickHandler;
 import ink.va.interfaces.ItemClickListener;
 import ink.va.interfaces.RecyclerItemClickListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.CommentModel;
 import ink.va.service.SocketService;
 import ink.va.utils.Animations;
 import ink.va.utils.ClipManager;
 import ink.va.utils.Constants;
+import ink.va.utils.DialogUtils;
 import ink.va.utils.InputField;
 import ink.va.utils.Keyboard;
-import ink.va.utils.DialogUtils;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static ink.va.utils.Constants.EVENT_COMMENT_ADDED;
 import static ink.va.utils.Constants.EVENT_POST_LIKED;
@@ -281,28 +279,18 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
         mCommentModels.clear();
         mCommentAdapter.notifyDataSetChanged();
-        Call<ResponseBody> commentsCall = Retrofit.getInstance().getInkService().getComments(mSharedHelper.getUserId(), postId);
-        commentsCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getComments(mSharedHelper.getUserId(), postId), mCommentsLoading, true, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getComments(postId, shouldFocus);
-                    return;
-                }
-                if (response.body() == null) {
-                    getComments(postId, shouldFocus);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 if (mCommentModels != null) {
                     mCommentModels.clear();
                     mCommentAdapter.notifyDataSetChanged();
                 }
                 try {
                     isResponseReceived = true;
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONArray jsonArray = new JSONArray(responseBody);
                     if (jsonArray.length() <= 0) {
-                        mCommentsLoading.setVisibility(View.GONE);
                         mCommentAdapter.setShowingNoComments(true);
                         mCommentAdapter.notifyDataSetChanged();
 
@@ -346,25 +334,21 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                     }
                 } catch (IOException e) {
                     Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-                    mCommentsLoading.setVisibility(View.GONE);
                     e.printStackTrace();
                 } catch (JSONException e) {
                     Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-                    mCommentsLoading.setVisibility(View.GONE);
                     e.printStackTrace();
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                mCommentsLoading.setVisibility(View.GONE);
+            public void onRequestFailed(Object[] result) {
                 mCommentRefresher.post(new Runnable() {
                     @Override
                     public void run() {
                         mCommentRefresher.setRefreshing(false);
                     }
                 });
-                Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -408,91 +392,82 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     private void addComment(final String commentBody, final String userImage,
                             final String commenterId, final String postId,
                             final String stickerUrl, final boolean isStickerChosen, final boolean isAnimated) {
-        Call<ResponseBody> addCommentCall = Retrofit.getInstance().getInkService().addComment(commenterId,
-                userImage, commentBody, postId, mSharedHelper.getFirstName(), mSharedHelper.getLastName(), isStickerChosen ? stickerUrl : "", isAnimated);
-        addCommentCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    addComment(commentBody, userImage, commenterId, postId, stickerUrl, isStickerChosen, isAnimated);
-                    return;
-                }
-                if (response.body() == null) {
-                    addComment(commentBody, userImage, commenterId, postId, stickerUrl, isStickerChosen, isAnimated);
-                    return;
-                }
-                addCommentDialog.dismiss();
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (success) {
-                        String commentId = jsonObject.optString("commentId");
+        makeRequest(Retrofit.getInstance().getInkService().addComment(commenterId,
+                userImage, commentBody, postId, mSharedHelper.getFirstName(), mSharedHelper.getLastName(), isStickerChosen ? stickerUrl : "", isAnimated),
+                null, false, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        addCommentDialog.dismiss();
+                        try {
+                            String responseBody = ((ResponseBody) result).string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            boolean success = jsonObject.optBoolean("success");
+                            if (success) {
+                                String commentId = jsonObject.optString("commentId");
 
-                        if (socketService != null) {
-                            JSONObject commentJson = new JSONObject();
+                                if (socketService != null) {
+                                    JSONObject commentJson = new JSONObject();
 
 
-                            commentJson.put("postId", mPostId);
-                            commentJson.put("userImage", mUserImage);
-                            commentJson.put("postBody", mPostBody);
-                            commentJson.put("attachment", mAttachment);
-                            commentJson.put("isSocialAccount", isOwnerSocialAccount);
-                            commentJson.put("location", mLocation);
-                            commentJson.put("name", mName);
-                            commentJson.put("date", mDate);
-                            commentJson.put("likesCount", mLikesCount);
-                            commentJson.put("isLiked", isLiked);
-                            commentJson.put("ownerId", ownerId);
-                            commentJson.put("attachmentPresent", hasAttachment);
-                            commentJson.put("addressPresent", hasAddress);
-                            commentJson.put("attachmentName", attachmentName);
-                            commentJson.put("addressName", addressName);
-                            commentJson.put("postId", postId);
-                            commentJson.put("postBody", postBody);
-                            commentJson.put("isPostOwner", isPostOwner);
-                            commentJson.put("isFriend", isFriend);
+                                    commentJson.put("postId", mPostId);
+                                    commentJson.put("userImage", mUserImage);
+                                    commentJson.put("postBody", mPostBody);
+                                    commentJson.put("attachment", mAttachment);
+                                    commentJson.put("isSocialAccount", isOwnerSocialAccount);
+                                    commentJson.put("location", mLocation);
+                                    commentJson.put("name", mName);
+                                    commentJson.put("date", mDate);
+                                    commentJson.put("likesCount", mLikesCount);
+                                    commentJson.put("isLiked", isLiked);
+                                    commentJson.put("ownerId", ownerId);
+                                    commentJson.put("attachmentPresent", hasAttachment);
+                                    commentJson.put("addressPresent", hasAddress);
+                                    commentJson.put("attachmentName", attachmentName);
+                                    commentJson.put("addressName", addressName);
+                                    commentJson.put("postId", postId);
+                                    commentJson.put("postBody", postBody);
+                                    commentJson.put("isPostOwner", isPostOwner);
+                                    commentJson.put("isFriend", isFriend);
 
-                            commentJson.put("commentId", commentId);
-                            commentJson.put("currentUserId", mSharedHelper.getUserId());
-                            commentJson.put("commenterId", commenterId);
-                            commentJson.put("commentBody", commentBody);
-                            commentJson.put("commenterFirstName", mSharedHelper.getFirstName());
-                            commentJson.put("commenterLastName", mSharedHelper.getLastName());
+                                    commentJson.put("commentId", commentId);
+                                    commentJson.put("currentUserId", mSharedHelper.getUserId());
+                                    commentJson.put("commenterId", commenterId);
+                                    commentJson.put("commentBody", commentBody);
+                                    commentJson.put("commenterFirstName", mSharedHelper.getFirstName());
+                                    commentJson.put("commenterLastName", mSharedHelper.getLastName());
 
-                            socketService.emit(EVENT_COMMENT_ADDED, commentJson);
-                            commentJson = null;
+                                    socketService.emit(EVENT_COMMENT_ADDED, commentJson);
+                                    commentJson = null;
+                                }
+
+                                mSharedHelper.putCommentedPost(postId);
+                                Snackbar.make(mCommentRefresher, getString(R.string.commentAdded), Snackbar.LENGTH_SHORT).
+                                        setAction("OK", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+
+                                            }
+                                        }).show();
+                                getComments(postId, true);
+                            } else {
+                                Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (IOException e) {
+                            Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                            addCommentDialog.dismiss();
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                            addCommentDialog.dismiss();
+                            e.printStackTrace();
                         }
-
-                        mSharedHelper.putCommentedPost(postId);
-                        Snackbar.make(mCommentRefresher, getString(R.string.commentAdded), Snackbar.LENGTH_SHORT).
-                                setAction("OK", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-
-                                    }
-                                }).show();
-                        getComments(postId, true);
-                    } else {
-                        Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                     }
-                } catch (IOException e) {
-                    Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-                    addCommentDialog.dismiss();
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-                    addCommentDialog.dismiss();
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                addCommentDialog.dismiss();
-                Toast.makeText(Comments.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+                        addCommentDialog.dismiss();
+                    }
+                });
     }
 
     @Override
@@ -655,20 +630,11 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     }
 
     private void deletePost() {
-        Call<ResponseBody> deletePostCall = Retrofit.getInstance().getInkService().deletePost(mPostId, mAttachment);
-        deletePostCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().deletePost(mPostId, mAttachment), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    deletePost();
-                    return;
-                }
-                if (response.body() == null) {
-                    deletePost();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     deleteDialog.dismiss();
@@ -687,8 +653,8 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+            public void onRequestFailed(Object[] result) {
+                deleteDialog.dismiss();
             }
         });
     }
@@ -742,21 +708,11 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     private void like(final String postId, final int isLiking, final TextView likeCountTV, final View likeWrapper) {
         shouldUpdate = true;
-        final Call<ResponseBody> likeCall = Retrofit.getInstance().getInkService().likePost(mSharedHelper.getUserId(), postId, isLiking);
-        likeCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().likePost(mSharedHelper.getUserId(), postId, isLiking), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    like(postId, isLiking, likeCountTV, likeWrapper);
-                    return;
-                }
-                if (response.body() == null) {
-                    like(postId, isLiking, likeCountTV, likeWrapper);
-                    return;
-                }
-
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     String likesCount = jsonObject.optString("likes_count");
                     likeWrapper.setEnabled(true);
@@ -783,8 +739,8 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                like(postId, isLiking, likeCountTV, likeWrapper);
+            public void onRequestFailed(Object[] result) {
+
             }
         });
     }
@@ -864,20 +820,11 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     }
 
     private void callCommentServer(final String type, final String commentId, final String newCommentBody) {
-        Call<ResponseBody> commentOptionsCall = Retrofit.getInstance().getInkService().commentOptions(type, commentId, newCommentBody);
-        commentOptionsCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().commentOptions(type, commentId, newCommentBody), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    callCommentServer(type, commentId, newCommentBody);
-                    return;
-                }
-                if (response.body() == null) {
-                    callCommentServer(type, commentId, newCommentBody);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
 
                     getComments(mPostId, false);
                     snackbar.setAction("OK", new View.OnClickListener() {
@@ -897,12 +844,11 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                callCommentServer(type, commentId, newCommentBody);
+            public void onRequestFailed(Object[] result) {
+
             }
         });
     }

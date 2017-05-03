@@ -17,14 +17,12 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.interfaces.RequestCallback;
 import ink.va.utils.Constants;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ChangePassword extends BaseActivity {
 
@@ -92,20 +90,11 @@ public class ChangePassword extends BaseActivity {
     }
 
     private void doPasswordCheckRequest(final String userCurrentPassword) {
-        Call<ResponseBody> getPasswordCall = Retrofit.getInstance().getInkService().getUserPassword(sharedHelper.getUserId(), Constants.PASSWORD_REQUEST_TOKEN);
-        getPasswordCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getUserPassword(sharedHelper.getUserId(), Constants.PASSWORD_REQUEST_TOKEN), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    doPasswordCheckRequest(currentPassword.getText().toString());
-                    return;
-                }
-                if (response.body() == null) {
-                    doPasswordCheckRequest(currentPassword.getText().toString());
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -153,31 +142,22 @@ public class ChangePassword extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                doPasswordCheckRequest(currentPassword.getText().toString());
+            public void onRequestFailed(Object[] result) {
+                progressDialog.hide();
             }
         });
     }
 
     private void changePassword(final String newPassword) {
-        Call<ResponseBody> changePasswordCall = Retrofit.getInstance().getInkService().changePassword(sharedHelper.getUserId(), Constants.PASSWORD_REQUEST_TOKEN, newPassword);
-        changePasswordCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().changePassword(sharedHelper.getUserId(), Constants.PASSWORD_REQUEST_TOKEN, newPassword), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    changePassword(newPassword);
-                    return;
-                }
-                if (response.body() == null) {
-                    changePassword(newPassword);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
+                    progressDialog.hide();
                     if (success) {
-                        progressDialog.hide();
                         Snackbar.make(repeatPassword, getString(R.string.passwordChanged), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -201,9 +181,10 @@ public class ChangePassword extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                changePassword(newPassword);
+            public void onRequestFailed(Object[] result) {
+                progressDialog.hide();
             }
         });
+
     }
 }

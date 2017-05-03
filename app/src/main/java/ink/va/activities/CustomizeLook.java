@@ -31,15 +31,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.va.callbacks.GeneralCallback;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.ColorModel;
 import ink.va.utils.Constants;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 /**
@@ -713,20 +711,11 @@ public class CustomizeLook extends BaseActivity {
     private void removeFromCloud() {
         progressDialog.setMessage(getString(R.string.removingFromCloud));
         progressDialog.show();
-        Call<ResponseBody> removeFromCloudCall = Retrofit.getInstance().getInkService().removeFromCloud(sharedHelper.getUserId(), Constants.CUSTOMIZATION_TYPE_REMOVE);
-        removeFromCloudCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().removeFromCloud(sharedHelper.getUserId(), Constants.CUSTOMIZATION_TYPE_REMOVE), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    removeFromCloud();
-                    return;
-                }
-                if (response.body() == null) {
-                    removeFromCloud();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
                     if (colorModel.success) {
                         progressDialog.hide();
@@ -779,14 +768,8 @@ public class CustomizeLook extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 progressDialog.hide();
-                Snackbar.make(friendsCleaner, getString(R.string.couldNotRemove), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                }).show();
             }
         });
     }
@@ -794,20 +777,11 @@ public class CustomizeLook extends BaseActivity {
     private void restoreFromCloud() {
         progressDialog.setMessage(getString(R.string.restoringFromCloud));
         progressDialog.show();
-        Call<ResponseBody> restoreCall = Retrofit.getInstance().getInkService().restoreCustomization(sharedHelper.getUserId(), Constants.CUSTOMIZATION_TYPE_RESTORE);
-        restoreCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().restoreCustomization(sharedHelper.getUserId(), Constants.CUSTOMIZATION_TYPE_RESTORE), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    restoreFromCloud();
-                    return;
-                }
-                if (response.body() == null) {
-                    restoreFromCloud();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
                     if (colorModel.success) {
                         progressDialog.hide();
@@ -861,14 +835,8 @@ public class CustomizeLook extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 progressDialog.hide();
-                Snackbar.make(friendsCleaner, getString(R.string.failedToRestore), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                }).show();
             }
         });
     }
@@ -899,7 +867,7 @@ public class CustomizeLook extends BaseActivity {
     }
 
     private void saveToCloud() {
-        Call<ResponseBody> saveCustomizationCall = Retrofit.getInstance().getInkService().saveCustomization(Constants.CUSTOMIZATION_TYPE_SAVE,
+        makeRequest(Retrofit.getInstance().getInkService().saveCustomization(Constants.CUSTOMIZATION_TYPE_SAVE,
                 sharedHelper.getUserId(), sharedHelper.getStatusBarColor() != null ? sharedHelper.getStatusBarColor() : "",
                 sharedHelper.getActionBarColor() != null ? sharedHelper.getActionBarColor() : "",
                 sharedHelper.getMenuButtonColor() != null ? sharedHelper.getMenuButtonColor() : "",
@@ -919,81 +887,66 @@ public class CustomizeLook extends BaseActivity {
                 sharedHelper.getOwnTextColor() != null ? sharedHelper.getOwnTextColor() : "",
                 sharedHelper.getChatFieldTextColor() != null ? sharedHelper.getChatFieldTextColor() : "",
                 sharedHelper.getTrendColor() != null ? sharedHelper.getTrendColor() : "",
-                sharedHelper.getOpponentProfileColor() != null ? sharedHelper.getOpponentProfileColor() : "");
-        saveCustomizationCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    saveToCloud();
-                    return;
-                }
-                if (response.body() == null) {
-                    saveToCloud();
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
-                    if (colorModel.success) {
-                        progressDialog.hide();
-                        isSavedToCloud = true;
-                        sharedHelper.putHasPendingCustomizationsToSave(false);
-                        Snackbar.make(friendsCleaner, getString(R.string.customizationSaved), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-
-                            }
-                        }).show();
-
-                    } else {
-                        progressDialog.hide();
-                        if (colorModel.cause != null) {
-                            if (colorModel.cause.equals(ErrorCause.SERVER_ERROR)) {
-                                Snackbar.make(friendsCleaner, getString(R.string.errorSaviingCustomaziation), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                sharedHelper.getOpponentProfileColor() != null ? sharedHelper.getOpponentProfileColor() : ""),
+                null, false, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        try {
+                            String responseBody = ((ResponseBody) result).string();
+                            ColorModel colorModel = gson.fromJson(responseBody, ColorModel.class);
+                            if (colorModel.success) {
+                                progressDialog.hide();
+                                isSavedToCloud = true;
+                                sharedHelper.putHasPendingCustomizationsToSave(false);
+                                Snackbar.make(friendsCleaner, getString(R.string.customizationSaved), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
 
                                     }
                                 }).show();
-                            }
-                        } else {
-                            progressDialog.hide();
-                            Snackbar.make(friendsCleaner, getString(R.string.customizationSaved), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Snackbar.make(friendsCleaner, getString(R.string.errorSaviingCustomaziation), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                            } else {
+                                progressDialog.hide();
+                                if (colorModel.cause != null) {
+                                    if (colorModel.cause.equals(ErrorCause.SERVER_ERROR)) {
+                                        Snackbar.make(friendsCleaner, getString(R.string.errorSaviingCustomaziation), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+
+                                            }
+                                        }).show();
+                                    }
+                                } else {
+                                    progressDialog.hide();
+                                    Snackbar.make(friendsCleaner, getString(R.string.customizationSaved), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
+                                            Snackbar.make(friendsCleaner, getString(R.string.errorSaviingCustomaziation), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
 
+                                                }
+                                            }).show();
                                         }
                                     }).show();
+                                }
+                            }
+                        } catch (IOException e) {
+                            progressDialog.hide();
+                            e.printStackTrace();
+                            Snackbar.make(friendsCleaner, getString(R.string.errorSaviingCustomaziation), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
                                 }
                             }).show();
                         }
                     }
-                } catch (IOException e) {
-                    progressDialog.hide();
-                    e.printStackTrace();
-                    Snackbar.make(friendsCleaner, getString(R.string.errorSaviingCustomaziation), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
 
-                        }
-                    }).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                progressDialog.hide();
-                Snackbar.make(friendsCleaner, getString(R.string.failedToSaveCloud), Snackbar.LENGTH_INDEFINITE).setAction("OK", new View.OnClickListener() {
                     @Override
-                    public void onClick(View view) {
-
+                    public void onRequestFailed(Object[] result) {
+                        progressDialog.hide();
                     }
-                }).show();
-            }
-        });
+                });
     }
 
     @Override

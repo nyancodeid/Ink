@@ -28,6 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.adapters.VipMemberAdapter;
+import ink.va.interfaces.RequestCallback;
 import ink.va.interfaces.VipMemberItemClickListener;
 import ink.va.models.UserModel;
 import ink.va.utils.ProgressDialog;
@@ -35,9 +36,6 @@ import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.User;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ExploreVipActivity extends BaseActivity implements VipMemberItemClickListener {
 
@@ -82,11 +80,10 @@ public class ExploreVipActivity extends BaseActivity implements VipMemberItemCli
 
     private void getVipMembers() {
         vipMemberAdapter.clear();
-        Call<List<UserModel>> vipMembersCall = Retrofit.getInstance().getInkService().getVipMembers(sharedHelper.getUserId());
-        vipMembersCall.enqueue(new Callback<List<UserModel>>() {
+        makeRequest(Retrofit.getInstance().getInkService().getVipMembers(sharedHelper.getUserId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
-                List<UserModel> userModels = response.body();
+            public void onRequestSuccess(Object result) {
+                List<UserModel> userModels = (List<UserModel>) result;
                 hideVipLoading();
                 if (userModels.isEmpty()) {
                     changeNoUserTVVisibility(true);
@@ -100,8 +97,7 @@ public class ExploreVipActivity extends BaseActivity implements VipMemberItemCli
             }
 
             @Override
-            public void onFailure(Call<List<UserModel>> call, Throwable t) {
-                Snackbar.make(exploreVipRootTitle, getString(R.string.serverErrorText), Snackbar.LENGTH_LONG).show();
+            public void onRequestFailed(Object[] result) {
                 hideVipLoading();
             }
         });
@@ -173,20 +169,11 @@ public class ExploreVipActivity extends BaseActivity implements VipMemberItemCli
 
     private void transferCoins(final int coinsAmount, final String transferrerId, final String receiverId) {
         transferDialog.show();
-        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().transferCoins(transferrerId, receiverId, coinsAmount);
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().transferCoins(transferrerId, receiverId, coinsAmount), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    transferCoins(coinsAmount, transferrerId, receiverId);
-                    return;
-                }
-                if (response.body() == null) {
-                    transferCoins(coinsAmount, transferrerId, receiverId);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBoy = response.body().string();
+                    String responseBoy = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBoy);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -209,7 +196,7 @@ public class ExploreVipActivity extends BaseActivity implements VipMemberItemCli
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 transferDialog.hide();
             }
         });

@@ -35,6 +35,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import ink.va.adapters.CoinsAdapter;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.CoinsModel;
 import ink.va.utils.Constants;
 import ink.va.utils.ProcessManager;
@@ -42,9 +43,6 @@ import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.User;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, SwipeRefreshLayout.OnRefreshListener {
 
@@ -92,18 +90,11 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
     }
 
     private void getCoins() {
-        Call<ResponseBody> coisnCall = Retrofit.getInstance().getInkService().getCoins();
-        coisnCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getCoins(), coinsRefresh, true, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    return;
-                }
-                if (response.body() == null) {
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     Type sizesType = new TypeToken<List<CoinsModel>>() {
                     }.getType();
@@ -113,7 +104,6 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
                     coinsAdapter.setOnItemClickListener(BuyCoins.this);
                     coinsRecycler.setAdapter(coinsAdapter);
                     coinsAdapter.notifyDataSetChanged();
-                    coinsRefresh.setRefreshing(false);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -122,7 +112,7 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
 
             }
         });
@@ -178,7 +168,6 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
             }
         }
     };
-
 
 
     @Override
@@ -292,22 +281,13 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
 
 
     private void updateCoinsOnServer(final String coinsCountToUpdate) {
-        Call<okhttp3.ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().setCoins(sharedHelper.getUserId(),
-                coinsCountToUpdate);
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().setCoins(sharedHelper.getUserId(),
+                coinsCountToUpdate), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    updateCoinsOnServer(coinsCountToUpdate);
-                    return;
-                }
-                if (response.body() == null) {
-                    updateCoinsOnServer(coinsCountToUpdate);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String reponseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(reponseBody);
+                    String responseBody = ((ResponseBody) result).string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     hideProgress();
                     if (success) {
@@ -328,8 +308,8 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+            public void onRequestFailed(Object[] result) {
+                hideProgress();
             }
         });
     }

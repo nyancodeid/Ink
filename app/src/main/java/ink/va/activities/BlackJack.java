@@ -30,6 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.callbacks.GeneralCallback;
+import ink.va.interfaces.RequestCallback;
 import ink.va.utils.Animations;
 import ink.va.utils.Constants;
 import ink.va.utils.ProcessManager;
@@ -354,39 +355,31 @@ public class BlackJack extends BaseActivity {
     }
 
     private void silentCoinsUpdate() {
-
-        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().silentCoinsUpdate(sharedHelper.getUserId(), String.valueOf(User.get().getCoins()), Constants.USER_COINS_TOKEN);
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    silentCoinsUpdate();
-                    return;
-                }
-                if (response.body() == null) {
-                    silentCoinsUpdate();
-                }
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (!success) {
-                        Toast.makeText(BlackJack.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+        makeRequest(Retrofit.getInstance().getInkService().silentCoinsUpdate(sharedHelper.getUserId(), String.valueOf(User.get().getCoins()), Constants.USER_COINS_TOKEN),
+                null, false, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        try {
+                            String responseBody = ((ResponseBody) result).string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            boolean success = jsonObject.optBoolean("success");
+                            if (!success) {
+                                Toast.makeText(BlackJack.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Toast.makeText(BlackJack.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            Toast.makeText(BlackJack.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        }
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(BlackJack.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-                } catch (JSONException e) {
-                    Toast.makeText(BlackJack.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(BlackJack.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+
+                    }
+                });
     }
 
     private void changeButtons(boolean enabled) {

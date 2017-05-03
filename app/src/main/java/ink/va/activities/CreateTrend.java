@@ -22,6 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.interfaces.RequestCallback;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.ImageLoader;
@@ -29,9 +30,6 @@ import ink.va.utils.Keyboard;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static ink.va.fragments.WhatsTrending.UPDATE_TRENDS;
 
@@ -174,67 +172,57 @@ public class CreateTrend extends BaseActivity {
         progressDialog.setTitle(getString(R.string.creating));
         progressDialog.setMessage(getString(R.string.creatingTrend));
         Keyboard.hideKeyboard(this);
-        Retrofit.getInstance().getInkService().addAdvertisement(trendTitleED.getText().toString().trim(), trendContentED.getText().toString().trim(),
+
+        makeRequest(Retrofit.getInstance().getInkService().addAdvertisement(trendTitleED.getText().toString().trim(), trendContentED.getText().toString().trim(),
                 imageUrl, trendExternalED.getText().toString().trim(), autoCompleteTrendCategoriesTV.getText().toString().trim(), isPremiumSwitch.isChecked(),
-                sharedHelper.getUserId())
-                .enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response == null) {
-                            callCreateTrend(imageUrl);
-                            return;
-                        }
+                sharedHelper.getUserId()), null, false, new RequestCallback() {
+            @Override
+            public void onRequestSuccess(Object result) {
+                progressDialog.dismiss();
+                try {
+                    String responseBody = ((ResponseBody) result).string();
+                    JSONObject jsonObject = new JSONObject(responseBody);
+                    boolean success = jsonObject.optBoolean("success");
+                    if (success) {
+                        DialogUtils.showDialog(CreateTrend.this, getString(R.string.success), getString(R.string.trendCreated), false, new DialogUtils.DialogListener() {
+                            @Override
+                            public void onNegativeClicked() {
 
-                        if (response.body() == null) {
-                            callCreateTrend(imageUrl);
-                            return;
-                        }
-                        progressDialog.dismiss();
-                        try {
-                            String responseBody = response.body().string();
-                            JSONObject jsonObject = new JSONObject(responseBody);
-                            boolean success = jsonObject.optBoolean("success");
-                            if (success) {
-                                DialogUtils.showDialog(CreateTrend.this, getString(R.string.success), getString(R.string.trendCreated), false, new DialogUtils.DialogListener() {
-                                    @Override
-                                    public void onNegativeClicked() {
-
-                                    }
-
-                                    @Override
-                                    public void onDialogDismissed() {
-
-                                    }
-
-                                    @Override
-                                    public void onPositiveClicked() {
-                                        setResult(UPDATE_TRENDS);
-                                        finish();
-                                    }
-                                }, false, null);
-                            } else {
-                                String cause = jsonObject.optString("cause");
-                                if (cause.equals(ErrorCause.NOT_ENOUGH_COINS)) {
-                                    DialogUtils.showDialog(CreateTrend.this, getString(R.string.error), getString(R.string.not_enough_coins), true, null, false, null);
-                                } else {
-                                    DialogUtils.showDialog(CreateTrend.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
-                                }
                             }
-                        } catch (IOException e) {
+
+                            @Override
+                            public void onDialogDismissed() {
+
+                            }
+
+                            @Override
+                            public void onPositiveClicked() {
+                                setResult(UPDATE_TRENDS);
+                                finish();
+                            }
+                        }, false, null);
+                    } else {
+                        String cause = jsonObject.optString("cause");
+                        if (cause.equals(ErrorCause.NOT_ENOUGH_COINS)) {
+                            DialogUtils.showDialog(CreateTrend.this, getString(R.string.error), getString(R.string.not_enough_coins), true, null, false, null);
+                        } else {
                             DialogUtils.showDialog(CreateTrend.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            DialogUtils.showDialog(CreateTrend.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
-                            e.printStackTrace();
                         }
                     }
+                } catch (IOException e) {
+                    DialogUtils.showDialog(CreateTrend.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    DialogUtils.showDialog(CreateTrend.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
+                    e.printStackTrace();
+                }
+            }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        progressDialog.dismiss();
-                        DialogUtils.showDialog(CreateTrend.this, getString(R.string.error), getString(R.string.serverErrorText), true, null, false, null);
-                    }
-                });
+            @Override
+            public void onRequestFailed(Object[] result) {
+                progressDialog.dismiss();
+            }
+        });
     }
 
     private void updatePricingMessage(int finalPrice) {

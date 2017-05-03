@@ -40,6 +40,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
+import ink.va.interfaces.RequestCallback;
 import ink.va.service.SocketService;
 import ink.va.utils.Constants;
 import ink.va.utils.FileUtils;
@@ -49,9 +50,6 @@ import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.User;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static ink.va.activities.MakePost.MAX_FILE_SIZE;
 import static ink.va.utils.Constants.EVENT_SEND_GROUP_MESSAGE;
@@ -227,76 +225,67 @@ public class CreateGroupPost extends BaseActivity implements ProgressRequestBody
         }
         final String message = groupInputField.getText().toString().trim();
 
-        Call<ResponseBody> sendGroupMessageCall = Retrofit.getInstance().getInkService().sendGroupMessage(map, groupId,
+        makeRequest(Retrofit.getInstance().getInkService().sendGroupMessage(map, groupId,
                 message, sharedHelper.getUserId(),
-                sharedHelper.getImageLink(), sharedHelper.getFirstName() + " " + sharedHelper.getLastName());
+                sharedHelper.getImageLink(), sharedHelper.getFirstName() + " " + sharedHelper.getLastName()),
+                groupMessageSpin, true, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        try {
+                            String responseBody = ((ResponseBody) result).string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            boolean success = jsonObject.optBoolean("success");
+                            if (success) {
+
+                                JSONObject groupJson = new JSONObject();
+                                groupJson.put("senderName", sharedHelper.getFirstName() + " " + sharedHelper.getLastName());
+                                groupJson.put("senderId", sharedHelper.getUserId());
+                                groupJson.put("message", message);
+
+                                groupJson.put("groupId", groupId);
+                                groupJson.put("groupName", mGroupName);
+                                groupJson.put("groupColor", mGroupColor);
+                                groupJson.put("groupImage", mGroupImage);
+                                groupJson.put("groupDescription", mGroupDescription);
+                                groupJson.put("groupOwnerId", mGroupOwnerId);
+                                groupJson.put("groupOwnerName", mGroupOwnerName);
+                                groupJson.put("count", mCount);
+                                groupJson.put("ownerImage", mOwnerImage);
+                                groupJson.put("isSocialAccount", isSocialAccount);
+                                groupJson.put("isMember", isMember);
+                                groupJson.put("isFriend", isFriendWithOwner);
+
+                                JSONArray participantsArray = new JSONArray();
+                                for (String eachParticipantId : User.get().getParticipantIds()) {
+                                    participantsArray.put(eachParticipantId);
+                                }
+
+                                groupJson.put("groupParticipants", participantsArray);
+
+                                socketService.emit(EVENT_SEND_GROUP_MESSAGE, groupJson);
+                                groupJson = null;
+                                overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
+                                LocalBroadcastManager.getInstance(CreateGroupPost.this).sendBroadcast(new Intent(getPackageName() +
+                                        "SingleGroupView"));
+                                finish();
+                            } else {
+                                sendGroupMessage();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+
+                    }
+                });
         groupInputField.setText("");
         groupMessageSpin.setVisibility(View.VISIBLE);
         groupInputField.setEnabled(false);
-        sendGroupMessageCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    sendGroupMessage();
-                    return;
-                }
-                if (response.body() == null) {
-                    sendGroupMessage();
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (success) {
-
-                        JSONObject groupJson = new JSONObject();
-                        groupJson.put("senderName", sharedHelper.getFirstName() + " " + sharedHelper.getLastName());
-                        groupJson.put("senderId", sharedHelper.getUserId());
-                        groupJson.put("message", message);
-
-                        groupJson.put("groupId", groupId);
-                        groupJson.put("groupName", mGroupName);
-                        groupJson.put("groupColor", mGroupColor);
-                        groupJson.put("groupImage", mGroupImage);
-                        groupJson.put("groupDescription", mGroupDescription);
-                        groupJson.put("groupOwnerId", mGroupOwnerId);
-                        groupJson.put("groupOwnerName", mGroupOwnerName);
-                        groupJson.put("count", mCount);
-                        groupJson.put("ownerImage", mOwnerImage);
-                        groupJson.put("isSocialAccount", isSocialAccount);
-                        groupJson.put("isMember", isMember);
-                        groupJson.put("isFriend", isFriendWithOwner);
-
-                        JSONArray participantsArray = new JSONArray();
-                        for (String eachParticipantId : User.get().getParticipantIds()) {
-                            participantsArray.put(eachParticipantId);
-                        }
-
-                        groupJson.put("groupParticipants", participantsArray);
-
-                        socketService.emit(EVENT_SEND_GROUP_MESSAGE, groupJson);
-                        groupJson = null;
-                        overridePendingTransition(R.anim.activity_scale_up, R.anim.activity_scale_down);
-                        LocalBroadcastManager.getInstance(CreateGroupPost.this).sendBroadcast(new Intent(getPackageName() +
-                                "SingleGroupView"));
-                        finish();
-                    } else {
-                        sendGroupMessage();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                groupMessageSpin.setVisibility(View.GONE);
-                Toast.makeText(CreateGroupPost.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-            }
-        });
 
     }
 

@@ -60,6 +60,7 @@ import ink.va.adapters.FeedAdapter;
 import ink.va.interfaces.ColorChangeListener;
 import ink.va.interfaces.FeedItemClick;
 import ink.va.interfaces.ItemClickListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.FeedModel;
 import ink.va.utils.Animations;
 import ink.va.utils.Constants;
@@ -72,9 +73,6 @@ import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import zh.wang.android.yweathergetter4a.WeatherInfo;
 import zh.wang.android.yweathergetter4a.YahooWeather;
 import zh.wang.android.yweathergetter4a.YahooWeatherInfoListener;
@@ -90,7 +88,7 @@ import static ink.va.utils.Time.DAYTIME_NIGHT;
  */
 public class Feed extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener,
         FeedItemClick, ColorChangeListener, YahooWeatherInfoListener, com.google.android.gms.location.LocationListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, RequestCallback {
     private static final String TAG = Feed.class.getSimpleName();
     private static final int SHARE_INTENT_RESULT = 5;
     private static final int STORAGE_PERMISSION_REQUEST = 115;
@@ -254,7 +252,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             // Add your code here
             // weatherInfo object contains all information returned by Yahoo Weather API
             // if `weatherInfo` is null, you can get the error from `errorType`
-            if (!isDetached()&&getActivity()!=null) {
+            if (!isDetached() && getActivity() != null) {
                 String greetingMessage = getString(R.string.greeting_appendix);
                 switch (Time.getDayTime()) {
                     case DAYTIME_MORNING:
@@ -324,70 +322,17 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                           final boolean clearItems,
                           final boolean newDataLoading,
                           final boolean showNewFeed, final boolean checkCommentAutomatic) {
-        if (clearItems) {
-            if (feedRefresh != null) {
-                feedRefresh.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        feedRefresh.setRefreshing(true);
-                    }
-                });
-            }
-
+        if (feedRefresh != null) {
+            feedRefresh.post(new Runnable() {
+                @Override
+                public void run() {
+                    feedRefresh.setRefreshing(true);
+                }
+            });
         }
-        Call<List<FeedModel>> feedCal = Retrofit.getInstance().getInkService().getPosts(mSharedHelper.getUserId(), String.valueOf(offset), String.valueOf(count));
-        feedCal.enqueue(new Callback<List<FeedModel>>() {
-            @Override
-            public void onResponse(Call<List<FeedModel>> call, Response<List<FeedModel>> response) {
-                List<FeedModel> feedModels = response.body();
+        ((HomeActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().getPosts(mSharedHelper.getUserId(), String.valueOf(offset), String.valueOf(count)),
+                feedRefresh, true, this);
 
-                if (feedModels.isEmpty()) {
-                    noPostsWrapper.setVisibility(View.VISIBLE);
-                } else {
-                    noPostsWrapper.setVisibility(View.GONE);
-                }
-
-                mAdapter.setFeedList(feedModels);
-                feedRefresh.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        feedRefresh.setRefreshing(false);
-                    }
-                });
-
-
-                if (!clearItems) {
-                    parentActivity.getToolbar().setTitle(HomeActivity.FEED);
-                }
-                if (showNewFeed) {
-                    if (!feedModels.isEmpty()) {
-                        newFeedsLayout.setVisibility(View.VISIBLE);
-                    } else {
-                        newFeedsLayout.setVisibility(View.GONE);
-                    }
-                }
-                if (newDataLoading) {
-                    mOffset += 10;
-                }
-                if (checkCommentAutomatic) {
-                    checkShowComment();
-                } else {
-                    mSharedHelper.putPostId("");
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<FeedModel>> call, Throwable t) {
-                feedRefresh.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        feedRefresh.setRefreshing(false);
-                    }
-                });
-                Toast.makeText(parentActivity, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override
@@ -708,45 +653,37 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
 
-        Retrofit.getInstance().getInkService().reportPost(feedModel.getId(), String.valueOf(feedModel.isGlobalPost()), reportCauseMessage, mSharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    reportPost(feedModel, reportCauseMessage);
-                    return;
-                }
-                if (response.body() == null) {
-                    reportPost(feedModel, reportCauseMessage);
-                    return;
-                }
-                dialog.hide();
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (success) {
-                        DialogUtils.showDialog(getActivity(), getString(R.string.done_text), getString(R.string.reported), true, null, false, null);
-                        mAdapter.clear();
+        ((HomeActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().reportPost(feedModel.getId(), String.valueOf(feedModel.isGlobalPost()), reportCauseMessage, mSharedHelper.getUserId()),
+                null, false, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        dialog.hide();
+                        try {
+                            String responseBody = ((ResponseBody) result).string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            boolean success = jsonObject.optBoolean("success");
+                            if (success) {
+                                DialogUtils.showDialog(getActivity(), getString(R.string.done_text), getString(R.string.reported), true, null, false, null);
+                                mAdapter.clear();
 
-                        onRefresh();
-                    } else {
-                        DialogUtils.showDialog(getActivity(), getString(R.string.error), getString(R.string.reportError), true, null, false, null);
+                                onRefresh();
+                            } else {
+                                DialogUtils.showDialog(getActivity(), getString(R.string.error), getString(R.string.reportError), true, null, false, null);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            DialogUtils.showDialog(getActivity(), getString(R.string.error), getString(R.string.reportError), true, null, false, null);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            DialogUtils.showDialog(getActivity(), getString(R.string.error), getString(R.string.reportError), true, null, false, null);
+                        }
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    DialogUtils.showDialog(getActivity(), getString(R.string.error), getString(R.string.reportError), true, null, false, null);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    DialogUtils.showDialog(getActivity(), getString(R.string.error), getString(R.string.reportError), true, null, false, null);
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                dialog.hide();
-                DialogUtils.showDialog(getActivity(), getString(R.string.error), getString(R.string.reportError), true, null, false, null);
-            }
-        });
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+                        dialog.hide();
+                    }
+                });
     }
 
     private void openShareView(final FeedModel singleModel) {
@@ -863,28 +800,18 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     }
 
     private void deletePost(final String postId, final String attachmentName) {
-        Call<ResponseBody> deletePostCall = Retrofit.getInstance().getInkService().deletePost(postId, attachmentName);
-        deletePostCall.enqueue(new Callback<ResponseBody>() {
+        ((HomeActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().deletePost(postId, attachmentName), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    deletePost(postId, attachmentName);
-                    return;
-                }
-                if (response.body() == null) {
-                    deletePost(postId, attachmentName);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
+                    deleteDialog.dismiss();
                     if (success) {
                         mSharedHelper.removeOwnPostId(postId);
-                        deleteDialog.dismiss();
                         Snackbar.make(mRecyclerView, getString(R.string.postDeleted), Snackbar.LENGTH_SHORT).show();
                     } else {
-                        deleteDialog.dismiss();
                         Snackbar.make(mRecyclerView, getString(R.string.couldNotDeletePost), Snackbar.LENGTH_LONG).show();
                     }
                     getFeeds(0, mOffset, true, false, false, false);
@@ -897,55 +824,45 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 deleteDialog.dismiss();
             }
         });
     }
 
     private void like(final String postId, final int isLiking, final TextView likeCountTV, final FeedModel feedModel, final View likeWrapper) {
-        final Call<ResponseBody> likeCall = Retrofit.getInstance().getInkService().likePost(mSharedHelper.getUserId(), postId, isLiking);
-        likeCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    like(postId, isLiking, likeCountTV, feedModel, likeWrapper);
-                    return;
-                }
-                if (response.body() == null) {
-                    like(postId, isLiking, likeCountTV, feedModel, likeWrapper);
-                    return;
-                }
-
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    String likesCount = jsonObject.optString("likes_count");
-                    feedModel.setLikesCount(likesCount);
-                    likeWrapper.setEnabled(true);
-                    if (!likesCount.equals("0")) {
-                        likeCountTV.setVisibility(View.VISIBLE);
-                        if (Integer.parseInt(likesCount) > 1) {
-                            likeCountTV.setText(likesCount + " " + getString(R.string.likesText));
-                        } else {
-                            likeCountTV.setText(likesCount + " " + getString(R.string.singleLikeText));
+        ((HomeActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().likePost(mSharedHelper.getUserId(), postId, isLiking),
+                null, false, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        try {
+                            String responseBody = ((ResponseBody) result).string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            String likesCount = jsonObject.optString("likes_count");
+                            feedModel.setLikesCount(likesCount);
+                            likeWrapper.setEnabled(true);
+                            if (!likesCount.equals("0")) {
+                                likeCountTV.setVisibility(View.VISIBLE);
+                                if (Integer.parseInt(likesCount) > 1) {
+                                    likeCountTV.setText(likesCount + " " + getString(R.string.likesText));
+                                } else {
+                                    likeCountTV.setText(likesCount + " " + getString(R.string.singleLikeText));
+                                }
+                            } else {
+                                likeCountTV.setVisibility(View.INVISIBLE);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    } else {
-                        likeCountTV.setVisibility(View.INVISIBLE);
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
-            }
+                    @Override
+                    public void onRequestFailed(Object[] result) {
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                like(postId, isLiking, likeCountTV, feedModel, likeWrapper);
-            }
-        });
+                    }
+                });
     }
 
 
@@ -1033,7 +950,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (!isDetached()&&getActivity()!=null) {
+        if (!isDetached() && getActivity() != null) {
             if (!LocationUtils.isLocationEnabled(getActivity())) {
                 if (!mSharedHelper.hasLocationSaved()) {
                     DialogUtils.showCustomDialog(getActivity(), getString(R.string.locationSettingsNeeded),
@@ -1102,5 +1019,26 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 mGoogleApiClient.disconnect();
             }
         }
+    }
+
+    @Override
+    public void onRequestSuccess(Object result) {
+        List<FeedModel> feedModels = (List<FeedModel>) result;
+
+        if (feedModels.isEmpty()) {
+            noPostsWrapper.setVisibility(View.VISIBLE);
+        } else {
+            noPostsWrapper.setVisibility(View.GONE);
+        }
+
+        mAdapter.setFeedList(feedModels);
+        mOffset += 10;
+
+
+    }
+
+    @Override
+    public void onRequestFailed(Object[] result) {
+
     }
 }

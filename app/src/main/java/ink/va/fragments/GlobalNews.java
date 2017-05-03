@@ -19,16 +19,15 @@ import com.ink.va.R;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import ink.va.activities.NewsAndTrendsActivity;
 import ink.va.adapters.NewsAdapter;
 import ink.va.interfaces.NewsItemClickListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.NewsModel;
 import ink.va.models.NewsResponse;
 import ink.va.utils.Constants;
 import ink.va.utils.Retrofit;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by PC-Comp on 9/12/2016.
@@ -81,20 +80,11 @@ public class GlobalNews extends Fragment implements NewsItemClickListener, Swipe
 
     private void getNews(final String nextUrl, final boolean shouldDelete) {
         showRefreshing();
-        final Call<ResponseBody> newsCall = Retrofit.getInstance().getNewsInterface().getNews(Constants.NEWS_BASE_URL + nextUrl);
-        newsCall.enqueue(new Callback<ResponseBody>() {
+        ((NewsAndTrendsActivity) getActivity()).makeRequest(Retrofit.getInstance().getNewsInterface().getNews(Constants.NEWS_BASE_URL + nextUrl), globalNewsSwipe, true, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getNews(nextUrl, shouldDelete);
-                    return;
-                }
-                if (response.body() == null) {
-                    getNews(nextUrl, shouldDelete);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     NewsResponse newsResponse = gson.fromJson(responseBody, NewsResponse.class);
                     if (newsResponse != null && newsResponse.newsModels != null && !newsResponse.newsModels.isEmpty()) {
                         lastKnownUrl = newsResponse.newsMeta.nextNewsUrl;
@@ -115,17 +105,14 @@ public class GlobalNews extends Fragment implements NewsItemClickListener, Swipe
                         }).show();
                     }
 
-                    globalNewsSwipe.setRefreshing(false);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    globalNewsSwipe.setRefreshing(false);
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Snackbar.make(newsRecycler, getString(R.string.newsError), Snackbar.LENGTH_LONG).show();
-                globalNewsSwipe.setRefreshing(false);
+            public void onRequestFailed(Object[] result) {
+
             }
         });
     }

@@ -59,15 +59,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.callbacks.GeneralCallback;
+import ink.va.interfaces.RequestCallback;
 import ink.va.utils.Constants;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.SocialSignIn;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import shem.com.materiallogin.MaterialLoginView;
 
 import static ink.va.utils.Constants.PEOPLE_LINKEDIN_URL;
@@ -267,26 +265,17 @@ public class Login extends BaseActivity {
         progressDialog.setTitle(getString(R.string.pleaseWait));
         progressDialog.setMessage(getString(R.string.connectingToServer));
         progressDialog.show();
-        final Call<ResponseBody> register = Retrofit.getInstance().getInkService().register(
+        makeRequest(Retrofit.getInstance().getInkService().register(
                 registrationLogin.getEditText().getText().toString().trim(),
                 registrationPassword.getEditText().getText().toString().trim(),
                 registrationFirstName.getEditText().getText().toString().trim(),
-                registrationLastName.getEditText().getText().toString().trim());
-        register.enqueue(new Callback<ResponseBody>() {
+                registrationLastName.getEditText().getText().toString().trim()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    registerUser();
-                    return;
-                }
-                if (response.body() == null) {
-                    registerUser();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 progressDialog.hide();
                 try {
                     try {
-                        String responseString = response.body().string();
+                        String responseString = ((ResponseBody) result).string();
                         JSONObject jsonObject = new JSONObject(responseString);
                         boolean success = jsonObject.optBoolean("success");
                         if (success) {
@@ -329,9 +318,8 @@ public class Login extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 progressDialog.hide();
-                Toast.makeText(Login.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -404,24 +392,15 @@ public class Login extends BaseActivity {
         progressDialog.setTitle(getString(R.string.pleaseWait));
         progressDialog.setMessage(getString(R.string.logging));
         progressDialog.show();
-        final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().login(loginInput.getEditText().getText().toString().toString(),
-                passwordInput.getEditText().getText().toString());
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().login(loginInput.getEditText().getText().toString().toString(),
+                passwordInput.getEditText().getText().toString()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    proceedLogin();
-                    return;
-                }
-                if (response.body() == null) {
-                    proceedLogin();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
                 progressDialog.hide();
                 try {
                     try {
-                        String responseString = response.body().string();
+                        String responseString = ((ResponseBody) result).string();
                         JSONObject jsonObject = new JSONObject(responseString);
                         boolean success = jsonObject.optBoolean("success");
                         if (!success) {
@@ -500,9 +479,8 @@ public class Login extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 progressDialog.hide();
-                Toast.makeText(Login.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -809,28 +787,18 @@ public class Login extends BaseActivity {
                            final String imageUrl,
                            final String userLink,
                            final String facebookName, final String loginType, String email) {
-        Call<ResponseBody> socialLoginCall = Retrofit.getInstance().getInkService().socialLogin(
+        makeRequest(Retrofit.getInstance().getInkService().socialLogin(
                 login,
                 firstName,
                 lastName,
                 imageUrl,
                 mSharedHelper.getToken(),
                 loginType,
-                userLink, facebookName, email);
-
-        socialLoginCall.enqueue(new Callback<ResponseBody>() {
+                userLink, facebookName, email), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    loginUser(login, firstName, lastName, imageUrl, userLink, facebookName, loginType, "");
-                    return;
-                }
-                if (response.body() == null) {
-                    loginUser(login, firstName, lastName, imageUrl, userLink, facebookName, loginType, "");
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -862,7 +830,7 @@ public class Login extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
 
             }
         });

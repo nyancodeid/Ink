@@ -22,6 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.adapters.BadgeAdapter;
 import ink.va.interfaces.BadgeClickListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.BadgeModel;
 import ink.va.models.BadgeResponseModel;
 import ink.va.utils.Constants;
@@ -29,15 +30,12 @@ import ink.va.utils.ErrorCause;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by PC-Comp on 1/31/2017.
  */
 
-public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, BadgeClickListener {
+public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, BadgeClickListener, RequestCallback {
 
     @BindView(R.id.badgeRecycler)
     RecyclerView badgeRecycler;
@@ -96,24 +94,7 @@ public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefr
     }
 
     public void getBadges() {
-        Call<BadgeResponseModel> modelCall = Retrofit.getInstance().getInkService().getBagdes(Constants.BADGE_TYPE_VIEW);
-        modelCall.enqueue(new Callback<BadgeResponseModel>() {
-            @Override
-            public void onResponse(Call<BadgeResponseModel> call, Response<BadgeResponseModel> response) {
-                if (badgeRefresh.isRefreshing()) {
-                    badgeRefresh.setRefreshing(false);
-                }
-                badgeAdapter.setBadgeModels(response.body().getBadgeModels());
-            }
-
-            @Override
-            public void onFailure(Call<BadgeResponseModel> call, Throwable t) {
-                if (badgeRefresh.isRefreshing()) {
-                    badgeRefresh.setRefreshing(false);
-                }
-                Toast.makeText(BadgeShop.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-            }
-        });
+        makeRequest(Retrofit.getInstance().getInkService().getBagdes(Constants.BADGE_TYPE_VIEW), badgeRefresh, true, this);
     }
 
     @Override
@@ -123,21 +104,12 @@ public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefr
     }
 
     public void buyBadge(final String badgeId) {
-        Call<ResponseBody> modelCall = Retrofit.getInstance().getInkService().buyBadge(Constants.BADGE_TYPE_BUY, sharedHelper.getUserId(), badgeId);
-        modelCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().buyBadge(Constants.BADGE_TYPE_BUY, sharedHelper.getUserId(), badgeId), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    buyBadge(badgeId);
-                    return;
-                }
-                if (response.body() == null) {
-                    buyBadge(badgeId);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 progressDialog.dismiss();
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     String cause = jsonObject.optString("cause");
@@ -188,10 +160,20 @@ public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefr
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 progressDialog.dismiss();
-                Toast.makeText(BadgeShop.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
+
+    }
+
+    @Override
+    public void onRequestSuccess(Object result) {
+        badgeAdapter.setBadgeModels(((BadgeResponseModel) result).getBadgeModels());
+    }
+
+    @Override
+    public void onRequestFailed(Object[] result) {
+
     }
 }

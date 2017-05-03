@@ -35,14 +35,12 @@ import ink.va.adapters.MusicAdapter;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.decorators.DividerItemDecoration;
 import ink.va.interfaces.MusicClickListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.Track;
 import ink.va.utils.ImageLoader;
 import ink.va.utils.MediaPlayerManager;
 import ink.va.utils.Retrofit;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class Music extends BaseActivity implements MusicClickListener {
@@ -227,13 +225,11 @@ public class Music extends BaseActivity implements MusicClickListener {
     private void getAllTracks() {
         clearTrackArray();
 
-        Call<ResponseBody> listCallback = Retrofit.getInstance().getMusicCloudInterface().getAllTracks();
-        listCallback.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getMusicCloudInterface().getAllTracks(), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
+            public void onRequestSuccess(Object result) {
                 try {
-                    Track[] tracks = gson.fromJson(response.body().string(), Track[].class);
+                    Track[] tracks = gson.fromJson(((ResponseBody) result).string(), Track[].class);
                     loadTracks(tracks);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -241,8 +237,8 @@ public class Music extends BaseActivity implements MusicClickListener {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getAllTracks();
+            public void onRequestFailed(Object[] result) {
+
             }
         });
     }
@@ -331,12 +327,11 @@ public class Music extends BaseActivity implements MusicClickListener {
                     musicGeneralTitle.setText(getString(R.string.musicTitleHint));
                     musicLoading.setVisibility(View.VISIBLE);
                     clearTrackArray();
-                    Call<ResponseBody> searchCall = Retrofit.getInstance().getMusicCloudInterface().searchSong(searchText);
-                    searchCall.enqueue(new Callback<ResponseBody>() {
+                    makeRequest(Retrofit.getInstance().getMusicCloudInterface().searchSong(searchText), musicLoading, true, new RequestCallback() {
                         @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        public void onRequestSuccess(Object result) {
                             try {
-                                String responseBody = response.body().string();
+                                String responseBody = ((ResponseBody) result).string();
                                 Track[] tracks = gson.fromJson(responseBody, Track[].class);
                                 loadTracks(tracks);
                             } catch (IOException e) {
@@ -345,8 +340,8 @@ public class Music extends BaseActivity implements MusicClickListener {
                         }
 
                         @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Toast.makeText(Music.this, getString(R.string.failedSearch), Toast.LENGTH_SHORT).show();
+                        public void onRequestFailed(Object[] result) {
+
                         }
                     });
                 }

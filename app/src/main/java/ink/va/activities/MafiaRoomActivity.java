@@ -34,15 +34,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.adapters.MafiaRoomAdapter;
 import ink.va.interfaces.MafiaItemClickListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.MafiaRoomsModel;
 import ink.va.service.MafiaGameService;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static ink.va.utils.ErrorCause.ALREADY_IN_ROOM;
 import static ink.va.utils.ErrorCause.GAME_ALREADY_IN_PROGRESS;
@@ -125,12 +123,11 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     private void getMyRooms() {
         showSwipe();
-        Call<List<MafiaRoomsModel>> mafiaRooms = Retrofit.getInstance().getInkService().getMyMafiaRooms(sharedHelper.getUserId());
-        mafiaRooms.enqueue(new Callback<List<MafiaRoomsModel>>() {
+        makeRequest(Retrofit.getInstance().getInkService().getMyMafiaRooms(sharedHelper.getUserId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<List<MafiaRoomsModel>> call, Response<List<MafiaRoomsModel>> response) {
+            public void onRequestSuccess(Object result) {
                 dismissSwipe();
-                List<MafiaRoomsModel> mafiaRoomsModels = response.body();
+                List<MafiaRoomsModel> mafiaRoomsModels = (List<MafiaRoomsModel>) result;
                 if (mafiaRoomsModels.isEmpty()) {
                     mafiaRoomAdapter.clear();
                     showNoRooms();
@@ -141,9 +138,8 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
             }
 
             @Override
-            public void onFailure(Call<List<MafiaRoomsModel>> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 dismissSwipe();
-                Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -180,12 +176,11 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     private void getRooms() {
         showSwipe();
-        Call<List<MafiaRoomsModel>> mafiaRooms = Retrofit.getInstance().getInkService().getMafiaRooms();
-        mafiaRooms.enqueue(new Callback<List<MafiaRoomsModel>>() {
+        makeRequest(Retrofit.getInstance().getInkService().getMafiaRooms(), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<List<MafiaRoomsModel>> call, Response<List<MafiaRoomsModel>> response) {
+            public void onRequestSuccess(Object result) {
                 dismissSwipe();
-                List<MafiaRoomsModel> mafiaRoomsModels = response.body();
+                List<MafiaRoomsModel> mafiaRoomsModels = (List<MafiaRoomsModel>) result;
                 if (mafiaRoomsModels.isEmpty()) {
                     mafiaRoomAdapter.clear();
                     showNoRooms();
@@ -196,9 +191,8 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
             }
 
             @Override
-            public void onFailure(Call<List<MafiaRoomsModel>> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 dismissSwipe();
-                Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -313,21 +307,12 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     private void deleteRoom(final int roomId) {
         showSwipe();
-        Call<ResponseBody> deleteCall = Retrofit.getInstance().getInkService().deleteMafiaRoom(roomId, sharedHelper.getUserId());
-        deleteCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().deleteMafiaRoom(roomId, sharedHelper.getUserId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    deleteRoom(roomId);
-                    return;
-                }
-                if (response.body() == null) {
-                    deleteRoom(roomId);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 dismissSwipe();
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -352,9 +337,8 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 dismissSwipe();
-                Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -362,21 +346,12 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     private void joinRoom(final int id) {
         showSwipe();
-        Call<ResponseBody> joinRoomCall = Retrofit.getInstance().getInkService().joinRoom(id, sharedHelper.getUserId());
-        joinRoomCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().joinRoom(id, sharedHelper.getUserId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    joinRoom(id);
-                    return;
-                }
-                if (response.body() == null) {
-                    joinRoom(id);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 dismissSwipe();
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -384,7 +359,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
                         sharedHelper.putMafiaParticipation(true);
                         sharedHelper.putMafiaLastRoomId(id);
                         try {
-                            stopService(new Intent(getApplicationContext(),MafiaGameService.class));
+                            stopService(new Intent(getApplicationContext(), MafiaGameService.class));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -426,9 +401,8 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 dismissSwipe();
-                Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -436,21 +410,12 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     private void leaveRoom(final int id) {
         showSwipe();
-        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().leaveRoom(id, sharedHelper.getUserId());
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().leaveRoom(id, sharedHelper.getUserId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    leaveRoom(id);
-                    return;
-                }
-                if (response.body() == null) {
-                    leaveRoom(id);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 dismissSwipe();
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -470,9 +435,8 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 dismissSwipe();
-                Toast.makeText(MafiaRoomActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }

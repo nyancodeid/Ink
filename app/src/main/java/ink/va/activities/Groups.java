@@ -54,6 +54,7 @@ import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.va.adapters.GroupsAdapter;
 import ink.va.callbacks.GeneralCallback;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.GroupsModel;
 import ink.va.utils.Constants;
 import ink.va.utils.ImageLoader;
@@ -61,9 +62,6 @@ import ink.va.utils.RecyclerTouchListener;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -281,21 +279,12 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
             searchProgress.setVisibility(View.VISIBLE);
 
             String searchableText = newText.trim().toLowerCase();
-            Call<ResponseBody> searchCall = Retrofit.getInstance().getInkService().searchGroups(mSharedHelper.getUserId(),
-                    searchableText);
-            searchCall.enqueue(new Callback<ResponseBody>() {
+            makeRequest(Retrofit.getInstance().getInkService().searchGroups(mSharedHelper.getUserId(),
+                    searchableText), null, false, new RequestCallback() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if (response == null) {
-                        doSearch(newText);
-                        return;
-                    }
-                    if (response.body() == null) {
-                        doSearch(newText);
-                        return;
-                    }
+                public void onRequestSuccess(Object result) {
                     try {
-                        String responseBody = response.body().string();
+                        String responseBody = ((ResponseBody) result).string();
                         JSONObject jsonObject = new JSONObject(responseBody);
                         boolean hasResults = jsonObject.optBoolean("hasAnyResult");
                         if (hasResults) {
@@ -336,8 +325,8 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                 }
 
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    doSearch(newText);
+                public void onRequestFailed(Object[] result) {
+                    showResult();
                 }
             });
 
@@ -382,20 +371,11 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                 groupSwipe.setRefreshing(true);
             }
         });
-        Call<ResponseBody> groupsCall = Retrofit.getInstance().getInkService().getGroups(mSharedHelper.getUserId(), type);
-        groupsCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getGroups(mSharedHelper.getUserId(), type), groupSwipe, true, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getGroups(type);
-                    return;
-                }
-                if (response.body() == null) {
-                    getGroups(type);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -426,14 +406,10 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                                         groupOwnerId, groupColor, participantsCount, ownerImage, isMember);
                                 groupsModels.add(groupsModel);
                                 groupsAdapter.notifyDataSetChanged();
-                                groupSwipe.setRefreshing(false);
                             }
                         } else {
-                            groupSwipe.setRefreshing(false);
                             showNoGroupLayout();
                         }
-                    } else {
-                        getGroups(type);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -443,8 +419,8 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getGroups(type);
+            public void onRequestFailed(Object[] result) {
+
             }
         });
     }
@@ -578,20 +554,13 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
     }
 
     private void callToServer(final String base64, final String groupName, final String groupDescription) {
-        Call<ResponseBody> createGroupCall = Retrofit.getInstance().getInkService().createGroup(mSharedHelper.getUserId(),
+        makeRequest(Retrofit.getInstance().getInkService().createGroup(mSharedHelper.getUserId(),
                 base64, groupName, groupDescription, chosenColor,
-                mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), mSharedHelper.getImageLink());
-        createGroupCall.enqueue(new Callback<ResponseBody>() {
+                mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), mSharedHelper.getImageLink()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    callToServer(base64, groupName, groupDescription);
-                }
-                if (response.body() == null) {
-                    callToServer(base64, groupName, groupDescription);
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -611,8 +580,10 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                callToServer(base64, groupName, groupDescription);
+            public void onRequestFailed(Object[] result) {
+                if (addGroupDialog != null && addGroupDialog.isShowing()) {
+                    addGroupDialog.dismiss();
+                }
             }
         });
     }

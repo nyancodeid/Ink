@@ -42,6 +42,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.adapters.VipGlobalChatAdapter;
 import ink.va.interfaces.ItemClickListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.interfaces.VipGlobalChatClickListener;
 import ink.va.models.UserModel;
 import ink.va.models.VipGlobalChatModel;
@@ -53,9 +54,6 @@ import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.User;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static android.view.KeyEvent.KEYCODE_ENTER;
 import static ink.va.utils.Constants.VIP_GLOBAL_CHAT_TYPE_DELETE;
@@ -194,11 +192,10 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
     private void getMessages() {
         showVipLoading();
         vipGlobalChatAdapter.clear();
-        Call<VipGlobalChatResponseModel> getMessages = Retrofit.getInstance().getInkService().vipGlobalChatAction(null, null, null, VIP_GLOBAL_CHAT_TYPE_GET);
-        getMessages.enqueue(new Callback<VipGlobalChatResponseModel>() {
+        makeRequest(Retrofit.getInstance().getInkService().vipGlobalChatAction(null, null, null, VIP_GLOBAL_CHAT_TYPE_GET), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<VipGlobalChatResponseModel> call, Response<VipGlobalChatResponseModel> response) {
-                VipGlobalChatResponseModel vipGlobalChatResponseModel = response.body();
+            public void onRequestSuccess(Object result) {
+                VipGlobalChatResponseModel vipGlobalChatResponseModel = (VipGlobalChatResponseModel) result;
                 hideVipLoading();
                 if (vipGlobalChatResponseModel.isSuccess()) {
                     if (!vipGlobalChatResponseModel.getVipGlobalChatModels().isEmpty()) {
@@ -215,9 +212,8 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
             }
 
             @Override
-            public void onFailure(Call<VipGlobalChatResponseModel> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 hideVipLoading();
-                Snackbar.make(globalChatRecycler, getString(R.string.serverErrorText), Snackbar.LENGTH_SHORT).show();
             }
         });
     }
@@ -439,40 +435,29 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
 
     private void deleteMessage(final VipGlobalChatModel vipGlobalChatModel) {
         showVipLoading();
-        Call<VipGlobalChatResponseModel> deleteCall = Retrofit.getInstance().getInkService().vipGlobalChatAction(String.valueOf(vipGlobalChatModel.getMessageId()),
-                null, null, VIP_GLOBAL_CHAT_TYPE_DELETE);
-        deleteCall.enqueue(new Callback<VipGlobalChatResponseModel>() {
+        makeRequest(Retrofit.getInstance().getInkService().vipGlobalChatAction(String.valueOf(vipGlobalChatModel.getMessageId()),
+                null, null, VIP_GLOBAL_CHAT_TYPE_DELETE), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<VipGlobalChatResponseModel> call, Response<VipGlobalChatResponseModel> response) {
+            public void onRequestSuccess(Object result) {
                 hideVipLoading();
-                if (response.body().isSuccess()) {
-                    vipGlobalChatAdapter.removeItem(vipGlobalChatModel);
+                vipGlobalChatAdapter.removeItem(vipGlobalChatModel);
 
-                    if (vipGlobalChatAdapter.isListEmpty()) {
-                        showNoChat();
-                    } else {
-                        hideNoChat();
-                    }
-                    Snackbar.make(globalChatRecycler, getString(R.string.messageDeleted), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    }).show();
+                if (vipGlobalChatAdapter.isListEmpty()) {
+                    showNoChat();
                 } else {
-                    Snackbar.make(globalChatRecycler, getString(R.string.messagedeleteError), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                        }
-                    }).show();
+                    hideNoChat();
                 }
+                Snackbar.make(globalChatRecycler, getString(R.string.messageDeleted), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                }).show();
             }
 
             @Override
-            public void onFailure(Call<VipGlobalChatResponseModel> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 hideVipLoading();
-                Snackbar.make(globalChatRecycler, getString(R.string.serverErrorText), Snackbar.LENGTH_SHORT).show();
             }
         });
     }
@@ -485,20 +470,11 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
 
     private void transferCoins(final int coinsAmount, final String transferrerId, final String receiverId) {
         transferDialog.show();
-        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().transferCoins(transferrerId, receiverId, coinsAmount);
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().transferCoins(transferrerId, receiverId, coinsAmount), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    transferCoins(coinsAmount, transferrerId, receiverId);
-                    return;
-                }
-                if (response.body() == null) {
-                    transferCoins(coinsAmount, transferrerId, receiverId);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBoy = response.body().string();
+                    String responseBoy = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBoy);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -521,7 +497,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 transferDialog.hide();
             }
         });
@@ -531,16 +507,15 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
         Keyboard.hideKeyboard(this);
         changeMessageFieldsState(false);
         sendingProgress.setVisibility(View.VISIBLE);
-        Call<VipGlobalChatResponseModel> sendMessageCall = Retrofit.getInstance().getInkService().vipGlobalChatAction(null, sharedHelper.getUserId(), message, VIP_GLOBAL_CHAT_TYPE_SEND);
-        sendMessageCall.enqueue(new Callback<VipGlobalChatResponseModel>() {
+        makeRequest(Retrofit.getInstance().getInkService().vipGlobalChatAction(null, sharedHelper.getUserId(), message, VIP_GLOBAL_CHAT_TYPE_SEND), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<VipGlobalChatResponseModel> call, Response<VipGlobalChatResponseModel> response) {
+            public void onRequestSuccess(Object result) {
                 changeMessageFieldsState(true);
                 sendingProgress.setVisibility(View.GONE);
                 hideNoChat();
-                if (response.body().isSuccess()) {
+                if (result != null) {
                     globalChatField.setText("");
-                    vipGlobalChatAdapter.insertItem(response.body().getVipGlobalChatModels().get(0));
+                    vipGlobalChatAdapter.insertItem(((VipGlobalChatResponseModel) result).getVipGlobalChatModels().get(0));
                     scrollToBottom();
                 } else {
                     Snackbar.make(globalChatRecycler, getString(R.string.messageNotSent), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
@@ -553,13 +528,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
             }
 
             @Override
-            public void onFailure(Call<VipGlobalChatResponseModel> call, Throwable t) {
-                Snackbar.make(globalChatRecycler, getString(R.string.serverErrorText), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                }).show();
+            public void onRequestFailed(Object[] result) {
                 sendingProgress.setVisibility(View.GONE);
                 changeMessageFieldsState(true);
             }

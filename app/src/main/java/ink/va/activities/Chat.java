@@ -47,6 +47,7 @@ import butterknife.OnClick;
 import ink.va.adapters.ChatAdapter;
 import ink.va.callbacks.GeneralCallback;
 import ink.va.interfaces.RecyclerItemClickListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.interfaces.SocketListener;
 import ink.va.models.ChatModel;
 import ink.va.service.SocketService;
@@ -61,9 +62,6 @@ import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
 import lombok.Setter;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import rx.Observer;
 import rx.functions.Func1;
 
@@ -593,19 +591,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         if (opponentId.isEmpty()) {
             return;
         }
-        Retrofit.getInstance().getInkService().getSingleUserDetails(opponentId, "").enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getSingleUserDetails(opponentId, ""), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getOpponentData();
-                    return;
-                }
-                if (response.body() == null) {
-                    getOpponentData();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     String firstName = jsonObject.optString("first_name");
                     String lastName = jsonObject.optString("last_name");
@@ -627,8 +617,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                isDataLoaded = true;
+            public void onRequestFailed(Object[] result) {
+                opponentFirstName = "N/A";
+                opponentLastName = "N/A";
             }
         });
     }

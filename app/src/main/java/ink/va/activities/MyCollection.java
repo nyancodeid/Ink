@@ -35,6 +35,7 @@ import ink.va.adapters.MyCollectionHorizontalAdapter;
 import ink.va.adapters.StickerAdapter;
 import ink.va.interfaces.ItemClickListener;
 import ink.va.interfaces.RecyclerItemClickListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.GifResponse;
 import ink.va.models.GifResponseModel;
 import ink.va.models.MyCollectionModel;
@@ -45,9 +46,6 @@ import ink.va.utils.DialogUtils;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static ink.va.utils.Constants.REQUEST_CODE_CHOSE_STICKER;
 import static ink.va.utils.Constants.STARTING_FOR_RESULT_BUNDLE_KEY;
@@ -162,21 +160,12 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
         if (verticalProgress.getVisibility() == View.GONE) {
             verticalProgress.setVisibility(View.VISIBLE);
         }
-        Call<ResponseBody> gifCall = Retrofit.getInstance().getInkService().getsSinglePack(packId,
-                Constants.SERVER_AUTH_KEY);
-        gifCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getsSinglePack(packId,
+                Constants.SERVER_AUTH_KEY), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getSinglePack(packId);
-                    return;
-                }
-                if (response.body() == null) {
-                    getSinglePack(packId);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     GifResponse gifResponse = gson.fromJson(responseBody, GifResponse.class);
                     verticalProgress.setVisibility(View.GONE);
                     if (gifResponse.success) {
@@ -196,8 +185,8 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getSinglePack(packId);
+            public void onRequestFailed(Object[] result) {
+
             }
         });
     }
@@ -224,22 +213,21 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
         stickerAdapter.clearItems();
 
 
-        Call<MyCollectionResponseModel> listCall = Retrofit.getInstance().getInkService().getUserCollection(sharedHelper.getUserId());
-        listCall.enqueue(new Callback<MyCollectionResponseModel>() {
+        makeRequest(Retrofit.getInstance().getInkService().getUserCollection(sharedHelper.getUserId()), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<MyCollectionResponseModel> call, Response<MyCollectionResponseModel> response) {
-                if (response.body().getMyCollectionModels().isEmpty()) {
+            public void onRequestSuccess(Object result) {
+                if (((MyCollectionResponseModel) result).getMyCollectionModels().isEmpty()) {
                     showNoCollection();
                 } else {
                     hideNoCollection();
-                    myCollectionHorizontalAdapter.setMyCollectionModels(response.body().getMyCollectionModels());
+                    myCollectionHorizontalAdapter.setMyCollectionModels(((MyCollectionResponseModel) result).getMyCollectionModels());
                 }
 
                 horizontalProgress.setVisibility(View.GONE);
             }
 
             @Override
-            public void onFailure(Call<MyCollectionResponseModel> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 buildErrorDialog();
                 horizontalProgress.setVisibility(View.GONE);
             }
@@ -316,22 +304,12 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
     }
 
     private void deleteCollection(final String packId) {
-        Call<ResponseBody> call = Retrofit.getInstance().getInkService().deleteCollection(sharedHelper.getUserId(), packId);
-        call.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().deleteCollection(sharedHelper.getUserId(), packId), null, false, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    deleteCollection(packId);
-                    return;
-                }
-                if (response.body() == null) {
-                    deleteCollection(packId);
-                    return;
-                }
-
+            public void onRequestSuccess(Object result) {
                 snackbar.dismiss();
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -349,9 +327,8 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 snackbar.dismiss();
-                Toast.makeText(MyCollection.this, getString(R.string.serverErrorTitle), Toast.LENGTH_SHORT).show();
             }
         });
     }
