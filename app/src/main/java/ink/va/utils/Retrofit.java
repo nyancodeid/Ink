@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import ink.va.models.BadgeResponseModel;
+import ink.va.models.Config;
 import ink.va.models.FeedModel;
 import ink.va.models.MafiaMessageModel;
 import ink.va.models.MafiaRoomsModel;
@@ -349,6 +350,10 @@ public class Retrofit {
         Call<ResponseBody> checkMafiaPlayer(@Field("roomId") int roomId,
                                             @Field("checkerId") String checkerId,
                                             @Field("userIdToCheck") String userIdToCheck);
+
+        @POST(Constants.CONFIGS_URL)
+        @FormUrlEncoded
+        Call<Config> getConfigs(@Field("configType") String type);
 
         @POST(Constants.MAFIA_VOTE_PLAYER)
         @FormUrlEncoded

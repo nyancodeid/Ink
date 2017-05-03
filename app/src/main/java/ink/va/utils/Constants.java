@@ -30,6 +30,7 @@ public class Constants {
     public static final String ADD_GROUP_URL = "AddGroup.php";
     public static final String CHANGE_VIP_MEMBERSHIP = "ChangeVipMembership.php";
     public static final String START_MAFIA_GAME_URL = "StartGame.php";
+    public static final String CONFIGS_URL = "AppConfigs.php";
     public static final String CHECK_BAN_URL = "CheckBan.php";
     public static final String WHO_VIEWED_URL = "WhoViewed.php";
     public static final String USER_COINS_UPDATE = "CoinsUpdate.php";
@@ -84,6 +85,7 @@ public class Constants {
     public static final String RESPOND_TO_REQUEST_URL = "RespondToRequest.php";
     public static final String REMOVE_FRIEND_URL = "RemoveFriend.php";
     public static final String RESPOND_TYPE_ACCEPT_FRIEND_REQUEST = "acceptFriendRequest";
+    public static final String CONFIG_TYPE_POLICY  = "policyUrl";
     public static final String RESPOND_TYPE_DENY_FRIEND_REQUEST = "denyFriendRequest";
     public static final String RESPOND_TYPE_DENY_LOCATION_REQUEST = "denyLocationRequest";
     public static final String RESPOND_TYPE_ACCEPT_LOCATION_REQUEST = "acceptLocationRequest";
