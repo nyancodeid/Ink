@@ -225,7 +225,7 @@ public class Music extends BaseActivity implements MusicClickListener {
     private void getAllTracks() {
         clearTrackArray();
 
-        makeRequest(Retrofit.getInstance().getMusicCloudInterface().getAllTracks(), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getMusicCloudInterface().getAllTracks(), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {
@@ -327,7 +327,7 @@ public class Music extends BaseActivity implements MusicClickListener {
                     musicGeneralTitle.setText(getString(R.string.musicTitleHint));
                     musicLoading.setVisibility(View.VISIBLE);
                     clearTrackArray();
-                    makeRequest(Retrofit.getInstance().getMusicCloudInterface().searchSong(searchText), musicLoading, true, new RequestCallback() {
+                    makeRequest(Retrofit.getInstance().getMusicCloudInterface().searchSong(searchText), musicLoading, new RequestCallback() {
                         @Override
                         public void onRequestSuccess(Object result) {
                             try {

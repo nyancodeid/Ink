@@ -269,7 +269,7 @@ public class Login extends BaseActivity {
                 registrationLogin.getEditText().getText().toString().trim(),
                 registrationPassword.getEditText().getText().toString().trim(),
                 registrationFirstName.getEditText().getText().toString().trim(),
-                registrationLastName.getEditText().getText().toString().trim()), null, false, new RequestCallback() {
+                registrationLastName.getEditText().getText().toString().trim()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 progressDialog.hide();
@@ -393,7 +393,7 @@ public class Login extends BaseActivity {
         progressDialog.setMessage(getString(R.string.logging));
         progressDialog.show();
         makeRequest(Retrofit.getInstance().getInkService().login(loginInput.getEditText().getText().toString().toString(),
-                passwordInput.getEditText().getText().toString()), null, false, new RequestCallback() {
+                passwordInput.getEditText().getText().toString()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
@@ -794,7 +794,7 @@ public class Login extends BaseActivity {
                 imageUrl,
                 mSharedHelper.getToken(),
                 loginType,
-                userLink, facebookName, email), null, false, new RequestCallback() {
+                userLink, facebookName, email), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {

@@ -279,7 +279,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
         mCommentModels.clear();
         mCommentAdapter.notifyDataSetChanged();
-        makeRequest(Retrofit.getInstance().getInkService().getComments(mSharedHelper.getUserId(), postId), mCommentsLoading, true, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getComments(mSharedHelper.getUserId(), postId), mCommentsLoading, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 if (mCommentModels != null) {
@@ -394,7 +394,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
                             final String stickerUrl, final boolean isStickerChosen, final boolean isAnimated) {
         makeRequest(Retrofit.getInstance().getInkService().addComment(commenterId,
                 userImage, commentBody, postId, mSharedHelper.getFirstName(), mSharedHelper.getLastName(), isStickerChosen ? stickerUrl : "", isAnimated),
-                null, false, new RequestCallback() {
+                null, new RequestCallback() {
                     @Override
                     public void onRequestSuccess(Object result) {
                         addCommentDialog.dismiss();
@@ -630,7 +630,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     }
 
     private void deletePost() {
-        makeRequest(Retrofit.getInstance().getInkService().deletePost(mPostId, mAttachment), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().deletePost(mPostId, mAttachment), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {
@@ -708,7 +708,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
 
     private void like(final String postId, final int isLiking, final TextView likeCountTV, final View likeWrapper) {
         shouldUpdate = true;
-        makeRequest(Retrofit.getInstance().getInkService().likePost(mSharedHelper.getUserId(), postId, isLiking), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().likePost(mSharedHelper.getUserId(), postId, isLiking), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {
@@ -820,7 +820,7 @@ public class Comments extends BaseActivity implements SwipeRefreshLayout.OnRefre
     }
 
     private void callCommentServer(final String type, final String commentId, final String newCommentBody) {
-        makeRequest(Retrofit.getInstance().getInkService().commentOptions(type, commentId, newCommentBody), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().commentOptions(type, commentId, newCommentBody), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {

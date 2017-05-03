@@ -711,7 +711,7 @@ public class CustomizeLook extends BaseActivity {
     private void removeFromCloud() {
         progressDialog.setMessage(getString(R.string.removingFromCloud));
         progressDialog.show();
-        makeRequest(Retrofit.getInstance().getInkService().removeFromCloud(sharedHelper.getUserId(), Constants.CUSTOMIZATION_TYPE_REMOVE), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().removeFromCloud(sharedHelper.getUserId(), Constants.CUSTOMIZATION_TYPE_REMOVE), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {
@@ -777,7 +777,7 @@ public class CustomizeLook extends BaseActivity {
     private void restoreFromCloud() {
         progressDialog.setMessage(getString(R.string.restoringFromCloud));
         progressDialog.show();
-        makeRequest(Retrofit.getInstance().getInkService().restoreCustomization(sharedHelper.getUserId(), Constants.CUSTOMIZATION_TYPE_RESTORE), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().restoreCustomization(sharedHelper.getUserId(), Constants.CUSTOMIZATION_TYPE_RESTORE), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {
@@ -888,7 +888,7 @@ public class CustomizeLook extends BaseActivity {
                 sharedHelper.getChatFieldTextColor() != null ? sharedHelper.getChatFieldTextColor() : "",
                 sharedHelper.getTrendColor() != null ? sharedHelper.getTrendColor() : "",
                 sharedHelper.getOpponentProfileColor() != null ? sharedHelper.getOpponentProfileColor() : ""),
-                null, false, new RequestCallback() {
+                null, new RequestCallback() {
                     @Override
                     public void onRequestSuccess(Object result) {
                         try {

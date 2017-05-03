@@ -333,7 +333,7 @@ public class MafiaAddRoomActivity extends BaseActivity {
         makeRequest(Retrofit.getInstance().getInkService().addMafiaRoom(roomNameTV.getText().toString().trim(),
                 chosenLanguage, finalGameType, durationMorningED.getText().toString(), finalMorningUnit,
                 String.valueOf(estimatedNightDuration), finalNightUnit,
-                sharedHelper.getUserId(), maxPlayers), null, false, new RequestCallback() {
+                sharedHelper.getUserId(), maxPlayers), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 progressDialog.dismiss();

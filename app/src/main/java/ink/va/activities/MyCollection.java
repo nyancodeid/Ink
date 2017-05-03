@@ -161,7 +161,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
             verticalProgress.setVisibility(View.VISIBLE);
         }
         makeRequest(Retrofit.getInstance().getInkService().getsSinglePack(packId,
-                Constants.SERVER_AUTH_KEY), null, false, new RequestCallback() {
+                Constants.SERVER_AUTH_KEY), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {
@@ -213,7 +213,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
         stickerAdapter.clearItems();
 
 
-        makeRequest(Retrofit.getInstance().getInkService().getUserCollection(sharedHelper.getUserId()), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getUserCollection(sharedHelper.getUserId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 if (((MyCollectionResponseModel) result).getMyCollectionModels().isEmpty()) {
@@ -304,7 +304,7 @@ public class MyCollection extends BaseActivity implements MyCollectionHorizontal
     }
 
     private void deleteCollection(final String packId) {
-        makeRequest(Retrofit.getInstance().getInkService().deleteCollection(sharedHelper.getUserId(), packId), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().deleteCollection(sharedHelper.getUserId(), packId), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 snackbar.dismiss();

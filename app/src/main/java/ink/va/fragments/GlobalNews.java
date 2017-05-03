@@ -80,7 +80,7 @@ public class GlobalNews extends Fragment implements NewsItemClickListener, Swipe
 
     private void getNews(final String nextUrl, final boolean shouldDelete) {
         showRefreshing();
-        ((NewsAndTrendsActivity) getActivity()).makeRequest(Retrofit.getInstance().getNewsInterface().getNews(Constants.NEWS_BASE_URL + nextUrl), globalNewsSwipe, true, new RequestCallback() {
+        ((NewsAndTrendsActivity) getActivity()).makeRequest(Retrofit.getInstance().getNewsInterface().getNews(Constants.NEWS_BASE_URL + nextUrl), globalNewsSwipe, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {

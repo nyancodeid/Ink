@@ -21,6 +21,7 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.interfaces.RequestCallback;
 import ink.va.utils.Constants;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.ImageLoader;
@@ -28,9 +29,6 @@ import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.User;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import tyrantgit.explosionfield.ExplosionField;
 
 import static ink.va.fragments.Packs.PACK_BUY_RESULT_CODE;
@@ -158,21 +156,12 @@ public class PackFullScreen extends BaseActivity {
     }
 
     private void openPack(final String packId) {
-        Call<ResponseBody> packCall = Retrofit.getInstance().getInkService().openPack(sharedHelper.getUserId(), packId);
-        packCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().openPack(sharedHelper.getUserId(), packId), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    openPack(packId);
-                    return;
-                }
-                if (response.body() == null) {
-                    openPack(packId);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
                     hideProgress();
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     AlertDialog.Builder builder = new AlertDialog.Builder(PackFullScreen.this);
@@ -265,7 +254,7 @@ public class PackFullScreen extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 finish();
                 overrideActivityAnimation();
             }

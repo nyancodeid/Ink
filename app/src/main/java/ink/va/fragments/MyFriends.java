@@ -49,6 +49,7 @@ import ink.va.adapters.FriendsAdapter;
 import ink.va.animations.CircularPathAnimation;
 import ink.va.interfaces.ColorChangeListener;
 import ink.va.interfaces.RecyclerItemClickListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.FriendsModel;
 import ink.va.models.UserSearchResponse;
 import ink.va.models.UserSearchResult;
@@ -318,12 +319,11 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
             clearAdapter();
             mFriendsAdapter.notifyDataSetChanged();
             stopSearchAnimation(false);
-            final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().getFriends(mSharedHelper.getUserId());
-            responseBodyCall.enqueue(new Callback<ResponseBody>() {
+            ((HomeActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().getFriends(mSharedHelper.getUserId()), null, new RequestCallback() {
                 @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                public void onRequestSuccess(Object result) {
                     try {
-                        String responseString = response.body().string();
+                        String responseString = ((ResponseBody) result).string();
                         try {
                             JSONObject jsonObject = new JSONObject(responseString);
                             boolean success = jsonObject.optBoolean("success");
@@ -389,8 +389,8 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
                 }
 
                 @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    getFriends();
+                public void onRequestFailed(Object[] result) {
+
                 }
             });
         } catch (Exception e) {
@@ -493,20 +493,11 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
             public void onClick(DialogInterface dialogInterface, int i) {
                 DimDialog.showDimDialog(getActivity(), getString(R.string.removingFriend));
                 RealmHelper.getInstance().removeMessage(friendId, mSharedHelper.getUserId());
-                Call<ResponseBody> removeFriendCall = Retrofit.getInstance().getInkService().removeFriend(mSharedHelper.getUserId(), friendId);
-                removeFriendCall.enqueue(new Callback<ResponseBody>() {
+                ((HomeActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().removeFriend(mSharedHelper.getUserId(), friendId), null, new RequestCallback() {
                     @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response == null) {
-                            removeFriend(friendId);
-                            return;
-                        }
-                        if (response.body() == null) {
-                            removeFriend(friendId);
-                            return;
-                        }
+                    public void onRequestSuccess(Object result) {
                         try {
-                            String responseBody = response.body().string();
+                            String responseBody = ((ResponseBody) result).string();
                             JSONObject jsonObject = new JSONObject(responseBody);
                             boolean success = jsonObject.optBoolean("success");
                             DimDialog.hideDialog();
@@ -529,8 +520,8 @@ public class MyFriends extends Fragment implements RecyclerItemClickListener,
                     }
 
                     @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        removeFriend(friendId);
+                    public void onRequestFailed(Object[] result) {
+
                     }
                 });
             }

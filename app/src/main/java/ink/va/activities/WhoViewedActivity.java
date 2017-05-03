@@ -7,7 +7,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -31,17 +30,15 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.adapters.WhoViewedAdapter;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.WhoViewedModel;
 import ink.va.utils.DimDialog;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class WhoViewedActivity extends AppCompatActivity implements
+public class WhoViewedActivity extends BaseActivity implements
         SwipeRefreshLayout.OnRefreshListener, WhoViewedAdapter.OnItemClickListener {
 
 
@@ -110,20 +107,11 @@ public class WhoViewedActivity extends AppCompatActivity implements
                 swipeRefreshLayout.setRefreshing(true);
             }
         });
-        final Call<okhttp3.ResponseBody> getWhoViewed = Retrofit.getInstance().getInkService().getWhoViewed(sharedHelper.getUserId());
-        getWhoViewed.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getWhoViewed(sharedHelper.getUserId()), swipeRefreshLayout, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getWhoViewedList();
-                    return;
-                }
-                if (response.body() == null) {
-                    getWhoViewedList();
-                    return;
-                }
+            public void onRequestSuccess(Object response) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) response).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     int totalViews = jsonObject.optInt("totalViews");
@@ -153,10 +141,8 @@ public class WhoViewedActivity extends AppCompatActivity implements
                             }
                         }
 
-                        swipeRefreshLayout.setRefreshing(false);
                     } else {
                         Toast.makeText(WhoViewedActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayout.setRefreshing(false);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -166,7 +152,7 @@ public class WhoViewedActivity extends AppCompatActivity implements
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
 
             }
         });
@@ -209,47 +195,40 @@ public class WhoViewedActivity extends AppCompatActivity implements
             public void onClick(DialogInterface dialogInterface, int i) {
                 DimDialog.showDimDialog(WhoViewedActivity.this, getString(R.string.removingFriend));
                 RealmHelper.getInstance().removeMessage(friendId, sharedHelper.getUserId());
-                Call<ResponseBody> removeFriendCall = Retrofit.getInstance().getInkService().removeFriend(sharedHelper.getUserId(),
-                        friendId);
-                removeFriendCall.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response == null) {
-                            removeFriend(friendId);
-                            return;
-                        }
-                        if (response.body() == null) {
-                            removeFriend(friendId);
-                            return;
-                        }
-                        try {
-                            String responseBody = response.body().string();
-                            JSONObject jsonObject = new JSONObject(responseBody);
-                            boolean success = jsonObject.optBoolean("success");
-                            DimDialog.hideDialog();
-                            if (success) {
-                                Snackbar.make(recyclerView, getString(R.string.friendRemoved), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
+                makeRequest(Retrofit.getInstance().getInkService().removeFriend(sharedHelper.getUserId(),
+                        friendId), null, new RequestCallback() {
+                            @Override
+                            public void onRequestSuccess(Object result) {
+                                try {
+                                    String responseBody = ((ResponseBody) result).string();
+                                    JSONObject jsonObject = new JSONObject(responseBody);
+                                    boolean success = jsonObject.optBoolean("success");
+                                    DimDialog.hideDialog();
+                                    if (success) {
+                                        Snackbar.make(recyclerView, getString(R.string.friendRemoved), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
 
+                                            }
+                                        }).show();
+                                        getWhoViewedList();
                                     }
-                                }).show();
+                                } catch (IOException e) {
+                                    DimDialog.hideDialog();
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    DimDialog.hideDialog();
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onRequestFailed(Object[] result) {
+                                DimDialog.hideDialog();
                                 getWhoViewedList();
                             }
-                        } catch (IOException e) {
-                            DimDialog.hideDialog();
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            DimDialog.hideDialog();
-                            e.printStackTrace();
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        removeFriend(friendId);
-                    }
-                });
+                );
             }
         });
         builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {

@@ -228,7 +228,7 @@ public class CreateGroupPost extends BaseActivity implements ProgressRequestBody
         makeRequest(Retrofit.getInstance().getInkService().sendGroupMessage(map, groupId,
                 message, sharedHelper.getUserId(),
                 sharedHelper.getImageLink(), sharedHelper.getFirstName() + " " + sharedHelper.getLastName()),
-                groupMessageSpin, true, new RequestCallback() {
+                groupMessageSpin, new RequestCallback() {
                     @Override
                     public void onRequestSuccess(Object result) {
                         try {

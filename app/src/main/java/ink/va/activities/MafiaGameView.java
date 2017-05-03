@@ -268,7 +268,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
         stopService(new Intent(MafiaGameView.this, MafiaGameService.class));
 
-        makeRequest(Retrofit.getInstance().getInkService().getSingleMafiaRoom(mafiaRoomsModel.getId()), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getSingleMafiaRoom(mafiaRoomsModel.getId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 mafiaRoomsModel = (MafiaRoomsModel) result;
@@ -458,7 +458,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
 
     private void getMafiaRoomMessages() {
-        makeRequest(Retrofit.getInstance().getInkService().getMafiaChat(mafiaRoomsModel.getId()), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getMafiaChat(mafiaRoomsModel.getId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 List<MafiaMessageModel> mafiaMessageModels = (List<MafiaMessageModel>) result;
@@ -826,7 +826,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
         sharedHelper.putRoleSeen(false);
         showDialog(getString(R.string.connecting), getString(R.string.startingGame));
 
-        makeRequest(Retrofit.getInstance().getInkService().startMafiaGame(mafiaRoomsModel.getId()), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().startMafiaGame(mafiaRoomsModel.getId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 hideDialog();
@@ -923,7 +923,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
     private void deleteRoom() {
         showDialog(getString(R.string.pleaseWait), getString(R.string.deleting));
-        makeRequest(Retrofit.getInstance().getInkService().deleteMafiaRoom(mafiaRoomsModel.getId(), sharedHelper.getUserId()), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().deleteMafiaRoom(mafiaRoomsModel.getId(), sharedHelper.getUserId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 hideDialog();
@@ -979,7 +979,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     }
 
     private void getMafiaRoomParticipants() {
-        makeRequest(Retrofit.getInstance().getInkService().getMafiaRoomParticipants(mafiaRoomsModel.getId()), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getMafiaRoomParticipants(mafiaRoomsModel.getId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 List<ParticipantModel> participants = (List<ParticipantModel>) result;
@@ -1029,7 +1029,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
     private void joinRoom() {
         showDialog(getString(R.string.pleaseWait), getString(R.string.joining));
-        makeRequest(Retrofit.getInstance().getInkService().joinRoom(mafiaRoomsModel.getId(), sharedHelper.getUserId()), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().joinRoom(mafiaRoomsModel.getId(), sharedHelper.getUserId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 hideDialog();
@@ -1135,7 +1135,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
 
     private void leaveRoom() {
         showDialog(getString(R.string.pleaseWait), getString(R.string.leavingText));
-        makeRequest(Retrofit.getInstance().getInkService().leaveRoom(mafiaRoomsModel.getId(), sharedHelper.getUserId()), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().leaveRoom(mafiaRoomsModel.getId(), sharedHelper.getUserId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 hideDialog();
@@ -1246,7 +1246,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     private void silentMessageServerInsert(final String message, final boolean isSystemMessage) {
         if (isSystemMessage) {
             if (isOwner()) {
-                makeRequest(Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId(), isSystemMessage, false), null, false, new RequestCallback() {
+                makeRequest(Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId(), isSystemMessage, false), null, new RequestCallback() {
                     @Override
                     public void onRequestSuccess(Object result) {
                         try {
@@ -1289,7 +1289,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
             }
         } else {
             makeRequest(Retrofit.getInstance().getInkService().silentMafiaMessageInsert(mafiaRoomsModel.getId(), message, sharedHelper.getUserId(), isSystemMessage, isMafiaToggled),
-                    null, false, new RequestCallback() {
+                    null, new RequestCallback() {
                         @Override
                         public void onRequestSuccess(Object result) {
                             try {
@@ -1638,7 +1638,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     private void vote(final ParticipantModel participantModel) {
         showDialog(getString(R.string.loadingText), getString(R.string.voting));
         makeRequest(Retrofit.getInstance().getInkService().voteMafiaPlayer(sharedHelper.getUserId(),
-                mafiaRoomsModel.getId(), participantModel.getUser().getUserId()), null, false, new RequestCallback() {
+                mafiaRoomsModel.getId(), participantModel.getUser().getUserId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 hideDialog();
@@ -1676,7 +1676,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
         showDialog(getString(R.string.loadingText), getString(R.string.removingVote));
         makeRequest(Retrofit.getInstance().getInkService().removeMafiaPlayerVote(sharedHelper.getUserId(),
                 mafiaRoomsModel.getId(), participantModel.getUser().getUserId()),
-                null, false, new RequestCallback() {
+                null, new RequestCallback() {
                     @Override
                     public void onRequestSuccess(Object result) {
                         hideDialog();
@@ -1735,7 +1735,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
         showDialog(getString(R.string.loadingText), getString(R.string.loadingText));
 
         makeRequest(Retrofit.getInstance().getInkService().checkMafiaPlayer(mafiaRoomsModel.getId(), sharedHelper.getUserId(), participantModel.getUser().getUserId()),
-                null, false, new RequestCallback() {
+                null, new RequestCallback() {
                     @Override
                     public void onRequestSuccess(Object result) {
                         hideDialog();
@@ -1794,7 +1794,7 @@ public class MafiaGameView extends BaseActivity implements RecyclerItemClickList
     private void shoot(final ParticipantModel participantModel) {
         showDialog(getString(R.string.shooting), getString(R.string.shootingPlayer));
         makeRequest(Retrofit.getInstance().getInkService().shoot(mafiaRoomsModel.getId(), sharedHelper.getUserId(), participantModel.getUser().getUserId()),
-                null, false, new RequestCallback() {
+                null, new RequestCallback() {
                     @Override
                     public void onRequestSuccess(Object result) {
                         hideDialog();

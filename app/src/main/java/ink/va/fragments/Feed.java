@@ -331,7 +331,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
             });
         }
         ((HomeActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().getPosts(mSharedHelper.getUserId(), String.valueOf(offset), String.valueOf(count)),
-                feedRefresh, true, this);
+                feedRefresh, this);
 
     }
 
@@ -654,7 +654,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
         dialog.show();
 
         ((HomeActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().reportPost(feedModel.getId(), String.valueOf(feedModel.isGlobalPost()), reportCauseMessage, mSharedHelper.getUserId()),
-                null, false, new RequestCallback() {
+                null, new RequestCallback() {
                     @Override
                     public void onRequestSuccess(Object result) {
                         dialog.hide();
@@ -800,7 +800,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
     }
 
     private void deletePost(final String postId, final String attachmentName) {
-        ((HomeActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().deletePost(postId, attachmentName), null, false, new RequestCallback() {
+        ((HomeActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().deletePost(postId, attachmentName), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {
@@ -832,7 +832,7 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
 
     private void like(final String postId, final int isLiking, final TextView likeCountTV, final FeedModel feedModel, final View likeWrapper) {
         ((HomeActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().likePost(mSharedHelper.getUserId(), postId, isLiking),
-                null, false, new RequestCallback() {
+                null, new RequestCallback() {
                     @Override
                     public void onRequestSuccess(Object result) {
                         try {

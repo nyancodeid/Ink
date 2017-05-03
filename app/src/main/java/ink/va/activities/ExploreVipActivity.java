@@ -80,7 +80,7 @@ public class ExploreVipActivity extends BaseActivity implements VipMemberItemCli
 
     private void getVipMembers() {
         vipMemberAdapter.clear();
-        makeRequest(Retrofit.getInstance().getInkService().getVipMembers(sharedHelper.getUserId()), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getVipMembers(sharedHelper.getUserId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 List<UserModel> userModels = (List<UserModel>) result;
@@ -169,7 +169,7 @@ public class ExploreVipActivity extends BaseActivity implements VipMemberItemCli
 
     private void transferCoins(final int coinsAmount, final String transferrerId, final String receiverId) {
         transferDialog.show();
-        makeRequest(Retrofit.getInstance().getInkService().transferCoins(transferrerId, receiverId, coinsAmount), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().transferCoins(transferrerId, receiverId, coinsAmount), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {

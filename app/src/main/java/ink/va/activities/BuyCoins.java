@@ -90,7 +90,7 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
     }
 
     private void getCoins() {
-        makeRequest(Retrofit.getInstance().getInkService().getCoins(), coinsRefresh, true, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getCoins(), coinsRefresh, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {
@@ -282,7 +282,7 @@ public class BuyCoins extends BaseActivity implements CoinsAdapter.ItemClick, Sw
 
     private void updateCoinsOnServer(final String coinsCountToUpdate) {
         makeRequest(Retrofit.getInstance().getInkService().setCoins(sharedHelper.getUserId(),
-                coinsCountToUpdate), null, false, new RequestCallback() {
+                coinsCountToUpdate), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {

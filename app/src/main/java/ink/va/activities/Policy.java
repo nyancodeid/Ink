@@ -32,7 +32,7 @@ public class Policy extends BaseActivity {
         setContentView(R.layout.activity_policy);
         ButterKnife.bind(this);
         makeRequest(Retrofit.getInstance().getInkService().getConfigs(Constants.CONFIG_TYPE_POLICY),
-                null, false, new RequestCallback() {
+                null, new RequestCallback() {
                     @Override
                     public void onRequestSuccess(Object result) {
                         final Config config = (Config) result;

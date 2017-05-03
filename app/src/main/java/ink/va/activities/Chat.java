@@ -591,7 +591,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         if (opponentId.isEmpty()) {
             return;
         }
-        makeRequest(Retrofit.getInstance().getInkService().getSingleUserDetails(opponentId, ""), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getSingleUserDetails(opponentId, ""), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {

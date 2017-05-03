@@ -284,7 +284,7 @@ public class HomeActivity extends BaseActivity
     private void getFriends() {
         final List<String> friendIds = new LinkedList<>();
         try {
-            makeRequest(Retrofit.getInstance().getInkService().getFriends(mSharedHelper.getUserId()), null, false, new RequestCallback() {
+            makeRequest(Retrofit.getInstance().getInkService().getFriends(mSharedHelper.getUserId()), null, new RequestCallback() {
                 @Override
                 public void onRequestSuccess(Object result) {
                     try {
@@ -470,7 +470,7 @@ public class HomeActivity extends BaseActivity
 
     private void getCoins() {
         coinsText.setText(getString(R.string.updating));
-        makeRequest(Retrofit.getInstance().getInkService().getCoins(mSharedHelper.getUserId()), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getCoins(mSharedHelper.getUserId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 Gson gson = new Gson();
@@ -714,7 +714,7 @@ public class HomeActivity extends BaseActivity
         progressDialog.setCanceledOnTouchOutside(true);
         progressDialog.show();
 
-        makeRequest(Retrofit.getInstance().getInkService().callVipServer(mSharedHelper.getUserId(), type), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().callVipServer(mSharedHelper.getUserId(), type), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 progressDialog.dismiss();
@@ -979,7 +979,7 @@ public class HomeActivity extends BaseActivity
     };
 
     private void hasNotifications() {
-        makeRequest(Retrofit.getInstance().getInkService().hasUnreadNotifications(mSharedHelper.getUserId()), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().hasUnreadNotifications(mSharedHelper.getUserId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {
@@ -1080,7 +1080,7 @@ public class HomeActivity extends BaseActivity
 
     private void handleSocialImage() {
         if (mSharedHelper.isSocialAccount()) {
-            makeRequest(Retrofit.getInstance().getInkService().getSingleUserDetails(mSharedHelper.getUserId(), ""), null, false, new RequestCallback() {
+            makeRequest(Retrofit.getInstance().getInkService().getSingleUserDetails(mSharedHelper.getUserId(), ""), null, new RequestCallback() {
                 @Override
                 public void onRequestSuccess(Object result) {
                     try {
@@ -1124,7 +1124,7 @@ public class HomeActivity extends BaseActivity
     }
 
     private void sendUpdateToServer() {
-        makeRequest(Retrofit.getInstance().getInkService().updateUserImage(mSharedHelper.getUserId(), mSharedHelper.getImageLink()), null, false, null);
+        makeRequest(Retrofit.getInstance().getInkService().updateUserImage(mSharedHelper.getUserId(), mSharedHelper.getImageLink()), null, null);
     }
 
 
@@ -1303,7 +1303,7 @@ public class HomeActivity extends BaseActivity
 
     private void getReward() {
         DimDialog.showDimDialog(this, getString(R.string.redeeming));
-        makeRequest(Retrofit.getInstance().getInkService().getReward(mSharedHelper.getUserId(), Constants.POLLFISH_TOKEN), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getReward(mSharedHelper.getUserId(), Constants.POLLFISH_TOKEN), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 pollFish.hidePollFish();

@@ -22,15 +22,13 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.interfaces.RequestCallback;
 import ink.va.utils.Constants;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.ProgressDialog;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class SecurityQuestion extends BaseActivity {
     @BindView(R.id.ownSecurityQuestion)
@@ -103,21 +101,12 @@ public class SecurityQuestion extends BaseActivity {
     }
 
     private void setSecurityQuestion() {
-        Call<ResponseBody> securityQuestionCall = Retrofit.getInstance().getInkService().setSecurityQuestion(sharedHelper.getUserId(), ownSecurityQuestion.getText().toString(),
-                ownAnswer.getText().toString());
-        securityQuestionCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().setSecurityQuestion(sharedHelper.getUserId(), ownSecurityQuestion.getText().toString(),
+                ownAnswer.getText().toString()), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    setSecurityQuestion();
-                    return;
-                }
-                if (response.body() == null) {
-                    setSecurityQuestion();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -149,8 +138,8 @@ public class SecurityQuestion extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                setSecurityQuestion();
+            public void onRequestFailed(Object[] result) {
+                progressDialog.hide();
             }
         });
     }
@@ -211,20 +200,11 @@ public class SecurityQuestion extends BaseActivity {
 
     private void doPasswordCheckRequest(final String userCurrentPassword) {
         securityQuestionProgress.setVisibility(View.VISIBLE);
-        Call<ResponseBody> getPasswordCall = Retrofit.getInstance().getInkService().getUserPassword(sharedHelper.getUserId(), Constants.PASSWORD_REQUEST_TOKEN);
-        getPasswordCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getUserPassword(sharedHelper.getUserId(), Constants.PASSWORD_REQUEST_TOKEN), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    doPasswordCheckRequest(userCurrentPassword);
-                    return;
-                }
-                if (response.body() == null) {
-                    doPasswordCheckRequest(userCurrentPassword);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     securityQuestionProgress.setVisibility(View.GONE);
@@ -272,8 +252,9 @@ public class SecurityQuestion extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                doPasswordCheckRequest(userCurrentPassword);
+            public void onRequestFailed(Object[] result) {
+                securityQuestionProgress.setVisibility(View.GONE);
+                progressDialog.hide();
             }
         });
     }

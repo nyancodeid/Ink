@@ -175,7 +175,7 @@ public class CreateTrend extends BaseActivity {
 
         makeRequest(Retrofit.getInstance().getInkService().addAdvertisement(trendTitleED.getText().toString().trim(), trendContentED.getText().toString().trim(),
                 imageUrl, trendExternalED.getText().toString().trim(), autoCompleteTrendCategoriesTV.getText().toString().trim(), isPremiumSwitch.isChecked(),
-                sharedHelper.getUserId()), null, false, new RequestCallback() {
+                sharedHelper.getUserId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 progressDialog.dismiss();

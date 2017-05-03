@@ -39,9 +39,6 @@ import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.User;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class BlackJack extends BaseActivity {
@@ -356,7 +353,7 @@ public class BlackJack extends BaseActivity {
 
     private void silentCoinsUpdate() {
         makeRequest(Retrofit.getInstance().getInkService().silentCoinsUpdate(sharedHelper.getUserId(), String.valueOf(User.get().getCoins()), Constants.USER_COINS_TOKEN),
-                null, false, new RequestCallback() {
+                null, new RequestCallback() {
                     @Override
                     public void onRequestSuccess(Object result) {
                         try {

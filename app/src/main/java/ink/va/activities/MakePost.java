@@ -528,7 +528,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                 finalType,
                 attachmentName,
                 postId,
-                shouldDelete, postType), null, false, new RequestCallback() {
+                shouldDelete, postType), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {
@@ -626,7 +626,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
                 mSharedHelper.getLastName(),
                 Time.getTimeZone(),
                 finalType, postId,
-                shouldDelete, postType), null, false, new RequestCallback() {
+                shouldDelete, postType), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {
@@ -779,7 +779,7 @@ public class MakePost extends BaseActivity implements ProgressRequestBody.Upload
     }
 
     private void getCoinsToCharge() {
-        makeRequest(Retrofit.getInstance().getInkService().getCoins(mSharedHelper.getUserId()), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getCoins(mSharedHelper.getUserId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 Gson gson = new Gson();

@@ -94,7 +94,7 @@ public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefr
     }
 
     public void getBadges() {
-        makeRequest(Retrofit.getInstance().getInkService().getBagdes(Constants.BADGE_TYPE_VIEW), badgeRefresh, true, this);
+        makeRequest(Retrofit.getInstance().getInkService().getBagdes(Constants.BADGE_TYPE_VIEW), badgeRefresh, this);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class BadgeShop extends BaseActivity implements SwipeRefreshLayout.OnRefr
     }
 
     public void buyBadge(final String badgeId) {
-        makeRequest(Retrofit.getInstance().getInkService().buyBadge(Constants.BADGE_TYPE_BUY, sharedHelper.getUserId(), badgeId), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().buyBadge(Constants.BADGE_TYPE_BUY, sharedHelper.getUserId(), badgeId), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 progressDialog.dismiss();

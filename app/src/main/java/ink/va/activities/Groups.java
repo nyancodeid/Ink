@@ -280,7 +280,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
 
             String searchableText = newText.trim().toLowerCase();
             makeRequest(Retrofit.getInstance().getInkService().searchGroups(mSharedHelper.getUserId(),
-                    searchableText), null, false, new RequestCallback() {
+                    searchableText), null, new RequestCallback() {
                 @Override
                 public void onRequestSuccess(Object result) {
                     try {
@@ -371,7 +371,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
                 groupSwipe.setRefreshing(true);
             }
         });
-        makeRequest(Retrofit.getInstance().getInkService().getGroups(mSharedHelper.getUserId(), type), groupSwipe, true, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getGroups(mSharedHelper.getUserId(), type), groupSwipe, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {
@@ -556,7 +556,7 @@ public class Groups extends BaseActivity implements SwipeRefreshLayout.OnRefresh
     private void callToServer(final String base64, final String groupName, final String groupDescription) {
         makeRequest(Retrofit.getInstance().getInkService().createGroup(mSharedHelper.getUserId(),
                 base64, groupName, groupDescription, chosenColor,
-                mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), mSharedHelper.getImageLink()), null, false, new RequestCallback() {
+                mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(), mSharedHelper.getImageLink()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {

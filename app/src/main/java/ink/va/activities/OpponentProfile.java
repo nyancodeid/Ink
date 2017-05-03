@@ -49,6 +49,7 @@ import fab.FloatingActionButton;
 import ink.va.adapters.OpponentProfileAdapter;
 import ink.va.interfaces.FeedItemClick;
 import ink.va.interfaces.ItemClickListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.FeedModel;
 import ink.va.models.UserModel;
 import ink.va.service.SocketService;
@@ -65,9 +66,6 @@ import ink.va.utils.ScrollAwareFABBehavior;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static ink.va.utils.Constants.EVENT_FRIEND_REQUESTED;
 import static ink.va.utils.Constants.EVENT_POST_LIKED;
@@ -226,47 +224,39 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
             public void onClick(DialogInterface dialogInterface, int i) {
                 DimDialog.showDimDialog(OpponentProfile.this, getString(R.string.removingFriend));
                 RealmHelper.getInstance().removeMessage(friendId, sharedHelper.getUserId());
-                Call<ResponseBody> removeFriendCall = Retrofit.getInstance().getInkService().removeFriend(sharedHelper.getUserId(), friendId);
-                removeFriendCall.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response == null) {
-                            removeFriend(friendId);
-                            return;
-                        }
-                        if (response.body() == null) {
-                            removeFriend(friendId);
-                            return;
-                        }
-                        try {
-                            String responseBody = response.body().string();
-                            JSONObject jsonObject = new JSONObject(responseBody);
-                            boolean success = jsonObject.optBoolean("success");
-                            DimDialog.hideDialog();
-                            if (success) {
-                                Toast.makeText(OpponentProfile.this, getString(R.string.friendRemoved), Toast.LENGTH_SHORT).show();
+                makeRequest(Retrofit.getInstance().getInkService().removeFriend(sharedHelper.getUserId(), friendId),
+                        null, new RequestCallback() {
+                            @Override
+                            public void onRequestSuccess(Object result) {
+                                try {
+                                    String responseBody = ((ResponseBody) result).string();
+                                    JSONObject jsonObject = new JSONObject(responseBody);
+                                    boolean success = jsonObject.optBoolean("success");
+                                    DimDialog.hideDialog();
+                                    if (success) {
+                                        Toast.makeText(OpponentProfile.this, getString(R.string.friendRemoved), Toast.LENGTH_SHORT).show();
 
-                                LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + "Comments"));
-                                LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
+                                        LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + "Comments"));
+                                        LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + "HomeActivity"));
 
-                                LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + ".Chat"));
-                                LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + "MyFriends"));
-                                finish();
+                                        LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + ".Chat"));
+                                        LocalBroadcastManager.getInstance(OpponentProfile.this).sendBroadcast(new Intent(getPackageName() + "MyFriends"));
+                                        finish();
+                                    }
+                                } catch (IOException e) {
+                                    DimDialog.hideDialog();
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    DimDialog.hideDialog();
+                                    e.printStackTrace();
+                                }
                             }
-                        } catch (IOException e) {
-                            DimDialog.hideDialog();
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            DimDialog.hideDialog();
-                            e.printStackTrace();
-                        }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        removeFriend(friendId);
-                    }
-                });
+                            @Override
+                            public void onRequestFailed(Object[] result) {
+
+                            }
+                        });
             }
         });
         builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -281,170 +271,163 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
 
     private void requestFriend() {
         DimDialog.showDimDialog(this, getString(R.string.sendingFriendRequest));
-        Call<ResponseBody> requestFriendCall = Retrofit.getInstance().getInkService().requestFriend(sharedHelper.getUserId(), mOpponentId,
-                sharedHelper.getFirstName() + " " + sharedHelper.getLastName());
-        requestFriendCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    requestFriend();
-                    return;
-                }
-                if (response.body() == null) {
-                    requestFriend();
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    DimDialog.hideDialog();
-                    if (success) {
-                        JSONObject friendRequestJson = new JSONObject();
-                        friendRequestJson.put("requesterFirstName", sharedHelper.getFirstName());
-                        friendRequestJson.put("requesterLastName", sharedHelper.getLastName());
-                        friendRequestJson.put("requestedUserId", mOpponentId);
-                        friendRequestJson.put("requesterId", sharedHelper.getUserId());
+        makeRequest(Retrofit.getInstance().getInkService().requestFriend(sharedHelper.getUserId(), mOpponentId,
+                sharedHelper.getFirstName() + " " + sharedHelper.getLastName()),
+                null, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        try {
+                            String responseBody = ((ResponseBody) result).string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            boolean success = jsonObject.optBoolean("success");
+                            DimDialog.hideDialog();
+                            if (success) {
+                                JSONObject friendRequestJson = new JSONObject();
+                                friendRequestJson.put("requesterFirstName", sharedHelper.getFirstName());
+                                friendRequestJson.put("requesterLastName", sharedHelper.getLastName());
+                                friendRequestJson.put("requestedUserId", mOpponentId);
+                                friendRequestJson.put("requesterId", sharedHelper.getUserId());
 
-                        socketService.emit(EVENT_FRIEND_REQUESTED, friendRequestJson);
-                        friendRequestJson = null;
-                        hasFriendRequested = true;
-                        Snackbar.make(opponentProfileRecycler, getString(R.string.requestSent), Snackbar.LENGTH_SHORT).show();
-                    } else {
-                        Snackbar.make(opponentProfileRecycler, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
+                                socketService.emit(EVENT_FRIEND_REQUESTED, friendRequestJson);
+                                friendRequestJson = null;
+                                hasFriendRequested = true;
+                                Snackbar.make(opponentProfileRecycler, getString(R.string.requestSent), Snackbar.LENGTH_SHORT).show();
+                            } else {
+                                Snackbar.make(opponentProfileRecycler, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
+                            }
+                        } catch (IOException e) {
+                            DimDialog.hideDialog();
+                            Snackbar.make(opponentProfileRecycler, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            DimDialog.hideDialog();
+                            Snackbar.make(opponentProfileRecycler, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        }
                     }
-                } catch (IOException e) {
-                    DimDialog.hideDialog();
-                    Snackbar.make(opponentProfileRecycler, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    DimDialog.hideDialog();
-                    Snackbar.make(opponentProfileRecycler, getString(R.string.errorSendingRequest), Snackbar.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                requestFriend();
-            }
-        });
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+                        DimDialog.hideDialog();
+                    }
+                });
     }
 
 
     private void getSingleUser() {
-        Call<ResponseBody> call = ink.va.utils.Retrofit.getInstance().getInkService().getSingleUserDetails(mOpponentId, sharedHelper.getUserId());
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                mProfileFab.setEnabled(true);
+        makeRequest(Retrofit.getInstance().getInkService().getSingleUserDetails(mOpponentId, sharedHelper.getUserId()),
+                null, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        mProfileFab.setEnabled(true);
 
-                try {
-                    String responseString = response.body().string();
-                    try {
-                        JSONObject jsonObject = new JSONObject(responseString);
-                        boolean success = jsonObject.optBoolean("success");
-                        if (success) {
+                        try {
+                            String responseString = ((ResponseBody) result).string();
+                            try {
+                                JSONObject jsonObject = new JSONObject(responseString);
+                                boolean success = jsonObject.optBoolean("success");
+                                if (success) {
 
-                            UserModel userModel = gson.fromJson(responseString, UserModel.class);
-                            opponentProfileAdapter.setUserJsonObject(jsonObject);
-                            isSocialAccount = userModel.isSocialAccount();
+                                    UserModel userModel = gson.fromJson(responseString, UserModel.class);
+                                    opponentProfileAdapter.setUserJsonObject(jsonObject);
+                                    isSocialAccount = userModel.isSocialAccount();
 
 
-                            mFirstName = userModel.getFirstName();
-                            mLastName = userModel.getLastName();
+                                    mFirstName = userModel.getFirstName();
+                                    mLastName = userModel.getLastName();
 
-                            mOpponentImage = jsonObject.optString("image_link");
-                            isFriend = jsonObject.optBoolean("isFriend");
-                            setUpFriendView();
-                            hasFriendRequested = jsonObject.optBoolean("hasFriendRequested");
-                            getUserPosts();
+                                    mOpponentImage = jsonObject.optString("image_link");
+                                    isFriend = jsonObject.optBoolean("isFriend");
+                                    setUpFriendView();
+                                    hasFriendRequested = jsonObject.optBoolean("hasFriendRequested");
+                                    getUserPosts();
 
-                        } else {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(OpponentProfile.this);
-                            builder.setTitle(getString(R.string.singleUserErrorTile));
-                            builder.setMessage(getString(R.string.singleUserErrorMessage));
-                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                } else {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(OpponentProfile.this);
+                                    builder.setTitle(getString(R.string.singleUserErrorTile));
+                                    builder.setMessage(getString(R.string.singleUserErrorMessage));
+                                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    builder.show();
+                                }
+                            } catch (JSONException e) {
+                                opponentProfileRefresh.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        opponentProfileRefresh.setRefreshing(false);
+                                    }
+                                });
+                                Toast.makeText(OpponentProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                                e.printStackTrace();
+                            }
+                        } catch (IOException e) {
+                            opponentProfileRefresh.post(new Runnable() {
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
+                                public void run() {
+                                    opponentProfileRefresh.setRefreshing(false);
                                 }
                             });
-                            builder.show();
+                            Toast.makeText(OpponentProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
                         }
-                    } catch (JSONException e) {
+                    }
+
+                    @Override
+                    public void onRequestFailed(Object[] result) {
                         opponentProfileRefresh.post(new Runnable() {
                             @Override
                             public void run() {
                                 opponentProfileRefresh.setRefreshing(false);
                             }
                         });
-                        Toast.makeText(OpponentProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
-                    }
-                } catch (IOException e) {
-                    opponentProfileRefresh.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            opponentProfileRefresh.setRefreshing(false);
-                        }
-                    });
-                    Toast.makeText(OpponentProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                opponentProfileRefresh.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        opponentProfileRefresh.setRefreshing(false);
                     }
                 });
-                Toast.makeText(OpponentProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void getUserPosts() {
-        Retrofit.getInstance().getInkService().getUserPosts(mOpponentId, sharedHelper.getUserId()).enqueue(new Callback<List<FeedModel>>() {
-            @Override
-            public void onResponse(Call<List<FeedModel>> call, Response<List<FeedModel>> response) {
-                opponentProfileAdapter.setHasServerError(false);
-                if (response.body().isEmpty()) {
-                    opponentProfileAdapter.setShowNoFeedsOrError(true);
-                    feedModels.add(new FeedModel());
-                    opponentProfileAdapter.notifyDataSetChanged();
-                } else {
-                    opponentProfileAdapter.setShowNoFeedsOrError(false);
-                    for (FeedModel feedModel : response.body()) {
-                        feedModels.add(feedModel);
+        makeRequest(Retrofit.getInstance().getInkService().getUserPosts(mOpponentId, sharedHelper.getUserId()),
+                null, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        opponentProfileAdapter.setHasServerError(false);
+                        List<FeedModel> feedModels = (List<FeedModel>) result;
+                        if (feedModels.isEmpty()) {
+                            opponentProfileAdapter.setShowNoFeedsOrError(true);
+                            feedModels.add(new FeedModel());
+                            opponentProfileAdapter.notifyDataSetChanged();
+                        } else {
+                            opponentProfileAdapter.setShowNoFeedsOrError(false);
+                            for (FeedModel feedModel : feedModels) {
+                                feedModels.add(feedModel);
+                                opponentProfileAdapter.notifyDataSetChanged();
+                            }
+                        }
+                        opponentProfileRefresh.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                opponentProfileRefresh.setRefreshing(false);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+                        opponentProfileRefresh.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                opponentProfileRefresh.setRefreshing(false);
+                            }
+                        });
+                        opponentProfileAdapter.setShowNoFeedsOrError(true);
+                        opponentProfileAdapter.setHasServerError(true);
+                        feedModels.add(new FeedModel());
                         opponentProfileAdapter.notifyDataSetChanged();
                     }
-                }
-                opponentProfileRefresh.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        opponentProfileRefresh.setRefreshing(false);
-                    }
                 });
-            }
-
-            @Override
-            public void onFailure(Call<List<FeedModel>> call, Throwable t) {
-                opponentProfileRefresh.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        opponentProfileRefresh.setRefreshing(false);
-                    }
-                });
-                opponentProfileAdapter.setShowNoFeedsOrError(true);
-                opponentProfileAdapter.setHasServerError(true);
-                feedModels.add(new FeedModel());
-                opponentProfileAdapter.notifyDataSetChanged();
-            }
-        });
     }
 
 
@@ -620,48 +603,39 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
     }
 
     private void like(final String postId, final int isLiking, final TextView likeCountTV, final FeedModel feedModel, final View likeWrapper) {
-        final Call<ResponseBody> likeCall = Retrofit.getInstance().getInkService().likePost(sharedHelper.getUserId(), postId, isLiking);
-        likeCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    like(postId, isLiking, likeCountTV, feedModel, likeWrapper);
-                    return;
-                }
-                if (response.body() == null) {
-                    like(postId, isLiking, likeCountTV, feedModel, likeWrapper);
-                    return;
-                }
-
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    String likesCount = jsonObject.optString("likes_count");
-                    feedModel.setLikesCount(likesCount);
-                    likeWrapper.setEnabled(true);
-                    if (!likesCount.equals("0")) {
-                        likeCountTV.setVisibility(View.VISIBLE);
-                        if (Integer.parseInt(likesCount) > 1) {
-                            likeCountTV.setText(likesCount + " " + getString(R.string.likesText));
-                        } else {
-                            likeCountTV.setText(likesCount + " " + getString(R.string.singleLikeText));
+        makeRequest(Retrofit.getInstance().getInkService().likePost(sharedHelper.getUserId(), postId, isLiking), null,
+                new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        try {
+                            String responseBody = ((ResponseBody) result).string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            String likesCount = jsonObject.optString("likes_count");
+                            feedModel.setLikesCount(likesCount);
+                            likeWrapper.setEnabled(true);
+                            if (!likesCount.equals("0")) {
+                                likeCountTV.setVisibility(View.VISIBLE);
+                                if (Integer.parseInt(likesCount) > 1) {
+                                    likeCountTV.setText(likesCount + " " + getString(R.string.likesText));
+                                } else {
+                                    likeCountTV.setText(likesCount + " " + getString(R.string.singleLikeText));
+                                }
+                            } else {
+                                likeCountTV.setVisibility(View.INVISIBLE);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    } else {
-                        likeCountTV.setVisibility(View.INVISIBLE);
+
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
-            }
+                    @Override
+                    public void onRequestFailed(Object[] result) {
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                like(postId, isLiking, likeCountTV, feedModel, likeWrapper);
-            }
-        });
+                    }
+                });
     }
 
 
@@ -809,45 +783,37 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
 
-        Retrofit.getInstance().getInkService().reportPost(feedModel.getId(), String.valueOf(feedModel.isGlobalPost()), reportCauseMessage, sharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    reportPost(feedModel, reportCauseMessage);
-                    return;
-                }
-                if (response.body() == null) {
-                    reportPost(feedModel, reportCauseMessage);
-                    return;
-                }
-                dialog.hide();
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (success) {
-                        DialogUtils.showDialog(OpponentProfile.this, getString(R.string.done_text), getString(R.string.reported), true, null, false, null);
-                        opponentProfileAdapter.clear();
+        makeRequest(Retrofit.getInstance().getInkService().reportPost(feedModel.getId(), String.valueOf(feedModel.isGlobalPost()), reportCauseMessage, sharedHelper.getUserId()),
+                null, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        dialog.hide();
+                        try {
+                            String responseBody = ((ResponseBody) result).string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            boolean success = jsonObject.optBoolean("success");
+                            if (success) {
+                                DialogUtils.showDialog(OpponentProfile.this, getString(R.string.done_text), getString(R.string.reported), true, null, false, null);
+                                opponentProfileAdapter.clear();
 
-                        onRefresh();
-                    } else {
-                        DialogUtils.showDialog(OpponentProfile.this, getString(R.string.error), getString(R.string.reportError), true, null, false, null);
+                                onRefresh();
+                            } else {
+                                DialogUtils.showDialog(OpponentProfile.this, getString(R.string.error), getString(R.string.reportError), true, null, false, null);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            DialogUtils.showDialog(OpponentProfile.this, getString(R.string.error), getString(R.string.reportError), true, null, false, null);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            DialogUtils.showDialog(OpponentProfile.this, getString(R.string.error), getString(R.string.reportError), true, null, false, null);
+                        }
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    DialogUtils.showDialog(OpponentProfile.this, getString(R.string.error), getString(R.string.reportError), true, null, false, null);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    DialogUtils.showDialog(OpponentProfile.this, getString(R.string.error), getString(R.string.reportError), true, null, false, null);
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                dialog.hide();
-                DialogUtils.showDialog(OpponentProfile.this, getString(R.string.error), getString(R.string.reportError), true, null, false, null);
-            }
-        });
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+                        dialog.hide();
+                    }
+                });
     }
 
     @Override

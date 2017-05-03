@@ -33,17 +33,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ink.va.activities.CreateTrend;
+import ink.va.activities.NewsAndTrendsActivity;
 import ink.va.adapters.HintAdapter;
 import ink.va.adapters.TrendAdapter;
 import ink.va.interfaces.RecyclerItemClickListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by PC-Comp on 9/12/2016.
@@ -153,121 +152,106 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
         trendModelArrayList.clear();
         isDataLoaded = false;
         if (category == null) {
-            Call<ResponseBody> trendsCall = Retrofit.getInstance().getInkService().getTrends(Constants.TREND_TYPE_ALL);
-            trendsCall.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if (response == null) {
-                        getTrendByCategory(category);
-                        return;
-                    }
-                    if (response.body() == null) {
-                        getTrendByCategory(category);
-                    }
-                    try {
-                        String responseBody = response.body().string();
-                        JSONObject jsonObject = new JSONObject(responseBody);
-                        boolean success = jsonObject.optBoolean("success");
-                        advertisementPrice = jsonObject.optString("advertisementPrice");
-                        topTrendPrice = jsonObject.optString("topTrendPrice");
-                        isDataLoaded = true;
-                        if (attemptedToCreate) {
-                            attemptedToCreate = false;
-                            Snackbar.make(trendRecycler, getString(R.string.canProceedText), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
+            ((NewsAndTrendsActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().getTrends(Constants.TREND_TYPE_ALL),
+                    null, new RequestCallback() {
+                        @Override
+                        public void onRequestSuccess(Object result) {
+                            try {
+                                String responseBody = ((ResponseBody) result).string();
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                boolean success = jsonObject.optBoolean("success");
+                                advertisementPrice = jsonObject.optString("advertisementPrice");
+                                topTrendPrice = jsonObject.optString("topTrendPrice");
+                                isDataLoaded = true;
+                                if (attemptedToCreate) {
+                                    attemptedToCreate = false;
+                                    Snackbar.make(trendRecycler, getString(R.string.canProceedText), Snackbar.LENGTH_SHORT).setAction("OK", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
 
+                                        }
+                                    }).show();
                                 }
-                            }).show();
-                        }
-                        if (success) {
-                            JSONArray trendsArray = jsonObject.optJSONArray("trends");
-                            if (trendsArray.length() == 0) {
-                                Snackbar.make(trendRecycler, getString(R.string.noTrends), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
+                                if (success) {
+                                    JSONArray trendsArray = jsonObject.optJSONArray("trends");
+                                    if (trendsArray.length() == 0) {
+                                        Snackbar.make(trendRecycler, getString(R.string.noTrends), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
 
+                                            }
+                                        }).show();
+                                        trendSwipe.setRefreshing(false);
+                                        return;
                                     }
-                                }).show();
+                                    for (int i = 0; i < trendsArray.length(); i++) {
+                                        JSONObject eachObject = trendsArray.optJSONObject(i);
+                                        trendModel = new TrendModel(eachObject.optString("creatorId"), eachObject.optString("title"), eachObject.optString("content"), eachObject.optString("image_url"),
+                                                eachObject.optString("external_url"), eachObject.optString("category"), eachObject.optString("id"), eachObject.optBoolean("isTop"));
+                                        trendModelArrayList.add(trendModel);
+                                        trendAdapter.notifyDataSetChanged();
+                                    }
+                                }
                                 trendSwipe.setRefreshing(false);
-                                return;
-                            }
-                            for (int i = 0; i < trendsArray.length(); i++) {
-                                JSONObject eachObject = trendsArray.optJSONObject(i);
-                                trendModel = new TrendModel(eachObject.optString("creatorId"), eachObject.optString("title"), eachObject.optString("content"), eachObject.optString("image_url"),
-                                        eachObject.optString("external_url"), eachObject.optString("category"), eachObject.optString("id"), eachObject.optBoolean("isTop"));
-                                trendModelArrayList.add(trendModel);
-                                trendAdapter.notifyDataSetChanged();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                trendSwipe.setRefreshing(false);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                trendSwipe.setRefreshing(false);
                             }
                         }
-                        trendSwipe.setRefreshing(false);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        trendSwipe.setRefreshing(false);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        trendSwipe.setRefreshing(false);
-                    }
-                }
 
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    trendSwipe.setRefreshing(false);
-                    Toast.makeText(getActivity(), getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-                }
-            });
+                        @Override
+                        public void onRequestFailed(Object[] result) {
+                            trendSwipe.setRefreshing(false);
+                        }
+                    });
         } else {
-            Call<ResponseBody> trendsCall = Retrofit.getInstance().getInkService().getTrends(category);
-            trendsCall.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if (response == null) {
-                        getTrendByCategory(category);
-                        return;
-                    }
-                    if (response.body() == null) {
-                        getTrendByCategory(category);
-                    }
-                    try {
-                        String responseBody = response.body().string();
-                        JSONObject jsonObject = new JSONObject(responseBody);
-                        boolean success = jsonObject.optBoolean("success");
-                        isDataLoaded = true;
-                        if (success) {
-                            JSONArray trendsArray = jsonObject.optJSONArray("trends");
-                            if (trendsArray.length() == 0) {
-                                Snackbar.make(trendRecycler, getString(R.string.noTrends), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
+            ((NewsAndTrendsActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().getTrends(category),
+                    null, new RequestCallback() {
+                        @Override
+                        public void onRequestSuccess(Object result) {
+                            try {
+                                String responseBody = ((ResponseBody) result).string();
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                boolean success = jsonObject.optBoolean("success");
+                                isDataLoaded = true;
+                                if (success) {
+                                    JSONArray trendsArray = jsonObject.optJSONArray("trends");
+                                    if (trendsArray.length() == 0) {
+                                        Snackbar.make(trendRecycler, getString(R.string.noTrends), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
 
+                                            }
+                                        }).show();
+                                        trendSwipe.setRefreshing(false);
+                                        return;
                                     }
-                                }).show();
+                                    for (int i = 0; i < trendsArray.length(); i++) {
+                                        JSONObject eachObject = trendsArray.optJSONObject(i);
+                                        trendModel = new TrendModel(eachObject.optString("creatorId"), eachObject.optString("title"), eachObject.optString("content"), eachObject.optString("image_url"),
+                                                eachObject.optString("external_url"), eachObject.optString("category"), eachObject.optString("id"), eachObject.optBoolean("isTop"));
+                                        trendModelArrayList.add(trendModel);
+                                        trendAdapter.notifyDataSetChanged();
+                                    }
+                                }
                                 trendSwipe.setRefreshing(false);
-                                return;
-                            }
-                            for (int i = 0; i < trendsArray.length(); i++) {
-                                JSONObject eachObject = trendsArray.optJSONObject(i);
-                                trendModel = new TrendModel(eachObject.optString("creatorId"), eachObject.optString("title"), eachObject.optString("content"), eachObject.optString("image_url"),
-                                        eachObject.optString("external_url"), eachObject.optString("category"), eachObject.optString("id"), eachObject.optBoolean("isTop"));
-                                trendModelArrayList.add(trendModel);
-                                trendAdapter.notifyDataSetChanged();
+                            } catch (IOException e) {
+                                trendSwipe.setRefreshing(false);
+                                e.printStackTrace();
+                            } catch (JSONException e) {
+                                trendSwipe.setRefreshing(false);
+                                e.printStackTrace();
                             }
                         }
-                        trendSwipe.setRefreshing(false);
-                    } catch (IOException e) {
-                        trendSwipe.setRefreshing(false);
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        trendSwipe.setRefreshing(false);
-                        e.printStackTrace();
-                    }
-                }
 
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    getTrendByCategory(category);
-                }
-            });
+                        @Override
+                        public void onRequestFailed(Object[] result) {
+                            trendSwipe.setRefreshing(false);
+                        }
+                    });
         }
     }
 
@@ -285,47 +269,41 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
         startRefreshing();
         categoriesList.clear();
         hintAdapter.notifyDataSetChanged();
-        Call<ResponseBody> categoriesCall = Retrofit.getInstance().getInkService().getTrendCategories(Constants.TREND_CATEGORIES_TOKEN);
-        categoriesCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    return;
-                }
-                if (response.body() == null) {
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (success) {
-                        spinnerWrapper.setVisibility(View.VISIBLE);
-                        JSONArray categories = jsonObject.optJSONArray("categories");
-                        for (int i = 0; i < categories.length(); i++) {
-                            categoriesList.add(categories.optString(i));
+        ((NewsAndTrendsActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().getTrendCategories(Constants.TREND_CATEGORIES_TOKEN), null,
+                new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        try {
+                            String responseBody = ((ResponseBody) result).string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            boolean success = jsonObject.optBoolean("success");
+                            if (success) {
+                                spinnerWrapper.setVisibility(View.VISIBLE);
+                                JSONArray categories = jsonObject.optJSONArray("categories");
+                                for (int i = 0; i < categories.length(); i++) {
+                                    categoriesList.add(categories.optString(i));
+                                }
+                                categoriesList.add(getString(R.string.all));
+                                categoriesSpinner.setSelection(hintAdapter.getCount());
+                                hintAdapter.notifyDataSetChanged();
+                            } else {
+                                Snackbar.make(trendRecycler, getString(R.string.notAuthorized), Snackbar.LENGTH_SHORT).show();
+                            }
+                            trendSwipe.setRefreshing(false);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            trendSwipe.setRefreshing(false);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            trendSwipe.setRefreshing(false);
                         }
-                        categoriesList.add(getString(R.string.all));
-                        categoriesSpinner.setSelection(hintAdapter.getCount());
-                        hintAdapter.notifyDataSetChanged();
-                    } else {
-                        Snackbar.make(trendRecycler, getString(R.string.notAuthorized), Snackbar.LENGTH_SHORT).show();
                     }
-                    trendSwipe.setRefreshing(false);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    trendSwipe.setRefreshing(false);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    trendSwipe.setRefreshing(false);
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getCategories();
-            }
-        });
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+                        trendSwipe.setRefreshing(false);
+                    }
+                });
     }
 
     @Override
@@ -378,42 +356,32 @@ public class WhatsTrending extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void callToDeleteServer(final TrendModel trendModel) {
-        Retrofit.getInstance().getInkService().deleteTrend(trendModel.getId()).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    callToDeleteServer(trendModel);
-                    return;
-                }
-
-                if (response.body() == null) {
-                    callToDeleteServer(trendModel);
-                    return;
-                }
-                trendSwipe.setRefreshing(false);
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (success) {
-                        getTrendByCategory(lastKnownCategory);
-                        Toast.makeText(getActivity(), getString(R.string.deleted), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getActivity(), getString(R.string.notDeleted), Toast.LENGTH_SHORT).show();
+        ((NewsAndTrendsActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().deleteTrend(trendModel.getId()),
+                trendSwipe, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        try {
+                            String responseBody = ((ResponseBody) result).string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            boolean success = jsonObject.optBoolean("success");
+                            if (success) {
+                                getTrendByCategory(lastKnownCategory);
+                                Toast.makeText(getActivity(), getString(R.string.deleted), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getActivity(), getString(R.string.notDeleted), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                trendSwipe.setRefreshing(false);
-                Toast.makeText(getActivity(), getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+
+                    }
+                });
     }
 
     @Override

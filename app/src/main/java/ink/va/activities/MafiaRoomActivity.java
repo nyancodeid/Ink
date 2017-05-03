@@ -123,7 +123,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     private void getMyRooms() {
         showSwipe();
-        makeRequest(Retrofit.getInstance().getInkService().getMyMafiaRooms(sharedHelper.getUserId()), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getMyMafiaRooms(sharedHelper.getUserId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 dismissSwipe();
@@ -176,7 +176,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     private void getRooms() {
         showSwipe();
-        makeRequest(Retrofit.getInstance().getInkService().getMafiaRooms(), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getMafiaRooms(), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 dismissSwipe();
@@ -307,7 +307,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     private void deleteRoom(final int roomId) {
         showSwipe();
-        makeRequest(Retrofit.getInstance().getInkService().deleteMafiaRoom(roomId, sharedHelper.getUserId()), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().deleteMafiaRoom(roomId, sharedHelper.getUserId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 dismissSwipe();
@@ -346,7 +346,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     private void joinRoom(final int id) {
         showSwipe();
-        makeRequest(Retrofit.getInstance().getInkService().joinRoom(id, sharedHelper.getUserId()), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().joinRoom(id, sharedHelper.getUserId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 dismissSwipe();
@@ -410,7 +410,7 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
 
     private void leaveRoom(final int id) {
         showSwipe();
-        makeRequest(Retrofit.getInstance().getInkService().leaveRoom(id, sharedHelper.getUserId()), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().leaveRoom(id, sharedHelper.getUserId()), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 dismissSwipe();

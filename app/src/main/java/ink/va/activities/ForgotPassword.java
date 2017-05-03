@@ -112,7 +112,7 @@ public class ForgotPassword extends BaseActivity {
     private void requestLogin(final String login) {
         setSecurityQuestionContainerEnabled(false);
         forgotPasswordProgress.setVisibility(View.VISIBLE);
-        makeRequest(Retrofit.getInstance().getInkService().getUserLogin(login, Constants.USER_LOGIN_TOKEN), forgotPasswordProgress, true, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getUserLogin(login, Constants.USER_LOGIN_TOKEN), forgotPasswordProgress, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {
@@ -193,7 +193,7 @@ public class ForgotPassword extends BaseActivity {
 
     private void getTemporaryPassword() {
         forgotPasswordProgress.setVisibility(View.VISIBLE);
-        makeRequest(Retrofit.getInstance().getInkService().getTemporaryPassword(inputLogin, Constants.USER_LOGIN_TOKEN), forgotPasswordProgress, true, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getTemporaryPassword(inputLogin, Constants.USER_LOGIN_TOKEN), forgotPasswordProgress, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {

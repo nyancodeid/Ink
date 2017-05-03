@@ -28,15 +28,13 @@ import butterknife.ButterKnife;
 import ink.va.activities.PackFullScreen;
 import ink.va.activities.Shop;
 import ink.va.adapters.PacksAdapter;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.PacksModel;
 import ink.va.models.PacksResponse;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.User;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static ink.va.utils.Constants.PACK_BACKGROUND_BUNDLE_KEY;
 import static ink.va.utils.Constants.PACK_CONTENT_BUNDLE_KEY;
@@ -110,20 +108,11 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
                 }
             });
         }
-        Call<ResponseBody> packsCall = Retrofit.getInstance().getInkService().getPacks();
-        packsCall.enqueue(new Callback<ResponseBody>() {
+        ((Shop) getActivity()).makeRequest(Retrofit.getInstance().getInkService().getPacks(), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getPacks();
-                    return;
-                }
-                if (response.body() == null) {
-                    getPacks();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     Gson gson = new Gson();
                     PacksResponse packsResponse = gson.fromJson(responseBody, PacksResponse.class);
                     if (packsResponse.success) {
@@ -144,8 +133,8 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getPacks();
+            public void onRequestFailed(Object[] result) {
+
             }
         });
     }

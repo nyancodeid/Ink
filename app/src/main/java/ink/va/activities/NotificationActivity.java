@@ -2,7 +2,6 @@ package ink.va.activities;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -21,16 +20,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.adapters.NotificationAdapter;
 import ink.va.interfaces.RecyclerItemClickListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.UserNotificationModel;
 import ink.va.utils.InterpreterHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class NotificationActivity extends AppCompatActivity implements RecyclerItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class NotificationActivity extends BaseActivity implements RecyclerItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private NotificationAdapter notificationAdapter;
     private InterpreterHelper interpreterHelper;
 
@@ -102,36 +99,29 @@ public class NotificationActivity extends AppCompatActivity implements RecyclerI
 
     private void silentRemove(final UserNotificationModel notificationModel) {
         String id = notificationModel.getId();
-        Retrofit.getInstance().getInkService().removeNotification(id).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    silentRemove(notificationModel);
-                    return;
-                }
-                if (response.body() == null) {
-                    silentRemove(notificationModel);
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (!success) {
-                        Toast.makeText(NotificationActivity.this, getString(R.string.couldNotRemoveText), Toast.LENGTH_SHORT).show();
+        makeRequest(Retrofit.getInstance().getInkService().removeNotification(id),
+                null, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        try {
+                            String responseBody = ((ResponseBody) result).string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            boolean success = jsonObject.optBoolean("success");
+                            if (!success) {
+                                Toast.makeText(NotificationActivity.this, getString(R.string.couldNotRemoveText), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(NotificationActivity.this, getString(R.string.couldNotRemoveText), Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+
+                    }
+                });
     }
 
     private void showNoNotifications() {
@@ -153,46 +143,32 @@ public class NotificationActivity extends AppCompatActivity implements RecyclerI
                 notificationSwipe.setRefreshing(true);
             }
         });
-        Retrofit.getInstance().getInkService().getUserNotifications(sharedHelper.getUserId()).enqueue(new Callback<List<UserNotificationModel>>() {
-            @Override
-            public void onResponse(Call<List<UserNotificationModel>> call, Response<List<UserNotificationModel>> response) {
-                List<UserNotificationModel> userNotificationModels = response.body();
-                notificationSwipe.post(new Runnable() {
+        makeRequest(Retrofit.getInstance().getInkService().getUserNotifications(sharedHelper.getUserId()),
+                notificationSwipe, new RequestCallback() {
                     @Override
-                    public void run() {
-                        notificationSwipe.setRefreshing(false);
+                    public void onRequestSuccess(Object result) {
+                        List<UserNotificationModel> userNotificationModels = (List<UserNotificationModel>) result;
+
+                        if (userNotificationModels.isEmpty()) {
+                            showNoNotifications();
+                            notificationAdapter.clearItems();
+                        } else {
+                            notificationAdapter.setUserNotificationModels(userNotificationModels);
+                            hideNoNotifications();
+                            silentNotificationCheck();
+                        }
+                    }
+
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+
                     }
                 });
-
-                if (userNotificationModels.isEmpty()) {
-                    showNoNotifications();
-                    notificationAdapter.clearItems();
-                } else {
-                    notificationAdapter.setUserNotificationModels(userNotificationModels);
-                    hideNoNotifications();
-                    silentNotificationCheck();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<UserNotificationModel>> call, Throwable t) {
-                Toast.makeText(NotificationActivity.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     private void silentNotificationCheck() {
-        Retrofit.getInstance().getInkService().checkNotificationAsRead(sharedHelper.getUserId()).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
+        makeRequest(Retrofit.getInstance().getInkService().checkNotificationAsRead(sharedHelper.getUserId()),
+                null, null);
     }
 
     @Override

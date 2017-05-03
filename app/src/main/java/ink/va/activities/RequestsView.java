@@ -23,10 +23,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ink.va.adapters.RequestsAdapter;
+import ink.va.interfaces.RequestCallback;
 import ink.va.interfaces.RequestListener;
 import ink.va.models.RequestsModel;
 import ink.va.service.SocketService;
@@ -35,9 +35,6 @@ import ink.va.utils.DimDialog;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static ink.va.utils.Constants.EVENT_ACCEPT_FRIEND_REQUEST;
 import static ink.va.utils.Constants.EVENT_DECLINE_FRIEND_REQUEST;
@@ -105,20 +102,11 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
             });
         }
 
-        Call<ResponseBody> myRequestsCall = Retrofit.getInstance().getInkService().getMyRequests(sharedHelper.getUserId());
-        myRequestsCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getMyRequests(sharedHelper.getUserId()), requestSwipe, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getMyRequests();
-                    return;
-                }
-                if (response.body() == null) {
-                    getMyRequests();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -154,23 +142,20 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
                             requestsModels.add(requestsModel);
                             requestsAdapter.notifyDataSetChanged();
                         }
-                        requestSwipe.setRefreshing(false);
 
                     } else {
                         getMyRequests();
                     }
                 } catch (IOException e) {
-                    requestSwipe.setRefreshing(false);
                     e.printStackTrace();
                 } catch (JSONException e) {
-                    requestSwipe.setRefreshing(false);
                     e.printStackTrace();
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getMyRequests();
+            public void onRequestFailed(Object[] result) {
+
             }
         });
     }
@@ -218,21 +203,13 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
             }
         });
         final RequestsModel requestsModel = requestsModels.get(position);
-        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.RESPOND_TYPE_ACCEPT_LOCATION_REQUEST, sharedHelper.getUserId(),
-                sharedHelper.getFirstName() + " " + sharedHelper.getLastName(), requestsModel.getRequestId(), requestsModel.getRequesterId());
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+
+        makeRequest(Retrofit.getInstance().getInkService().respondToRequest(Constants.RESPOND_TYPE_ACCEPT_LOCATION_REQUEST, sharedHelper.getUserId(),
+                sharedHelper.getFirstName() + " " + sharedHelper.getLastName(), requestsModel.getRequestId(), requestsModel.getRequesterId()), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    acceptLocationRequest(position);
-                    return;
-                }
-                if (response.body() == null) {
-                    acceptLocationRequest(position);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     DimDialog.hideDialog();
@@ -266,12 +243,11 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
                     DimDialog.hideDialog();
                     e.printStackTrace();
                 }
-
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                acceptFriendRequest(position);
+            public void onRequestFailed(Object[] result) {
+                DimDialog.hideDialog();
             }
         });
     }
@@ -284,23 +260,14 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
             }
         });
         RequestsModel requestsModel = requestsModels.get(position);
-        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.RESPOND_TYPE_DENY_LOCATION_REQUEST, requestsModel.getRequestId(),
+        makeRequest(Retrofit.getInstance().getInkService().respondToRequest(Constants.RESPOND_TYPE_DENY_LOCATION_REQUEST, requestsModel.getRequestId(),
                 sharedHelper.getFirstName() + " "
                         + sharedHelper.getLastName(),
-                requestsModel.getRequesterId(), sharedHelper.getUserId());
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+                requestsModel.getRequesterId(), sharedHelper.getUserId()), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    declineLocationRequest(position);
-                    return;
-                }
-                if (response.body() == null) {
-                    declineLocationRequest(position);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -318,8 +285,8 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                declineLocationRequest(position);
+            public void onRequestFailed(Object[] result) {
+                DimDialog.hideDialog();
             }
         });
     }
@@ -332,21 +299,12 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
             }
         });
         final RequestsModel requestsModel = requestsModels.get(position);
-        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.RESPOND_TYPE_ACCEPT_FRIEND_REQUEST, sharedHelper.getUserId(),
-                sharedHelper.getFirstName() + " " + sharedHelper.getLastName(), "", requestsModel.getRequesterId());
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().respondToRequest(Constants.RESPOND_TYPE_ACCEPT_FRIEND_REQUEST, sharedHelper.getUserId(),
+                sharedHelper.getFirstName() + " " + sharedHelper.getLastName(), "", requestsModel.getRequesterId()), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    acceptFriendRequest(position);
-                    return;
-                }
-                if (response.body() == null) {
-                    acceptFriendRequest(position);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     DimDialog.hideDialog();
@@ -369,12 +327,12 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
                     DimDialog.hideDialog();
                     e.printStackTrace();
                 }
-
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                acceptFriendRequest(position);
+            public void onRequestFailed(Object[] result) {
+                DimDialog.hideDialog();
+                getMyRequests();
             }
         });
     }
@@ -388,21 +346,12 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
             }
         });
         final RequestsModel requestsModel = requestsModels.get(position);
-        Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.RESPOND_TYPE_DENY_FRIEND_REQUEST, requestsModel.getRequestId(), "",
-                "", "");
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().respondToRequest(Constants.RESPOND_TYPE_DENY_FRIEND_REQUEST, requestsModel.getRequestId(), "",
+                "", ""), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    denyFriendRequest(position);
-                    return;
-                }
-                if (response.body() == null) {
-                    denyFriendRequest(position);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -428,8 +377,8 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                denyFriendRequest(position);
+            public void onRequestFailed(Object[] result) {
+                DimDialog.hideDialog();
             }
         });
     }
@@ -475,22 +424,13 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
             }
         });
         final RequestsModel requestsModel = requestsModels.get(position);
-        Call<ResponseBody> requestCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.TYPE_ACCEPT_REQUEST,
+        makeRequest(Retrofit.getInstance().getInkService().respondToRequest(Constants.TYPE_ACCEPT_REQUEST,
                 requestsModel.getRequesterId(), requestsModel.getRequesterName(), requestsModel.getRequesterImage(),
-                requestsModel.getRequestedGroupId());
-        requestCall.enqueue(new Callback<ResponseBody>() {
+                requestsModel.getRequestedGroupId()), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    acceptGroupRequest(position);
-                    return;
-                }
-                if (response.body() == null) {
-                    acceptGroupRequest(position);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -511,8 +451,8 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                acceptGroupRequest(position);
+            public void onRequestFailed(Object[] result) {
+                DimDialog.hideDialog();
             }
         });
     }
@@ -525,23 +465,13 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
             }
         });
         RequestsModel requestsModel = requestsModels.get(position);
-        Call<ResponseBody> requestCall = Retrofit.getInstance().getInkService().respondToRequest(Constants.TYPE_DENY_REQUEST,
+        makeRequest(Retrofit.getInstance().getInkService().respondToRequest(Constants.TYPE_DENY_REQUEST,
                 requestsModel.getRequesterId(), requestsModel.getRequesterName(), requestsModel.getRequesterImage(),
-                requestsModel.getRequestedGroupId());
-        requestCall.enqueue(new Callback<ResponseBody>() {
+                requestsModel.getRequestedGroupId()), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                if (response == null) {
-                    denyGroupRequest(position);
-                    return;
-                }
-                if (response.body() == null) {
-                    denyGroupRequest(position);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -562,8 +492,8 @@ public class RequestsView extends BaseActivity implements SwipeRefreshLayout.OnR
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                denyGroupRequest(position);
+            public void onRequestFailed(Object[] result) {
+                DimDialog.hideDialog();
             }
         });
     }

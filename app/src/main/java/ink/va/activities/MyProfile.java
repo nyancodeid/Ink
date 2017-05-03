@@ -62,6 +62,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
 import ink.va.callbacks.GeneralCallback;
+import ink.va.interfaces.RequestCallback;
 import ink.va.service.SocketService;
 import ink.va.utils.Constants;
 import ink.va.utils.DialogUtils;
@@ -74,8 +75,6 @@ import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 import static ink.va.utils.FragmentDialog.ORDER_TYPE_HIDE_PROFILE;
@@ -393,27 +392,19 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     }
 
     private void getMyData() {
-        final Call<ResponseBody> myDataResponse = Retrofit.getInstance()
-                .getInkService().getSingleUserDetails(mSharedHelper.getUserId(), "");
-        myDataResponse.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getMyData();
-                    return;
-                }
-                if (response.body() == null) {
-                    getMyData();
-                    return;
-                }
-                fetchData(response);
-            }
+       makeRequest(Retrofit.getInstance()
+                       .getInkService().getSingleUserDetails(mSharedHelper.getUserId(), ""),
+               null, new RequestCallback() {
+                   @Override
+                   public void onRequestSuccess(Object result) {
+                       fetchData((Response<ResponseBody>) result);
+                   }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getMyData();
-            }
-        });
+                   @Override
+                   public void onRequestFailed(Object[] result) {
+
+                   }
+               });
     }
 
 
@@ -653,54 +644,46 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     }
 
     private void completeOrder(final String actionName) {
-        final Call<ResponseBody> responseBodyCall = Retrofit.getInstance().getInkService().changeProfile(actionName, mSharedHelper.getUserId());
-        responseBodyCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    completeOrder(actionName);
-                    return;
-                }
-                if (response.body() == null) {
-                    completeOrder(actionName);
-                    return;
-                }
-                progressDialog.dismiss();
-                try {
-                    String responseBody = response.body().string();
-                    JSONObject jsonObject = new JSONObject(responseBody);
-                    boolean success = jsonObject.optBoolean("success");
-                    if (success) {
-                        DialogUtils.showDialog(MyProfile.this, getString(R.string.success), getString(R.string.service_removed),
-                                true, null, false, null);
-                        switch (actionName) {
-                            case ACTION_REMOVE_HIDDEN_PROFILE:
-                                isHidden = false;
-                                break;
-                            case ACTION_REMOVE_INCOGNITO:
-                                isIncognito = false;
-                                break;
+        makeRequest(Retrofit.getInstance().getInkService().changeProfile(actionName, mSharedHelper.getUserId()),
+                null, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        progressDialog.dismiss();
+                        try {
+                            String responseBody = ((ResponseBody) result).string();
+                            JSONObject jsonObject = new JSONObject(responseBody);
+                            boolean success = jsonObject.optBoolean("success");
+                            if (success) {
+                                DialogUtils.showDialog(MyProfile.this, getString(R.string.success), getString(R.string.service_removed),
+                                        true, null, false, null);
+                                switch (actionName) {
+                                    case ACTION_REMOVE_HIDDEN_PROFILE:
+                                        isHidden = false;
+                                        break;
+                                    case ACTION_REMOVE_INCOGNITO:
+                                        isIncognito = false;
+                                        break;
+                                }
+                                isDataLoaded = false;
+                                attachValues(false);
+                            } else {
+                                DialogUtils.showDialog(MyProfile.this, getString(R.string.error), getString(R.string.orderError),
+                                        true, null, false, null);
+                            }
+                        } catch (IOException e) {
+                            Toast.makeText(MyProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            Toast.makeText(MyProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
                         }
-                        isDataLoaded = false;
-                        attachValues(false);
-                    } else {
-                        DialogUtils.showDialog(MyProfile.this, getString(R.string.error), getString(R.string.orderError),
-                                true, null, false, null);
                     }
-                } catch (IOException e) {
-                    Toast.makeText(MyProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    Toast.makeText(MyProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(MyProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+                        progressDialog.dismiss();
+                    }
+                });
     }
 
     private void closeMenuFab() {
@@ -1008,77 +991,69 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     }
 
     private void deleteAccountRequest() {
-        final Call<ResponseBody> deleteAccountCall = Retrofit.getInstance().getInkService().deleteAccount(mSharedHelper.getUserId());
-        deleteAccountCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    deleteAccountRequest();
-                    return;
-                }
-                if (response.body() == null) {
-                    deleteAccountRequest();
-                    return;
-                }
-                try {
-                    String responseBody = response.body().string();
-                    if (responseBody.equals("deleted")) {
-                        mSharedHelper.clean();
-                        stopService(new Intent(MyProfile.this, SocketService.class));
+        makeRequest(Retrofit.getInstance().getInkService().deleteAccount(mSharedHelper.getUserId()),
+                null, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
                         try {
-                            RealmHelper.getInstance().clearDatabase(null);
-                        } catch (Exception e) {
+                            String responseBody = ((ResponseBody) result).string();
+                            if (responseBody.equals("deleted")) {
+                                mSharedHelper.clean();
+                                stopService(new Intent(MyProfile.this, SocketService.class));
+                                try {
+                                    RealmHelper.getInstance().clearDatabase(null);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                Thread thread = new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                                        try {
+                                            FirebaseInstanceId.getInstance().deleteInstanceId();
+                                            progressDialog.dismiss();
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Toast.makeText(MyProfile.this, getString(R.string.accountdeleted), Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                            Intent intent = new Intent(getApplicationContext(), Login.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                            progressDialog.dismiss();
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Toast.makeText(MyProfile.this, getString(R.string.accountdeleted), Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                            fireAccountDeleteListener();
+                                            Intent intent = new Intent(getApplicationContext(), Login.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    }
+                                });
+                                thread.start();
+                            } else {
+                                progressDialog.dismiss();
+                                Toast.makeText(MyProfile.this, getString(R.string.coudlNotDelete), Toast.LENGTH_LONG).show();
+                            }
+                        } catch (IOException e) {
+                            deleteAccountRequest();
                             e.printStackTrace();
                         }
-                        Thread thread = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-                                try {
-                                    FirebaseInstanceId.getInstance().deleteInstanceId();
-                                    progressDialog.dismiss();
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(MyProfile.this, getString(R.string.accountdeleted), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                    Intent intent = new Intent(getApplicationContext(), Login.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    progressDialog.dismiss();
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(MyProfile.this, getString(R.string.accountdeleted), Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                    fireAccountDeleteListener();
-                                    Intent intent = new Intent(getApplicationContext(), Login.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            }
-                        });
-                        thread.start();
-                    } else {
-                        progressDialog.dismiss();
-                        Toast.makeText(MyProfile.this, getString(R.string.coudlNotDelete), Toast.LENGTH_LONG).show();
                     }
-                } catch (IOException e) {
-                    deleteAccountRequest();
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                deleteAccountRequest();
-            }
-        });
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+                        progressDialog.dismiss();
+                    }
+                });
     }
 
     private void saveEdit() {
@@ -1216,46 +1191,65 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
 
 
     private void callServer(final String base64) {
-        final Call<ResponseBody> updateCall = Retrofit.getInstance().getInkService().updateUserDetails(mSharedHelper.getUserId(),
+        makeRequest(Retrofit.getInstance().getInkService().updateUserDetails(mSharedHelper.getUserId(),
                 mFirstNameToSend.trim(), mLastNameToSend.trim(),
                 mAddressToSend.equals(getString(R.string.noAddress)) ? "" : mAddressToSend.trim(), mPhoneNumberToSend.equals(getString(R.string.noPhone)) ? "" : mPhoneNumberToSend.trim(),
                 mRelationshipToSend.equals(getString(R.string.noRelationship)) ? "" : mRelationshipToSend.trim(),
                 mGenderToSend.equals(getString(R.string.noGender)) ? "" : mGenderToSend.trim(),
                 mFacebookProfileToSend.equals(getString(R.string.noFacebook)) ? "" : mFacebookProfileToSend.trim(),
                 mSkypeToSend.equals(getString(R.string.noSkype)) ? "" : mSkypeToSend.trim(), base64,
-                mStatusToSend.equals(getString(R.string.noStatusText)) ? "" : mStatusToSend.trim(), mFacebookName, mImageLinkToSend);
-        updateCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    sendUpdatesToServer();
-                    return;
-                }
-                if (response.body() == null) {
-                    sendUpdatesToServer();
-                    return;
-                }
-                isEditEnabled = false;
-                try {
-                    String body = response.body().string();
-                    try {
-                        JSONObject jsonObject = new JSONObject(body);
-                        boolean success = jsonObject.optBoolean("success");
-                        if (success) {
-                            mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
-                            attachValues(false);
-                            hideSnack(true);
-                            String imageId = jsonObject.optString("image_id");
-                            if (imageId != null && !imageId.isEmpty()) {
-                                String imageLink = mSharedHelper.getUserId() + ".png";
-                                mSharedHelper.putImageLink(imageLink);
-                                ImageLoader.clearIonCache(getApplicationContext());
-                                ImageLoader.clearPicassoCache(getApplicationContext());
-                                FileUtils.deleteDirectoryTree(getApplicationContext().getCacheDir());
-                                mSharedHelper.putIsSocialAccount(false);
+                mStatusToSend.equals(getString(R.string.noStatusText)) ? "" : mStatusToSend.trim(), mFacebookName, mImageLinkToSend),
+                null, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        isEditEnabled = false;
+                        try {
+                            String body = ((ResponseBody) result).string();
+                            try {
+                                JSONObject jsonObject = new JSONObject(body);
+                                boolean success = jsonObject.optBoolean("success");
+                                if (success) {
+                                    mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
+                                    attachValues(false);
+                                    hideSnack(true);
+                                    String imageId = jsonObject.optString("image_id");
+                                    if (imageId != null && !imageId.isEmpty()) {
+                                        String imageLink = mSharedHelper.getUserId() + ".png";
+                                        mSharedHelper.putImageLink(imageLink);
+                                        ImageLoader.clearIonCache(getApplicationContext());
+                                        ImageLoader.clearPicassoCache(getApplicationContext());
+                                        FileUtils.deleteDirectoryTree(getApplicationContext().getCacheDir());
+                                        mSharedHelper.putIsSocialAccount(false);
+                                    }
+                                    cacheUserData();
+                                } else {
+                                    hideSnack(false);
+                                    promptBuilder = new AlertDialog.Builder(MyProfile.this);
+                                    promptBuilder.setTitle(getString(R.string.error));
+                                    promptBuilder.setMessage(getString(R.string.couldNotUpdate));
+                                    promptBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            dialogInterface.dismiss();
+                                        }
+                                    });
+                                    promptBuilder.show();
+                                }
+                            } catch (JSONException e) {
+                                hideSnack(false);
+                                promptBuilder = new AlertDialog.Builder(MyProfile.this);
+                                promptBuilder.setTitle(getString(R.string.error));
+                                promptBuilder.setMessage(getString(R.string.couldNotUpdate));
+                                promptBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                });
+                                promptBuilder.show();
+                                e.printStackTrace();
                             }
-                            cacheUserData();
-                        } else {
+                        } catch (IOException e) {
                             hideSnack(false);
                             promptBuilder = new AlertDialog.Builder(MyProfile.this);
                             promptBuilder.setTitle(getString(R.string.error));
@@ -1267,42 +1261,15 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                                 }
                             });
                             promptBuilder.show();
+                            e.printStackTrace();
                         }
-                    } catch (JSONException e) {
-                        hideSnack(false);
-                        promptBuilder = new AlertDialog.Builder(MyProfile.this);
-                        promptBuilder.setTitle(getString(R.string.error));
-                        promptBuilder.setMessage(getString(R.string.couldNotUpdate));
-                        promptBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        });
-                        promptBuilder.show();
-                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    hideSnack(false);
-                    promptBuilder = new AlertDialog.Builder(MyProfile.this);
-                    promptBuilder.setTitle(getString(R.string.error));
-                    promptBuilder.setMessage(getString(R.string.couldNotUpdate));
-                    promptBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    });
-                    promptBuilder.show();
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                progressDialog.dismiss();
-            }
-        });
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+                        progressDialog.dismiss();
+                    }
+                });
 
 
     }

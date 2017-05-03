@@ -192,7 +192,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
     private void getMessages() {
         showVipLoading();
         vipGlobalChatAdapter.clear();
-        makeRequest(Retrofit.getInstance().getInkService().vipGlobalChatAction(null, null, null, VIP_GLOBAL_CHAT_TYPE_GET), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().vipGlobalChatAction(null, null, null, VIP_GLOBAL_CHAT_TYPE_GET), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 VipGlobalChatResponseModel vipGlobalChatResponseModel = (VipGlobalChatResponseModel) result;
@@ -436,7 +436,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
     private void deleteMessage(final VipGlobalChatModel vipGlobalChatModel) {
         showVipLoading();
         makeRequest(Retrofit.getInstance().getInkService().vipGlobalChatAction(String.valueOf(vipGlobalChatModel.getMessageId()),
-                null, null, VIP_GLOBAL_CHAT_TYPE_DELETE), null, false, new RequestCallback() {
+                null, null, VIP_GLOBAL_CHAT_TYPE_DELETE), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 hideVipLoading();
@@ -470,7 +470,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
 
     private void transferCoins(final int coinsAmount, final String transferrerId, final String receiverId) {
         transferDialog.show();
-        makeRequest(Retrofit.getInstance().getInkService().transferCoins(transferrerId, receiverId, coinsAmount), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().transferCoins(transferrerId, receiverId, coinsAmount), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {
@@ -507,7 +507,7 @@ public class GlobalVipChat extends BaseActivity implements VipGlobalChatClickLis
         Keyboard.hideKeyboard(this);
         changeMessageFieldsState(false);
         sendingProgress.setVisibility(View.VISIBLE);
-        makeRequest(Retrofit.getInstance().getInkService().vipGlobalChatAction(null, sharedHelper.getUserId(), message, VIP_GLOBAL_CHAT_TYPE_SEND), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().vipGlobalChatAction(null, sharedHelper.getUserId(), message, VIP_GLOBAL_CHAT_TYPE_SEND), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 changeMessageFieldsState(true);

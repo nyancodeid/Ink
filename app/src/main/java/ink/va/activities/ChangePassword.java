@@ -90,7 +90,7 @@ public class ChangePassword extends BaseActivity {
     }
 
     private void doPasswordCheckRequest(final String userCurrentPassword) {
-        makeRequest(Retrofit.getInstance().getInkService().getUserPassword(sharedHelper.getUserId(), Constants.PASSWORD_REQUEST_TOKEN), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().getUserPassword(sharedHelper.getUserId(), Constants.PASSWORD_REQUEST_TOKEN), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {
@@ -149,7 +149,7 @@ public class ChangePassword extends BaseActivity {
     }
 
     private void changePassword(final String newPassword) {
-        makeRequest(Retrofit.getInstance().getInkService().changePassword(sharedHelper.getUserId(), Constants.PASSWORD_REQUEST_TOKEN, newPassword), null, false, new RequestCallback() {
+        makeRequest(Retrofit.getInstance().getInkService().changePassword(sharedHelper.getUserId(), Constants.PASSWORD_REQUEST_TOKEN, newPassword), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
                 try {

@@ -21,13 +21,11 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ink.va.interfaces.RequestCallback;
 import ink.va.utils.DialogUtils;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static ink.va.utils.MembershipTypes.MEMBERSHIP_TYPE_BLACK;
 import static ink.va.utils.MembershipTypes.MEMBERSHIP_TYPE_GOLD;
@@ -209,23 +207,14 @@ public class VIPActivity extends BaseActivity {
     }
 
     private void changeMembership() {
-        final Call<ResponseBody> changeMembership = Retrofit.getInstance().getInkService().changeMembership(sharedHelper.getUserId(), chosenMembership);
-        changeMembership.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().changeMembership(sharedHelper.getUserId(), chosenMembership), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    changeMembership();
-                    return;
-                }
-                if (response.body() == null) {
-                    changeMembership();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 hideVipLoading();
                 changeButtonVisibility(false);
                 loadMenu();
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (!success) {
@@ -239,9 +228,8 @@ public class VIPActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 hideVipLoading();
-                DialogUtils.showDialog(VIPActivity.this, getString(R.string.error), getString(R.string.serverErrorText), false, null, false, null);
             }
         });
     }

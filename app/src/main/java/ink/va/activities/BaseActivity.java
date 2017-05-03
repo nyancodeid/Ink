@@ -34,12 +34,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.IntConsumer;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,7 +51,6 @@ import ink.va.utils.Constants;
 import ink.va.utils.DimDialog;
 import ink.va.utils.Notification;
 import ink.va.utils.ProcessManager;
-import ink.va.utils.ProgressDialog;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Version;
@@ -409,25 +406,23 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
         }
     }
 
-    public void makeRequest(Call<T> call, @Nullable final View progress, final boolean dismissibleProgress,
+    public void makeRequest(Call<T> call, @Nullable final View progress,
                             @Nullable final RequestCallback requestCallback) {
 
         call.enqueue(new Callback<T>() {
             @Override
             public void onResponse(Call<T> call, Response<T> response) {
                 if (progress != null) {
-                    if (dismissibleProgress) {
-                        if (progress instanceof SwipeRefreshLayout) {
-                            progress.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ((SwipeRefreshLayout) progress).setRefreshing(false);
-                                }
-                            });
-                        } else {
-                            if (progress != null) {
-                                progress.setVisibility(View.GONE);
+                    if (progress instanceof SwipeRefreshLayout) {
+                        progress.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((SwipeRefreshLayout) progress).setRefreshing(false);
                             }
+                        });
+                    } else {
+                        if (progress != null) {
+                            progress.setVisibility(View.GONE);
                         }
                     }
                 }
@@ -439,18 +434,16 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
             @Override
             public void onFailure(Call<T> call, Throwable t) {
                 if (progress != null) {
-                    if (dismissibleProgress) {
-                        if (progress instanceof SwipeRefreshLayout) {
-                            progress.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ((SwipeRefreshLayout) progress).setRefreshing(false);
-                                }
-                            });
-                        } else {
-                            if (progress != null) {
-                                progress.setVisibility(View.GONE);
+                    if (progress instanceof SwipeRefreshLayout) {
+                        progress.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((SwipeRefreshLayout) progress).setRefreshing(false);
                             }
+                        });
+                    } else {
+                        if (progress != null) {
+                            progress.setVisibility(View.GONE);
                         }
                     }
                 }

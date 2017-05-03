@@ -53,6 +53,7 @@ import ink.va.adapters.GroupMessagesAdapter;
 import ink.va.adapters.MemberAdapter;
 import ink.va.interfaces.ItemClickListener;
 import ink.va.interfaces.RecyclerItemClickListener;
+import ink.va.interfaces.RequestCallback;
 import ink.va.models.GroupMessagesModel;
 import ink.va.models.MemberModel;
 import ink.va.service.SocketService;
@@ -65,9 +66,6 @@ import ink.va.utils.ScrollAwareFABButtonehavior;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.User;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static ink.va.utils.Constants.EVENT_REQUEST_GROUP_JOIN;
 import static ink.va.utils.Constants.NOTIFICATION_RECEIVED_GROUP_BUNDLE;
@@ -352,21 +350,11 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
-        Call<ResponseBody> leaveCall = Retrofit.getInstance().getInkService().groupOptions(Constants.GROUP_OPTIONS_LEAVE, mGroupId, mSharedHelper.getUserId(), "");
-        leaveCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().groupOptions(Constants.GROUP_OPTIONS_LEAVE, mGroupId, mSharedHelper.getUserId(), ""), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    leaveGroup();
-                    return;
-                }
-                if (response.body() == null) {
-                    leaveGroup();
-                    return;
-                }
-
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -388,8 +376,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                leaveGroup();
+            public void onRequestFailed(Object[] result) {
+                progressDialog.dismiss();
             }
         });
 
@@ -472,20 +460,12 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
         });
         builder.show();
         isParticipantsLoaded = false;
-        Call<ResponseBody> participantCall = Retrofit.getInstance().getInkService().getParticipants(mSharedHelper.getUserId(), mGroupId);
-        participantCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getParticipants(mSharedHelper.getUserId(), mGroupId), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getParticipants();
-                    return;
-                }
-                if (response.body() == null) {
-                    getParticipants();
-                }
+            public void onRequestSuccess(Object result) {
                 isParticipantsLoaded = true;
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -530,10 +510,9 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 isParticipantsLoaded = true;
                 membersLoading.setVisibility(View.GONE);
-                Toast.makeText(socketService, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -543,21 +522,12 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             User.get().getParticipantIds().clear();
         }
         isParticipantsLoaded = false;
-        Call<ResponseBody> participantCall = Retrofit.getInstance().getInkService().getParticipants(mSharedHelper.getUserId(), mGroupId);
-        participantCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getParticipants(mSharedHelper.getUserId(), mGroupId), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getParticipantsFromServer();
-                    return;
-                }
-                if (response.body() == null) {
-                    getParticipantsFromServer();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 isParticipantsLoaded = true;
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -599,29 +569,20 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onRequestFailed(Object[] result) {
                 isParticipantsLoaded = true;
             }
         });
     }
 
     private void requestJoin() {
-        final Call<ResponseBody> requestJoinCall = Retrofit.getInstance().getInkService().requestJoin(mGroupOwnerId,
+        makeRequest(Retrofit.getInstance().getInkService().requestJoin(mGroupOwnerId,
                 mSharedHelper.getUserId(), mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName(),
-                mSharedHelper.getImageLink(), mGroupId);
-        requestJoinCall.enqueue(new Callback<ResponseBody>() {
+                mSharedHelper.getImageLink(), mGroupId), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    requestJoin();
-                    return;
-                }
-                if (response.body() == null) {
-                    requestJoin();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -646,8 +607,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                requestJoin();
+            public void onRequestFailed(Object[] result) {
+
             }
         });
     }
@@ -792,20 +753,11 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             progressDialog.setMessage(getString(R.string.savingChanges));
         }
         progressDialog.show();
-        Call<ResponseBody> groupCall = Retrofit.getInstance().getInkService().groupOptions(type, mGroupId, groupName, groupDescription);
-        groupCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().groupOptions(type, mGroupId, groupName, groupDescription), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    saveGroupChanges(type, groupName, groupDescription);
-                    return;
-                }
-                if (response.body() == null) {
-                    saveGroupChanges(type, groupName, groupDescription);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (type.equals(Constants.GROUP_TYPE_EDIT)) {
@@ -833,8 +785,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+            public void onRequestFailed(Object[] result) {
+                progressDialog.dismiss();
             }
         });
     }
@@ -879,20 +831,11 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             groupMessagesModels.clear();
         }
         groupMessagesAdapter.notifyDataSetChanged();
-        Call<ResponseBody> messagesCall = Retrofit.getInstance().getInkService().getGroupMessages(mGroupId, mSharedHelper.getUserId());
-        messagesCall.enqueue(new Callback<ResponseBody>() {
+        makeRequest(Retrofit.getInstance().getInkService().getGroupMessages(mGroupId, mSharedHelper.getUserId()), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    getGroupMessages();
-                    return;
-                }
-                if (response.body() == null) {
-                    getGroupMessages();
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -946,8 +889,9 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                getGroupMessages();
+            public void onRequestFailed(Object[] result) {
+                hideMessageLoading();
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
     }
@@ -1057,22 +1001,13 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
     }
 
     private void updateGroupMessage(final String message, final String messageId) {
-        Call<ResponseBody> groupOptionsCall = Retrofit.getInstance().getInkService().changeGroupMessages(
+        makeRequest(Retrofit.getInstance().getInkService().changeGroupMessages(
                 "", Constants.GROUP_MESSAGES_TYPE_EDIT,
-                message, messageId);
-        groupOptionsCall.enqueue(new Callback<ResponseBody>() {
+                message, messageId), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    updateGroupMessage(message, messageId);
-                    return;
-                }
-                if (response.body() == null) {
-                    updateGroupMessage(message, messageId);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -1098,29 +1033,20 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+            public void onRequestFailed(Object[] result) {
+                snackbar.dismiss();
             }
         });
     }
 
     private void deleteComment(final String messageId, String fileName) {
-        Call<ResponseBody> groupOptionsCall = Retrofit.getInstance().getInkService().changeGroupMessages(
+        makeRequest(Retrofit.getInstance().getInkService().changeGroupMessages(
                 fileName, Constants.GROUP_MESSAGES_TYPE_DELETE,
-                "", messageId);
-        groupOptionsCall.enqueue(new Callback<ResponseBody>() {
+                "", messageId), null, new RequestCallback() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response == null) {
-                    updateGroupMessage("", messageId);
-                    return;
-                }
-                if (response.body() == null) {
-                    updateGroupMessage("", messageId);
-                    return;
-                }
+            public void onRequestSuccess(Object result) {
                 try {
-                    String responseBody = response.body().string();
+                    String responseBody = ((ResponseBody) result).string();
                     JSONObject jsonObject = new JSONObject(responseBody);
                     boolean success = jsonObject.optBoolean("success");
                     if (success) {
@@ -1146,8 +1072,8 @@ public class SingleGroupView extends BaseActivity implements RecyclerItemClickLi
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+            public void onRequestFailed(Object[] result) {
+                snackbar.show();
             }
         });
     }
