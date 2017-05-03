@@ -202,6 +202,11 @@ public class Messages extends BaseActivity implements SwipeRefreshLayout.OnRefre
             finalId = userMessagesModel.getUserId();
         }
 
+        userMessagesModel.setHasRead(true);
+        int index = messagesAdapter.getUserMessagesModels().indexOf(userMessagesModel);
+        RealmHelper.getInstance().updateMessageReadStatus(userMessagesModel.getMessageId(), true, null);
+        messagesAdapter.notifyItemChanged(index);
+
         RealmHelper.getInstance().removeNotificationCount(this, Integer.valueOf(finalId));
 
         Intent intent = new Intent(getApplicationContext(), Chat.class);

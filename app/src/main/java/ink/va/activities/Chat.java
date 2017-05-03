@@ -1027,6 +1027,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             @Override
             public void run() {
                 if (chatModel.getUserId().equals(opponentId)) {
+                    chatModel.setHasRead(true);
                     chatAdapter.insertChatModel(chatModel);
                     localMessageInsert(chatModel, false);
                     playReceive();

@@ -116,6 +116,56 @@ public class RealmHelper {
         return clearDBSuccess;
     }
 
+    public void updateMessageReadStatus(final String messageId, final boolean readStatus,
+                                        @Nullable final GeneralCallback querySuccess) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mRealm.isClosed()) {
+                    openRealm(new GeneralCallback() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            mRealm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    RealmResults<MessageModel> messageModels = realm.where(MessageModel.class).equalTo("messageId",
+                                            messageId).findAll();
+                                    for (MessageModel messageModel : messageModels) {
+                                        messageModel.setHasRead(readStatus);
+                                    }
+                                    if (querySuccess != null) {
+                                        querySuccess.onSuccess(null);
+                                    }
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(Object o) {
+                            if (querySuccess != null) {
+                                querySuccess.onFailure(null);
+                            }
+                        }
+                    });
+                } else {
+                    mRealm.executeTransactionAsync(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            RealmResults<MessageModel> messageModels = realm.where(MessageModel.class).equalTo("messageId",
+                                    messageId).findAll();
+                            for (MessageModel messageModel : messageModels) {
+                                messageModel.setHasRead(readStatus);
+                            }
+                            if (querySuccess != null) {
+                                querySuccess.onSuccess(null);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
     public void updateMessageDeliveryStatus(final String messageId, final String deliveryStatus,
                                             @Nullable final GeneralCallback querySuccess) {
         handler.post(new Runnable() {
@@ -297,6 +347,7 @@ public class RealmHelper {
                                         userMessagesModel.setLastName(queryModel.getLastName());
                                         userMessagesModel.setDate(queryModel.getDate());
                                         userMessagesModel.setImageName(queryModel.getUserImage());
+                                        userMessagesModel.setHasRead(queryModel.isHasRead());
                                         userMessagesModel.setFriend(false);
                                         userMessagesModel.setMessage(queryModel.getMessage());
                                         userMessagesModel.setMessageId(queryModel.getMessageId());
@@ -365,6 +416,7 @@ public class RealmHelper {
                                 userMessagesModel.setFirstName(queryModel.getFirstName());
                                 userMessagesModel.setLastName(queryModel.getLastName());
                                 userMessagesModel.setDate(queryModel.getDate());
+                                userMessagesModel.setHasRead(queryModel.isHasRead());
                                 userMessagesModel.setImageName(queryModel.getUserId().equals(currentUserId) ? queryModel.getOpponentImage() : queryModel.getUserImage());
                                 userMessagesModel.setFriend(false);
                                 userMessagesModel.setMessage(queryModel.getMessage());
@@ -407,6 +459,7 @@ public class RealmHelper {
                                         messageModel.setUserId(chatModel.getUserId());
                                         messageModel.setOpponentId(chatModel.getOpponentId());
                                         messageModel.setAnimated(false);
+                                        messageModel.setHasRead(chatModel.isHasRead());
                                         messageModel.setDeliveryStatus(STATUS_DELIVERED);
                                         messageModel.setUserImage(chatModel.getCurrentUserImage());
                                         messageModel.setSocialAccount(chatModel.isSocialAccount());
@@ -449,6 +502,7 @@ public class RealmHelper {
                                 messageModel.setUserId(chatModel.getUserId());
                                 messageModel.setOpponentId(chatModel.getOpponentId());
                                 messageModel.setAnimated(false);
+                                messageModel.setHasRead(chatModel.isHasRead());
                                 messageModel.setDeliveryStatus(STATUS_DELIVERED);
                                 messageModel.setUserImage(chatModel.getCurrentUserImage());
                                 messageModel.setOpponentImage(chatModel.getOpponentImage());
@@ -1115,9 +1169,11 @@ public class RealmHelper {
                                             .or().equalTo("opponentId", userId).equalTo("userId", opponentId
                                             ).findAll();
                                     for (MessageModel messageModel : realmResults) {
+                                        messageModel.setHasRead(true);
                                         ChatModel chatModel = new ChatModel();
                                         chatModel.setUserId(messageModel.getUserId());
                                         chatModel.setDate(messageModel.getDate());
+                                        chatModel.setHasRead(messageModel.isHasRead());
                                         chatModel.setOpponentImage(messageModel.getOpponentImage());
                                         chatModel.setMessage(StringEscapeUtils.unescapeJava(messageModel.getMessage()));
                                         chatModel.setMessageId(messageModel.getMessageId());
@@ -1125,7 +1181,6 @@ public class RealmHelper {
                                         chatModel.setOpponentId(messageModel.getOpponentId());
                                         chatModel.setStickerChosen(messageModel.isHasGif());
                                         chatModel.setStickerUrl(messageModel.getGifUrl());
-
                                         chatModels.add(chatModel);
                                     }
                                     Collections.sort(chatModels, new Comparator<ChatModel>() {
@@ -1162,10 +1217,12 @@ public class RealmHelper {
                                     ).findAll();
 
                             for (MessageModel messageModel : realmResults) {
+                                messageModel.setHasRead(true);
                                 ChatModel chatModel = new ChatModel();
                                 chatModel.setUserId(messageModel.getUserId());
                                 chatModel.setDate(messageModel.getDate());
                                 chatModel.setOpponentImage(messageModel.getOpponentImage());
+                                chatModel.setHasRead(messageModel.isHasRead());
                                 chatModel.setMessageId(messageModel.getMessageId());
                                 chatModel.setDeliveryStatus(messageModel.getDeliveryStatus());
                                 chatModel.setMessage(StringEscapeUtils.unescapeJava(messageModel.getMessage()));

@@ -83,6 +83,10 @@ public class ChatModel implements Comparable<ChatModel> {
     @Getter
     private String deliveryStatus = STATUS_NOT_DELIVERED;
 
+    @Setter
+    @Getter
+    private boolean hasRead;
+
     @Override
     public int compareTo(ChatModel o) {
         try {

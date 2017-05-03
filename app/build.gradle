@@ -30,8 +30,8 @@ android {
         applicationId "com.ink.va"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 69
-        versionName "1.5.8"
+        versionCode 70
+        versionName "1.5.9"
         manifestPlaceholders = [appPackageName: "${applicationId}"]
         multiDexEnabled true
         setProperty("archivesBaseName", "Ink")
@@ -114,7 +114,7 @@ dependencies {
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.romainpiel.shimmer:library:1.4.0@aar'
     compile 'joda-time:joda-time:2.9.4'
-    compile 'me.leolin:ShortcutBadger:1.1.10@aar'
+    compile 'me.leolin:ShortcutBadger:1.1.16@aar'
     compile 'com.koushikdutta.ion:ion:2.+'
     compile 'com.instabug.library:instabug:4.0.1'
     compile 'com.github.nkzawa:socket.io-client:0.3.0'

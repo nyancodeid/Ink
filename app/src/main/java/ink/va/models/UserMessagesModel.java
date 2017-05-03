@@ -54,6 +54,10 @@ public class UserMessagesModel implements Comparable<UserMessagesModel> {
     @Getter
     private String date;
 
+    @Setter
+    @Getter
+    private boolean hasRead;
+
     @Override
     public int compareTo(UserMessagesModel o) {
         try {

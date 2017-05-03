@@ -1148,4 +1148,5 @@
     <string name="canTurnOffLocation">Теперь вы можете отключить службы геолокации вручную.</string>
     <string name="turnLocationOn">Включите местоположение, чтобы эта функция работала</string>
     <string name="shareToInk">Поделиться в Инк-е</string>
+    <string name="unread">не прочитано</string>
 </resources>

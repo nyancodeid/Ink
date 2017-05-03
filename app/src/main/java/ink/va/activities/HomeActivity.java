@@ -104,6 +104,7 @@ import static ink.va.utils.Constants.NOTIFICATION_BUNDLE_EXTRA_KEY;
 import static ink.va.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
 import static ink.va.utils.Constants.NOTIFICATION_POST_ID_KEY;
 
+
 public class HomeActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AccountDeleteListener, PollfishSurveyCompletedListener, PollfishOpenedListener,
         PollfishClosedListener, PollfishSurveyReceivedListener,
@@ -193,7 +194,6 @@ public class HomeActivity extends BaseActivity
             });
             bottomSheetDialog.show();
         }
-
 
         checkNotification(getIntent());
 

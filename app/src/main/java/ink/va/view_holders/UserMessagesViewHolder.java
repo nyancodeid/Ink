@@ -1,6 +1,7 @@
 package ink.va.view_holders;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -42,6 +43,8 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
     TextView messageBody;
     @BindView(R.id.messagesImage)
     ImageView messagesImage;
+    @BindView(R.id.unreadTV)
+    TextView unreadTV;
     private MyMessagesItemClickListener onItemClickListener;
     private UserMessagesModel userMessagesModel;
     private SharedHelper sharedHelper;
@@ -65,6 +68,8 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
         String message = userMessagesModel.getMessage();
         String finalMessage;
 
+        boolean shouldBold = false;
+
         if (userMessagesModel.getUserId().equals(sharedHelper.getUserId())) {
             if (userMessagesModel.getMessage().isEmpty()) {
                 finalMessage = context.getString(R.string.you) + context.getString(R.string.sentSticker);
@@ -72,8 +77,14 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
                 finalMessage = context.getString(R.string.you) + context.getString(R.string.quoteOpen) +
                         message.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, "") + context.getString(R.string.quoteClose);
             }
-
+            shouldBold = false;
         } else {
+            if (!userMessagesModel.isHasRead()) {
+                shouldBold = true;
+            } else {
+                shouldBold = false;
+            }
+
             if (userMessagesModel.getMessage().isEmpty()) {
                 String firstName = userMessagesModel.getFirstName() != null ? userMessagesModel.getFirstName().isEmpty() ? context.getString(R.string.NA) : userMessagesModel.getFirstName() :
                         context.getString(R.string.NA);
@@ -92,6 +103,13 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
                 finalMessage = firstName + " " + lastName + " : " + context.getString(R.string.quoteOpen) +
                         message.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, "") + context.getString(R.string.quoteClose);
             }
+        }
+        if (shouldBold) {
+            unreadTV.setVisibility(View.VISIBLE);
+            messageBody.setTypeface(null, Typeface.BOLD);
+        } else {
+            unreadTV.setVisibility(View.GONE);
+            messageBody.setTypeface(null, Typeface.NORMAL);
         }
 
         messageBody.setText(StringEscapeUtils.unescapeJava(finalMessage));

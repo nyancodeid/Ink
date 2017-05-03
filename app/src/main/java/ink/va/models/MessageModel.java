@@ -72,4 +72,7 @@ public class MessageModel extends RealmObject {
     @Getter
     boolean currentUserSocial;
 
+    @Setter
+    @Getter
+    boolean hasRead;
 }

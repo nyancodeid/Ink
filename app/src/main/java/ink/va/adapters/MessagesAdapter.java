@@ -16,12 +16,14 @@ import ink.va.interfaces.MyMessagesItemClickListener;
 import ink.va.models.UserMessagesModel;
 import ink.va.utils.SharedHelper;
 import ink.va.view_holders.UserMessagesViewHolder;
+import lombok.Getter;
 
 /**
  * Created by USER on 2016-07-02.
  */
 public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    @Getter
     private List<UserMessagesModel> userMessagesModels;
     private Context mContext;
     private SharedHelper mSharedHelper;
