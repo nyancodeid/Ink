@@ -100,14 +100,12 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
     }
 
     private void getPacks() {
-        if (!swipeRefreshLayout.isRefreshing()) {
-            swipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    swipeRefreshLayout.setRefreshing(true);
-                }
-            });
-        }
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(true);
+            }
+        });
         ((Shop) getActivity()).makeRequest(Retrofit.getInstance().getInkService().getPacks(), null, new RequestCallback() {
             @Override
             public void onRequestSuccess(Object result) {
@@ -134,7 +132,12 @@ public class Packs extends Fragment implements PacksAdapter.PackClickListener, S
 
             @Override
             public void onRequestFailed(Object[] result) {
-
+                swipeRefreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
             }
         });
     }

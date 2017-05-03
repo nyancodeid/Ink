@@ -1149,4 +1149,6 @@
     <string name="turnLocationOn">Включите местоположение, чтобы эта функция работала</string>
     <string name="shareToInk">Поделиться в Инк-е</string>
     <string name="unread">не прочитано</string>
+    <string name="noNetwork">Нет сети</string>
+    <string name="timeOutError">Тайм-аут при попытке подключения к серверу. Убедитесь, что у вас есть действующий интернет.</string>
 </resources>

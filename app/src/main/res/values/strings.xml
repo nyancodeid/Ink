@@ -1122,5 +1122,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="turnLocationOn">Turn location on for this function to work</string>
     <string name="shareToInk">Share to Ink</string>
     <string name="unread">unread</string>
+    <string name="noNetwork">No Network</string>
+    <string name="timeOutError">Time out while trying to connect to server. Check that you have active internet</string>
 
 </resources>

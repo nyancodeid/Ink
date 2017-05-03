@@ -14,6 +14,7 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -27,6 +28,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ink.va.R;
 
@@ -34,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -49,6 +52,7 @@ import ink.va.models.ServerInformationModel;
 import ink.va.service.SocketService;
 import ink.va.utils.Constants;
 import ink.va.utils.DimDialog;
+import ink.va.utils.Network;
 import ink.va.utils.Notification;
 import ink.va.utils.ProcessManager;
 import ink.va.utils.Retrofit;
@@ -127,6 +131,7 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
     private SocketService socketService;
     private Intent messageIntent;
     private boolean unbindCalled;
+    private BottomSheetDialog bottomSheetDialog;
     private ScheduledExecutorService scheduler;
 
     @Override
@@ -406,9 +411,30 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
         }
     }
 
-    public void makeRequest(Call<T> call, @Nullable final View progress,
+    public void makeRequest(final Call<T> call, @Nullable final View progress,
                             @Nullable final RequestCallback requestCallback) {
 
+        if (!Network.isNetworkAvailable(this)) {
+            if (progress != null) {
+                if (progress instanceof SwipeRefreshLayout) {
+                    progress.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((SwipeRefreshLayout) progress).setRefreshing(false);
+                        }
+                    });
+                } else {
+                    if (progress != null) {
+                        progress.setVisibility(View.GONE);
+                    }
+                }
+            }
+            if (requestCallback != null) {
+                requestCallback.onRequestFailed("NetworkNotAvailable");
+                showBottomSheetWarning(getString(R.string.notConnectedToServer), R.drawable.no_internet_icon, call, progress, requestCallback);
+            }
+            return;
+        }
         call.enqueue(new Callback<T>() {
             @Override
             public void onResponse(Call<T> call, Response<T> response) {
@@ -450,8 +476,71 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
                 if (requestCallback != null) {
                     requestCallback.onRequestFailed(t);
                 }
+
+                if (t instanceof SocketTimeoutException) {
+                    showBottomSheetWarning(getString(R.string.timeOutError), R.drawable.time_out_icon, call, progress, requestCallback);
+                } else {
+                    showBottomSheetWarning(getString(R.string.serverErrorText), R.drawable.server_error_icon, call, progress, requestCallback);
+                }
             }
         });
+    }
+
+    private void showBottomSheetWarning(String warningText, int imageResourceId, final Call call, final View progress, final RequestCallback requestCallback) {
+        if (bottomSheetDialog != null) {
+            if (!bottomSheetDialog.isShowing()) {
+                if (bottomSheetDialog != null) {
+                    bottomSheetDialog = null;
+                }
+                bottomSheetDialog = new BottomSheetDialog(this);
+                bottomSheetDialog.setTitle(getString(R.string.noNetwork));
+                bottomSheetDialog.setContentView(R.layout.no_network_view);
+                ImageView connectivityImage = (ImageView) bottomSheetDialog.findViewById(R.id.connectivityImage);
+                connectivityImage.setImageResource(imageResourceId);
+
+                TextView warningTv = (TextView) bottomSheetDialog.findViewById(R.id.connectivityWarningTV);
+                warningTv.setText(warningText);
+                bottomSheetDialog.findViewById(R.id.retryConnecting).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomSheetDialog.dismiss();
+                        makeRequest(call.clone(), progress, requestCallback);
+                    }
+                });
+                bottomSheetDialog.findViewById(R.id.closeConnectivityWarning).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+                bottomSheetDialog.show();
+            }
+        } else {
+            if (bottomSheetDialog != null) {
+                bottomSheetDialog = null;
+            }
+            bottomSheetDialog = new BottomSheetDialog(this);
+            bottomSheetDialog.setTitle(getString(R.string.noNetwork));
+            bottomSheetDialog.setContentView(R.layout.no_network_view);
+            ImageView connectivityImage = (ImageView) bottomSheetDialog.findViewById(R.id.connectivityImage);
+            connectivityImage.setImageResource(imageResourceId);
+            TextView warningTv = (TextView) bottomSheetDialog.findViewById(R.id.connectivityWarningTV);
+            warningTv.setText(warningText);
+            bottomSheetDialog.findViewById(R.id.closeConnectivityWarning).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bottomSheetDialog.dismiss();
+                }
+            });
+            bottomSheetDialog.findViewById(R.id.retryConnecting).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bottomSheetDialog.dismiss();
+                    makeRequest(call.clone(), progress, requestCallback);
+                }
+            });
+            bottomSheetDialog.show();
+        }
     }
 
     protected void hideActionBar() {

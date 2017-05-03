@@ -210,25 +210,21 @@ public class MafiaRoomActivity extends BaseActivity implements SwipeRefreshLayou
     }
 
     private void dismissSwipe() {
-        if (mafiaRoomsSwipe.isRefreshing()) {
-            mafiaRoomsSwipe.post(new Runnable() {
-                @Override
-                public void run() {
-                    mafiaRoomsSwipe.setRefreshing(false);
-                }
-            });
-        }
+        mafiaRoomsSwipe.post(new Runnable() {
+            @Override
+            public void run() {
+                mafiaRoomsSwipe.setRefreshing(false);
+            }
+        });
     }
 
     private void showSwipe() {
-        if (!mafiaRoomsSwipe.isRefreshing()) {
-            mafiaRoomsSwipe.post(new Runnable() {
-                @Override
-                public void run() {
-                    mafiaRoomsSwipe.setRefreshing(true);
-                }
-            });
-        }
+        mafiaRoomsSwipe.post(new Runnable() {
+            @Override
+            public void run() {
+                mafiaRoomsSwipe.setRefreshing(true);
+            }
+        });
     }
 
     @Override
