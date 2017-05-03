@@ -25,15 +25,10 @@ import ink.va.models.ChatModel;
 import ink.va.models.MessageModel;
 import ink.va.models.NotificationModel;
 import ink.va.models.UserMessagesModel;
-import io.realm.DynamicRealm;
-import io.realm.FieldAttribute;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmMigration;
-import io.realm.RealmObjectSchema;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
-import io.realm.RealmSchema;
 import io.realm.Sort;
 import io.realm.internal.IOException;
 import me.leolin.shortcutbadger.ShortcutBadger;
@@ -75,44 +70,7 @@ public class RealmHelper {
                 Realm.init(context);
                 mRealmConfiguration = new RealmConfiguration.Builder()
                         .name(REALM_DB_NAME)
-                        .migration(new RealmMigration() {
-                            @Override
-                            public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
-                                RealmSchema realmSchema = realm.getSchema();
-                                if (oldVersion == REALM_CURRENT_VERSION) {
-                                    RealmObjectSchema messageSchema = realmSchema.get("MessageModel");
-                                    RealmObjectSchema notificationSchema = realmSchema.get("NotificationModel");
-
-                                    if (!notificationSchema.hasField("message")) {
-                                        notificationSchema.addField("message", String.class, null);
-                                    }
-
-                                    if (!messageSchema.hasField("isSocialAccount")) {
-                                        messageSchema.addField("isSocialAccount", boolean.class, FieldAttribute.REQUIRED);
-                                    }
-                                    if (!messageSchema.hasField("firstName")) {
-                                        messageSchema.addField("firstName", String.class, null);
-                                    }
-
-                                    if (!messageSchema.hasField("lastName")) {
-                                        messageSchema.addField("lastName", String.class, null);
-                                    }
-                                    if (!messageSchema.hasField("opponentFirstName")) {
-                                        messageSchema.addField("opponentFirstName", String.class, null);
-                                    }
-
-                                    if (!messageSchema.hasField("opponentLastName")) {
-                                        messageSchema.addField("opponentLastName", String.class, null);
-                                    }
-
-                                    if (!messageSchema.hasField("currentUserSocial")) {
-                                        messageSchema.addField("currentUserSocial", boolean.class, FieldAttribute.REQUIRED);
-                                    }
-
-                                    oldVersion++;
-                                }
-                            }
-                        })
+                        .deleteRealmIfMigrationNeeded()
                         .build();
                 mRealm = Realm.getInstance(mRealmConfiguration);
             }
