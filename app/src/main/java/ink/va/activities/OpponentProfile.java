@@ -12,11 +12,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -44,8 +41,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import fab.FloatingActionButton;
 import ink.va.adapters.OpponentProfileAdapter;
 import ink.va.interfaces.FeedItemClick;
 import ink.va.interfaces.ItemClickListener;
@@ -62,9 +57,9 @@ import ink.va.utils.InputField;
 import ink.va.utils.PermissionsChecker;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
-import ink.va.utils.ScrollAwareFABBehavior;
 import ink.va.utils.SharedHelper;
 import ink.va.utils.Time;
+import ink.va.view_holders.OpponentProfileHeaderView;
 import okhttp3.ResponseBody;
 
 import static ink.va.utils.Constants.EVENT_FRIEND_REQUESTED;
@@ -74,21 +69,16 @@ import static ink.va.utils.Constants.EVENT_POST_LIKED;
 /**
  * Created by USER on 2016-06-22.
  */
-public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, FeedItemClick {
+public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, FeedItemClick, OpponentProfileHeaderView.HeaderViewClickListener {
 
     private static final int SHARE_INTENT_RESULT = 5;
     private static final int STORAGE_PERMISSION_REQUEST = 115;
 
-    @BindView(R.id.sendMessage)
-    FloatingActionButton sendMessage;
-    @BindView(R.id.removeFriend)
-    FloatingActionButton removeFriend;
     private boolean isFriend;
     private boolean disableButton;
-    @BindView(R.id.profileFab)
-    FloatingActionMenu mProfileFab;
     @BindView(R.id.opponentProfileRoot)
     public View opponentProfileRoot;
+
     @BindView(R.id.opponentProfileRefresh)
     SwipeRefreshLayout opponentProfileRefresh;
     @BindView(R.id.opponentProfileRecycler)
@@ -117,7 +107,6 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
         setContentView(R.layout.opponent_profile);
         ButterKnife.bind(this);
         ButterKnife.setDebug(true);
-        mProfileFab.setEnabled(false);
         Bundle extras = getIntent().getExtras();
         sharedHelper = new SharedHelper(this);
         feedModels = new LinkedList<>();
@@ -127,6 +116,7 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
         opponentProfileAdapter.setOnFeedItemClickListener(this);
         opponentProfileRecycler.setLayoutManager(new LinearLayoutManager(this));
         opponentProfileRecycler.setAdapter(opponentProfileAdapter);
+        opponentProfileAdapter.setHeaderViewClickListener(this);
 
         ActionBar actionBar = getSupportActionBar();
         if (extras != null) {
@@ -136,13 +126,9 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
             isFriend = extras.getBoolean("isFriend");
             if (extras.containsKey("disableButton")) {
                 disableButton = extras.getBoolean("disableButton");
-                if (disableButton && !isFriend) {
-                    sendMessage.setVisibility(View.VISIBLE);
-                } else if (disableButton) {
-                    sendMessage.setVisibility(View.GONE);
-                }
+                opponentProfileAdapter.setDisableButton(disableButton);
+                opponentProfileAdapter.notifyDataSetChanged();
             }
-//            enableButton();
             if (actionBar != null) {
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 actionBar.setTitle(mFirstName + " " + mLastName);
@@ -155,49 +141,14 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
     private void initColors() {
         if (sharedHelper.getOpponentProfileColor() != null) {
             opponentProfileRoot.setBackgroundColor(Color.parseColor(sharedHelper.getOpponentProfileColor()));
-        } else {
-            opponentProfileRoot.setBackground(ContextCompat.getDrawable(this, R.drawable.opponent_profile_background));
         }
     }
 
-    private void setUpFriendView() {
-        if (!isFriend) {
-            sendMessage.setImageResource(R.drawable.request_friend_icon);
-            sendMessage.setLabelText(getString(R.string.sendFriendRequest));
-            removeFriend.setVisibility(View.GONE);
-        }
-        if (disableButton && !isFriend) {
-            sendMessage.setVisibility(View.VISIBLE);
-        } else if (disableButton) {
-            sendMessage.setVisibility(View.GONE);
-        }
-    }
 
-    private void enableButton() {
-        mProfileFab.setVisibility(View.VISIBLE);
-        CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) mProfileFab.getLayoutParams();
-        p.setBehavior(new ScrollAwareFABBehavior(this));
-        mProfileFab.setLayoutParams(p);
-    }
-
-
-    @OnClick(R.id.removeFriend)
-    public void removeFriend() {
-        removeFriend(mOpponentId);
-    }
-
-
-    @OnClick(R.id.sendMessage)
-    public void WriteMessage() {
-        mProfileFab.close(true);
+    @Override
+    public void onFriendUnfriendClicked() {
         if (isFriend) {
-            Intent intent = new Intent(getApplicationContext(), Chat.class);
-            intent.putExtra("firstName", mFirstName);
-            intent.putExtra("lastName", mLastName);
-            intent.putExtra("opponentId", mOpponentId);
-            intent.putExtra("isSocialAccount", isSocialAccount);
-            intent.putExtra("opponentImage", mOpponentImage);
-            startActivity(intent);
+            removeFriend(mOpponentId);
         } else {
             if (hasFriendRequested) {
                 Snackbar.make(opponentProfileRecycler, getString(R.string.youHaveSentAlreadyRequest), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
@@ -206,11 +157,23 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
 
                     }
                 }).show();
-                mProfileFab.close(true);
             } else {
-                mProfileFab.close(true);
                 requestFriend();
             }
+        }
+    }
+
+
+    @Override
+    public void onSendMessageClicked() {
+        if (isFriend) {
+            Intent intent = new Intent(getApplicationContext(), Chat.class);
+            intent.putExtra("firstName", mFirstName);
+            intent.putExtra("lastName", mLastName);
+            intent.putExtra("opponentId", mOpponentId);
+            intent.putExtra("isSocialAccount", isSocialAccount);
+            intent.putExtra("opponentImage", mOpponentImage);
+            startActivity(intent);
         }
     }
 
@@ -319,7 +282,6 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
                 null, new RequestCallback() {
                     @Override
                     public void onRequestSuccess(Object result) {
-                        mProfileFab.setEnabled(true);
 
                         try {
                             String responseString = ((ResponseBody) result).string();
@@ -338,7 +300,6 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
 
                                     mOpponentImage = jsonObject.optString("image_link");
                                     isFriend = jsonObject.optBoolean("isFriend");
-                                    setUpFriendView();
                                     hasFriendRequested = jsonObject.optBoolean("hasFriendRequested");
                                     getUserPosts();
 
@@ -374,6 +335,8 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
                             Toast.makeText(OpponentProfile.this, getString(R.string.serverErrorText), Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
+                        opponentProfileAdapter.setEnableButtons(true);
+                        opponentProfileAdapter.notifyDataSetChanged();
                     }
 
                     @Override
@@ -402,7 +365,7 @@ public class OpponentProfile extends BaseActivity implements SwipeRefreshLayout.
                         } else {
                             opponentProfileAdapter.setShowNoFeedsOrError(false);
                             for (FeedModel feedModel : feedModels) {
-                                feedModels.add(feedModel);
+                                OpponentProfile.this.feedModels.add(feedModel);
                                 opponentProfileAdapter.notifyDataSetChanged();
                             }
                         }

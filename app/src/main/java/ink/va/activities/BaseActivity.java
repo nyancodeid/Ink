@@ -15,7 +15,6 @@ import android.os.IBinder;
 import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.FloatingActionMenu;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -93,10 +92,6 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
     @Nullable
     @BindView(R.id.sendGroupMessage)
     FloatingActionButton sendGroupMessage;
-
-    @Nullable
-    @BindView(R.id.profileFab)
-    FloatingActionMenu profileFab;
 
     @Nullable
     @BindView(R.id.editImageNameFab)
@@ -275,10 +270,6 @@ public abstract class BaseActivity<T> extends AppCompatActivity {
             }
         }
         if (sharedHelper.getMenuButtonColor() != null) {
-            if (profileFab != null) {
-                profileFab.setMenuButtonColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
-                profileFab.setMenuButtonColorPressed(Color.parseColor(sharedHelper.getMenuButtonColor()));
-            }
             if (editImageNameFab != null) {
                 editImageNameFab.setColorNormal(Color.parseColor(sharedHelper.getMenuButtonColor()));
                 editImageNameFab.setColorPressed(Color.parseColor(sharedHelper.getMenuButtonColor()));

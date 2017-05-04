@@ -33,6 +33,12 @@ public class OpponentProfileAdapter extends HFRecyclerView<FeedModel> {
     private boolean hasServerError;
     @Setter
     private boolean showNoFeedsOrError;
+    @Setter
+    private boolean disableButton;
+    @Setter
+    private boolean enableButtons;
+    @Setter
+    private OpponentProfileHeaderView.HeaderViewClickListener headerViewClickListener;
 
     public OpponentProfileAdapter(List<FeedModel> data, boolean withHeader, boolean withFooter, Context context) {
         super(data, withHeader, withFooter);
@@ -64,7 +70,7 @@ public class OpponentProfileAdapter extends HFRecyclerView<FeedModel> {
             ((FeedViewHolder) holder).initData(context, feedModels.get(position - 1), position - 1, onFeedItemClickListener, getItemCount() - 1);
         } else if (holder instanceof OpponentProfileHeaderView) {
             if (userJsonObject != null) {
-                ((OpponentProfileHeaderView) holder).initData(userJsonObject, context);
+                ((OpponentProfileHeaderView) holder).initData(userJsonObject, context, disableButton, enableButtons, headerViewClickListener);
             }
         }
     }

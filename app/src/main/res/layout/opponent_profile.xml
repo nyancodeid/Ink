@@ -21,40 +21,4 @@
 
         </android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.SwipeRefreshLayout>
-
-
-    <android.support.design.widget.FloatingActionMenu
-        android:id="@+id/profileFab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="8dp"
-        android:layout_marginRight="8dp"
-        android:src="@drawable/fab_add"
-        fab:menu_colorNormal="@color/colorPrimary"
-        fab:menu_colorPressed="#cccccc"
-        fab:menu_colorRipple="#cccccc">
-
-        <fab.FloatingActionButton
-            android:id="@+id/removeFriend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/remove_friend_icon"
-            fab:fab_colorNormal="#444f65"
-            fab:fab_colorPressed="#636e85"
-            fab:fab_label="@string/removeFromFriends"
-            fab:fab_size="mini" />
-
-
-        <fab.FloatingActionButton
-            android:id="@+id/sendMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_send_white_24dp"
-            fab:fab_colorNormal="#444f65"
-            fab:fab_colorPressed="#636e85"
-            fab:fab_label="@string/sendMessage"
-            fab:fab_size="mini" />
-    </android.support.design.widget.FloatingActionMenu>
 </RelativeLayout>

@@ -75,7 +75,6 @@ import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
 import okhttp3.ResponseBody;
-import retrofit2.Response;
 
 import static ink.va.utils.FragmentDialog.ORDER_TYPE_HIDE_PROFILE;
 import static ink.va.utils.FragmentDialog.ORDER_TYPE_INCOGNITO;
@@ -353,7 +352,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                     mCollapsingToolbar.setExpandedTitleColor(Color.parseColor("#ffffff"));
                     isImageChosen = true;
                     imageLoadingProgress.setVisibility(View.VISIBLE);
-                    ImageLoader.loadImage(getApplicationContext(), false, false, new File(selectedImagePath), 0, 0, profileImage, new ImageLoader.ImageLoadedCallback() {
+                    ImageLoader.loadImage(getApplicationContext(), true, false, new File(selectedImagePath), 0, 0, profileImage, new ImageLoader.ImageLoadedCallback() {
                         @Override
                         public void onImageLoaded(Object result, Exception e) {
                             imageLoadingProgress.setVisibility(View.GONE);
@@ -392,73 +391,68 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
     }
 
     private void getMyData() {
-       makeRequest(Retrofit.getInstance()
-                       .getInkService().getSingleUserDetails(mSharedHelper.getUserId(), ""),
-               null, new RequestCallback() {
-                   @Override
-                   public void onRequestSuccess(Object result) {
-                       fetchData((Response<ResponseBody>) result);
-                   }
+        makeRequest(Retrofit.getInstance()
+                        .getInkService().getSingleUserDetails(mSharedHelper.getUserId(), ""),
+                null, new RequestCallback() {
+                    @Override
+                    public void onRequestSuccess(Object result) {
+                        try {
+                            String responseString = ((ResponseBody) result).string();
+                            try {
+                                JSONObject jsonObject = new JSONObject(responseString);
+                                boolean success = jsonObject.optBoolean("success");
+                                if (success) {
+                                    String userId = jsonObject.optString("userId");
+                                    mFirstNameToSend = jsonObject.optString("first_name");
+                                    mLastNameToSend = jsonObject.optString("last_name");
+                                    mGenderToSend = jsonObject.optString("gender");
+                                    mBadgeName = jsonObject.optString("badge_name");
+                                    mPhoneNumberToSend = jsonObject.optString("phone_number");
+                                    mFacebookProfileToSend = jsonObject.optString("facebook_profile");
+                                    mFacebookName = jsonObject.optString("facebook_name");
+                                    mImageLinkToSend = jsonObject.optString("image_link");
+                                    mSkypeToSend = jsonObject.optString("skype");
+                                    mAddressToSend = jsonObject.optString("address");
+                                    mRelationshipToSend = jsonObject.optString("relationship");
+                                    mStatusToSend = jsonObject.optString("status");
+                                    isIncognito = jsonObject.optBoolean("isIncognito");
+                                    isIncognitoBought = jsonObject.optBoolean("isIncognitoBought");
+                                    isHidden = jsonObject.optBoolean("isHidden");
+                                    isHiddenBought = jsonObject.optBoolean("isHiddenBought");
+                                    incognitoCost = jsonObject.optInt("incognitoCost");
+                                    hiddenProfileCost = jsonObject.optInt("hiddenProfileCost");
+                                    userCoins = jsonObject.optInt("userCoins");
 
-                   @Override
-                   public void onRequestFailed(Object[] result) {
+                                    cacheUserData();
 
-                   }
-               });
-    }
+                                    attachValues(true);
 
-
-    private void fetchData(Response<ResponseBody> response) {
-        try {
-            String responseString = response.body().string();
-            try {
-                JSONObject jsonObject = new JSONObject(responseString);
-                boolean success = jsonObject.optBoolean("success");
-                if (success) {
-                    String userId = jsonObject.optString("userId");
-                    mFirstNameToSend = jsonObject.optString("first_name");
-                    mLastNameToSend = jsonObject.optString("last_name");
-                    mGenderToSend = jsonObject.optString("gender");
-                    mBadgeName = jsonObject.optString("badge_name");
-                    mPhoneNumberToSend = jsonObject.optString("phone_number");
-                    mFacebookProfileToSend = jsonObject.optString("facebook_profile");
-                    mFacebookName = jsonObject.optString("facebook_name");
-                    mImageLinkToSend = jsonObject.optString("image_link");
-                    mSkypeToSend = jsonObject.optString("skype");
-                    mAddressToSend = jsonObject.optString("address");
-                    mRelationshipToSend = jsonObject.optString("relationship");
-                    mStatusToSend = jsonObject.optString("status");
-                    isIncognito = jsonObject.optBoolean("isIncognito");
-                    isIncognitoBought = jsonObject.optBoolean("isIncognitoBought");
-                    isHidden = jsonObject.optBoolean("isHidden");
-                    isHiddenBought = jsonObject.optBoolean("isHiddenBought");
-                    incognitoCost = jsonObject.optInt("incognitoCost");
-                    hiddenProfileCost = jsonObject.optInt("hiddenProfileCost");
-                    userCoins = jsonObject.optInt("userCoins");
-
-                    cacheUserData();
-
-                    attachValues(true);
-
-                    ImageLoader.loadImage(this, true, false, Constants.MAIN_URL + mBadgeName, 0, R.drawable.badge_placeholder, badgeIcon, null);
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MyProfile.this);
-                    builder.setTitle(getString(R.string.singleUserErrorTile));
-                    builder.setMessage(getString(R.string.singleUserErrorMessage));
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
+                                    ImageLoader.loadImage(MyProfile.this, true, false, Constants.MAIN_URL + mBadgeName, 0, R.drawable.badge_placeholder, badgeIcon, null);
+                                } else {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(MyProfile.this);
+                                    builder.setTitle(getString(R.string.singleUserErrorTile));
+                                    builder.setMessage(getString(R.string.singleUserErrorMessage));
+                                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    builder.show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    });
-                    builder.show();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                    }
+
+                    @Override
+                    public void onRequestFailed(Object[] result) {
+
+                    }
+                });
     }
 
     private void cacheUserData() {
@@ -514,7 +508,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
             if (shouldLoadImage) {
                 if (isSocialAccount()) {
                     imageLoadingProgress.setVisibility(View.VISIBLE);
-                    ImageLoader.loadImage(getApplicationContext(), false, false, mImageLinkToSend, 0, 0, profileImage, new ImageLoader.ImageLoadedCallback() {
+                    ImageLoader.loadImage(getApplicationContext(), true, false, mImageLinkToSend, 0, 0, profileImage, new ImageLoader.ImageLoadedCallback() {
                         @Override
                         public void onImageLoaded(Object result, Exception e) {
                             imageLoadingProgress.setVisibility(View.GONE);
@@ -524,7 +518,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
                     String encodedImage = Uri.encode(mImageLinkToSend);
                     imageLoadingProgress.setVisibility(View.VISIBLE);
 
-                    ImageLoader.loadImage(this, false, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage, 0, 0, profileImage,
+                    ImageLoader.loadImage(this, true, false, Constants.MAIN_URL + Constants.USER_IMAGES_FOLDER + encodedImage, 0, 0, profileImage,
                             new ImageLoader.ImageLoadedCallback() {
                                 @Override
                                 public void onImageLoaded(Object result, Exception e) {

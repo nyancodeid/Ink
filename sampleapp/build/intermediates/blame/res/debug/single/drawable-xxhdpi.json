@@ -72,12 +72,12 @@
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xxhdpi\\abc_ab_share_pack_holo_light.9.png"
     },
     {
-        "merged": "E:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\abc_ic_menu_share_holo_light.png",
-        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xxhdpi\\abc_ic_menu_share_holo_light.png"
-    },
-    {
         "merged": "E:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\abc_ab_solid_dark_holo.9.png",
         "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xxhdpi\\abc_ab_solid_dark_holo.9.png"
+    },
+    {
+        "merged": "E:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\abc_ic_menu_share_holo_light.png",
+        "source": "C:\\Users\\USER\\.android\\build-cache\\8fc800ee1979c73af3c9f011335ede1d0017b83d\\output\\res\\drawable-xxhdpi\\abc_ic_menu_share_holo_light.png"
     },
     {
         "merged": "D:\\Ink\\sampleapp\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi\\abc_cab_background_top_holo_dark.9.png",

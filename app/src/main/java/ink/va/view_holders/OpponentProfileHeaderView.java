@@ -2,9 +2,12 @@ package ink.va.view_holders;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -25,6 +28,7 @@ import butterknife.OnClick;
 import ink.va.activities.FullscreenActivity;
 import ink.va.utils.Constants;
 import ink.va.utils.ImageLoader;
+import ink.va.utils.SharedHelper;
 import it.sephiroth.android.library.picasso.NetworkPolicy;
 import it.sephiroth.android.library.picasso.Picasso;
 import it.sephiroth.android.library.picasso.Target;
@@ -78,18 +82,54 @@ public class OpponentProfileHeaderView extends RecyclerView.ViewHolder {
     private String mOpponentImage;
     private Context context;
     private Target target;
+    private boolean isFriend;
+    @BindView(R.id.sendMessageFab)
+    android.support.design.widget.FloatingActionButton sendMessageFab;
+    @BindView(R.id.friendUnfriendFab)
+    android.support.design.widget.FloatingActionButton friendUnfriendFab;
+    private String mFirstName;
+    private String mLastName;
+    HeaderViewClickListener headerViewClickListener;
+    private SharedHelper sharedHelper;
 
     public OpponentProfileHeaderView(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
 
-    public void initData(JSONObject jsonObject, Context context) {
+    public void initData(JSONObject jsonObject, Context context, boolean disableSendMessage, boolean enableButtons, @Nullable HeaderViewClickListener headerViewClickListener) {
+        if (sharedHelper == null) {
+            sharedHelper = new SharedHelper(context);
+        }
+        this.headerViewClickListener = headerViewClickListener;
         this.context = context;
+        if (disableSendMessage) {
+            sendMessageFab.setVisibility(View.INVISIBLE);
+        } else if (isFriend) {
+            sendMessageFab.setVisibility(View.VISIBLE);
+        } else {
+            sendMessageFab.setVisibility(View.INVISIBLE);
+        }
+
+        if (!enableButtons) {
+            friendUnfriendFab.setEnabled(false);
+        } else {
+            friendUnfriendFab.setEnabled(true);
+            if (isFriend) {
+                friendUnfriendFab.setImageResource(R.drawable.remove_friend_icon);
+            } else {
+                friendUnfriendFab.setImageResource(R.drawable.request_friend_icon);
+            }
+        }
+
+        if (sharedHelper.getMenuButtonColor() != null) {
+            sendMessageFab.setBackgroundTintList((ColorStateList.valueOf(Color.parseColor(sharedHelper.getMenuButtonColor()))));
+            friendUnfriendFab.setBackgroundTintList((ColorStateList.valueOf(Color.parseColor(sharedHelper.getMenuButtonColor()))));
+        }
 
         String status = jsonObject.optString("status");
-        String firstName = jsonObject.optString("first_name");
-        String lastName = jsonObject.optString("last_name");
+        mFirstName = jsonObject.optString("first_name");
+        mLastName = jsonObject.optString("last_name");
         String gender = jsonObject.optString("gender");
         String badgeName = jsonObject.optString("badge_name");
         String phoneNumber = jsonObject.optString("phoneNumber");
@@ -99,10 +139,11 @@ public class OpponentProfileHeaderView extends RecyclerView.ViewHolder {
         String skype = jsonObject.optString("skype");
         String address = jsonObject.optString("address");
         String relationship = jsonObject.optString("relationship");
+        isFriend = jsonObject.optBoolean("isFriend");
 
 
-        ImageLoader.loadImage(context,true,false,Constants.MAIN_URL + badgeName,0,R.drawable.badge_placeholder,singleUserBadge,null);
-        userName.setText(firstName + " " + lastName);
+        ImageLoader.loadImage(context, true, false, Constants.MAIN_URL + badgeName, 0, R.drawable.badge_placeholder, singleUserBadge, null);
+        userName.setText(mFirstName + " " + mLastName);
         boolean shouldHighlightFacebook = true;
         boolean shouldHighlightAddress = true;
         isSocialAccount = jsonObject.optBoolean("isSocialAccount");
@@ -188,6 +229,21 @@ public class OpponentProfileHeaderView extends RecyclerView.ViewHolder {
         }
     }
 
+    @OnClick(R.id.sendMessageFab)
+    public void WriteMessage() {
+        if (headerViewClickListener != null) {
+            headerViewClickListener.onSendMessageClicked();
+        }
+    }
+
+    @OnClick(R.id.friendUnfriendFab)
+    public void removeFriend() {
+        if (headerViewClickListener != null) {
+            headerViewClickListener.onFriendUnfriendClicked();
+        }
+    }
+
+
     @OnClick(R.id.profileImage)
     public void profileImage() {
         Intent intent = new Intent(context, FullscreenActivity.class);
@@ -267,4 +323,9 @@ public class OpponentProfileHeaderView extends RecyclerView.ViewHolder {
         return target;
     }
 
+    public interface HeaderViewClickListener {
+        void onFriendUnfriendClicked();
+
+        void onSendMessageClicked();
+    }
 }
