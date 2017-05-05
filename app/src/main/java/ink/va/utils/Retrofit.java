@@ -15,9 +15,11 @@ import ink.va.models.MyCollectionResponseModel;
 import ink.va.models.MyMessagesModel;
 import ink.va.models.ParticipantModel;
 import ink.va.models.ServerInformationModel;
+import ink.va.models.SipResponse;
 import ink.va.models.UserModel;
 import ink.va.models.UserNotificationModel;
 import ink.va.models.VipGlobalChatResponseModel;
+import lombok.Getter;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -44,6 +46,8 @@ public class Retrofit {
     public InkService inkService;
     public MusicCloudInterface musicCloudInterface;
     private NewsInterface newsInterface;
+    @Getter
+    public SipService sipService;
 
     private Retrofit() {
         retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
@@ -61,10 +65,16 @@ public class Retrofit {
                 .baseUrl(Constants.NEWS_BASE_URL)
                 .build();
 
+        retrofit2.Retrofit supService = new retrofit2.Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(Constants.SIP_MAIN_URL)
+                .build();
+
 
         inkService = retrofit.create(InkService.class);
         musicCloudInterface = cloudRetrofit.create(MusicCloudInterface.class);
         newsInterface = newsInterfaceRetrofit.create(NewsInterface.class);
+        sipService = retrofit.create(SipService.class);
 
     }
 
@@ -74,6 +84,16 @@ public class Retrofit {
 
     public NewsInterface getNewsInterface() {
         return newsInterface;
+    }
+
+    public interface SipService {
+        @POST(Constants.SPI_REGISTER_URL)
+        @FormUrlEncoded
+        Call<SipResponse> registerSipAccount(@Field("username") String username,
+                                             @Field("password") String password,
+                                             @Field("email") String email,
+                                             @Field("display_name") String displayName);
+
     }
 
     public InkService getInkService() {

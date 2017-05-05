@@ -16,11 +16,11 @@
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="android.permission.USE_SIP" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission
         android:name="com.sec.android.provider.badge.permission.READ"
         tools:node="remove" />
@@ -54,7 +54,6 @@
     <uses-permission
         android:name="com.huawei.android.launcher.permission.WRITE_SETTINGS"
         tools:node="remove" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -169,7 +168,7 @@
         <service android:name="ink.va.service.RemoveChatRouletteService" />
         <service android:name="ink.va.service.SendTokenService" />
 
-        <!-- <receiver android:name="ink.broadcasts.IncomingCallReceiver"></receiver> -->
+        <receiver android:name="ink.va.receivers.IncomingCallReceiver" />
         <receiver android:name="ink.va.receivers.DeleteReceiver" />
         <receiver android:name="ink.va.receivers.NotificationBroadcast" />
         <receiver android:name="ink.va.receivers.ReplyIntentReceiver" />
@@ -392,7 +391,10 @@
         <activity android:name="ink.va.activities.MafiaGameView" />
         <activity android:name="ink.va.activities.MafiaInfoActivity" />
         <activity android:name="ink.va.activities.NotificationActivity" />
-        <activity android:name="ink.va.activities.CreateTrend"></activity>
+        <activity android:name="ink.va.activities.CreateTrend" />
+        <activity
+            android:name="ink.va.activities.IncomingCallScreen"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

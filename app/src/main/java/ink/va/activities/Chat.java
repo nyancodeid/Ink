@@ -280,6 +280,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
     }
 
+    @OnClick(R.id.callIcon)
+    public void callIconClicked() {
+
+    }
+
     @OnClick(R.id.opponentImage)
     public void opponentImageClicked() {
         openOpponentProfile();

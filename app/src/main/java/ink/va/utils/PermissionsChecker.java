@@ -40,6 +40,14 @@ public class PermissionsChecker {
         }
     }
 
+    public static boolean isSipPermissionGranted(Context context) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.USE_SIP) != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public static boolean isStoragePermissionGranted(Context context) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             return false;

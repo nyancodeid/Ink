@@ -79,7 +79,6 @@ public class FingerPrintManager extends FingerprintManager.AuthenticationCallbac
             return;
         }
 
-
         try {
             if (!fingerprintManager.hasEnrolledFingerprints()) {
                 if (onFingerprintCallback != null) {

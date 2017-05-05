@@ -1,5 +1,6 @@
 package ink.va.activities;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,6 +20,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionMenu;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -77,12 +79,14 @@ import ink.va.service.SendTokenService;
 import ink.va.service.SocketService;
 import ink.va.utils.Constants;
 import ink.va.utils.DeviceChecker;
+import ink.va.utils.DialogUtils;
 import ink.va.utils.DimDialog;
 import ink.va.utils.ErrorCause;
 import ink.va.utils.FileUtils;
 import ink.va.utils.ImageLoader;
 import ink.va.utils.Keyboard;
 import ink.va.utils.Notification;
+import ink.va.utils.PermissionsChecker;
 import ink.va.utils.PollFish;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
@@ -169,7 +173,7 @@ public class HomeActivity extends BaseActivity
         friendGson = new Gson();
 
         initService();
-
+        checkSipPermission();
 
         if (!mSharedHelper.isSecurityQuestionSet() && isAccountRecoverable()) {
             View warningView = getLayoutInflater().inflate(R.layout.app_warning_view, null);
@@ -269,6 +273,28 @@ public class HomeActivity extends BaseActivity
         mUserNameTV = (TextView) headerView.findViewById(R.id.userNameTextView);
         panelHeader = (RelativeLayout) headerView.findViewById(R.id.panelHeader);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void checkSipPermission() {
+        if (!PermissionsChecker.isSipPermissionGranted(this)) {
+            DialogUtils.showCustomDialog(this, getString(R.string.sipPermissionNeeded),
+                    getString(R.string.proceed), getString(R.string.actionRequired), new DialogUtils.DialogListener() {
+                        @Override
+                        public void onNegativeClicked() {
+
+                        }
+
+                        @Override
+                        public void onDialogDismissed() {
+
+                        }
+
+                        @Override
+                        public void onPositiveClicked() {
+                            ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.USE_SIP}, 0);
+                        }
+                    });
+        }
     }
 
     public void initService() {

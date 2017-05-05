@@ -28,5 +28,6 @@ public class ErrorCause {
     public static final String ALREADY_VOTED = "alreadyVoted";
     public static final String NOT_VOTED_TO_REMOVE = "notVoted";
     public static final String CATEGORY_EXISTS = "categoryExists";
+    public static final String SIP_USER_EXISTS_ERROR = "user_exists";
 
 }

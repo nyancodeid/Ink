@@ -69,15 +69,6 @@ dependencies {
     compile project(':linkedin-sdk')
     compile project(path: ':explosionfield')
     compile files('src/main/libs/pollfish-googleplay-4.3.1.jar')
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.wang.avi:library:1.0.5'
-    compile 'com.google.android.gms:play-services-auth:10.0.1'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.android.support:cardview-v7:25.3.0'
-    compile 'com.android.support:recyclerview-v7:25.3.0'
-    compile 'com.jakewharton:butterknife:8.5.1'
-    compile 'com.android.support:appcompat-v7:25.3.0'
-    compile 'com.google.firebase:firebase-storage:10.0.1'
 
     compile('com.google.apis:google-api-services-translate:v2-rev47-1.22.0') {
         exclude group: 'com.google.guava'
@@ -89,6 +80,15 @@ dependencies {
         exclude group: 'com.google.api-client', module: 'google-api-client-appengine'
     }
 
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.wang.avi:library:1.0.5'
+    compile 'com.google.android.gms:play-services-auth:10.0.1'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.android.support:cardview-v7:25.3.0'
+    compile 'com.android.support:recyclerview-v7:25.3.0'
+    compile 'com.jakewharton:butterknife:8.5.1'
+    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.google.firebase:firebase-storage:10.0.1'
     compile 'com.android.support:design:25.3.0'
     compile 'com.android.support:support-v4:25.3.0'
     compile 'com.facebook.android:facebook-android-sdk:4.+'

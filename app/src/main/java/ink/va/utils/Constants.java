@@ -16,7 +16,11 @@ public class Constants {
      */
     public static final String MAIN_URL = "http://104.196.118.124/Ink_Base_project_1992_no_15_dp_deployed_57_olAllolclslf_8954/";
     public static final String SOCKET_URL = "http://104.196.118.124:9090";
+    public static final String SIP_MAIN_URL = "https://blink.sipthor.net/";
+    public static final String SPI_REGISTER_URL = "enrollment-webrtc.phtml";
+    public static final String SIP_OUTBOUND_PROXY_URL = "proxy.sipthor.net:5060";
     public static final String MAFIA_SOCKET_URL = "http://104.196.118.124:3000";
+    public static final String SIP_DOMAIN_URL = "sip2sip.info";
 
     /**
      * The appendable of main url
@@ -85,7 +89,7 @@ public class Constants {
     public static final String RESPOND_TO_REQUEST_URL = "RespondToRequest.php";
     public static final String REMOVE_FRIEND_URL = "RemoveFriend.php";
     public static final String RESPOND_TYPE_ACCEPT_FRIEND_REQUEST = "acceptFriendRequest";
-    public static final String CONFIG_TYPE_POLICY  = "policyUrl";
+    public static final String CONFIG_TYPE_POLICY = "policyUrl";
     public static final String RESPOND_TYPE_DENY_FRIEND_REQUEST = "denyFriendRequest";
     public static final String RESPOND_TYPE_DENY_LOCATION_REQUEST = "denyLocationRequest";
     public static final String RESPOND_TYPE_ACCEPT_LOCATION_REQUEST = "acceptLocationRequest";
