@@ -1,5 +1,6 @@
 package ink.va.activities;
 
+import android.Manifest;
 import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,8 +11,10 @@ import android.net.Uri;
 import android.net.sip.SipAudioCall;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -55,9 +58,11 @@ import ink.va.models.ChatModel;
 import ink.va.service.SocketService;
 import ink.va.utils.ClipManager;
 import ink.va.utils.Constants;
+import ink.va.utils.DialogUtils;
 import ink.va.utils.ImageLoader;
 import ink.va.utils.Keyboard;
 import ink.va.utils.Notification;
+import ink.va.utils.PermissionsChecker;
 import ink.va.utils.RealmHelper;
 import ink.va.utils.Retrofit;
 import ink.va.utils.SharedHelper;
@@ -82,6 +87,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
     public static final String TAG = Chat.class.getSimpleName();
     public static final int UPDATE_USER_MESSAGES = 2;
+    private static final int USE_SIP_REQUEST_PERMISSION = 5;
 
     @BindView(R.id.sendChatMessage)
     fab.FloatingActionButton mSendChatMessage;
@@ -154,6 +160,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private int lastVisiblePosition;
     private MessagePagingTask messagePagingTask;
     private boolean furtherLoad = true;
+    private String lastDestination;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -284,7 +291,28 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     @OnClick(R.id.callIcon)
     public void callIconClicked() {
         String destination = opponentFirstName + opponentLastName + Constants.SIP_USERNAME_EXTENSION;
-        callUser(destination);
+        lastDestination = destination;
+        if (!PermissionsChecker.isSipPermissionGranted(this)) {
+            DialogUtils.showCustomDialog(this, getString(R.string.sipPermissionNeeded),
+                    getString(R.string.proceed), getString(R.string.actionRequired), new DialogUtils.DialogListener() {
+                        @Override
+                        public void onNegativeClicked() {
+
+                        }
+
+                        @Override
+                        public void onDialogDismissed() {
+
+                        }
+
+                        @Override
+                        public void onPositiveClicked() {
+                            ActivityCompat.requestPermissions(Chat.this, new String[]{Manifest.permission.USE_SIP}, USE_SIP_REQUEST_PERMISSION);
+                        }
+                    });
+        } else {
+            callUser(destination);
+        }
     }
 
     private void callUser(String destination) {
@@ -1251,6 +1279,18 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             if (firstPaging) {
                 scrollToBottom();
             }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case USE_SIP_REQUEST_PERMISSION:
+                if (PermissionsChecker.isSipPermissionGranted(this)) {
+                    callUser(lastDestination);
+                }
+                break;
         }
     }
 }
