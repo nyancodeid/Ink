@@ -169,6 +169,7 @@ public class OutgoingCallActivity extends BaseActivity implements SipManagerUtil
     @Override
     public void onOutgoingCallError(SipAudioCall call, int errorCode, String errorMessage) {
         insideCall = false;
+        callStateTV.setText(getString(R.string.error) + " " + errorMessage);
     }
 
     @Override

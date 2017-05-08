@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.net.sip.SipAudioCall;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -53,7 +52,6 @@ import ink.va.callbacks.GeneralCallback;
 import ink.va.interfaces.RecyclerItemClickListener;
 import ink.va.interfaces.RequestCallback;
 import ink.va.interfaces.SocketListener;
-import ink.va.managers.SipManagerUtil;
 import ink.va.models.ChatModel;
 import ink.va.service.SocketService;
 import ink.va.utils.ClipManager;
@@ -83,7 +81,7 @@ import static ink.va.utils.Constants.REQUEST_CODE_CHOSE_STICKER;
 import static ink.va.utils.Constants.STARTING_FOR_RESULT_BUNDLE_KEY;
 
 
-public class Chat extends BaseActivity implements RecyclerItemClickListener, SocketListener, SipManagerUtil.SipCallback {
+public class Chat extends BaseActivity implements RecyclerItemClickListener, SocketListener {
 
     public static final String TAG = Chat.class.getSimpleName();
     public static final int UPDATE_USER_MESSAGES = 2;
@@ -1169,67 +1167,6 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             startActivity(intent);
         }
     }
-
-    @Override
-    public void onRinging(String callerName) {
-
-    }
-
-    @Override
-    public void onIncomingCallEstablished(SipAudioCall sipAudioCall) {
-
-    }
-
-    @Override
-    public void onIncomingCallEnded(SipAudioCall sipAudioCall) {
-
-    }
-
-    @Override
-    public void onIncomingCallError(SipAudioCall call, int errorCode, String errorMessage) {
-
-    }
-
-    @Override
-    public void onOutgoingCalling() {
-
-    }
-
-    @Override
-    public void onOutgoingCallEstablished(SipAudioCall call) {
-
-    }
-
-    @Override
-    public void onOutgoingCallEnded(SipAudioCall call) {
-
-    }
-
-    @Override
-    public void onUserBusy() {
-
-    }
-
-    @Override
-    public void onOutgoingCallHeld() {
-
-    }
-
-    @Override
-    public void onOutgoingCallError(SipAudioCall call, int errorCode, String errorMessage) {
-
-    }
-
-    @Override
-    public void onIncomingCallHeld() {
-
-    }
-
-    @Override
-    public void onIncomingCallInstanceNull() {
-
-    }
-
     private class MessagePagingTask extends AsyncTask<Integer, String, List<ChatModel>> {
         @Setter
         private boolean firstPaging;
