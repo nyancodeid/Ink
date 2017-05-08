@@ -330,8 +330,10 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 }
             });
         }
-        ((HomeActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().getPosts(mSharedHelper.getUserId(), String.valueOf(offset), String.valueOf(count)),
-                feedRefresh, this);
+        if (getActivity() != null) {
+            ((HomeActivity) getActivity()).makeRequest(Retrofit.getInstance().getInkService().getPosts(mSharedHelper.getUserId(), String.valueOf(offset), String.valueOf(count)),
+                    feedRefresh, this);
+        }
 
     }
 
@@ -527,17 +529,19 @@ public class Feed extends android.support.v4.app.Fragment implements SwipeRefres
                 e.printStackTrace();
             }
 
-            if (((HomeActivity) getActivity()).getSocketService() != null) {
-                if (!((HomeActivity) getActivity()).getSocketService().isSocketConnected()) {
-                    ((HomeActivity) getActivity()).getSocketService().connectSocket();
+            if (getActivity() != null) {
+                if (((HomeActivity) getActivity()).getSocketService() != null) {
+                    if (!((HomeActivity) getActivity()).getSocketService().isSocketConnected()) {
+                        ((HomeActivity) getActivity()).getSocketService().connectSocket();
+                    }
+                    ((HomeActivity) getActivity()).getSocketService().emit(EVENT_POST_LIKED, likeJson);
+                } else {
+                    ((HomeActivity) getActivity()).initService();
+                    if (!((HomeActivity) getActivity()).getSocketService().isSocketConnected()) {
+                        ((HomeActivity) getActivity()).getSocketService().connectSocket();
+                    }
+                    ((HomeActivity) getActivity()).getSocketService().emit(EVENT_POST_LIKED, likeJson);
                 }
-                ((HomeActivity) getActivity()).getSocketService().emit(EVENT_POST_LIKED, likeJson);
-            } else {
-                ((HomeActivity) getActivity()).initService();
-                if (!((HomeActivity) getActivity()).getSocketService().isSocketConnected()) {
-                    ((HomeActivity) getActivity()).getSocketService().connectSocket();
-                }
-                ((HomeActivity) getActivity()).getSocketService().emit(EVENT_POST_LIKED, likeJson);
             }
         }
     }

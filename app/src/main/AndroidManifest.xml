@@ -394,8 +394,9 @@
         <activity android:name="ink.va.activities.CreateTrend" />
         <activity
             android:name="ink.va.activities.IncomingCallScreen"
-            android:theme="@style/FullscreenTheme"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/FullscreenTheme" />
+        <activity android:name="ink.va.activities.OutgoingCallActivity"></activity>
     </application>
 
 </manifest>

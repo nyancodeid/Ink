@@ -65,7 +65,7 @@ public class Retrofit {
                 .baseUrl(Constants.NEWS_BASE_URL)
                 .build();
 
-        retrofit2.Retrofit supService = new retrofit2.Retrofit.Builder()
+        retrofit2.Retrofit sipRetrofit = new retrofit2.Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(Constants.SIP_MAIN_URL)
                 .build();
@@ -74,7 +74,7 @@ public class Retrofit {
         inkService = retrofit.create(InkService.class);
         musicCloudInterface = cloudRetrofit.create(MusicCloudInterface.class);
         newsInterface = newsInterfaceRetrofit.create(NewsInterface.class);
-        sipService = retrofit.create(SipService.class);
+        sipService = sipRetrofit.create(SipService.class);
 
     }
 

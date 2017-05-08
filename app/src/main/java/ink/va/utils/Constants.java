@@ -328,5 +328,7 @@ public class Constants {
     public static final String EVENT_DECLINE_FRIEND_REQUEST = "declineFriendRequest";
     public static final String EVENT_CREATE_GAME = "creatingGame";
     public static final String EVENT_SEND_GROUP_MESSAGE = "sendGroupMessage";
+    public static final String SIP_USERNAME_EXTENSION = "InkUserSip";
+    public static final String SIP_GENERIC_PASSWORD = "5369615737425";
 }
 

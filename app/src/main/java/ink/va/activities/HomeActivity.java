@@ -68,11 +68,13 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import fab.FloatingActionButton;
+import ink.va.callbacks.GeneralCallback;
 import ink.va.fragments.Feed;
 import ink.va.fragments.MyFriends;
 import ink.va.interfaces.AccountDeleteListener;
 import ink.va.interfaces.ColorChangeListener;
 import ink.va.interfaces.RequestCallback;
+import ink.va.managers.SipManagerUtil;
 import ink.va.models.CoinsResponse;
 import ink.va.models.FriendModel;
 import ink.va.service.SendTokenService;
@@ -114,6 +116,7 @@ public class HomeActivity extends BaseActivity
 
     private static final String TAG = HomeActivity.class.getSimpleName();
     public static final int PROFILE_RESULT_CODE = 836;
+    private static final int USE_SIP_REQUEST_PERMISSION = 10;
 
 
     private FloatingActionMenu mFab;
@@ -151,6 +154,7 @@ public class HomeActivity extends BaseActivity
     private SocketService socketService;
     private boolean openInstaBug;
     private Gson friendGson;
+    private SipManagerUtil sipManagerUtil;
 
 
     @Override
@@ -160,6 +164,7 @@ public class HomeActivity extends BaseActivity
         ButterKnife.bind(this);
         pollFish = PollFish.get();
         pollFish.setActivity(this);
+        sipManagerUtil = new SipManagerUtil(this);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         PROFILE = getString(R.string.profileText);
@@ -200,7 +205,6 @@ public class HomeActivity extends BaseActivity
         checkNotification(getIntent());
 
         LocalBroadcastManager.getInstance(this).registerReceiver(feedUpdateReceiver, new IntentFilter(getPackageName() + "HomeActivity"));
-
         User.get().setUserName(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());
         User.get().setUserId(mSharedHelper.getUserId());
         mFab = (FloatingActionMenu) findViewById(R.id.fab);
@@ -291,9 +295,11 @@ public class HomeActivity extends BaseActivity
 
                         @Override
                         public void onPositiveClicked() {
-                            ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.USE_SIP}, 0);
+                            ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.USE_SIP}, USE_SIP_REQUEST_PERMISSION);
                         }
                     });
+        } else {
+            startSip();
         }
     }
 
@@ -1172,6 +1178,9 @@ public class HomeActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (sipManagerUtil != null) {
+            sipManagerUtil.destroy();
+        }
         Notification.get().setAppAlive(false);
     }
 
@@ -1210,8 +1219,37 @@ public class HomeActivity extends BaseActivity
             case PROFILE_RESULT_CODE:
                 getCoins();
                 break;
+            case USE_SIP_REQUEST_PERMISSION:
+                startSip();
+                break;
 
         }
+    }
+
+    private void startSip() {
+        String firstName = mSharedHelper.getFirstName();
+        String lastName = mSharedHelper.getLastName();
+        final String userId = mSharedHelper.getUserId();
+        final String sipUserName = firstName + lastName + Constants.SIP_USERNAME_EXTENSION;
+        final String displayName = firstName + " " + lastName;
+        sipManagerUtil.registerSipAccount(firstName + lastName + Constants.SIP_USERNAME_EXTENSION, Constants.SIP_GENERIC_PASSWORD, displayName, new GeneralCallback() {
+            @Override
+            public void onSuccess(Object o) {
+                sipManagerUtil.loginIntoSip(sipUserName, Constants.SIP_GENERIC_PASSWORD, displayName, userId);
+            }
+
+            @Override
+            public void onFailure(Object o) {
+                Log.d(TAG, "onFailure: " + o);
+                if (o != null) {
+                    switch (o.toString()) {
+                        case ErrorCause.SIP_USER_EXISTS_ERROR:
+                            sipManagerUtil.loginIntoSip(sipUserName, Constants.SIP_GENERIC_PASSWORD, displayName, userId);
+                            break;
+                    }
+                }
+            }
+        });
     }
 
 

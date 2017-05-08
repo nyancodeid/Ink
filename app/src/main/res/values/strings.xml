@@ -1129,5 +1129,9 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="acceptDecline">Accept or Decline The Call</string>
     <string name="callEstablished">Call established</string>
     <string name="callEnded">Call ended</string>
+    <string name="leavingCallWarning">You\'re about to end the call by leaving. The call will be hanged up, proceed?</string>
+    <string name="endCallWarning">Do you want to end the call?</string>
+    <string name="calling">Calling...</string>
+    <string name="userBusy">The user is busy</string>
 
 </resources>

@@ -59,6 +59,7 @@ public class IncomingCallScreen extends BaseActivity implements SipManagerUtil.S
     private SipAudioCall sipAudioCall;
     private String opponentImageUrl;
     private boolean isSocialAccount;
+    private Intent destinationIntent;
 
 
     @Override
@@ -71,13 +72,13 @@ public class IncomingCallScreen extends BaseActivity implements SipManagerUtil.S
         }
         sipManagerUtil = new SipManagerUtil(this);
         sipManagerUtil.setSipCallback(this);
-
-        Intent destinationIntent = (Intent) getIntent().getExtras().get("destinationIntent");
+        destinationIntent = (Intent) getIntent().getExtras().get("destinationIntent");
         try {
             sipAudioCall = sipManagerUtil.takeAudioCall(destinationIntent);
         } catch (SipException e) {
             e.printStackTrace();
         }
+
         callerNameTV.setText(sipAudioCall.getPeerProfile().getDisplayName());
         getSingleUserDetails(sipAudioCall.getPeerProfile().getProfileName());
 
@@ -88,6 +89,11 @@ public class IncomingCallScreen extends BaseActivity implements SipManagerUtil.S
 
     @OnClick(R.id.acceptCallIcon)
     public void acceptCallIconClicked() {
+        try {
+            sipManagerUtil.pickup();
+        } catch (SipException e) {
+            e.printStackTrace();
+        }
         startAcceptAnimation();
     }
 
@@ -134,11 +140,21 @@ public class IncomingCallScreen extends BaseActivity implements SipManagerUtil.S
 
     @OnClick(R.id.declineCallIcon)
     public void declineCallIconClicked() {
+        try {
+            sipManagerUtil.hangup();
+        } catch (SipException e) {
+            e.printStackTrace();
+        }
         finish();
     }
 
     @OnClick(R.id.hangupIV)
     public void hangupIV() {
+        try {
+            sipManagerUtil.hangup();
+        } catch (SipException e) {
+            e.printStackTrace();
+        }
         finish();
     }
 

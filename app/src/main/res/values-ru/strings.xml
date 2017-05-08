@@ -1155,4 +1155,7 @@
     <string name="incomingCall">Входящий звонок</string>
     <string name="callEstablished">Вызов установлен</string>
     <string name="callEnded">Звонок окончен</string>
+    <string name="leavingCallWarning">Вы собираетесь завершить вызов, уйдя. Вызов будет завершен, продолжить?</string>
+    <string name="calling">Звоним...</string>
+    <string name="userBusy">Пользователь занят</string>
 </resources>

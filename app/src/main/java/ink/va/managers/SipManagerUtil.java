@@ -1,5 +1,6 @@
 package ink.va.managers;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -106,8 +107,6 @@ public class SipManagerUtil implements SipRegistrationListener {
             }
         });
         workerThread.start();
-
-
     }
 
     private void closeSipProfile() {
@@ -156,19 +155,29 @@ public class SipManagerUtil implements SipRegistrationListener {
     public SipAudioCall takeAudioCall(final Intent incomingIntent) throws SipException {
         incomingCallInstance = sipManager.takeAudioCall(incomingIntent, new SipAudioCall.Listener() {
             @Override
-            public void onRinging(SipAudioCall call, SipProfile caller) {
+            public void onRinging(SipAudioCall call, final SipProfile caller) {
                 super.onRinging(call, caller);
                 if (sipCallback != null) {
-                    sipCallback.onRinging(caller.getDisplayName());
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sipCallback.onRinging(caller.getDisplayName());
+                        }
+                    });
                 }
             }
 
             @Override
-            public void onCallEstablished(SipAudioCall call) {
+            public void onCallEstablished(final SipAudioCall call) {
                 super.onCallEstablished(call);
                 incomingCallInstance.startAudio();
                 if (sipCallback != null) {
-                    sipCallback.onIncomingCallEstablished(call);
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sipCallback.onIncomingCallEstablished(call);
+                        }
+                    });
                 }
             }
 
@@ -176,23 +185,38 @@ public class SipManagerUtil implements SipRegistrationListener {
             public void onCallHeld(SipAudioCall call) {
                 super.onCallHeld(call);
                 if (sipCallback != null) {
-                    sipCallback.onIncomingCallHeld();
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sipCallback.onIncomingCallHeld();
+                        }
+                    });
                 }
             }
 
             @Override
-            public void onCallEnded(SipAudioCall call) {
+            public void onCallEnded(final SipAudioCall call) {
                 super.onCallEnded(call);
                 if (sipCallback != null) {
-                    sipCallback.onIncomingCallEnded(call);
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sipCallback.onIncomingCallEnded(call);
+                        }
+                    });
                 }
             }
 
             @Override
-            public void onError(SipAudioCall call, int errorCode, String errorMessage) {
+            public void onError(final SipAudioCall call, final int errorCode, final String errorMessage) {
                 super.onError(call, errorCode, errorMessage);
                 if (sipCallback != null) {
-                    sipCallback.onIncomingCallError(call, errorCode, errorMessage);
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sipCallback.onIncomingCallError(call, errorCode, errorMessage);
+                        }
+                    });
                 }
             }
 
@@ -216,7 +240,12 @@ public class SipManagerUtil implements SipRegistrationListener {
     public void pickup() throws SipException {
         if (incomingCallInstance == null) {
             if (sipCallback != null) {
-                sipCallback.onIncomingCallInstanceNull();
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        sipCallback.onIncomingCallInstanceNull();
+                    }
+                });
             }
         } else {
             incomingCallInstance.answerCall(10);
@@ -226,7 +255,13 @@ public class SipManagerUtil implements SipRegistrationListener {
     public void hangup() throws SipException {
         if (incomingCallInstance == null) {
             if (sipCallback != null) {
-                sipCallback.onIncomingCallInstanceNull();
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        sipCallback.onIncomingCallInstanceNull();
+                    }
+                });
+
             }
         } else {
             incomingCallInstance.endCall();
@@ -236,7 +271,12 @@ public class SipManagerUtil implements SipRegistrationListener {
     public boolean toggleMute() {
         if (incomingCallInstance == null) {
             if (sipCallback != null) {
-                sipCallback.onIncomingCallInstanceNull();
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        sipCallback.onIncomingCallInstanceNull();
+                    }
+                });
             }
         } else {
             incomingCallInstance.toggleMute();
@@ -247,7 +287,12 @@ public class SipManagerUtil implements SipRegistrationListener {
     public void holdCall() {
         if (incomingCallInstance == null) {
             if (sipCallback != null) {
-                sipCallback.onIncomingCallInstanceNull();
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        sipCallback.onIncomingCallInstanceNull();
+                    }
+                });
             }
         } else {
             try {
@@ -261,7 +306,12 @@ public class SipManagerUtil implements SipRegistrationListener {
     public void resumeCall() {
         if (incomingCallInstance == null) {
             if (sipCallback != null) {
-                sipCallback.onIncomingCallInstanceNull();
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        sipCallback.onIncomingCallInstanceNull();
+                    }
+                });
             }
         } else {
             try {
@@ -275,7 +325,12 @@ public class SipManagerUtil implements SipRegistrationListener {
     public void toggleSpeaker(boolean on) {
         if (incomingCallInstance == null) {
             if (sipCallback != null) {
-                sipCallback.onIncomingCallInstanceNull();
+                ((Activity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        sipCallback.onIncomingCallInstanceNull();
+                    }
+                });
             }
         } else {
             incomingCallInstance.setSpeakerMode(on);
@@ -291,24 +346,40 @@ public class SipManagerUtil implements SipRegistrationListener {
             public void onCalling(SipAudioCall call) {
                 super.onCalling(call);
                 if (sipCallback != null) {
-                    sipCallback.onOutgoingCalling();
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sipCallback.onOutgoingCalling();
+                        }
+                    });
                 }
             }
 
             @Override
-            public void onCallEstablished(SipAudioCall call) {
+            public void onCallEstablished(final SipAudioCall call) {
                 super.onCallEstablished(call);
                 call.startAudio();
                 if (sipCallback != null) {
-                    sipCallback.onOutgoingCallEstablished(call);
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sipCallback.onOutgoingCallEstablished(call);
+                        }
+                    });
+
                 }
             }
 
             @Override
-            public void onCallEnded(SipAudioCall call) {
+            public void onCallEnded(final SipAudioCall call) {
                 super.onCallEnded(call);
                 if (sipCallback != null) {
-                    sipCallback.onOutgoingCallEnded(call);
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sipCallback.onOutgoingCallEnded(call);
+                        }
+                    });
                 }
             }
 
@@ -324,22 +395,33 @@ public class SipManagerUtil implements SipRegistrationListener {
             public void onCallHeld(SipAudioCall call) {
                 super.onCallHeld(call);
                 if (sipCallback != null) {
-                    sipCallback.onOutgoingCallHeld();
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sipCallback.onOutgoingCallHeld();
+                        }
+                    });
                 }
             }
 
             @Override
-            public void onError(SipAudioCall call, int errorCode, String errorMessage) {
+            public void onError(final SipAudioCall call, final int errorCode, final String errorMessage) {
                 super.onError(call, errorCode, errorMessage);
                 if (sipCallback != null) {
-                    sipCallback.onOutgoingCallError(call, errorCode, errorMessage);
+                    ((Activity) context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sipCallback.onOutgoingCallError(call, errorCode, errorMessage);
+                        }
+                    });
+
                 }
             }
         }, 10);
     }
 
-    private void registerSipAccount(String sipUsername, String sipPassword,
-                                    String displayName, @Nullable final GeneralCallback generalCallback) {
+    public void registerSipAccount(String sipUsername, String sipPassword,
+                                   String displayName, @Nullable final GeneralCallback generalCallback) {
 
         Retrofit.getInstance().getSipService().registerSipAccount(sipUsername, sipPassword, "dummy@email.com", displayName).enqueue(new Callback<SipResponse>() {
             @Override
