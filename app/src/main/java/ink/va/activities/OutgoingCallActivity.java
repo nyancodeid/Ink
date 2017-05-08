@@ -59,6 +59,8 @@ public class OutgoingCallActivity extends BaseActivity implements SipManagerUtil
         sipManagerUtil = SipManagerUtil.getManager();
         sipManagerUtil.setContext(this);
         sipManagerUtil.setSipCallback(this);
+        usernameTV.setText(opponentName);
+        callStateTV.setText(getString(R.string.calling));
         try {
             sipManagerUtil.call(destination);
         } catch (SipException e) {

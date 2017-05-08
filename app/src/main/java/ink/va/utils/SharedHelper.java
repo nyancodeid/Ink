@@ -118,6 +118,15 @@ public class SharedHelper {
         mEditor.commit();
     }
 
+    public void setSipRegistered(boolean value) {
+        mEditor.putBoolean("sipRegistered", value);
+        mEditor.commit();
+    }
+
+    public boolean isSipRegistered() {
+        return mSharedPreferences.getBoolean("sipRegistered", false);
+    }
+
     public void removeLastNotificationId(String notificationId) {
         mEditor.remove(notificationId);
         mEditor.remove("notificationCount" + notificationId);

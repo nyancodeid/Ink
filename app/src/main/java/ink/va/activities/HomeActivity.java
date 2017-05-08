@@ -179,7 +179,7 @@ public class HomeActivity extends BaseActivity
         friendGson = new Gson();
 
         initService();
-        checkSipPermission();
+//        checkSipPermission();
 
         if (!mSharedHelper.isSecurityQuestionSet() && isAccountRecoverable()) {
             View warningView = getLayoutInflater().inflate(R.layout.app_warning_view, null);
@@ -1233,24 +1233,30 @@ public class HomeActivity extends BaseActivity
         final String userId = mSharedHelper.getUserId();
         final String sipUserName = firstName + lastName + Constants.SIP_USERNAME_EXTENSION;
         final String displayName = firstName + " " + lastName;
-        sipManagerUtil.registerSipAccount(firstName + lastName + Constants.SIP_USERNAME_EXTENSION, Constants.SIP_GENERIC_PASSWORD, displayName, new GeneralCallback() {
-            @Override
-            public void onSuccess(Object o) {
-                sipManagerUtil.loginIntoSip(sipUserName, Constants.SIP_GENERIC_PASSWORD, displayName, userId);
-            }
+        if(mSharedHelper.isSipRegistered()){
+            sipManagerUtil.loginIntoSip(sipUserName, Constants.SIP_GENERIC_PASSWORD, displayName, userId);
+        }else{
+            sipManagerUtil.registerSipAccount(firstName + lastName + Constants.SIP_USERNAME_EXTENSION, Constants.SIP_GENERIC_PASSWORD, displayName, new GeneralCallback() {
+                @Override
+                public void onSuccess(Object o) {
+                    sipManagerUtil.loginIntoSip(sipUserName, Constants.SIP_GENERIC_PASSWORD, displayName, userId);
+                    mSharedHelper.setSipRegistered(true);
+                }
 
-            @Override
-            public void onFailure(Object o) {
-                Log.d(TAG, "onFailure: " + o);
-                if (o != null) {
-                    switch (o.toString()) {
-                        case ErrorCause.SIP_USER_EXISTS_ERROR:
-                            sipManagerUtil.loginIntoSip(sipUserName, Constants.SIP_GENERIC_PASSWORD, displayName, userId);
-                            break;
+                @Override
+                public void onFailure(Object o) {
+                    Log.d(TAG, "onFailure: " + o);
+                    if (o != null) {
+                        switch (o.toString()) {
+                            case ErrorCause.SIP_USER_EXISTS_ERROR:
+                                sipManagerUtil.loginIntoSip(sipUserName, Constants.SIP_GENERIC_PASSWORD, displayName, userId);
+                                mSharedHelper.setSipRegistered(true);
+                                break;
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
 

@@ -344,8 +344,8 @@ public class SipManagerUtil implements SipRegistrationListener {
 
     public void call(String sipUsername) throws SipException, ParseException {
         SipProfile.Builder builder = new SipProfile.Builder(sipUsername, SIP_DOMAIN_URL);
-        SipProfile sipProfile = builder.build();
-        sipManager.makeAudioCall(this.sipProfile, sipProfile, new SipAudioCall.Listener() {
+        SipProfile peerProfile = builder.build();
+        sipManager.makeAudioCall(this.sipProfile, peerProfile, new SipAudioCall.Listener() {
             @Override
             public void onCalling(SipAudioCall call) {
                 super.onCalling(call);

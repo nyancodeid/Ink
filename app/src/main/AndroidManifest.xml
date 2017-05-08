@@ -396,7 +396,10 @@
             android:name="ink.va.activities.IncomingCallScreen"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
-        <activity android:name="ink.va.activities.OutgoingCallActivity"></activity>
+        <activity
+            android:name="ink.va.activities.OutgoingCallActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>
