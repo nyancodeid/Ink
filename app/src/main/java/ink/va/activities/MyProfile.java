@@ -534,7 +534,7 @@ public class MyProfile extends BaseActivity implements FragmentDialog.ResultList
             }
         } else {
             imageLoadingProgress.setVisibility(View.GONE);
-            profileImage.setBackgroundResource(R.drawable.no_image);
+            ImageLoader.loadImage(this, true, true, null, R.drawable.no_image, R.drawable.user_image_placeholder, profileImage, null);
         }
         mPhone.setText(mPhoneNumberToSend);
         mFacebook.setText(mFacebookName);

@@ -35,7 +35,7 @@ import static ink.va.utils.Constants.SIP_OUTBOUND_PROXY_URL;
  * Don't forget to initialize the Context of the caller from the first after you have the reference to the singleton.
  */
 
-class SipManagerUtil implements SipRegistrationListener {
+public class SipManagerUtil implements SipRegistrationListener {
 
     @Setter
     private SipCallback sipCallback;

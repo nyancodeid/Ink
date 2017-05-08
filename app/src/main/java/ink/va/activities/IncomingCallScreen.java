@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ink.va.R;
-import com.romainpiel.shimmer.ShimmerTextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,14 +34,16 @@ public class IncomingCallScreen extends BaseActivity {
     ImageView acceptCallIcon;
     @BindView(R.id.declineCallIcon)
     ImageView declineCallIcon;
+    @BindView(R.id.hangupIV)
+    ImageView hangupIV;
 
     @BindView(R.id.slideToAcceptCancelTV)
-    ShimmerTextView slideToAcceptCancelTV;
+    TextView acceptDeclineText;
 
     private Animation fadeOut;
-    private Animation slideRightRotate;
     private Animation slideDown;
-    private boolean shallDecline;
+    private Animation scaleInAnimation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,27 +53,18 @@ public class IncomingCallScreen extends BaseActivity {
         if (!PermissionsChecker.isCallPermissionGranted(this)) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 0);
         }
-//        incomingIntent = (Intent) getIntent().getExtras().get("destinationIntent");
-        slideToAcceptCancelTV.animate();
 
-        fadeOut = AnimationUtils.loadAnimation(this, R.anim.com_adobe_image_fade_out_long);
-        slideRightRotate = AnimationUtils.loadAnimation(this, R.anim.slide_rotate);
+        fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
         slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+        scaleInAnimation = AnimationUtils.loadAnimation(this, R.anim.scale_in);
     }
 
     @OnClick(R.id.acceptCallIcon)
     public void acceptCallIconClicked() {
-        if (!shallDecline) {
-            startAcceptAnimation();
-        } else {
-            finish();
-        }
+        startAcceptAnimation();
     }
 
     private void startAcceptAnimation() {
-        shallDecline = true;
-        acceptCallIcon.setImageResource(R.drawable.decline_call_icon);
-
         fadeOut.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -81,7 +73,7 @@ public class IncomingCallScreen extends BaseActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                slideToAcceptCancelTV.setVisibility(View.GONE);
+                acceptDeclineText.setVisibility(View.GONE);
             }
 
             @Override
@@ -89,7 +81,7 @@ public class IncomingCallScreen extends BaseActivity {
 
             }
         });
-        slideToAcceptCancelTV.startAnimation(fadeOut);
+        acceptDeclineText.startAnimation(fadeOut);
         slideDown.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -99,6 +91,7 @@ public class IncomingCallScreen extends BaseActivity {
             @Override
             public void onAnimationEnd(Animation animation) {
                 declineCallIcon.setVisibility(View.GONE);
+                acceptCallIcon.setVisibility(View.GONE);
             }
 
             @Override
@@ -107,10 +100,18 @@ public class IncomingCallScreen extends BaseActivity {
             }
         });
         declineCallIcon.startAnimation(slideDown);
+        acceptCallIcon.startAnimation(slideDown);
+        hangupIV.setVisibility(View.VISIBLE);
+        hangupIV.startAnimation(scaleInAnimation);
     }
 
     @OnClick(R.id.declineCallIcon)
     public void declineCallIconClicked() {
+        finish();
+    }
+
+    @OnClick(R.id.hangupIV)
+    public void hangupIV() {
         finish();
     }
 }

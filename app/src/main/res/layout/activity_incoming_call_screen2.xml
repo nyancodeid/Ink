@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:minHeight="100dp"
+        app:cardCornerRadius="10dp"
         app:cardElevation="10dp">
 
         <RelativeLayout
@@ -38,7 +39,7 @@
                 android:layout_margin="10dp"
                 android:fontFamily="@string/appFont"
                 android:text="@string/loadingText"
-                android:textSize="32sp"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -64,7 +65,7 @@
         android:layout_above="@+id/callActionCV"
         android:layout_below="@+id/callerInfoCV"
         android:layout_margin="10dp"
-        app:cardCornerRadius="5dp"
+        app:cardCornerRadius="10dp"
         app:cardElevation="10dp">
 
         <ImageView
@@ -82,6 +83,7 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="10dp"
         android:minHeight="100dp"
+        app:cardCornerRadius="10dp"
         app:cardElevation="10dp">
 
         <RelativeLayout
@@ -96,8 +98,6 @@
                 android:layout_margin="10dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:padding="10dp"
                 android:scaleX="-1"
                 android:src="@drawable/accept_call_icon" />
@@ -110,13 +110,25 @@
                 android:layout_margin="10dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:padding="10dp"
                 android:src="@drawable/decline_call_icon" />
 
 
-            <com.romainpiel.shimmer.ShimmerTextView
+            <ImageView
+                android:id="@+id/hangupIV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:padding="10dp"
+                android:rotation="-135"
+                android:src="@drawable/decline_call_icon"
+                android:visibility="gone" />
+
+
+            <TextView
                 android:id="@+id/slideToAcceptCancelTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
