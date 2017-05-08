@@ -70,7 +70,8 @@ public class IncomingCallScreen extends BaseActivity implements SipManagerUtil.S
         if (!PermissionsChecker.isCallPermissionGranted(this)) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 0);
         }
-        sipManagerUtil = new SipManagerUtil(this);
+        sipManagerUtil = SipManagerUtil.getManager();
+        sipManagerUtil.setContext(this);
         sipManagerUtil.setSipCallback(this);
         destinationIntent = (Intent) getIntent().getExtras().get("destinationIntent");
         try {

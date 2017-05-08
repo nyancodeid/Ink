@@ -40,6 +40,7 @@ public class SipManagerUtil implements SipRegistrationListener {
 
     @Setter
     private SipCallback sipCallback;
+    @Setter
     private Context context;
     private SipManager sipManager;
     private SipProfile sipProfile;
@@ -52,10 +53,9 @@ public class SipManagerUtil implements SipRegistrationListener {
     @Getter
     private SipAudioCall incomingCallInstance;
     private String userId;
+    private static final SipManagerUtil sipInstance = new SipManagerUtil();
 
-    public SipManagerUtil(Context context) {
-        this.context = context;
-        initSip();
+    public SipManagerUtil() {
     }
 
     private void initSip() {
@@ -64,6 +64,9 @@ public class SipManagerUtil implements SipRegistrationListener {
         }
     }
 
+    public static SipManagerUtil getManager(){
+        return sipInstance;
+    }
     public void loginIntoSip(final String sipUsername,
                              final String sipPassword,
                              final String displayName,

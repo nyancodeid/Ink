@@ -164,7 +164,8 @@ public class HomeActivity extends BaseActivity
         ButterKnife.bind(this);
         pollFish = PollFish.get();
         pollFish.setActivity(this);
-        sipManagerUtil = new SipManagerUtil(this);
+        sipManagerUtil = SipManagerUtil.getManager();
+        sipManagerUtil.setContext(this);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         PROFILE = getString(R.string.profileText);

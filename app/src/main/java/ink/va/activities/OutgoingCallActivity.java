@@ -56,7 +56,8 @@ public class OutgoingCallActivity extends BaseActivity implements SipManagerUtil
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        sipManagerUtil = new SipManagerUtil(this);
+        sipManagerUtil = SipManagerUtil.getManager();
+        sipManagerUtil.setContext(this);
         sipManagerUtil.setSipCallback(this);
         try {
             sipManagerUtil.call(destination);
