@@ -55,6 +55,7 @@ public class SipManagerUtil implements SipRegistrationListener {
 
     public SipManagerUtil(Context context) {
         this.context = context;
+        initSip();
     }
 
     private void initSip() {
