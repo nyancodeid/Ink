@@ -199,8 +199,6 @@ public class HomeActivity extends BaseActivity
 
         checkNotification(getIntent());
 
-        startActivity(new Intent(this, IncomingCallScreen.class));
-
         LocalBroadcastManager.getInstance(this).registerReceiver(feedUpdateReceiver, new IntentFilter(getPackageName() + "HomeActivity"));
 
         User.get().setUserName(mSharedHelper.getFirstName() + " " + mSharedHelper.getLastName());

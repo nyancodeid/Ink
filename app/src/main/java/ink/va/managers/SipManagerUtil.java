@@ -39,9 +39,6 @@ public class SipManagerUtil implements SipRegistrationListener {
 
     @Setter
     private SipCallback sipCallback;
-    @Getter
-    private static SipManagerUtil manager = new SipManagerUtil();
-    @Setter
     private Context context;
     private SipManager sipManager;
     private SipProfile sipProfile;
@@ -51,10 +48,12 @@ public class SipManagerUtil implements SipRegistrationListener {
     private SipProfile.Builder profileBuilder;
     private PendingIntent pendingIntent;
     private String displayName;
+    @Getter
     private SipAudioCall incomingCallInstance;
     private String userId;
 
-    private SipManagerUtil() {
+    public SipManagerUtil(Context context) {
+        this.context = context;
     }
 
     private void initSip() {
@@ -154,7 +153,7 @@ public class SipManagerUtil implements SipRegistrationListener {
         }
     }
 
-    public void takeAudioCall(final Intent incomingIntent) throws SipException {
+    public SipAudioCall takeAudioCall(final Intent incomingIntent) throws SipException {
         incomingCallInstance = sipManager.takeAudioCall(incomingIntent, new SipAudioCall.Listener() {
             @Override
             public void onRinging(SipAudioCall call, SipProfile caller) {
@@ -198,6 +197,7 @@ public class SipManagerUtil implements SipRegistrationListener {
             }
 
         });
+        return incomingCallInstance;
     }
 
     public void destroy() {
@@ -208,7 +208,6 @@ public class SipManagerUtil implements SipRegistrationListener {
         }
         workerThread = null;
         sipProfile = null;
-        manager = null;
         sipCallback = null;
         pendingIntent = null;
         context = null;

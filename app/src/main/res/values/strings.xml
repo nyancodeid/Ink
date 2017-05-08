@@ -1127,5 +1127,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="sipPermissionNeeded">We need permission to use your SIP functions in order to make and receive calls inside the application</string>
     <string name="incomingCall">Incoming Call</string>
     <string name="acceptDecline">Accept or Decline The Call</string>
+    <string name="callEstablished">Call established</string>
+    <string name="callEnded">Call ended</string>
 
 </resources>

@@ -1,17 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="ink.va.activities.IncomingCallScreenActivity">
+    android:animateLayoutChanges="true"
+    tools:context="ink.va.activities.IncomingCallScreen">
 
-    <Button
-        android:id="@+id/hangup"
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.CardView
+        android:id="@+id/callerInfoCV"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="hangup" />
+        android:layout_margin="10dp"
+        android:minHeight="100dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/callStateTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_margin="10dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/incomingCall"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/callerNameTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/callStateTV"
+                android:layout_margin="10dp"
+                android:fontFamily="@string/appFont"
+                android:text="@string/loadingText"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <Chronometer
+                android:id="@+id/callDurationCM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:fontFamily="@string/appFont"
+                android:gravity="right"
+                android:textSize="32sp"
+                android:visibility="visible" />
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/imageHolderCV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/callActionCV"
+        android:layout_below="@+id/callerInfoCV"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="10dp">
+
+        <ImageView
+            android:id="@+id/callerImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:scaleType="fitXY" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/callActionCV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:minHeight="100dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/acceptCallIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_margin="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:padding="10dp"
+                android:scaleX="-1"
+                android:src="@drawable/accept_call_icon" />
+
+            <ImageView
+                android:id="@+id/declineCallIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_margin="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:padding="10dp"
+                android:src="@drawable/decline_call_icon" />
+
+
+            <ImageView
+                android:id="@+id/hangupIV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:padding="10dp"
+                android:rotation="-135"
+                android:src="@drawable/decline_call_icon"
+                android:visibility="gone" />
+
+
+            <TextView
+                android:id="@+id/slideToAcceptCancelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_toLeftOf="@+id/declineCallIcon"
+                android:layout_toRightOf="@+id/acceptCallIcon"
+                android:gravity="center"
+                android:text="@string/acceptDecline" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
 </RelativeLayout>

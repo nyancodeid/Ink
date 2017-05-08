@@ -1153,4 +1153,6 @@
     <string name="timeOutError">Тайм-аут при попытке подключения к серверу. Убедитесь, что у вас есть действующий интернет.</string>
     <string name="sipPermissionNeeded">Нам нужно разрешение на использование ваших функций SIP для того, чтобы совершать и принимать вызовы внутри приложения</string>
     <string name="incomingCall">Входящий звонок</string>
+    <string name="callEstablished">Вызов установлен</string>
+    <string name="callEnded">Звонок окончен</string>
 </resources>
