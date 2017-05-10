@@ -474,7 +474,7 @@
     <string name="warning">Внимание</string>
     <string name="leavingSession">У вас есть активный сеанс местоположения.Если вы выйдете, то сеанс будет закрыт, пока вы не откройте новый.Закрыть сеанс?</string>
     <string name="acceptedYourFriendRequest">принал вашу заявку в друзьям</string>
-    <string name="intelligentText">Краски Вселенной В Ващих Руках</string>
+    <string name="intelligentText">Be INKredible!</string>
     <integer name="com_vk_sdk_AppId">5593776</integer>
     <string name="thinFont">sans-serif-thin</string>
     <string name="normalFont">sans-serif</string>
