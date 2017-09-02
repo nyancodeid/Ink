@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Kashmir Social</string>
+    <string name="app_name">KSocial</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">* Login</string>
@@ -13,7 +13,7 @@
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing emailcompletions."</string>
     <string name="intro">Intro</string>
-    <string name="registerText"><![CDATA[ New to Kashmir Social? Register now]]></string>
+    <string name="registerText"><![CDATA[ New to KSocial? Register now]]></string>
     <string name="appFont">sans-serif-condensed</string>
     <string name="registerButtonText">Register</string>
     <string name="confirmPassword">* Confirm Password</string>
@@ -269,7 +269,7 @@ The issue considers to the notifications and background task not being received 
 \n\n4)Navigate to \'Advanced Settings\'
 \n\n5)Click on the \'Battery Manager\'
 \n\n6)You will see the block called \'Protected Apps\',click on it.
-\n\n7)Find the \'Kashmir Social\' application in the list and switch the trigger ON.
+\n\n7)Find the \'KSocial\' application in the list and switch the trigger ON.
 \n\nAs soon as you did all the required steps,the text with the \'Protected\' sign will appear below of the app.
 \n\nFor Lollipop and below devices you should follow same steps except 4 and 5 steps.Just navigate through Settings->Protected Apps and do the rest steps as follows.
 \nWe sincerely sorry if this could make you fell uncomfortable,but there is nothing more we can do except warn you.
@@ -360,7 +360,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="coudlNotDelete">Could not delete your account.Contact support team</string>
     <string name="accountdeleted">Account deleted</string>
     <string name="signInWithFacebook">Sign in with facebook</string>
-    <string name="registerInkAccount">Register new account on Kashmir Social</string>
+    <string name="registerInkAccount">Register new account on KSocial</string>
     <string name="noGif">You don\'t have any stickers.Go buy some</string>
     <string name="myItems">My items (Touch to play)</string>
 
@@ -384,7 +384,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
 
     <string name="haveSentSticker">have sent you a sticker</string>
     <string name="loadingSticker">Loading...</string>
-    <string name="title_activity_fullscreen">Kashmir Social</string>
+    <string name="title_activity_fullscreen">KSocial</string>
     <string name="searchPerson">Search person</string>
     <string name="removeFromFriends">Remove friend</string>
     <string name="userExist">User Found</string>
@@ -653,7 +653,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="chooseSocialAccount">Choose Social Account</string>
     <string name="orSocial">Or if you signed with social account</string>
     <string name="fetchingProfileInfo">Fetching your Profile Information...</string>
-    <string name="forgotPasswordSocialHint">*Only for accounts registered with \'Kashmir Social\'</string>
+    <string name="forgotPasswordSocialHint">*Only for accounts registered with \'KSocial\'</string>
     <string name="enterPasswordHint">Enter account password</string>
     <string name="passwordWrong">Password is wrong,check the capitals</string>
     <string name="letsPlay">Let\'s play!</string>
@@ -704,7 +704,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="enableGroupNotificationText">Enable Group Notification</string>
     <string name="enableLikeNotificationText">Enable Likes Notification</string>
     <string name="enableCommentNotificationText">Enable Comments Notification</string>
-    <string name="share_ink_with">Share Kashmir Social with</string>
+    <string name="share_ink_with">Share KSocial with</string>
     <string name="unsent_message">unsent message.Переотпровляем...</string>
     <string name="view_image">View Image</string>
     <string name="pleaseWaitDownload">Pleas wait till image loaded</string>
@@ -719,8 +719,8 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="tooShort">Text is too short (Minimum 10 characters)</string>
     <string name="englishRoom">English Room</string>
     <string name="russianRoom">Russian Room</string>
-    <string name="ink_share_text">Get Kashmir Social
-        \nhttps://play.google.com/store/apps/details?id=com.kasmir.social</string>
+    <string name="ink_share_text">Get KSocial
+        \nhttps://play.google.com/store/apps/details?id=com.kasmirr.social</string>
     <string name="locatedAt">Located At : </string>
     <string name="signInWithLinkedIn">Sing in with LinkedIn</string>
     <string name="whoViewedText">Who\'s viewed my profile</string>
@@ -788,7 +788,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="password_too_short">Password is too short (Min 5 symbols)</string>
     <string name="newMessageGlobal">New Message</string>
     <string name="versionName">Version v%1$s</string>
-        <string name="aboutContent">Kashmir Social is an official trademark of Kashmir Apps.The logos,ideas and characters are either owned by the Company or has been used under the
+        <string name="aboutContent">KSocial is an official trademark of KSocial Apps.The logos,ideas and characters are either owned by the Company or has been used under the
     \'open source\' license.
     \nFor any questions or for an help,you can contact with one of our team members straight away from the application.</string>
     <string name="aboutTitle">About</string>
@@ -805,7 +805,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="badge_already_bought">You already have bought this badge</string>
     <string name="messagesLoadingError">Could not load messages</string>
     <string name="newComment">New comment was added,view?</string>
-    <string name="viewGames">Kashmir Social Games</string>
+    <string name="viewGames">KSocial Games</string>
     <string name="blackJackTitle">BlackJack</string>
     <string name="blackJackDescription">Get on it going and win coins to spend!</string>
     <string name="freedomRunning">Could not complete the purchase as the freedom apk is running and conflicting with the purchase,if you try this couple times you will be banned</string>
@@ -826,7 +826,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="you_won">You won %1$d coins!</string>
     <string name="draw">Game on draw : Coins Back</string>
     <string name="blackjack_home_text">Welcome to BlackJack,
-        enjoy you\'r time while playing the game and getting Kashmir Social Coins to spend around the application. You can choose the Pot based on you\'r taste.</string>
+        enjoy you\'r time while playing the game and getting KSocial Coins to spend around the application. You can choose the Pot based on you\'r taste.</string>
     <string name="low_pot">1 coins pot</string>
     <string name="medium_pot">5 coins pot</string>
     <string name="high_pot">10 coins pot</string>
@@ -970,7 +970,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="timeLeftForMorning">Time left for the morning - %1$s</string>
     <string name="timeLeftForNight">Time left for the night - %1$s</string>
     <string name="localPostHint">Note : you\'r post is visible only to you\'r friends. Change by clicking the icon</string>
-    <string name="globalPostHint">The post is visible to all Kashmir Social users. You will be charged %1$d coins</string>
+    <string name="globalPostHint">The post is visible to all KSocial users. You will be charged %1$d coins</string>
     <string name="visibilityDisabled">You can\'t edit visibility</string>
     <string name="startingGame">Starting the game, please wait...</string>
     <string name="couldNotStartGame">Could not start the game...</string>
@@ -1120,7 +1120,7 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="actionRequired">Action Required</string>
     <string name="canTurnOffLocation">Now you can turn off the location services manually</string>
     <string name="turnLocationOn">Turn location on for this function to work</string>
-    <string name="shareToInk">Share to Kashmir Social</string>
+    <string name="shareToInk">Share to KSocial</string>
     <string name="unread">unread</string>
     <string name="noNetwork">No Network</string>
     <string name="timeOutError">Time out while trying to connect to server. Check that you have active internet</string>
