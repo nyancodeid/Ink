@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ink.va.utils.TransparentPanel xmlns:android="http://schemas.android.com/apk/res/android"
+<kashmirr.social.utils.TransparentPanel xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_mafia_game_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    tools:context="ink.va.activities.MafiaGameView">
+    tools:context="kashmirr.social.activities.MafiaGameView">
 
     <ImageView
         android:id="@+id/nightDayIV"
@@ -285,4 +285,4 @@
             android:textColor="@color/vk_white" />
     </RelativeLayout>
 
-</ink.va.utils.TransparentPanel>
+</kashmirr.social.utils.TransparentPanel>

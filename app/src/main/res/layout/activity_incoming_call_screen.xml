@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    tools:context="ink.va.activities.IncomingCallScreen">
+    tools:context="kashmirr.social.activities.IncomingCallScreen">
 
     <android.support.v7.widget.CardView
         android:id="@+id/callerInfoCV"

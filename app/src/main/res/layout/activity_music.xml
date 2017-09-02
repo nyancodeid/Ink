@@ -5,7 +5,7 @@
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ink.va.activities.Music">
+    tools:context="kashmirr.social.activities.Music">
 
     <TextView
         android:id="@+id/musicGeneralTitle"

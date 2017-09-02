@@ -1,67 +1,67 @@
 -- Merging decision tree log ---
 manifest
-ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:2:1-28:12
+ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:2:1-28:12
 	package
-		ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:3:5-54
+		ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:3:5-54
 	android:versionName
-		INJECTED from D:\Ink\sampleapp\src\main\AndroidManifest.xml
-		INJECTED from D:\Ink\sampleapp\src\main\AndroidManifest.xml
+		INJECTED from E:\Ink\sampleapp\src\main\AndroidManifest.xml
+		INJECTED from E:\Ink\sampleapp\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:2:11-69
+		ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:2:11-69
 	android:versionCode
-		INJECTED from D:\Ink\sampleapp\src\main\AndroidManifest.xml
-		INJECTED from D:\Ink\sampleapp\src\main\AndroidManifest.xml
+		INJECTED from E:\Ink\sampleapp\src\main\AndroidManifest.xml
+		INJECTED from E:\Ink\sampleapp\src\main\AndroidManifest.xml
 application
-ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:5:5-26:19
-MERGED from [Ink:linkedin-sdk:unspecified] D:\Ink\linkedin-sdk\build\intermediates\bundles\default\AndroidManifest.xml:13:5-20
-MERGED from [com.android.support:appcompat-v7:19.1.0] C:\Users\PC-Comp\.android\build-cache\e6211f72c7188f95eaf92d5008e1f193b74e913e\output\AndroidManifest.xml:19:5-20
-MERGED from [com.android.support:support-v4:21.0.3] C:\Users\PC-Comp\.android\build-cache\70f9c7d9352d5f121be70a8e9c1fc8f09c77ec78\output\AndroidManifest.xml:16:5-19
+ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:5:5-26:19
+MERGED from [Ink:linkedin-sdk:unspecified] E:\Ink\linkedin-sdk\build\intermediates\bundles\default\AndroidManifest.xml:13:5-20
+MERGED from [com.android.support:appcompat-v7:19.1.0] C:\Users\vladi\.android\build-cache\2aafa92c5cef201be0a388b5543e25813944b7d6\output\AndroidManifest.xml:19:5-20
+MERGED from [com.android.support:support-v4:21.0.3] C:\Users\vladi\.android\build-cache\5164298b467f35e18031849e06be8a1b9305386c\output\AndroidManifest.xml:16:5-19
 	android:label
-		ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:8:9-41
+		ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:8:9-41
 	android:allowBackup
-		ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:6:9-35
+		ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:6:9-35
 	android:icon
-		ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:7:9-45
+		ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:7:9-45
 activity#com.linkedin.android.mobilesdksampleapp.MainActivity
-ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:9:9-17:20
+ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:9:9-17:20
 	android:label
-		ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:11:13-45
+		ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:11:13-45
 	android:name
-		ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:10:13-41
+		ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:10:13-41
 intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
-ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:12:13-16:29
+ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:12:13-16:29
 action#android.intent.action.MAIN
-ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:13:17-69
+ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:13:17-69
 	android:name
-		ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:13:25-66
+		ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:13:25-66
 category#android.intent.category.LAUNCHER
-ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:15:17-77
+ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:15:17-77
 	android:name
-		ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:15:27-74
+		ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:15:27-74
 activity#com.linkedin.android.mobilesdksampleapp.DeepLinkActivity
-ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:18:9-21:20
+ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:18:9-21:20
 	android:label
-		ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:20:13-60
+		ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:20:13-60
 	android:name
-		ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:19:13-45
+		ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:19:13-45
 activity#com.linkedin.android.mobilesdksampleapp.ApiActivity
-ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:22:9-25:20
+ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:22:9-25:20
 	android:label
-		ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:24:13-55
+		ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:24:13-55
 	android:name
-		ADDED from D:\Ink\sampleapp\src\main\AndroidManifest.xml:23:13-40
+		ADDED from E:\Ink\sampleapp\src\main\AndroidManifest.xml:23:13-40
 uses-sdk
-INJECTED from D:\Ink\sampleapp\src\main\AndroidManifest.xml reason: use-sdk injection requested
-MERGED from [Ink:linkedin-sdk:unspecified] D:\Ink\linkedin-sdk\build\intermediates\bundles\default\AndroidManifest.xml:7:5-9:41
-MERGED from [com.android.support:appcompat-v7:19.1.0] C:\Users\PC-Comp\.android\build-cache\e6211f72c7188f95eaf92d5008e1f193b74e913e\output\AndroidManifest.xml:18:5-42
-MERGED from [com.android.support:support-v4:21.0.3] C:\Users\PC-Comp\.android\build-cache\70f9c7d9352d5f121be70a8e9c1fc8f09c77ec78\output\AndroidManifest.xml:15:5-42
+INJECTED from E:\Ink\sampleapp\src\main\AndroidManifest.xml reason: use-sdk injection requested
+MERGED from [Ink:linkedin-sdk:unspecified] E:\Ink\linkedin-sdk\build\intermediates\bundles\default\AndroidManifest.xml:7:5-9:41
+MERGED from [com.android.support:appcompat-v7:19.1.0] C:\Users\vladi\.android\build-cache\2aafa92c5cef201be0a388b5543e25813944b7d6\output\AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:support-v4:21.0.3] C:\Users\vladi\.android\build-cache\5164298b467f35e18031849e06be8a1b9305386c\output\AndroidManifest.xml:15:5-42
 	android:targetSdkVersion
-		INJECTED from D:\Ink\sampleapp\src\main\AndroidManifest.xml
-		INJECTED from D:\Ink\sampleapp\src\main\AndroidManifest.xml
+		INJECTED from E:\Ink\sampleapp\src\main\AndroidManifest.xml
+		INJECTED from E:\Ink\sampleapp\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from D:\Ink\sampleapp\src\main\AndroidManifest.xml
-		INJECTED from D:\Ink\sampleapp\src\main\AndroidManifest.xml
+		INJECTED from E:\Ink\sampleapp\src\main\AndroidManifest.xml
+		INJECTED from E:\Ink\sampleapp\src\main\AndroidManifest.xml
 uses-permission#android.permission.INTERNET
-ADDED from [Ink:linkedin-sdk:unspecified] D:\Ink\linkedin-sdk\build\intermediates\bundles\default\AndroidManifest.xml:11:5-67
+ADDED from [Ink:linkedin-sdk:unspecified] E:\Ink\linkedin-sdk\build\intermediates\bundles\default\AndroidManifest.xml:11:5-67
 	android:name
-		ADDED from [Ink:linkedin-sdk:unspecified] D:\Ink\linkedin-sdk\build\intermediates\bundles\default\AndroidManifest.xml:11:22-64
+		ADDED from [Ink:linkedin-sdk:unspecified] E:\Ink\linkedin-sdk\build\intermediates\bundles\default\AndroidManifest.xml:11:22-64

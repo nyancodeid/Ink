@@ -6,7 +6,7 @@
     android:background="@drawable/feed_background_color"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="ink.va.activities.Login">
+    tools:context="kashmirr.social.activities.Login">
 
 
     <ImageView

@@ -36,7 +36,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.ink.va.R;
+import com.kashmirr.social.R;
 
 
 public class FloatingActionButton extends ImageButton {

@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:92405051857:android:77f064ab4ee66234",
         "android_client_info": {
-          "package_name": "com.ink.va"
+          "package_name": "com.kashmirr.social"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "92405051857-83qk25l4t210ghjr32t1ktrv96s3e73r.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.ink.va",
+            "package_name": "com.kashmirr.social",
             "certificate_hash": "0B632D124666738D82E46BED8882ED60CFBF388F"
           }
         },
@@ -26,7 +26,7 @@
           "client_id": "92405051857-0uk561bo567ku6i42704amqp552ke0m6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.ink.va",
+            "package_name": "com.kashmirr.social",
             "certificate_hash": "25E155DAFFDA1CC566C649DDC66CF29D9365302F"
           }
         },

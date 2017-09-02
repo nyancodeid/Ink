@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.ink.va">
+    package="com.kashmirr.social">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -75,10 +75,10 @@
         android:required="true" />
 
     <permission
-        android:name="com.ink.va.permission.C2D_MESSAGE"
+        android:name="com.kashmirr.social.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.ink.va.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.kashmirr.social.permission.C2D_MESSAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
@@ -93,7 +93,7 @@
         android:required="false" />
 
     <application
-        android:name="ink.StartupApplication"
+        android:name="kashmirr.StartupApplication"
         android:allowBackup="true"
         android:banner="@layout/activity_about"
         android:icon="@mipmap/ic_launcher"
@@ -117,40 +117,40 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="ink.va.activities.Login"
+            android:name="kashmirr.social.activities.Login"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="ink.va.activities.Intro"
+            android:name="kashmirr.social.activities.Intro"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name="ink.va.activities.HomeActivity"
+            android:name="kashmirr.social.activities.HomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/feedText"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ink.va.activities.HomeActivity" />
+                android:value="kashmirr.social.activities.HomeActivity" />
         </activity>
         <activity
-            android:name="ink.va.activities.OpponentProfile"
+            android:name="kashmirr.social.activities.OpponentProfile"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="ink.va.activities.Chat"
+            android:name="kashmirr.social.activities.Chat"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/ChatTheme" />
         <activity
-            android:name="ink.va.activities.CustomizeLook"
+            android:name="kashmirr.social.activities.CustomizeLook"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name="ink.va.service.MafiaGameService" />
+        <service android:name="kashmirr.social.service.MafiaGameService" />
         <service
-            android:name="ink.va.service.NotificationService"
+            android:name="kashmirr.social.service.NotificationService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -158,27 +158,27 @@
             </intent-filter>
         </service>
         <service
-            android:name="ink.va.service.FirebaseInstanceService"
+            android:name="kashmirr.social.service.FirebaseInstanceService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="ink.va.service.RemoveChatRouletteService" />
-        <service android:name="ink.va.service.SendTokenService" />
+        <service android:name="kashmirr.social.service.RemoveChatRouletteService" />
+        <service android:name="kashmirr.social.service.SendTokenService" />
 
-        <receiver android:name="ink.va.receivers.IncomingCallReceiver" />
-        <receiver android:name="ink.va.receivers.DeleteReceiver" />
-        <receiver android:name="ink.va.receivers.NotificationBroadcast" />
-        <receiver android:name="ink.va.receivers.ReplyIntentReceiver" />
+        <receiver android:name="kashmirr.social.receivers.IncomingCallReceiver" />
+        <receiver android:name="kashmirr.social.receivers.DeleteReceiver" />
+        <receiver android:name="kashmirr.social.receivers.NotificationBroadcast" />
+        <receiver android:name="kashmirr.social.receivers.ReplyIntentReceiver" />
         <receiver
-            android:name="ink.va.receivers.AlarmReceiver"
+            android:name="kashmirr.social.receivers.AlarmReceiver"
             android:process=":remote" />
-        <receiver android:name="ink.va.broadcast.DismissBroadcast" />
+        <receiver android:name="kashmirr.social.broadcast.DismissBroadcast" />
         -- Declaring broadcast receiver for BOOT_COMPLETED event. -->
         <receiver
-            android:name="ink.va.receivers.BootReceiver"
+            android:name="kashmirr.social.receivers.BootReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
@@ -187,17 +187,17 @@
         </receiver>
 
         <activity
-            android:name="ink.va.activities.ReplyView"
+            android:name="kashmirr.social.activities.ReplyView"
             android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent"
             android:windowSoftInputMode="stateAlwaysVisible" />
         <activity
-            android:name="ink.va.activities.MyProfile"
+            android:name="kashmirr.social.activities.MyProfile"
             android:theme="@style/AppTheme.Profile" />
-        <activity android:name="ink.va.activities.Messages" />
+        <activity android:name="kashmirr.social.activities.Messages" />
         <activity
-            android:name="ink.va.activities.MakePost"
+            android:name="kashmirr.social.activities.MakePost"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/shareToInk"
             android:theme="@style/DialogTheme">
@@ -217,15 +217,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="ink.va.activities.MapsActivity"
+            android:name="kashmirr.social.activities.MapsActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label=""
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/TransparentDialog" />
-        <activity android:name="ink.va.activities.Comments" />
+        <activity android:name="kashmirr.social.activities.Comments" />
         <activity
-            android:name="ink.va.activities.SplashScreen"
+            android:name="kashmirr.social.activities.SplashScreen"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -240,50 +240,50 @@
             android:label="ServiceActivity"
             android:theme="@style/VK.Transparent" />
         <activity
-            android:name="ink.va.activities.Groups"
+            android:name="kashmirr.social.activities.Groups"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/LoginTheme" />
         <activity
-            android:name="ink.va.activities.ChatRoulette"
+            android:name="kashmirr.social.activities.ChatRoulette"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ink.va.activities.SingleGroupView"
+            android:name="kashmirr.social.activities.SingleGroupView"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/AppTheme.Profile" />
         <activity
-            android:name="ink.va.activities.CreateGroupPost"
+            android:name="kashmirr.social.activities.CreateGroupPost"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
 
         <meta-data
             android:name="android.app.default_searchable"
-            android:value="ink.activities.SearchResultsActivity" />
+            android:value="kashmirr.social.activities.SearchResultsActivity" />
 
         <activity
-            android:name="ink.va.activities.RequestsView"
+            android:name="kashmirr.social.activities.RequestsView"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask" />
         <activity
-            android:name="ink.va.activities.WaitRoom"
+            android:name="kashmirr.social.activities.WaitRoom"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ink.va.activities.Shop"
+            android:name="kashmirr.social.activities.Shop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ink.va.activities.BadgeShop"
+            android:name="kashmirr.social.activities.BadgeShop"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ink.va.activities.BuyCoins"
+            android:name="kashmirr.social.activities.BuyCoins"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
         <activity
-            android:name="ink.va.activities.Music"
+            android:name="kashmirr.social.activities.Music"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name="ink.va.activities.ImageEditor"
+            android:name="kashmirr.social.activities.ImageEditor"
             android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -307,97 +307,97 @@
             android:value="80f8d0846bb012e567f21fdf7ebbc38efe19d99e" />
 
         <activity
-            android:name="ink.va.activities.FullscreenActivity"
+            android:name="kashmirr.social.activities.FullscreenActivity"
             android:label="@string/title_activity_fullscreen"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
         <activity
-            android:name="ink.va.activities.Settings"
+            android:name="kashmirr.social.activities.Settings"
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ink.va.activities.ForgotPassword"
+            android:name="kashmirr.social.activities.ForgotPassword"
             android:screenOrientation="portrait"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity
-            android:name="ink.va.activities.ChangePassword"
+            android:name="kashmirr.social.activities.ChangePassword"
             android:screenOrientation="portrait"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity
-            android:name="ink.va.activities.SecurityQuestion"
+            android:name="kashmirr.social.activities.SecurityQuestion"
             android:screenOrientation="portrait"
             android:theme="@style/LoginTheme"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
         <activity
-            android:name="ink.va.activities.NewsAndTrendsActivity"
+            android:name="kashmirr.social.activities.NewsAndTrendsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ink.va.activities.Policy"
+            android:name="kashmirr.social.activities.Policy"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ink.va.activities.WhoViewedActivity"
+            android:name="kashmirr.social.activities.WhoViewedActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ink.va.activities.ServerNotification"
+            android:name="kashmirr.social.activities.ServerNotification"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
-        <activity android:name="ink.va.activities.MyCollection" />
+        <activity android:name="kashmirr.social.activities.MyCollection" />
         <activity
-            android:name="ink.va.activities.PackFullScreen"
+            android:name="kashmirr.social.activities.PackFullScreen"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent" />
         <activity
-            android:name="ink.va.activities.VIPActivity"
+            android:name="kashmirr.social.activities.VIPActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ink.va.activities.ExploreVipActivity"
+            android:name="kashmirr.social.activities.ExploreVipActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ink.va.activities.GlobalVipChat"
+            android:name="kashmirr.social.activities.GlobalVipChat"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ink.va.activities.About"
+            android:name="kashmirr.social.activities.About"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ink.va.activities.GamesActivity"
+            android:name="kashmirr.social.activities.GamesActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="ink.va.activities.BlackJack"
+            android:name="kashmirr.social.activities.BlackJack"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Profile" />
-        <activity android:name="ink.va.activities.BlackJackHome" />
+        <activity android:name="kashmirr.social.activities.BlackJackHome" />
         <activity
-            android:name="ink.va.activities.Mafia"
+            android:name="kashmirr.social.activities.Mafia"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
 
-        <service android:name="ink.va.service.SocketService" />
+        <service android:name="kashmirr.social.service.SocketService" />
 
         <activity
-            android:name="ink.va.activities.BackUpActivity"
+            android:name="kashmirr.social.activities.BackUpActivity"
             android:label="@string/backUpRestoreServices" />
-        <activity android:name="ink.va.activities.SecurityActivity" />
-        <activity android:name="ink.va.activities.SecurityScreen" />
+        <activity android:name="kashmirr.social.activities.SecurityActivity" />
+        <activity android:name="kashmirr.social.activities.SecurityScreen" />
         <activity
-            android:name="ink.va.activities.MafiaRoomActivity"
+            android:name="kashmirr.social.activities.MafiaRoomActivity"
             android:launchMode="singleTask" />
         <activity
-            android:name="ink.va.activities.MafiaAddRoomActivity"
+            android:name="kashmirr.social.activities.MafiaAddRoomActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="stateAlwaysHidden|stateHidden" />
-        <activity android:name="ink.va.activities.MafiaGameView" />
-        <activity android:name="ink.va.activities.MafiaInfoActivity" />
-        <activity android:name="ink.va.activities.NotificationActivity" />
-        <activity android:name="ink.va.activities.CreateTrend" />
+        <activity android:name="kashmirr.social.activities.MafiaGameView" />
+        <activity android:name="kashmirr.social.activities.MafiaInfoActivity" />
+        <activity android:name="kashmirr.social.activities.NotificationActivity" />
+        <activity android:name="kashmirr.social.activities.CreateTrend" />
         <activity
-            android:name="ink.va.activities.IncomingCallScreen"
+            android:name="kashmirr.social.activities.IncomingCallScreen"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
         <activity
-            android:name="ink.va.activities.OutgoingCallActivity"
+            android:name="kashmirr.social.activities.OutgoingCallActivity"
             android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme"></activity>
     </application>

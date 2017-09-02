@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/explore_vip_background"
-    tools:context="ink.va.activities.ExploreVipActivity">
+    tools:context="kashmirr.social.activities.ExploreVipActivity">
 
     <TextView
         android:id="@+id/exploreVipRootTitle"

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:animateLayoutChanges="true"
     android:layout_height="match_parent"
-    tools:context="ink.va.activities.MapsActivity">
+    tools:context="kashmirr.social.activities.MapsActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/mapsToolbar"

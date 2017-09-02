@@ -5,7 +5,7 @@
     android:id="@+id/activity_global_vip_chat"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ink.va.activities.GlobalVipChat">
+    tools:context="kashmirr.social.activities.GlobalVipChat">
 
     <RelativeLayout
         android:id="@+id/globalChatBgHeader"

@@ -4,7 +4,7 @@
     android:id="@+id/activity_who_viewed"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ink.va.activities.WhoViewedActivity">
+    tools:context="kashmirr.social.activities.WhoViewedActivity">
 
     <TextView
         android:id="@+id/totalAccountViews"

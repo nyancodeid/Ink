@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/black_jack_game_background"
-    tools:context="ink.va.activities.BlackJack">
+    tools:context="kashmirr.social.activities.BlackJack">
 
     <TextView
         android:id="@+id/coinsTV"

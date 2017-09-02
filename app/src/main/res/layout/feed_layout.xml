@@ -8,7 +8,7 @@
     android:animateLayoutChanges="true"
     android:background="@drawable/feed_background_color"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="ink.va.activities.HomeActivity">
+    tools:context="kashmirr.social.activities.HomeActivity">
 
     <android.support.v7.widget.CardView
         android:id="@+id/greetingCard"
@@ -129,7 +129,7 @@
             android:text="@string/noPostsYet" />
     </RelativeLayout>
 
-    <ink.va.custom_views.SnowView
+    <kashmirr.social.custom_views.SnowView
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

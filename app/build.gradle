@@ -4,14 +4,14 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 android {
-    signingConfigs {
-        config {
-            keyAlias 'inkAllias'
-            keyPassword '536961'
-            storeFile file('C:/Users/USER/Downloads/inkKeystore.jks')
-            storePassword '536961'
-        }
-    }
+//    signingConfigs {
+////        config {
+////            keyAlias 'inkAllias'
+////            keyPassword '536961'
+////            storeFile file('C:/Users/USER/Downloads/inkKeystore.jks')
+////            storePassword '536961'
+////        }
+//    }
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
     dexOptions {
@@ -27,7 +27,7 @@ android {
         }
     }
     defaultConfig {
-        applicationId "com.ink.va"
+        applicationId "com.kashmirr.social"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 75
@@ -44,15 +44,24 @@ android {
             zipAlignEnabled true
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+//            signingConfig signingConfigs.config
         }
         debug {
-            signingConfig signingConfigs.config
+//            signingConfig signingConfigs.config
         }
     }
 }
 
-
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'com.android.support') {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion '25.3.1'
+            }
+        }
+    }
+}
 
 android.packagingOptions {
     exclude 'META-INF/services/javax.annotation.processing.Processor'

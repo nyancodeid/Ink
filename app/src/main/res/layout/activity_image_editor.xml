@@ -6,7 +6,7 @@
     android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ink.va.activities.ImageEditor">
+    tools:context="kashmirr.social.activities.ImageEditor">
 
     <TextView
         android:id="@+id/imageChooseStatus"

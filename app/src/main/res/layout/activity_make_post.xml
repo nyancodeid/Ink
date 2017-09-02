@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:fitsSystemWindows="true"
-    tools:context="ink.va.activities.MakePost">
+    tools:context="kashmirr.social.activities.MakePost">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -210,7 +210,7 @@
                     android:paddingTop="5dp"
                     android:src="@drawable/local_icon" />
 
-                <ink.va.custom_views.LinedEditText
+                <kashmirr.social.custom_views.LinedEditText
                     android:id="@+id/postBody"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
