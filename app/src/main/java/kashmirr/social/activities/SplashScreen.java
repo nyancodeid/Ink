@@ -43,6 +43,7 @@ public class SplashScreen extends AppCompatActivity {
 
         hasHacks = ProcessManager.hasHacks(this);
 
+        isAppOriginal = true;
         if (hasHacks) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getString(R.string.freedomTitle));

@@ -4,20 +4,27 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 android {
-//    signingConfigs {
-////        config {
-////            keyAlias 'inkAllias'
-////            keyPassword '536961'
-////            storeFile file('C:/Users/USER/Downloads/inkKeystore.jks')
-////            storePassword '536961'
-////        }
-//    }
+    signingConfigs {
+        config {
+            keyAlias 'allias'
+            keyPassword '000000'
+            storeFile file('C:/Users/vladi/Desktop/kashmirKeystore.jks')
+            storePassword '000000'
+        }
+    }
+    signingConfigs {
+        configRelease {
+            keyAlias 'allias'
+            keyPassword '000000'
+            storeFile file('C:/Users/vladi/Desktop/kashmirKeystore.jks')
+            storePassword '000000'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
     dexOptions {
         javaMaxHeapSize "2g"
     }
-
     android {
         lintOptions {
             checkReleaseBuilds true
@@ -30,8 +37,8 @@ android {
         applicationId "com.kashmirr.social"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 75
-        versionName "1.6.5"
+        versionCode 77
+        versionName "1.6.8"
         manifestPlaceholders = [appPackageName: "${applicationId}"]
         multiDexEnabled true
         setProperty("archivesBaseName", "Ink")
@@ -44,10 +51,11 @@ android {
             zipAlignEnabled true
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            signingConfig signingConfigs.config
+            signingConfig signingConfigs.config
+            signingConfig signingConfigs.configRelease
         }
         debug {
-//            signingConfig signingConfigs.config
+            signingConfig signingConfigs.config
         }
     }
 }
@@ -78,17 +86,14 @@ dependencies {
     compile project(':linkedin-sdk')
     compile project(path: ':explosionfield')
     compile files('src/main/libs/pollfish-googleplay-4.3.1.jar')
-
     compile('com.google.apis:google-api-services-translate:v2-rev47-1.22.0') {
         exclude group: 'com.google.guava'
     }
-
     compile('com.google.cloud:google-cloud-translate:0.6.0') {
         exclude group: 'io.grpc', module: 'grpc-all'
         exclude group: 'com.google.protobuf', module: 'protobuf-java'
         exclude group: 'com.google.api-client', module: 'google-api-client-appengine'
     }
-
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.wang.avi:library:1.0.5'
     compile 'com.google.android.gms:play-services-auth:10.0.1'
