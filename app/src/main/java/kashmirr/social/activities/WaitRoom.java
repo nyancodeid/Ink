@@ -208,10 +208,14 @@ public class WaitRoom extends BaseActivity {
                 public void run() {
                     try {
                         omegleSession.disconnect();
-                        omegleSession.triggerDisconnectCallback();
-                    } catch (OmegleException e) {
+                        if(omegleSession!=null){
+                            omegleSession.triggerDisconnectCallback();
+                        }
+                    } catch (Exception e) {
                         e.printStackTrace();
-                        omegleSession.triggerDisconnectCallback();
+                        if(omegleSession!=null){
+                            omegleSession.triggerDisconnectCallback();
+                        }
                     }
                 }
             });
@@ -592,7 +596,7 @@ public class WaitRoom extends BaseActivity {
             public void run() {
                 try {
                     omegleSession.send(chatRouletteMessageBody.getText().toString());
-                } catch (OmegleException e) {
+                } catch (Exception e) {
 
                     e.printStackTrace();
                 }

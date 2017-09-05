@@ -690,7 +690,7 @@ public class HomeActivity extends BaseActivity
 
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
-                shareIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.ink.va");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=com.kashmirr.social");
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.share_ink_with)));
                 break;
 

@@ -234,6 +234,7 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:visibility="gone"
                         android:id="@+id/locationWidget"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

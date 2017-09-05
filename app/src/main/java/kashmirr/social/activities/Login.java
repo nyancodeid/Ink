@@ -134,7 +134,6 @@ public class Login extends BaseActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         setStatusBarColor(R.color.light_blue);
-
         mCallbackManager = CallbackManager.Factory.create();
         // Set up the login form.
         mSharedHelper = new SharedHelper(this);

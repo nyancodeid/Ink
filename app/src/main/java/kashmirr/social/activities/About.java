@@ -20,6 +20,8 @@ public class About extends BaseActivity {
     ImageView developerCredit;
     @BindView(R.id.uxCredit)
     ImageView uxCredit;
+    @BindView(R.id.adminIV)
+    ImageView adminIV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,7 @@ public class About extends BaseActivity {
 
         ImageLoader.loadImage(this, true, true, null, R.drawable.me, R.drawable.user_image_placeholder, developerCredit, null);
         ImageLoader.loadImage(this, true, true, null, R.drawable.jean, R.drawable.user_image_placeholder, uxCredit, null);
+        ImageLoader.loadImage(this, true, true, null, R.drawable.azan, R.drawable.user_image_placeholder, adminIV, null);
     }
 
     @Override
