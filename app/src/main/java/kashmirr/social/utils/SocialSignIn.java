@@ -60,7 +60,11 @@ public class SocialSignIn {
                 .build();
 
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        mGoogleApiClient.connect();
+        if (mGoogleApiClient.hasConnectedApi(Auth.GOOGLE_SIGN_IN_API)) {
+            mGoogleApiClient.clearDefaultAccountAndReconnect();
+        }else{
+            mGoogleApiClient.connect();
+        }
         context.startActivityForResult(signInIntent, requestCode);
 
     }
@@ -219,5 +223,11 @@ public class SocialSignIn {
 
     public static SocialSignIn get() {
         return socialSignIn;
+    }
+
+    public void destroyGoogleClient() {
+        if(mGoogleApiClient!=null){
+         mGoogleApiClient.disconnect();
+        }
     }
 }

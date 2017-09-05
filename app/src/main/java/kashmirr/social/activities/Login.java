@@ -680,6 +680,7 @@ public class Login extends BaseActivity {
         } catch (IllegalArgumentException e) {
 
         }
+        SocialSignIn.get().destroyGoogleClient();
         super.onDestroy();
 
     }

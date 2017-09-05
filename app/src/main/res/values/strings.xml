@@ -135,7 +135,7 @@
     <string name="somethingWentWrong">Something went wrong.Try again...</string>
     <string name="discardChanges">Discard changes</string>
     <string name="discardChangesQuestion">Do you want to discard changes you have made?</string>
-    <string name="googleMapsApiKey">AIzaSyC_SMdaFoOfRqBhUlzVVG9NO1U0g9P1MfU</string>
+    <string name="googleMapsApiKey">AIzaSyBqlJvjYxAxLHSuxQ-IClVFe29EyJ-MpA4</string>
     <string name="selectLocation">Select your location (Hint: Click on desired place to attach)</string>
     <string name="openingMap">Opening map...</string>
     <string name="permissionsRequired">Permissions are required to show your location</string>

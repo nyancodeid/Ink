@@ -138,7 +138,7 @@
     <string name="somethingWentWrong">Что-то пошло не так.Попробуйте снова...</string>
     <string name="discardChanges">Отменить изменения</string>
     <string name="discardChangesQuestion">Вы хотите отменить все изменения, которые вы сделали?</string>
-    <string name="googleMapsApiKey">AIzaSyC_SMdaFoOfRqBhUlzVVG9NO1U0g9P1MfU</string>
+    <string name="googleMapsApiKey">AIzaSyBqlJvjYxAxLHSuxQ-IClVFe29EyJ-MpA4</string>
     <string name="selectLocation">Выберите ваше местоположение (Подсказка: нажмите на нужное место для прикрепления)</string>
     <string name="openingMap">Открываем карту...</string>
     <string name="permissionsRequired">Нужно разрешение для того, что бы показать ваше местоположение</string>

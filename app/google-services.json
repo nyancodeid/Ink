@@ -1,54 +1,33 @@
 {
   "project_info": {
-    "project_number": "92405051857",
-    "firebase_url": "https://inkfcm.firebaseio.com",
-    "project_id": "inkfcm",
-    "storage_bucket": "inkfcm.appspot.com"
+    "project_number": "957488178887",
+    "project_id": "firebase-ksocial"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:92405051857:android:77f064ab4ee66234",
+        "mobilesdk_app_id": "1:957488178887:android:8e0048e7eb0c9be0",
         "android_client_info": {
-          "package_name": "com.ink.va"
+          "package_name": "com.kashmirr.social"
         }
       },
       "oauth_client": [
         {
-          "client_id": "92405051857-880bb0avsnerb3h59ok5smgeoe6t77um.apps.googleusercontent.com",
+          "client_id": "957488178887-0qc8rlvvv3370llrmgl6h3bvfg2ki601.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.ink.va",
+            "package_name": "com.kashmirr.social",
             "certificate_hash": "301a2c33427609cb9f1bf2739d581355197cc8a5"
           }
         },
         {
-          "client_id": "92405051857-tulnmt44hhqrpi42ehbh7976701k6bq5.apps.googleusercontent.com",
+          "client_id": "957488178887-8pj4ethb1ro0a16u846oopilt2b8eqjn.apps.googleusercontent.com",
           "client_type": 3
-        },
-        {
-          "client_id": "92405051857-ukpmd3gvnrvfdlmoji4pcpoic3mcto0o.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ink.va",
-            "certificate_hash": "25e155daffda1cc566c649ddc66cf29d9365302f"
-          }
-        },
-        {
-          "client_id": "92405051857-3v42cmc8rj9ng4u2cnje5hsku6q6255p.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.ink.va",
-            "certificate_hash": "0b632d124666738d82e46bed8882ed60cfbf388f"
-          }
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB8tJRm6s-NjefxktpSuYbNTCBUiW3LY0w"
-        },
-        {
-          "current_key": "AIzaSyCIDRtCZeTTqPbTsFHvobHWEAZFLkLdRTY"
+          "current_key": "AIzaSyBqlJvjYxAxLHSuxQ-IClVFe29EyJ-MpA4"
         }
       ],
       "services": {
@@ -60,54 +39,7 @@
           "other_platform_oauth_client": []
         },
         "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:92405051857:android:8e0048e7eb0c9be0",
-        "android_client_info": {
-          "package_name": "com.kashmirr.social"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "92405051857-fvns9nsohh9r80ltd7u3jlreusrissbu.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.kashmirr.social",
-            "certificate_hash": "301a2c33427609cb9f1bf2739d581355197cc8a5"
-          }
-        },
-        {
-          "client_id": "92405051857-tulnmt44hhqrpi42ehbh7976701k6bq5.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyB8tJRm6s-NjefxktpSuYbNTCBUiW3LY0w"
-        },
-        {
-          "current_key": "AIzaSyCIDRtCZeTTqPbTsFHvobHWEAZFLkLdRTY"
-        }
-      ],
-      "services": {
-        "analytics_service": {
           "status": 1
-        },
-        "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "92405051857-tulnmt44hhqrpi42ehbh7976701k6bq5.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }

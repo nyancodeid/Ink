@@ -37,11 +37,11 @@ android {
         applicationId "com.kashmirr.social"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 77
-        versionName "1.6.8"
+        versionCode 81
+        versionName "1.7.2"
         manifestPlaceholders = [appPackageName: "${applicationId}"]
         multiDexEnabled true
-        setProperty("archivesBaseName", "Ink")
+        setProperty("archivesBaseName", "KSocial")
     }
     buildTypes {
         release {
