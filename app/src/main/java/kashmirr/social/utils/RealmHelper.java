@@ -72,7 +72,16 @@ public class RealmHelper {
                         .name(REALM_DB_NAME)
                         .deleteRealmIfMigrationNeeded()
                         .build();
-                mRealm = Realm.getInstance(mRealmConfiguration);
+                try{
+                    mRealm = Realm.getInstance(mRealmConfiguration);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    mRealmConfiguration = new RealmConfiguration.Builder()
+                            .name(REALM_DB_NAME)
+                            .deleteRealmIfMigrationNeeded()
+                            .build();
+                    mRealm = Realm.getInstance(mRealmConfiguration);
+                }
             }
         });
     }

@@ -981,7 +981,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     public void onServiceConnected(SocketService socketService) {
         super.onServiceConnected(socketService);
         this.socketService = socketService;
-        socketConnected = socketService.isSocketConnected();
+        if(socketService!=null){
+            socketConnected = socketService.isSocketConnected();
+        }
         socketService.setOnSocketListener(this, Integer.valueOf(sharedHelper.getUserId()));
         getOpponentStatus();
         scheduleTask();
