@@ -15,11 +15,11 @@ public class Constants {
      * App main url
      */
     public static final String MAIN_URL = "http://35.196.113.134/Ink_Base_project_1992_no_15_dp_deployed_57_olAllolclslf_8954/";
-    public static final String SOCKET_URL = "http://35.196.113.134:9090";
+    public static final String SOCKET_URL = "http://35.196.113.134:4000";
     public static final String SIP_MAIN_URL = "https://blink.sipthor.net/";
     public static final String SPI_REGISTER_URL = "enrollment-webrtc.phtml";
     public static final String SIP_OUTBOUND_PROXY_URL = "proxy.sipthor.net:5060";
-    public static final String MAFIA_SOCKET_URL = "http://35.196.113.134:3000";
+    public static final String MAFIA_SOCKET_URL = "http://35.196.113.134:4500";
     public static final String SIP_DOMAIN_URL = "sip2sip.info";
 
     /**
