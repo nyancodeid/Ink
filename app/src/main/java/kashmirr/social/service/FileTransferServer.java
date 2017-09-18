@@ -32,16 +32,8 @@ public class FileTransferServer extends Service {
     private ServerSocketThread serverSocketThread;
     private File file;
     private SocketService socketService;
+    private Intent intent;
 
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Intent intent = new Intent(this, SocketService.class);
-        if (socketService == null) {
-            bindService(intent, mConnection, BIND_AUTO_CREATE);
-        }
-    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -51,12 +43,12 @@ public class FileTransferServer extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        try {
-            startServer(intent);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        this.intent = intent;
+        Intent socketIntent = new Intent(this, SocketService.class);
+        if (socketService == null) {
+            bindService(socketIntent, mConnection, BIND_AUTO_CREATE);
         }
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     private void startServer(Intent intent) throws JSONException {
@@ -97,8 +89,7 @@ public class FileTransferServer extends Service {
                     InetAddress inetAddress = enumInetAddress.nextElement();
 
                     if (inetAddress.isSiteLocalAddress()) {
-                        ip += "SiteLocalAddress: "
-                                + inetAddress.getHostAddress() + "\n";
+                        ip = inetAddress.getHostAddress();
                     }
 
                 }
@@ -122,6 +113,11 @@ public class FileTransferServer extends Service {
                                        IBinder service) {
             SocketService.LocalBinder binder = (SocketService.LocalBinder) service;
             socketService = binder.getService();
+            try {
+                startServer(intent);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override

@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Environment;
 import android.os.IBinder;
+import android.os.Looper;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -12,7 +13,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
 import static kashmirr.social.utils.Constants.FILE_TRANSFER_EXTRA_KEY;
@@ -38,7 +40,7 @@ public class FileTransferClient extends Service {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     private void startClient(Intent intent) throws JSONException {
@@ -75,35 +77,27 @@ public class FileTransferClient extends Service {
                         Environment.getExternalStorageDirectory(),
                         fileName);
 
-                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+                InputStream ois = socket.getInputStream();
 
-                byte[] bytes;
-                FileOutputStream fos = null;
+                byte[] buffer = new byte[ois.available()];
+                ois.read(buffer);
+                OutputStream outStream = null;
                 try {
-                    bytes = (byte[]) ois.readObject();
-                    fos = new FileOutputStream(file);
-                    fos.write(bytes);
-                } catch (ClassNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    outStream = new FileOutputStream(file);
+                    outStream.write(buffer);
                 } finally {
-                    if (fos != null) {
-                        fos.close();
+                    if (outStream != null) {
+                        outStream.close();
                     }
 
                 }
-                socket.close();
+                Looper.prepare();
                 Toast.makeText(getApplicationContext(), "transfer completed", Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
                 if (socket != null) {
-                    try {
-                        socket.close();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                    //                        socket.close();
                 }
             }
         }
