@@ -53,9 +53,14 @@ public class MessageModel extends RealmObject {
     @Setter
     @Getter
     String firstName;
+
     @Setter
     @Getter
     String lastName;
+
+    @Setter
+    @Getter
+    String filePath;
 
     @Setter
     @Getter

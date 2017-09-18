@@ -51,11 +51,11 @@ android {
             zipAlignEnabled true
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
-            signingConfig signingConfigs.configRelease
+//            signingConfig signingConfigs.config
+//            signingConfig signingConfigs.configRelease
         }
         debug {
-            signingConfig signingConfigs.config
+//            signingConfig signingConfigs.config
         }
     }
 }
@@ -131,6 +131,7 @@ dependencies {
     compile 'me.leolin:ShortcutBadger:1.1.16@aar'
     compile 'com.koushikdutta.ion:ion:2.+'
     compile 'com.instabug.library:instabug:4.0.1'
+    compile 'in.gauriinfotech:commons:1.0.8'
     compile 'com.github.nkzawa:socket.io-client:0.3.0'
     compile 'io.smooch:core:4.3.0'
     compile 'io.smooch:ui:4.3.0'

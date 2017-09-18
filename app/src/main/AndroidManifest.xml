@@ -399,7 +399,16 @@
         <activity
             android:name="kashmirr.social.activities.OutgoingCallActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme" />
+
+        <service
+            android:name="kashmirr.social.service.FileTransferServer"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name="kashmirr.social.service.FileTransferClient"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

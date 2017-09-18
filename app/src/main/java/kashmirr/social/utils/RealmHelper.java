@@ -72,9 +72,9 @@ public class RealmHelper {
                         .name(REALM_DB_NAME)
                         .deleteRealmIfMigrationNeeded()
                         .build();
-                try{
+                try {
                     mRealm = Realm.getInstance(mRealmConfiguration);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     mRealmConfiguration = new RealmConfiguration.Builder()
                             .name(REALM_DB_NAME)
@@ -467,6 +467,7 @@ public class RealmHelper {
                                         messageModel.setMessage(chatModel.getMessage());
                                         messageModel.setUserId(chatModel.getUserId());
                                         messageModel.setOpponentId(chatModel.getOpponentId());
+                                        messageModel.setFilePath(chatModel.getFilePath());
                                         messageModel.setAnimated(false);
                                         messageModel.setHasRead(chatModel.isHasRead());
                                         messageModel.setDeliveryStatus(STATUS_DELIVERED);
@@ -512,6 +513,7 @@ public class RealmHelper {
                                 messageModel.setOpponentId(chatModel.getOpponentId());
                                 messageModel.setAnimated(false);
                                 messageModel.setHasRead(chatModel.isHasRead());
+                                messageModel.setFilePath(chatModel.getFilePath());
                                 messageModel.setDeliveryStatus(STATUS_DELIVERED);
                                 messageModel.setUserImage(chatModel.getCurrentUserImage());
                                 messageModel.setOpponentImage(chatModel.getOpponentImage());
@@ -1181,6 +1183,7 @@ public class RealmHelper {
                                         messageModel.setHasRead(true);
                                         ChatModel chatModel = new ChatModel();
                                         chatModel.setUserId(messageModel.getUserId());
+                                        chatModel.setFilePath(messageModel.getFilePath());
                                         chatModel.setDate(messageModel.getDate());
                                         chatModel.setHasRead(messageModel.isHasRead());
                                         chatModel.setOpponentImage(messageModel.getOpponentImage());
@@ -1232,6 +1235,7 @@ public class RealmHelper {
                                 chatModel.setDate(messageModel.getDate());
                                 chatModel.setOpponentImage(messageModel.getOpponentImage());
                                 chatModel.setHasRead(messageModel.isHasRead());
+                                chatModel.setFilePath(messageModel.getFilePath());
                                 chatModel.setMessageId(messageModel.getMessageId());
                                 chatModel.setDeliveryStatus(messageModel.getDeliveryStatus());
                                 chatModel.setMessage(StringEscapeUtils.unescapeJava(messageModel.getMessage()));

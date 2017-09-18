@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.kashmirr.social.R;
 
+import java.io.File;
 import java.util.Date;
 
 import butterknife.BindView;
@@ -51,6 +52,13 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
     ImageView imageView;
     @BindView(R.id.singleGifViewWrapper)
     LinearLayout imageViewWrapper;
+    @BindView(R.id.chatAttachmentWrapper)
+    LinearLayout chatAttachmentWrapper;
+    @BindView(R.id.attachmentNameTV)
+    TextView attachmentNameTV;
+    @BindView(R.id.downloadAttachmentIV)
+    ImageView downloadAttachmentIV;
+
     private SharedHelper sharedHelper;
     private Context mContext;
     private RecyclerItemClickListener onItemClickListener;
@@ -80,21 +88,26 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         LinearLayout.LayoutParams deliveryStatusParams = (LinearLayout.LayoutParams) deliveryStatus.getLayoutParams();
         LinearLayout.LayoutParams dateTVParams = (LinearLayout.LayoutParams) dateTV.getLayoutParams();
         LinearLayout.LayoutParams gifChatViewLayoutParams = (LinearLayout.LayoutParams) imageViewWrapper.getLayoutParams();
+        LinearLayout.LayoutParams chatAttachmentWrapperParams = (LinearLayout.LayoutParams) chatAttachmentWrapper.getLayoutParams();
 
 
         if (currentUserId.equals(chatModel.getUserId())) {
             if (sharedHelper.getOwnTextColor() != null) {
                 message.setTextColor(Color.parseColor(sharedHelper.getOwnTextColor()));
             }
+            checkForFile(chatModel, true);
+
             layoutParams.gravity = Gravity.RIGHT;
             layoutParams.rightMargin = Dp.toDps(context, 16);
             deliveryStatusParams.gravity = Gravity.RIGHT;
             gifChatViewLayoutParams.gravity = Gravity.RIGHT;
+            chatAttachmentWrapperParams.gravity = Gravity.RIGHT;
             dateTVParams.gravity = Gravity.RIGHT;
             dateTVParams.rightMargin = Dp.toDps(context, 15);
 
             chatViewBubble.setLayoutParams(layoutParams);
             imageView.setLayoutParams(gifChatViewLayoutParams);
+            chatAttachmentWrapper.setLayoutParams(chatAttachmentWrapperParams);
             dateTV.setLayoutParams(dateTVParams);
 
             chatViewBubble.setBackground(ContextCompat.getDrawable(context, R.drawable.outgoing_message_bg));
@@ -105,6 +118,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
 
             checkDelivery(context, maxSize);
         } else {
+            checkForFile(chatModel, false);
             chatViewBubble.setBackground(ContextCompat.getDrawable(context, R.drawable.incoming_message_bg));
             if (sharedHelper.getOpponentTextColor() != null) {
                 message.setTextColor(Color.parseColor(sharedHelper.getOpponentTextColor()));
@@ -114,11 +128,13 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
             }
             layoutParams.gravity = Gravity.LEFT;
             gifChatViewLayoutParams.gravity = Gravity.LEFT;
+            chatAttachmentWrapperParams.gravity = Gravity.LEFT;
             dateTVParams.gravity = Gravity.LEFT;
 
             chatViewBubble.setLayoutParams(layoutParams);
             dateTV.setLayoutParams(dateTVParams);
             imageView.setLayoutParams(gifChatViewLayoutParams);
+            chatAttachmentWrapper.setLayoutParams(chatAttachmentWrapperParams);
             deliveryStatus.setVisibility(View.INVISIBLE);
         }
         Date date = new Date();
@@ -134,6 +150,29 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         isDateVisible = false;
         dateTV.setText(finalDate);
         checkForSticker(chatModel);
+    }
+
+    private void checkForFile(ChatModel chatModel, boolean me) {
+        String filePath = chatModel.getFilePath();
+        if (me) {
+            if (filePath != null && !filePath.isEmpty()) {
+                File file = new File(filePath);
+                downloadAttachmentIV.setVisibility(View.GONE);
+                chatAttachmentWrapper.setVisibility(View.VISIBLE);
+                attachmentNameTV.setText(file.getName());
+            } else {
+                chatAttachmentWrapper.setVisibility(View.GONE);
+            }
+        } else {
+            if (filePath != null && !filePath.isEmpty()) {
+                File file = new File(filePath);
+                downloadAttachmentIV.setVisibility(View.VISIBLE);
+                chatAttachmentWrapper.setVisibility(View.VISIBLE);
+                attachmentNameTV.setText(file.getName());
+            } else {
+                chatAttachmentWrapper.setVisibility(View.GONE);
+            }
+        }
     }
 
     private void checkDelivery(Context context, int maxSize) {
@@ -156,6 +195,13 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
     @OnClick(R.id.chatViewBubble)
     public void chatClicked() {
         rootClicked();
+    }
+
+    @OnClick(R.id.downloadAttachmentIV)
+    public void downloadAttachmentIVClicked() {
+        if (onItemClickListener != null) {
+            onItemClickListener.onAdditionalItemClicked(chatModel);
+        }
     }
 
     @OnLongClick(R.id.chatViewBubble)

@@ -65,6 +65,8 @@ import static kashmirr.social.utils.Constants.EVENT_MESSAGE_SENT;
 import static kashmirr.social.utils.Constants.EVENT_NEW_MESSAGE;
 import static kashmirr.social.utils.Constants.EVENT_ONLINE_STATUS;
 import static kashmirr.social.utils.Constants.EVENT_ON_COMMENT_ADDED;
+import static kashmirr.social.utils.Constants.EVENT_ON_FILE_TRANSFER_REQUEST;
+import static kashmirr.social.utils.Constants.EVENT_ON_FILE_TRANSFER_SERVER_READY;
 import static kashmirr.social.utils.Constants.EVENT_ON_FRIEND_REQUESTED;
 import static kashmirr.social.utils.Constants.EVENT_ON_FRIEND_REQUEST_ACCEPTED;
 import static kashmirr.social.utils.Constants.EVENT_ON_FRIEND_REQUEST_DECLINED;
@@ -72,6 +74,7 @@ import static kashmirr.social.utils.Constants.EVENT_ON_GAME_CREATED;
 import static kashmirr.social.utils.Constants.EVENT_ON_GLOBAL_MESSAGE;
 import static kashmirr.social.utils.Constants.EVENT_ON_GLOBAL_MESSAGE_RECEIVED;
 import static kashmirr.social.utils.Constants.EVENT_ON_NEW_GROUP_MESSAGE;
+import static kashmirr.social.utils.Constants.EVENT_ON_NO_FILE_EXIST;
 import static kashmirr.social.utils.Constants.EVENT_ON_POST_LIKED;
 import static kashmirr.social.utils.Constants.EVENT_ON_POST_MADE;
 import static kashmirr.social.utils.Constants.EVENT_ON_REQUEST_GROUP_JOIN;
@@ -81,6 +84,7 @@ import static kashmirr.social.utils.Constants.EVENT_POST_MADE_RECEIVED;
 import static kashmirr.social.utils.Constants.EVENT_REQUEST_GROUP_JOIN_RECEIVED;
 import static kashmirr.social.utils.Constants.EVENT_STOPPED_TYPING;
 import static kashmirr.social.utils.Constants.EVENT_TYPING;
+import static kashmirr.social.utils.Constants.FILE_TRANSFER_EXTRA_KEY;
 import static kashmirr.social.utils.Constants.NOTIFICATION_BUNDLE_EXTRA_KEY;
 import static kashmirr.social.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
 import static kashmirr.social.utils.Constants.NOTIFICATION_RECEIVED_GROUP_BUNDLE;
@@ -355,6 +359,30 @@ public class SocketService extends Service {
         }
     };
 
+    private Emitter.Listener onNoFileExists = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+
+        }
+    };
+
+    private Emitter.Listener onFileTransferServerReady = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+
+        }
+    };
+
+    private Emitter.Listener onFileTransferRequest = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            JSONObject data = (JSONObject) args[0];
+            Intent intent = new Intent(getApplicationContext(), FileTransferServer.class);
+            intent.putExtra(FILE_TRANSFER_EXTRA_KEY, data.toString());
+            startService(intent);
+        }
+    };
+
     private Emitter.Listener onFriendRequested = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -617,6 +645,9 @@ public class SocketService extends Service {
         mSocket.on(EVENT_ON_POST_LIKED, onPostLiked);
         mSocket.on(EVENT_ON_POST_MADE, onPostMade);
         mSocket.on(EVENT_ON_FRIEND_REQUESTED, onFriendRequested);
+        mSocket.on(EVENT_ON_FILE_TRANSFER_REQUEST, onFileTransferRequest);
+        mSocket.on(EVENT_ON_FILE_TRANSFER_SERVER_READY, onFileTransferServerReady);
+        mSocket.on(EVENT_ON_NO_FILE_EXIST, onNoFileExists);
 
         mSocket.connect();
     }
@@ -706,6 +737,9 @@ public class SocketService extends Service {
             mSocket.off(EVENT_ON_POST_LIKED, onPostLiked);
             mSocket.off(EVENT_ON_POST_MADE, onPostMade);
             mSocket.off(EVENT_ON_FRIEND_REQUESTED, onFriendRequested);
+            mSocket.off(EVENT_ON_FILE_TRANSFER_REQUEST, onFileTransferRequest);
+            mSocket.off(EVENT_ON_FILE_TRANSFER_SERVER_READY, onFileTransferServerReady);
+            mSocket.off(EVENT_ON_NO_FILE_EXIST, onNoFileExists);
         }
         mSocket = null;
         if (socketListeners != null) {

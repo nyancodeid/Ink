@@ -1133,5 +1133,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="endCallWarning">Do you want to end the call?</string>
     <string name="calling">Calling...</string>
     <string name="userBusy">The user is busy</string>
+    <string name="addedAttachmentText">Added Attachment</string>
 
 </resources>

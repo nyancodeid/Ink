@@ -260,6 +260,7 @@ public class Constants {
     public static final String NOTIFICATION_POST_ID_KEY = "postId";
     public static final String PACK_BACKGROUND_BUNDLE_KEY = "pack_background";
     public static final String STICKER_URL_EXTRA_KEY = "stickerUrlExtra";
+    public static final String FILE_TRANSFER_EXTRA_KEY = "fileTransferExtraKey";
     public static final String NOTIFICATION_BUNDLE_EXTRA_KEY = "notification_bundle_key";
     public static final String NOTIFICATION_RECEIVED_GROUP_BUNDLE = "notification_group_bundle";
     public static final String STICKER_IS_ANIMATED_EXTRA_KEY = "stickerIsAnimated";
@@ -288,6 +289,7 @@ public class Constants {
     public static final String EVENT_MAFIA_GLOBAL_MESSAGE = "onMafiaGlobalMessage";
     public static final String EVENT_ON_USER_LEFT_MAFIA_ROOM = "onRoomLeft";
     public static final String EVENT_ON_USER_JOINED_MAFIA_ROOM = "onUserJoinedRoom";
+    public static final String EVENT_NO_FILE_EXIST  = "noFileExist";
     public static final String EVENT_ON_MAFIA_GAME_STARTED = "onMafiaGameStarted";
     public static final String EVENT_ON_GAME_CREATED = "onGameCreated";
     public static final String EVENT_ON_SOCKET_MESSAGE_RECEIVED = "socketMessageReceived";
@@ -295,6 +297,7 @@ public class Constants {
     public static final String EVENT_ON_POST_LIKED = "onPostLiked";
     public static final String EVENT_ON_POST_MADE = "onPostMade";
     public static final String EVENT_ON_FRIEND_REQUESTED = "onFriendRequested";
+    public static final String EVENT_ON_FILE_TRANSFER_SERVER_READY = "onFileTransferServerReady";
     public static final String EVENT_ON_FRIEND_REQUEST_ACCEPTED = "onFriendRequestAccepted";
     public static final String EVENT_ON_FRIEND_REQUEST_DECLINED = "onFriendRequestDeclined";
     public static final String EVENT_ON_REQUEST_GROUP_JOIN = "onRequestGroupJoin";
@@ -306,6 +309,9 @@ public class Constants {
      */
     public static final String EVENT_ADD_USER = "addUser";
     public static final String EVENT_SEND_MESSAGE = "sendMessage";
+    public static final String EVENT_FILE_TRANSFER_SERVER_READY = "fileTransferServerReady";
+    public static final String EVENT_ON_NO_FILE_EXIST = "onNoFileExists";
+
     public static final String EVENT_MESSAGE_RECEIVED = "onClientMessageReceived";
     public static final String EVENT_COMMENT_RECEIVED = "onClientCommentReceived";
     public static final String EVENT_FRIEND_REQUEST_ACCEPT_RECEIVED = "onClientFriendRequestAcceptReceived";
@@ -313,6 +319,8 @@ public class Constants {
     public static final String EVENT_POST_LIKE_RECEIVED = "onClientPostLikeReceived";
     public static final String EVENT_POST_MADE_RECEIVED = "onClientPostMadeReceived";
     public static final String EVENT_FRIEND_REQUEST_RECEIVED = "onClientFriendRequestReceived";
+    public static final String EVENT_ON_FILE_TRANSFER_REQUEST = "onFileTransferRequest";
+    public static final String EVENT_REQUEST_FILE_TRANSFER = "fileTransferRequest";
     public static final String EVENT_REQUEST_GROUP_JOIN_RECEIVED = "requestGroupJoinReceived";
     public static final String EVENT_ON_SEND_GROUP_MESSAGE_RECEIVED = "onSendGroupMessageReceived";
     public static final String EVENT_ON_GLOBAL_MESSAGE_RECEIVED = "onClientGlobalMessageReceived";

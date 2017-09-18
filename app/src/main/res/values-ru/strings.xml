@@ -1158,4 +1158,5 @@
     <string name="leavingCallWarning">Вы собираетесь завершить вызов, уйдя. Вызов будет завершен, продолжить?</string>
     <string name="calling">Звоним...</string>
     <string name="userBusy">Пользователь занят</string>
+    <string name="addedAttachmentText">Added Attachment</string>
 </resources>

@@ -28,6 +28,7 @@ import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -36,6 +37,7 @@ import com.kashmirr.social.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -47,6 +49,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import in.gauriinfotech.commons.Commons;
 import kashmirr.social.adapters.ChatAdapter;
 import kashmirr.social.callbacks.GeneralCallback;
 import kashmirr.social.interfaces.RecyclerItemClickListener;
@@ -70,9 +73,12 @@ import okhttp3.ResponseBody;
 import rx.Observer;
 import rx.functions.Func1;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static kashmirr.social.activities.SplashScreen.LOCK_SCREEN_REQUEST_CODE;
 import static kashmirr.social.service.SocketService.sendMessageNotification;
 import static kashmirr.social.utils.Constants.EVENT_ONLINE_STATUS;
+import static kashmirr.social.utils.Constants.EVENT_REQUEST_FILE_TRANSFER;
 import static kashmirr.social.utils.Constants.EVENT_SEND_MESSAGE;
 import static kashmirr.social.utils.Constants.EVENT_STOPPED_TYPING;
 import static kashmirr.social.utils.Constants.EVENT_TYPING;
@@ -86,6 +92,8 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     public static final String TAG = Chat.class.getSimpleName();
     public static final int UPDATE_USER_MESSAGES = 2;
     private static final int USE_SIP_REQUEST_PERMISSION = 5;
+    private static final int ATTACHMENT_STORAGE_PERMISSION = 105;
+    private static final int FILE_CHOOSER_REQUEST = 100;
 
     @BindView(R.id.sendChatMessage)
     fab.FloatingActionButton mSendChatMessage;
@@ -125,6 +133,10 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     ImageView statusColor;
     @BindView(R.id.moreMessagesHint)
     View moreMessagesHint;
+    @BindView(R.id.attachmentWrapper)
+    View attachmentWrapper;
+    @BindView(R.id.attachmentNameTV)
+    TextView attachmentNameTV;
 
     private ChatAdapter chatAdapter;
     private RealmHelper realmHelper;
@@ -159,6 +171,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private MessagePagingTask messagePagingTask;
     private boolean furtherLoad = true;
     private String lastDestination;
+    private String filePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -283,8 +296,28 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     @OnClick(R.id.moreMessagesHint)
     public void moreMessagesHintClicked() {
         moreMessagesHint.setVisibility(View.GONE);
-
     }
+
+    @OnClick(R.id.removeAttachmentIV)
+    public void removeAttachmentIVClicked() {
+        removeAttachment();
+    }
+
+    @OnClick(R.id.attachmentVector)
+    public void attachmentVectorClicked() {
+        if (PermissionsChecker.isStoragePermissionGranted(this)) {
+            openFilePicker();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, ATTACHMENT_STORAGE_PERMISSION);
+        }
+    }
+
+    private void openFilePicker() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        startActivityForResult(intent, FILE_CHOOSER_REQUEST);
+    }
+
 
     @OnClick(R.id.callIcon)
     public void callIconClicked() {
@@ -349,6 +382,24 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         }
     }
 
+
+    private void removeAttachment() {
+        filePath = null;
+        attachmentWrapper.setVisibility(View.GONE);
+        String charSequence = mWriteEditText.getText().toString().trim();
+
+        if (charSequence.length() <= 0) {
+            mSendChatMessage.setEnabled(false);
+        } else {
+            mSendChatMessage.setEnabled(true);
+        }
+    }
+
+    private void addAttachment() {
+        mSendChatMessage.setEnabled(true);
+        attachmentWrapper.setVisibility(View.VISIBLE);
+    }
+
     private void sendMessage(String message) {
         if (messageJson != null) {
             messageJson = null;
@@ -368,6 +419,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             messageJson.put("isSocialAccount", isSocialAccount);
             messageJson.put("isCurrentUserSocial", sharedHelper.isSocialAccount());
             messageJson.put("message", message);
+            messageJson.put("filePath", filePath != null ? filePath : "");
             messageJson.put("date", Time.getCurrentTime());
             messageJson.put("stickerChosen", isStickerChosen);
             messageJson.put("stickerUrl", lastChosenStickerUrl);
@@ -388,6 +440,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         });
         handleStickerRemoved();
         localMessageInsert(chatModel, true);
+        removeAttachment();
 
     }
 
@@ -730,7 +783,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                     @Override
                     public Boolean call(CharSequence charSequence) {
                         String textToCheck = charSequence.toString().trim();
-                        if (textToCheck.length() <= 0 && !isStickerChosen) {
+                        if (textToCheck.length() <= 0 && !isStickerChosen && filePath == null) {
                             mSendChatMessage.setEnabled(false);
                         } else {
                             mSendChatMessage.setEnabled(true);
@@ -943,6 +996,30 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
     @Override
     public void onAdditionalItemClicked(Object object) {
+        ChatModel chatModel = (ChatModel) object;
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("destinationId", opponentId);
+            jsonObject.put("requesterId", sharedHelper.getUserId());
+            jsonObject.put("filePath", chatModel.getFilePath());
+            if (socketService != null) {
+                socketService.emit(EVENT_REQUEST_FILE_TRANSFER, jsonObject);
+            } else {
+                Snackbar.make(mRecyclerView, getString(R.string.notConnectedToServer), Snackbar.LENGTH_LONG).setAction(getString(R.string.vk_retry), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showSuccess = true;
+                        if (socketService != null) {
+                            socketService.connectSocket();
+                        } else {
+                            Snackbar.make(mRecyclerView, getString(R.string.couldNotConnectToServer), Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
+                }).show();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -973,6 +1050,22 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                 break;
             default:
         }
+        switch (requestCode) {
+            case FILE_CHOOSER_REQUEST:
+                if (data != null) {
+                    Uri uri = data.getData();
+                    filePath = Commons.getPath(uri, this);
+                    File file = new File(filePath);
+                    if (file.exists()) {
+                        attachmentNameTV.setText(file.getName());
+                        addAttachment();
+                    } else {
+                        removeAttachment();
+                        Toast.makeText(socketService, "Error while picking the file...", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                break;
+        }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -981,7 +1074,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     public void onServiceConnected(SocketService socketService) {
         super.onServiceConnected(socketService);
         this.socketService = socketService;
-        if(socketService!=null){
+        if (socketService != null) {
             socketConnected = socketService.isSocketConnected();
         }
         socketService.setOnSocketListener(this, Integer.valueOf(sharedHelper.getUserId()));
@@ -1169,6 +1262,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             startActivity(intent);
         }
     }
+
     private class MessagePagingTask extends AsyncTask<Integer, String, List<ChatModel>> {
         @Setter
         private boolean firstPaging;
@@ -1228,6 +1322,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             case USE_SIP_REQUEST_PERMISSION:
                 if (PermissionsChecker.isSipPermissionGranted(this)) {
                     callUser(lastDestination);
+                }
+                break;
+            case ATTACHMENT_STORAGE_PERMISSION:
+                if (PermissionsChecker.isStoragePermissionGranted(this)) {
+                    openFilePicker();
                 }
                 break;
         }

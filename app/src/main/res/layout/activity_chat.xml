@@ -190,6 +190,47 @@
 
 
         <RelativeLayout
+            android:id="@+id/attachmentWrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/writeField"
+            android:layout_margin="5dp"
+            android:animateLayoutChanges="true"
+            android:background="@drawable/grey_transparent_rectangle"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/attachmentHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:text="@string/addedAttachmentText" />
+
+            <TextView
+                android:id="@+id/attachmentNameTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/attachmentHeader"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:layout_toLeftOf="@+id/removeAttachmentIV"
+                android:ellipsize="end"
+                android:gravity="left"
+                android:maxLines="1"
+                android:text="@string/loadingText" />
+
+            <ImageView
+                android:id="@+id/removeAttachmentIV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="10dp"
+                android:src="@drawable/trash_icon" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/writeField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -279,6 +320,21 @@
                     android:foreground="?attr/selectableItemBackground"
                     android:padding="8dp"
                     android:src="@drawable/smiley_vector" />
+
+
+                <ImageView
+                    android:id="@+id/attachmentVector"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/messageBody"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@+id/stickerIcon"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:padding="8dp"
+                    android:src="@drawable/attach_vector_yellow" />
             </RelativeLayout>
         </RelativeLayout>
 

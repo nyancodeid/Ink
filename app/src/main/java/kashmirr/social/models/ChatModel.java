@@ -79,6 +79,11 @@ public class ChatModel implements Comparable<ChatModel> {
     @Getter
     private String opponentImage;
 
+    @SerializedName("filePath")
+    @Setter
+    @Getter
+    private String filePath = "";
+
     @Setter
     @Getter
     private String deliveryStatus = STATUS_NOT_DELIVERED;
