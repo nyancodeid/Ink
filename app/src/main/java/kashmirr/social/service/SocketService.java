@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
 import android.support.v4.content.LocalBroadcastManager;
+import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -362,14 +363,17 @@ public class SocketService extends Service {
     private Emitter.Listener onNoFileExists = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-
+            Toast.makeText(getApplicationContext(), "no file exists", Toast.LENGTH_SHORT).show();
         }
     };
 
     private Emitter.Listener onFileTransferServerReady = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-
+            JSONObject data = (JSONObject) args[0];
+            Intent intent = new Intent(getApplicationContext(), FileTransferClient.class);
+            intent.putExtra(FILE_TRANSFER_EXTRA_KEY, data.toString());
+            startService(intent);
         }
     };
 

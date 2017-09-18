@@ -1,7 +1,9 @@
 package kashmirr.social.service;
 
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.IBinder;
 
 import org.json.JSONException;
@@ -20,6 +22,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.Enumeration;
 
+import static kashmirr.social.utils.Constants.EVENT_FILE_TRANSFER_SERVER_READY;
+import static kashmirr.social.utils.Constants.EVENT_ON_NO_FILE_EXIST;
 import static kashmirr.social.utils.Constants.FILE_TRANSFER_EXTRA_KEY;
 
 public class FileTransferServer extends Service {
@@ -27,8 +31,16 @@ public class FileTransferServer extends Service {
     private int socketServerPORT = 8080;
     private ServerSocketThread serverSocketThread;
     private File file;
+    private SocketService socketService;
 
-    public FileTransferServer() {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Intent intent = new Intent(this, SocketService.class);
+        if (socketService == null) {
+            bindService(intent, mConnection, BIND_AUTO_CREATE);
+        }
     }
 
     @Override
@@ -51,13 +63,22 @@ public class FileTransferServer extends Service {
         String json = intent.getExtras().getString(FILE_TRANSFER_EXTRA_KEY);
         JSONObject data = new JSONObject(json);
         String requesterId = data.optString("requesterId");
-        String fileParth = data.optString("filePath");
-        file = new File(fileParth);
+        String filePath = data.optString("filePath");
+        file = new File(filePath);
         if (file.exists()) {
+            String ipAddress = getIpAddress();
             serverSocketThread = new ServerSocketThread();
             serverSocketThread.start();
+            JSONObject jsonToSend = new JSONObject();
+            jsonToSend.put("hostAddress", ipAddress);
+            jsonToSend.put("hostPort", socketServerPORT);
+            jsonToSend.put("filePath", filePath);
+            jsonToSend.put("destinationId", requesterId);
+            socketService.emit(EVENT_FILE_TRANSFER_SERVER_READY, jsonToSend);
         } else {
-
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("destinationId", requesterId);
+            socketService.emit(EVENT_ON_NO_FILE_EXIST, jsonObject);
         }
 
     }
@@ -93,6 +114,21 @@ public class FileTransferServer extends Service {
         return ip;
     }
 
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            SocketService.LocalBinder binder = (SocketService.LocalBinder) service;
+            socketService = binder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+
+        }
+    };
 
     public class ServerSocketThread extends Thread {
 

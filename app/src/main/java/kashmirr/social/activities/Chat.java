@@ -94,6 +94,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private static final int USE_SIP_REQUEST_PERMISSION = 5;
     private static final int ATTACHMENT_STORAGE_PERMISSION = 105;
     private static final int FILE_CHOOSER_REQUEST = 100;
+    private static final int FILE_DOWNLOAD_STORAGE_REQUEST = 48;
 
     @BindView(R.id.sendChatMessage)
     fab.FloatingActionButton mSendChatMessage;
@@ -996,29 +997,33 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
     @Override
     public void onAdditionalItemClicked(Object object) {
-        ChatModel chatModel = (ChatModel) object;
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("destinationId", opponentId);
-            jsonObject.put("requesterId", sharedHelper.getUserId());
-            jsonObject.put("filePath", chatModel.getFilePath());
-            if (socketService != null) {
-                socketService.emit(EVENT_REQUEST_FILE_TRANSFER, jsonObject);
-            } else {
-                Snackbar.make(mRecyclerView, getString(R.string.notConnectedToServer), Snackbar.LENGTH_LONG).setAction(getString(R.string.vk_retry), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showSuccess = true;
-                        if (socketService != null) {
-                            socketService.connectSocket();
-                        } else {
-                            Snackbar.make(mRecyclerView, getString(R.string.couldNotConnectToServer), Snackbar.LENGTH_SHORT).show();
+        if (PermissionsChecker.isStoragePermissionGranted(this)) {
+            ChatModel chatModel = (ChatModel) object;
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("destinationId", opponentId);
+                jsonObject.put("requesterId", sharedHelper.getUserId());
+                jsonObject.put("filePath", chatModel.getFilePath());
+                if (socketService != null) {
+                    socketService.emit(EVENT_REQUEST_FILE_TRANSFER, jsonObject);
+                } else {
+                    Snackbar.make(mRecyclerView, getString(R.string.notConnectedToServer), Snackbar.LENGTH_LONG).setAction(getString(R.string.vk_retry), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            showSuccess = true;
+                            if (socketService != null) {
+                                socketService.connectSocket();
+                            } else {
+                                Snackbar.make(mRecyclerView, getString(R.string.couldNotConnectToServer), Snackbar.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                }).show();
+                    }).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, FILE_DOWNLOAD_STORAGE_REQUEST);
         }
 
     }
@@ -1327,6 +1332,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             case ATTACHMENT_STORAGE_PERMISSION:
                 if (PermissionsChecker.isStoragePermissionGranted(this)) {
                     openFilePicker();
+                }
+                break;
+            case FILE_DOWNLOAD_STORAGE_REQUEST:
+                if (PermissionsChecker.isStoragePermissionGranted(this)) {
+                    Toast.makeText(socketService, "Now you can click again to download", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
