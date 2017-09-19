@@ -390,7 +390,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
             }
         });
-        builder.show();
+        try {
+            builder.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void showFileDownloadedDialog() {
@@ -1197,13 +1201,13 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     protected void onDestroy() {
         super.onDestroy();
         Notification.get().setSendingRemote(true);
-        if (timeOutTimer != null) {
-            try {
-                timeOutTimer.cancel();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+//        if (timeOutTimer != null) {
+//            try {
+//                timeOutTimer.cancel();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
         if (socketService != null) {
             socketService.destroyListener();
         }
