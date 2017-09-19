@@ -1131,6 +1131,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
             @Override
             public void onFinish() {
+                hasPendingDownload = false;
                 sendNotification(0, getApplicationContext(), "Unable to download", "The other side respond timed out");
                 showTimeOutDownloadError();
             }
