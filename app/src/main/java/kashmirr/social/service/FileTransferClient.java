@@ -11,6 +11,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
+import com.google.api.client.util.Base64;
 import com.kashmirr.social.R;
 
 import org.json.JSONException;
@@ -81,9 +82,13 @@ public class FileTransferClient extends Service {
         File file = new File(filePath);
         fileName = file.getName();
 
-        File destinationFile = new File(Environment.getExternalStorageDirectory(), fileName);
+        File destinationFile = new File(Environment.getExternalStorageDirectory() + "/KSocial_Media");
+        if (!destinationFile.exists()) {
+            destinationFile.mkdirs();
+        }
+        File outPut = new File(destinationFile.getPath(), fileName);
         try {
-            outStream = new FileOutputStream(destinationFile);
+            outStream = new FileOutputStream(outPut);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -123,8 +128,8 @@ public class FileTransferClient extends Service {
                     data.putExtra("action", "transferStarted");
                     LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(data);
                 }
-
-                byte[] buffer = (byte[]) jsonObject.opt("bytes");
+                String byteBase64 = jsonObject.optString("bytes");
+                byte[] buffer = Base64.decodeBase64(byteBase64);
                 try {
                     outStream.write(buffer);
                 } catch (IOException e) {
@@ -151,7 +156,7 @@ public class FileTransferClient extends Service {
                 data.putExtra("success", true);
                 data.putExtra("action", "downloadDone");
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(data);
-                sendNotification(0, getApplicationContext(), "Transfer done", "The file was downloaded into internal storage");
+                sendNotification(0, getApplicationContext(), "Transfer done", "The file was downloaded into KSocial_Media folder");
                 destroySocket();
                 stopSelf();
             }

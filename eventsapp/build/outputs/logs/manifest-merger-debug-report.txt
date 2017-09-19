@@ -14,8 +14,8 @@ ADDED from E:\Ink\eventsapp\src\main\AndroidManifest.xml:2:1-26:12
 application
 ADDED from E:\Ink\eventsapp\src\main\AndroidManifest.xml:5:5-24:19
 MERGED from [Ink:linkedin-sdk:unspecified] E:\Ink\linkedin-sdk\build\intermediates\bundles\default\AndroidManifest.xml:13:5-20
-MERGED from [com.android.support:appcompat-v7:19.1.0] C:\Users\Vladimir_Arevshatyan\.android\build-cache\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\output\AndroidManifest.xml:19:5-20
-MERGED from [com.android.support:support-v4:21.0.3] C:\Users\Vladimir_Arevshatyan\.android\build-cache\9efc5c488b78765be734f91acb54a330ce94c1e4\output\AndroidManifest.xml:16:5-19
+MERGED from [com.android.support:appcompat-v7:19.1.0] C:\Users\vladi\.android\build-cache\2aafa92c5cef201be0a388b5543e25813944b7d6\output\AndroidManifest.xml:19:5-20
+MERGED from [com.android.support:support-v4:21.0.3] C:\Users\vladi\.android\build-cache\5164298b467f35e18031849e06be8a1b9305386c\output\AndroidManifest.xml:16:5-19
 	android:label
 		ADDED from E:\Ink\eventsapp\src\main\AndroidManifest.xml:7:9-41
 	android:allowBackup
@@ -51,8 +51,8 @@ ADDED from E:\Ink\eventsapp\src\main\AndroidManifest.xml:19:9-23:20
 uses-sdk
 INJECTED from E:\Ink\eventsapp\src\main\AndroidManifest.xml reason: use-sdk injection requested
 MERGED from [Ink:linkedin-sdk:unspecified] E:\Ink\linkedin-sdk\build\intermediates\bundles\default\AndroidManifest.xml:7:5-9:41
-MERGED from [com.android.support:appcompat-v7:19.1.0] C:\Users\Vladimir_Arevshatyan\.android\build-cache\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\output\AndroidManifest.xml:18:5-42
-MERGED from [com.android.support:support-v4:21.0.3] C:\Users\Vladimir_Arevshatyan\.android\build-cache\9efc5c488b78765be734f91acb54a330ce94c1e4\output\AndroidManifest.xml:15:5-42
+MERGED from [com.android.support:appcompat-v7:19.1.0] C:\Users\vladi\.android\build-cache\2aafa92c5cef201be0a388b5543e25813944b7d6\output\AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:support-v4:21.0.3] C:\Users\vladi\.android\build-cache\5164298b467f35e18031849e06be8a1b9305386c\output\AndroidManifest.xml:15:5-42
 	android:targetSdkVersion
 		INJECTED from E:\Ink\eventsapp\src\main\AndroidManifest.xml
 		INJECTED from E:\Ink\eventsapp\src\main\AndroidManifest.xml

@@ -44,6 +44,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.github.nkzawa.socketio.client.IO;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.instabug.library.Instabug;
@@ -62,6 +63,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -177,6 +179,13 @@ public class HomeActivity extends BaseActivity
         mToolbar.setTitle(FEED);
         mSharedHelper = new SharedHelper(this);
         friendGson = new Gson();
+        com.github.nkzawa.socketio.client.Socket socket = null;
+
+        try {
+            socket = IO.socket(Constants.FILE_SHARING_URL);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
 
         initService();
 //        checkSipPermission();
@@ -1233,9 +1242,9 @@ public class HomeActivity extends BaseActivity
         final String userId = mSharedHelper.getUserId();
         final String sipUserName = firstName + lastName + Constants.SIP_USERNAME_EXTENSION;
         final String displayName = firstName + " " + lastName;
-        if(mSharedHelper.isSipRegistered()){
+        if (mSharedHelper.isSipRegistered()) {
             sipManagerUtil.loginIntoSip(sipUserName, Constants.SIP_GENERIC_PASSWORD, displayName, userId);
-        }else{
+        } else {
             sipManagerUtil.registerSipAccount(firstName + lastName + Constants.SIP_USERNAME_EXTENSION, Constants.SIP_GENERIC_PASSWORD, displayName, new GeneralCallback() {
                 @Override
                 public void onSuccess(Object o) {

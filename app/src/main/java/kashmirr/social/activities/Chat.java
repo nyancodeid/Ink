@@ -404,11 +404,9 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             String filePath = downloadChatModel.getFilePath();
             File file = new File(filePath);
             String fileName = file.getName();
-
-
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getString(R.string.fileDownloaded));
-            builder.setMessage(getString(R.string.yourFileDownloadedTo, fileName, "Internal Storage of Device"));
+            builder.setMessage(getString(R.string.yourFileDownloadedTo, fileName, "KSocial_Media folder"));
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

@@ -80,4 +80,8 @@ public class MessageModel extends RealmObject {
     @Setter
     @Getter
     boolean hasRead;
+
+    @Setter
+    @Getter
+    String fileUrl;
 }

@@ -37,8 +37,8 @@ android {
         applicationId "com.kashmirr.social"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 89
-        versionName "1.8.0"
+        versionCode 90
+        versionName "1.8.1"
         manifestPlaceholders = [appPackageName: "${applicationId}"]
         multiDexEnabled true
         setProperty("archivesBaseName", "KSocial")
@@ -51,11 +51,11 @@ android {
             zipAlignEnabled true
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//            signingConfig signingConfigs.config
-//            signingConfig signingConfigs.configRelease
+            signingConfig signingConfigs.config
+            signingConfig signingConfigs.configRelease
         }
         debug {
-//            signingConfig signingConfigs.config
+            signingConfig signingConfigs.config
         }
     }
 }
@@ -140,6 +140,7 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'com.vk:androidsdk:1.6.5'
     compile 'org.parceler:parceler-api:1.1.6'
+    compile 'in.gauriinfotech:commons:1.0.8'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'

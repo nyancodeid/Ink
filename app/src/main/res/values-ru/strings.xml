@@ -139,6 +139,7 @@
     <string name="discardChanges">Отменить изменения</string>
     <string name="discardChangesQuestion">Вы хотите отменить все изменения, которые вы сделали?</string>
     <string name="googleMapsApiKey">AIzaSyBqlJvjYxAxLHSuxQ-IClVFe29EyJ-MpA4</string>
+    <string name="storagePermissionsDescription">We need storage permissions to access your files in order to process your request</string>
     <string name="selectLocation">Выберите ваше местоположение (Подсказка: нажмите на нужное место для прикрепления)</string>
     <string name="openingMap">Открываем карту...</string>
     <string name="permissionsRequired">Нужно разрешение для того, что бы показать ваше местоположение</string>
@@ -723,7 +724,7 @@
     <string name="russianRoom">Русская Комната</string>
 
     <string name="ink_share_text">Получить приложение
-        \nhttps://play.google.com/store/apps/details?id=com.ink.va</string>
+        \nhttps://play.google.com/store/apps/details?id=com.kashmirr.social</string>
     <string name="locatedAt">Находится в : </string>
     <string name="signInWithLinkedIn">Войти с помощю аккаунта google LinkedIn</string>
 

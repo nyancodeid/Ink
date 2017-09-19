@@ -18,7 +18,7 @@
         android:layout_margin="5dp"
         android:layout_marginRight="10dp"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/attachmentIV"
@@ -52,6 +52,7 @@
             android:maxLength="21"
             android:text="fbhkjashfkjhasfhashfkjas" />
     </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/singleGifViewWrapper"

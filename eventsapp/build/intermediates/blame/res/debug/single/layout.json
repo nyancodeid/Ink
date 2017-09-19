@@ -4,16 +4,16 @@
         "source": "E:\\Ink\\eventsapp\\src\\main\\res\\layout\\attendee_list_item.xml"
     },
     {
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\support_simple_spinner_dropdown_item.xml",
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\support_simple_spinner_dropdown_item.xml"
+    },
+    {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\activity_profile.xml",
         "source": "E:\\Ink\\eventsapp\\src\\main\\res\\layout\\activity_profile.xml"
     },
     {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\support_simple_spinner_dropdown_item.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\support_simple_spinner_dropdown_item.xml"
-    },
-    {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_menu_layout.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_action_menu_layout.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_action_menu_layout.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\layout_view_on_linkedin.xml",
@@ -21,39 +21,39 @@
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_title_item.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_action_bar_title_item.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_action_bar_title_item.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_radio.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_list_menu_item_radio.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_list_menu_item_radio.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_tabbar.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_action_bar_tabbar.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_action_bar_tabbar.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_mode_close_item.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_action_mode_close_item.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_action_mode_close_item.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_decor_include.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_action_bar_decor_include.xml"
-    },
-    {
-        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_checkbox.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_list_menu_item_checkbox.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_action_bar_decor_include.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\activity_main.xml",
         "source": "E:\\Ink\\eventsapp\\src\\main\\res\\layout\\activity_main.xml"
     },
     {
+        "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_checkbox.xml",
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_list_menu_item_checkbox.xml"
+    },
+    {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_activity_chooser_view_include.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_activity_chooser_view_include.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_activity_chooser_view_include.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_expanded_menu_layout.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_expanded_menu_layout.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_expanded_menu_layout.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\layout_action_bar.xml",
@@ -61,27 +61,27 @@
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_menu_item_layout.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_action_menu_item_layout.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_action_menu_item_layout.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_popup_menu_item_layout.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_popup_menu_item_layout.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_popup_menu_item_layout.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_home.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_action_bar_home.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_action_bar_home.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_search_dropdown_item_icons_2line.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_search_dropdown_item_icons_2line.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_search_dropdown_item_icons_2line.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_icon.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_list_menu_item_icon.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_list_menu_item_icon.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_mode_bar.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_action_mode_bar.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_action_mode_bar.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\layout_event_fragment.xml",
@@ -89,15 +89,15 @@
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_activity_chooser_view_list_item.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_activity_chooser_view_list_item.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_activity_chooser_view_list_item.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_tab.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_action_bar_tab.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_action_bar_tab.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_view_list_nav_layout.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_action_bar_view_list_nav_layout.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_action_bar_view_list_nav_layout.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\layout_linkedin_login.xml",
@@ -105,14 +105,14 @@
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_search_view.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_search_view.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_search_view.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_list_menu_item_layout.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_list_menu_item_layout.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_list_menu_item_layout.xml"
     },
     {
         "merged": "E:\\Ink\\eventsapp\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_decor_overlay.xml",
-        "source": "C:\\Users\\Vladimir_Arevshatyan\\.android\\build-cache\\847b53c4594f94ee09b8d8ba2cea6acf902c69c5\\output\\res\\layout\\abc_action_bar_decor_overlay.xml"
+        "source": "C:\\Users\\vladi\\.android\\build-cache\\2aafa92c5cef201be0a388b5543e25813944b7d6\\output\\res\\layout\\abc_action_bar_decor_overlay.xml"
     }
 ]

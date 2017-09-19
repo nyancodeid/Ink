@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationCompat;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
+import com.google.api.client.util.Base64;
 import com.kashmirr.social.R;
 
 import org.json.JSONException;
@@ -160,7 +161,8 @@ public class FileTransferServer extends Service {
                 byte[] buffer = new byte[BUFFER_SIZE];
 
                 while (fileInputStream.read(buffer) > 0) {
-                    jsonObject.put("bytes", buffer);
+                    String base64String = Base64.encodeBase64String(buffer);
+                    jsonObject.put("bytes", base64String);
                     jsonObject.put("remainingBytesLength", fileInputStream.available());
                     socket.emit(EVENT_TRANSFER_BYTES, jsonObject);
                 }
