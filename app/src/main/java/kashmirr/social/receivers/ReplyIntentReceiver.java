@@ -87,6 +87,10 @@ public class ReplyIntentReceiver extends BroadcastReceiver {
         }
         final String finalMessageToSend = messageToSend;
 
+        initBinding(finalMessageToSend);
+    }
+
+    private void initBinding(final String finalMessageToSend) {
         if (socketService == null) {
             setOnBindCallback(new OnBindCallback() {
                 @Override
@@ -98,7 +102,7 @@ public class ReplyIntentReceiver extends BroadcastReceiver {
             socketService = SocketService.get();
             if (socketService == null) {
                 try {
-                    context.stopService(new Intent(context,SocketService.class));
+                    context.stopService(new Intent(context, SocketService.class));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -113,6 +117,10 @@ public class ReplyIntentReceiver extends BroadcastReceiver {
     }
 
     private void sendMessage(String finalMessageToSend) {
+        if (socketService == null) {
+            initBinding(finalMessageToSend);
+            return;
+        }
         socketService.connectSocket();
         final ChatModel chatModel = chatGSON.fromJson(receivedMessageJson.toString(), ChatModel.class);
         chatModel.setDate(Time.getCurrentTime());

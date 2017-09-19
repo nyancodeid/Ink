@@ -1139,5 +1139,6 @@ phone\'s pictures directories in multiple way as you will be prompted to choose 
     <string name="yourFileDownloadedTo">Your file with name %1$s was downloaded to %2$s</string>
     <string name="downloadFailed">Download failed</string>
     <string name="downloadFailedReason">The download failed because it took to long for the other side to give response. Please try again later...</string>
+    <string name="sentFile">Sent File</string>
 
 </resources>

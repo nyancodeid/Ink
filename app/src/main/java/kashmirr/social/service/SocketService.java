@@ -764,9 +764,10 @@ public class SocketService extends Service {
         final String lastName = jsonObject.optString("lastName");
         final String message = jsonObject.optString("message");
         final String opponentId = jsonObject.optString("userId");
+        String filePath = jsonObject.optString("filePath");
         final StringBuilder stringBuilder = new StringBuilder();
 
-
+        final String finalFilePath = filePath;
         RealmHelper.getInstance().getNotificationCount(Integer.valueOf(opponentId), new RealmHelper.QueryReadyListener() {
             @Override
             public void onQueryReady(Object... results) {
@@ -777,11 +778,19 @@ public class SocketService extends Service {
                 List<String> messages = (List<String>) results[1];
 
                 for (String message : messages) {
-                    stringBuilder.append("\n" + (message.isEmpty() ? context.getString(R.string.sentSticker) : message));
+                    if (message.isEmpty()) {
+
+                        if (finalFilePath != null && !finalFilePath.isEmpty()) {
+                            stringBuilder.append("\n" + context.getString(R.string.sentFile));
+                        } else {
+                            stringBuilder.append("\n" + (message.isEmpty() ? context.getString(R.string.sentSticker) : message));
+                        }
+                    }
                 }
+
                 stringBuilder.append(messages.isEmpty() ? message.isEmpty() ?
-                        context.getString(R.string.sentSticker) : message
-                        : "\n" + (message.isEmpty() ? context.getString(R.string.sentSticker) : message));
+                        finalFilePath.isEmpty() ? context.getString(R.string.sentSticker) : context.getString(R.string.sentFile) : message
+                        : "\n" + (message.isEmpty() ? finalFilePath.isEmpty() ? context.getString(R.string.sentSticker) : context.getString(R.string.sentFile) : message));
 
 
                 Intent requestsViewIntent = new Intent(context, Chat.class);

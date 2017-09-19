@@ -14,6 +14,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -459,7 +461,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         attachmentWrapper.setVisibility(View.GONE);
         String charSequence = mWriteEditText.getText().toString().trim();
 
-        if (charSequence.length() <= 0) {
+        if (charSequence.length() <= 0 && !isStickerChosen) {
             mSendChatMessage.setEnabled(false);
         } else {
             mSendChatMessage.setEnabled(true);
@@ -543,7 +545,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         stickerPreviewLayout.setVisibility(View.GONE);
         String charSequence = mWriteEditText.getText().toString().trim();
 
-        if (charSequence.length() <= 0) {
+        if (charSequence.length() <= 0 && filePath == null) {
             mSendChatMessage.setEnabled(false);
         } else {
             mSendChatMessage.setEnabled(true);
@@ -1008,56 +1010,109 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     public void onItemLongClick(Object object) {
         final ChatModel chatModel = (ChatModel) object;
         AlertDialog.Builder builder = new AlertDialog.Builder(Chat.this);
-        builder.setItems(new String[]{getString(R.string.delete), getString(R.string.copy), getString(R.string.resend)}, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        String messageId = chatModel.getMessageId();
-                        RealmHelper.getInstance().deleteSingleMessage(messageId, new GeneralCallback() {
-                            @Override
-                            public void onSuccess(Object o) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        chatAdapter.removeItem(chatModel);
-                                        Snackbar.make(mRecyclerView, getString(R.string.messageDeleted), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
+        if (chatModel.getUserId().equals(sharedHelper.getUserId())) {
+            builder.setItems(new String[]{getString(R.string.delete), getString(R.string.copy), getString(R.string.resend)}, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case 0:
+                            String messageId = chatModel.getMessageId();
+                            RealmHelper.getInstance().deleteSingleMessage(messageId, new GeneralCallback() {
+                                @Override
+                                public void onSuccess(Object o) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            chatAdapter.removeItem(chatModel);
+                                            Snackbar.make(mRecyclerView, getString(R.string.messageDeleted), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
 
-                                            }
-                                        }).show();
-                                    }
-                                });
+                                                }
+                                            }).show();
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onFailure(Object o) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Snackbar.make(mRecyclerView, getString(R.string.messagedeleteError), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+
+                                                }
+                                            }).show();
+                                        }
+                                    });
+                                }
+                            });
+                            break;
+                        case 1:
+                            ClipManager.copy(Chat.this, chatModel.getMessage());
+                            break;
+                        case 2:
+                            if (chatModel.getFilePath() != null && !chatModel.getFilePath().isEmpty()) {
+                                filePath = chatModel.getFilePath();
                             }
+                            sendMessage(chatModel.getMessage());
+                            break;
+                    }
 
-                            @Override
-                            public void onFailure(Object o) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Snackbar.make(mRecyclerView, getString(R.string.messagedeleteError), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-
-                                            }
-                                        }).show();
-                                    }
-                                });
-                            }
-                        });
-                        break;
-                    case 1:
-                        ClipManager.copy(Chat.this, chatModel.getMessage());
-                        break;
-                    case 2:
-                        sendMessage(chatModel.getMessage());
-                        break;
                 }
+            });
+            builder.show();
+        } else {
+            builder.setItems(new String[]{getString(R.string.delete), getString(R.string.copy)}, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case 0:
+                            String messageId = chatModel.getMessageId();
+                            RealmHelper.getInstance().deleteSingleMessage(messageId, new GeneralCallback() {
+                                @Override
+                                public void onSuccess(Object o) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            chatAdapter.removeItem(chatModel);
+                                            Snackbar.make(mRecyclerView, getString(R.string.messageDeleted), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
 
-            }
-        });
-        builder.show();
+                                                }
+                                            }).show();
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onFailure(Object o) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Snackbar.make(mRecyclerView, getString(R.string.messagedeleteError), Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+
+                                                }
+                                            }).show();
+                                        }
+                                    });
+                                }
+                            });
+                            break;
+                        case 1:
+                            ClipManager.copy(Chat.this, chatModel.getMessage());
+                            break;
+                    }
+
+                }
+            });
+            builder.show();
+        }
     }
 
     @Override
@@ -1277,12 +1332,12 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
     @Override
     public void onNewMessageReceived(final JSONObject messageJson) {
-        hideNoMessages();
         final ChatModel chatModel = chatGSON.fromJson(messageJson.toString(), ChatModel.class);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (chatModel.getUserId().equals(opponentId)) {
+                    hideNoMessages();
                     chatModel.setHasRead(true);
                     chatAdapter.insertChatModel(chatModel);
                     localMessageInsert(chatModel, false);
@@ -1294,7 +1349,30 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                         }
                     });
                 } else {
-                    sendMessageNotification(getApplicationContext(), messageJson);
+                    RealmHelper.getInstance().insertMessage(chatModel, new GeneralCallback() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    sendMessageNotification(getApplicationContext(), messageJson);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(Object o) {
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    sendMessageNotification(getApplicationContext(), messageJson);
+                                }
+                            });
+                        }
+                    });
+
                 }
 
             }
@@ -1337,6 +1415,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                sendNotification(0, getApplicationContext(), "File doesn't exist", "The file doesn't exist on the other side");
                 DialogUtils.showDialog(Chat.this, "File doesn't exist", "The requested file doesn't exist on the other side", true, null, false, null);
             }
         });

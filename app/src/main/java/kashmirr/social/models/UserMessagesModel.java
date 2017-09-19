@@ -49,10 +49,17 @@ public class UserMessagesModel implements Comparable<UserMessagesModel> {
     @Getter
     @SerializedName("isFriend")
     private boolean isFriend;
+
+
     @SerializedName("date")
     @Setter
     @Getter
     private String date;
+
+    @SerializedName("filePath")
+    @Setter
+    @Getter
+    private String filePath;
 
     @Setter
     @Getter

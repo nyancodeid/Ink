@@ -359,6 +359,7 @@ public class RealmHelper {
                                         userMessagesModel.setHasRead(queryModel.isHasRead());
                                         userMessagesModel.setFriend(false);
                                         userMessagesModel.setMessage(queryModel.getMessage());
+                                        userMessagesModel.setFilePath(queryModel.getFilePath());
                                         userMessagesModel.setMessageId(queryModel.getMessageId());
                                         userMessagesModel.setOpponentId(queryModel.getOpponentId());
                                         userMessagesModel.setUserId(queryModel.getUserId());
@@ -429,6 +430,7 @@ public class RealmHelper {
                                 userMessagesModel.setImageName(queryModel.getUserId().equals(currentUserId) ? queryModel.getOpponentImage() : queryModel.getUserImage());
                                 userMessagesModel.setFriend(false);
                                 userMessagesModel.setMessage(queryModel.getMessage());
+                                userMessagesModel.setFilePath(queryModel.getFilePath());
                                 userMessagesModel.setMessageId(queryModel.getMessageId());
                                 userMessagesModel.setOpponentId(queryModel.getOpponentId());
                                 userMessagesModel.setUserId(queryModel.getUserId());

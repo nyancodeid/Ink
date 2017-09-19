@@ -190,47 +190,6 @@
 
 
         <RelativeLayout
-            android:id="@+id/attachmentWrapper"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/writeField"
-            android:layout_margin="5dp"
-            android:animateLayoutChanges="true"
-            android:background="@drawable/grey_transparent_rectangle"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/attachmentHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                android:text="@string/addedAttachmentText" />
-
-            <TextView
-                android:id="@+id/attachmentNameTV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/attachmentHeader"
-                android:layout_centerVertical="true"
-                android:layout_margin="10dp"
-                android:layout_toLeftOf="@+id/removeAttachmentIV"
-                android:ellipsize="end"
-                android:gravity="left"
-                android:maxLines="1"
-                android:text="@string/loadingText" />
-
-            <ImageView
-                android:id="@+id/removeAttachmentIV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:padding="10dp"
-                android:src="@drawable/trash_icon" />
-        </RelativeLayout>
-
-        <RelativeLayout
             android:id="@+id/writeField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -241,6 +200,7 @@
 
             <RelativeLayout
                 android:layout_width="wrap_content"
+                android:animateLayoutChanges="true"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent">
 
@@ -307,6 +267,49 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp" />
                 </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/attachmentWrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/stickerIcon"
+                    android:layout_margin="5dp"
+                    android:animateLayoutChanges="true"
+                    android:background="@drawable/grey_transparent_rectangle"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/attachmentHeader"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/addedAttachmentText" />
+
+                    <TextView
+                        android:id="@+id/attachmentNameTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/attachmentHeader"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="10dp"
+                        android:layout_toLeftOf="@+id/removeAttachmentIV"
+                        android:ellipsize="end"
+                        android:gravity="left"
+                        android:maxLines="1"
+                        android:text="@string/loadingText" />
+
+                    <ImageView
+                        android:id="@+id/removeAttachmentIV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:padding="10dp"
+                        android:src="@drawable/trash_icon" />
+                </RelativeLayout>
+
 
                 <ImageView
                     android:id="@+id/stickerIcon"

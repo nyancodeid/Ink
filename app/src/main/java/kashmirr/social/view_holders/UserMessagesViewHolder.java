@@ -69,10 +69,16 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
         String finalMessage;
 
         boolean shouldBold = false;
+        String filePath = userMessagesModel.getFilePath();
 
         if (userMessagesModel.getUserId().equals(sharedHelper.getUserId())) {
             if (userMessagesModel.getMessage().isEmpty()) {
-                finalMessage = context.getString(R.string.you) + context.getString(R.string.sentSticker);
+
+                if (filePath.isEmpty()) {
+                    finalMessage = context.getString(R.string.you) + context.getString(R.string.sentSticker);
+                } else {
+                    finalMessage = context.getString(R.string.you) + context.getString(R.string.sentFile);
+                }
             } else {
                 finalMessage = context.getString(R.string.you) + context.getString(R.string.quoteOpen) +
                         message.replaceAll(Constants.TYPE_MESSAGE_ATTACHMENT, "") + context.getString(R.string.quoteClose);
@@ -91,8 +97,13 @@ public class UserMessagesViewHolder extends RecyclerView.ViewHolder {
                 String lastName = userMessagesModel.getLastName() != null ? userMessagesModel.getLastName().isEmpty() ? "" : userMessagesModel.getLastName() :
                         "";
 
-                finalMessage = firstName + " " + lastName + " : " + context.getString(R.string.quoteOpen) +
-                        context.getString(R.string.sentSticker) + context.getString(R.string.quoteClose);
+                if (filePath.isEmpty()) {
+                    finalMessage = firstName + " " + lastName + " : " + context.getString(R.string.quoteOpen) +
+                            context.getString(R.string.sentSticker) + context.getString(R.string.quoteClose);
+                } else {
+                    finalMessage = firstName + " " + lastName + " : " + context.getString(R.string.quoteOpen) +
+                            context.getString(R.string.sentFile) + context.getString(R.string.quoteClose);
+                }
             } else {
 
                 String firstName = userMessagesModel.getFirstName() != null ? userMessagesModel.getFirstName().isEmpty() ? context.getString(R.string.NA) : userMessagesModel.getFirstName() :

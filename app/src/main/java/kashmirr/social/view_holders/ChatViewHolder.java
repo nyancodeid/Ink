@@ -58,6 +58,8 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
     TextView attachmentNameTV;
     @BindView(R.id.downloadAttachmentIV)
     ImageView downloadAttachmentIV;
+    @BindView(R.id.attachmentIV)
+    ImageView attachmentIV;
 
     private SharedHelper sharedHelper;
     private Context mContext;
@@ -89,6 +91,8 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         LinearLayout.LayoutParams dateTVParams = (LinearLayout.LayoutParams) dateTV.getLayoutParams();
         LinearLayout.LayoutParams gifChatViewLayoutParams = (LinearLayout.LayoutParams) imageViewWrapper.getLayoutParams();
         LinearLayout.LayoutParams chatAttachmentWrapperParams = (LinearLayout.LayoutParams) chatAttachmentWrapper.getLayoutParams();
+        LinearLayout.LayoutParams attachmentIVParams = (LinearLayout.LayoutParams) attachmentIV.getLayoutParams();
+        LinearLayout.LayoutParams downloadAttachmentIVParams = (LinearLayout.LayoutParams) downloadAttachmentIV.getLayoutParams();
 
 
         if (currentUserId.equals(chatModel.getUserId())) {
@@ -102,12 +106,16 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
             deliveryStatusParams.gravity = Gravity.RIGHT;
             gifChatViewLayoutParams.gravity = Gravity.RIGHT;
             chatAttachmentWrapperParams.gravity = Gravity.RIGHT;
+            attachmentIVParams.gravity = Gravity.RIGHT;
+            downloadAttachmentIVParams.gravity = Gravity.RIGHT;
             dateTVParams.gravity = Gravity.RIGHT;
             dateTVParams.rightMargin = Dp.toDps(context, 15);
 
             chatViewBubble.setLayoutParams(layoutParams);
             imageView.setLayoutParams(gifChatViewLayoutParams);
             chatAttachmentWrapper.setLayoutParams(chatAttachmentWrapperParams);
+            attachmentIV.setLayoutParams(attachmentIVParams);
+            downloadAttachmentIV.setLayoutParams(downloadAttachmentIVParams);
             dateTV.setLayoutParams(dateTVParams);
 
             chatViewBubble.setBackground(ContextCompat.getDrawable(context, R.drawable.outgoing_message_bg));
@@ -130,11 +138,15 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
             gifChatViewLayoutParams.gravity = Gravity.LEFT;
             chatAttachmentWrapperParams.gravity = Gravity.LEFT;
             dateTVParams.gravity = Gravity.LEFT;
+            attachmentIVParams.gravity = Gravity.LEFT;
+            downloadAttachmentIVParams.gravity = Gravity.LEFT;
 
             chatViewBubble.setLayoutParams(layoutParams);
             dateTV.setLayoutParams(dateTVParams);
             imageView.setLayoutParams(gifChatViewLayoutParams);
             chatAttachmentWrapper.setLayoutParams(chatAttachmentWrapperParams);
+            attachmentIV.setLayoutParams(attachmentIVParams);
+            downloadAttachmentIV.setLayoutParams(downloadAttachmentIVParams);
             deliveryStatus.setVisibility(View.INVISIBLE);
         }
         Date date = new Date();
@@ -154,9 +166,25 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
 
     private void checkForFile(ChatModel chatModel, boolean me) {
         String filePath = chatModel.getFilePath();
+        File file = new File(filePath);
+        String filenameArray[] = file.getName().split("\\.");
+        String extension = filenameArray[filenameArray.length - 1];
+        if (filePath == null) {
+            filePath = "";
+        }
+
+        if (extension.equals("jpg") || extension.equals("png") || extension.equals("jpeg")) {
+            attachmentIV.setImageResource(R.drawable.image_vector);
+        } else if (extension.equals("pdf")) {
+            attachmentIV.setImageResource(R.drawable.pdf_vector);
+        } else if (extension.equals("apk")) {
+            attachmentIV.setImageResource(R.drawable.android_icon);
+        } else {
+            attachmentIV.setImageResource(R.drawable.attachment_icon);
+        }
+
         if (me) {
             if (filePath != null && !filePath.isEmpty()) {
-                File file = new File(filePath);
                 downloadAttachmentIV.setVisibility(View.GONE);
                 chatAttachmentWrapper.setVisibility(View.VISIBLE);
                 attachmentNameTV.setText(file.getName());
@@ -165,7 +193,6 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
             }
         } else {
             if (filePath != null && !filePath.isEmpty()) {
-                File file = new File(filePath);
                 downloadAttachmentIV.setVisibility(View.VISIBLE);
                 chatAttachmentWrapper.setVisibility(View.VISIBLE);
                 attachmentNameTV.setText(file.getName());
