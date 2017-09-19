@@ -2,19 +2,25 @@ package kashmirr.social.activities;
 
 import android.Manifest;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -85,6 +91,7 @@ import static kashmirr.social.utils.Constants.EVENT_TYPING;
 import static kashmirr.social.utils.Constants.NOTIFICATION_MESSAGE_BUNDLE_KEY;
 import static kashmirr.social.utils.Constants.REQUEST_CODE_CHOSE_STICKER;
 import static kashmirr.social.utils.Constants.STARTING_FOR_RESULT_BUNDLE_KEY;
+import static kashmirr.social.utils.NotificationUtils.sendNotification;
 
 
 public class Chat extends BaseActivity implements RecyclerItemClickListener, SocketListener {
@@ -95,6 +102,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private static final int ATTACHMENT_STORAGE_PERMISSION = 105;
     private static final int FILE_CHOOSER_REQUEST = 100;
     private static final int FILE_DOWNLOAD_STORAGE_REQUEST = 48;
+    private static final long TIM_OUT_LENGTH = 15000;
 
     @BindView(R.id.sendChatMessage)
     fab.FloatingActionButton mSendChatMessage;
@@ -173,6 +181,11 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     private boolean furtherLoad = true;
     private String lastDestination;
     private String filePath;
+    private boolean hasPendingDownload;
+    private ChatModel downloadChatModel;
+    private CountDownTimer timeOutTimer;
+    private NotificationManager mNotifyManager;
+    private NotificationCompat.Builder mBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,8 +214,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         initVariables(extras, false);
 
         checkNotification(extras, false, null);
-
-
+        LocalBroadcastManager.getInstance(this).registerReceiver(downloadFinishedReceiver, new IntentFilter(getPackageName() + ".Chat"));
         initUser();
 
         mSendChatMessage.setEnabled(false);
@@ -220,6 +232,7 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         checkLock();
+
     }
 
     private void checkLock() {
@@ -344,6 +357,59 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
                     });
         } else {
             callUser(destination);
+        }
+    }
+
+    private BroadcastReceiver downloadFinishedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            hasPendingDownload = false;
+            String action = intent.getExtras().getString("action");
+            if (action.equals("downloadDone")) {
+                boolean success = intent.getExtras().getBoolean("success");
+                if (success) {
+                    showFileDownloadedDialog();
+                } else {
+                    String cause = intent.getExtras().getString("cause");
+                }
+            } else if (action.equals("transferStarted")) {
+                if (timeOutTimer != null) {
+                    timeOutTimer.cancel();
+                }
+            }
+        }
+    };
+
+    private void showTimeOutDownloadError() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.downloadFailed));
+        builder.setMessage(getString(R.string.downloadFailedReason));
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.show();
+    }
+
+    private void showFileDownloadedDialog() {
+        if (downloadChatModel != null) {
+            String filePath = downloadChatModel.getFilePath();
+            File file = new File(filePath);
+            String fileName = file.getName();
+
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.fileDownloaded));
+            builder.setMessage(getString(R.string.yourFileDownloadedTo, fileName, "Internal Storage of Device"));
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            builder.show();
         }
     }
 
@@ -997,14 +1063,25 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
 
     @Override
     public void onAdditionalItemClicked(Object object) {
+        if (hasPendingDownload) {
+            Toast.makeText(this, getString(R.string.wait_till_download), Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (PermissionsChecker.isStoragePermissionGranted(this)) {
             ChatModel chatModel = (ChatModel) object;
+            downloadChatModel = chatModel;
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("destinationId", opponentId);
                 jsonObject.put("requesterId", sharedHelper.getUserId());
                 jsonObject.put("filePath", chatModel.getFilePath());
+                jsonObject.put("requesterFirstName", sharedHelper.getFirstName());
+                jsonObject.put("requesterLastName", sharedHelper.getLastName());
                 if (socketService != null) {
+                    initTimeOutTimer();
+                    Toast.makeText(Chat.this, "See Notification", Toast.LENGTH_SHORT).show();
+                    buildWaitNotification();
+                    hasPendingDownload = true;
                     socketService.emit(EVENT_REQUEST_FILE_TRANSFER, jsonObject);
                 } else {
                     Snackbar.make(mRecyclerView, getString(R.string.notConnectedToServer), Snackbar.LENGTH_LONG).setAction(getString(R.string.vk_retry), new View.OnClickListener() {
@@ -1026,6 +1103,35 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
             ActivityCompat.requestPermissions(this, new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, FILE_DOWNLOAD_STORAGE_REQUEST);
         }
 
+    }
+
+    private void buildWaitNotification() {
+        String text = "Waiting for response from the other side to start download";
+        mNotifyManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mBuilder = new NotificationCompat.Builder(this);
+        mBuilder.setContentTitle("Waiting...")
+                .setContentText(text)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
+                .setSmallIcon(R.mipmap.ic_launcher);
+        mBuilder.setProgress(0, 0, true);
+        mNotifyManager.notify(0, mBuilder.build());
+    }
+
+    private void initTimeOutTimer() {
+        timeOutTimer = new CountDownTimer(TIM_OUT_LENGTH, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                sendNotification(0, getApplicationContext(), "Unable to download", "The other side respond timed out");
+                showTimeOutDownloadError();
+            }
+        };
+        timeOutTimer.start();
     }
 
     @Override
@@ -1091,12 +1197,23 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
     protected void onDestroy() {
         super.onDestroy();
         Notification.get().setSendingRemote(true);
+        if (timeOutTimer != null) {
+            try {
+                timeOutTimer.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         if (socketService != null) {
             socketService.destroyListener();
         }
+        try {
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(downloadFinishedReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         unbindService();
         destroyScheduler();
-
     }
 
 
@@ -1209,6 +1326,17 @@ public class Chat extends BaseActivity implements RecyclerItemClickListener, Soc
         });
 
     }
+
+    @Override
+    public void onFileNotExists() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                DialogUtils.showDialog(Chat.this, "File doesn't exist", "The requested file doesn't exist on the other side", true, null, false, null);
+            }
+        });
+    }
+
 
     @Override
     public void onBackPressed() {

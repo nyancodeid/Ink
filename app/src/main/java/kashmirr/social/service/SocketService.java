@@ -15,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
 import android.support.v4.content.LocalBroadcastManager;
-import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -363,7 +362,13 @@ public class SocketService extends Service {
     private Emitter.Listener onNoFileExists = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            Toast.makeText(getApplicationContext(), "no file exists", Toast.LENGTH_SHORT).show();
+            JSONObject jsonObject = (JSONObject) args[0];
+            String destinationId = jsonObject.optString("destinationId");
+            if (destinationId.equals(sharedHelper.getUserId())) {
+                if (onSocketListener != null) {
+                    onSocketListener.onFileNotExists();
+                }
+            }
         }
     };
 

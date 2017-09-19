@@ -20,6 +20,7 @@ public class Constants {
     public static final String SPI_REGISTER_URL = "enrollment-webrtc.phtml";
     public static final String SIP_OUTBOUND_PROXY_URL = "proxy.sipthor.net:5060";
     public static final String MAFIA_SOCKET_URL = "http://35.196.113.134:4500";
+    public static final String FILE_SHARING_URL = "http://35.196.113.134:3000";
     public static final String SIP_DOMAIN_URL = "sip2sip.info";
 
     /**
@@ -289,7 +290,7 @@ public class Constants {
     public static final String EVENT_MAFIA_GLOBAL_MESSAGE = "onMafiaGlobalMessage";
     public static final String EVENT_ON_USER_LEFT_MAFIA_ROOM = "onRoomLeft";
     public static final String EVENT_ON_USER_JOINED_MAFIA_ROOM = "onUserJoinedRoom";
-    public static final String EVENT_NO_FILE_EXIST  = "noFileExist";
+    public static final String EVENT_NO_FILE_EXIST = "noFileExist";
     public static final String EVENT_ON_MAFIA_GAME_STARTED = "onMafiaGameStarted";
     public static final String EVENT_ON_GAME_CREATED = "onGameCreated";
     public static final String EVENT_ON_SOCKET_MESSAGE_RECEIVED = "socketMessageReceived";
@@ -321,9 +322,15 @@ public class Constants {
     public static final String EVENT_FRIEND_REQUEST_RECEIVED = "onClientFriendRequestReceived";
     public static final String EVENT_ON_FILE_TRANSFER_REQUEST = "onFileTransferRequest";
     public static final String EVENT_REQUEST_FILE_TRANSFER = "fileTransferRequest";
+    public static final String EVENT_FILE_TRANSFER_CLIENT_READY = "fileTransferClientConnected";
+    public static final String EVENT_TRANSFER_BYTES = "transferByte";
+    public static final String EVENT_COMPLETE_TRANSFER = "completeTransfer";
+    public static final String EVENT_ON_TRANSFER_COMPLETED = "onTransferCompleted";
+    public static final String EVENT_ON_TRANSFER_BYTES = "onTransferByte";
     public static final String EVENT_REQUEST_GROUP_JOIN_RECEIVED = "requestGroupJoinReceived";
     public static final String EVENT_ON_SEND_GROUP_MESSAGE_RECEIVED = "onSendGroupMessageReceived";
     public static final String EVENT_ON_GLOBAL_MESSAGE_RECEIVED = "onClientGlobalMessageReceived";
+    public static final String EVENT_ON_FILE_TRANSFER_CLIENT_READY = "onFileTransferClientConnected";
 
     public static final String EVENT_ONLINE_STATUS = "onlineStatus";
     public static final String EVENT_PING = "ping";

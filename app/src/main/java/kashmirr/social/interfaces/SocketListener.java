@@ -22,4 +22,7 @@ public interface SocketListener {
     void onMessageSent(JSONObject chatJson);
 
     void onOnlineStatusReceived(boolean isOnline, String friendlyMessage);
+
+    void onFileNotExists();
+
 }
